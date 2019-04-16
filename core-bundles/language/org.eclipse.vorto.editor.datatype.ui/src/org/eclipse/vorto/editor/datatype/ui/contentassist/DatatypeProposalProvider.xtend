@@ -15,8 +15,14 @@
 
 package org.eclipse.vorto.editor.datatype.ui.contentassist
 
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+
 /**
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
  */
 class DatatypeProposalProvider extends AbstractDatatypeProposalProvider {
+
 }

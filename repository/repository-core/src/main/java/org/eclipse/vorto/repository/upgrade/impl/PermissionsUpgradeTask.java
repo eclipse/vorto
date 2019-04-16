@@ -13,9 +13,6 @@
 package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +28,6 @@ import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.ModelRepository;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
@@ -42,9 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -74,9 +67,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 
   @Override
   public void doUpgrade() throws UpgradeProblem {
-    Authentication dummyAuthentication = createAuthentication();
-    
-    SecurityContextHolder.getContext().setAuthentication(dummyAuthentication);
+    setAdminUserContext();
     
     Map<String, List<ModelInfo>> searchResult = getModelSearchService().search("*");
     
@@ -134,7 +125,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
         }
         
         for (ModelInfo modelInfo : entry.getValue()) {
-          setPermissions(repositoryFactory.getPolicyManager(entry.getKey(), dummyAuthentication), modelInfo);
+          setPermissions(repositoryFactory.getPolicyManager(entry.getKey(), createAuthentication()), modelInfo);
         }
         
         return null;
@@ -149,52 +140,6 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
       policyManager.addPolicyEntry(modelInfo.getId(),
           PolicyEntry.of(modelInfo.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS),PolicyEntry.of(Role.SYS_ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
     }
-  }
-
-  private Authentication createAuthentication() {
-    return new Authentication() {
-
-      /**
-       * 
-       */
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public String getName() {
-        return "admin";
-      }
-
-      @Override
-      public Collection<? extends GrantedAuthority> getAuthorities() {
-        return SpringUserUtils.toAuthorityList(new HashSet<>(Arrays.asList(Role.SYS_ADMIN)));
-      }
-
-      @Override
-      public Object getCredentials() {
-        return null;
-      }
-
-      @Override
-      public Object getDetails() {
-        return null;
-      }
-
-      @Override
-      public Object getPrincipal() {
-        return "admin";
-      }
-
-      @Override
-      public boolean isAuthenticated() {
-        return false;
-      }
-
-      @Override
-      public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        //is not invoked since it is a dummy provider
-      }
-
-    };
   }
 
   public Optional<IUpgradeTaskCondition> condition() {

@@ -164,19 +164,23 @@ In the following example, a custom (Javascript) converter is defined in a Functi
 
 ## Mapping Conditions
 
-If you want to specify a condition, when mapping rules should be applied, you can do this easily with mapping conditions.
+If you want to specify a condition, when mapping rules for a Function Block should be applied, you can do this easily with mapping conditions.
 
-Here is an example of using conditions to map to either temperature or illuminance based on the device payload header:
+Here is an example of using conditions to map to either temperature or illuminance Function Block based on the device payload header. 
+
+In this example, only the Temperature Function Block will be mapped, if the type field of header matches the 'T' value. 
 
 Function Block Temperature Mapping
 
 	...
-	from Temperature.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'T'"}
+	from Temperature to condition with {value:"header.type == 'T'"}
+	//mapping rules for Temperature properties
 
 Function Block Illuminance Mapping
 
 	...
-	from Illuminance.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'I'"}
+	from Illuminance to condition with {value:"header.type == 'I'"}
+	//mapping rules for Illuminance properties
 
 
 

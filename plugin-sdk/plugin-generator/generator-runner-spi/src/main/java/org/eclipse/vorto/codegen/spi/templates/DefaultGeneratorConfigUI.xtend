@@ -53,6 +53,20 @@ class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
 						</div><!-- /.box-body -->
 					</div><!-- /.box -->
 				</div>
+				«IF serviceInfo.key == "boschiotsuite"»
+				<div class="col-sm-6">
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">Web Application</h3>
+							<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+						</div><!-- /.box-header -->
+						<div class="box-body">
+							<p>Visualizes device data for Vorto - described devices in a tiny Web UI (requires NodeJS runtime). <a href="https://download.eclipse.org/vorto/downloads/vorto-webui.zip">Download App</a></p>
+							<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp.png" width="50%" />
+						</div><!-- /.box -->
+					</div>
+				</div>
+				«ENDIF»
 			</div>
 		«ENDFOR»
 		'''

@@ -22,14 +22,13 @@ import org.eclipse.vorto.repository.core.impl.ModelRepository;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ModelValidationDiagnostic;
 import org.eclipse.vorto.repository.core.impl.diagnostics.NodeDiagnosticUtils;
-import org.eclipse.vorto.repository.core.impl.diagnostics.ReferenceIntegrityDiagnostic;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
-
+  
   @Test
-  public void baseline() {
+  public void testDiagnosisAllValidModels() {
     IUserContext admin = createUserContext("admin");
 
     ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
@@ -55,7 +54,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void withValidationProblems() {
+  public void testDiagnosisMissingReference() {
     IUserContext admin = createUserContext("admin");
     
     ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
@@ -69,7 +68,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 
     try {
       getModelRepository(admin).restore(IOUtils.toByteArray(
-          new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-validation-error.xml")
+          new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-missingreference.xml")
               .getInputStream()));
     } catch (Exception e) {
       e.printStackTrace();
@@ -98,30 +97,4 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
     assertEquals("com.ipso.smartobjects", modelId.getNamespace());
     assertEquals("1.1.0", modelId.getVersion());
   }
-
-  // TODO : This test doesn't actually work as the sequencer will rebuild the references everytime
-  // you restore the backup file, and so the references will
-  // correct themselves but I'm not deleting it as it shows how to code around the possible race
-  // problem when writing test that uploads a model then access
-  // the metadata that still needs to be built by the sequencer. This shows how to execute code that
-  // actually waits for the sequencer
-  // to finish.
-
-  // @Test
-  public void withReferenceIntegrityProblems() {
-    IUserContext admin = createUserContext("admin");
-    
-    ReferenceIntegrityDiagnostic diagnosticTest = new ReferenceIntegrityDiagnostic();
-
-    RepositoryDiagnostics modelDiagnostics = new RepositoryDiagnostics();
-    modelDiagnostics.setNodeDiagnosticTests(Arrays.asList(diagnosticTest));
-
-    ModelRepository modelRepository = ((ModelRepository) getModelRepository(admin)); 
-    modelRepository.setRepositoryDiagnostics(modelDiagnostics);
-
-    Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
-    diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
-    assertEquals(0, diagnostics.size());
-  }
-
 }

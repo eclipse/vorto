@@ -14,10 +14,10 @@
 *******************************************************************************/
 package org.eclipse.vorto.editor.mapping.ui.contentassist
 
-import org.eclipse.vorto.editor.mapping.ui.contentassist.AbstractMappingProposalProvider
-
 /**
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
  */
 class MappingProposalProvider extends AbstractMappingProposalProvider {
+	
+	
 }

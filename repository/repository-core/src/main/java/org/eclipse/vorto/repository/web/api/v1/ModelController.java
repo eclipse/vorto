@@ -59,11 +59,13 @@ public class ModelController extends AbstractRepositoryController {
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
-  @ApiOperation(value = "Returns a full model by its model ID")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model info"),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model not found"),
-      @ApiResponse(code = 403, message = "Not Authorized to view model")})
+  @ApiOperation(value = "Returns a full model by its model ID",
+      notes = "This method call allows the user to view the specific model information.<br/>"
+            + "If you want to search the non-released models, you need to login.")
+@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
+    @ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
+    @ApiResponse(code = 404, message = "Model not found"),
+    @ApiResponse(code = 403, message = "Not Authorized to view model") })
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
   public ModelInfo getModelInfo(
@@ -82,11 +84,11 @@ public class ModelController extends AbstractRepositoryController {
     return ModelDtoFactory.createDto(resource);
   }
 
-  @ApiOperation(value = "Returns the complete model content")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"),
-          @ApiResponse(code = 400, message = "Wrong input"),
-          @ApiResponse(code = 404, message = "Model not found")})
+  @ApiOperation(value = "Returns the complete model content",
+      notes = "This method call returns the complete model content of the specific 'modelId' provided in the query.<br/>")
+@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
+      @ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
+      @ApiResponse(code = 404, message = "Model not found") })
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
   public ModelContent getModelContent(
@@ -113,12 +115,13 @@ public class ModelController extends AbstractRepositoryController {
     return result;
   }
 
-  @ApiOperation(
-      value = "Returns the complete model content including target platform specific attributes")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"),
-          @ApiResponse(code = 400, message = "Wrong input"),
-          @ApiResponse(code = 404, message = "Model not found")})
+  @ApiOperation(value = "Returns the complete model content including target platform specific attributes",
+      notes = "This method call retrieves the complete content of the model "
+              + "for the specific platform. If there are no platform specific attributes or mappings, the "
+              + "method call will return 404.")
+@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
+      @ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
+      @ApiResponse(code = 404, message = "Model Mappings not found") })
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
   public ModelContent getModelContentForTargetPlatform(
@@ -179,10 +182,12 @@ public class ModelController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Downloads the model file")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model not found")})
+  @ApiOperation(value = "Downloads the model file",
+      notes = "This method call downloads the model file for the 'modelId' provided. "
+              + "If you need to get the model dependencies, you need to set 'includeDependencies' flag to 'true'")
+@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
+      @ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
+      @ApiResponse(code = 404, message = "Model not found") })
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
   public void downloadModelById(

@@ -84,11 +84,13 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
 
-  @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model") // 403
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(NotAuthorizedException.class)
-  public void unAuthorized(final NotAuthorizedException ex) {
-    logger.error("NotAuthorizedException occured", ex);
-    // do logging
+  public ResponseEntity<Object> unAuthorized(final NotAuthorizedException ex) {
+	  Map<String, Object> authError = new HashMap<String, Object>();
+	  authError.put("message", ex.getMessage());
+	  authError.put("modelId", ex.getModelId().getPrettyFormat());
+	  return new ResponseEntity<Object>(authError, HttpStatus.UNAUTHORIZED);
   }
 
   @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during generation.")

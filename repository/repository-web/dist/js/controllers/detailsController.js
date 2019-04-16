@@ -771,9 +771,7 @@ repositoryControllers.controller('DetailsController',
 				});
 		};
 		
-		if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
-			$scope.diagnoseModel();
-		}
+		$scope.diagnoseModel();
 		
 		$scope.getPolicies = function() {
 			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies')

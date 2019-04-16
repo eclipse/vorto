@@ -77,6 +77,7 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -180,7 +181,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
 
 
   @Override
-  public ModelFileContent getModelContent(ModelId modelId) {
+  public ModelFileContent getModelContent(ModelId modelId, boolean validate) {
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -190,8 +191,11 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
         InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
         final String fileContent = IOUtils.toString(is);
-        ModelResource resource = (ModelResource) modelParserFactory.getParser(fileNode.getName())
-            .parse(IOUtils.toInputStream(fileContent));
+        
+        IModelParser parser = modelParserFactory.getParser(fileNode.getName());
+        parser.setValidate(validate);
+        
+        ModelResource resource = (ModelResource) parser.parse(IOUtils.toInputStream(fileContent));
         return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
       } catch (IOException e) {
         throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
@@ -219,13 +223,15 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
   }
 
   public ModelInfo save(ModelId modelId, byte[] content, String fileName,
-      IUserContext userContext) {
+      IUserContext userContext, boolean validate) {
     Objects.requireNonNull(content);
     Objects.requireNonNull(modelId);
 
-    ModelResource modelInfo = (ModelResource) modelParserFactory
-        .getParser("model" + ModelType.fromFileName(fileName).getExtension())
-        .parse(new ByteArrayInputStream(content));
+    IModelParser parser =
+        modelParserFactory.getParser("model" + ModelType.fromFileName(fileName).getExtension());
+    parser.setValidate(validate);
+    
+    ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
     
     return doInSession(jcrSession -> {
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
@@ -278,6 +284,11 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
         throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
       }
     });
+  }
+  
+  public ModelInfo save(ModelId modelId, byte[] content, String fileName,
+      IUserContext userContext) {
+    return save(modelId, content, fileName, userContext, true);
   }
 
   @Override
@@ -758,7 +769,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
         throw new ModelAlreadyExistsException();
       }
 
-      ModelFileContent existingModelContent = this.getModelContent(existingId);
+      ModelFileContent existingModelContent = this.getModelContent(existingId, false);
       Model model = existingModelContent.getModel();
       model.setVersion(newVersion);
       ModelResource resource = new ModelResource(model);

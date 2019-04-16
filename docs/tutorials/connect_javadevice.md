@@ -33,7 +33,7 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 	- Click **Next**.
 	
 	- Specify the **Namespace**. 
-		> The namespace must match with the namespace that you have set in Bosch IoT Things for your solution.
+		> !! The namespace must match with the namespace that you have set in Bosch IoT Things for your solution.
 	
 	- Leave the default value for **Name**.
 	
@@ -77,9 +77,9 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 	- Set the **Password**, you have specified during the thing creation process (refer to above).
 	
-	- Go to the **AUTH_ID** and remove the **<namespace>:** in the **AUTH_ID**. This should make your AUTH_ID have the form of **<Technical Device ID>@<HONO_TENANT>**.
+	- Set the **AUTH_ID** to the format like **Technical Device ID@HONO_TENANT**, e.g. 471100@t932f4726de33232223121_hub
 	
-	- Change the **DITTO_TOPIC** to **<namespace>/<Technical Device ID>**. (e.g com.test.vorto/47-11-00)
+	- Set the **DITTO_TOPIC** to **Things Namespace/Technical Device ID**. (e.g org.mycompany/4711)
 
 	- Click **Save** to save the changes.
 

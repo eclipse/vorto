@@ -20,8 +20,8 @@ import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
-import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
-import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConditionalProperties;
+import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class JsonMappingTest {
   @Test
   public void testMapWithSimpleCondition() throws Exception {
     IDataMapper mapper =
-        IDataMapper.newBuilder().withSpecification(new SpecWithCondition()).build();
+        IDataMapper.newBuilder().withSpecification(new SpecWithConditionalProperties()).build();
 
     String json = "{\"count\" : 2 }";
 
@@ -64,7 +64,7 @@ public class JsonMappingTest {
   @Test
   public void testMapWithJxpathCondition() throws Exception {
     IDataMapper mapper =
-        IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath()).build();
+        IDataMapper.newBuilder().withSpecification(new SpecWithPropertyConditionXpath()).build();
 
     String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 

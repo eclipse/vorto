@@ -77,7 +77,14 @@ public class GeneratorController extends AbstractRepositoryController {
   @Autowired
   private ITenantService tenantService;
 
-  @ApiOperation(value = "Generate code for a specified platform, and extract specified path")
+  @ApiOperation(value = "Generate code for a specified platform, and extract specified path",
+		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."
+				    + "<br/>"
+			  		+ "<pre>"
+			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+			  		+ "* serviceKey : The key value of the specific generator.<br/>"
+			  		+ "</pre>")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model or generator not found")})
@@ -154,7 +161,14 @@ public class GeneratorController extends AbstractRepositoryController {
     return apm.extractPathWithinPattern(bestMatchPattern, path);
   }
 
-  @ApiOperation(value = "Generate code for a specified platform")
+  @ApiOperation(value = "Generate code for a specified platform",
+		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."
+				    + "<br/>"
+			  		+ "<pre>"
+			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+			  		+ "* serviceKey : The key value of the specific generator.<br/>"
+			  		+ "</pre>")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model or generator not found")})
@@ -209,11 +223,13 @@ public class GeneratorController extends AbstractRepositoryController {
     return requestParams;
   }
 
-  @ApiOperation(value = "Returns all currently registered Code Generator")
+  @ApiOperation(value = "Returns all currently registered Code Generator",
+		  notes = "This method call retrieves all registered code generators currently in the repository."
+				    + "<br/>The generators are grouped under 'production', 'infra' and 'demo' tags.")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved generators successfully")})
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public Collection<GeneratorInfo> getRegisteredGeneratorServices(
-      @ApiParam(value = "Prioritize results with given tag", allowableValues = "any given tags",
+      @ApiParam(value = "Prioritize results with given tag", allowableValues = "demo,infra,production",
           required = false) @RequestParam(value = "orderBy", required = false,
               defaultValue = "production") String orderBy) {
     List<GeneratorInfo> generatorInfoResult = new ArrayList<>();
@@ -254,7 +270,8 @@ public class GeneratorController extends AbstractRepositoryController {
     return false;
   }
 
-  @ApiOperation(value = "Returns a specific generator info")
+  @ApiOperation(value = "Returns a specific generator info", 
+		  notes = "This method retrieves information of a specific generator. The input that needs to be passed is the 'servicekey' of the generator.")
   @RequestMapping(value = "/{serviceKey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public GeneratorInfo getGeneratorInfo(

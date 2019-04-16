@@ -33,3 +33,21 @@
  	font-size: 15px;
     padding-bottom: 10px;
  }
+ 
+.swagger-ui .get .heading, .swagger-ui .get .content {
+ 	background-color: #e7f0f7;
+    border: 1px solid #c3d9ec;
+    padding: 3px;
+}
+
+.swagger-ui .delete .heading, .swagger-ui .delete .content {
+    background-color: #f5e8e8;
+    border: 1px solid #e8c6c7;
+    padding: 3px;
+}
+
+.swagger-ui .put .heading, .swagger-ui .put .content {
+    background-color: #f9f2e9;
+    border: 1px solid #f0e0ca;
+    padding: 3px;
+}

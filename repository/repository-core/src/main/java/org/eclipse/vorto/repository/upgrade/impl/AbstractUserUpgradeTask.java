@@ -42,4 +42,5 @@ abstract class AbstractUserUpgradeTask implements IUserUpgradeTask {
   public Optional<IUpgradeTaskCondition> condition(User user, Supplier<Object> upgradeContext) {
     return Optional.of(() -> upgradeContext.get() instanceof OAuth2Authentication);
   }
+
 }

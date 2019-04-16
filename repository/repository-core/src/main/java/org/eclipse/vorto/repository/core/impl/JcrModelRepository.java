@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -78,6 +77,7 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -91,7 +91,6 @@ import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -101,7 +100,7 @@ import com.google.common.collect.Sets;
  * @author Alexander Edelmann
  *
  */
-//@Service("modelRepository")
+// @Service("modelRepository")
 public class JcrModelRepository implements IModelRepository, IDiagnostics, IModelPolicyManager {
 
   private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
@@ -135,7 +134,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       if (queryExpression == null || queryExpression.isEmpty()) {
         queryExpression = "*";
       }
-      
+
       List<ModelInfo> modelResources = new ArrayList<>();
       Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
 
@@ -185,7 +184,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
 
   @Override
-  public ModelFileContent getModelContent(ModelId modelId) {
+  public ModelFileContent getModelContent(ModelId modelId, boolean validate) {
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -195,9 +194,13 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
         final String fileContent = IOUtils.toString(is);
-        ModelResource resource = (ModelResource) modelParserFactory.getParser(fileNode.getName())
-            .parse(IOUtils.toInputStream(fileContent));
-        return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
+
+        IModelParser parser = modelParserFactory.getParser(fileNode.getName());
+        parser.setValidate(validate);
+
+        ModelResource resource = (ModelResource) parser.parse(IOUtils.toInputStream(fileContent));
+        return new ModelFileContent(resource.getModel(), fileNode.getName(),
+            fileContent.getBytes());
       } catch (IOException e) {
         throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
       }
@@ -223,17 +226,20 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
   }
 
-  public ModelInfo save(ModelId modelId, byte[] content, String fileName,
-      IUserContext userContext) {
+  public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext,
+      boolean validate) {
+
     Objects.requireNonNull(content);
     Objects.requireNonNull(modelId);
 
-    ModelResource modelInfo = (ModelResource) modelParserFactory
-        .getParser("model" + ModelType.fromFileName(fileName).getExtension())
-        .parse(new ByteArrayInputStream(content));
+    IModelParser parser =
+        modelParserFactory.getParser("model" + ModelType.fromFileName(fileName).getExtension());
+    parser.setValidate(validate);
+
+    ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
 
     logger.info("Saving " + modelId.toString() + " as " + fileName + " in Repository");
-    
+
     return doInSession(jcrSession -> {
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
       try {
@@ -255,8 +261,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           Property input = contentNode.setProperty("jcr:data", binary);
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
-            throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
-                null);
+            throw new FatalModelRepositoryException(
+                "Problem indexing new node for search" + modelId, null);
           }
         } else { // node already exists, so just update it.
           Node fileNode = nodeIt.nextNode();
@@ -269,8 +275,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           Property input = contentNode.setProperty("jcr:data", binary);
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
-            throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
-                null);
+            throw new FatalModelRepositoryException(
+                "Problem indexing new node for search" + modelId, null);
           }
         }
 
@@ -282,6 +288,11 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
       }
     });
+  }
+
+  public ModelInfo save(ModelId modelId, byte[] content, String fileName,
+      IUserContext userContext) {
+    return save(modelId, content, fileName, userContext, true);
   }
 
   @Override
@@ -357,7 +368,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         try {
           Node referencedFolder = prop.getParent();
           final ModelId referencedById = ModelIdHelper.fromPath(referencedFolder.getPath());
-          if (hasPermission(referencedById,Permission.READ)) {
+          if (hasPermission(referencedById, Permission.READ)) {
             resource.getReferencedBy().add(referencedById);
 
             if (referencedFolder.getProperty(VORTO_NODE_TYPE).getString()
@@ -406,8 +417,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     return doInSession(session -> {
       List<ModelInfo> referencingModels = Lists.newArrayList();
       QueryManager queryManager = session.getWorkspace().getQueryManager();
-      Query query = queryManager.createQuery("SELECT * FROM [vorto:meta] WHERE [vorto:references] = '" + modelId.toString() + "'", Query.JCR_SQL2);
-      
+      Query query = queryManager.createQuery(
+          "SELECT * FROM [vorto:meta] WHERE [vorto:references] = '" + modelId.toString() + "'",
+          Query.JCR_SQL2);
+
       QueryResult result = query.execute();
       RowIterator rowIterator = result.getRows();
       while (rowIterator.hasNext()) {
@@ -421,11 +434,11 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           }
         }
       }
-      
+
       return referencingModels;
     });
   }
-  
+
   @Override
   public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
     logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
@@ -517,8 +530,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     return doInSession(session -> {
       try {
         Node folderNode = createNodeForModelId(session, modelId);
-        Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
-            ? folderNode.getNodes(FILE_NODES).nextNode() : null;
+        Node fileNode =
+            folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
+                : null;
         fileNode.addMixin("mix:lastModified");
         nodeConsumer.accept(fileNode);
         session.save();
@@ -570,7 +584,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           .createBinary(new ByteArrayInputStream(fileContent.getContent()));
       contentNode.setProperty("jcr:data", binary);
       session.save();
-      
+
       return null;
     });
   }
@@ -650,7 +664,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
             .createBinary(new ByteArrayInputStream(fileContent.getContent()));
         contentNode.setProperty("jcr:data", binary);
         session.save();
-        
+
         return null;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -673,9 +687,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
             Node fileNode = (Node) nodeIt.next();
             Attachment attachment = Attachment.newInstance(modelId, fileNode.getName());
             if (fileNode.hasProperty("vorto:tags")) {
-              final List<Value> tags = Arrays.asList(fileNode.getProperty("vorto:tags").getValues());
-              attachment
-                  .setTags(tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
+              final List<Value> tags =
+                  Arrays.asList(fileNode.getProperty("vorto:tags").getValues());
+              attachment.setTags(
+                  tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
             }
             attachments.add(attachment);
           }
@@ -740,7 +755,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
             && attachment.getFilename().equals(fileName)))) {
       return false;
     }
-    
+
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -758,7 +773,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         return false;
       } catch (PathNotFoundException e) {
         return false;
-      } 
+      }
     });
   }
 
@@ -775,7 +790,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         throw new ModelAlreadyExistsException();
       }
 
-      ModelFileContent existingModelContent = this.getModelContent(existingId);
+      ModelFileContent existingModelContent = this.getModelContent(existingId, false);
       Model model = existingModelContent.getModel();
       model.setVersion(newVersion);
       ModelResource resource = new ModelResource(model);
@@ -830,17 +845,17 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   }
 
   @Override
-  public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {    
+  public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
     return doInSession(session -> {
       List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
-      
+
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
         final Node folderNode = session.getNode(modelIdHelper.getFullPath());
-        
+
         if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          throw new ModelNotFoundException("Could not find model with ID "+modelId);
+          throw new ModelNotFoundException("Could not find model with ID " + modelId);
         }
         Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
@@ -860,7 +875,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
             policyEntries.add(policy);
           }
         }
-        
+
         return policyEntries;
       } catch (AccessDeniedException ex) {
         throw new NotAuthorizedException(modelId);
@@ -893,18 +908,24 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         }
 
         final AccessControlList _acl = acl;
-        
+
         List<AccessControlEntry> existingEntries = new ArrayList<>();
         for (AccessControlEntry ace : acl.getAccessControlEntries()) {
-          Arrays.asList(newEntries).stream().forEach(entry -> {if (entry.isSame(ace)) {existingEntries.add(ace);}});
+          Arrays.asList(newEntries).stream().forEach(entry -> {
+            if (entry.isSame(ace)) {
+              existingEntries.add(ace);
+            }
+          });
         }
 
         if (!existingEntries.isEmpty()) {
-          existingEntries.stream().forEach(ace -> {try {
-            _acl.removeAccessControlEntry(ace);
-          } catch (Exception e) {
-            logger.error("Could not grant user readd permissions for model", e); 
-          }});
+          existingEntries.stream().forEach(ace -> {
+            try {
+              _acl.removeAccessControlEntry(ace);
+            } catch (Exception e) {
+              logger.error("Could not grant user readd permissions for model", e);
+            }
+          });
         }
 
         for (PolicyEntry newEntry : newEntries) {
@@ -925,7 +946,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       } catch (AccessDeniedException ex) {
         throw new NotAuthorizedException(modelId);
       }
-    }); 
+    });
   }
 
   private String[] createPrivileges(PolicyEntry newEntry) {
@@ -948,7 +969,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   public void removePolicyEntry(ModelId modelId, PolicyEntry entryToRemove) {
     entryToRemove.setPermission(null);
     this.addPolicyEntry(modelId, entryToRemove);
-    
+
     if (this.getPolicyEntries(modelId).isEmpty()) {
       doInSession(session -> {
         try {
@@ -969,7 +990,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
           acm.removePolicy(fileNode.getPath(), acl);
           session.save();
-          
+
           return null;
         } catch (AccessDeniedException ex) {
           throw new NotAuthorizedException(modelId);
@@ -987,20 +1008,22 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
         if (permission == Permission.READ) {
-          return folderNode.getNodes(FILE_NODES).hasNext(); 
+          return folderNode.getNodes(FILE_NODES).hasNext();
         } else {
-          return this.getPolicyEntries(modelId).stream().filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID())).filter(p -> hasPermission(p.getPermission(),permission)).findAny().isPresent();        
-        } 
+          return this.getPolicyEntries(modelId).stream()
+              .filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID()))
+              .filter(p -> hasPermission(p.getPermission(), permission)).findAny().isPresent();
+        }
       } catch (AccessDeniedException e) {
-        return false;     
-      } 
+        return false;
+      }
     });
   }
-  
+
   private boolean hasPermission(Permission userPermission, Permission permission) {
     return userPermission.includes(permission);
   }
-  
+
   @Override
   public byte[] backup() {
     return doInSession(session -> {
@@ -1008,30 +1031,31 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         return _backup(session);
       } catch (IOException e) {
         logger.error("Exception while making a backup", e);
-        throw new FatalModelRepositoryException("Something went wrong while making a backup of the system.", e);
+        throw new FatalModelRepositoryException(
+            "Something went wrong while making a backup of the system.", e);
       }
     });
   }
-  
+
   private byte[] _backup(Session session) throws RepositoryException, IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     session.exportSystemView("/", baos, false, false);
     baos.close();
     return baos.toByteArray();
   }
-  
+
   @Override
   public void restore(byte[] data) {
     doInSession(session -> {
       byte[] oldData = null;
       try {
         oldData = _backup(session);
-        
+
         logger.info("Attempting to restore backup");
         session.getWorkspace().importXML("/", new ByteArrayInputStream(data),
             ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
         logger.info("Restored backup succesfully");
-        
+
       } catch (RepositoryException | IOException e) {
         logger.error("Backup failed. Will try to revert the restoration with previous data.", e);
         try {
@@ -1061,19 +1085,20 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
     } catch (Exception ex) {
       logger.error("Unexception exception", ex);
-      throw new FatalModelRepositoryException("Unexpected exception while operating on repository.", ex);
+      throw new FatalModelRepositoryException("Unexpected exception while operating on repository.",
+          ex);
     } finally {
       if (session != null) {
         session.logout();
       }
     }
   }
-  
+
   protected Credentials getCredentialSource() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return new SpringSecurityCredentials(authentication, Sets.newHashSet(Role.SYS_ADMIN));
   }
-  
+
   @FunctionalInterface
   public interface SessionFunction<K> {
     K apply(Session session) throws Exception;

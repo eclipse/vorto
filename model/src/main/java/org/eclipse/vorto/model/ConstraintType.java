@@ -14,5 +14,5 @@ package org.eclipse.vorto.model;
 
 public enum ConstraintType {
 
-  MIN, MAX, STRLEN, REGEX, MIMETYPE, SCALING
+  MIN, MAX, STRLEN, REGEX, MIMETYPE, SCALING, DEFAULT, NULLABLE
 }
