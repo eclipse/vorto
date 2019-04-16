@@ -21,6 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+
 @SpringBootApplication
 @EnableJpaRepositories("org.eclipse.vorto.repository")
 @EntityScan("org.eclipse.vorto.repository")
