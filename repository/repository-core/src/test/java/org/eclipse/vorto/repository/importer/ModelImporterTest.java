@@ -108,7 +108,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 
     this.importer.doImport(uploadResult.getHandleId(), admin);
     ModelFileContent content = repositoryFactory.getRepository(admin)
-        .getModelContent(uploadResult.getReports().get(0).getModel().getId());
+        .getModelContent(uploadResult.getReports().get(0).getModel().getId(), true);
 
     assertTrue(uploadResult.hasWarnings());
     assertTrue(new String(content.getContent(), "utf-8").contains("mandatory b as int"));
@@ -265,5 +265,4 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     assertEquals(false, uploadResult.isValid());
     assertNotNull(uploadResult.getReports().get(0).getMessage());
   }
-
 }

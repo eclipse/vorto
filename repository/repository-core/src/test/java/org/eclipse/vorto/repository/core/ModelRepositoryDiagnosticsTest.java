@@ -69,7 +69,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 
     try {
       getModelRepository(admin).restore(IOUtils.toByteArray(
-          new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-validation-error.xml")
+          new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-missingreference.xml")
               .getInputStream()));
     } catch (Exception e) {
       e.printStackTrace();
