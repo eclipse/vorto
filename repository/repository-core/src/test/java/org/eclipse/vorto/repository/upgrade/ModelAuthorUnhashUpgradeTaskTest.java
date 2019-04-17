@@ -48,7 +48,7 @@ public class ModelAuthorUnhashUpgradeTaskTest {
 
   private OAuth2Authentication mockUser = Mockito.mock(OAuth2Authentication.class);
   
-  IModelRepository modelRepository = Mockito.mock(IModelRepository.class);
+  private IModelRepository modelRepository = Mockito.mock(IModelRepository.class);
 
   private UsernamePasswordAuthenticationToken mockedAuthToken =
       Mockito.mock(UsernamePasswordAuthenticationToken.class);

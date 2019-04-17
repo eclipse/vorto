@@ -1029,7 +1029,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   public byte[] backup() {
     return doInSession(session -> {
       try {
-        return _backup(session);
+        return backupRepository(session);
       } catch (IOException e) {
         logger.error("Exception while making a backup", e);
         throw new FatalModelRepositoryException(
@@ -1038,7 +1038,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     });
   }
 
-  private byte[] _backup(Session session) throws RepositoryException, IOException {
+  private byte[] backupRepository(Session session) throws RepositoryException, IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     session.exportSystemView("/", baos, false, false);
     baos.close();
@@ -1050,7 +1050,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     doInSession(session -> {
       byte[] oldData = null;
       try {
-        oldData = _backup(session);
+        oldData = backupRepository(session);
 
         logger.info("Attempting to restore backup");
         session.getWorkspace().importXML("/", new ByteArrayInputStream(data),

@@ -63,6 +63,13 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   protected static final String CONTENT_DISPOSITION = "content-disposition";
 
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Something went wrong in the application.") // 404
+  @ExceptionHandler(GenericApplicationException.class)
+  public void genericError(final GenericApplicationException ex) {
+    // do logging
+    logger.error(ex);
+  }
+  
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Model not found.") // 404
   @ExceptionHandler(ModelNotFoundException.class)
   public void notFound(final ModelNotFoundException ex) {

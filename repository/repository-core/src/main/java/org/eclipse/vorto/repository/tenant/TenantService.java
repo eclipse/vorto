@@ -33,7 +33,6 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
-import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +57,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private ApplicationEventPublisher eventPublisher = null;
 
   public TenantService(@Autowired ITenantRepository tenantRepo,
-      @Autowired INamespaceRepository namespaceRepo, @Autowired IUserAccountService accountService,
-      @Autowired ITenantUserRepo tenantUserRepo) {
+      @Autowired INamespaceRepository namespaceRepo, @Autowired IUserAccountService accountService) {
     this.tenantRepo = tenantRepo;
     this.namespaceRepo = namespaceRepo;
     this.userAccountService = accountService;

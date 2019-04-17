@@ -37,6 +37,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,7 +222,7 @@ public class ModelController2 extends AbstractRepositoryController {
         IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
         response.flushBuffer();
       } catch (IOException e) {
-        throw new RuntimeException("Error copying file.", e);
+        throw new GenericApplicationException("Error copying file.", e);
       }
     } else {
       createSingleModelContent(tenantId, modelID, response);
@@ -241,7 +242,7 @@ public class ModelController2 extends AbstractRepositoryController {
       return baos.toByteArray();
 
     } catch (Exception ex) {
-      throw new RuntimeException(ex);
+      throw new GenericApplicationException("Error while generating zip file.", ex);
     }
   }
 

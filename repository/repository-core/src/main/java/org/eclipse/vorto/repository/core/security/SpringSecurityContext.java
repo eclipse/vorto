@@ -67,16 +67,12 @@ public class SpringSecurityContext implements SecurityContext {
     }
 
     // grant non-members of the tenant (including anonymous users) access to models
-    if (rolesInTenant.size() < 1 && principalName.equals("ANONYMOUS")) {
+    if (rolesInTenant.size() < 1 && "ANONYMOUS".equals(principalName)) {
       return true;
     }
 
     // grant everyone read access to all repositories
-    if (principalName.equals("readonly")) {
-      return true;
-    }
-
-    return false;
+    return "readonly".equals(principalName);
   }
 
   private boolean isSysAdmin(Authentication authentication2) {

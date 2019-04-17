@@ -129,76 +129,76 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, user);
+      return newRepo(tenant, user);
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, userContext.getAuthentication());
+      return newRepo(tenant, userContext.getAuthentication());
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService() {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
+      return newRepo(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
   }
   
   @Override
   public IModelSearchService getModelSearchService(Authentication user) {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, user);
+      return newRepo(tenant, user);
     });
   }
 
   @Override
   public IModelSearchService getModelSearchService(IUserContext userContext) {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, userContext.getAuthentication());
+      return newRepo(tenant, userContext.getAuthentication());
     });
   }
 
   @Override
   public IModelSearchService getModelSearchService() {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return _getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
+      return newRepo(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
   }
   
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
-    return _getRepository(tenant, user);
+    return newRepo(tenant, user);
   }
 
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
-    return _getRepository(tenant, user);
+    return newRepo(tenant, user);
   }
 
   @Override
   public IModelPolicyManager getPolicyManager(IUserContext userContext) {
-    return _getRepository(userContext.getTenant(), userContext.getAuthentication());
+    return newRepo(userContext.getTenant(), userContext.getAuthentication());
   }
 
   @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
-    return _getRepository(tenant, user);
+    return newRepo(tenant, user);
   }
 
   @Override
   public IModelRepository getRepository(IUserContext userContext) {
-    return _getRepository(userContext.getTenant(), userContext.getAuthentication());
+    return newRepo(userContext.getTenant(), userContext.getAuthentication());
   }
   
   @Override
   public IModelRepository getRepository(String tenantId) {
-    return _getRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
+    return newRepo(tenantId, SecurityContextHolder.getContext().getAuthentication());
   }
 
-  public ModelRepository _getRepository(String tenant, Authentication user) {
+  public ModelRepository newRepo(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.userRepository, this.modelSearchUtil,
         this.attachmentValidator, this.modelParserFactory, this.repoDiagnostics, 
         getModelRetrievalService(user));

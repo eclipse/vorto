@@ -303,7 +303,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
 
         Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
-        ModelInfo modelResource = createModelResource(session, fileNode);
+        ModelInfo modelResource = createModelResource(fileNode);
 
         if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
           modelResource.setHasImage(true);
@@ -322,7 +322,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     });
   }
 
-  private ModelInfo createModelResource(Session session, Node fileNode) throws RepositoryException {
+  private ModelInfo createModelResource(Node fileNode) throws RepositoryException {
     final Node folderNode = fileNode.getParent();
 
     ModelInfo resource = createMinimalModelInfo(fileNode);
@@ -1006,7 +1006,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
   public byte[] backup() {
     return doInSession(session -> {
       try {
-        return _backup(session);
+        return backupRepository(session);
       } catch (IOException e) {
         logger.error("Exception while making a backup", e);
         throw new FatalModelRepositoryException("Something went wrong while making a backup of the system.", e);
@@ -1014,7 +1014,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     });
   }
   
-  private byte[] _backup(Session session) throws RepositoryException, IOException {
+  private byte[] backupRepository(Session session) throws RepositoryException, IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     session.exportSystemView("/", baos, false, false);
     baos.close();
@@ -1026,7 +1026,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     doInSession(session -> {
       byte[] oldData = null;
       try {
-        oldData = _backup(session);
+        oldData = backupRepository(session);
         
         logger.info("Attempting to restore backup");
         session.getWorkspace().importXML("/", new ByteArrayInputStream(data),

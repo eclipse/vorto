@@ -56,10 +56,10 @@ public class TestModel {
 
 
   public static final class TestModelBuilder {
-    String namespace = "com.mycompany." + TestUtils.createRandomString(10).toLowerCase();
-    String modelName = TestUtils.createRandomString(10).toUpperCase();
-    String description = "InformationModel for " + modelName;
-    String version = "1.0.0";
+    private String namespace = "com.mycompany." + TestUtils.createRandomString(10).toLowerCase();
+    private String modelName = TestUtils.createRandomString(10).toUpperCase();
+    private String description = "InformationModel for " + modelName;
+    private String version = "1.0.0";
 
     private TestModelBuilder() {}
 

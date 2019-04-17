@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -92,37 +91,30 @@ public abstract class AbstractIntegrationTest {
   protected ModelRepositoryFactory repositoryFactory;
 
   protected TenantService tenantService = Mockito.mock(TenantService.class);
-  
+
   protected TenantUserService tenantUserService = null;
 
   private Tenant playgroundTenant = playgroundTenant();
 
   @Before
   public void beforeEach() throws Exception {
-    Mockito.when(userRepository.findByUsername("alex"))
-      .thenReturn(getUser("alex", playgroundTenant));
+    when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
 
-    Mockito.when(userRepository.findByUsername("erle"))
-      .thenReturn(getUser("erle", playgroundTenant));
+    when(userRepository.findByUsername("erle")).thenReturn(getUser("erle", playgroundTenant));
 
-    Mockito.when(userRepository.findByUsername("admin"))
-      .thenReturn(getUser("admin", playgroundTenant));
-    
-    Mockito.when(userRepository.findByUsername("creator"))
-      .thenReturn(getUser("creator", playgroundTenant));
-    
-    Mockito.when(userRepository.findByUsername("reviewer"))
-      .thenReturn(getUser("reviewer", playgroundTenant));
-    
-    Mockito.when(userRepository.findAll())
-      .thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant), 
-          getUser("erle", playgroundTenant),
-          getUser("alex", playgroundTenant),
-          getUser("creator", playgroundTenant),
-          getUser("reviewer", playgroundTenant)));
+    when(userRepository.findByUsername("admin")).thenReturn(getUser("admin", playgroundTenant));
 
-    Mockito.when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
-    Mockito.when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
+    when(userRepository.findByUsername("creator")).thenReturn(getUser("creator", playgroundTenant));
+
+    when(userRepository.findByUsername("reviewer"))
+        .thenReturn(getUser("reviewer", playgroundTenant));
+
+    when(userRepository.findAll()).thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant),
+        getUser("erle", playgroundTenant), getUser("alex", playgroundTenant),
+        getUser("creator", playgroundTenant), getUser("reviewer", playgroundTenant)));
+
+    when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
+    when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
 
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.setErrorMessageProvider(new ErrorMessageProvider());
@@ -134,25 +126,25 @@ public abstract class AbstractIntegrationTest {
     repositoryFactory = new ModelRepositoryFactory(userRepository, modelSearchUtil,
         attachmentValidator, modelParserFactory, null, config, tenantService) {
 
-          @Override
-          public IModelRetrievalService getModelRetrievalService() {
-            return super.getModelRetrievalService(createUserContext("admin"));
-          }
+      @Override
+      public IModelRetrievalService getModelRetrievalService() {
+        return super.getModelRetrievalService(createUserContext("admin"));
+      }
 
-          @Override
-          public IModelSearchService getModelSearchService() {
-            return super.getModelSearchService(createUserContext("admin"));
-          }
+      @Override
+      public IModelSearchService getModelSearchService() {
+        return super.getModelSearchService(createUserContext("admin"));
+      }
 
-          @Override
-          public IModelRepository getRepository(String tenantId) {
-            return super.getRepository(createUserContext("admin", tenantId));
-          }
+      @Override
+      public IModelRepository getRepository(String tenantId) {
+        return super.getRepository(createUserContext("admin", tenantId));
+      }
     };
     repositoryFactory.start();
 
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
-    
+
     ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor(repositoryFactory);
 
     accountService = new DefaultUserAccountService();
@@ -162,7 +154,7 @@ public abstract class AbstractIntegrationTest {
     accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
 
     tenantUserService = new TenantUserService(tenantService, accountService);
-    
+
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
     this.importer.setUserRepository(this.accountService);
@@ -184,7 +176,7 @@ public abstract class AbstractIntegrationTest {
   protected ModelInfo importModel(String user, String modelName) {
     return importModel(modelName, createUserContext(user, "playground"));
   }
-  
+
   protected ModelInfo importModel(String modelName) {
     return importModel(modelName, createUserContext(getCallerId(), "playground"));
   }
@@ -213,13 +205,14 @@ public abstract class AbstractIntegrationTest {
   }
 
   protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
-    when(userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-        .thenReturn(User.create(getCallerId(), new Tenant("playground"), Role.USER));
+    when(
+        userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
+            .thenReturn(User.create(getCallerId(), new Tenant("playground"), Role.USER));
     workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
         .thenReturn(User.create("admin", new Tenant("playground"), Role.SYS_ADMIN));
-    return workflow.doAction(model.getId(),createUserContext("admin", "playground"),
+    return workflow.doAction(model.getId(), createUserContext("admin", "playground"),
         SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
 
@@ -230,7 +223,7 @@ public abstract class AbstractIntegrationTest {
   protected IUserContext createUserContext(String username) {
     return createUserContext(username, "playground");
   }
-  
+
   protected IUserContext createUserContext(String username, String tenantId) {
     Set<String> userRoles = getTenantUser(username, playgroundTenant).getRoles().stream()
         .map(uRole -> Role.rolePrefix + uRole.getRole().name()).collect(Collectors.toSet());
@@ -248,13 +241,16 @@ public abstract class AbstractIntegrationTest {
     UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
     UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
     UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
-    
-    Tenant playground =
-        Tenant.newTenant("playground", "org.eclipse", Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
 
-    playground.addUser(createTenantUser("alex", Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
-    playground.addUser(createTenantUser("erle", Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
-    playground.addUser(createTenantUser("admin", Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
+    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
+        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
+
+    playground.addUser(createTenantUser("alex",
+        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
+    playground.addUser(createTenantUser("erle",
+        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
+    playground.addUser(createTenantUser("admin",
+        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
     playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
     playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
 
@@ -278,10 +274,10 @@ public abstract class AbstractIntegrationTest {
     return tenant.getUsers().stream().filter(tu -> tu.getUser().getUsername().equals(userId))
         .findAny().get();
   }
-  
+
   private class MockAppEventPublisher implements ApplicationEventPublisher {
     private ModelRepositorySupervisor supervisor;
-    
+
     public MockAppEventPublisher(ModelRepositorySupervisor supervisor) {
       this.supervisor = supervisor;
     }
@@ -295,6 +291,8 @@ public abstract class AbstractIntegrationTest {
     }
 
     @Override
-    public void publishEvent(Object event) {}
+    public void publishEvent(Object event) {
+      // implement when need arises
+    }
   }
 }

@@ -71,10 +71,8 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
     List<ModelId> references = modelResource.getReferences();
     List<ModelId> missingReferences = new ArrayList<ModelId>();
     for (ModelId modelId : references) {
-      if (!zipModelIds.contains(modelId)) {
-        if (isNotInRepository(modelId, context.getUserContext())) {
-          missingReferences.add(modelId);
-        }
+      if (!zipModelIds.contains(modelId) && isNotInRepository(modelId, context.getUserContext())) {
+        missingReferences.add(modelId);
       }
     }
     if (missingReferences.size() > 0)

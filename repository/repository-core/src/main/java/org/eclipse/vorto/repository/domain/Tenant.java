@@ -42,14 +42,6 @@ public class Tenant {
   public static final String STANDARDIZATION_TENANT_ID = "standardization";
   public static final String STANDARDIZATION_TENANT_DEFAULT_NAMESPACE = "org.eclipse.vorto";
 
-  public static Tenant newTenant(String tenantId, String defaultNamespace, Set<String> namespaces) {
-    Tenant tenant = new Tenant(tenantId);
-    tenant.setDefaultNamespace(defaultNamespace);
-    tenant.getNamespaces().addAll(Namespace.toNamespace(namespaces, tenant));
-
-    return tenant;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -84,6 +76,14 @@ public class Tenant {
   @JoinColumn(name="owner_id")
   private User owner;
 
+  public static Tenant newTenant(String tenantId, String defaultNamespace, Set<String> namespaces) {
+    Tenant tenant = new Tenant(tenantId);
+    tenant.setDefaultNamespace(defaultNamespace);
+    tenant.getNamespaces().addAll(Namespace.toNamespace(namespaces, tenant));
+
+    return tenant;
+  }
+  
   public Tenant() {}
 
   public Tenant(String tenantId) {

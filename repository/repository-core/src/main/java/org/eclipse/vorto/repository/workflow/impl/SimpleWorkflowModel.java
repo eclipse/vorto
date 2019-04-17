@@ -71,7 +71,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	
 	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepositoryFactory repositoryFactory, INotificationService notificationService) {
 		
-		final IWorkflowCondition isAdminCondition = new IsAdminCondition(userRepository);
+		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		

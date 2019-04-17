@@ -26,8 +26,6 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
-import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -39,18 +37,12 @@ public class TenantServiceTest {
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
-  private ITenantUserRepo tenantUserRepo = Mockito.mock(ITenantUserRepo.class);
-
-  @Before
-  public void init() {
-
-  }
 
   @Test
   public void testPreconditions() {
     Mockito.when(accountService.exists("admin")).thenReturn(false);
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     try {
       tenantService.createOrUpdateTenant(null, "", Sets.newHashSet("admin"), Optional.empty(),
@@ -117,7 +109,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     try {
       tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
@@ -136,7 +128,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
     
@@ -163,7 +155,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
     
@@ -191,7 +183,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
     
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
 
@@ -225,7 +217,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     try {
       tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
@@ -248,7 +240,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
     
     try {
       tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
@@ -274,7 +266,7 @@ public class TenantServiceTest {
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
     
     TenantService tenantService =
-        new TenantService(tenantRepo, nsRepo, accountService, tenantUserRepo);
+        new TenantService(tenantRepo, nsRepo, accountService);
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
     

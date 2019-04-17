@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -27,6 +26,17 @@ import org.hibernate.annotations.NaturalId;
 @Table(name = "namespace")
 public class Namespace {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "tenant_id")
+  private Tenant tenant;
+
+  @NaturalId
+  private String name;
+
   public static Collection<Namespace> toNamespace(Collection<String> namespaces, Tenant tenant) {
     return namespaces.stream().map(name -> {
       Namespace namespace = new Namespace();
@@ -35,23 +45,12 @@ public class Namespace {
       return namespace;
     }).collect(Collectors.toList());
   }
-  
+
   public static Namespace newNamespace(String name) {
     Namespace namespace = new Namespace();
     namespace.setName(name);
     return namespace;
   }
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  @ManyToOne
-  @JoinColumn(name = "tenant_id")
-  private Tenant tenant;
-  
-  @NaturalId
-  private String name;
 
   public Long getId() {
     return id;

@@ -58,6 +58,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
@@ -139,7 +140,7 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       IOUtils.copy(new ByteArrayInputStream(imageContent.getContent()), response.getOutputStream());
       response.flushBuffer();
     } catch (IOException e) {
-      throw new RuntimeException("Error copying file.", e);
+      throw new GenericApplicationException("Error copying file.", e);
     }
   }
 
@@ -167,7 +168,7 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       getModelRepository(tenantId).attachFile(modelID,
           new FileContent(file.getOriginalFilename(), file.getBytes()), user, Attachment.TAG_IMAGE);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new GenericApplicationException("error in attaching file to model '" + modelId + "'", e);
     }
     return new ResponseEntity<>(false, HttpStatus.CREATED);
   }
@@ -376,7 +377,7 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       zos.close();
       baos.close();
     } catch (Exception ex) {
-      throw new RuntimeException(ex);
+      throw new GenericApplicationException("error in creating zip file.", ex);
     }
 
     response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
@@ -385,7 +386,7 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
       response.flushBuffer();
     } catch (IOException e) {
-      throw new RuntimeException("Error copying file.", e);
+      throw new GenericApplicationException("Error copying file.", e);
     }
   }
 

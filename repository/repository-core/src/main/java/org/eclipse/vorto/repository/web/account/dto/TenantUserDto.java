@@ -18,6 +18,9 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 
 public class TenantUserDto {
   
+  private String username;
+  private Collection<String> roles;
+  
   public static TenantUserDto fromTenantUser(TenantUser user) {
     TenantUserDto tenantUser = new TenantUserDto();
     tenantUser.setUsername(user.getUser().getUsername());
@@ -26,9 +29,6 @@ public class TenantUserDto {
         .collect(Collectors.toList()));
     return tenantUser;
   }
-  
-  private String username;
-  private Collection<String> roles;
 
   public String getUsername() {
     return username;

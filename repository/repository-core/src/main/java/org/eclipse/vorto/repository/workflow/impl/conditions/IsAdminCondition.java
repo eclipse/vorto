@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.conditions;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.domain.Role;
@@ -20,12 +19,6 @@ import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 import org.springframework.security.core.Authentication;
 
 public class IsAdminCondition implements IWorkflowCondition {
-
-  private IUserAccountService userRepository;
-
-  public IsAdminCondition(IUserAccountService userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
