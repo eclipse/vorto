@@ -32,7 +32,7 @@ script:
 #  - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn --fail-fast -q clean install -P checkstyle
+  - mvn --fail-fast -q clean install -P checkstyle,coverage
   - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
   - docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:nightly .;
   - if [ -n "$TRAVIS_TAG" ]; then
