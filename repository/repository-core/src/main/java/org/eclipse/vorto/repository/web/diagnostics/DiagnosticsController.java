@@ -15,11 +15,12 @@ package org.eclipse.vorto.repository.web.diagnostics;
 import java.util.Collection;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.impl.ModelRepository;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,20 +33,22 @@ public class DiagnosticsController {
   @Autowired
   private IModelRepositoryFactory repoFactory;
 
-  @Autowired 
+  @Autowired
   private ITenantService tenantService;
-  
+
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public Collection<Diagnostic> diagnose() {
     Collection<Diagnostic> diagnostics = Lists.newArrayList();
-    
-    for(Tenant tenant : tenantService.getTenants()) {
-      Collection<Diagnostic> tenantDiagnostics = ((ModelRepository) repoFactory.getRepository(tenant.getTenantId())).diagnoseAllModels();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    for (Tenant tenant : tenantService.getTenants()) {
+      Collection<Diagnostic> tenantDiagnostics =
+          repoFactory.getDiagnosticsService(tenant.getTenantId(), auth).diagnoseAllModels();
       tenantDiagnostics.forEach(diagnostic -> diagnostic.setTenantId(tenant.getTenantId()));
       diagnostics.addAll(tenantDiagnostics);
     }
-    
+
     return diagnostics;
   }
 

@@ -54,7 +54,7 @@ public class SpringSecurityContext implements SecurityContext {
 
     // grant sys ads access to the models
     boolean isRoleValid = Role.isValid(principalName);
-    if (isRoleValid && Role.of(principalName) == Role.SYS_ADMIN && isSysAdmin(authentication)) {
+    if (isRoleValid && Role.of(principalName) == Role.SYS_ADMIN && isSysAdmin()) {
       return true;
     }
 
@@ -75,7 +75,7 @@ public class SpringSecurityContext implements SecurityContext {
     return "readonly".equals(principalName);
   }
 
-  private boolean isSysAdmin(Authentication authentication2) {
+  private boolean isSysAdmin() {
     return authentication.getAuthorities().stream()
         .anyMatch(auth -> auth.getAuthority().equals(UserRole.ROLE_SYS_ADMIN));
   }

@@ -24,6 +24,7 @@ import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IDiagnostics;
@@ -129,81 +130,86 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, user);
+      return getRepository(tenant, user);
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, userContext.getAuthentication());
+      return getRepository(tenant, userContext.getAuthentication());
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService() {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, SecurityContextHolder.getContext().getAuthentication());
+      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
   }
   
   @Override
   public IModelSearchService getModelSearchService(Authentication user) {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, user);
+      return getRepository(tenant, user);
     });
   }
 
   @Override
   public IModelSearchService getModelSearchService(IUserContext userContext) {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, userContext.getAuthentication());
+      return getRepository(tenant, userContext.getAuthentication());
     });
   }
 
   @Override
   public IModelSearchService getModelSearchService() {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return newRepo(tenant, SecurityContextHolder.getContext().getAuthentication());
+      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
   }
   
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
-    return newRepo(tenant, user);
+    Diagnostician diagnostics = new Diagnostician(repoDiagnostics);
+    diagnostics.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    return diagnostics;
   }
 
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
-    return newRepo(tenant, user);
+    ModelPolicyManager policyManager = new ModelPolicyManager();
+    policyManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    return policyManager;
   }
 
   @Override
   public IModelPolicyManager getPolicyManager(IUserContext userContext) {
-    return newRepo(userContext.getTenant(), userContext.getAuthentication());
+    return getPolicyManager(userContext.getTenant(), userContext.getAuthentication());
   }
 
   @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
-    return newRepo(tenant, user);
+    ModelRepository modelRepository = new ModelRepository(this.userRepository, this.modelSearchUtil,
+        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user));
+
+    modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
+
+    return modelRepository;
   }
 
   @Override
   public IModelRepository getRepository(IUserContext userContext) {
-    return newRepo(userContext.getTenant(), userContext.getAuthentication());
+    return getRepository(userContext.getTenant(), userContext.getAuthentication());
   }
   
   @Override
   public IModelRepository getRepository(String tenantId) {
-    return newRepo(tenantId, SecurityContextHolder.getContext().getAuthentication());
+    return getRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
   }
-
-  public ModelRepository newRepo(String tenant, Authentication user) {
-    ModelRepository modelRepository = new ModelRepository(this.userRepository, this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, this.repoDiagnostics, 
-        getModelRetrievalService(user));
-
-    modelRepository.setSessionSupplier(() -> {
+  
+  private Supplier<Session> repositorySessionSupplier(String tenant, Authentication user) {
+    return () -> {
       try {
         return repository.login(
             new SpringSecurityCredentials(user, getUserRolesInTenant(tenant, user.getName())),
@@ -216,9 +222,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
         throw new FatalModelRepositoryException("Error while getting repository given tenant ["
             + tenant + "] and user [" + user.getName() + "]", e);
       }
-    });
-
-    return modelRepository;
+    };
   }
 
   private Set<Role> getUserRolesInTenant(String tenantId, String username) {

@@ -19,7 +19,7 @@ import java.util.Collection;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.core.impl.ModelRepository;
+import org.eclipse.vorto.repository.core.impl.Diagnostician;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ModelValidationDiagnostic;
 import org.eclipse.vorto.repository.core.impl.diagnostics.NodeDiagnosticUtils;
@@ -30,7 +30,7 @@ import org.springframework.core.io.ClassPathResource;
 public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 
   @Test
-  public void baseline() {
+  public void testDiagnosisAllValidModels() {
     IUserContext admin = createUserContext("admin");
 
     ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
@@ -38,10 +38,11 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 
     RepositoryDiagnostics modelDiagnostics = new RepositoryDiagnostics();
     modelDiagnostics.setNodeDiagnosticTests(Arrays.asList(modelValidationTest));
-    
-    ModelRepository modelRepository = ((ModelRepository) getModelRepository(admin)); 
-    modelRepository.setRepositoryDiagnostics(modelDiagnostics);
-    
+
+    Diagnostician diagnostician = (Diagnostician) repositoryFactory
+        .getDiagnosticsService("playground", admin.getAuthentication());
+    diagnostician.setRepoDiagnostics(modelDiagnostics);
+
     try {
       getModelRepository(admin).restore(IOUtils.toByteArray(
           new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-baseline.xml")
@@ -51,22 +52,23 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
       fail("Failed to load backup file.");
     }
 
-    Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
+    Collection<Diagnostic> diagnostics = diagnostician.diagnoseAllModels();
     assertEquals(0, diagnostics.size());
   }
 
   @Test
-  public void withValidationProblems() {
+  public void testDiagnosisMissingReference() {
     IUserContext admin = createUserContext("admin");
-    
+
     ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
     modelValidationTest.setModelParserFactory(modelParserFactory);
 
     RepositoryDiagnostics modelDiagnostics = new RepositoryDiagnostics();
     modelDiagnostics.setNodeDiagnosticTests(Arrays.asList(modelValidationTest));
-    
-    ModelRepository modelRepository = ((ModelRepository) getModelRepository(admin)); 
-    modelRepository.setRepositoryDiagnostics(modelDiagnostics);
+
+    Diagnostician diagnostician = (Diagnostician) repositoryFactory
+        .getDiagnosticsService("playground", admin.getAuthentication());
+    diagnostician.setRepoDiagnostics(modelDiagnostics);
 
     try {
       getModelRepository(admin).restore(IOUtils.toByteArray(
@@ -77,7 +79,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
       fail("Failed to load backup file.");
     }
 
-    Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
+    Collection<Diagnostic> diagnostics = diagnostician.diagnoseAllModels();
     diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
     assertEquals(1, diagnostics.size());
   }
@@ -111,16 +113,17 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
   // @Test
   public void withReferenceIntegrityProblems() {
     IUserContext admin = createUserContext("admin");
-    
+
     ReferenceIntegrityDiagnostic diagnosticTest = new ReferenceIntegrityDiagnostic();
 
     RepositoryDiagnostics modelDiagnostics = new RepositoryDiagnostics();
     modelDiagnostics.setNodeDiagnosticTests(Arrays.asList(diagnosticTest));
 
-    ModelRepository modelRepository = ((ModelRepository) getModelRepository(admin)); 
-    modelRepository.setRepositoryDiagnostics(modelDiagnostics);
+    Diagnostician diagnostician = (Diagnostician) repositoryFactory
+        .getDiagnosticsService("playground", admin.getAuthentication());
+    diagnostician.setRepoDiagnostics(modelDiagnostics);
 
-    Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
+    Collection<Diagnostic> diagnostics = diagnostician.diagnoseAllModels();
     diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
     assertEquals(0, diagnostics.size());
   }
