@@ -16,11 +16,13 @@ public class EnumLiteral {
 
   private String name;
   private String description;
+  private ModelId parent;
 
-  public EnumLiteral(String name, String description) {
+  public EnumLiteral(String name, String description, ModelId parent) {
     super();
     this.name = name;
     this.description = description;
+    this.parent = parent;
   }
 
   protected EnumLiteral() {
@@ -42,8 +44,16 @@ public class EnumLiteral {
   public void setDescription(String description) {
     this.description = description;
   }
+  
+  public ModelId getParent() {
+	return parent;
+}
 
-  @Override
+public void setParent(ModelId parent) {
+	this.parent = parent;
+}
+
+@Override
   public String toString() {
     return "EnumLiteralDto [name=" + name + ", description=" + description + "]";
   }

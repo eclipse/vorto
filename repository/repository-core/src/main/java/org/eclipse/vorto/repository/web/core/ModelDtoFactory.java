@@ -557,6 +557,6 @@ public class ModelDtoFactory {
 
     private static EnumLiteral createLiteral(
         org.eclipse.vorto.core.api.model.datatype.EnumLiteral literal) {
-        return new EnumLiteral(literal.getName(), literal.getDescription());
+        return new EnumLiteral(literal.getName(), literal.getDescription(),createModelId((Enum)literal.eContainer()));
     }
 }
