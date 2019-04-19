@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
@@ -34,12 +35,14 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
 	releaseModel("com.test:Zone:1.0.0");
     createModel("Color.type", "org.eclipse.vorto.examples.type:Color:1.0.0");
     releaseModel("org.eclipse.vorto.examples.type:Color:1.0.0");
+    
     this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/infomodelrepository").build();
   }
   
   @After
   public void cleanup() throws Exception {
     deleteModel("org.eclipse.vorto.examples.type:Color:1.0.0");
+    deleteModel("com.test:Zone:1.0.0");
   }
   
   @Test
@@ -48,11 +51,17 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   }
   
   @Test
-  public void testGetContentOfModel() {
+  public void testGetContentOfEntityModel() {
     ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
     assertEquals(1,((EntityModel)content.getModels().get(content.getRoot())).getProperties().size());
     EnumAttributeProperty attribute =  (EnumAttributeProperty)((EntityModel)content.getModels().get(content.getRoot())).getProperties().get(0).getAttributes().get(0);
     assertEquals("NORTH",attribute.getValue().getName());
+  }
+  
+  @Test
+  public void testGetContentOfEnumModel() {
+    ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("com.test:Zone:1.0.0"));
+    assertEquals(5,((EnumModel)content.getModels().get(content.getRoot())).getLiterals().size());
   }
   
   @Test
