@@ -14,7 +14,9 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
@@ -30,12 +32,17 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   protected void setUpTest() throws Exception {
     createModel("Color.type", "org.eclipse.vorto.examples.type:Color:1.0.0");
     releaseModel("org.eclipse.vorto.examples.type:Color:1.0.0");
+    
+    createModel("Zone.type", "com.test:Zone:1.0.0");
+    releaseModel("com.test:Zone:1.0.0");
+    
     this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/infomodelrepository").build();
   }
   
   @After
   public void cleanup() throws Exception {
     deleteModel("org.eclipse.vorto.examples.type:Color:1.0.0");
+    deleteModel("com.test:Zone:1.0.0");
   }
   
   @Test
@@ -44,9 +51,15 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   }
   
   @Test
-  public void testGetContentOfModel() {
+  public void testGetContentOfEntityModel() {
     ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
     assertEquals(1,((EntityModel)content.getModels().get(content.getRoot())).getProperties().size());
+  }
+  
+  @Test
+  public void testGetContentOfEnumModel() {
+    ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("com.test:Zone:1.0.0"));
+    assertEquals(5,((EnumModel)content.getModels().get(content.getRoot())).getLiterals().size());
   }
   
   @Test
