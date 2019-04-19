@@ -30,6 +30,7 @@ class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
 	}
 	
 	override getContent(GeneratorServiceInfo serviceInfo) {
+		var generated = false;
 		'''
 		<div class="form-group">
 		«FOR item : generatorInfo.configurationItems»
@@ -53,7 +54,8 @@ class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
 						</div><!-- /.box-body -->
 					</div><!-- /.box -->
 				</div>
-				«IF serviceInfo.key == "boschiotsuite"»
+				«IF serviceInfo.key == "boschiotsuite" && !generated»
+				<div «generated = true»></div>
 				<div class="col-sm-6">
 					<div class="box box-primary">
 						<div class="box-header with-border">

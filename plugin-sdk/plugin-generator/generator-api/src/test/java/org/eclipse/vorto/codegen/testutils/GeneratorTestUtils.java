@@ -22,6 +22,9 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
 public abstract class GeneratorTestUtils {
@@ -41,6 +44,10 @@ public abstract class GeneratorTestUtils {
 		
 	public static FunctionblockBuilder newFunctionblock(ModelId modelId) {
 		return new FunctionblockBuilder().withId(modelId);
+	}
+	
+	public static InformationModelBuilder newInformationModel(ModelId modelId) {
+		return new InformationModelBuilder().withId(modelId);
 	}
 	
 	public static EntityBuilder newEntity(ModelId modelId) {
@@ -72,6 +79,35 @@ public abstract class GeneratorTestUtils {
 			return this.entity;
 		}
 		
+	}
+	
+	public static class InformationModelBuilder {
+		
+		private InformationModel infomodel;
+		
+		public InformationModelBuilder() {
+			this.infomodel = InformationModelFactory.eINSTANCE.createInformationModel();
+		}
+		
+		public InformationModelBuilder withId(ModelId id) {
+			infomodel.setName(id.getName());
+			infomodel.setDisplayname(id.getName());
+			infomodel.setNamespace(id.getNamespace());
+			infomodel.setVersion(id.getVersion());
+			return this;
+		}
+		
+		public InformationModelBuilder withFunctionBlock(FunctionblockModel fbm, String propertyName) {
+			FunctionblockProperty property = InformationModelFactory.eINSTANCE.createFunctionblockProperty();
+			property.setName(propertyName);
+			property.setType(fbm);
+			this.infomodel.getProperties().add(property);
+			return this;
+		}
+		
+		public InformationModel build() {
+			return this.infomodel;
+		}
 	}
 	
 	public static class FunctionblockBuilder {

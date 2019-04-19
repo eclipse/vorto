@@ -15,11 +15,13 @@ package org.eclipse.vorto.codegen.bosch;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorInfo.ChoiceItem;
+import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
+import org.eclipse.vorto.codegen.bosch.templates.ProvisionDeviceScriptTemplate;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
@@ -45,6 +47,11 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
       result.append(generateGateway(infomodel, invocationContext, monitor));
     } else {
       result.append(generateJava(infomodel, invocationContext, monitor));
+    }
+    
+    String provisionScript = invocationContext.getConfigurationProperties().getOrDefault("provision", "false");
+    if ("true".equalsIgnoreCase(provisionScript)) {
+        new GeneratorTaskFromFileTemplate<>(new ProvisionDeviceScriptTemplate()).generate(infomodel, invocationContext, output);
     }
 
     return output;
@@ -88,7 +95,8 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
         "Eclipse Vorto Team").production().withChoiceConfigurationItem("language",
             "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"),
             ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java"),
-            ChoiceItem.of("Bosch IoT Gateway Software", "gateway"));
+            ChoiceItem.of("Bosch IoT Gateway Software", "gateway"))
+    		.withBinaryConfigurationItem("provision", "Device Provisioning Script (requires Postman)");
   }
 
 }
