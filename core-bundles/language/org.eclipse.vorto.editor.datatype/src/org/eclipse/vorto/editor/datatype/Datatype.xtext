@@ -75,10 +75,6 @@ ConstraintRule:
 	{ConstraintRule} (Constraints += Constraint ("," Constraints += Constraint)*)?	
 ;
 
-EnumLiteralName:
-  ID '.' ID
-;
-
 PropertyAttribute:
   BooleanPropertyAttribute | EnumLiteralPropertyAttribute
 ;
@@ -98,7 +94,7 @@ enum VortoLangVersion:
 ;
 
 EnumLiteralPropertyAttribute:
-  type=EnumLiteralPropertyAttributeType ':' value = [EnumLiteral | EnumLiteralName]
+  type=EnumLiteralPropertyAttributeType ':' value = [EnumLiteral | QualifiedName]
 ;
 
 enum EnumLiteralPropertyAttributeType:
