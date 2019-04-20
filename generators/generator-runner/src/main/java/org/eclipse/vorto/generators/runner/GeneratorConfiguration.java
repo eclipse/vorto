@@ -25,7 +25,7 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
 
   @Override
   protected void doSetup() {
-    addGenerator(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class));
+    addGenerator(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class,new BoschGeneratorConfigUI()));
     addGenerator(Generator.create("/generators/ditto.properties", EclipseDittoGenerator.class));
     addGenerator(Generator.create("/generators/hono.properties", EclipseHonoGenerator.class));
     addGenerator(Generator.create("/generators/generator_template.properties",
