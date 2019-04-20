@@ -81,14 +81,14 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 										<div class="col-sm-6">
 											<div class="box box-primary">
 												<div class="box-header with-border">
-													<h3 class="box-title">Useful Scripts</h3>
+													<h3 class="box-title">Scripts</h3>
 												</div><!-- /.box-header -->
 												<div class="box-body">
 													<p>
-														Postman Collection that provisions the device in the Bosch IoT Suite.
+														Script(s) to provision the device in the Bosch IoT Suite (Requires Postman).
 													</p>
 													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/create_thing.md" target="_blank" class="btn btn-primary btn-sm"><i class="fa fa-book"></i> Tutorial</a>
-													<a href="./api/v1/generators/eclipsehono/models/{{model.id.prettyFormat}}?provision=true" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Download</a>
+													<a href="./api/v1/generators/boschiotsuite/models/{{model.id.prettyFormat}}?provision=true" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Download</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->
 										</div>
