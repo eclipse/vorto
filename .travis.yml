@@ -30,8 +30,18 @@ install:
   - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.deb -O /tmp/hugo.deb && sudo dpkg -i /tmp/hugo.deb
   - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage
-
+  - remark -i .remark_ignore -f -u validate-links .
+  - remark -i .remark_ignore -u lint-no-dead-urls .
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage, checkstyle
+  - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
+  - docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:nightly .;
+  - if [ -n "$TRAVIS_TAG" ]; then
+    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:latest .;
+    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:latest .;
+    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG .;
+    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG .;
+    fi;
+    
 deploy:
   provider: script
   script: bash docker/docker_push
