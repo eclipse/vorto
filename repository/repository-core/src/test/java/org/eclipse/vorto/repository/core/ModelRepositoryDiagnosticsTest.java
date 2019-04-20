@@ -95,7 +95,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		}
 		
 		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
-		assertEquals(1, diagnostics.size());
+		assertEquals(2, diagnostics.size());
 	}
 	
 	@Test
