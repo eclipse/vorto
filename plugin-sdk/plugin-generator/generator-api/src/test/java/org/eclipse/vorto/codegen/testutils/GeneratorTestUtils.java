@@ -108,7 +108,7 @@ public abstract class GeneratorTestUtils {
 	}
 	
 	public static class EnumBuilder {
-		private org.eclipse.vorto.core.api.model.datatype.Enum enumeration;
+		private Enum enumeration;
 		
 		public EnumBuilder() {
 			this.enumeration = DatatypeFactory.eINSTANCE.createEnum();
