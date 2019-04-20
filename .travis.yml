@@ -15,6 +15,7 @@ addons:
       secure: $SONAR_TOKEN
     branches:
       - development
+      - sonar
 
 cache:
   directories:
