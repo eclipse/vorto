@@ -282,6 +282,12 @@
                         <configuration>
                            <destFile>${sonar.jacoco.reportPath}</destFile>
                            <append>true</append>
+			   <excludes>
+        			<exclude>**/core-bundles/*</exclude>
+				<exclude>**/device-adapter/*</exclude>
+				<exclude>**/model-runtime/*</exclude>
+				<exclude>**/plugin-sdk/*</exclude>
+    			   </excludes>
                         </configuration>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <executions>
