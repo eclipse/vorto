@@ -41,6 +41,27 @@ public class Generator {
         }
       };
 
+   public static Generator create(String configFile,
+    	      Class<? extends IVortoCodeGenerator> generatorClass, IGeneratorConfigUITemplate configTemplate) {
+	Objects.requireNonNull(configFile);
+    Objects.requireNonNull(generatorClass);
+    Objects.requireNonNull(configTemplate);
+
+    try {
+      IVortoCodeGenerator instance = generatorClass.newInstance();
+      Generator generator = new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance),
+      instance, configTemplate);
+      generator.info.setDescription(instance.getInfo().getDescription());
+      generator.info.setCreator(instance.getInfo().getOrganisation());
+      generator.info.setName(instance.getInfo().getName());
+      generator.info.setTags(
+      instance.getInfo().getTags().toArray(new String[instance.getInfo().getTags().size()]));
+      return generator;
+    } catch (Exception e) {
+      throw new GeneratorCreationException("Error in instantiating Generator", e);
+    }
+  }
+      
   public static Generator create(String configFile,
       Class<? extends IVortoCodeGenerator> generatorClass) {
     Objects.requireNonNull(configFile);
@@ -62,11 +83,7 @@ public class Generator {
   }
 
   private static IGeneratorConfigUITemplate createConfigUI(IVortoCodeGenerator generator) {
-    if (generator.getInfo().isConfigurable()) {
-      return new DefaultGeneratorConfigUI(generator.getInfo());
-    } else {
-      return EMPTY_TEMPLATE;
-    }
+	  return new DefaultGeneratorConfigUI(generator.getInfo());
   }
 
   private Generator(GeneratorServiceInfo info, IVortoCodeGenerator instance,
