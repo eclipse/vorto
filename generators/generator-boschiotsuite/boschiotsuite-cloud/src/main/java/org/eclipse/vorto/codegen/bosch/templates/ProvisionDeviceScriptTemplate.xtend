@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.codegen.bosch.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
@@ -6,7 +18,13 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.xtext.util.Strings
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.Entity
 
+/**
+ * Template that creates a Postman Script (collection) containing the requests 
+ * to provision the Vorto modelled device in the Bosch IoT Suite
+ */
 class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
@@ -93,11 +111,10 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 		      "attributes": {
 		    	"thingName": "«model.displayname»",
 		    	"definition": "«model.namespace»:«model.name»:«model.version»"
-		      }
-		  },
-		  "features": {
+		      },
+		  	"features": {
 		  	«FOR fbProperty : model.properties SEPARATOR ","»
-		  	"«fbProperty.name»" : {
+		  		"«fbProperty.name»" : {
 		  		"definition": [
 		  			"«fbProperty.type.namespace»:«fbProperty.type.name»:«fbProperty.type.version»"
 		  		],
@@ -105,14 +122,14 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 		  			«IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
 		  			 "status": {
 		  			 	«FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ","»
-		  			 	"«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ENDIF»
+		  			 	"«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ELSE»«getJsonObjectType(statusProperty.type as ObjectPropertyType)»«ENDIF»
 		  			 	«ENDFOR»
 		  			 }«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
 		  			«ENDIF»
 		  			«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
 		  			 "configuration": {
 		  			 	«FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
-		  			 	"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ENDIF»
+		  			 	"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSE»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ENDIF»
 		  			 	«ENDFOR»
 		  			 }
 		  			«ENDIF»
@@ -121,6 +138,30 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 		  	«ENDFOR» 
 		  }
 		}
+		}
+		}
+		'''
+	}
+	
+	def String getJsonObjectType(ObjectPropertyType propertyType) {
+		if (propertyType.type instanceof org.eclipse.vorto.core.api.model.datatype.Enum) {
+			var literals = (propertyType.type as org.eclipse.vorto.core.api.model.datatype.Enum).enums;
+			if (literals.empty) {
+				return "\"\""
+			} else {
+				return "\""+literals.get(0).name+"\"";
+			}
+		} else {
+			return getEntityJson(propertyType.type as org.eclipse.vorto.core.api.model.datatype.Entity).toString();
+		}
+	}
+	
+	def getEntityJson(Entity entity) {
+		'''
+		{
+			«FOR property : entity.properties SEPARATOR ","»
+			"«property.name»" : «IF property.type instanceof PrimitivePropertyType»«getJsonPrimitive(property.type as PrimitivePropertyType)»«ELSE»«getJsonObjectType(property.type as ObjectPropertyType)»«ENDIF»
+			«ENDFOR»
 		}
 		'''
 	}

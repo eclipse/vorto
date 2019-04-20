@@ -14,9 +14,13 @@ package org.eclipse.vorto.codegen.testutils;
 
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.Enum;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory;
@@ -28,6 +32,19 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
 public abstract class GeneratorTestUtils {
+	
+	private static Property createProperty(String name, Type type) {
+		Property prop = DatatypeFactory.eINSTANCE.createProperty();
+		prop.setName(name);
+		prop.setType(createObjectType(type));
+		return prop;
+	} 
+	
+	private static ObjectPropertyType createObjectType(Type type) {
+		ObjectPropertyType typeObj = DatatypeFactory.eINSTANCE.createObjectPropertyType();
+		typeObj.setType(type);
+		return typeObj;
+	}
 
 	private static Property createProperty(String name, PrimitiveType type) {
 		Property prop = DatatypeFactory.eINSTANCE.createProperty();
@@ -75,10 +92,48 @@ public abstract class GeneratorTestUtils {
 			return this;
 		}
 		
+		public EntityBuilder withProperty(String name, Type objectType) {
+			this.entity.getProperties().add(GeneratorTestUtils.createProperty(name, objectType));
+			return this;
+		}
+		
 		public Entity build() {
 			return this.entity;
 		}
 		
+	}
+	
+	public static EnumBuilder newEnum(ModelId modelId) {
+		return new EnumBuilder().withId(modelId);
+	}
+	
+	public static class EnumBuilder {
+		private org.eclipse.vorto.core.api.model.datatype.Enum enumeration;
+		
+		public EnumBuilder() {
+			this.enumeration = DatatypeFactory.eINSTANCE.createEnum();
+		}
+		
+		public EnumBuilder withId(ModelId id) {
+			enumeration.setName(id.getName());
+			enumeration.setDisplayname(id.getName());
+			enumeration.setNamespace(id.getNamespace());
+			enumeration.setVersion(id.getVersion());
+			return this;
+		}
+		
+		public EnumBuilder withLiterals(String... values) {
+			for (String value : values) {
+				EnumLiteral literal = DatatypeFactory.eINSTANCE.createEnumLiteral();
+				literal.setName(value);
+				this.enumeration.getEnums().add(literal);
+			}
+			return this;
+		}
+		
+		public Enum build() {
+			return this.enumeration;
+		}
 	}
 	
 	public static class InformationModelBuilder {
@@ -139,7 +194,26 @@ public abstract class GeneratorTestUtils {
 			return this;
 		}
 		
+		public FunctionblockBuilder withStatusProperty(String name, Type type) {
+			if (this.fb.getStatus() == null) {
+				Status status = FunctionblockFactory.eINSTANCE.createStatus();
+				this.fb.setStatus(status);
+			}
+		
+			this.fb.getStatus().getProperties().add(GeneratorTestUtils.createProperty(name, type));
+			return this;
+		}
+		
 		public FunctionblockBuilder withConfiguration(String name, PrimitiveType type) {
+			if (this.fb.getConfiguration() == null) {
+				Configuration configuration = FunctionblockFactory.eINSTANCE.createConfiguration();				
+				this.fb.setConfiguration(configuration);
+			}
+			this.fb.getConfiguration().getProperties().add(GeneratorTestUtils.createProperty(name, type));
+			return this;
+		}
+		
+		public FunctionblockBuilder withConfiguration(String name, Type type) {
 			if (this.fb.getConfiguration() == null) {
 				Configuration configuration = FunctionblockFactory.eINSTANCE.createConfiguration();				
 				this.fb.setConfiguration(configuration);
