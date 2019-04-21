@@ -45,9 +45,7 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
       result.append(generateJava(infomodel, invocationContext, monitor));
     } else if (platform.equalsIgnoreCase("gateway")) {
       result.append(generateGateway(infomodel, invocationContext, monitor));
-    } else {
-      result.append(generateJava(infomodel, invocationContext, monitor));
-    }
+    } 
     
     String provisionScript = invocationContext.getConfigurationProperties().getOrDefault("provision", "false");
     if ("true".equalsIgnoreCase(provisionScript)) {
