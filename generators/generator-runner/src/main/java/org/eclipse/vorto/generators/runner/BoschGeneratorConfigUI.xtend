@@ -106,7 +106,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 														<br/>
 														<i><span><i class="fa fa-exclamation-triangle"></i></span> Requires <a href="https://nodejs.org/en/download/" target="_blank">Node.js</a></i>
 														<br/>
-														<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp.png" width="45%" />
+														<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp2.png" width="45%" />
 														<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp.png" width="45%" />
 													</p>
 													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/create_webapp_dashboard.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
