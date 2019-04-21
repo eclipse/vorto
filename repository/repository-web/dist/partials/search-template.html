@@ -13,7 +13,7 @@
 								<td colspan="4" class="headerTable">
 									<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"
 									    role="button">
-										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create new Model</a>
+										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Describe device</a>
 								</td>
 							</tr>
 							<tr>
@@ -104,7 +104,7 @@
 									<span ng-show="model.description.length > 80">[...]</span>
 								</td>
 								<td>
-									<a class="btn btn-sm btn-primary" href="./#/details/{{model.id.prettyFormat}}" role="button">Details</a>
+									<a class="btn btn-sm btn-default" href="./#/details/{{model.id.prettyFormat}}" role="button">Details</a>
 								</td>
 							</tr>
 							<tr ng-show="isLoading">
