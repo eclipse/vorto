@@ -61,6 +61,7 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+	<sonar.exclusions>core-bundles/*, model/*, model-runtime/*, plugin-sdk/*, generators/generator-runner/*, generators/eclipse-ditto/*, generators/generator-eclipsehono/*, repository/repository-server-config/*, </sonar.exclusions>
     </properties>
 
     <distributionManagement>
