@@ -65,7 +65,7 @@ public class ModelSearchUtil {
       {SEARCH_FILTER_KEY_NAME, SEARCH_FILTER_KEY_NAMESPACE, SEARCH_FILTER_KEY_VERSION,
           SEARCH_FILTER_KEY_AUTHOR, SEARCH_FILTER_KEY_STATE};
 
-  public final String VORTO_DISPLAYNAME = "vorto:displayname";
+  public final String VORTO_DISPLAYNAME = "vorto:name";
 
   public final String VORTO_NAMESPACE = "vorto:namespace";
 
@@ -209,22 +209,35 @@ public class ModelSearchUtil {
       if (entry.getValue().isEmpty()) {
         continue;
       } else {
-        stringBuilder.append(SOURCE).append(".");
         if (map.containsKey(entry.getKey())) {
-          stringBuilder.append("[").append(map.get(entry.getKey())).append("]");
+        	if (entry.getValue().get(0).endsWith("*")) {
+              stringBuilder.append("CONTAINS([").append(map.get(entry.getKey())).append("],");
+        	} else {
+            	stringBuilder.append("[").append(map.get(entry.getKey())).append("]");
+        	}
         } else {
-          stringBuilder.append("[").append(entry.getKey()).append("]");
+        	if (entry.getValue().get(0).endsWith("*")) {
+                stringBuilder.append("CONTAINS([").append(entry.getKey()).append("],");
+        	} else {
+        		stringBuilder.append("[").append(entry.getKey()).append("]");
+        	}
         }
         if (entry.getValue().size() == 1) {
-          stringBuilder.append(" = ").append(getSearchCriteriaParametersAsString(entry.getValue()));
+        	if (entry.getValue().get(0).endsWith("*")) {
+               stringBuilder.append(getSearchCriteriaParametersAsString(entry.getValue())).append(")");
+        	} else {
+                stringBuilder.append(" = ").append(getSearchCriteriaParametersAsString(entry.getValue()));
+        	}
         } else {
           stringBuilder.append(" IN ")
               .append(getSearchCriteriaParametersAsString(entry.getValue()));
         }
-        stringBuilder.append(" ").append(AND).append(" ");
+        if (iterator.hasNext()) {
+        	stringBuilder.append(" ").append(AND).append(" ");
+        }
+        
       }
     }
-    stringBuilder.replace(stringBuilder.lastIndexOf(AND), stringBuilder.length() - 1, "");
     return stringBuilder.toString();
   }
 
@@ -239,15 +252,15 @@ public class ModelSearchUtil {
    * @param arrayList
    * @return
    */
-  private String getSearchCriteriaParametersAsString(ArrayList<String> arrayList) {
+  private String getSearchCriteriaParametersAsString(ArrayList<String> criteria) {
     StringBuilder stringBuilder = new StringBuilder();
-    if (arrayList.isEmpty()) {
+    if (criteria.isEmpty()) {
       return "''";
-    } else if (arrayList.size() == 1) {
-      stringBuilder.append("'").append(arrayList.get(0)).append("'");
+    } else if (criteria.size() == 1) {
+      stringBuilder.append("'").append(clean(criteria.get(0))).append("'");
     } else {
       stringBuilder.append("(");
-      for (String string : arrayList) {
+      for (String string : criteria) {
         stringBuilder.append("'").append(string).append("', ");
       }
       stringBuilder.replace(stringBuilder.lastIndexOf(","), stringBuilder.length() - 1, "");
@@ -256,7 +269,15 @@ public class ModelSearchUtil {
     return stringBuilder.toString();
   }
 
-  /**
+  private String clean(String value) {
+	if (value.endsWith("*")) {
+		return value.substring(0,value.indexOf("*"));
+	} else {
+		return value;
+	}
+}
+
+/**
    * Specifies the search strategies that can be applied to a model search query
    * 
    * @author shiv
