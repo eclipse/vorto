@@ -81,7 +81,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 
     Collection<Diagnostic> diagnostics = diagnostician.diagnoseAllModels();
     diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
-    assertEquals(1, diagnostics.size());
+    assertEquals(2, diagnostics.size());
   }
 
   @Test
@@ -127,5 +127,4 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
     diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
     assertEquals(0, diagnostics.size());
   }
-
 }

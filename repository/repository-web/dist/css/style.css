@@ -161,6 +161,9 @@ ul.nav a {
     border-radius: 3px;
 }
 
+ .btn-default {
+	background-color: #ddd;
+ }
  .btn-primary {
     background-color: rgb(0, 129, 199); 
     background-image: -moz-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* FF3.6+ */

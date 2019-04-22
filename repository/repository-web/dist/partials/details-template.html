@@ -21,7 +21,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div ng-repeat="action in workflowActions">
-				<button class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog(action)">
+				<button class="btn btn-default pull-left" ng-click="openWorkflowActionDialog(action)">
 					<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
 					<span ng-if="action ==='Claim'" class="fa fa-cube" aria-hidden="true"></span>
 					<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
@@ -40,19 +40,19 @@
 			</div>
 			
 			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
-				<a class="btn btn-primary pull-left" ng-click="openCreateModelVersionDialog()" role="button">
+				<a class="btn btn-default pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
 			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && model.type === 'InformationModel' ">
 				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
-					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping Spec.</a>
+					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
 			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
-					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
+					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Describe device</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
 			</div>
 		</div>
@@ -284,13 +284,13 @@
 												
 												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
-													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
+													<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Reference</a>
 												
 
 											</div>
 											<div ng-show="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
 											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
-												<a class="btn btn-sm btn-primary pull-right" ng-disabled="true" role="button">
+												<a class="btn btn-sm btn-default pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 											</div>

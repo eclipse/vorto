@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.hamcrest.Matchers;
@@ -33,13 +32,7 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
 
   protected void setUpTest() throws Exception {
     super.setUpTest();
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-    createAndReleaseModel("Zone.type", "com.test:Zone:1.0.0");
-    createAndReleaseModel("Colour.type", "com.test:Colour:1.0.0");
-    createAndReleaseModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-    createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
-    createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
+
   }
 
   /** +++++++++++++ GENERAL GENERATOR INFO ENDPOINT TEST CASES ++++++++++++++++++++++++ */
@@ -64,32 +57,6 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
           .andExpect(status().isOk()).andExpect(jsonPath("$.name", Matchers.is(genInfo.getName())))
           .andExpect(jsonPath("$.description", Matchers.is(genInfo.getDescription())));
     }
-    assertTrue(true);
-  }
-
-
-  /** +++++++++++++ ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++ */
-
-  @Test
-  public void testGenerateEclipseDitto() throws Exception {
-    invokeAndAssertEclipseDittoGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-eclipseditto.zip", Optional.empty());
-    assertTrue(true);
-  }
-
-  private void invokeAndAssertEclipseDittoGenerator(String modelId, String fileNameToCompare,
-      Optional<String> paramUrl) throws Exception {
-    repositoryServer
-        .perform(get("/api/v1/generators/eclipseditto/models/" + modelId
-            + (paramUrl.isPresent() ? paramUrl.get() : "")).with(userAdmin))
-        .andExpect(status().isOk())
-        .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
-  }
-
-  @Test
-  public void testGenerateEclipseDittoForStreetLamp() throws Exception {
-    invokeAndAssertEclipseDittoGenerator("com.test:StreetLamp:1.0.0",
-        "generated-eclipseditto-lampfb.zip", Optional.empty());
     assertTrue(true);
   }
 }

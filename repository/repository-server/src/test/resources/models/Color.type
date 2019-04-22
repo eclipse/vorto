@@ -2,6 +2,9 @@ vortolang 1.0
 
 namespace org.eclipse.vorto.examples.type
 version 1.0.0
+
+using com.test.Zone;1.0.0
+
 entity Color {
-	mandatory color as string
+	mandatory color as string with {measurementUnit : com.test.Zone.NORTH}
 }

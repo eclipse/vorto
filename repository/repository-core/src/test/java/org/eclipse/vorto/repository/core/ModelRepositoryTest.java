@@ -181,58 +181,83 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSearchModelWithFilters1() {
+  public void testSearchModelByModelName() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1,
-        repositoryFactory.getRepository(createUserContext("admin")).search("name:Color").size());
-    assertEquals(3, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("name:Color name:Switcher name:HueLightStrips").size());
-  }
+    
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
 
+    assertEquals(1, modelRepository.search("name:Color").size());
+  }
+  
   @Test
-  public void testSearchModelWithFilters2() {
+  public void testSearchModelByNameWildcard() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("name:Color version:1.0.0   ").size());
-    assertEquals(0, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("name:Color version:1.0.1").size());
+    
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
+    
+    assertEquals(2, modelRepository.search("name:Color*").size());
   }
 
   @Test
-  public void testSearchModelWithFilters3() {
+  public void testSearchModelByNamespace() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("namespace:org.eclipse.vorto.examples.fb").size());
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("namespace:com.mycompany.fb").size());
-    assertEquals(2, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("namespace:com.mycompany   version:1.0.0").size());
+    
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
+    
+    assertEquals(1, modelRepository.search("namespace:org.eclipse.vorto.examples.fb").size());
+    assertEquals(1, modelRepository.search("namespace:com.mycompany.fb").size());
+    assertEquals(2, modelRepository.search("namespace:com.mycompany   version:1.0.0").size());
 
   }
-
+  
   @Test
-  public void testSearchModelWithFilters4() {
+  public void testSearchModelByType() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(0, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("name:Switcher InformationModel").size());
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("name:Switcher Functionblock").size());
-    assertEquals(2,
-        repositoryFactory.getRepository(createUserContext("admin")).search("Functionblock").size());
+    
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
+    
+    assertEquals(2, modelRepository.search("Functionblock").size());
+  }
+
+  @Test
+  public void testSearchModelByNameAndType() {
+    importModel("Color.type");
+    importModel("Colorlight.fbmodel");
+    importModel("Switcher.fbmodel");
+    importModel("ColorLightIM.infomodel");
+    importModel("HueLightStrips.infomodel");
+      
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
+    
+    assertEquals(0, modelRepository.search("name:Switcher InformationModel").size());
+    assertEquals(1, modelRepository.search("name:Switcher Functionblock").size());
+  }
+  
+  @Test
+  public void testSearchModelWithFilters5() {
+    importModel("Color.type");
+    importModel("Colorlight.fbmodel");
+    importModel("Switcher.fbmodel");
+    importModel("ColorLightIM.infomodel");
+    importModel("HueLightStrips.infomodel");
+    
+    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
+    
+    assertEquals(1, modelRepository.search("Functionblock name:Color*").size());
   }
 
   @Test

@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -91,10 +90,10 @@ public class ModelDtoFactory {
   public static ModelInfoDto createDto(String tenantId, ModelInfo resource) {
     ModelInfoDto dto =
         new ModelInfoDto(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
-    
+
     copy(resource, dto);
     dto.setTenantId(tenantId);
-    
+
     return dto;
   }
 
@@ -553,6 +552,7 @@ public class ModelDtoFactory {
 
   private static EnumLiteral createLiteral(
       org.eclipse.vorto.core.api.model.datatype.EnumLiteral literal) {
-    return new EnumLiteral(literal.getName(), literal.getDescription());
+    return new EnumLiteral(literal.getName(), literal.getDescription(),
+        createModelId((Enum) literal.eContainer()));
   }
 }
