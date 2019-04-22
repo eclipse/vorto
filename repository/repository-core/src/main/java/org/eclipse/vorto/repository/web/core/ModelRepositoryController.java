@@ -125,7 +125,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @PostMapping(value = "/{modelId:.+}/images")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') || "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
+      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Boolean> uploadModelImage(
@@ -155,7 +155,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   // ToDo add Getter method
   @ApiOperation(value = "Saves a model to the repository.")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
+      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   @PutMapping(value = "/{modelId:.+}", produces = "application/json")
@@ -240,7 +240,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @ApiOperation(value = "Creates a new version for the given model in the specified version")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or (hasRole('ROLE_MODEL_CREATOR') and "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
+      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).READ))")
   @PostMapping(value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
@@ -264,7 +264,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @DeleteMapping(value = "/{modelId:.+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   public ResponseEntity<Boolean> deleteModelResource(
@@ -365,7 +365,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication).hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication).hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @GetMapping(value = "/{modelId:.+}/policies")
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(
@@ -404,7 +404,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @PutMapping(value = "/{modelId:.+}/policies")
@@ -429,7 +429,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         .equals(entry.getPrincipalId());
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
       + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @DeleteMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}")
