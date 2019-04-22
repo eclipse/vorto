@@ -5,6 +5,7 @@
 		<div class="row">
 			<div class="col-md-6">
 				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-change="search()">
+				<span ng-show="isLoading"><i class='fa fa-refresh fa-spin'></i>&nbsp; Searching ...</span>
 			</div>
 			<div class="col-md-6">
 				<span ng-show="modelsTotal != null" class="total-summary pull-right">{{modelsTotal}} models found</span>
@@ -13,13 +14,13 @@
 		<div class="row">
 			<div class="col-md-2 form-group">
 		 		<label ng-show="authenticated && userInfo.isRegistered === 'true'" class="chkbox">Only My Models
-          			<input type="checkbox">
+          			<input type="checkbox" ng-model="onlyMyModels" ng-change="search()">
           			<span class="checkmark"></span>
         		</label>
 				<hr/>
 				<h5 class="category">States</h5>
-				<select id="dropdownState" ng-model="state" ng-change="search()" class="form-control">
-						<option value="">All States</option>
+				<select id="dropdownState" ng-model="modelState" ng-change="search()" class="form-control">
+						<option value="all">All States</option>
 						<option value="Draft">Draft</option>
 						<option value="InReview">In Review</option>
 						<option value="Released">Released</option>
@@ -69,13 +70,6 @@
 			</div>
 			<div class="col-md-10">
 				<div id="searchResult">
-					<div ng-show="isLoading" class="row">
-						<div class="loadingCenter" ng-show="isLoading">
-							<h3>
-								<i class='fa fa-refresh fa-spin'></i>&nbsp; Searching. Please wait...
-							</h3>
-						</div>
-					</div>
 					<div ng-hide="isLoading" class="row"">
 						<div class="col-md-4" ng-repeat="model in models">
 							<div ng-if="model.type === 'InformationModel'" class="model-box im">

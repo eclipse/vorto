@@ -156,36 +156,10 @@ ul.nav a {
 }
 
 .btn {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity cubic-bezier(0.38, 0.04, 0.35, 0.96) 600ms;
-  border: 1px solid transparent;
-  border-radius: 0 !important;
-  cursor: pointer;
-  padding-top: 0;
-  padding-bottom: 0;
-  text-decoration: none;
-  font-weight: 300;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  padding: 8px 15px;
-  font-weight: 500;
-  margin:2px;
-  font-size: 15px; }
-  .btn:active {
-    outline: none; }
-  .btn:disabled {
-    cursor: not-allowed; }
-  .btn > .rb-icon {
-    margin-right: 0.3em;
-    font-size: 1.35em; }
+    border-radius: 2px;
+    font-weight: bold;
+    border: 0px;
+}
 
 .btn-primary {
   border-radius: 0 !important;
@@ -208,6 +182,11 @@ ul.nav a {
       border-color: #005691;
       background-color: #005691; } }
 
+.btn-default {
+    color: #333;
+    background-color: #eee;
+    border-color: #ccc;
+}
 
 .btn-success {
     background-color: #6CB674; /* Old browsers */
