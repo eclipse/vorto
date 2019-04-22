@@ -23,7 +23,7 @@ h3{font-size: 20px; font-weight: 400; margin: 10px 0;}
 h4{font-size:18px; font-weight: 400}
 
 ul.nav {
-    margin-top: 10px;
+    margin-top: 18px;
 }
 
 @media (min-width: 1368px) {
@@ -148,12 +148,6 @@ ul.nav a {
   color: #3a5a82;
 }
 
-.btn {
-    border-radius: 2px;
-    font-weight: bold;
-    border:0px;
-}
-
 .btn-group-lg>.btn, .btn-lg {
     padding: 10px 16px;
     font-size: 18px;
@@ -161,32 +155,59 @@ ul.nav a {
     border-radius: 3px;
 }
 
- .btn-default {
-	background-color: #ddd;
- }
- .btn-primary {
-    background-color: rgb(0, 129, 199); 
-    background-image: -moz-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 129, 199, 1)), color-stop(100%, rgba(0, 73, 134, 1))); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* Chrome10+,Safari5.1+ */
-    background-image: -o-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* Opera 11.10+ */
-    background-image: -ms-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* IE10+ */
-    background-image: linear-gradient(to bottom, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0081c7', endColorstr='#004986', GradientType=0); /* IE6-9 */
-    border-color: rgba(0,0,0,0);
-}
+.btn {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity cubic-bezier(0.38, 0.04, 0.35, 0.96) 600ms;
+  border: 1px solid transparent;
+  border-radius: 0 !important;
+  cursor: pointer;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-decoration: none;
+  font-weight: 300;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  padding: 8px 15px;
+  font-weight: 500;
+  margin:2px;
+  font-size: 15px; }
+  .btn:active {
+    outline: none; }
+  .btn:disabled {
+    cursor: not-allowed; }
+  .btn > .rb-icon {
+    margin-right: 0.3em;
+    font-size: 1.35em; }
 
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary.focus,
-.btn-primary:active,
-.btn-primary.active,
-.open > .dropdown-toggle.btn-primary {
-    color: #fff;
-    background-color: #286090;
-    border-color: rgba(0,0,0,0);
-    background-color: rgb(0, 73, 134); 
-}
+.btn-primary {
+  border-radius: 0 !important;
+  border-color: #005691;
+  background-color: #005691;
+  background-image: none;
+  color: #fff; }
+  .btn-primary:hover {
+    border-color: #7fc6e7 !important;
+    background-color: #7fc6e7; }
+  .btn-primary:active {
+    outline: 0;
+    border-color: #008ecf;
+    background-color: #008ecf; }
+  .btn-primary:disabled {
+    border-color: #bfc0c2;
+    background-color: #bfc0c2; }
+  @media (hover: none) {
+    .btn .btn-primary:hover {
+      border-color: #005691;
+      background-color: #005691; } }
+
 
 .btn-success {
     background-color: #6CB674; /* Old browsers */
@@ -644,7 +665,7 @@ span.star.filled:before{
     padding: 10px;
 }
 
-.bg-aqua{
+.bg-blue{
     background-color: #4D90C3 !important;
     color: #fff !important;
 }
@@ -1218,7 +1239,6 @@ th.action
 	border: 1px solid #ddd;
 }
 
-
 .modelresult-heading-collapsed .header{
   font-size: 16px;
   font-weight: normal;
@@ -1349,15 +1369,15 @@ legend.results-border {
 .tiny-box {
  	padding: 0 5px;
     color: #333;
-    margin: 2px auto;
+    margin: 4px auto;
     min-height: 84px;
     background: #fff;
     height: 110px;
     width: 110px;
     text-align: center;
-    box-shadow: 1px 1px 1px 1px rgba(0,0,0,.1);
+    box-shadow: 0 0 1px 1px rgba(0,0,0,.1);
     font-size: 12px;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 0 solid rgba(0,0,0,.1);
 }
 
 .tiny-box-icon {
@@ -1369,8 +1389,8 @@ legend.results-border {
   background-color: transparent !important; }
 
 .tiny-box:hover, .tiny-box.selected {
-  border: 1px solid #c2e1f5;
-  box-shadow: 1px 1px 1px 1px #c2e1f5;
+  border: 0 solid #c2e1f5;
+  box-shadow: 0 0 2px 2px #c2e1f5;
   cursor: pointer; }
 
 .tiny-box-name, .tiny-box-action {
@@ -1493,14 +1513,11 @@ input[type=file]::-webkit-file-upload-button {
 
 #dropdownState {
     background-color: #F9F9F9; 
-    width: 150px;
     margin-right: 15px;
-    margin-left: 15px;
 }
 
 #dropdownType {
     background-color: #F9F9F9; 
-    width: 200px;
     margin-right: 15px;
 }
 
@@ -1649,4 +1666,197 @@ input[type=file]::-webkit-file-upload-button {
     border: none;
     padding: 20px 3px 0;
 }
+
+/*added 22.4.2019*/
+.chkbox {
+    display: block;
+    position: relative;
+    padding-left: 28px;
+    margin: 25px 5px 12px 5px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-weight: 400;
 }
+.chkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.chkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #DEDEDF;
+}
+.chkbox:hover input ~ .checkmark {
+    background-color: #96C5E5;
+}
+.chkbox input:checked ~ .checkmark {
+     background-color: #31578E;
+}
+.chkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.chkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+.chkbox .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.category {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+#searchResult {
+    margin: 25px 10px 10px 10px;
+}
+
+.total-summary {
+    margin-top: 8px;
+    margin-right: 8px;
+    font-weight: 500;
+}
+
+.model-box {
+    border-radius: 0;
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.model-box a, .model-box a:hover {
+    color: #111;
+}
+
+.model-box a:active, .model-box a:hover, .model-box a:focus {
+    text-decoration: none;
+}
+
+.model-box .inner {
+    padding: 5px 10px 5px 10px;
+    height: 110px;
+}
+
+.model-box .model-name {
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    padding: 0;
+}
+
+.model-box .namespace {
+    display: block;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.model-box .desc {
+    font-size: 12px;
+    line-height: 12px;
+    color: #999;
+    height: 30px;
+}
+
+.model-box.im .inner {
+    padding: 5px 80px 5px 10px;
+}
+
+.model-box.im .icon img{
+    transition: all 0.3s linear;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 0;
+    width: 80px;
+    height: 80px;
+}
+
+.model-box .model-box-footer {
+    position: relative;
+    padding: 2px 6px;
+    color: #fff;
+    text-align: center;
+    display: block;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    height: 20px;
+}
+
+.model-box .model-box-footer .version {
+    float: right;
+}
+
+.model-box .model-box-footer .type {
+    float: left;
+}
+
+.model-box.im .model-box-footer {
+    background: #365A80;
+}
+
+.model-box.im:hover .model-box-footer {
+    background: rgba(49, 91, 126, 0.9);
+}
+
+.model-box.im:hover {
+    background: rgba(49, 91, 126, 0.1);
+}
+
+.model-box.fb .model-box-footer {
+    background: rgba(72, 15, 95);
+}
+
+.model-box.fb:hover .model-box-footer {
+    background: rgba(72, 15, 95, 0.75);
+}
+
+.model-box.fb:hover {
+    background: rgba(72, 15, 95, 0.1);
+}
+
+.model-box.dt .model-box-footer {
+    background: rgba(255, 146, 57);
+}
+
+.model-box.dt:hover .model-box-footer {
+    background: rgba(255, 146, 57, 0.75);
+}
+
+.model-box.dt:hover {
+    background: rgba(255, 146, 57, 0.1);
+}
+
+.model-box.mp .model-box-footer {
+    background: #999;
+}
+
+.model-box.mp:hover .model-box-footer {
+    background: rgba(153, 153, 153, 0.75);
+}
+
+.model-box.mp:hover {
+    background: rgba(153, 153, 153, 0.1);
+}
+
+
+    
