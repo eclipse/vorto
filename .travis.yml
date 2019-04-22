@@ -31,7 +31,6 @@ install:
 script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn --fail-fast -q clean package -DskipTests -P checkstyle
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then 
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
     fi 
