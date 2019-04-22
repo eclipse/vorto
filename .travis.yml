@@ -31,9 +31,10 @@ install:
 script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn --fail-fast -q clean package -DskipTests -P checkstyle
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then 
+    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+    else mvn --fail-fast -q clean package -P checkstyle;
     fi 
   - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
   - docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:nightly .;
