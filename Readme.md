@@ -7,8 +7,6 @@
 
 The Bosch IoT Suite uses Vorto to define their entire device semantic abstraction layer and thus allows IoT Solution Developers to easily build device - agnostic IoT solutions. 
 
-Check out the [Vorto Console](https://vorto.eclipse.org/console) that demonstrates the easy integration of devices with the Bosch IoT Suite.
-
 <img src="docs/images/vorto_cover.png"/>
 
 
