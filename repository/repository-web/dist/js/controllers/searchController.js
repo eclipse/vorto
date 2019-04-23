@@ -80,7 +80,7 @@ repositoryControllers.controller('SearchController',
     }
 
     $scope.go = function(model){
-        $location.path("/details/"+model.id.prettyFormat);
+        $location.path("/details/" + model.tenantId + "/" + model.id.prettyFormat);
     };
 
     $scope.showYourModels = function() {
