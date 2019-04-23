@@ -24,7 +24,7 @@ With the following tutorials, you are going to learn to connect devices that are
 
 Tutorials that show you what you can do with Vorto Information Models to prototype an IoT Solution based on an IoT Platform:
 
-- [Generate a SpringBoot Web Application](tutorials/create_webapp_dashboard.md) that reads device data from Bosch IoT Things and visualizes it in pre-defined Vorto UI Widgets.
+- [Generate a Node Dashboard](tutorials/create_webapp_dashboard.md) that reads device data from Bosch IoT Things and visualizes it in pre-defined Vorto UI Widgets.
 
 
 ## Misc
