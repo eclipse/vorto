@@ -62,6 +62,12 @@ script:
     docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG .;
     docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG .;
     fi;
+    
+before_deploy:
+  - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
+  - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
+  - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
+  
 deploy:
   - provider: script
     script: bash docker/docker_push
