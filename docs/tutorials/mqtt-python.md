@@ -16,8 +16,6 @@ This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch
 
 * IDEs - for Python: [Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python) 
 
-* [Paho Python Client](https://eclipse.org/paho/clients/python/)
-
 * [GrovePi Sensor Kit](https://www.dexterindustries.com/grovepi/)
 
 ## Proceed as follows
@@ -44,17 +42,21 @@ This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch
 
 	**Download the python source code template**
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+	- Head over to the [Vorto Repository](https://vorto.eclipse.org).
 
-	- Navigate to your thing and click on it.
+	- Navigate to your Information Model and click on it.
 
-	- Click on the **Source Code Templates** tab.
+	- Click on the **Bosch IoT Suite** Generator.
 
-	- At the **Integrate device with Python** template, click **Download**.
+	- At the **Integrate device with Python** template, click **Source Code**.
 
-		<img width="300" src="../images/tutorials/connect_grovepi/python-generator.png" style="border:3px !important;">
+		<img width="800" src="../images/tutorials/create_thing/provision_device_dl.PNG">
 
 	- Store the ZIP file and extract the source code.
+
+4. Install Python dependencies.   
+The bundled generated code contains a file called `requirements.txt`. This file describes the dependencies that still have to be installed.   
+Install the dependencies using the `pip install .` command which looks at the current directory and installs the dependecies stated in this file.
 
 4. Install GrovePi Python dependencies on the Raspberry Pi.
 
@@ -125,12 +127,12 @@ This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch
 
 8. Verify incoming sensor data.
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+	- The simplest way to quickly visualize your sensor data is to use the [Vorto Dashboard](create_webapp_dashboard.md).
 
-	- Click  on thing to open the details
+	- Alternatively, you can also use the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) to get a quick insight into whether your data is updating,
 
-	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
+	- Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite!
 
 ## What's next ?
 
- - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
+ - [Generate a Vorto Dashboard](create_webapp_dashboard.md) that visualizes the device data in UI widgets.

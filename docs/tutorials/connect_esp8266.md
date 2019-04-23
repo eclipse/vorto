@@ -62,15 +62,15 @@ The ESP3266 Development board's ports will not be recognized by the Arduino IDE	
 
 ### Step 2: Generating an arduino sketch using the Arduino Generator (Arduino project).
 
-- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+- Head over to the [Vorto Repository](https://vorto.eclipse.org).
 
-- Navigate to your thing in the Thing Browser and click on it.
+- Navigate to your Information Model and click on it.
 
-- Click on the **Source Code Templates** tab.
+- Click on the **Bosch IoT Suite** Generator.
 
-- At the **Integrate device with Arduino C** template, click **Download**.
+- At the **Integrate device with Arduino** template, click **Source Code**.
 
-	<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
+	<img width="800" src="../images/tutorials/create_thing/provision_device_dl.PNG">
 
 - Store the ZIP file and extract the source code.
 
@@ -124,13 +124,11 @@ The following important changes have to be made:
 
 ### Step 3: Verify incoming sensor data.
 
-- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+- The simplest way to quickly visualize your sensor data is to use the [Vorto Dashboard](create_webapp_dashboard.md).
 
-- Open the thing details
+- Alternatively, you can also use the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) to get a quick insight into whether your data is updating,
 
-- Check if the sensor data was sent successfully to the Bosch IoT Suite.
-
-**Congratulations**, you have successfully connected your ESP8266 device to the Bosch IoT Suite.
+Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite!
 
 ## What Could Go Wrong
 
@@ -142,4 +140,4 @@ You have followed all the steps above but the Hub does not receive any data? Her
 
 ## What's next ?
 
- - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
+ - [Generate a Vorto Dashboard](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
