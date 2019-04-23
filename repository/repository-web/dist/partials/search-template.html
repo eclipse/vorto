@@ -1,132 +1,148 @@
 <section class="content">
-	<br>
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="row" id="searchResult">
-				<div>
-					<table st-persist st-table="displayedModels" st-safe-src="filteredModels" class="table table-striped" id="searchTable">
-						<thead>
-							<tr>
-								<td colspan="4" class="headerTable">
-									<h2 id="searchHeadline">Models</h2>
-								</td>
-								<td colspan="4" class="headerTable">
-									<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"
-									    role="button">
-										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Describe device</a>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="8" class="headerTable">
-									<table>
-										<tr>
-											<td>
-												<div class="">
-													<input style="background-color: #F9F9F9" class="search-box-query-filter form-control search-input" type="search" placeholder="Filter models"
-													    size="80" ng-model="queryFilter" st-search="" autofocus class="queryFilter input-sm" />
-												</div>
-											</td>
-											<td>
-												<select id="dropdownState" st-search="state" class="form-control">
-													<option value="">All States</option>
-													<option value="Draft">Draft</option>
-													<option value="InReview">In Review</option>
-													<option value="Released">Released</option>
-													<option value="Deprecated">Deprecated</option>
-												</select>
-											</td>
-											<td>
-												<select id="dropdownType" st-search="type" class="form-control">
-													<option value="">All Types</option>
-													<option value="InformationModel">Information Model</option>
-													<option value="Functionblock">Functionblock</option>
-													<option value="Datatype">Datatype</option>
-													<option value="Mapping">Mapping</option>
-												</select>
-											</td>
-											<td>
-												<a id="chooseOwnModel" ng-show="authenticated && userInfo.isRegistered === 'true'" class="btn btn-link form-control pull-right"
-												    data-toggle="button" ng-click="showYourModels()" role="button">Only My Models</a>
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-							<tr ng-show="!isLoading">
-								<td colspan="7">
-									<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary>
-								</td>
-							</tr>
-							<tr ng-show="!isLoading">
-								<th width="50px">Type</th>
-								<th id="onName" st-sort="id.name" width="20%">
-									<a href="">Name
-										<i class="fa fa-sort"></i>
-									</a>
-								</th>
-								<th id="onNamespace" st-sort="id.namespace" width="25%">
-									<a href="">Namespace
-										<i class="fa fa-sort"></i>
-									</a>
-								</th>
-								<th id="onVersion" width="50px">Version</th>
-								<th width="50px">State</th>
-								<th st-sort="creationDate" width="140px">
-									<a href="">Created On
-										<i class="fa fa-sort">
-								</th>
-								<th>Description</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-show="!isLoading" ng-repeat="model in displayedModels track by $index">
-								<td ng-show="model.type === 'InformationModel'">
-									<img src="webjars/repository-web/dist/images/im.png" />
-								</td>
-								<td ng-show="model.type === 'Functionblock'">
-									<img src="webjars/repository-web/dist/images/fb.png" />
-								</td>
-								<td ng-show="model.type === 'Datatype'">
-									<img src="webjars/repository-web/dist/images/dt.png" />
-								</td>
-								<td ng-show="model.type === 'Mapping'">
-									<i class="fa fa-exchange" aria-hidden="true"></i>
-								</td>
-								<td  ng-click="go(model)">{{ model.id.name }}</td>
-								<td  ng-click="go(model)">{{ model.id.namespace }}</td>
-								<td  ng-click="go(model)">{{ model.id.version }}</td>
-								<td  ng-click="go(model)">
-									<span class="state state-{{model.state}}">{{ model.state }}</span>
-								</td>
-								<td  ng-click="go(model)">{{ model.creationDate | date:"dd-MM-yyyy" }}</td>
-								<td  ng-click="go(model)">{{ model.description | limitTo : 80 }}
-									<span ng-show="model.description.length > 80">[...]</span>
-								</td>
-								<td>
-									<a class="btn btn-sm btn-primary" href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}" role="button">Details</a>
-								</td>
-							</tr>
-							<tr ng-show="isLoading">
-								<td colspan="7">
-									<div class="loadingCenter" ng-show="isLoading">
-										<h3>
-											<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading models. Please wait...</h3>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-
-						<tfoot>
-							<tr>
-								<td colspan="12" class="text-center">
-									<div st-pagination="" st-template="webjars/repository-web/dist/partials/templates/pagination.custom.html" st-items-by-page="itemsByPage" st-displayed-pages="displayedModels.length"></div>
-								</td>
-							</tr>
-						</tfoot>
-					</table>
+		<h2 id="searchHeadline">Models</h2>
+		<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Describe device</a>
+		<br/><br/>
+		<div class="row">
+			<div class="col-md-6">
+				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-change="search()">
+				<span ng-show="isLoading"><i class='fa fa-refresh fa-spin'></i>&nbsp; Searching ...</span>
+			</div>
+			<div class="col-md-6">
+				<span ng-show="modelsTotal != null" class="total-summary pull-right">{{modelsTotal}} models found</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 form-group">
+		 		<label ng-show="authenticated && userInfo.isRegistered === 'true'" class="chkbox">Only My Models
+          			<input type="checkbox" ng-model="onlyMyModels" ng-change="search()">
+          			<span class="checkmark"></span>
+        		</label>
+				<hr/>
+				<h5 class="category">States</h5>
+				<select id="dropdownState" ng-model="modelState" ng-change="search()" class="form-control">
+						<option value="all">All States</option>
+						<option value="Draft">Draft</option>
+						<option value="InReview">In Review</option>
+						<option value="Released">Released</option>
+						<option value="Deprecated">Deprecated</option>
+				</select>
+				<!--label class="chkbox">Information Model 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		        <label class="chkbox">Functionblock 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		        <label class="chkbox">Datatype 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		        <label class="chkbox">Mapping 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label-->
+				<hr/>
+				<h5 class="category">Types</h5>
+				<select id="dropdownType" ng-model="modelType" ng-change="search()" class="form-control">
+					<option value="all">All Types</option>
+					<option value="InformationModel">Information Model</option>
+					<option value="Functionblock">Functionblock</option>
+					<option value="Datatype">Datatype</option>
+					<option value="Mapping">Mapping</option>
+				</select>
+				<!--label class="chkbox">Released 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		        <label class="chkbox">Draft 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		         <label class="chkbox">In Review 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label>
+		         <label class="chkbox">Deprecated 
+		          <input type="checkbox" checked="checked">
+		          <span class="checkmark"></span>
+		        </label-->
+			</div>
+			<div class="col-md-10">
+				<div id="searchResult">
+					<div ng-hide="isLoading" class="row"">
+						<div class="col-md-4" ng-repeat="model in models">
+							<div ng-if="model.type === 'InformationModel'" class="model-box im">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
+					                <div class="inner">
+					                  <span class="model-name">{{model.id.name}}</span>
+					                  <small class="namespace">{{model.id.namespace}}</small>
+					                  <p class="desc">{{model.description | limitTo : 80}}</p>
+					                  <span class="state state-{{model.state}}">{{model.state}}</span>
+					                </div>
+					                <div class="icon">
+					                  <img src="rest/tenants/{{model.tenantId}}/models/{{model.id.prettyFormat}}/images" />
+					                </div>
+					                <div class="model-box-footer">
+					                  <small class="type">IM</small>
+					                 <small class="version">{{model.id.version}}</small>
+					               </div>
+                				</a>
+              				</div>
+              				<div ng-if="model.type === 'Functionblock'" class="model-box fb">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
+                					<div class="inner">
+                  						<span class="model-name">{{model.id.name}}</span>
+                  						<small class="namespace">{{model.id.namespace}}</small>
+                  						<p class="desc">{{model.description | limitTo : 80}}</p>
+                  						<span class="state state-{{model.state}}">{{model.state}}</span>
+                					</div>
+					                <div class="model-box-footer">
+					                   <small class="type">FB</small>
+					                 <small class="version">{{model.id.version}}</small>
+					               </div>
+                				</a>
+              				</div>
+              				<div ng-if="model.type === 'Datatype'" class="model-box dt">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
+                					<div class="inner">
+                  						<span class="model-name">{{model.id.name}}</span>
+                  						<small class="namespace">{{model.namespace}}</small>
+                  						<p class="desc">{{model.description | limitTo : 80}}</p>
+                  						<span class="state state-{{model.state}}">{{model.state}}</span>
+                					</div>
+					                <div class="model-box-footer">
+					                   <small class="type">DT</small>
+					                 <small class="version">{{model.id.version}}</small>
+					               </div>
+                				</a>
+              				</div>
+              				<div ng-if="model.type === 'Mapping'" class="model-box mp">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
+                					<div class="inner">
+                  						<span class="model-name">{{model.id.name}}</span>
+                  						<small class="namespace">{{model.id.namespace}}</small>
+                  						<p class="desc">{{model.description | limitTo : 80}}</p>
+                  						<span class="state state-{{model.state}}">{{model.state}}</span>
+                					</div>
+					                <div class="model-box-footer">
+					                   <small class="type"><i class="fa fa-exchange" aria-hidden="true"></i></small>
+					                 <small class="version">{{model.id.version}}</small>
+					               </div>
+                				</a>
+              				</div>
+						</div>
+					</div>
+					<!--div class="row text-center">
+						<ul class="pagination">
+						  <li><a href="#">First</a></li>
+						  <li><a href="#"><</a></li>
+						  <li><a href="#">1</a></li>
+						  <li><a href="#">></a></li>
+						  <li><a href="#">Last</a></li>
+						</ul>
+					</div-->
 				</div>
 			</div>
 		</div>
-	</div>
 </section>

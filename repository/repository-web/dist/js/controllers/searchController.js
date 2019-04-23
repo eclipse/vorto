@@ -4,7 +4,9 @@ repositoryControllers.controller('SearchController',
 
     $scope.models = [];
     $scope.filteredModels = [];
-    $scope.modelType = 'all';
+    $scope.modelType = 'InformationModel';
+    $scope.modelState = 'Released';
+    $scope.onlyMyModels = "false";
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
     $scope.isLoading = false;
@@ -22,16 +24,32 @@ repositoryControllers.controller('SearchController',
 
     $scope.search = function() {
     	$scope.isLoading = true;
-        var filter = null;
-        if ($scope.modelType === 'all') {
-            filter = $scope.queryFilter;
+    	var filter = "";
+    	       
+        if ($scope.modelState === 'all' && $scope.modelType === 'all' && $scope.onlyMyModels === false) {
+        	filter = $scope.queryFilter;
         } else {
-            filter = $scope.queryFilter + " "+$scope.modelType;
+        	if ($scope.modelType !== 'all') {
+        		filter += $scope.modelType+" ";
+        	}
+        	if ($scope.modelState !== 'all') {
+        		filter += "state:"+$scope.modelState+" ";
+        	}
+        	
+        	if ($scope.onlyMyModels === true) {
+        		filter += "author:"+$rootScope.user+" ";
+        	}
+        	
+        	if ($scope.queryFilter !== "") {
+        		filter += "name:"+$scope.queryFilter+"*"
+        	}
         }
+
         $http.get('./api/v1/search/models?expression=' + filter).success(
             function(data, status, headers, config) {
                 console.log("" + JSON.stringify(data));
             	$scope.models = data;
+            	$scope.modelsTotal = data.length;
                 $scope.isLoading = false;
                 filterModels();
             }).error(function(data, status, headers, config) {
