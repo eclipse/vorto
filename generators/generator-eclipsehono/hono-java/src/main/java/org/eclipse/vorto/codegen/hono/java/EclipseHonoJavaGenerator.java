@@ -64,8 +64,6 @@ public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
 
     generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()));
     generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new Log4jTemplate()));
-    generator
-        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CertificateTemplate()));
 
     generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AppTemplate()));
     generator

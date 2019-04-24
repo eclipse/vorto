@@ -39,14 +39,14 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import model.DittoSerializer as DittoSerializer
 	
 	# DEVICE CONFIG GOES HERE
-	hono_tenant = "«context.configurationProperties.getOrDefault("hono_tenant","<hono_tenant>")»"
-	hono_password = "<ADD PASSWORD HERE>"
-	hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","<hono_endpoint>")»"
-	hono_deviceId = "«context.configurationProperties.getOrDefault("hono_deviceId","<hono_deviceId>")»"
-	hono_clientId = hono_deviceId
-	hono_authId = hono_deviceId + "@" + hono_tenant
-	hono_certificatePath = "<ADD PATH TO CERTIFICATE HERE>"
-	ditto_topic = "«context.configurationProperties.getOrDefault("ditto_topic","com.mycompany/4711")»"
+	tenantId = "ADD TENANT HERE"
+	device_password = "ADD DEVICE PASSWORD HERE"
+	hub_adapter_host = "mqtt.bosch-iot-hub.com"
+	deviceId = "ADD DEVICE ID HERE"
+	clientId = deviceId
+	authId = "ADD AUTH ID HERE"
+	certificatePath = "ADD PATH TO SERVER CERTIFICATE HERE"
+	ditto_topic = "ADD TOPIC HERE, e.g. com.mycompany/4711"
 
 
 	# The callback for when the client receives a CONNACK response from the server.
@@ -61,7 +61,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    # reconnect then subscriptions will be renewed.
 	
 	    # BEGIN SAMPLE CODE
-	    client.subscribe("commands/" + hono_tenant + "/")
+	    client.subscribe("commands/" + tenantId + "/")
 	    # END SAMPLE CODE
 
 	    # Time stamp when the periodAction function shall be called again
@@ -82,7 +82,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	# The functions to publish the functionblocks data
 	«FOR fb : model.properties»
 	def publish«fb.name.toFirstUpper»():
-	    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_topic, hono_deviceId)
+	    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_topic, deviceId)
 	    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
 	    client.publish(publishTopic, payload)
 	    
@@ -160,23 +160,24 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	timePeriod = 10
 
 	# Configuration of client ID and publish topic	
-	publishTopic = "telemetry/" + hono_tenant + "/" + hono_clientId
+	publishTopic = "telemetry/" + tenantId + "/" + deviceId
 
 	# Output relevant information for consumers of our information
-	print("Connecting client:    ", hono_clientId)
+	print("Connecting client:    ", clientId)
 	print("Publishing to topic:  ", publishTopic)
 
 	# Create the MQTT client
-	client = mqtt.Client(hono_clientId)
+	client = mqtt.Client(clientId)
 	client.on_connect = on_connect
 	client.on_message = on_message
 	
-	client.tls_set(hono_certificatePath)
+	client.tls_set(certificatePath)
 	
-	client.username_pw_set(hono_authId, hono_password)
+	username = authId + "@" + tenantId
+	client.username_pw_set(username, device_password)
 
 	# Connect to the MQTT broker
-	client.connect(hono_endpoint, 8883, 60)
+	client.connect(hub_adapter_host, 8883, 60)
 
 	# Blocking call that processes network traffic, dispatches callbacks and
 	# handles reconnecting.
