@@ -38,6 +38,9 @@ script:
     else mvn --fail-fast -q clean package -P checkstyle;
     fi
 
+  # copying the mariadb java client
+  - wget -P wgetDownload/ https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-2.3.0.jar
+
   # setting up artifact uploads to aws
   - mkdir ~/aws-upload
   - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
@@ -69,11 +72,11 @@ before_deploy:
   - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
 
 deploy:
-  - provider: script
-    script: build-scripts/repackage-repo.sh || travis_terminate 1;
-    skip_cleanup: true
-    on:
-      all_branches: true
+#  - provider: script
+#    script: build-scripts/repackage-repo.sh || travis_terminate 1;
+#    skip_cleanup: true
+#    on:
+#      all_branches: true
   - provider: script
     script: bash docker/docker_push
     skip_cleanup: true
