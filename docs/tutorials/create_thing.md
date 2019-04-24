@@ -5,6 +5,8 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 <img src="../images/tutorials/create_thing/raspbi_IM.png" />
 
+<br />
+
 ## Prerequisites
 
 * [Postman is installed](https://www.getpostman.com/downloads/)
@@ -21,21 +23,33 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 <br />
 
-## Proceed as follows
+## Steps
+1. Download the Device provision postman script
+2. Configure the request with your custom information
+3. Create a new thing
 
-**1.** Click the `Source Code` button to download the generated Postman script.
+<br />
+
+## Download the Device provision postman script
+
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+<img src="../images/tutorials/create_thing/code_generators.png" />
+
+**2.** We want to provision a device. Click the `Source Code` button to download the generated Postman script.
 <img src="../images/tutorials/create_thing/provision_device_dl.PNG" height="500"/>
 
-**2.** Unzip the downloaded file and open Postman   
+**3.** Unzip the downloaded file and open Postman   
 
-**3.** Import the file present in the extracted folder into Postman.   
+**4.** Import the file present in the extracted folder into Postman.   
 <img src="../images/tutorials/create_thing/import_jspm.png" />
 
 <br />
 
-**4.** Click on the just imported `Collections` and switch to the `Pre-request Script` tab.
+## Configure the request with your custom information
 
-**5.** In here you will see 3 entires. 
+**5.** Click on the just imported `Collections` and switch to the `Pre-request Script` tab.
+
+**6.** In here you will see 3 entires. 
 <img src="../images/tutorials/create_thing/pre_requeset_script.png" />
 
 - **service-instance-id**: Service Instance ID of your asset communication subscription. (Can be found in the *Show Credentials* on the far bottom)
@@ -47,18 +61,22 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 <br />
 
-**6.** Once you've entered the information into the tab, switch to the `Headers` tab.
+**7.** Once you've entered the information into the tab, switch to the `Headers` tab.
 <img src="../images/tutorials/create_thing/bearer_token.png" />
 
-**7.** Head over to your Bosch IoT Suite account and open the [OAuth2 Client page](https://accounts.bosch-iot-suite.com/oauth2-clients). Click the `Use` button to get a temporary token (valid for 5min).
+**8.** Head over to your Bosch IoT Suite account and open the [OAuth2 Client page](https://accounts.bosch-iot-suite.com/oauth2-clients). Click the `Use` button to get a temporary token (valid for 5min).
 
-**8.** Insert the temporary token into the second row that says `Authorization`. **Don't** remove the `Bearer` keyword.
-
-**9.** After entering the token, press the blue `Send` button in the upper right corner to create your Thing.
+**9.** Insert the temporary token into the second row that says `Authorization`. **Don't** remove the `Bearer` keyword.
 
 <br />
 
-**10.** Once your request was successful, you'll see a long response in the bottom section of Postman and the status `201 Created`. Now your thing has been created and you can start with the integration. 
+## Create a new thing
+
+**10.** After entering the token, press the blue `Send` button in the upper right corner to create your Thing.
+
+**11.** Once your request was successful, you'll see a long response in the bottom section of Postman and the status `201 Created`. Now your thing has been created and you can start with the integration. 
+
+<br />
 
 ## What's next?
 
