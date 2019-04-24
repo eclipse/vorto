@@ -19,7 +19,7 @@ import org.eclipse.vorto.codegen.api.InvocationContext
 class PythonRequirementsTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
-		'''requirement.txt'''
+		'''requirements.txt'''
 	}
 	
 	override getPath(InformationModel context) {
