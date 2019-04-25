@@ -80,8 +80,8 @@
 					                  <p class="desc">{{model.description | limitTo : 80}}</p>
 					                  <span class="state state-{{model.state}}">{{model.state}}</span>
 					                </div>
-					                <div class="icon">
-					                  <img src="rest/default/models/{{model.id.prettyFormat}}/images" />
+					                <div class="icon" ng-if="model.hasImage">
+					                  <img ng-src="rest/default/models/{{model.id.prettyFormat}}/images" />
 					                </div>
 					                <div class="model-box-footer">
 					                  <small class="type">IM</small>
@@ -133,15 +133,6 @@
               				</div>
 						</div>
 					</div>
-					<!--div class="row text-center">
-						<ul class="pagination">
-						  <li><a href="#">First</a></li>
-						  <li><a href="#"><</a></li>
-						  <li><a href="#">1</a></li>
-						  <li><a href="#">></a></li>
-						  <li><a href="#">Last</a></li>
-						</ul>
-					</div-->
 				</div>
 			</div>
 		</div>
