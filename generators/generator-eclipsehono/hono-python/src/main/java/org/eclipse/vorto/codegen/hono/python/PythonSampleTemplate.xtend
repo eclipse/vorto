@@ -58,8 +58,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 			    global next_call
 			
 			    if rc != 0:
-			    print("Connection to MQTT broker failed: " + str(rc))
-			    return
+			        print("Connection to MQTT broker failed: " + str(rc))
+			        return
 			
 			    # Subscribing in on_connect() means that if we lose the connection and
 			    # reconnect then subscriptions will be renewed.
@@ -89,8 +89,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 				    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_topic, deviceId)
 				    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
 				    client.publish(publishTopic, payload)
-				    
 			«ENDFOR»
+			
 			
 			# The function that will be executed periodically once the connection to the MQTT broker was established
 			def periodicAction():

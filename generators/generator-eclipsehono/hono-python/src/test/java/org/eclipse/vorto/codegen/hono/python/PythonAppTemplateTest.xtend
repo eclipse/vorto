@@ -34,8 +34,7 @@ class PythonAppTemplateTest {
 		im.withFunctionBlock(fbm,"temperature");	
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate);
+		Assert.assertEquals(getExpectedTemplate,generated);
 	}
 	
 	def String getExpectedTemplate() {
@@ -93,7 +92,8 @@ class PythonAppTemplateTest {
 		    payload = ser.serialize_functionblock("temperature", infomodel.temperature, ditto_topic, deviceId)
 		    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
 		    client.publish(publishTopic, payload)
-		    
+		
+		
 		# The function that will be executed periodically once the connection to the MQTT broker was established
 		def periodicAction():
 		    global next_call
@@ -176,7 +176,7 @@ class PythonAppTemplateTest {
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate2);
+		Assert.assertEquals(getExpectedTemplate2,generated);
 	}
 	
 	def String getExpectedTemplate2() {
@@ -204,8 +204,8 @@ class PythonAppTemplateTest {
 		    global next_call
 		
 		    if rc != 0:
-		    print("Connection to MQTT broker failed: " + str(rc))
-		    return
+		        print("Connection to MQTT broker failed: " + str(rc))
+		        return
 		
 		    # Subscribing in on_connect() means that if we lose the connection and
 		    # reconnect then subscriptions will be renewed.
@@ -234,7 +234,7 @@ class PythonAppTemplateTest {
 		    payload = ser.serialize_functionblock("temperature", infomodel.temperature, ditto_topic, deviceId)
 		    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
 		    client.publish(publishTopic, payload)
-		    
+		
 		
 		# The function that will be executed periodically once the connection to the MQTT broker was established
 		def periodicAction():
