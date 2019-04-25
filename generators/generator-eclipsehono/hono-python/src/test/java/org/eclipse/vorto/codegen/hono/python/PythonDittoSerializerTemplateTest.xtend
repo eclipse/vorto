@@ -48,11 +48,11 @@ class PythonDittoSerializerTemplateTest {
 		    def serialize_functionblock(self, name, object, ditto_topic, hono_clientId):
 		        self.payload += "{\"topic\": \"" + ditto_topic + "/things/twin/commands/modify\","
 		        self.payload += "\"headers\": {\"response-required\": false},"
-		        self.payload += "\"path\": \"/features/"+name+"\",\"value\" : { \"properties\":{\"status\" : {"
+		        self.payload += "\"path\": \"/features/"+name+"/properties\",\"value\" : {\"status\" : {"
 		        object.serializeStatus(self)
 		        self.payload += "}, \"configuration\" : {"
 		        object.serializeConfiguration(self)
-		        self.payload += "} } } }"
+		        self.payload += "} } }"
 		        returnPayload = self.payload
 		        # RESET
 		        self.payload = ""

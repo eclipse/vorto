@@ -64,7 +64,7 @@ class FbSourceTemplateTest {
 		String Temperature::serialize(String ditto_topic, String hono_deviceId, String fbName) {
 		    String result = "{\"topic\":\""+ ditto_topic +"/things/twin/commands/modify\",";
 		    result += "\"headers\":{\"response-required\": false},";
-		    result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": {";
+		    result += "\"path\":\"/features/" + fbName + "/properties\",\"value\": {";
 		    //Status Properties
 		    result += "\"status\": {";
 		    result += "\"value\" : " + String(value) + ",";
