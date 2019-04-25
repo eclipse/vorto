@@ -154,8 +154,8 @@ For more information on *Model States* click [here](../../repository/docs/model_
 ## What's next?
 
 - [Generate Arduino sketch](connect_esp8266.md) that connects an ESP8266 based device to the Bosch IoT Suite via MQTT
-- [Generate Python Code](mqtt-python.md) that connects the device to the Bosch IoT Suite via MQTT.
-- [Generate Java Code](mqtt-python.md) that connects the device to the Bosch IoT Suite via MQTT.
+- [Generate Python Code](integrate_python.md) that connects the device to the Bosch IoT Suite via MQTT.
+- [Generate Java Code](connect_javadevice.md) that connects the device to the Bosch IoT Suite via MQTT.
 
 
 

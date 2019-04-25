@@ -15,7 +15,7 @@ With the following tutorials, you are going to learn to connect devices that are
 
 - [Connect a Java - based device](tutorials/connect_javadevice.md)
 - [Connect an ESP8266 - based device](tutorials/connect_esp8266.md)
-- [Connect a GrovePi](tutorials/mqtt-python.md)
+- [Integrate a RaspberryPi with Python](tutorials/integrate_python.md)
 - [Map simple arbitrary device payload](../mapping-engine/Readme.md) to Vorto Function Blocks
 - [Map binary camera payload](https://github.com/eclipse/vorto-examples/blob/master/vorto-connector/Readme.md) to Vorto Function Blocks
 
