@@ -31,7 +31,7 @@ DataTypeMappingModel:
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingModel:
 	{InfoModelMappingModel}
-	'vortolang' lang=VortoLangVersion
+	('vortolang' lang=VortoLangVersion)?
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ('displayname' displayname=STRING)?      
@@ -67,7 +67,7 @@ InfoModelAttributeSource:
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMappingModel:
 	{FunctionBlockMappingModel}
-	'vortolang' lang=VortoLangVersion
+	('vortolang' lang=VortoLangVersion)?
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ('displayname' displayname=STRING)?      
@@ -131,7 +131,7 @@ EventSource:
 /*----------------------Start Entity Mapping Definition---------------------------*/
 EntityMappingModel:
 	{EntityMappingModel}
-	'vortolang' lang=VortoLangVersion
+	('vortolang' lang=VortoLangVersion)?
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ('displayname' displayname=STRING)?      
@@ -167,7 +167,7 @@ EntityAttributeSource:
 /*----------------------Start Enum Mapping Definition---------------------------*/
 EnumMappingModel:
 	{EnumMappingModel}
-	'vortolang' lang=VortoLangVersion
+	('vortolang' lang=VortoLangVersion)?
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ('displayname' displayname=STRING)?      
