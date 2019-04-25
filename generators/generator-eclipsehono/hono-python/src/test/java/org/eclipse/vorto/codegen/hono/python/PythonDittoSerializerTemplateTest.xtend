@@ -38,6 +38,7 @@ class PythonDittoSerializerTemplateTest {
 	def String getExpectedTemplate() {
 		'''
 		import numbers
+		import json
 		
 		class DittoSerializer(object):
 		    
@@ -66,6 +67,8 @@ class PythonDittoSerializerTemplateTest {
 		            self.first_prop = False
 		        if isinstance(value, numbers.Number):
 		            self.payload += "\"" + name + "\": " + str(value)
+		        elif isinstance(value,dict):
+		        	self.payload += "\"" + name + "\": " + json.dumps(value)
 		        else:
 		            self.payload += "\"" + name + "\": \"" + str(value) + "\""
 		'''
