@@ -16,6 +16,7 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
+> Make sure to have a `namespace` set in the dashboard of Asset communication!
 
 * Created a [Bosch IoT Suite OAuth2 Client](https://accounts.bosch-iot-suite.com/oauth2-clients/)
 > Make sure to have both scopes checked on creation! (Hub and Things)
@@ -80,5 +81,8 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 ## What's next?
 
-- [Generate Arduino sketch](connect_esp8266.md) that connects an ESP8266 based device to the Bosch IoT Suite.
 - [Visualize your data with the Vorto Dashboard](./create_webapp_dashboard.md)
+- Integrate your device using:
+  - [Python](./integrate_python.md)
+  - [Arduino](./connect_esp8266.md)
+  - [Java](./connect_javadevice.md)

@@ -40,6 +40,7 @@ Once set up, the dashboard displays the latest state of your things in a visuall
 
 ![oauth client config](../images/tutorials/vorto_dashboard/oauth_client_details.png)
 
+> **Note:** Make sure to use the **Things** scope in your `config.json` file! 
 
 <br />
 
@@ -67,6 +68,6 @@ If your device isn't integrated and sending data already, check out these tutori
 ## What's next?
 
 - Integrate your device using:
-  - [Python](./mqtt-python.md)
+  - [Python](./integrate_python.md)
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)
