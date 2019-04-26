@@ -6,14 +6,14 @@
 
 - Enum Datatypes are not properly returned in Java Repository Client
 - Eclipse Hono Generator for Arduino creates invalid json for referenced entities
+- Bosch IoT Suite Generator creates invalid Eclipse Ditto protocol payload
 - Measurement Unit in DSL not working
 - OMA/LwM2M to Vorto Models Resolver is broken
 
 **Minor Improvements**
 
-- Repository Search
-- Bosch IoT Suite Generator for Web UI and Device Provisioning
-- Vorto lang DSL attribute, indicating the version of the meta model
+- Repository Search UX
+- Bosch IoT Suite Generator for Web Dashboard and Device Provisioning Scripts
 
 ## 0.10 
 

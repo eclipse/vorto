@@ -67,7 +67,7 @@ If your device isn't integrated and sending data already, check out these tutori
 
 ## What's next?
 
-- Integrate your device using:
+- Integrate your device with the Bosch IoT Suite using:
   - [Python](./integrate_python.md)
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)
