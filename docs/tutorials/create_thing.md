@@ -11,7 +11,7 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 * [Postman is installed](https://www.getpostman.com/downloads/)
 
-* Created a Vorto Information Model for the device (refer to [Describing a device](describe_device-in-5min)).
+* Created a Vorto Information Model for the device (refer to [Describing a device](./describe_device-in-5min.md)).
 
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
