@@ -49,16 +49,16 @@ script:
   # copying the repository artifact to the aws-upload
   - export ARTIFACT_NAME=infomodelrepository
   - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-  - cp ./repository/repository-server/target/infomodelrepository.jar ~/aws_upload/tmp
-  - cd ~/aws_upload/tmp
+  - cp ./repository/repository-server/target/infomodelrepository.jar ~/aws-upload/tmp
+  - cd ~/aws-upload/tmp
   - jar -xvf infomodelrepository.jar
   - rm -f infomodelrepository.jar
   - cp ~/wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
   - pwd
   - jar -cvf infomodelrepository-dbclient.jar .
   - ls -al && pwd
-  - cp ~/aws_upload/tmp/infomodelrepository-dbclient.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
-  - rm -rf ~/aws_upload/tmp
+  - cp ~/aws-upload/tmp/infomodelrepository-dbclient.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
+  - rm -rf ~/aws-upload/tmp
 
   # copying the official generators to the aws-upload folder
   - export ARTIFACT_NAME=generator-runner-exec
