@@ -96,25 +96,22 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 			def periodicAction():
 			    global next_call
 			
-			    ### BEGIN SAMPLE CODE
+			    ### BEGIN READING SENSOR DATA
+
+				«FOR fb : model.properties»
+					«IF fb.type.functionblock.status !== null»
+						«FOR statusProp : fb.type.functionblock.status.properties»
+							«output(statusProp,"infomodel."+fb.name)»
+						«ENDFOR»
+					«ENDIF»
+					«IF fb.type.functionblock.configuration !== null»
+						«FOR configurationProp : fb.type.functionblock.configuration.properties»
+							«output(configurationProp,"infomodel."+fb.name)»
+						«ENDFOR»
+					«ENDIF»
+				«ENDFOR»
 			
-			    # Setting properties of function blocks
-			    «FOR fb : model.properties»
-			    	«IF fb.type.functionblock.status !== null»
-			    		«FOR status : fb.type.functionblock.status.properties»
-			    			«IF status.type instanceof PrimitivePropertyType»
-			    				«var primitiveType = status.type as PrimitivePropertyType»
-			    				«IF primitiveType.type == PrimitiveType.STRING»
-			    					infomodel.«fb.name».«status.name» = ""
-			    				«ELSE»
-			    					infomodel.«fb.name».«status.name» += 1
-			    				«ENDIF»
-			    			«ENDIF»
-			    		«ENDFOR»
-			    	«ENDIF»
-			    «ENDFOR»
-			
-			    ### END SAMPLE CODE
+			    ### END READING SENSOR DATA
 			
 			    # Publish payload
 			    «FOR fb : model.properties»
@@ -125,21 +122,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 			    next_call = next_call + timePeriod;
 			    threading.Timer(next_call - time.time(), periodicAction).start()
 			
-			
-			# Initialization of Information Model 
+			# Initialization of Information Model
 			infomodel = «model.name».«model.name»()
-			«FOR fb : model.properties»
-				«IF fb.type.functionblock.status !== null»
-					«FOR statusProp : fb.type.functionblock.status.properties»
-						«output(statusProp,"infomodel."+fb.name)»
-					«ENDFOR»
-				«ENDIF»
-				«IF fb.type.functionblock.configuration !== null»
-					«FOR configurationProp : fb.type.functionblock.configuration.properties»
-						«output(configurationProp,"infomodel."+fb.name)»
-					«ENDFOR»
-				«ENDIF»
-			«ENDFOR»
 			
 			# Create a serializer for the MQTT payload from the Information Model
 			ser = DittoSerializer.DittoSerializer()

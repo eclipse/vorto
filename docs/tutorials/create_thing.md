@@ -11,7 +11,7 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 * [Postman is installed](https://www.getpostman.com/downloads/)
 
-* Created a Vorto Information Model for the device (refer to [Describing a device](describe_tisensor.md)).
+* Created a Vorto Information Model for the device (refer to [Describing a device](./describe_device-in-5min.md)).
 
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
@@ -82,7 +82,7 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 ## What's next?
 
 - [Visualize your data with the Vorto Dashboard](./create_webapp_dashboard.md)
-- Integrate your device using:
+- Integrate your device with the Bosch IoT Suite using:
   - [Python](./integrate_python.md)
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)

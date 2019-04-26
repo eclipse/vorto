@@ -98,13 +98,12 @@ class PythonAppTemplateTest {
 		def periodicAction():
 		    global next_call
 		
-		    ### BEGIN SAMPLE CODE
+		    ### BEGIN READING SENSOR DATA
 		
-		    # Setting properties of function blocks
-		    infomodel.temperature.value += 1
-		    infomodel.temperature.unit = ""
+			infomodel.temperature.value = 0
+			infomodel.temperature.unit = ""
 		
-		    ### END SAMPLE CODE
+		    ### END READING SENSOR DATA
 		
 		    # Publish payload
 		    publishTemperature()
@@ -113,11 +112,8 @@ class PythonAppTemplateTest {
 		    next_call = next_call + timePeriod;
 		    threading.Timer(next_call - time.time(), periodicAction).start()
 		
-		
-		# Initialization of Information Model 
+		# Initialization of Information Model
 		infomodel = MyDevice.MyDevice()
-		infomodel.temperature.value = 0
-		infomodel.temperature.unit = ""
 		
 		# Create a serializer for the MQTT payload from the Information Model
 		ser = DittoSerializer.DittoSerializer()
@@ -240,12 +236,15 @@ class PythonAppTemplateTest {
 		def periodicAction():
 		    global next_call
 		
-		    ### BEGIN SAMPLE CODE
+		    ### BEGIN READING SENSOR DATA
 		
-		    # Setting properties of function blocks
-		    infomodel.temperature.otherProp = ""
+			infomodel.temperature.value = {
+				"current" : 0,
+				"unit" : 0
+			}
+			infomodel.temperature.otherProp = ""
 		
-		    ### END SAMPLE CODE
+		    ### END READING SENSOR DATA
 		
 		    # Publish payload
 		    publishTemperature()
@@ -254,14 +253,8 @@ class PythonAppTemplateTest {
 		    next_call = next_call + timePeriod;
 		    threading.Timer(next_call - time.time(), periodicAction).start()
 		
-		
-		# Initialization of Information Model 
+		# Initialization of Information Model
 		infomodel = MyDevice.MyDevice()
-		infomodel.temperature.value = {
-			"current" : 0,
-			"unit" : 0
-		}
-		infomodel.temperature.otherProp = ""
 		
 		# Create a serializer for the MQTT payload from the Information Model
 		ser = DittoSerializer.DittoSerializer()
