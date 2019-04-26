@@ -49,7 +49,7 @@ Your model should look like this:
 
 ## What's next?
 
-- [Generate Python Code](integrate_python.md) that integrates the device with the Bosch IoT Suite.
+- [Generate Python Code](mqtt-python.md) that integrates the device with the Bosch IoT Suite.
 - [Visualize device data](create_webapp_dashboard.md) in a Node.js web application.
 - [Describe a TI SensorTag with Vorto](describe_tisensor.md)
 

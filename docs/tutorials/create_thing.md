@@ -83,6 +83,6 @@ As an example, we will use our [RaspberryPiTutorial Information Model](https://v
 
 - [Visualize your data with the Vorto Dashboard](./create_webapp_dashboard.md)
 - Integrate your device with the Bosch IoT Suite using:
-  - [Python](./integrate_python.md)
+  - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)
