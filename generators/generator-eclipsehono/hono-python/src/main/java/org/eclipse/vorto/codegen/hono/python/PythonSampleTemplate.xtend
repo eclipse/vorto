@@ -97,19 +97,19 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 			    global next_call
 			
 			    ### BEGIN READING SENSOR DATA
-
-				«FOR fb : model.properties»
-					«IF fb.type.functionblock.status !== null»
-						«FOR statusProp : fb.type.functionblock.status.properties»
-							«output(statusProp,"infomodel."+fb.name)»
-						«ENDFOR»
-					«ENDIF»
-					«IF fb.type.functionblock.configuration !== null»
-						«FOR configurationProp : fb.type.functionblock.configuration.properties»
-							«output(configurationProp,"infomodel."+fb.name)»
-						«ENDFOR»
-					«ENDIF»
-				«ENDFOR»
+			    
+			    «FOR fb : model.properties»
+			    	«IF fb.type.functionblock.status !== null»
+			    		«FOR statusProp : fb.type.functionblock.status.properties»
+			    			«output(statusProp,"infomodel."+fb.name)»
+			    		«ENDFOR»
+			    	«ENDIF»
+			    	«IF fb.type.functionblock.configuration !== null»
+			    		«FOR configurationProp : fb.type.functionblock.configuration.properties»
+			    			«output(configurationProp,"infomodel."+fb.name)»
+			    		«ENDFOR»
+			    	«ENDIF»
+			    «ENDFOR»
 			
 			    ### END READING SENSOR DATA
 			
@@ -119,7 +119,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 			    «ENDFOR»
 			
 			    # Schedule next call
-			    next_call = next_call + timePeriod;
+			    next_call = next_call + timePeriod
 			    threading.Timer(next_call - time.time(), periodicAction).start()
 			
 			# Initialization of Information Model

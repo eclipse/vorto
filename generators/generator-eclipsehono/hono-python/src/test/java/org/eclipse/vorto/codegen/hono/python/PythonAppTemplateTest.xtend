@@ -99,9 +99,9 @@ class PythonAppTemplateTest {
 		    global next_call
 		
 		    ### BEGIN READING SENSOR DATA
-		
-			infomodel.temperature.value = 0
-			infomodel.temperature.unit = ""
+		    
+		    infomodel.temperature.value = 0
+		    infomodel.temperature.unit = ""
 		
 		    ### END READING SENSOR DATA
 		
@@ -109,7 +109,7 @@ class PythonAppTemplateTest {
 		    publishTemperature()
 		
 		    # Schedule next call
-		    next_call = next_call + timePeriod;
+		    next_call = next_call + timePeriod
 		    threading.Timer(next_call - time.time(), periodicAction).start()
 		
 		# Initialization of Information Model
@@ -237,12 +237,12 @@ class PythonAppTemplateTest {
 		    global next_call
 		
 		    ### BEGIN READING SENSOR DATA
-		
-			infomodel.temperature.value = {
-				"current" : 0,
-				"unit" : 0
-			}
-			infomodel.temperature.otherProp = ""
+		    
+		    infomodel.temperature.value = {
+		    	"current" : 0,
+		    	"unit" : 0
+		    }
+		    infomodel.temperature.otherProp = ""
 		
 		    ### END READING SENSOR DATA
 		
@@ -250,7 +250,7 @@ class PythonAppTemplateTest {
 		    publishTemperature()
 		
 		    # Schedule next call
-		    next_call = next_call + timePeriod;
+		    next_call = next_call + timePeriod
 		    threading.Timer(next_call - time.time(), periodicAction).start()
 		
 		# Initialization of Information Model
