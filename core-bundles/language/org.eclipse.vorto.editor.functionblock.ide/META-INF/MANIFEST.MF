@@ -2,7 +2,7 @@ FManifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.vorto.editor.functionblock.ide
 Bundle-Vendor: My Company
-Bundle-Version: 0.11.0.qualifier
+Bundle-Version: 0.10.1
 Bundle-SymbolicName: org.eclipse.vorto.editor.functionblock.ide;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.vorto.editor.functionblock,
