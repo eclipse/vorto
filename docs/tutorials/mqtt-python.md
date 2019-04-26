@@ -93,9 +93,9 @@ There is no need to edit any other section of the python file.
 
 Code sections which can be customized for your needs are marked with
 ```python
-### BEGIN SAMPLE CODE
+### BEGIN READING SENSOR DATA
 ...
-### END SAMPLE CODE
+### END READING SENSOR DATA
 ```
 
 In order to read the cpu temperature, we need to add this code block inside the `periodicAction` function between the `BEGIN` and `END` comments.
