@@ -33,9 +33,12 @@ script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
   - if [ "$TRAVIS_PULL_REQUEST" = "false" -a \( "$TRAVIS_BRANCH" = "development" -o "$TRAVIS_BRANCH" = "master" \) ] ; then
-    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-    else mvn --fail-fast -q clean package -P checkstyle;
+    # mvn --fail-fast -q clean package -DskipTests -P checkstyle;
+    # mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+    mvn --fail-fast -q clean package
+    else 
+    mvn --fail-fast -q clean package;
+    # mvn --fail-fast -q clean package -P checkstyle;
     fi
 
   # copying the mariadb java client
@@ -57,14 +60,14 @@ script:
   - pwd
   - jar -cvf infomodelrepository-dbclient.jar .
   - cd ~
-  - echo $pwd
   - cp ~/aws-upload/tmp/infomodelrepository-dbclient.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
   - rm -rf ~/aws-upload/tmp
+  - ls -l
 
   # copying the official generators to the aws-upload folder
-  - export ARTIFACT_NAME=generator-runner-exec
-  - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-  - cp ~/generators/generator-runner/target/generator-runner-exec.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
+  - export GEN_ARTIFACT_NAME=generator-runner-exec
+  - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${GEN_ARTIFACT_NAME}"
+  - cp ~/generators/generator-runner/target/generator-runner-exec.jar ~/aws-upload/${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
   # list the contents of aws-upload folder
   - ls -al ~/aws-upload
 
