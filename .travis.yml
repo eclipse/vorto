@@ -33,12 +33,10 @@ script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
   - if [ "$TRAVIS_PULL_REQUEST" = "false" -a \( "$TRAVIS_BRANCH" = "development" -o "$TRAVIS_BRANCH" = "master" \) ] ; then
-    # mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-    # mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-    mvn --fail-fast -q clean package
-    else 
-    mvn --fail-fast -q clean package;
-    # mvn --fail-fast -q clean package -P checkstyle;
+    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
+    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+    else
+    mvn --fail-fast -q clean package ;
     fi
 
   # copying the mariadb java client
