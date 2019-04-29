@@ -204,11 +204,13 @@ client.enable_logger(logger)
 - the [Vorto Dashboard](create_webapp_dashboard.md) that simply displays your data in different UI widgets.
 - or the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) which doesn't require anything to be installed and allows a quick insight into whether your data is updating.
 
-Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite!   
-Now you can go in and connect and integrate the GPS and battery.
+##### Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite!    Now you can go in and connect and integrate the GPS and battery.
 
 <br />
 
 ## What's next ?
 
  - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+- Integrate your device with the Bosch IoT Suite using:
+  - [Arduino](./connect_esp8266.md)
+  - [Java](./connect_javadevice.md)
