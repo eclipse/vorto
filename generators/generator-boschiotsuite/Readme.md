@@ -8,7 +8,7 @@ The following tutorials help you to get started with the Generator:
 
 - [Connect a Java - based device](../../docs/tutorials/connect_javadevice.md)
 - [Connect an ESP8266 - based device](../../docs/tutorials/connect_esp8266.md)
-- [Connect a GrovePi](../../docs/tutorials/mqtt-python.md)
+- [Connect a RaspberryPi using Python](../../docs/tutorials/mqtt-python.md)
 
 In addition, you download a simple NodeJS/React - based web application, that renders device data from Bosch IoT Suite complying to [org.eclipse.vorto](https://vorto.eclipse.org/#/?s=org.eclipse.vorto) Function Blocks.
 

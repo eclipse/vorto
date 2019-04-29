@@ -82,7 +82,7 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 			
 			Map<String, Object> wrapper = new HashMap<String, Object>();
 			wrapper.put("topic", dittoTopic + "/things/twin/commands/modify");
-		    wrapper.put("path", "/features/"+featureName);
+		    wrapper.put("path", "/features/"+featureName+"/properties");
 		    wrapper.put("value", createValue(StatusProperties,ConfigurationProperties));
 			wrapper.put("headers", headers);
 	
@@ -90,13 +90,11 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 		}
 		
 		private <T> Map<String, Object> createValue(T StatusProperties, T ConfigurationProperties) {
-			Map<String, Object> value = new HashMap<String, Object>();
 			Map<String, Object> properties = new HashMap<String, Object>();
 			
 			properties.put("status",StatusProperties);
 			properties.put("configuration",ConfigurationProperties);
-			value.put("properties", properties);
-			return value;
+			return properties;
 		}
 	
 		private HonoMqttClient getConnectedHonoClient(String resourceId) {

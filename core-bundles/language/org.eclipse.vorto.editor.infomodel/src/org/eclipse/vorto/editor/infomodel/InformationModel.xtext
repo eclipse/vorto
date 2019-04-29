@@ -21,7 +21,7 @@ import "http://www.eclipse.org/vorto/metamodel/Model" as model
 
 InformationModel:
 	{InformationModel}
-	'vortolang' lang=VortoLangVersion
+	('vortolang' lang=VortoLangVersion)?
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     'displayname' displayname=STRING      

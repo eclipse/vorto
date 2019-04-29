@@ -5,10 +5,6 @@
 
 [Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
 
-The Bosch IoT Suite uses Vorto to define their entire device semantic abstraction layer and thus allows IoT Solution Developers to easily build device - agnostic IoT solutions. 
-
-Check out the [Vorto Console](https://vorto.eclipse.org/console) that demonstrates the easy integration of devices with the Bosch IoT Suite.
-
 <img src="docs/images/vorto_cover.png"/>
 
 
@@ -36,14 +32,6 @@ The Repository Plugin SDK helps you build and deploy various extensions to the V
 		<td><a href="repository/repository-importer/Readme.md">Read more</a></td>
 	</tr>
 </table>
-
-## Documentation
-
-- [Vorto DSL](core-bundles/docs/quickhelp_dsl.md)
-- [Code Generators](generators/Readme.md)
-- [Payload Mapping Engine](mapping-engine/Readme.md)
-- [Tutorials](docs/gettingstarted.md)
-- [Vorto DSL Utilities](utilities/Readme.md)
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

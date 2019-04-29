@@ -35,7 +35,7 @@ Type:
 ;
 
 Entity:
-   'vortolang' lang=VortoLangVersion	
+   ('vortolang' lang=VortoLangVersion)?
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    ('displayname' displayname=STRING)?      
@@ -48,7 +48,7 @@ Entity:
 ;
 
 Enum:
-   'vortolang' lang=VortoLangVersion
+   ('vortolang' lang=VortoLangVersion)?
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    ('displayname' displayname=STRING)?      
