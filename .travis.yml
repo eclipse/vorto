@@ -64,7 +64,7 @@ script:
   # copying the official generators to the aws-upload folder
   - export ARTIFACT_NAME=generator-runner-exec
   - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-  - cp ./generators/generator-runner/target/generator-runner-exec.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
+  - cp ~/generators/generator-runner/target/generator-runner-exec.jar ~/aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
   # list the contents of aws-upload folder
   - ls -al ~/aws-upload
 
