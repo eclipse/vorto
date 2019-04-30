@@ -33,3 +33,15 @@ rm -rf ./aws-upload/tmp/*
 # list the contents of aws-upload folder
 ls -l ./aws-upload
 
+# uploading to s3 bucket
+echo "uploading to s3 bucket"
+aws s3 cp ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
+
+# versioning the artifact in EBS
+echo "versioning the artifact at EBS"
+aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+
+echo "update EBS environment is not done yet"
+
+echo "finished running repackage-repo.sh"
+

@@ -77,30 +77,30 @@ deploy:
     skip_cleanup: true
     on:
       branch: master
-  - provider: script
-    script:
-      - aws s3 cp ~/aws-upload/infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
-    skip_cleanup: true
-    on:
-      branch:
-        - development
-        - feature/issue-1436_integrate_auto_deployment_using_travisci
-  - provider: script
-    script:
-      - aws s3 cp ~/aws-upload/generator-runner-exec_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
-    skip_cleanup: true
-    on:
-      branch:
-        - development
-        - feature/issue-1436_integrate_auto_deployment_using_travisci
-  - provider: script
-    script:
-      - aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar"
-    skip_cleanup: true
-    on:
-      branch:
-        - development
-        - feature/issue-1436_integrate_auto_deployment_using_travisci
+#  - provider: script
+#    script:
+#      - aws s3 cp ~/aws-upload/infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
+#    skip_cleanup: true
+#    on:
+#      branch:
+#        - development
+#        - feature/issue-1436_integrate_auto_deployment_using_travisci
+#  - provider: script
+#    script:
+#      - aws s3 cp ~/aws-upload/generator-runner-exec_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
+#    skip_cleanup: true
+#    on:
+#      branch:
+#        - development
+#        - feature/issue-1436_integrate_auto_deployment_using_travisci
+#  - provider: script
+#    script:
+#      - aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar"
+#    skip_cleanup: true
+#    on:
+#      branch:
+#        - development
+#        - feature/issue-1436_integrate_auto_deployment_using_travisci
   - provider: script
     script:
       - aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="generator-runner-exec_${ELASTIC_BEANSTALK_LABEL}.jar"
@@ -109,11 +109,11 @@ deploy:
       branch:
         - development
         - feature/issue-1436_integrate_auto_deployment_using_travisci
-  - provider: script
-    script:
-      - aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
-    skip_cleanup: true
-    on:
-      branch:
-        - development
-        - feature/issue-1436_integrate_auto_deployment_using_travisci
+#  - provider: script
+#    script:
+#      - aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
+#    skip_cleanup: true
+#    on:
+#      branch:
+#        - development
+#        - feature/issue-1436_integrate_auto_deployment_using_travisci
