@@ -23,7 +23,7 @@ cd aws-upload/tmp
 jar -xvf infomodelrepository.jar
 rm -f infomodelrepository.jar
 cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
-jar -cvf infomodelrepository-dbclient.jar .
+jar -cvmf META-INF/MANIFEST.MF infomodelrepository-dbclient.jar .
 cd ../..
 echo "pwd : $(pwd)"
 ls -l

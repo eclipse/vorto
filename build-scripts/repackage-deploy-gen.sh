@@ -11,7 +11,7 @@ cd aws-upload/tmp
 jar -xvf generator-runner-exec.jar
 rm -f generator-runner-exec.jar
 aws s3 cp s3://$VORTO_S3_BUCKET/img/official ./BOOT-INF/classes/img --recursive
-jar -cvf generator-runner-exec-withimg.jar .
+jar -cvmf META-INF/MANIFEST.MF generator-runner-exec-withimg.jar .
 
 echo "copying the jar with images to aws-upload folder"
 cp generator-runner-exec-withimg.jar ../${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
