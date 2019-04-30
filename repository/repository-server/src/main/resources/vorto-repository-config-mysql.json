@@ -8,23 +8,29 @@
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
-        }
+        },
+        "providers" : [
+            {
+                "name" : "Spring Security",
+                "classname" : "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
+            }
+        ]
     },
     "storage" : {
-      "cacheConfiguration" : "infinispan-configuration.xml",
+      "cacheConfiguration" : "infinispan-configuration-mysql.xml",
       "cacheName" : "contentRepository",
       "binaryStorage" : {
           "type"  : "database",
           "driverClass" : "org.mariadb.jdbc.Driver",
-          "url" : "jdbc:mysql://db:3306/vorto",
-          "username" : "root",
-          "password" : "example"
+          "url" : "jdbc:mysql://vorto-dev-db-v2-instance.cenreumiygyi.eu-central-1.rds.amazonaws.com:3306/vorto_dev?autoReconnect=true",
+          "username" : "vorto_db",
+          "password" : "VortoIsEverything"
       }
   },
     "sequencing" : {
         "removeDerivedContentWithOriginal" : false,
         "sequencers" : {
-            "XML Sequencer" : {
+            "Vorto Sequencer" : {
                 "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",
                 "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
             }
