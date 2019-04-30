@@ -29,13 +29,7 @@ echo "pwd : $(pwd)"
 ls -l
 cp ./aws-upload/tmp/infomodelrepository-dbclient.jar ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
 rm -rf ./aws-upload/tmp/*
-ls -l ./aws-upload
-
-exit 1
-
-# copying the official generators to the aws-upload folder
-cp ~/generators/generator-runner/target/generator-runner-exec.jar ~/aws-upload/${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
 
 # list the contents of aws-upload folder
-ls -al ~/aws-upload
+ls -l ./aws-upload
 
