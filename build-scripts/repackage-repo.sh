@@ -3,6 +3,9 @@
 # this script is to repackage repository jar with neccessory jars
 #
 # copying the mariadb java client
+pwd
+exit 1
+
 mkdir ~/wgetDownload
 wget -P ~/wgetDownload/ https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-2.3.0.jar
 
