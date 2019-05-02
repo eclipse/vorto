@@ -48,7 +48,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
@@ -79,8 +78,6 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
   private static final String VORTO_NODE_TYPE = "vorto:type";
 
-  private IUserRepository userRepository;
-
   private IModelRetrievalService modelRetrievalService;
 
   private ModelSearchUtil modelSearchUtil;
@@ -89,10 +86,9 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
   private ModelParserFactory modelParserFactory;
 
-  public ModelRepository(IUserRepository userRepository, ModelSearchUtil modelSearchUtil,
+  public ModelRepository(ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator, ModelParserFactory modelParserFactory,
       IModelRetrievalService modelRetrievalService) {
-    this.userRepository = userRepository;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -138,6 +134,9 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     resource.setCreationDate(fileNode.getProperty("jcr:created").getDate().getTime());
     if (fileNode.hasProperty("jcr:lastModified")) {
       resource.setModificationDate(fileNode.getProperty("jcr:lastModified").getDate().getTime());
+    }
+    if (fileNode.hasProperty("jcr:lastModifiedBy")) {
+      resource.setLastModifiedBy(fileNode.getProperty("jcr:lastModifiedBy").getString());
     }
     if (fileNode.hasProperty("vorto:state")) {
       resource.setState(fileNode.getProperty("vorto:state").getString());
@@ -455,7 +454,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
       try {
         ModelInfo modelResource = this.getById(modelId);
         if (modelResource == null) {
-          throw new ModelNotFoundException("Cannot find " + modelId.getPrettyFormat());
+          throw new ModelNotFoundException("Cannot find '" + modelId.getPrettyFormat() + "' in '" + session.getWorkspace().getName() + "'");
         }
 
         if (modelResource.getReferencedBy() != null && !modelResource.getReferencedBy().isEmpty()) {
@@ -516,14 +515,6 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
   public void setModelSearchUtil(ModelSearchUtil modelSearchUtil) {
     this.modelSearchUtil = modelSearchUtil;
-  }
-
-  public IUserRepository getUserRepository() {
-    return userRepository;
-  }
-
-  public void setUserRepository(IUserRepository userRepository) {
-    this.userRepository = userRepository;
   }
 
   @Override

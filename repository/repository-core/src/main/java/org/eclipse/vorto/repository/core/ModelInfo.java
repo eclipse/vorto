@@ -29,6 +29,7 @@ public class ModelInfo extends AbstractModel {
   protected String author;
   protected Date creationDate;
   protected Date modificationDate;
+  protected String lastModifiedBy;
   protected boolean hasImage = false;
   protected String state;
   protected Boolean imported = false;
@@ -101,6 +102,14 @@ public class ModelInfo extends AbstractModel {
 
   public void setState(String state) {
     this.state = state;
+  }
+  
+  public String getLastModifiedBy() {
+    return lastModifiedBy;
+  }
+
+  public void setLastModifiedBy(String lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
   }
 
   @Override

@@ -119,6 +119,7 @@ public class ModelDtoFactory {
     dto.setState(resource.getState());
     dto.setFileName(resource.getFileName());
     dto.setModificationDate(resource.getModificationDate());
+    dto.setLastModifiedBy(resource.getLastModifiedBy());
     dto.setImported(resource.getImported());
     dto.setAuthor(resource.getAuthor());
   }
