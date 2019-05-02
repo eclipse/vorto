@@ -20,13 +20,17 @@ cd ../..
 echo "pwd $(pwd)"
 ls -l ./aws-upload
 
+# uploading to s3
 echo "uploading to s3 bucket"
 aws s3 cp ./aws-upload/${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
 
+# updating the application-version
 echo "versioning the artifact in EBS"
 aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
-echo "updating EBS is not done yet"
+# updating  environment
+echo "updating environment in EBS"
+aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
 
 echo "finished running repackage-deploy-gen.sh"
 
