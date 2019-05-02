@@ -135,9 +135,14 @@ public class DefaultUserAccountService
   }
   
   public boolean hasRole(String tenantId, Authentication authentication, String role) {
+    PreConditions.notNull(authentication, "authentication should not be null");
+    return hasRole(tenantId, authentication.getName(), role);
+  }
+  
+  public boolean hasRole(String tenantId, String username, String role) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(role, "role");
-    PreConditions.notNull(authentication, "authentication should not be null");
+    PreConditions.notNullOrEmpty(username, "username");
     
     if (!Role.exist(role)) {
       throw new IllegalArgumentException("role must be in Role enum");
@@ -146,10 +151,10 @@ public class DefaultUserAccountService
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     PreConditions.notNull(tenant, "Tenant with tenantId" + tenantId + " doesnt exists");
     
-    Optional<TenantUser> _user = tenant.getUser(authentication.getName());
-    if (_user.isPresent()) {
-      TenantUser user = _user.get();
-      return user.hasRole(Role.valueOf(role.replace(Role.rolePrefix, "")));
+    Optional<TenantUser> user = tenant.getUser(username);
+    if (user.isPresent()) {
+      TenantUser tenantUser = user.get();
+      return tenantUser.hasRole(Role.valueOf(role.replace(Role.rolePrefix, "")));
     }
     
     return false;
@@ -253,6 +258,11 @@ public class DefaultUserAccountService
   @Override
   public void saveUser(User user) {
     this.userRepository.save(user);
+  }
+  
+  @Override
+  public Collection<User> getSystemAdministrators() {
+    return userRepository.findUsersWithRole(Role.SYS_ADMIN);
   }
 
   public IUserRepository getUserRepository() {

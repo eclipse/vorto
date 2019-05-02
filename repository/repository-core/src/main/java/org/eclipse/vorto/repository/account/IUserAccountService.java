@@ -26,6 +26,12 @@ public interface IUserAccountService {
   
   /**
    * 
+   * @return users who are system administrators
+   */
+  Collection<User> getSystemAdministrators();
+  
+  /**
+   * 
    * @param tenantId the tenant from which to remove the user
    * @param userId the user to be removed
    * @return
@@ -47,10 +53,19 @@ public interface IUserAccountService {
    * @param tenantId the tenant to check 
    * @param userId the user id
    * @param role the role to check (e.g ROLE_TENANT_ADMIN, ROLE_USER,..)
-   * @param roles the roles to be given to the user
    * @return
    */
   boolean hasRole(String tenantId, Authentication authentication, String role);
+  
+  /**
+   * Returns if the particular user as the role in the Tenant
+   * 
+   * @param tenantId the tenant to check 
+   * @param username the userId of the user
+   * @param role the role to check (e.g ROLE_TENANT_ADMIN, ROLE_USER,..)
+   * @return
+   */
+  boolean hasRole(String tenantId, String username, String role);
   
   /**
    * Gets all tenant for this user
