@@ -26,4 +26,5 @@ public interface IUserContext {
 
   boolean isAnonymous();
 
+  boolean isSysAdmin();
 }
