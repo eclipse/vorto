@@ -53,15 +53,10 @@ deploy:
     script: bash build-scripts/repackage-deploy-repo.sh
     skip_cleanup: true
     on:
-      all_branches: true
+      branch: development
   - provider: script
     script: bash build-scripts/repackage-deploy-gen.sh
     skip_cleanup: true
     on:
-      all_branches: true
-  - provider: script
-    script: bash docker/docker_push
-    skip_cleanup: true
-    on:
-      branch: master
+      branch: development
 
