@@ -22,9 +22,9 @@
       "binaryStorage" : {
           "type"  : "database",
           "driverClass" : "org.mariadb.jdbc.Driver",
-          "url" : "jdbc:mysql://vorto-dev-db-v2-instance.cenreumiygyi.eu-central-1.rds.amazonaws.com:3306/vorto_dev?autoReconnect=true",
-          "username" : "vorto_db",
-          "password" : "VortoIsEverything"
+          "url" : "jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true",
+          "username" : "${db_username}",
+          "password" : "${db_password}"
       }
   },
     "sequencing" : {

@@ -11,19 +11,19 @@
 			<transaction
 					mode="NON_XA"
 					locking="PESSIMISTIC"/>
-			<eviction max-entries="8192" 
+			<eviction max-entries="8192"
 					  strategy="LIRS"/>
 			<persistence>
-				<jdbc:string-keyed-jdbc-store 
+				<jdbc:string-keyed-jdbc-store
 										 fetch-state="false"
 										 read-only="false"
 										 purge="false"
 										 shared="true">
 					<jdbc:connection-pool
-							connection-url="jdbc:mysql://vorto-dev-db-v2-instance.cenreumiygyi.eu-central-1.rds.amazonaws.com:3306/vorto_dev?autoReconnect=true"
+            connection-url="jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true"
 							driver="org.mariadb.jdbc.Driver"
-							username="vorto_db"
-							password="VortoIsEverything"/>
+              username="${db_username}"
+              password="${db_password}"/>
 					<jdbc:string-keyed-table
 							prefix="ISPN_STRING_TABLE"
 							create-on-start="true"
