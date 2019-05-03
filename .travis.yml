@@ -30,26 +30,23 @@ install:
   - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
   - pip install --user awscli
 script:
-#  - remark -i .remark_ignore -f -u validate-links .
-#  - remark -i .remark_ignore -u lint-no-dead-urls .
-#  - if [ "$TRAVIS_PULL_REQUEST" = "false" -a \( "$TRAVIS_BRANCH" = "development" -o "$TRAVIS_BRANCH" = "master" \) ] ; then
-#    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-#    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-#    else
-#    mvn --fail-fast -q clean package ;
-#    fi
-
-  - mvn clean package -DskipTests
+  - remark -i .remark_ignore -f -u validate-links .
+  - remark -i .remark_ignore -u lint-no-dead-urls .
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
+    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+    else mvn --fail-fast -q clean package -P checkstyle;
+    fi
 
   # to send images to docker hub
-#  - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
-#  - docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:nightly .;
-#  - if [ -n "$TRAVIS_TAG" ]; then
-#    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:latest .;
-#    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:latest .;
-#    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG .;
-#    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG .;
-#    fi;
+  - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
+  - docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:nightly .;
+  - if [ -n "$TRAVIS_TAG" ]; then
+    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:latest .;
+    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:latest .;
+    docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG .;
+    docker build --build-arg JAR_FILE=./generators/generator-runner/target/generator-runner-exec.jar -f docker/Generators_Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG .;
+    fi;
 
 before_deploy:
   - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
@@ -77,43 +74,4 @@ deploy:
     skip_cleanup: true
     on:
       branch: master
-#  - provider: script
-#    script:
-#      - aws s3 cp ~/aws-upload/infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
-#    skip_cleanup: true
-#    on:
-#      branch:
-#        - development
-#        - feature/issue-1436_integrate_auto_deployment_using_travisci
-#  - provider: script
-#    script:
-#      - aws s3 cp ~/aws-upload/generator-runner-exec_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
-#    skip_cleanup: true
-#    on:
-#      branch:
-#        - development
-#        - feature/issue-1436_integrate_auto_deployment_using_travisci
-#  - provider: script
-#    script:
-#      - aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar"
-#    skip_cleanup: true
-#    on:
-#      branch:
-#        - development
-#        - feature/issue-1436_integrate_auto_deployment_using_travisci
-#  - provider: script
-#    script:
-#      - aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="generator-runner-exec_${ELASTIC_BEANSTALK_LABEL}.jar"
-#    skip_cleanup: true
-#    on:
-#      branch:
-#        - development
-#        - feature/issue-1436_integrate_auto_deployment_using_travisci
-#  - provider: script
-#    script:
-#      - aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
-#    skip_cleanup: true
-#    on:
-#      branch:
-#        - development
-#        - feature/issue-1436_integrate_auto_deployment_using_travisci
+
