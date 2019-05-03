@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -18,8 +17,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
+import javax.jcr.Session;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
@@ -27,18 +28,27 @@ import javax.jcr.security.AccessControlPolicyIterator;
 import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.modeshape.jcr.security.SimplePrincipal;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ModelPolicyManager extends AbstractRepositoryOperation implements IModelPolicyManager {
 
   private static Logger logger = Logger.getLogger(ModelPolicyManager.class);
-  
+
+  private IUserAccountService userAccountService;
+
+  public ModelPolicyManager(@Autowired IUserAccountService userAccountService) {
+    this.userAccountService = userAccountService;
+  }
+
   @Override
   public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
     return doInSession(session -> {
@@ -208,8 +218,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         if (permission == Permission.READ) {
           return folderNode.getNodes(FILE_NODES).hasNext();
         } else {
-          return this.getPolicyEntries(modelId).stream()
-              .filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID()))
+          return this.getPolicyEntries(modelId).stream().filter(userFilter(session))
               .filter(p -> hasPermission(p.getPermission(), permission)).findAny().isPresent();
         }
       } catch (AccessDeniedException e) {
@@ -217,7 +226,18 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
       }
     });
   }
-  
+
+  private Predicate<PolicyEntry> userFilter(Session session) {
+    return p -> {
+      if (p.getPrincipalType() == PrincipalType.User) {
+        return p.getPrincipalId().equalsIgnoreCase(session.getUserID());
+      } else {
+        return userAccountService.hasRole(session.getWorkspace().getName(), session.getUserID(),
+            p.getPrincipalId());
+      }
+    };
+  }
+
   private boolean hasPermission(Permission userPermission, Permission permission) {
     return userPermission.includes(permission);
   }
