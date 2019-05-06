@@ -19,7 +19,6 @@ import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -29,19 +28,13 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest {
 
   @Override
   protected void setUpTest() throws Exception {
-    createModel("Zone.type", "com.test.Zone:1.0.0");
-    releaseModel("com.test:Zone:1.0.0");
+    createModel("Zone.type", "com.test:Zone:1.0.0");
+    setPublic("com.test:Zone:1.0.0");
     createModel("Color2.type", "com.test:Color:1.0.0");
-    releaseModel("com.test:Color:1.0.0");
+    setPublic("com.test:Color:1.0.0");
 
     this.repositoryClient = IRepositoryClient.newBuilder()
         .setBaseUrl("http://localhost:" + port + "/infomodelrepository").build();
-  }
-
-  @After
-  public void cleanup() throws Exception {
-    deleteModel("com.test:Color:1.0.0");
-    deleteModel("com.test:Zone:1.0.0");
   }
 
   @Test

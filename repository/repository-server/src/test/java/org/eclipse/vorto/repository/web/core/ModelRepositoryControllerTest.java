@@ -198,8 +198,11 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
 
     @Test public void getUserPolicy() throws Exception {
         this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userAdmin))
+            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(nonTenantUser))
             .andExpect(status().isNotFound());
+        this.repositoryServer.perform(
+            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userAdmin))
+            .andExpect(status().isOk());
         this.repositoryServer.perform(
             get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userCreator))
             .andExpect(status().isOk());

@@ -38,6 +38,7 @@ public class ApplicationConfig {
   public static final String USER_ADMIN = "user1";
   public static final String USER_STANDARD = "user2";
   public static final String USER_CREATOR = "user3";
+  public static final String NON_TENANT_USER = "user4";
 
 
   @PostConstruct

@@ -31,6 +31,9 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.After;
@@ -81,6 +84,7 @@ public abstract class AbstractIntegrationTest {
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor nonTenantUser;
 
   protected Gson gson = new Gson();
 
@@ -96,11 +100,13 @@ public abstract class AbstractIntegrationTest {
   @Before
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userAdmin = user("user1").password("pass").authorities(SpringUserUtils.toAuthorityList(
+    userAdmin = user(ApplicationConfig.USER_ADMIN).password("pass").authorities(SpringUserUtils.toAuthorityList(
         Sets.newHashSet(USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
-    userStandard = user("user2").password("pass")
+    userStandard = user(ApplicationConfig.USER_STANDARD).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
-    userCreator = user("user3").password("pass")
+    userCreator = user(ApplicationConfig.USER_CREATOR).password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+    nonTenantUser = user(ApplicationConfig.NON_TENANT_USER).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
     
     setUpTest();
@@ -145,6 +151,18 @@ public abstract class AbstractIntegrationTest {
 
     repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Approve")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
+  }
+  
+  public void setPublic(String modelId) throws Exception {
+    PolicyEntry publicPolicyEntry = new PolicyEntry();
+    publicPolicyEntry.setPrincipalId("ANONYMOUS");
+    publicPolicyEntry.setPermission(Permission.READ);
+    publicPolicyEntry.setPrincipalType(PrincipalType.User);
+    
+    String publicPolicyEntryStr = new Gson().toJson(publicPolicyEntry);
+    
+    repositoryServer.perform(put("/rest/tenants/playground/models/" + modelId + "/policies")
+        .with(userAdmin).contentType(MediaType.APPLICATION_JSON).content(publicPolicyEntryStr));
   }
 
   public void createAndReleaseModel(String fileName, String modelId) throws Exception {
