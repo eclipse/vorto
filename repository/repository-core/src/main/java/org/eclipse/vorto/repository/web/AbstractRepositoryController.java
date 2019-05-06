@@ -85,7 +85,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
   @ExceptionHandler(IllegalArgumentException.class)
   public Object wrongInput(final IllegalArgumentException ex) {
-      logger.error("IllegalArgumentException occured", ex);
+      //logger.error("IllegalArgumentException occured", ex);
       Map<String, Object> error = new HashMap<String, Object>();
 	  error.put("message", ex.getMessage());
 	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
