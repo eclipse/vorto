@@ -25,7 +25,7 @@ import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -62,7 +62,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
   @Autowired
-  private IUserRepository userRepository;
+  private IUserAccountService userAccountService;
 
   @Autowired
   private ModelSearchUtil modelSearchUtil;
@@ -93,14 +93,14 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   public ModelRepositoryFactory() {}
   
-  public ModelRepositoryFactory(IUserRepository userRepository,
+  public ModelRepositoryFactory(IUserAccountService userAccountService,
       ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory,
       RepositoryDiagnostics repoDiagnostics,
       RepositoryConfiguration repoConfig, 
       TenantService tenantService) {
-    this.userRepository = userRepository;
+    this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -178,7 +178,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
-    ModelPolicyManager policyManager = new ModelPolicyManager();
+    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService);
     policyManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
     return policyManager;
   }
@@ -190,7 +190,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
-    ModelRepository modelRepository = new ModelRepository(this.userRepository, this.modelSearchUtil,
+    ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user));
 
     modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
