@@ -210,7 +210,9 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
-					$scope.getUserPolicy();
+					if ($rootScope.authenticated) {
+						$scope.getUserPolicy();
+					}
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;

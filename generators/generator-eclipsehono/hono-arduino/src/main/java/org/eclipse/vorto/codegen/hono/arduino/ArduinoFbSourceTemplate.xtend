@@ -65,7 +65,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		String «fb.name»::serialize(String ditto_topic, String hono_deviceId, String fbName) {
 		    String result = "{\"topic\":\""+ ditto_topic +"/things/twin/commands/modify\",";
 		    result += "\"headers\":{\"response-required\": false},";
-		    result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": {";
+		    result += "\"path\":\"/features/" + fbName + "/properties\",\"value\": {";
 		    «IF fb.functionblock.status !== null»
 		    //Status Properties
 		    «var counter = 0»

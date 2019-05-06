@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.upgrade.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,10 +41,9 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
   private IModelRepositoryFactory repositoryFactory;
 
   private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
-
     @Override
     public boolean shouldExecuteTask() {
-      return shouldUpgrade;
+      return false;
     }
   };
 
@@ -68,12 +67,23 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
         Optional<FileContent> content =
             modelRepository.getFileContent(modelInfo.getId(), Optional.of(modelInfo.getFileName()));
         if (content.isPresent()) {
+          String currentModelContent = "";
+          try {
+            currentModelContent = new String(content.get().getContent(), "utf-8");
+          } catch (UnsupportedEncodingException e1) {
+            logger.warn("Could not set vortolang field for model "
+                + modelInfo.getId().getPrettyFormat() + ".Skipping...", e1);
+
+          }
+          if (currentModelContent.contains("vortolang 1.0")) {
+            continue;
+          }
           StringBuilder contentBuilder = new StringBuilder();
           contentBuilder.append("vortolang 1.0");
           contentBuilder.append(newline);
           contentBuilder.append(newline);
           try {
-            contentBuilder.append(new String(content.get().getContent(), "utf-8"));
+            contentBuilder.append(currentModelContent);
             logger.info("Upgrading " + modelInfo.toString() + " for vortolang attribute....");
             modelRepository.save(modelInfo.getId(), contentBuilder.toString().getBytes(),
                 modelInfo.getFileName(), UserContext.user(modelInfo.getAuthor(), tenantId), false);
@@ -82,6 +92,7 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
             logger.warn("Could not set vortolang field for model "
                 + modelInfo.getId().getPrettyFormat() + ".Skipping...", e);
           }
+
         }
       }
     }

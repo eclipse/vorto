@@ -9,7 +9,7 @@ The following code represents the Data Type Model DSL syntax.
     qualifiedName: id ('.' id)*;
 
     entity:
-       'vortolang' 1.0
+       ('vortolang' 1.0)?
        'namespace' qualifiedName
        'version' version
        ('displayname' displayname)?
@@ -22,7 +22,7 @@ The following code represents the Data Type Model DSL syntax.
     ;
 
     enumeration:
-       'vortolang' 1.0
+       ('vortolang' 1.0)?
        'namespace' qualifiedName
        'version' version
        (modelReference)*
@@ -264,7 +264,7 @@ the following attributes are supported
 **Example**
 
     mandatory engineTemperature as float 
-      with { measurementUnit: Temperature.Celsius, readable: true, writable: true, eventable: false } 
+      with { measurementUnit: org.company.Temperature.Celsius, readable: true, writable: true, eventable: false } 
       "The engine temperature"
 
 #### Constraints

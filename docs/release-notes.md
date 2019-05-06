@@ -1,5 +1,20 @@
 # Release Notes
 
+## 0.10.1
+
+**Bugfixes**
+
+- Enum Datatypes are not properly returned in Java Repository Client
+- Eclipse Hono Generator for Arduino creates invalid json for referenced entities
+- Bosch IoT Suite Generator creates invalid Eclipse Ditto protocol payload
+- Measurement Unit in DSL not working
+- OMA/LwM2M to Vorto Models Resolver is broken
+
+**Minor Improvements**
+
+- Repository Search UX
+- Bosch IoT Suite Generator for Web Dashboard and Device Provisioning Scripts
+
 ## 0.10 
 
 ### New Features

@@ -3,7 +3,7 @@
 The following code represents the Function Block Model DSL syntax. Function block model use all variables that are defined in Data Type DSL.
 
     functionblockmodel:
-        'vortolang' 1.0
+        ('vortolang' 1.0)?
         'namespace' qualifiedName
         'version' version
         'displayname' displayname
@@ -94,7 +94,8 @@ A function block model describes a function block with its properties and behavi
 Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-model-dsl-grammar-reference).
 
 **Example**
-
+	
+	vortolang 1.0
 	namespace com.mycompany.fb
 	version 1.0.0
 	description "A lamp makes the environment bright"  

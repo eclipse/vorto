@@ -46,7 +46,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 												</div><!-- /.box-header -->
 												<div class="box-body">
 													<p>Java code template that connects the device to Bosch IoT Hub using MQTT (Paho).</p>
-													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/connect_javadevice.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
+													<a href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/connect_javadevice.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
 													<a href="./api/v1/generators/eclipsehono/models/{{model.id.prettyFormat}}?language=java" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Source Code</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->
@@ -58,7 +58,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 												</div><!-- /.box-header -->
 												<div class="box-body">
 													<p>Arduino code templates that sends device data to Bosch IoT Hub using MQTT.</p>
-													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/connect_esp8266.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
+													<a href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/connect_esp8266.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
 													<a href="./api/v1/generators/eclipsehono/models/{{model.id.prettyFormat}}?language=arduino" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Source Code</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->
@@ -70,7 +70,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 												</div><!-- /.box-header -->
 												<div class="box-body">
 													<p>Python code template that connects the device to Bosch IoT Hub with MQTT.</p>
-													 <a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/mqtt-python.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
+													 <a href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/mqtt-python.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
 													 <a href="./api/v1/generators/eclipsehono/models/{{model.id.prettyFormat}}?language=python" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Source Code</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->
@@ -89,7 +89,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 														<br/>
 														<i><span><i class="fa fa-exclamation-triangle"></i></span> Requires <a href="https://www.getpostman.com/downloads/" target="_blank">Postman</a></i>
 													</p>
-													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/create_thing.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
+													<a href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/create_thing.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
 													<a href="./api/v1/generators/boschiotsuite/models/{{model.id.prettyFormat}}?provision=true" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Source Code</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->
@@ -109,7 +109,7 @@ class BoschGeneratorConfigUI implements IGeneratorConfigUITemplate{
 														<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp2.png" width="45%" />
 														<img src="webjars/repository-web/dist/images/bosch_iot_suite_webapp.png" width="45%" />
 													</p>
-													<a href="https://github.com/eclipse/vorto/blob/development/docs/tutorials/create_webapp_dashboard.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
+													<a href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/create_webapp_dashboard.md" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-book"></i> Tutorial</a>
 													<a href="https://download.eclipse.org/vorto/downloads/vorto-webui.zip" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Download</a>
 												</div><!-- /.box-body -->
 											</div><!-- /.box -->

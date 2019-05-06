@@ -61,16 +61,16 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<exclusions>
 				<exclusion>
-				 <groupId>org.springframework.security</groupId>
-				 <artifactId>spring-security-web</artifactId>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-web</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-web</artifactId>
-		    <version>4.2.9.RELEASE</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.2.9.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
@@ -214,20 +214,29 @@
 			<version>${project.version}</version>
 			<type>test-jar</type>
 		</dependency>
+		<!-- following two jars are need to have models stored in database -->
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-cachestore-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<resources>
-		   <resource>
-			  <directory>src/main/resources</directory>
-		   </resource>
-		   <resource>
-			  <directory>src/main/resources</directory>
-			  <filtering>true</filtering>
-			  <includes>
-				  <include>static/index.html</include>
-			  </includes>
-		   </resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>static/index.html</include>
+				</includes>
+			</resource>
 		</resources>
 		<finalName>infomodelrepository</finalName>
 		<plugins>

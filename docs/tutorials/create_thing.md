@@ -1,54 +1,88 @@
 # Creating a thing in the Bosch IoT Suite from a Vorto Information Model
 
-This tutorial explains how to create a thing in the Bosch IoT Suite that was described as a Vorto Information Model.
+This tutorial explains how to create a thing in the Bosch IoT Suite that was described as a Vorto Information Model.   
+As an example, we will use our [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0). 
 
-As an example, the [Octopus board](http://vorto.eclipse.org/#/details/com.bosch.iot.suite:OctopusSuiteEdition:1.0.0) based on ESP 8266 is used. 
+<img src="../images/tutorials/create_thing/raspbi_IM.png" />
 
+<br />
 
 ## Prerequisites
+
+* [Postman is installed](https://www.getpostman.com/downloads/)
+
+* Created a Vorto Information Model for the device (refer to [Describing a device](./describe_device-in-5min.md)).
 
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
+> Make sure to have a `namespace` set in the dashboard of Asset communication!
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](describe_tisensor.md)).
+* Created a [Bosch IoT Suite OAuth2 Client](https://accounts.bosch-iot-suite.com/oauth2-clients/)
+> Make sure to have both scopes checked on creation! (Hub and Things)
+<img src="../images/tutorials/create_thing/oauth2_client.png" />
 
+<br />
 
-## Proceed as follows
+## Steps
+1. Download the Device provision postman script
+2. Configure the request with your custom information
+3. Create a new thing
 
+<br />
 
-1. Create an Octopus board thing instance for the Vorto Information Model in the Bosch IoT Suite device registry:
+## Download the Device provision postman script
 
-	- Login to the [Vorto Console](https://vorto.eclipse.org/console).
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+<img src="../images/tutorials/create_thing/code_generators.png" />
 
-	- Click **Create thing**.
-	
-	- In the **Vorto Models** table, select the Octopus Board Information Model
-	
-	- Click **Next**.
-	
-	- Specify the **Namespace**. 
-		> The namespace must match with the namespace that you have set in Bosch IoT Things for your solution.
-	
-	- Leave the default value for **Name**.
-	
-	- Set the **Technical Device ID** of the thing.
+**2.** We want to provision a device. Click the `Source Code` button to download the generated Postman script.
+<img src="../images/tutorials/create_thing/provision_device_dl.PNG" height="500"/>
 
-		> This can be a MAC address, a serial number or anything that uniquely identifies the device. For the example, use `47-11-00`.
+**3.** Unzip the downloaded file and open Postman   
 
-	- Click **Next**.
-	
-	- Specify the value for the **Password**. For the example, use `s3cr3t`
-	
-	- Click **Next**.
+**4.** Import the file present in the extracted folder into Postman.   
+<img src="../images/tutorials/create_thing/import_jspm.png" />
 
-	- Review the changes that are going to be made to the Suite.
-	
-	- Click **Create**.
-	
-		A new thing for the Octopus Board is created in the Bosch IoT Suite.
-		
-		
+<br />
+
+## Configure the request with your custom information
+
+**5.** Click on the just imported `Collections` and switch to the `Pre-request Script` tab.
+
+**6.** In here you will see 3 entires. 
+<img src="../images/tutorials/create_thing/pre_requeset_script.png" />
+
+- **service-instance-id**: Service Instance ID of your asset communication subscription. (Can be found in the *Show Credentials* on the far bottom)
+<img src="../images/tutorials/create_thing/service_isntance_id.png" />
+
+- **device-id**: Some Unique ID to give the device in the format of `<namespace>:<uniqueId>`. (Namespace has to defined and can be found in the namespace tab of the asset communication subscription).
+
+- **device-password**: Password to be used when creating the integration for the device and sending data to it.
+
+<br />
+
+**7.** Once you've entered the information into the tab, switch to the `Headers` tab.
+<img src="../images/tutorials/create_thing/bearer_token.png" />
+
+**8.** Head over to your Bosch IoT Suite account and open the [OAuth2 Client page](https://accounts.bosch-iot-suite.com/oauth2-clients). Click the `Use` button to get a temporary token (valid for 5min).
+
+**9.** Insert the temporary token into the second row that says `Authorization`. **Don't** remove the `Bearer` keyword.
+
+<br />
+
+## Create a new thing
+
+**10.** After entering the token, press the blue `Send` button in the upper right corner to create your Thing.
+
+**11.** Once your request was successful, you'll see a long response in the bottom section of Postman and the status `201 Created`. Now your thing has been created and you can start with the integration. 
+
+<br />
+
 ## What's next?
 
-- [Generate Arduino sketch](connect_esp8266.md) that connects an ESP8266 based device to the Bosch IoT Suite.
+- [Visualize your data with the Vorto Dashboard](./create_webapp_dashboard.md)
+- Integrate your device with the Bosch IoT Suite using:
+  - [Python](./mqtt-python.md)
+  - [Arduino](./connect_esp8266.md)
+  - [Java](./connect_javadevice.md)

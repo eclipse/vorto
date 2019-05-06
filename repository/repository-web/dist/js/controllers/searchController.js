@@ -4,8 +4,8 @@ repositoryControllers.controller('SearchController',
 
     $scope.models = [];
     $scope.filteredModels = [];
-    $scope.modelType = 'InformationModel';
-    $scope.modelState = 'Released';
+    $scope.modelType = $rootScope.authenticated === true ? 'all' : 'InformationModel';
+    $scope.modelState = $rootScope.authenticated === true ? 'all' :'Released';
     $scope.onlyMyModels = "false";
     $scope.queryFilter = "";
     $scope.fileToUpload = null;

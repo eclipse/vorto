@@ -43,40 +43,34 @@ class AppTemplate implements IFileTemplate<InformationModel> {
 	import «Utils.getJavaPackage(element)».service.hono.HonoDataService;
 	
 	/**
-	 * Example App that uses the Hono Data Service by sending random data to Eclipse Hono MQTT Connector
+	 * Example App that uses the Hono Data Service by sending random data to MQTT Connector
 	 */
 	public class «element.name»App {
-	
+		
 		private static final Logger LOGGER = Logger.getLogger(«element.name»App.class);
-	
+		
 		/**************************************************************************/
 		/* Configuration Section */
 		/* Adjust according to your Endpoint Configuration*/
 		/**************************************************************************/
-	
-		// Hono MQTT Endpoint
-		private static final String MQTT_ENDPOINT = "«context.configurationProperties.getOrDefault("hono_endpoint","<INSERT HONO MQTT ENDPOINT HERE>")»";
-	
-		// Your Tenant
-		private static final String HONO_TENANT = "«context.configurationProperties.getOrDefault("hono_tenant","DEFAULT_TENANT")»";
-	
-		// Your DeviceId
-		private static final String DEVICE_ID = "«context.configurationProperties.getOrDefault("deviceId","<INSERT DEVICE ID HERE>")»";
 		
-		// Device authentication ID
-		private static final String AUTH_ID = "«context.configurationProperties.getOrDefault("hono_user","<INSERT DEVICE AUTH ID HERE>")»";
+		private static final String HUB_ADAPTER_HOST = "ssl://mqtt.bosch-iot-hub.com:8883";
 		
-		// Ditto topic , e.g. com.mycompany/4711
-		private static final String DITTO_TOPIC = "«context.configurationProperties.getOrDefault("ditto_topic","com.mycompany/1234")»";
-	
-		// Device authentication Password
-		private static final String PASSWORD = "ENTER_DEVICE_PASSWORD";
+		private static final String TENANT_ID = "ADD TENANT ID HERE";
+		
+		private static final String DEVICE_ID = "ADD DEVICE ID HERE";
+		
+		private static final String AUTH_ID = "ADD AUTH ID HERE";
+		
+		private static final String DITTO_TOPIC = "ADD DITTO TOPIC HERE, e.g. com.mycompany/1234";
+		
+		private static final String DEVICE_PASSWORD = "ADD DEVICE PASSWORD HERE";
 		
 		private static final long SEND_INTERVAL_IN_SECONDS = 2;
-	
+		
 		public static void main(final String... args) {
-			HonoDataService honoDataService = new HonoDataService(MQTT_ENDPOINT, HONO_TENANT, DITTO_TOPIC, 
-					DEVICE_ID, AUTH_ID,PASSWORD);
+			HonoDataService honoDataService = new HonoDataService(HUB_ADAPTER_HOST, TENANT_ID, DITTO_TOPIC, 
+					DEVICE_ID, AUTH_ID + "@" + TENANT_ID, DEVICE_PASSWORD);
 			
 			while (true) {
 				«FOR fbProperty : element.properties»

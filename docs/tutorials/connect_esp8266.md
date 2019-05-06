@@ -1,8 +1,14 @@
 # Integrating an ESP8266 - based Device with the Bosch IoT Suite using Vorto
 
-This tutorial explains how to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.
+This tutorial explains how to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.   
+Your device should already be created as a thing from an Information Model at this point.   
+We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
+
+<img src="../images/tutorials/connect_esp8266/cover.png"/>
 
 ## Prerequisites
+
+* [Arduino IDE](https://www.arduino.cc/en/Main/Software) is installed 
 
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
@@ -10,136 +16,177 @@ This tutorial explains how to generate an Arduino sketch for a given Vorto Infor
 
 * You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
+<br />
+
 ## Tools
+* ESP8266 Package
 
-* [Arduino IDE](https://www.arduino.cc/en/Main/Software)
+* [PubSubClient](https://pubsubclient.knolleary.net/)
 
- * ESP8266 Package
+<br />
 
- * [PubSubClient](https://pubsubclient.knolleary.net/)
+## Steps
+1. Setup your development environment (on your development machine).
+1. Download the generated integration script
+1. Configure the scripts with the information of your created thing
+1. Reading the sensor data
+1. Start sending data
 
-* OpenSSL
+<br />
 
-* Curl
 
-## Proceed as follows
+## Setup your development environment (on your development machine).
 
-### Step 1: Setup your development environment (on your development machine).
+**1.** First you need to install the ESP8266 Board Package. You can conveniently do this by
 
-If not already done setup your development environment for the ESP8266. First, you have to install the Arduino IDE, the board-package for the ESP8266 and the PubSubClient.
+* Selecting **File -> Preferences -> Additional Board Manager URLs** and adding `http://arduino.esp8266.com/stable/package_esp8266com_index.json`.
 
-- Download and install the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
+* Then selecting **Tools -> Board -> Boards Manager...**, looking for the esp8266 package and installing the latest version.
 
-- Install the ESP8266 Board Package.
+* Selecting **Tools -> Board**.
 
-	1. Select **File -> Preferences -> Additional Board Manager URLs** and add `http://arduino.esp8266.com/stable/package_esp8266com_index.json`.
+**2.** You should now find all the supported ESP8266 boards listed, chose the one you are working with.
 
-	2. Select **Tools -> Board -> Boards Manager...**, look for the esp8266 package and install the latest version.
+**3.** Plug-in the NodeMCU board and check in the Device Manager, whether you have the necessary USB serial driver installed. In case it is missing and Windows Update can't find the driver, get the latest version of the driver from the [NodeMCU github repository](https://github.com/nodemcu/nodemcu-devkit/blob/master/Drivers/).
 
-	3. Select **Tools -> Board**.
+**4.** Select **Sketch -> Include Library -> Manage Libraries** and look for the `PubSubClient` and install the latest version.
 
-	You should now find all the supported ESP8266 boards listed, chose the one you are working with.
+> **Note**: The PubSubClient will get installed in the Arduino/libraries directory, i.e. in `{HOME}/Arduino/libraries`. As you might need to adjust the buffer size for the MQTT payload, it is a good thing to verify the location of the library at this point.
 
-	4. Plug-in the NodeMCU board and check in the Device Manager, whether you have the necessary USB serial driver installed. In case it is missing and Windows Update can't find the driver, get the latest version of the driver from the [NodeMCU github repository](https://github.com/nodemcu/nodemcu-devkit/blob/master/Drivers/).
+<br />
 
-- Select **Sketch -> Include Library -> Manage Libraries**, look for the PubSubClient and install the latest version.
-
-	> Note: You can use the search field to search for the PubSubClient.
-
-The PubSubClient will get installed in the Arduino/libraries directory, i.e. in `{HOME}/Arduino/libraries`. As you might need to adjust the buffer size for the MQTT payload, it is a good thing to verify the location of the library at this point.
-		
 ---
-**Important Note for Mac Users!**
+### Important Note for Mac Users!
 
 The ESP3266 Development board's ports will not be recognized by the Arduino IDE	since there are several drivers that are missing on a Mac.
 
 1. Download the drivers through the [SiLabs website](https://www.silabs.com/Support)
 2. Install the drivers onto the computer
-3. Plug in the ESP3266 through the micro-usb cable to the computer, and the port will appear on the Arduino IDE under Tools->Ports.
+3. Plug in the ESP3266 through the micro-usb cable to the computer, and the port will appear on the Arduino IDE under    
+**Tools -> Ports**.
 
 ---
-		
 
-### Step 2: Generating an arduino sketch using the Arduino Generator (Arduino project).
+<br />
 
-- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+## Download the generated integration script
 
-- Navigate to your thing in the Thing Browser and click on it.
+**5.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 
-- Click on the **Source Code Templates** tab.
+<img src="../images/tutorials/create_thing/code_generators.png" />
 
-- At the **Integrate device with Arduino C** template, click **Download**.
+**6.** We want to integrate a device using Arduino. Click the `Source Code` button to download the generated Arduino  project.
 
-	<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
+<img src="../images/tutorials/connect_esp8266/arduino_generator.png" height="500"/>
 
-- Store the ZIP file and extract the source code.
+**7.** Unzip the downloaded file and open it the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 
-- Open the INO file in your Arduino IDE.
+**8.** In order to guarantee secure transmission of your data, the integration uses SSL. We therefore need a certificate.   
+Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub.crt) file and download it.   
+We need to extract the fingerprint of this certificate to paste into our script later. This can be done by using
+```bash
+openssl x509 -noout -fingerprint -sha1 -inform pem -in iothub.crt
+```
+This fingerprint has to be added to the `mqttServerFingerprint` in the App file.
+```java
+#if (USE_SECURE_CONNECTION == 1)
+	/* SHA-1 fingerprint of the server certificate of the MQTT broker, UPPERCASE and spacing */
+	const char* mqttServerFingerprint = "<XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX>";
+#endif
+```
 
-- Adjust the Arduino Project according to your needs.
+> **Note:** On some systems you need to [install `openssl`](https://www.xolphin.com/support/OpenSSL/OpenSSL_-_Installation_under_Windows) first.
 
-The following important changes have to be made:
+<br />
 
-* Change the _honoPassword_, the password you had entered while creating the thing
-	  
-* WLAN configuration.
+## Configure the scripts with the information of your created thing
 
-	* SSID: change the constant ssid to your WiFi's SSID.
+**9.** Once imported, we have to adjust the credentials in order to be able to connect and publish data to the Bosch IoT Suite.
+The following sections of the generated file have to be adjusted.
 
-	* Password: change the constant password to your WiFi password.
+```java
+#define tenantId "ADD TENANT ID HERE"
 
-* In order to verify the server, you need to add a fingerprint of the server certificate to the code. This finger print is an SHA-1 hash of the certificate of the MQTT broker.
+...
 
-* The certificate of the Bosch IoT Hub can be downloaded from the Web site [http://docs.bosch-iot-hub.com/cert/iothub.crt](http://docs.bosch-iot-hub.com/cert/iothub.crt).
+/* Device Configuration */
+String deviceId = "ADD DEVICE ID HERE";
+String authId = "ADD AUTH ID HERE";
+const char* device_password = "ADD DEVICE PASSWORD HERE";
 
-* For other MQTT brokers you might need to use openssl to extract the server certificate by invoking:
+/* Payload Configuration*/
+String ditto_topic = "ADD DITTO TOPIC HERE, e.g. com.mycompany/4711";
 
-		openssl s_client -showcerts -connect www.example.com:443 </dev/null
+/* WiFi Configuration */
+const char* ssid = "<ENTER YOUR WIFI SSID>"; /* SSID (Name) of your Wifi */
+const char* password = "<ENTER YOUR WIFI PASSWORD>";
+```
 
-			The first certificate, starting with
+**10.** We will use the request response we got upon creating a thing with the postman script. Since it holds exactly the information we need, we can copy and paste the different ids from the response.
 
-				-----BEGIN CERTIFICATE-----
+<img src="../images/tutorials/connect_grovepi/postman_json.png" />
 
-			and ending with
+<br />
 
-				-----END CERTIFICATE-----
+## Reading the sensor data
 
-			is the part you want to store in a `.crt` file.
+**11.** After configuring our connection credentials, the last step is to implement the data retrieval from the sensor. The generators create a section in the according class, in our case the DistanceSensorApp.ino file.
+By default, random values will be sent for the values the sensor sends.
 
-		* The fingerprint for the certificate above can be extracted by invoking:
+**12.** We can simply adapt the code in the `loop` function at the end of the script to read the sensors of your device and filling in the corresponding values to the Information Model API.   
+The dummy values inside the method calls can be replaced with the read out data from the sensor.
 
-				openssl x509 -noout -fingerprint -sha1 -inform pem -in [certificate-file.crt]
+```js
+/* SAMPLE CODE */
+//Status Properties
+infoModel.distance.setsensorValue(dummy_value);
+infoModel.distance.setsensorUnits(msg);
+infoModel.distance.setminMeasuredValue(dummy_value);
+infoModel.distance.setmaxMeasuredValue(dummy_value);
+infoModel.distance.setminRangeValue(dummy_value);
+infoModel.distance.setmaxRangeValue(dummy_value);
+//Configuration Properties
+infoModel.distance.setcurrentCalibration(msg);
+infoModel.distance.setapplicationType(msg);
 
-	* Add the fingerprint to the Arduino sketch by setting the constant `mqttServerFingerprint`, replacing the colons with spaces.
+publishDistance();
+/* END OF SAMPLE CODE */
+```
 
-		<img width="800" src="../images/tutorials/connect_esp8266/mqtt-cert.png">
+**13.** Make sure to compile the code to verify your code before connecting your ESP8266 to your computer and selecting the virtual COM port to which your device is connected in the Arduino IDE under **Tools -> Port**.
 
-* Finally you can adapt the code in the loop function to read the sensors of your device and filling in the corresponding values to the Information Model API.
+<br />
 
-* Compile the code to verify everything with your code is ok.
+## Start sending data
 
-* Connect your ESP8266 to your computer and select the virtual COM port to which your device is connected in the Arduino IDE under **Tools -> Port**.
+**14.** Upload your code to your device by selecting **Sketch -> Upload** and double check it's working properly. 
 
-* Upload your code to your device by selecting **Sketch -> Upload**. 
+**15**. We can now verify that there is data incoming by either using
+- the [Vorto Dashboard](create_webapp_dashboard.md) that simply displays your data in different UI widgets.
+- or the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) which doesn't require anything to be installed and allows a quick insight into whether your data is updating.
 
-### Step 3: Verify incoming sensor data.
-
-- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
-
-- Open the thing details
-
-- Check if the sensor data was sent successfully to the Bosch IoT Suite.
-
-**Congratulations**, you have successfully connected your ESP8266 device to the Bosch IoT Suite.
-
-## What Could Go Wrong
-
+<details>
+    <summary>
+        <b>
+            Your script is not sending data?
+        </b>
+    </summary> 
+    
 You have followed all the steps above but the Hub does not receive any data? Here are a few things you might want to check:
 
 * PubSubClient has an MQTT buffer size of 128 bytes per default.
 
-	This means that if the length of your topic and payload plus 5 bytes overhead is longer than those 128 bytes the library will not transmit your data. However there is a solution: you can increase the buffer size by setting the variable `MQTT_MAX_PACKET_SIZE` in `PubSubClient.h` to a larger value, e.g. 256 or 384.
+This means that if the length of your topic and payload plus 5 bytes overhead is longer than those 128 bytes the library will not transmit your data. However there is a solution: you can increase the buffer size by setting the variable `MQTT_MAX_PACKET_SIZE` in `PubSubClient.h` to a larger value, e.g. 256 or 384.
+
+</details>
+
+
+##### Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite using the Arduino IDE! 
+
+<br />
 
 ## What's next ?
-
- - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
+- [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+- Integrate your device with the Bosch IoT Suite using:
+  - [Python](./mqtt-python.md)
+  - [Arduino](./connect_esp8266.md)

@@ -1,136 +1,216 @@
-# Integrating a GrovePi Sensor to the Bosch IoT Hub using Vorto
+# Integrating a device with Python into the Bosch IoT Hub using Vorto
 
-This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch IoT Suite using MQTT.
+This tutorial explains how to integrate a device with the Bosch IoT Suite using MQTT. Your device should already be created as a thing from an Information Model at this point.   
+We will use our [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) again.
+
+<img src="../images/tutorials/connect_grovepi/cover.png"/>
 
 ## Prerequisites
 
-* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
+* [Python](https://www.python.org/downloads/) is installed
 
-* Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
+* Some code editor is installed (e.g. [VSCode](https://code.visualstudio.com/))
 
-* You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
+* Created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
+
+<br />
 
 ## Tools
+> **Note**: This tutorial will only show the integration of the in-built temperature sensor of the RaspberryPi. Sending the data to hub, however, is similarilly done for the other sensors.
 
-* [Python 3.x](https://www.python.org/)
+* [GPS module](https://learn.adafruit.com/adafruit-ultimate-gps-on-the-raspberry-pi?view=all)
+* [Pi-Top Battery](https://www.pi-top.com/) ([Reading the battery status](https://github.com/rricharz/pi-top-setup))
 
-* IDEs - for Python: [Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python) 
+<br />
 
-* [Paho Python Client](https://eclipse.org/paho/clients/python/)
+## Steps
+1. Setup your device
+1. Download the generated integration script
+1. Configure the scripts with the information of your created thing
+1. Reading the sensor data
+1. Start sending data
 
-* [GrovePi Sensor Kit](https://www.dexterindustries.com/grovepi/)
+<br />
 
-## Proceed as follows
+## Setup your device.
+> **Note**: This tutorial will assume that your RaspberryPi is already running a version of [Raspbian](https://www.raspberrypi.org/learning/software-guide/) and is [connected to the network](https://www.raspberrypi.org/learning/software-guide/wifi/).   
+You can either use a display, keyboard, and mouse to directly work on the RaspberryPi or [setup SSH](https://www.raspberrypi.org/documentation/remote-access/ssh/) and later copy your script over to it.
 
-1. Setup your device.
+<br />
 
-	In this example Raspberry Pi is used but you can use any device which can run python.
+## Download the generated integration script
 
-	* [Install raspbian on the Raspberry Pi](https://www.raspberrypi.org/learning/software-guide/).
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+<img src="../images/tutorials/create_thing/code_generators.png" />
 
-	* [Connect the pi to wifi](https://www.raspberrypi.org/learning/software-guide/wifi/).
+**2.** We want to integrate a device using Python. Click the `Source Code` button to download the generated python script.
+<img src="../images/tutorials/connect_grovepi/python-generator.png" height="500"/>
 
-	* [Enable ssh connection on your pi](https://www.raspberrypi.org/documentation/remote-access/ssh/)	.
+**3.** Unzip the downloaded file and open it in your code editor. 
 
-	* [Install python and required modules](https://github.com/eclipse/vorto/blob/development/docs/tutorials/tutorial_install_python_and_required_python_modules.md).
+**4.** In order to guarantee secure transmission of your data, the integration uses SSL. We therefore need a certificate.   
+Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub.crt) file and place it in the root folder of the just unzipped folder.
 
-2. Setup your development environment (on your development machine).
+<br />
 
-	* [Install Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python).
+## Configure the scripts with the information of your created thing
 
-	* [Install python and required modules](https://github.com/eclipse/vorto/blob/development/docs/tutorials/tutorial_install_python_and_required_python_modules.md).
+**5.** Before we start reading in the sensor data and sending it to Hub, we need to configure our credentials. This will allow the script to send the sensor data to our digital twin.   
+The main `.py` file (`RaspberryPiTutorialApp.py` in this case) will contain a section that looks like this:   
+```python
+# DEVICE CONFIG GOES HERE
+tenantId = "ADD TENANT HERE"
+device_password = "ADD DEVICE PASSWORD HERE"
+hub_adapter_host = "mqtt.bosch-iot-hub.com"
+deviceId = "ADD DEVICE ID HERE"
+clientId = deviceId
+authId = "ADD AUTH ID HERE"
+certificatePath = "./iothub.crt"
+ditto_topic = "ADD TOPIC HERE, e.g. com.mycompany/4711"
+```
+> **Note:** Make sure to point the `certificatePath` at your just downloaded `.crt` file.
 
-3. Generate application code using the Python generator.
+**6.** We will use the request response we got upon creating a thing with the postman script. Since it holds exactly the information we need, we can copy and paste the different ids from the response.
+<img src="../images/tutorials/connect_grovepi/postman_json.png" />
 
-	**Download the python source code template**
+<br />
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+## Reading the sensor data	
 
-	- Navigate to your thing and click on it.
+**7.** After filling in the credentials, we can start integrating our sensors.   
+The implementation is done inside of the `periodicAction` function.   
+This function is called periodically every `timePeriod` seconds. It is meant to periodically read your sensor's values and transmit them using the thing type as a data model layer and the Paho MQTT Client.
 
-	- Click on the **Source Code Templates** tab.
+The variable `timePeriod` is set further down in the file. In this example, the variable `timePeriod` is set to 10.
+```python
+# Period for publishing data to the MQTT broker in seconds
+timePeriod = 10
+```
 
-	- At the **Integrate device with Python** template, click **Download**.
+**8.** We will only cover the integration of the built-in cpu temperature sensor here.   
+The code contains comments which will tell you where to edit code and do your implementation.   
+There is no need to edit any other section of the python file.
 
-		<img width="300" src="../images/tutorials/connect_grovepi/python-generator.png" style="border:3px !important;">
+Code sections which can be customized for your needs are marked with
+```python
+### BEGIN SAMPLE CODE
+...
+### END SAMPLE CODE
+```
 
-	- Store the ZIP file and extract the source code.
+In order to read the cpu temperature, we need to add this code block inside the `periodicAction` function between the `BEGIN` and `END` comments.
+```python
+def get_cpu_temperature():
+    with open("/sys/class/thermal/thermal_zone0/temp", "r") as tempFile:
+        temp = float(tempFile.read())
+        tempC = temp/1000
+        return tempC
+    
+# Read the data and assign it to the functional block properties
+infomodel.cpuTemperature.value = {
+    "currentMeasured" : get_cpu_temperature()
+}
+```
 
-4. Install GrovePi Python dependencies on the Raspberry Pi.
+> **Note:** In order to implement the sensors in the right way, we have to look at the specifc paths of the attributes.   
+<details>
+    <summary>
+        <b>
+            How do I find the specific path?
+        </b>
+    </summary> 
+    
 
-	Install necessary dependencies for GrovePi on the Raspberry Pi. To do so, just execute the commands 
+    
+The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) is a [Temperature Function Block](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto:Temperature:1.0.0). 
+```js
+infomodel RaspberryPiTutorial {
+	functionblocks {
+		...
+		cpuTemperature as Temperature
+	}
+}
+```
 
-		sudo curl https://raw.githubusercontent.com/DexterInd/Raspbian_For_Robots/master
-		upd_script/fetch_grovepi.sh | bash
+This means we have to check the internals of this FB.   
+```js
+functionblock Temperature {
+    status {
+      value as SensorValue
+    }
+}
+```
+As we can see, it has a `value` which is a [SensorValue Data Type](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
+Since the nesting ends with this DT, we know that the path to our `currentMeasured` and optional values is:   
+```js
+cpuTemperature -> value -> currentMeasured, minMeasured, ...
+```
 
-		sudo reboot
+Therefore the structure will look like this:
+```python
+cpuTemperature.value.currentMeasured
+cpuTemperature.value.minMeasured
+cpuTemperature.value.maxMeasured
+```
 
-	You can find full instructions [here](https://www.dexterindustries.com/GrovePi/get-started-with-the-grovepi/setting-software/).
+Which in combination with the parent element is represented like this:
+```js
+infomodel.cpuTemperature.value = {
+    "currentMeasured" : 0.0,
+    "minMeasured": 0.0,
+    "maxMeasured": 0.0
+}
+```
+</details>
 
-5. Connect the sensor to the Raspberry Pi.
+<br />
 
-	- Select a sensor from the kit.
+## Start sending data
 
-	- Connect the selected sensor to the Raspberry Pi. In this tutorial, ultrasonic sensor is used. The ultrasonic sensor is connected to **pin "3"** on the GrovePi.
+**9.** Before we can run the script, we need to install additional dependencies. The bundle contains a file called `requirements.txt`. This file describes the dependencies that still have to be installed in order to run the script.      
+Install the dependencies using the `pip install -r requirements.txt` command which looks at the current `requirements.txt` file and installs the dependecies listed there.
 
-6. Update the application code.
+**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiTutorialApp.py`
 
-	The ZIP file contains the necessary libraries for your project and a sample Python main program. The main program is named after the thing type and stored in the main directory of the project. Open this file in your editor of choice to make the necessary adjustments.
+<details>
+    <summary>
+        <b>
+            Your script is not sending data?
+        </b>
+    </summary> 
+    
+If you started the script and you can't see any data being sent your script most likely contains an error in the way the values are assigned to the attributes.
 
-	Code sections which can be customized for your needs are marked with
+In order to see the error message, you need to add a logger to the script.   
+This is easily done by adding the logging module at the top:
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
 
-		### BEGIN SAMPLE CODE
+And near the end of the file, where the client is created, you have to only paste in those two lines:
 
-	and
+```python
+# Create the MQTT client
+client = mqtt.Client(hono_clientId)
+...
 
-		### END SAMPLE CODE
+logger = logging.getLogger(__name__)
+client.enable_logger(logger)
+```
+</details>
 
-	The following sections are of particular interest:
+**11**. We can now verify that there is data incoming by either using
+- the [Vorto Dashboard](create_webapp_dashboard.md) that simply displays your data in different UI widgets.
+- or the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) which doesn't require anything to be installed and allows a quick insight into whether your data is updating.
 
-	* Import the GrovePi dependencies:
-	
-			from grovepi import *
-	
-	* Update the Device Configuration values like:
+##### Once you can see your data updating, you have successfully connected your ESP8266 device to the Bosch IoT Suite!    Now you can go in and connect and integrate the GPS and battery.
 
-		* `hono_password`
-
-		* `hono_certificatePath`
-
-	* Define a constant and assign the pin number of the pin to which the sensor is physically connected:
-	
-			# constants
-			ultrasonic_ranger = 3
-		
-	* Function `periodicAction`.
-
-		This function is called periodically every `timePeriod` seconds. It is meant to periodically read your sensor's values and transmit them using the thing type as a data model layer and the Paho MQTT Client.
-	
-		Read the data and assign it to the functional block properties:
-		
-			infomodel.distance.sensor_value = ultrasonicRead(ultrasonic_ranger)
-			infomodel.distance.sensor_units = "cm"
-		
-	* The variable `timePeriod` is set further down in the file. In this example, the variable `timePeriod` is set to 10.
-
-7. Run the application on the device.
-
-	- Copy the code to the device ([How to copy files to Raspberry Pi?](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md)).
-
-	- Open the Terminal and navigate to the source code folder.
-
-	- Run the application by typing the following command:
-			
-			python GENERATED_MAIN_PYTHON_FILE.py
-
-8. Verify incoming sensor data.
-
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
-
-	- Click  on thing to open the details
-
-	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
+<br />
 
 ## What's next ?
 
- - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
+ - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+- Integrate your device with the Bosch IoT Suite using:
+  - [Arduino](./connect_esp8266.md)
+  - [Java](./connect_javadevice.md)
