@@ -23,7 +23,7 @@ public interface ITenantService {
 
   boolean tenantExist(String tenantId);
 
-  boolean namespaceExist(String namespace);
+  boolean conflictsWithExistingNamespace(String namespace);
   
   Tenant createOrUpdateTenant(String tenantId, String defaultNamespace, Set<String> tenantAdmins,
       Optional<Set<String>> namespaces, Optional<String> authenticationProvider,
@@ -39,5 +39,5 @@ public interface ITenantService {
 
   boolean addNamespacesToTenant(String tenantId, Set<String> namespaces);
   
-  boolean deleteTenant(String tenantId, IUserContext userContext);
+  boolean deleteTenant(Tenant tenant, IUserContext userContext);
 }

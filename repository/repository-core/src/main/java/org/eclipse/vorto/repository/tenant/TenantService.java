@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -53,28 +52,28 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private INamespaceRepository namespaceRepo;
 
   private IUserAccountService userAccountService;
-  
+
   private ApplicationEventPublisher eventPublisher = null;
 
   public TenantService(@Autowired ITenantRepository tenantRepo,
-      @Autowired INamespaceRepository namespaceRepo, @Autowired IUserAccountService accountService) {
+      @Autowired INamespaceRepository namespaceRepo,
+      @Autowired IUserAccountService accountService) {
     this.tenantRepo = tenantRepo;
     this.namespaceRepo = namespaceRepo;
     this.userAccountService = accountService;
   }
-  
-  public void setApplicationEventPublisher(
-    ApplicationEventPublisher applicationEventPublisher) {
-   this.eventPublisher = applicationEventPublisher;
+
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.eventPublisher = applicationEventPublisher;
   }
 
   public boolean tenantExist(String tenantId) {
     return tenantRepo.findByTenantId(tenantId) != null;
   }
 
-  public boolean namespaceExist(String namespace) {
+  public boolean conflictsWithExistingNamespace(String namespace) {
     List<Namespace> namespaces = Lists.newArrayList(namespaceRepo.findAll());
-    return namespaces.stream().anyMatch(ns -> namespace.startsWith(ns.getName()));
+    return namespaces.stream().anyMatch(ns -> ns.isInConflictWith(namespace));
   }
 
   public Tenant createOrUpdateTenant(String tenantId, String defaultNamespace,
@@ -90,7 +89,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     for (String tenantAdmin : tenantAdmins) {
       PreConditions.notNullOrEmpty(tenantAdmin, "tenantAdmin");
-      
+
       if (!userAccountService.exists(tenantAdmin)) {
         throw new TenantAdminDoesntExistException(tenantAdmin);
       }
@@ -102,13 +101,18 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     EventType eventType = EventType.TENANT_ADDED;
     if (tenant == null) {
-      logger.info("Adding new tenant {}", tenantId);
+      logger.info("Adding new tenant '{}'", tenantId);
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null));
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
       tenant.setUsers(newTenantAdmins);
+      tenant.setOwner(owner);
     } else {
-      logger.info("Updating tenant {} - {}", tenantId, tenant);
+      if (!userContext.isSysAdmin() && !tenant.hasTenantAdmin(userContext.getUsername())) {
+        throw new UpdateNotAllowedException(userContext.getUsername(), tenant.getTenantId());
+      }
+
+      logger.info("Updating tenant '{}' - {}", tenantId, tenant);
       tenant = updateTenant(tenant, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null));
 
@@ -116,9 +120,9 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       eventType = EventType.TENANT_UPDATED;
     }
 
-    tenant.setOwner(owner);
     tenant = tenantRepo.save(tenant);
 
+    logger.info("Sending event for {}", tenantId);
     eventPublisher.publishEvent(new AppEvent(this, tenant, eventType));
 
     return tenant;
@@ -137,7 +141,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     totallyNewAdmins.forEach(admin -> {
       logger.info("Adding new tenant_admin '{}' to Tenant '{}'", admin, tenant.getTenantId());
       User user = userAccountService.getUser(admin);
-      tenant.getUsers().add(TenantUser.createTenantUser(tenant, user, Role.TENANT_ADMIN));
+      tenant.addUser(TenantUser.createTenantUser(user, Role.TENANT_ADMIN, Role.USER,
+          Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER));
     });
 
     upgradedToAdmins.forEach(admin -> {
@@ -169,7 +174,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     Set<TenantUser> tenantAdminUsers = Sets.newHashSet();
     for (String tenantAdminId : tenantAdmins) {
       User user = userAccountService.getUser(tenantAdminId);
-      tenantAdminUsers.add(TenantUser.createTenantUser(tenant, user, Role.TENANT_ADMIN));
+      tenantAdminUsers.add(TenantUser.createTenantUser(tenant, user, Role.TENANT_ADMIN, Role.USER,
+          Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER));
     }
     return tenantAdminUsers;
   }
@@ -181,21 +187,21 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     return Optional.ofNullable(tenantRepo.findByTenantId(tenantId));
   }
-  
+
   public Optional<Tenant> getTenantFromNamespace(String namespace) {
     PreConditions.notNullOrEmpty(namespace, "namespace");
-    
-    for(Tenant tenant : getTenants()) {
+
+    for (Tenant tenant : getTenants()) {
       if (tenant.getNamespaces() == null) {
         continue;
       }
-      for(Namespace ns : tenant.getNamespaces()) {
+      for (Namespace ns : tenant.getNamespaces()) {
         if (namespace.startsWith(ns.getName())) {
           return Optional.of(tenant);
         }
       }
     }
-    
+
     return Optional.empty();
   }
 
@@ -243,21 +249,13 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return false;
   }
 
-  public boolean deleteTenant(String tenantId, IUserContext userContext) {
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+  public boolean deleteTenant(Tenant tenant, IUserContext userContext) {
+    PreConditions.notNull(tenant, "Tenant should not be null");
 
-    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+    tenant.removeUsers();
+    
+    tenant.unsetOwner();
 
-    PreConditions.notNull(tenant, "Tenant with tenantId '" + tenantId + "' doesn't exist.");
-
-    if (tenant.getOwner().getUsername().equals(userContext.getUsername())) {
-      throw new IllegalArgumentException("Tenant with tenantId '" + tenantId
-          + "' isn't owned by user '" + userContext.getUsername() + "'");
-    }
-
-    tenant.getUsers().forEach(user -> {
-      tenant.removeUser(user);
-    });
     tenantRepo.delete(tenant);
 
     eventPublisher.publishEvent(new AppEvent(this, tenant, EventType.TENANT_DELETED));
@@ -295,7 +293,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Predicate<String> namespaceOwnedByAnotherTenant(Tenant tenant) {
-    return namespace -> !namespaceOwnedByTenant(tenant, namespace) && namespaceExist(namespace);
+    return namespace -> !namespaceOwnedByTenant(tenant, namespace)
+        && conflictsWithExistingNamespace(namespace);
   }
 
   private boolean namespaceOwnedByTenant(Tenant tenant, String namespace) {
@@ -306,8 +305,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       Optional<Set<String>> namespaces, String authenticationProvider,
       String authorizationProvider) {
 
-    Set<String> tenantNamespaces =
-        checkForConflict(combine(namespaces, defaultNamespace), this::namespaceExist);
+    Set<String> tenantNamespaces = checkForConflict(combine(namespaces, defaultNamespace),
+        this::conflictsWithExistingNamespace);
 
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
     tenant.setAuthenticationProvider(
