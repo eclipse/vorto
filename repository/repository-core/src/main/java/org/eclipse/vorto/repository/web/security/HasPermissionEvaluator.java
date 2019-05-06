@@ -13,13 +13,12 @@
 package org.eclipse.vorto.repository.web.security;
 
 import java.io.Serializable;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
@@ -33,13 +32,16 @@ import org.springframework.stereotype.Component;
 public class HasPermissionEvaluator implements PermissionEvaluator {
 
   private IModelRepositoryFactory repositoryFactory;
+  
+  private IUserAccountService accountService;
 
   private ITenantService tenantService;
 
   public HasPermissionEvaluator(@Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired ITenantService tenantService) {
+      @Autowired ITenantService tenantService, @Autowired IUserAccountService userAccountService) {
     this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
+    this.accountService = userAccountService;
   }
 
   @Override
@@ -94,17 +96,9 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
       String targetType, Object permission) {
 
     if (targetType.equals(Tenant.class.getName())) {
-      final String username = authentication.getName();
       final String role = (String) permission;
       final String tenantId = (String) targetId;
-
-      Optional<Tenant> _tenant = tenantService.getTenant(tenantId);
-      if (_tenant.isPresent()) {
-        Tenant tenant = _tenant.get();
-        return tenant.getUsers().stream()
-            .anyMatch(tenantUser -> tenantUser.getUser().getUsername().equals(username)
-                && tenantUser.hasRole(Role.valueOf(role.replace("ROLE_", ""))));
-      }
+      return accountService.hasRole(tenantId, authentication, role);
     }
 
     return false;
