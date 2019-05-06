@@ -34,10 +34,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ModelRepositorySupervisor implements ApplicationListener<AppEvent> {
 
+  @Autowired
   private ModelRepositoryFactory repositoryFactory;
 
-  public ModelRepositorySupervisor(@Autowired ModelRepositoryFactory repositoryFactory) {
-    this.repositoryFactory = repositoryFactory;
+  public ModelRepositorySupervisor() {
   }
 
   @Override
@@ -61,5 +61,13 @@ public class ModelRepositorySupervisor implements ApplicationListener<AppEvent> 
         repository.updateMeta(model);
       }
     });
+  }
+
+  public ModelRepositoryFactory getRepositoryFactory() {
+    return repositoryFactory;
+  }
+
+  public void setRepositoryFactory(ModelRepositoryFactory repositoryFactory) {
+    this.repositoryFactory = repositoryFactory;
   }
 }
