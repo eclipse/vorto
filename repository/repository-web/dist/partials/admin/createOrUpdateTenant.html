@@ -5,10 +5,17 @@
 		<h4 class="modal-title">{{ mode }} Tenant</h4>
 	</div>
 	<div class="modal-body">
+		<div class="row" ng-show="errorMessage !== ''">
+			<div class="alert alert-danger alert-dismissible" role="alert">
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  {{ errorMessage }}
+			</div>
+		</div>
+	
 		<div class="form-group">
-			<label for="tenantIdInput" class="col-sm-2 control-label">Tenant Key</label>
+			<label for="tenantIdInput" class="col-sm-2 control-label">Tenant ID</label>
 			<div class="col-sm-10">
-				<input name="tenantId" type="text" class="form-control" id="tenantIdInput" placeholder="Tenant key" ng-model="tenant.tenantId" ng-readonly="tenant.edit">
+				<input name="tenantId" type="text" class="form-control" id="tenantIdInput" placeholder="Tenant Id" ng-model="tenant.tenantId" ng-readonly="tenant.edit">
 			</div>
 		</div>
 	
@@ -117,8 +124,11 @@
 			<div class="alert alert-danger" role="alert">Value is required.</div>
 		</div>
 		<div class="form-group">
-			<label>{{ dialog.label }}</label><small ng-visible="dialog.info != null">{{ dialog.info }}</small>
-			<input name="value" type="text" ng-model="value" class="form-control" required>
+			<label>{{ dialog.label }}</label>
+			<div class="input-group">
+				<span ng-show="dialog.prefix != null" class="input-group-addon">{{ dialog.prefix }}</span>
+				<input name="value" type="text" ng-model="value" class="form-control" required>
+			</div>
 		</div>    
 	</div>
 	<div class="modal-footer">

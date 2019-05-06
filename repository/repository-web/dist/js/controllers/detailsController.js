@@ -785,6 +785,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.getUserPolicy = function() {
 			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policy')
 				.success(function (result) {
+					console.log("-erle- : policy = " + JSON.stringify(result));
 					$scope.permission = result.permission;
 					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
 						$scope.modelEditor.setReadOnly(true);
@@ -794,6 +795,7 @@ repositoryControllers.controller('DetailsController',
 						$scope.getPolicies();
 					}
 				}).error(function (data, status, headers, config) {
+					// TODO : should be unnecessary
 					$scope.permission = "READ";
 					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
 						$scope.modelEditor.setReadOnly(true);

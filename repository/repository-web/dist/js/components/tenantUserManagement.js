@@ -1,31 +1,15 @@
 
 repositoryControllers.controller("tenantUserManagementController", 
-    [ "$rootScope", "$scope", "$http", "$uibModal", 
-    function($rootScope, $scope, $http, $uibModal) {
+    [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "tenant", "dialogConfirm", 
+    function($rootScope, $scope, $http, $uibModal, $uibModalInstance, tenant, dialogConfirm) {
         
-        $scope.isRetrievingTenants = false;
+    	$scope.tenant = tenant;
         $scope.isRetrievingTenantUsers = false;
-        $scope.userTenants = [];
-        $scope.chosenTenant = null;
         $scope.userTenantUsers = [];
         
-        $scope.getTenants = function() {
-            $scope.isRetrievingTenants = true;
-            $http.get("./rest/tenants?role=ROLE_TENANT_ADMIN")
-                .then(function(result) {
-                    $scope.isRetrievingTenants = false;
-                    console.log(JSON.stringify(result));
-                    $scope.userTenants = result.data;
-                    if ($scope.userTenants.length > 0) {
-                        $scope.getTenantUsers($scope.userTenants[0].tenantId);
-                    }
-                }, function(reason) {
-                    $scope.isRetrievingTenants = false;
-                    // TODO : handling of failures
-                });
+        $scope.cancel = function() {
+            $uibModalInstance.dismiss("Canceled.");  
         };
-        
-        $scope.getTenants();
         
         $scope.$on("USER_CONTEXT_UPDATED", function(evt, data) {
             $scope.getTenants();
@@ -33,7 +17,6 @@ repositoryControllers.controller("tenantUserManagementController",
         
         $scope.getTenantUsers = function(tenantId) {
             $scope.isRetrievingTenantUsers = true;
-            $scope.chosenTenant = tenantId;
             
             $http.get("./rest/tenants/" + tenantId + "/users")
                 .then(function(result) {
@@ -45,6 +28,8 @@ repositoryControllers.controller("tenantUserManagementController",
                     // TODO : handling of failures
                 });
         };
+        
+        $scope.getTenantUsers($scope.tenant.tenantId);
         
         $scope.newUser = function() {
             return {
@@ -79,26 +64,32 @@ repositoryControllers.controller("tenantUserManagementController",
                         return user;
                     },
                     tenantId: function() {
-                        return $scope.chosenTenant;
+                        return $scope.tenant.tenantId;
                     }
                 }
             });
             
             modalInstance.result.finally(function(result) {
-                $scope.getTenantUsers($scope.chosenTenant);
+                $scope.getTenantUsers($scope.tenant.tenantId);
                 $rootScope.init();
             });
         };
         
         $scope.deleteUser = function(user) {
-            $http.delete("./rest/tenants/" + $scope.chosenTenant + "/users/" + user.username)
-                .then(function(result) {
-                    console.log("SUCCESS:" + JSON.stringify(result));
-                    $scope.getTenantUsers($scope.chosenTenant);
-                }, function(reason) {
-                    console.log("ERROR:" + JSON.stringify(reason));
-                    // TODO : Show error on window
-                });
+        	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.username + "'?", ["Confirm", "Cancel"]);
+        	
+        	dialog.setCallback("Confirm", function() {
+	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.username)
+	                .then(function(result) {
+	                    console.log("SUCCESS:" + JSON.stringify(result));
+	                    $scope.getTenantUsers($scope.tenant.tenantId);
+	                }, function(reason) {
+	                    console.log("ERROR:" + JSON.stringify(reason));
+	                    // TODO : Show error on window
+	                });
+        	});
+        	
+        	dialog.run();
         };
         
         $scope.hasUserRole = function(role, roles) {
@@ -106,12 +97,6 @@ repositoryControllers.controller("tenantUserManagementController",
         }
     }
 ]);
-
-repositoryControllers.directive("tenantUser", function() {
-    return {
-        templateUrl: "webjars/repository-web/dist/partials/admin/tenantUserManagement.html"
-    };
-});
 
 repositoryControllers.controller("createOrUpdateUserController", 
     ["$rootScope", "$scope", "$uibModalInstance", "$http", "user", "tenantId",

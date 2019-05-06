@@ -125,21 +125,19 @@
 												<dd class="ng-binding">{{model.displayName == "" ? "&nbsp;" : model.displayName}}</dd>
 												<dt>Namespace:</dt>
 												<dd class="ng-binding">{{model.id.namespace}}</dd>
-												<dt>
-													Version:
-												</dt>
+												<dt>Version:</dt>
 												<dd class="ng-binding">{{model.id.version}}</dd>
+												<dt>Created By:</dt>
+												<dd class="ng-binding">{{ model.author }}</dd>
+												<dt>Created On:</dt>
+												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+												<dt>Last Modified By:</dt>
+												<dd class="ng-binding">{{model.lastModifiedBy}}</dd>
 												<dt ng-show="model.state === 'Released'">Released Date:</dt>
-												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Modification Date:</dt>
+												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Last Modified On:</dt>
 												<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
 												<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 												<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
-												<dt>
-													Created On:
-												</dt>
-												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-												<dt>Modified By:</dt>
-												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>References:</dt>
 												<dd>
 													<div ng-show="modelReferences.show">

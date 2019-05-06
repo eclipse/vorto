@@ -1,4 +1,10 @@
 <section class="content">
+		<!--  -->
+		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('ROLE_MODEL_CREATOR')">
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <strong>You don't have any tenants yet!</strong> You cannot describe devices without a tenant. To create a tenant, click on the <strong>Manage</strong> tab.
+		</div>
+		<!--  -->
 		<h2 id="searchHeadline">Models</h2>
 		<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Describe device</a>
 		<br/><br/>

@@ -1,9 +1,9 @@
-
 repositoryControllers.controller("tenantManagementController", 
-    [ "$rootScope", "$scope", "$http", "$uibModal", 
-    function($rootScope, $scope, $http, $uibModal) {
+    [ "$rootScope", "$scope", "$http", "$uibModal", "dialogConfirm", "dialogPrompt",
+    function($rootScope, $scope, $http, $uibModal, dialogConfirm, dialogPrompt) {
         $scope.tenants = [];
         $scope.isRetrievingTenants = false;
+        $scope.errorMessage = "";
         
         $scope.getTenants = function() {
             $scope.isRetrievingTenants = true;
@@ -46,6 +46,9 @@ repositoryControllers.controller("tenantManagementController",
                 resolve: {
                     tenant: function () {
                         return tenant;
+                    },
+                    tenants: function() {
+                    	return $scope.tenants;
                     }
                 }
             });
@@ -56,15 +59,59 @@ repositoryControllers.controller("tenantManagementController",
             });
         };
         
+        $scope.manageUsers = function(tenant) {
+        	var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: "webjars/repository-web/dist/partials/admin/tenantUserManagement.html",
+                size: "lg",
+                controller: "tenantUserManagementController",
+                resolve: {
+                    tenant: function () {
+                        return tenant;
+                    }
+                }
+            });
+            
+            modalInstance.result.finally(function(result) {
+                $scope.getTenants();
+                $rootScope.init();
+            });
+        }
+        
+        $scope.requestOfficialNamespace = function(tenant) {
+        	var dialog = dialogPrompt($scope, "Official Namespace Request", "Namespace (e.g com.abc.xyz)", ["Confirm", "Cancel"]);
+        	
+        	dialog.setCallback("Confirm", function(promptReply) {
+        		$http.post("./rest/tenants/" + tenant.tenantId + "/namespaces/" + promptReply + "/requestOfficial")
+	                .then(function(result) {
+	                	var emailSent = result.data;
+	                	if (!emailSent) {
+	                		$scope.errorMessage = "Email was not sent. Please try contacting the administrators of Vorto manually.";
+	                	}
+	                    console.log("SUCCESS:" + JSON.stringify(result));
+	                }, function(reason) {
+	                    console.log("ERROR:" + JSON.stringify(reason));
+	                });
+        	});
+        	
+        	dialog.run();
+        }
+        
         $scope.deleteTenant = function(tenant) {
-            $http.delete("./rest/tenants/" + tenant.tenantId)
-                .then(function(result) {
-                    console.log("SUCCESS:" + JSON.stringify(result));
-                    $scope.getTenants();
-                }, function(reason) {
-                    console.log("ERROR:" + JSON.stringify(reason));
-                    $scope.getTenants();
-                });
+        	var dialog = dialogConfirm($scope, "Are you sure you want to remove tenant '" + tenant.tenantId + "'?", ["Confirm", "Cancel"]);
+        	
+        	dialog.setCallback("Confirm", function() {
+        		$http.delete("./rest/tenants/" + tenant.tenantId)
+	                .then(function(result) {
+	                    console.log("SUCCESS:" + JSON.stringify(result));
+	                    $scope.getTenants();
+	                }, function(reason) {
+	                    console.log("ERROR:" + JSON.stringify(reason));
+	                    $scope.getTenants();
+	                });
+        	});
+        	
+        	dialog.run();
         };
     }
 ]);
@@ -76,12 +123,13 @@ repositoryControllers.directive("tenantManagement", function() {
 });
 
 repositoryControllers.controller("createOrUpdateTenantController", 
-    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "tenant",
-    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, tenant) {
+    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "tenant", "tenants",
+    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, tenant, tenants) {
         
         $scope.tenant = tenant;
         $scope.mode = tenant.edit ? "Update" : "Create";
         $scope.originalNamespaces = tenant.namespaces.slice();
+        $scope.errorMessage = "";
         
         $scope.isCreatingOrUpdating = false;
         
@@ -90,7 +138,7 @@ repositoryControllers.controller("createOrUpdateTenantController",
         };
         
         $scope.createOrUpdateTenant = function() {
-            $scope.isCreatingOrUpdating = true;
+        	$scope.isCreatingOrUpdating = true;
             $http.put("./rest/tenants/" + $scope.tenant.tenantId, {
                 "tenantAdmins" : $scope.tenant.admins,
                 "authenticationProvider" : $scope.tenant.authenticationProvider,
@@ -103,12 +151,13 @@ repositoryControllers.controller("createOrUpdateTenantController",
                 $uibModalInstance.close($scope.tenant);
             }, function(reason) {
                 console.log("ERROR:" + JSON.stringify(reason));
+                $scope.errorMessage = reason.data.errorMessage;
                 $scope.isCreatingOrUpdating = false;
             });
         };
         
         $scope.isInvalid = function() {
-            return $scope.tenant.tenantId === '' || 
+        	return $scope.tenant.tenantId === '' || 
                 $scope.tenant.admins.length <= 0 || 
                 $scope.tenant.namespaces.length <= 0 ||
                 $scope.tenant.defaultNamespace === '';
@@ -182,7 +231,7 @@ repositoryControllers.controller("createOrUpdateTenantController",
             $scope.addItem({
                 title: "Add Namespace",
                 label: "Namespace",
-                info: "this namespace will be appended with '" + $rootScope.privateNamespacePrefix + "'. An official namespace (without the '" + $rootScope.privateNamespacePrefix + "' prefix) can be requested after the tenant is created.",
+                prefix: "vorto.private.",
                 validate: function(value, resultFn) {
                     if ($scope.tenant.namespaces.includes($rootScope.privateNamespacePrefix + value)) {
                         resultFn({
@@ -212,6 +261,9 @@ repositoryControllers.controller("createOrUpdateTenantController",
                 },
                 successFn: function(value) {
                     $scope.tenant.namespaces.push($rootScope.privateNamespacePrefix + value);
+                    if ($scope.tenant.namespaces.length == 1) {
+                    	$scope.tenant.defaultNamespace = $scope.tenant.namespaces[0]; 
+                    }
                 }
             });
         };

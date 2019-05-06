@@ -20,7 +20,7 @@
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" ng-model="user.roleUser"> ROLE_USER
+						<input type="checkbox" ng-model="user.roleUser"> VIEW <small>Allow this user to view models</small>
 			        </label>
 		      	</div>
 		    </div>
@@ -30,7 +30,7 @@
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" ng-model="user.roleModelCreator"> ROLE_MODEL_CREATOR
+						<input type="checkbox" ng-model="user.roleModelCreator"> CREATE <small>Allow this user to create models</small>
 			        </label>
 		      	</div>
 		    </div>
@@ -40,7 +40,7 @@
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" ng-model="user.roleModelPromoter"> ROLE_MODEL_PROMOTER
+						<input type="checkbox" ng-model="user.roleModelPromoter"> PROMOTE <small>Allow this user to release models</small>
 			        </label>
 		      	</div>
 		    </div>
@@ -50,12 +50,13 @@
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" ng-model="user.roleModelReviewer"> ROLE_MODEL_REVIEWER
+						<input type="checkbox" ng-model="user.roleModelReviewer"> REVIEW <small>Allow this user to approve the release of models</small>
 			        </label>
 		      	</div>
 		    </div>
 		</div>
-		
+	</div>
+	<div class="modal-footer">	
 		<div class="form-group">
 			<div class="col-sm-12">
 				<button type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">

@@ -11,42 +11,63 @@
 			New
 		</button>
 	</div>
+</div> 
+<div class="row" style="height: 10px;"></div>
+<div ng-show="errorMessage !== ''" class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  {{ errorMessage }}
 </div>
-<div class="col-xs-12" style="height: 10px;"></div>
-<div>
-	<table class="table table-bordered table-striped table-condensed">
-		<thead>
-			<tr>
-				<th>TenantId</th>
-				<th>Admins</th>
-				<th>Authentication Provider</th>
-				<th>Authorization Provider</th>
-				<th>Namespaces</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody ng-repeat="tenant in tenants">
-			<tr>
-				<td>{{ tenant.tenantId }}</td>
-				<td>
-					<div ng-repeat="admin in tenant.admins">{{admin}}</div>
-				</td>
-				<td>{{ tenant.authenticationProvider }}</td>
-				<td>{{ tenant.authorizationProvider }}</td>
-				<td>
-					<div ng-repeat="namespace in tenant.namespaces">
-						{{namespace}}&nbsp;<span
-							ng-show="namespace === tenant.defaultNamespace"
-							class="label label-primary">default</span>
-					</div>
-				</td>
-				<td>
-					<div class="btn-group" role="group">
-						<button type="button" class="btn btn-info" ng-click="createOrUpdateTenant(editableTenant(tenant))">Edit</button>
-						<button type="button" class="btn btn-danger" ng-click="deleteTenant(tenant)">Delete</button>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+<div class="row">
+	<div class="col-sm-12">
+		<table class="table table-bordered table-striped table-condensed">
+			<thead>
+				<tr>
+					<th class="col-md-2">TenantId</th>
+					<th class="col-md-2">Admins</th>
+					<th class="col-md-1">Authentication</th>
+					<th class="col-md-1">Authorization</th>
+					<th class="col-md-3">Namespaces</th>
+					<th class="col-md-3">Actions</th>
+				</tr>
+			</thead>
+			<tbody ng-repeat="tenant in tenants">
+				<tr>
+					<td class="col-md-2">{{ tenant.tenantId }}</td>
+					<td class="col-md-2">
+						<div ng-repeat="admin in tenant.admins">{{admin}}</div>
+					</td>
+					<td class="col-md-1">{{ tenant.authenticationProvider }}</td>
+					<td class="col-md-1">{{ tenant.authorizationProvider }}</td>
+					<td class="col-md-3">
+						<div ng-repeat="namespace in tenant.namespaces">
+							{{namespace}}&nbsp;<span
+								ng-show="namespace === tenant.defaultNamespace"
+								class="label label-primary">default</span>
+						</div>
+					</td>
+					<td class="col-md-3">
+						<div class="btn-group btn-group-justified" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-sm btn-primary" ng-click="createOrUpdateTenant(editableTenant(tenant))">Edit</button>
+							</div>
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-sm btn-danger" ng-click="deleteTenant(tenant)">Delete</button>
+							</div>
+							<!-- Other actions -->
+							<div class="btn-group" role="group">
+							  <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							    More ...<span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu">
+							    <li><a ng-click="manageUsers(tenant)">Manage Users</a></li>
+							    <li><a ng-click="requestOfficialNamespace(tenant)">Request official namespace</a></li>
+							  </ul>
+							</div>
+							<!--  -->
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
