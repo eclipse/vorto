@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.eclipse.vorto.repository.account.Role.ADMIN;
-import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
-import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
-import static org.eclipse.vorto.repository.account.Role.USER;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_CREATOR;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
+import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
+import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -31,6 +31,9 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.After;
@@ -44,6 +47,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -58,6 +62,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles( profiles={"local-test"})
 @ContextConfiguration
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -79,6 +84,7 @@ public abstract class AbstractIntegrationTest {
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor nonTenantUser;
 
   protected Gson gson = new Gson();
 
@@ -94,13 +100,15 @@ public abstract class AbstractIntegrationTest {
   @Before
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userAdmin = user("user1").password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
-    userStandard = user("user2").password("pass")
+    userAdmin = user(ApplicationConfig.USER_ADMIN).password("pass").authorities(SpringUserUtils.toAuthorityList(
+        Sets.newHashSet(USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
+    userStandard = user(ApplicationConfig.USER_STANDARD).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
-    userCreator = user("user3").password("pass")
+    userCreator = user(ApplicationConfig.USER_CREATOR).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
-
+    nonTenantUser = user(ApplicationConfig.NON_TENANT_USER).password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+    
     setUpTest();
   }
 
@@ -125,7 +133,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void deleteModel(String modelId) throws Exception {
-    repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
+    repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
 
@@ -138,11 +146,23 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void releaseModel(String modelId) throws Exception {
-    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Release")
+    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Release")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
 
-    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve")
+    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Approve")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
+  }
+  
+  public void setPublic(String modelId) throws Exception {
+    PolicyEntry publicPolicyEntry = new PolicyEntry();
+    publicPolicyEntry.setPrincipalId("ANONYMOUS");
+    publicPolicyEntry.setPermission(Permission.READ);
+    publicPolicyEntry.setPrincipalType(PrincipalType.User);
+    
+    String publicPolicyEntryStr = new Gson().toJson(publicPolicyEntry);
+    
+    repositoryServer.perform(put("/rest/tenants/playground/models/" + modelId + "/policies")
+        .with(userAdmin).contentType(MediaType.APPLICATION_JSON).content(publicPolicyEntryStr));
   }
 
   public void createAndReleaseModel(String fileName, String modelId) throws Exception {
@@ -153,11 +173,11 @@ public abstract class AbstractIntegrationTest {
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
       String fileName, String modelId) throws Exception {
     repositoryServer
-        .perform(post("/rest/default/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+        .perform(post("/rest/tenants/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
             .with(user).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
     repositoryServer
-        .perform(put("/rest/default/models/" + modelId).with(user)
+        .perform(put("/rest/tenants/playground/models/" + modelId).with(user)
             .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
         .andExpect(status().isOk());
   }

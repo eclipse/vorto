@@ -62,11 +62,6 @@
 			<artifactId>mapping-serializer</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.vorto.utilities</groupId>
-			<artifactId>dsl-reader</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext</artifactId>
 			<exclusions>
@@ -205,14 +200,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!-- Testing -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

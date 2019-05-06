@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.notification.message;
 
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.IMessage;
 
 public abstract class AbstractMessage implements IMessage {

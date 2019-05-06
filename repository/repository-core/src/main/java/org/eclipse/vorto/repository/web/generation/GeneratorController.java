@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(value = "/generate", description = "Generate code from information models")
 @RestController("internal.GeneratorController")
-@RequestMapping(value = "/rest/{tenant}/generators")
+@RequestMapping(value = "/rest/{tenantId}/generators")
 public class GeneratorController extends AbstractRepositoryController {
 
   @Autowired
@@ -72,7 +72,7 @@ public class GeneratorController extends AbstractRepositoryController {
 
   @ApiOperation(value = "Deregister a code generator", hidden = true)
   @RequestMapping(value = "/{serviceKey}", method = RequestMethod.DELETE)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public boolean deregisterGenerator(
       @ApiParam(value = "Service key for a specified platform, e.g. lwm2m",
           required = true) final @PathVariable String serviceKey) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -60,26 +61,36 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<exclusions>
 				<exclusion>
-				 <groupId>org.springframework.security</groupId>
-				 <artifactId>spring-security-web</artifactId>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-web</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-web</artifactId>
-		    <version>4.2.9.RELEASE</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.2.9.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 			<version>2.0.17.RELEASE</version>
 		</dependency>
+
+		<!-- start (mariadb) -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>1.5.7</version>
+		</dependency>
+		<!-- end -->
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -87,10 +98,9 @@
 			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -192,24 +202,23 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.eclipse.vorto</groupId>
-            <artifactId>generator-runner</artifactId>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>generator-runner</artifactId>
 			<version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-         <dependency>
-            <groupId>org.eclipse.vorto</groupId>
-            <artifactId>generator-api</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-        </dependency>
-		<!--  following two jars are need to have models stored in database -->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>generator-api</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+		</dependency>
+		<!-- following two jars are need to have models stored in database -->
 		<dependency>
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-cachestore-jdbc</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
@@ -218,16 +227,16 @@
 
 	<build>
 		<resources>
-		   <resource>
-			  <directory>src/main/resources</directory>
-		   </resource>
-		   <resource>
-			  <directory>src/main/resources</directory>
-			  <filtering>true</filtering>
-			  <includes>
-				  <include>static/index.html</include>
-			  </includes>
-		   </resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>static/index.html</include>
+				</includes>
+			</resource>
 		</resources>
 		<finalName>infomodelrepository</finalName>
 		<plugins>

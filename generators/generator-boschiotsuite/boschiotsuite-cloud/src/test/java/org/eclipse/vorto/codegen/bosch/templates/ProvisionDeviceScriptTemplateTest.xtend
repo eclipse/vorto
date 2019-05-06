@@ -34,8 +34,8 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm,"cpuTemperature");
 		
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate1);
+		System.out.println(generated.replaceAll("\\\\r\\\\n", "\\\\n"));
+		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n"), getExpectedTemplate1.replaceAll("\\\\r\\\\n", "\\\\n"));
 	}
 	
 	def String getExpectedTemplate1() {
@@ -106,7 +106,7 @@ class ProvisionDeviceScriptTemplateTest {
 		
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate2);
+		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n"), getExpectedTemplate2.replaceAll("\\\\r\\\\n", "\\\\n"));
 	}
 	
 	def String getExpectedTemplate2() {
@@ -182,7 +182,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm,"cpuTemperature");
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate3);
+		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n") ,getExpectedTemplate3.replaceAll("\\\\r\\\\n", "\\\\n"));
 	}
 	
 	def String getExpectedTemplate3() {
@@ -254,7 +254,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm,"cpuTemperature");
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(generated,getExpectedTemplate4);
+		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n"), getExpectedTemplate4.replaceAll("\\\\r\\\\n", "\\\\n"));
 	}
 	
 	def String getExpectedTemplate4() {

@@ -10,24 +10,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.backup;
+package org.eclipse.vorto.repository.core.events;
 
-public interface IModelBackupService {
-
-  /**
-   * creates a complete backup of the repository content
-   * 
-   * @return
-   * @throws Exception
-   */
-  byte[] backup() throws Exception;
-
-  /**
-   * restores the given backup. Previous data will be lost!!
-   * 
-   * @param inputStream
-   * @throws Exception
-   */
-  void restore(byte[] backup) throws Exception;
-
+public enum EventType {
+  USER_DELETED,
+  USER_MODIFIED,
+  USER_ADDED,
+  TENANT_ADDED,
+  TENANT_UPDATED,
+  TENANT_DELETED
 }

@@ -15,12 +15,15 @@ package org.eclipse.vorto.repository.account;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRole;
 
 public class UserUtils {
 
 
-  public static String getUserRolesAsCommaSeparatedString(User user) {
-    Set<Role> userRoles = UserUtils.extractRolesAsList(user.getRoles());
+  public static String getUserRolesAsCommaSeparatedString(String tenantId, User user) {
+    Set<Role> userRoles = UserUtils.extractRolesAsList(user.getRoles(tenantId));
     StringJoiner roles = new StringJoiner(",");
 
     for (Role userRole : userRoles) {

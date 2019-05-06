@@ -46,13 +46,15 @@ repositoryControllers.controller('SearchController',
         }
 
         $http.get('./api/v1/search/models?expression=' + filter).success(
-            function(data, status, headers, config) {            	
+            function(data, status, headers, config) {
+                console.log("" + JSON.stringify(data));
             	$scope.models = data;
             	$scope.modelsTotal = data.length;
                 $scope.isLoading = false;
                 filterModels();
             }).error(function(data, status, headers, config) {
                 $scope.models = [];
+                $scope.filteredModels = [];
                 $scope.isLoading = false;
             });
     };
@@ -78,7 +80,7 @@ repositoryControllers.controller('SearchController',
     }
 
     $scope.go = function(model){
-        $location.path("/details/"+model.id.prettyFormat);
+        $location.path("/details/" + model.tenantId + "/" + model.id.prettyFormat);
     };
 
     $scope.showYourModels = function() {
@@ -87,7 +89,7 @@ repositoryControllers.controller('SearchController',
     };
 
     function filterModels() {    
-        $scope.filteredModels = $scope.models;    
+        $scope.filteredModels = $scope.models;
         if($scope.onlyYourModels) {
             $scope.filteredModels = $filter('filter')($scope.filteredModels, {author: $rootScope.user });        
         }

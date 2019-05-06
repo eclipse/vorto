@@ -23,9 +23,11 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.domain.Generator;
 import org.eclipse.vorto.repository.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.generation.GenerationException;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
@@ -56,7 +58,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
   private IGeneratorLookupRepository registeredGeneratorsRepository;
 
   @Autowired
-  private IModelRepository modelRepositoryService;
+  private IModelRepositoryFactory modelRepositoryFactory;
 
 
   private RestTemplate restTemplate;
@@ -109,17 +111,21 @@ public class GenerationDelegateProxyService implements IGeneratorService {
   }
 
   @Override
-  public GeneratedOutput generate(ModelId modelId, String serviceKey,
+  public GeneratedOutput generate(IUserContext userContext, ModelId modelId, String serviceKey,
       Map<String, String> requestParams) {
-    ModelInfo modelResource = modelRepositoryService.getById(modelId);
+
+    ModelInfo modelResource = modelRepositoryFactory.getRepository(userContext).getById(modelId);
+
     if (modelResource == null) {
       throw new ModelNotFoundException("Model with the given ID does not exist", null);
     }
+
     if (modelResource.getType() == ModelType.Datatype
         || modelResource.getType() == ModelType.Mapping) {
       throw new GenerationException(
           "Provided model is neither an information model nor a function block model!");
     }
+
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
     Generator generatorEntity = getGenerator(serviceKey);
     if (generatorEntity == null) {
@@ -139,7 +145,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
         generatorEntity.getGenerationEndpointUrl() + attachRequestParams(requestParams),
         HttpMethod.GET, entity, byte[].class, modelId.getNamespace(), modelId.getName(),
         modelId.getVersion());
-
+    
     return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response),
         response.getHeaders().getContentLength());
   }

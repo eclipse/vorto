@@ -29,6 +29,10 @@ public class ModelNotFoundException extends RuntimeException {
   public ModelNotFoundException(String msg, Throwable t) {
     super(msg, t);
   }
+  
+  public ModelNotFoundException(Throwable t) {
+    super("Model not found", t);
+  }
 
   public ModelNotFoundException(String msg) {
     super(msg);

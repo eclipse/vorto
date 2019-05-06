@@ -13,7 +13,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
         templateUrl : "webjars/repository-web/dist/partials/mapping/mappingcreator.html",
         controller : "MappingBuilderController"
-    }).when("/details/:modelId", {
+    }).when("/details/:tenantId/:modelId", {
         templateUrl : "webjars/repository-web/dist/partials/details-template.html",
         controller : "DetailsController"
     }).when("/generators", {
@@ -45,6 +45,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
 } ]).run(function($location, $http, $rootScope) {
 
+    $rootScope.privateNamespacePrefix = "vorto.private.";
+    
 	$rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
 	
 	$rootScope.authenticated = false;
@@ -75,7 +77,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.displayName = user.displayName;
             $rootScope.authenticated = true;
             $rootScope.authority = user.roles;
-            // TODO : set the $rootScope.tenant to the tenant of the user
+            
+            console.log(JSON.stringify(user));
+            
         } else {
             $rootScope.userInfo = null;
             $rootScope.user = null;
@@ -106,7 +110,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 if(element === role) {
                     flag = true;
                     break;
-                }else{
+                } else {
                     flag = false;
                 }
             }
@@ -136,6 +140,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
         var getUserSucceeded = function(result) {
             $rootScope.setUser(result.data);
+            $rootScope.$broadcast("USER_CONTEXT_UPDATED", result.data);
             return result.data;
         };
 
@@ -158,7 +163,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             }
             return user;
         };
-
+        
         $http.get("./context")
             .then(getContextSucceeded, getContextFailed)
             .then(getUser)

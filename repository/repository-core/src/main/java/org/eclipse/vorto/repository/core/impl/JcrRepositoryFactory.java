@@ -22,12 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Component
+//@Component
 public class JcrRepositoryFactory implements FactoryBean<Repository> {
 
   private static final Logger LOG = LoggerFactory.getLogger(JcrRepositoryFactory.class);

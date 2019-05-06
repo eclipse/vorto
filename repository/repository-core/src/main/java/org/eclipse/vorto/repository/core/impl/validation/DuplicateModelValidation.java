@@ -13,34 +13,38 @@
 package org.eclipse.vorto.repository.core.impl.validation;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
+import org.eclipse.vorto.repository.domain.Role;
+import org.springframework.security.core.Authentication;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class DuplicateModelValidation implements IModelValidator {
 
-  private IModelRepository modelRepository;
-  
-  private IModelPolicyManager policyManager;
+  private IModelRepositoryFactory modelRepoFactory;
 
   private IUserAccountService userRepository;
 
-  public DuplicateModelValidation(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserAccountService userRepo) {
-    this.modelRepository = modelRepository;
-    this.policyManager = policyManager;
+  public DuplicateModelValidation(IModelRepositoryFactory modelRepoFactory,
+      IUserAccountService userRepo) {
+    this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepo;
   }
 
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
-    if (modelRepository.exists(modelResource.getId()) && (!isAdmin(context) && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
+    IModelPolicyManager policyManager = modelRepoFactory.getPolicyManager(context.getUserContext());
+    IModelRetrievalService modelRetrievalService =
+        modelRepoFactory.getModelRetrievalService(context.getUserContext());
+    if (modelRetrievalService.getModel(modelResource.getId()).isPresent() && (!isAdmin(context)
+        && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
       throw new ValidationException("Model already exists", modelResource);
     }
   }
@@ -51,10 +55,9 @@ public class DuplicateModelValidation implements IModelValidator {
     assert (context.getUserContext().getUsername() != null);
     assert (userRepository != null);
 
-    User user = userRepository.getUser(context.getUserContext().getUsername());
-    if (user == null) {
-      return false;
-    }
-    return user.isAdmin();
+    Authentication authentication = context.getUserContext().getAuthentication();
+
+    return authentication.getAuthorities().stream()
+        .anyMatch(ga -> ga.getAuthority().equals(Role.rolePrefix + Role.SYS_ADMIN));
   }
 }

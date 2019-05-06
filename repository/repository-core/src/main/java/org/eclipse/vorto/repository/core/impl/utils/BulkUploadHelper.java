@@ -26,14 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
@@ -50,16 +48,13 @@ import org.springframework.util.StringUtils;
 
 public class BulkUploadHelper {
 
-  private IModelRepository repositoryService;
-
   private IUserAccountService userRepository;
   
-  private IModelPolicyManager policyManager;
+  private IModelRepositoryFactory modelRepoFactory;
 
-  public BulkUploadHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, 
+  public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory, 
 		  IUserAccountService userRepository) {
-    this.repositoryService = modelRepository;
-    this.policyManager = policyManager;
+    this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
   }
 
@@ -181,11 +176,11 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new DuplicateModelValidation(this.repositoryService, this.policyManager, this.userRepository));
+        .add(new DuplicateModelValidation(modelRepoFactory, this.userRepository));
     bulkUploadValidators
-        .add(new BulkModelDuplicateIdValidation(this.repositoryService, modelResources));
+        .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators
-        .add(new BulkModelReferencesValidation(this.repositoryService, modelResources));
+        .add(new BulkModelReferencesValidation(modelRepoFactory, modelResources));
     return bulkUploadValidators;
   }
 

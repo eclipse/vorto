@@ -1,0 +1,68 @@
+<form class="form-horizontal" name="tenantForm">
+	<div class="modal-header">
+		<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">{{ mode }} User</h4>
+	</div>
+	<div class="modal-body">
+		
+		<div class="row" ng-show="errorMessage !== ''">
+			<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+		</div>
+		
+		<div class="form-group">
+		    <label for="userId" class="col-sm-2 control-label">User ID</label>
+		    <div class="col-sm-10">
+		    	<input type="text" class="form-control" id="userId" placeholder="userId" ng-model="user.username" ng-readonly="user.edit">
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleUser"> VIEW <small>Allow this user to view models</small>
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelCreator"> CREATE <small>Allow this user to create models</small>
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelPromoter"> PROMOTE <small>Allow this user to release models</small>
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelReviewer"> REVIEW <small>Allow this user to approve the release of models</small>
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+	</div>
+	<div class="modal-footer">	
+		<div class="form-group">
+			<div class="col-sm-12">
+				<button type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">
+					<i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i>{{ mode }} User
+				</button>
+			</div>
+		</div>
+	</div>
+</form>

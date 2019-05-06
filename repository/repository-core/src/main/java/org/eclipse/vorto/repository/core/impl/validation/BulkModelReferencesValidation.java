@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
@@ -31,9 +32,9 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
 
   private List<ModelId> zipModelIds;
 
-  public BulkModelReferencesValidation(IModelRepository modelRepository,
+  public BulkModelReferencesValidation(IModelRepositoryFactory modelRepoFactory,
       Set<ModelInfo> modelResources) {
-    super(modelRepository);
+    super(modelRepoFactory);
     zipModelIds =
         modelResources.stream().map(new java.util.function.Function<ModelInfo, ModelId>() {
           @Override
@@ -49,7 +50,7 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
       throws ValidationException {
     validateInRepository(modelResource, context);
     // Validate other references in zip files.
-    validateInZipFiles(modelResource);
+    validateInZipFiles(modelResource, context);
   }
 
   private List<ModelId> validateInRepository(ModelInfo modelResource, InvocationContext context) {
@@ -62,19 +63,16 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
     return missingReferences;
   }
 
-  private boolean isNotInRepository(ModelId modelId) {
-    return getModelRepository().getById(modelId) == null;
-
+  private boolean isNotInRepository(ModelId modelId, IUserContext userContext) {
+    return !getModelRepoFactory().getModelRetrievalService(userContext).getModel(modelId).isPresent();
   }
 
-  private void validateInZipFiles(ModelInfo modelResource) {
+  private void validateInZipFiles(ModelInfo modelResource, InvocationContext context) {
     List<ModelId> references = modelResource.getReferences();
     List<ModelId> missingReferences = new ArrayList<ModelId>();
     for (ModelId modelId : references) {
-      if (!zipModelIds.contains(modelId)) {
-        if (isNotInRepository(modelId)) {
-          missingReferences.add(modelId);
-        }
+      if (!zipModelIds.contains(modelId) && isNotInRepository(modelId, context.getUserContext())) {
+        missingReferences.add(modelId);
       }
     }
     if (missingReferences.size() > 0)

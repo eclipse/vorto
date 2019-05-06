@@ -15,11 +15,10 @@ package org.eclipse.vorto.repository.upgrade.impl;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +40,10 @@ public class CommentAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 
     try {
       if (emailPrefix.isPresent()) {
-        updateModelsFor(UserContext.user(emailPrefix.get()), user);
+        updateModelsFor(user.getUsername(), UserContext.getHash(emailPrefix.get()));
       }
 
-      updateModelsFor(UserContext.user(user.getUsername()), user);
+      updateModelsFor(user.getUsername(), UserContext.getHash(user.getUsername()));
     } catch (Exception e) {
       logger.error("error while updating user " + user.getUsername(), e);
     }
@@ -53,13 +52,12 @@ public class CommentAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
         emailPrefix);
   }
 
-  private void updateModelsFor(IUserContext userContext, User user) {
-    Collection<Comment> comments =
-        commentService.getCommentsByAuthor(userContext.getHashedUsername());
+  private void updateModelsFor(String username, String hashedUsername) {
+    Collection<Comment> comments = commentService.getCommentsByAuthor(hashedUsername);
     for (Comment comment : comments) {
-      comment.setAuthor(user.getUsername());
+      comment.setAuthor(username);
       commentService.saveComment(comment);
-      logger.info("Setting Comment '{}' to author '{}'", comment.getContent(), user.getUsername());
+      logger.info("Setting Comment '{}' to author '{}'", comment.getContent(), username);
     }
   }
 

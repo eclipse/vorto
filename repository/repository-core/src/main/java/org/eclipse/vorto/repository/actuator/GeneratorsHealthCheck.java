@@ -12,8 +12,8 @@
  */
 package org.eclipse.vorto.repository.actuator;
 
+import org.eclipse.vorto.repository.domain.Generator;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
-import org.eclipse.vorto.repository.generation.impl.Generator;
 import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;

@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
-
+  
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
 
@@ -68,12 +68,12 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepository(), getPolicyManager(), getUserRepository());
+          new BulkUploadHelper(getModelRepoFactory(), getUserRepository());
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           user);
     } else {
       ModelValidationHelper validationHelper =
-          new ModelValidationHelper(getModelRepository(), getPolicyManager(), getUserRepository());
+          new ModelValidationHelper(getModelRepoFactory(), getUserRepository());
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
         return Arrays.asList(validationHelper.validate(modelInfo, user));

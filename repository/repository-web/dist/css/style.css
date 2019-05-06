@@ -253,7 +253,7 @@ ul.nav a {
 .dropdown-menu a:hover {
     background-color: grey;
 }
-
+/*
 .panel-heading {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
@@ -290,14 +290,14 @@ ul.nav a {
 
 .panel-default>.panel-heading {
     color: #12263A;
-    background: #f9fcff; /* Old browsers */
-    background: -moz-linear-gradient(top, #f9fcff 0%, #d4dde8 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f9fcff), color-stop(100%, #d4dde8)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #f9fcff 0%, #d4dde8 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #f9fcff 0%, #d4dde8 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #f9fcff 0%, #d4dde8 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #f9fcff 0%, #d4dde8 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9fcff', endColorstr='#d4dde8', GradientType=0); /* IE6-9 */
+    background: #f9fcff;
+    background: -moz-linear-gradient(top, #f9fcff 0%, #d4dde8 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f9fcff), color-stop(100%, #d4dde8));
+    background: -webkit-linear-gradient(top, #f9fcff 0%, #d4dde8 100%);
+    background: -o-linear-gradient(top, #f9fcff 0%, #d4dde8 100%);
+    background: -ms-linear-gradient(top, #f9fcff 0%, #d4dde8 100%);
+    background: linear-gradient(to bottom, #f9fcff 0%, #d4dde8 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9fcff', endColorstr='#d4dde8', GradientType=0);
     border-color: #ddd;
 }
 
@@ -308,7 +308,7 @@ ul.nav a {
     border-color: #337ab7;
     box-shadow: 3px 3px 0px 0px rgba(30, 103, 157, 0.95);
 }
-
+*/
 select {
   font-size: 28px;
 }

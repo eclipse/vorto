@@ -10,15 +10,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "user_roles")
+@Table(name = "user_role")
 public class UserRole implements Serializable {
 
+  public static final String ROLE_SYS_ADMIN = Role.rolePrefix + Role.SYS_ADMIN.toString();
+  public static final String ROLE_TENANT_ADMIN = Role.rolePrefix + Role.TENANT_ADMIN.toString();
+  
   /**
    * 
    */
@@ -33,12 +36,16 @@ public class UserRole implements Serializable {
   private Role role;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+  @JoinColumn(name = "tenant_user_id")
+  private TenantUser user;
 
   public UserRole() {}
 
-  public UserRole(Role role, User user) {
+  public UserRole(Role role) {
+    this.role = role;
+  }
+  
+  public UserRole(Role role, TenantUser user) {
     this.role = role;
     this.user = user;
   }
@@ -59,17 +66,44 @@ public class UserRole implements Serializable {
     this.role = role;
   }
 
-  public User getUser() {
+  public TenantUser getUser() {
     return user;
   }
 
-  public void setUser(User user) {
+  public void setUser(TenantUser user) {
     this.user = user;
   }
-
+  
   @Override
   public String toString() {
     return "UserRole [id=" + id + ", role=" + role + ", user=" + user + "]";
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((role == null) ? 0 : role.hashCode());
+    result = prime * result + ((user == null) ? 0 : user.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    UserRole other = (UserRole) obj;
+    if (role != other.role)
+      return false;
+    if (user == null) {
+      if (other.user != null)
+        return false;
+    } else if (!user.equals(other.user))
+      return false;
+    return true;
+  }
 }

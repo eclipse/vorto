@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.IUserContext;
 
 /**
  * This service is a facade service to communicate to all registered Vorto Generators
@@ -76,7 +77,7 @@ public interface IGeneratorService {
    * @return actual generated output
    * @throws GenerationException if something goes wrong during code generation
    */
-  GeneratedOutput generate(ModelId modelId, String serviceKey, Map<String, String> requestParams);
+  GeneratedOutput generate(IUserContext userContext, ModelId modelId, String serviceKey, Map<String, String> requestParams);
 
   /**
    * Invokes a generator for the given serviceKey

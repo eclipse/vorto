@@ -20,10 +20,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.upgrade.impl.CommentAuthorUnhashUpgradeTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +43,9 @@ public class CommentAuthorUnhashUpgradeTaskTest {
   private UsernamePasswordAuthenticationToken mockedAuthToken =
       Mockito.mock(UsernamePasswordAuthenticationToken.class);
 
-  private UserContext userContext = UserContext.user("erleczars.mantos");
+  private UserContext userContext = UserContext.user("erleczars.mantos", "playground");
 
-  private UserContext userContext2 = UserContext.user("emantos");
+  private UserContext userContext2 = UserContext.user("emantos", "playground");
 
   private List<Comment> commentsForEmantos = getComments(userContext2.getHashedUsername());
   private List<Comment> commentsForEmailPrefix = getComments(userContext.getHashedUsername());
@@ -84,7 +86,7 @@ public class CommentAuthorUnhashUpgradeTaskTest {
     commentsForEmailPrefix.forEach(
         comment -> assertTrue(comment.getAuthor().equals(userContext.getHashedUsername())));
 
-    updateTask.doUpgrade(User.create("emantos"), () -> mockUser);
+    updateTask.doUpgrade(User.create("emantos", new Tenant("playground"), Role.USER), () -> mockUser);
 
     commentsForEmantos.forEach(comment -> assertTrue(comment.getAuthor().equals("emantos")));
     commentsForEmailPrefix.forEach(comment -> assertTrue(comment.getAuthor().equals("emantos")));

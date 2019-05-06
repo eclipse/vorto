@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 
 /**
@@ -40,9 +43,10 @@ public class ModelSearchController extends AbstractRepositoryController {
   public Collection<ModelInfo> getReleasedModels(@RequestParam("type") String type,
       @RequestParam("namespace") String namespace) {
 
-    Collection<ModelInfo> result = modelRepository.search("namespace:"+namespace);
+    Collection<ModelInfo> result = reduce(getModelSearchService().search("namespace:" + namespace));
 
-    result = result.stream().filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
+    result = result.stream()
+        .filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
         .collect(Collectors.toList());
 
     Collections.sort(new ArrayList<>(result), new Comparator<ModelInfo>() {
@@ -51,6 +55,16 @@ public class ModelSearchController extends AbstractRepositoryController {
       public int compare(ModelInfo model1, ModelInfo model2) {
         return model1.getId().getName().compareTo(model2.getId().getName());
       }
+    });
+
+    return result;
+  }
+  
+  private List<ModelInfo> reduce(Map<String, List<ModelInfo>> modelResourcesMap) {
+    List<ModelInfo> result = Lists.newArrayList();
+
+    modelResourcesMap.forEach((tenantId, modelInfos) -> {
+      result.addAll(modelInfos);
     });
 
     return result;

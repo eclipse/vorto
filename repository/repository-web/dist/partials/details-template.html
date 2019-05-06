@@ -32,8 +32,8 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="((hasAuthority('ROLE_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions">
-				<button class="btn btn-default pull-left"  role="button"
+			<div ng-show="((hasAuthority('ROLE_SYS_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions">
+				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
@@ -73,7 +73,7 @@
 							<span class="badge">{{comments.length}}</span>
 						</a>
 					</li>
-					<li ng-show="!model.released && (permission === 'FULL_ACCESS' || hasAuthority('ROLE_ADMIN'))">
+					<li ng-show="!model.released && (permission === 'FULL_ACCESS' || hasAuthority('ROLE_SYS_ADMIN'))">
 						<a href="" role="tab" data-target="#policies" data-toggle="tab">
 							<i class="fa fa-lock"></i> Permissions
 						</a>
@@ -98,7 +98,7 @@
 													<div class="noimg" ng-show="!model.hasImage">No Image Yet
 													</div>
 													<img ng-if="model.hasImage" ng-src="rest/{{tenant}}/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
-													<div class="upload" ng-show="(hasAuthority('ROLE_ADMIN') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
+													<div class="upload" ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
 														<a href="" ng-click="chooseImageFile()">
 															<i class="fa fa-upload"></i> Click to change image</a>
 													</div>
@@ -125,21 +125,19 @@
 												<dd class="ng-binding">{{model.displayName == "" ? "&nbsp;" : model.displayName}}</dd>
 												<dt>Namespace:</dt>
 												<dd class="ng-binding">{{model.id.namespace}}</dd>
-												<dt>
-													Version:
-												</dt>
+												<dt>Version:</dt>
 												<dd class="ng-binding">{{model.id.version}}</dd>
+												<dt>Created By:</dt>
+												<dd class="ng-binding">{{ model.author }}</dd>
+												<dt>Created On:</dt>
+												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+												<dt>Last Modified By:</dt>
+												<dd class="ng-binding">{{model.lastModifiedBy}}</dd>
 												<dt ng-show="model.state === 'Released'">Released Date:</dt>
-												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Modification Date:</dt>
+												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Last Modified On:</dt>
 												<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
 												<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 												<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
-												<dt>
-													Created On:
-												</dt>
-												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-												<dt>Modified By:</dt>
-												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>References:</dt>
 												<dd>
 													<div ng-show="modelReferences.show">
@@ -165,7 +163,7 @@
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>	
 																	<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
-																	<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
+																	<a ng-if="reference.hasAccess" ng-href="./#/details/{{tenantId}}/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
 																	 <span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>																																			
 																</li>
 															</ul>
@@ -198,7 +196,7 @@
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>
 																	<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>	
-																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{tenantId}}/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
 																	 <span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>														
 																</li>
 															</ul>
@@ -235,13 +233,13 @@
 												</div>
 												<dt>Model File:</dt>
 												<dd>
-													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
+													<a ng-href="./api/v1/tenants/{{tenantId}}/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
 														<i class="fa fa-fw fa-download"></i>ZIP archive</a>
 												</dd>
-												<dt ng-show="hasAuthority('ROLE_ADMIN')">
+												<dt ng-show="hasAuthority('ROLE_SYS_ADMIN')">
 													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
 												</dt>
-												<dt ng-show="!(hasAuthority('ROLE_ADMIN'))">
+												<dt ng-show="!(hasAuthority('ROLE_SYS_ADMIN'))">
 													Attachments:
 												</dt>
 												<dd>
@@ -249,7 +247,7 @@
 														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 														</a>
-														<button ng-hide="(!hasAuthority('ROLE_ADMIN')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+														<button ng-hide="(!hasAuthority('ROLE_SYS_ADMIN')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 															<i class="fa fa-close"></i>
 														</button>
 													</div>
@@ -266,29 +264,29 @@
 												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
 												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
 											</div>
-											<div ng-hide="model.imported && !(hasAuthority('ROLE_ADMIN'))  && !model.released"
+											<div ng-hide="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
 											    class="col-sm-9">
 											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/development/core-bundles/docs/quickhelp_dsl.md">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
 												
-												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (permission !== 'READ' && !model.released)"
+												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_SYS_ADMIN') || (permission !== 'READ' && !model.released)"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (permission !== 'READ' && !model.released)"
+												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_SYS_ADMIN') || (permission !== 'READ' && !model.released)"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 												
-												<a class="btn btn-sm btn-default pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_ADMIN'))"
+												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Reference</a>
 												
 
 											</div>
-											<div ng-show="model.imported && !(hasAuthority('ROLE_ADMIN'))  && !model.released"
+											<div ng-show="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
 											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
 												<a class="btn btn-sm btn-default pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>

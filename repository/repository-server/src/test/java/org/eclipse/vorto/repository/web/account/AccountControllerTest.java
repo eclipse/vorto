@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +39,11 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void getUser() throws Exception {
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
-        this.repositoryServer.perform(get("/rest/default/accounts/"+testUser).with(userAdmin))
+        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
             .andExpect(status().isOk());
-        this.repositoryServer.perform(get("/rest/default/accounts/doesNotExist").with(userAdmin))
+        this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userAdmin))
             .andExpect(status().isNotFound());
     }
 
@@ -58,35 +58,35 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void upgradeUserAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
-        this.repositoryServer.perform(post("/rest/default/accounts/testUser/updateTask").with(userAdmin))
+        this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
             .andExpect(status().isCreated());
-        this.repositoryServer.perform(post("/rest/default/accounts/doesnotexist/updateTask").with(userAdmin))
+        this.repositoryServer.perform(post("/rest/accounts/doesnotexist/updateTask").with(userAdmin))
             .andExpect(status().isNotFound());
     }
 
     @Test public void updateAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(
-            put("/rest/default/accounts/"+testUser)
+            put("/rest/accounts/"+testUser)
                 .content(testMail).with(userAdmin))
             .andExpect(status().isOk());
         assert(this.accountService.getUser(testUser).getEmailAddress().equals(testMail));
         this.repositoryServer.perform(
-            put("/rest/default/accounts/doesnotexist")
+            put("/rest/accounts/doesnotexist")
                 .content(testMail).with(userAdmin))
             .andExpect(status().isNotFound());
     }
 
     @Test public void deleteUserAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(
-            delete("/rest/default/accounts/"+testUser)
+            delete("/rest/accounts/"+testUser)
                 .content(testMail).with(userAdmin))
             .andExpect(status().isNoContent());
     }

@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/{tenant}/comments")
+@RequestMapping(value = "/rest/{tenantId}/comments")
 public class CommentController {
 
   @Autowired
@@ -46,11 +46,13 @@ public class CommentController {
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_USER')")
   public List<Comment> getCommentsforModelId(
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     return commentService.getCommentsforModelId(modelID).stream()
         .map(comment -> ModelDtoFactory.createDto(comment,
-            UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName())))
+            UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(), tenantId)))
         .collect(Collectors.toList());
   }
 

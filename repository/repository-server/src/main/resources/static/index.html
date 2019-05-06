@@ -66,11 +66,13 @@
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/updateController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/signUpController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/mapping/mappingbuilder-controller.js"></script>
-
+<script type="text/javascript" src="webjars/repository-web/dist/js/components/tenantManagement.js"></script>
+<script type="text/javascript" src="webjars/repository-web/dist/js/components/tenantUserManagement.js"></script>
 
 <!-- Service -->
 <script src="webjars/repository-web/dist/js/service/modelDetailsService.js"></script>
 <script src="webjars/repository-web/dist/js/service/modelCreationService.js"></script>
+<script src="webjars/repository-web/dist/js/service/commonDialogServices.js"></script>
 
 <script type="text/javascript" src="webjars/repository-web/dist/js/directives.js"></script>
 
@@ -98,7 +100,7 @@
 				<ul class="nav navbar-nav">
 					<li ng-show="!context.authenticatedSearchMode || hasAuthority('ROLE_USER')"><a href="./#/" st-reset>Explore</a></li>
 					<li ng-show="hasAuthority('ROLE_MODEL_CREATOR')"><a href="./#/import">Import</a></li>
-					<li ng-show="hasAuthority('ROLE_ADMIN')"><a href="./#/manage">Manage</a></li>
+					<li ng-show="authenticated"><a href="./#/manage">Manage</a></li>
 					<li><a href="./#/generators">Plugins</a></li>
 					<li><a href="./#/api">HTTP API</a></li>
 					<li><a href="http://www.eclipse.org/vorto">What is Vorto?</a></li>

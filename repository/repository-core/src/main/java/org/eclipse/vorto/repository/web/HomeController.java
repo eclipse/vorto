@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -79,7 +79,7 @@ public class HomeController {
 
   @Autowired
   private IUserAccountService accountService;
-
+  
   @SuppressWarnings("unchecked")
   @ApiOperation(value = "Returns the currently logged in User")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Unauthorized"),
@@ -89,12 +89,12 @@ public class HomeController {
       final HttpServletRequest request) throws ParseException {
 
     Map<String, Object> map = new LinkedHashMap<>();
-
+    
     if (user == null)
       return new ResponseEntity<Map<String, Object>>(map, HttpStatus.UNAUTHORIZED);
 
     OAuth2Authentication oauth2User = (OAuth2Authentication) user;
-
+    
     List<String> roles = new ArrayList<>();
     oauth2User.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
     map.put("roles", roles);

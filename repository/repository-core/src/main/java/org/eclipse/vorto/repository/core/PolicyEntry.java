@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.Privilege;
-import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.domain.Role;
 
 public class PolicyEntry {
 
@@ -133,7 +133,7 @@ public class PolicyEntry {
   }
 
   public boolean isAdminPolicy() {
-    return this.principalId.equalsIgnoreCase(Role.ADMIN.name())
+    return this.principalId.equalsIgnoreCase(Role.SYS_ADMIN.name())
         && this.principalType == PrincipalType.Role;
   }
 

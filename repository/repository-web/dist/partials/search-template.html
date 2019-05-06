@@ -1,4 +1,10 @@
 <section class="content">
+		<!--  -->
+		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('ROLE_MODEL_CREATOR')">
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <strong>You don't have any tenants yet!</strong> You cannot describe devices without a tenant. To create a tenant, click on the <strong>Manage</strong> tab.
+		</div>
+		<!--  -->
 		<h2 id="searchHeadline">Models</h2>
 		<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Describe device</a>
 		<br/><br/>
@@ -73,7 +79,7 @@
 					<div ng-hide="isLoading" class="row"">
 						<div class="col-md-4" ng-repeat="model in models">
 							<div ng-if="model.type === 'InformationModel'" class="model-box im">
-						 		<a href="./#/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
 					                <div class="inner">
 					                  <span class="model-name">{{model.id.name}}</span>
 					                  <small class="namespace">{{model.id.namespace}}</small>
@@ -81,7 +87,7 @@
 					                  <span class="state state-{{model.state}}">{{model.state}}</span>
 					                </div>
 					                <div class="icon" ng-if="model.hasImage">
-					                  <img ng-src="rest/default/models/{{model.id.prettyFormat}}/images" />
+					                  <img src="rest/tenants/{{model.tenantId}}/models/{{model.id.prettyFormat}}/images" />
 					                </div>
 					                <div class="model-box-footer">
 					                  <small class="type">IM</small>
@@ -90,7 +96,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Functionblock'" class="model-box fb">
-						 		<a href="./#/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
                 					<div class="inner">
                   						<span class="model-name">{{model.id.name}}</span>
                   						<small class="namespace">{{model.id.namespace}}</small>
@@ -104,7 +110,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Datatype'" class="model-box dt">
-						 		<a href="./#/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
                 					<div class="inner">
                   						<span class="model-name">{{model.id.name}}</span>
                   						<small class="namespace">{{model.namespace}}</small>
@@ -118,7 +124,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Mapping'" class="model-box mp">
-						 		<a href="./#/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.tenantId}}/{{model.id.prettyFormat}}">
                 					<div class="inner">
                   						<span class="model-name">{{model.id.name}}</span>
                   						<small class="namespace">{{model.id.namespace}}</small>

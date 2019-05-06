@@ -15,10 +15,8 @@ package org.eclipse.vorto.repository.workflow.impl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
@@ -30,7 +28,7 @@ import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantModelOwnerPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
-import org.eclipse.vorto.repository.workflow.impl.functions.RemovePolicies;
+import org.eclipse.vorto.repository.workflow.impl.functions.RemoveModelReviewerPolicy;
 import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
@@ -70,16 +68,18 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 	private static final List<IState> ALL_STATES = Arrays.asList(STATE_DRAFT,STATE_IN_REVIEW,STATE_RELEASED, STATE_DEPRECATED);
 	
-	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepository repository, INotificationService notificationService) {
+	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepositoryFactory repositoryFactory, INotificationService notificationService) {
 		
-		final IWorkflowCondition isAdminCondition = new IsAdminCondition(userRepository);
+		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		
-		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy((IModelPolicyManager)repository);
-		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy((IModelPolicyManager)repository);
-		final IWorkflowFunction removePolicies = new RemovePolicies((IModelPolicyManager)repository);
-		final IWorkflowFunction claimOwnership = new ClaimOwnership((IModelPolicyManager)repository,repository);
+		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy(repositoryFactory);
+		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
+		//final IWorkflowFunction removePolicies = new RemovePolicies(repositoryFactory);
+		final IWorkflowFunction claimOwnership = new ClaimOwnership(repositoryFactory);
+		//final IWorkflowFunction grantAnonymousAccessPolicy = new GrantAnonymousAccessPolicy(repositoryFactory);
+		final IWorkflowFunction removeModelReviewerPolicy = new RemoveModelReviewerPolicy(repositoryFactory);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
@@ -90,17 +90,18 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
 		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER_EXCLUDING_ANONYMOUS,isAdminCondition));
-		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
+		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		ACTION_RELEASE.setFunctions(pendingWorkItemNotification,grantReviewerModelAccess);
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
-		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		ACTION_APPROVE.setFunctions(removePolicies);
+		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
+		//ACTION_APPROVE.setFunctions(removePolicies);
+		//ACTION_APPROVE.setFunctions(grantAnonymousAccessPolicy, removeModelReviewerPolicy);
+		ACTION_APPROVE.setFunctions(removeModelReviewerPolicy);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));
-
 		
 		ACTION_WITHDRAW.setTo(STATE_DRAFT);
 		ACTION_WITHDRAW.setConditions(ONLY_OWNER_EXCLUDING_ANONYMOUS);
@@ -133,7 +134,4 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public Optional<IState> getState(String name) {
 		return ALL_STATES.stream().filter(state -> state.getName().equals(name)).findFirst();
 	}
-
-
-
 }

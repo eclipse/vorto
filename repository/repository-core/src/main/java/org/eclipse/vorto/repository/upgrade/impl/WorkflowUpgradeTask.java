@@ -13,9 +13,9 @@
 package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
@@ -32,56 +32,59 @@ import org.springframework.stereotype.Component;
 @Component
 public class WorkflowUpgradeTask extends AbstractUpgradeTask implements IUpgradeTask {
 
-	private static final Logger logger = LoggerFactory.getLogger(WorkflowUpgradeTask.class);
-	
-	@Value("${server.upgrade.workflow:false}")
-	private boolean shouldUpgrade;
+  private static final Logger logger = LoggerFactory.getLogger(WorkflowUpgradeTask.class);
 
-	private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
-		
-		@Override
-		public boolean shouldExecuteTask() {
-			return shouldUpgrade;
-		}
-	};
+  @Value("${server.upgrade.workflow:false}")
+  private boolean shouldUpgrade;
 
-	@Autowired
-	private IWorkflowService workflowService;
-	
-	public WorkflowUpgradeTask(@Autowired IModelRepository repository, @Autowired IWorkflowService workflowService) {
-		super(repository);
-		this.workflowService = workflowService;
-	}
+  private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
 
-	@Override
-	public void doUpgrade() throws UpgradeProblem {
-		List<ModelInfo> modelInfos = getModelRepository().search("*");
-		for(ModelInfo modelInfo : modelInfos) {
-			if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
-				logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
-				try {
-					workflowService.start(modelInfo.getId(),null);
-				} catch (WorkflowException e) {
-					throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
-				}
-			}
-		}
-	}
-	
-	public Optional<IUpgradeTaskCondition> condition() {
-		return Optional.of(upgradeTaskCondition);
-	}
+    @Override
+    public boolean shouldExecuteTask() {
+      return shouldUpgrade;
+    }
+  };
 
-	@Override
-	public String getShortDescription() {
-		return "Task for setting model states to be controlled by the workflow management.";
-	}
-	
-	public IUpgradeTaskCondition getUpgradeTaskCondition() {
-		return upgradeTaskCondition;
-	}
+  @Autowired
+  private IWorkflowService workflowService;
 
-	public void setUpgradeTaskCondition(IUpgradeTaskCondition upgradeTaskCondition) {
-		this.upgradeTaskCondition = upgradeTaskCondition;
-	}
+  public WorkflowUpgradeTask(@Autowired IModelRepositoryFactory repositoryFactory,
+      @Autowired IWorkflowService workflowService) {
+    super(repositoryFactory.getModelSearchService());
+    this.workflowService = workflowService;
+  }
+
+  @Override
+  public void doUpgrade() throws UpgradeProblem {
+    Map<String, List<ModelInfo>> searchResult = getModelSearchService().search("*");
+    for (Map.Entry<String, List<ModelInfo>> modelInfos : searchResult.entrySet()) {
+      for (ModelInfo modelInfo : modelInfos.getValue()) {
+        if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
+          logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
+          try {
+            workflowService.start(modelInfo.getId(), null);
+          } catch (WorkflowException e) {
+            throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
+          }
+        }
+      }
+    }
+  }
+
+  public Optional<IUpgradeTaskCondition> condition() {
+    return Optional.of(upgradeTaskCondition);
+  }
+
+  @Override
+  public String getShortDescription() {
+    return "Task for setting model states to be controlled by the workflow management.";
+  }
+
+  public IUpgradeTaskCondition getUpgradeTaskCondition() {
+    return upgradeTaskCondition;
+  }
+
+  public void setUpgradeTaskCondition(IUpgradeTaskCondition upgradeTaskCondition) {
+    this.upgradeTaskCondition = upgradeTaskCondition;
+  }
 }

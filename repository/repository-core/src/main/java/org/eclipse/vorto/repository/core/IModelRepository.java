@@ -39,6 +39,13 @@ public interface IModelRepository {
 	 * @throws NotAuthorizedException if current user is not allowed to access the given model
 	 */
 	ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
+	
+	/**
+	 * Get all models in this repository who are referencing modelId
+	 * @param modelId the modelId that is being referenced
+	 * @return list of models referencing modelId
+	 */
+	List<ModelInfo> getModelsReferencing(ModelId modelId);
 		
 	/**
 	 * Returns the actual model content for the given model id
@@ -59,6 +66,13 @@ public interface IModelRepository {
 	 * @throws ModelAlreadyExistsException if the given model with the given version already exists 
 	 */
 	ModelResource createVersion(ModelId modelId, String newVersion, IUserContext user);
+	
+	/**
+	 * Return the resource for the modelId
+	 * @param modelId
+	 * @return resource
+	 */
+	ModelResource getEMFResource(ModelId modelId);
 	
 	/**
 	 * Saves the model to the repo. If it does not exist, the model is created.
@@ -167,4 +181,16 @@ public interface IModelRepository {
 	 * @return
 	 */
 	boolean exists(ModelId modelId);
+	
+	/**
+     * Backs up the given repository
+     * @return backup which can be use to restore at a later time
+     */
+	byte[] backup();
+	
+	/**
+	 * Restores a repository with the given data
+	 * @param data
+	 */
+	void restore(byte[] data);
 }

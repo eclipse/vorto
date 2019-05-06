@@ -1,7 +1,7 @@
 {
     "name" : "vorto",
     "workspaces" : {
-        "default" : "default",
+        "default" : "playground",
         "allowCreation" : true
     },
     "security" : {
@@ -12,7 +12,7 @@
         "providers" : [
             {
                 "name" : "Spring Security",
-                "classname" : "org.eclipse.vorto.repository.utils.DummySecurityProvider"
+                "classname" : "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
             }
         ]
     },

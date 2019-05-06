@@ -12,21 +12,29 @@
  */
 package org.eclipse.vorto.repository.core.security;
 
+import java.util.Set;
 import javax.jcr.Credentials;
-
+import org.eclipse.vorto.repository.domain.Role;
 import org.springframework.security.core.Authentication;
 
 public class SpringSecurityCredentials implements Credentials {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -671171242483089098L;
 
-	private transient Authentication authentication;
+  private Authentication authentication;
 
-	public SpringSecurityCredentials(Authentication authentication) {
-		this.authentication = authentication;
-	}
+  private Set<Role> rolesInTenant;
 
-	public Authentication getAuthentication() {
-		return authentication;
-	}
+  public SpringSecurityCredentials(Authentication authentication, Set<Role> rolesInTenant) {
+    this.authentication = authentication;
+    this.rolesInTenant = rolesInTenant;
+  }
+
+  public Authentication getAuthentication() {
+    return authentication;
+  }
+
+  public Set<Role> getRolesInTenant() {
+    return rolesInTenant;
+  }
 }

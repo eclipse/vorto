@@ -18,24 +18,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.backup.IModelBackupService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/rest/{tenant}/backups")
+@RequestMapping(value = "/rest/tenants/{tenantId}/backups")
 public class BackupController extends AbstractRepositoryController {
-
-  @Autowired
-  private IModelBackupService backupService;
 
   @Value("${repo.config.maxBackupSize}")
   private long maxBackupSize;
@@ -47,9 +44,14 @@ public class BackupController extends AbstractRepositoryController {
   private static final SimpleDateFormat SIMPLEDATEFORMAT = new SimpleDateFormat("yyyyMMdd-HH:mm");
 
   @RequestMapping(method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public void backupRepository(final HttpServletResponse response) throws Exception {
-    byte[] backup = this.backupService.backup();
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  public void backupRepository(
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
+      final HttpServletResponse response) throws Exception {
+
+    byte[] backup = getModelRepository(tenantId).backup();
+
     response.setHeader(CONTENT_DISPOSITION,
         ATTACHMENT_FILENAME + "vortobackup_" + SIMPLEDATEFORMAT.format(new Date()) + ".xml");
     response.setContentLengthLong(backup.length);
@@ -63,12 +65,15 @@ public class BackupController extends AbstractRepositoryController {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public void restoreRepository(@RequestParam("file") MultipartFile file) throws Exception {
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  public void restoreRepository(
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
+      @RequestParam("file") MultipartFile file) throws Exception {
     if (file.getSize() > maxBackupSize) {
       throw new UploadTooLargeException("backup", maxBackupSize);
     }
 
-    this.backupService.restore(file.getBytes());
+    getModelRepository(tenantId).restore(file.getBytes());
   }
 }
