@@ -25,7 +25,6 @@ import org.eclipse.vorto.repository.workflow.impl.conditions.IsOwnerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
 import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
-import org.eclipse.vorto.repository.workflow.impl.functions.GrantAnonymousAccessPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantModelOwnerPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
@@ -79,7 +78,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
 		//final IWorkflowFunction removePolicies = new RemovePolicies(repositoryFactory);
 		final IWorkflowFunction claimOwnership = new ClaimOwnership(repositoryFactory);
-		final IWorkflowFunction grantAnonymousAccessPolicy = new GrantAnonymousAccessPolicy(repositoryFactory);
+		//final IWorkflowFunction grantAnonymousAccessPolicy = new GrantAnonymousAccessPolicy(repositoryFactory);
 		final IWorkflowFunction removeModelReviewerPolicy = new RemoveModelReviewerPolicy(repositoryFactory);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
@@ -98,7 +97,8 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		//ACTION_APPROVE.setFunctions(removePolicies);
-		ACTION_APPROVE.setFunctions(grantAnonymousAccessPolicy, removeModelReviewerPolicy);
+		//ACTION_APPROVE.setFunctions(grantAnonymousAccessPolicy, removeModelReviewerPolicy);
+		ACTION_APPROVE.setFunctions(removeModelReviewerPolicy);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));
