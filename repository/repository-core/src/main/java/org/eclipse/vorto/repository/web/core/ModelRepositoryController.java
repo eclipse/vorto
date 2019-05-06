@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -17,8 +16,8 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -125,9 +124,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @PostMapping(value = "/{modelId:.+}/images")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') || "
-      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+      + "hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_MODEL_CREATOR')")
   public ResponseEntity<Boolean> uploadModelImage(
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
@@ -155,9 +152,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   // ToDo add Getter method
   @ApiOperation(value = "Saves a model to the repository.")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+      + "hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_MODEL_CREATOR')")
   @PutMapping(value = "/{modelId:.+}", produces = "application/json")
   public ResponseEntity<ValidationReport> saveModel(
       @ApiParam(value = "The id of the tenant",
@@ -204,7 +199,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
-  @PreAuthorize("@userAccountService.hasRole(#tenantId, authentication, 'ROLE_MODEL_CREATOR')")
+  @PreAuthorize("hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_MODEL_CREATOR')")
   @PostMapping(value = "/{modelId:.+}/{modelType}", produces = "application/json")
   public ResponseEntity<ModelInfo> createModel(
       @ApiParam(value = "The id of the tenant",
@@ -239,10 +234,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Creates a new version for the given model in the specified version")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or (hasRole('ROLE_MODEL_CREATOR') and "
-      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).READ))")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_MODEL_CREATOR')")
   @PostMapping(value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
   public ResponseEntity<ModelInfo> createVersionOfModel(
       @ApiParam(value = "The id of the tenant",
@@ -365,8 +358,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getPolicyManager(#tenantId, authentication).hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
+      + "hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/policies")
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(
       @ApiParam(value = "The id of the tenant",
@@ -389,19 +381,28 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<PolicyEntry> getUserPolicy(
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId, Principal user) {
+      final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "model ID must not be null");
-    try {
 
-      return new ResponseEntity<>(
-          getPolicyManager(tenantId).getPolicyEntries(ModelId.fromPrettyFormat(modelId)).stream()
-              .filter(p -> p.getPrincipalType() == PrincipalType.User
-                  && p.getPrincipalId().equals(user.getName()))
-              .findFirst().get(),
-          HttpStatus.OK);
-    } catch (NoSuchElementException ex) {
+    Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    Optional<PolicyEntry> policyEntry =
+        getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+            .filter(p -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName())
+                || p.getPrincipalType() == PrincipalType.Role && hasRole(user, tenantId, p.getPrincipalId()))
+            .findFirst();
+
+    if (policyEntry.isPresent()) {
+      return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+  }
+
+  private boolean hasRole(Authentication user, String tenantId, String role) {
+    return accountService.hasRole(tenantId, user, role);
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
@@ -417,7 +418,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     if (attemptChangePolicyOfCurrentUser(entry)) {
       throw new IllegalArgumentException("Cannot change policy of current user");
-    } else if (!this.accountService.exists(entry.getPrincipalId())) {
+    } else if (!entry.getPrincipalId().equals("ANONYMOUS")
+        && !this.accountService.exists(entry.getPrincipalId())) {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 

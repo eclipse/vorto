@@ -79,7 +79,7 @@ public class HomeController {
 
   @Autowired
   private IUserAccountService accountService;
-
+  
   @SuppressWarnings("unchecked")
   @ApiOperation(value = "Returns the currently logged in User")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Unauthorized"),

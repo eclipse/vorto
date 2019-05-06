@@ -36,6 +36,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -110,6 +112,12 @@ public class AccountController {
     }
 
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+    
+    // You cannot delete yourself if you are tenant admin
+    Authentication user = SecurityContextHolder.getContext().getAuthentication();
+    if (user.getName().equals(userId)) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
