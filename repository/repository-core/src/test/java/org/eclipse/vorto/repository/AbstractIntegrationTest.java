@@ -117,6 +117,14 @@ public abstract class AbstractIntegrationTest {
     when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
 
+    ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor();
+
+    accountService = new DefaultUserAccountService();
+    accountService.setNotificationService(notificationService);
+    accountService.setUserRepository(userRepository);
+    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
+    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
+    
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.setErrorMessageProvider(new ErrorMessageProvider());
     modelParserFactory.init();
@@ -124,7 +132,7 @@ public abstract class AbstractIntegrationTest {
     RepositoryConfiguration config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(userRepository, modelSearchUtil,
+    repositoryFactory = new ModelRepositoryFactory(null, modelSearchUtil,
         attachmentValidator, modelParserFactory, null, config, tenantService) {
 
       @Override
@@ -144,16 +152,9 @@ public abstract class AbstractIntegrationTest {
     };
     repositoryFactory.start();
 
+    supervisor.setRepositoryFactory(repositoryFactory);
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
-
-    ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor(repositoryFactory);
-
-    accountService = new DefaultUserAccountService();
-    accountService.setNotificationService(notificationService);
-    accountService.setUserRepository(userRepository);
-    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
-    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
-
+    
     tenantUserService = new TenantUserService(tenantService, accountService);
 
     this.importer = new VortoModelImporter();
