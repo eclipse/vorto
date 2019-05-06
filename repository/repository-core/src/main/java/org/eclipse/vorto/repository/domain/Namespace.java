@@ -12,7 +12,9 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,11 +24,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.NaturalId;
+import com.google.common.collect.Lists;
 
 @Entity
 @Table(name = "namespace")
 public class Namespace {
 
+  public static String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -75,5 +80,22 @@ public class Namespace {
 
   public void setTenant(Tenant tenant) {
     this.tenant = tenant;
+  }
+  
+  public boolean isInConflictWith(String namespace) {
+    return in(namespace, components(getName())) || in(getName(), components(namespace));
+  }
+  
+  private String[] components(String namespace) {
+    String[] breakdown = namespace.split("\\.");
+    List<String> components = Lists.newArrayList();
+    for(int i=1; i <= breakdown.length; i++) {
+      components.add(String.join(".", Arrays.copyOfRange(breakdown, 0, i)));
+    }
+    return components.toArray(new String[components.size()]);
+  }
+  
+  private boolean in(String str, String[] strings) {
+    return Arrays.stream(strings).anyMatch(str::equals);
   }
 }

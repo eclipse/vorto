@@ -24,7 +24,7 @@ public enum Role {
   // may execute system admin functionalities
   SYS_ADMIN("readonly", "readwrite", "admin"),
   // may execute tenant admin functionalities
-  TENANT_ADMIN("readonly", "readwrite", "tenantadmin"),
+  TENANT_ADMIN("readonly", "readwrite", "admin"),
   // users with this role may create models in the system, import models, edit his own models and
   // delete own models as long as they are not released
   MODEL_CREATOR("readonly", "readwrite"),

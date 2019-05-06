@@ -26,13 +26,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "tenant_user",
-  uniqueConstraints={
-    @UniqueConstraint(columnNames = {"tenant_id", "user_id"})
-})
+@Table(name = "tenant_user")
 public class TenantUser {
 
   @Id
@@ -52,23 +48,22 @@ public class TenantUser {
   private Set<UserRole> roles;
 
   public static TenantUser createTenantUser(Tenant tenant, User user, Role ... roles) {
+    TenantUser tenantUser = createTenantUser(user, roles);
+    tenant.addUser(tenantUser);
+    return tenantUser;
+  }
+  
+  public static TenantUser createTenantUser(User user, Role ... roles) {
     TenantUser tenantUser = new TenantUser();
     user.addTenantUser(tenantUser);
-    tenant.addUser(tenantUser);
-    Set<UserRole> userRoles = Arrays.asList(roles).stream()
-      .map(role -> new UserRole(role, tenantUser))
-      .collect(Collectors.toSet());
-    tenantUser.setRoles(userRoles);
+    tenantUser.addRoles(roles);
     return tenantUser;
   }
   
   public static TenantUser createTenantUser(Tenant tenant, Role ... roles) {
     TenantUser tenantUser = new TenantUser();
+    tenantUser.addRoles(roles);
     tenant.addUser(tenantUser);
-    Set<UserRole> userRoles = Arrays.asList(roles).stream()
-      .map(role -> new UserRole(role, tenantUser))
-      .collect(Collectors.toSet());
-    tenantUser.setRoles(userRoles);
     return tenantUser;
   }
   

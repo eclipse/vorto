@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -15,6 +14,7 @@ package org.eclipse.vorto.repository.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -60,8 +60,7 @@ public class Tenant {
   @Enumerated(EnumType.STRING)
   private AuthorizationProvider authorizationProvider;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name="tenant_id")
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
   private Set<Namespace> namespaces = new HashSet<Namespace>();
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
@@ -71,9 +70,9 @@ public class Tenant {
   @JoinTable(name = "tenant_generator", joinColumns = @JoinColumn(name = "tenant_id"),
       inverseJoinColumns = @JoinColumn(name = "generator_id"))
   private List<Generator> generators = new ArrayList<>();
-  
+
   @ManyToOne
-  @JoinColumn(name="owner_id")
+  @JoinColumn(name = "owner_id")
   private User owner;
 
   public static Tenant newTenant(String tenantId, String defaultNamespace, Set<String> namespaces) {
@@ -83,7 +82,7 @@ public class Tenant {
 
     return tenant;
   }
-  
+
   public Tenant() {}
 
   public Tenant(String tenantId) {
@@ -114,6 +113,11 @@ public class Tenant {
     this.namespaces = namespaces;
   }
 
+  public void removeNamespace(Namespace ns) {
+    this.namespaces.remove(ns);
+    ns.setTenant(null);
+  }
+
   public void addGenerator(Generator generator) {
     generators.add(generator);
     generator.getTenants().add(this);
@@ -128,16 +132,21 @@ public class Tenant {
     return users.stream().filter(user -> user.hasRole(Role.TENANT_ADMIN))
         .map(user -> user.getUser()).collect(Collectors.toSet());
   }
-  
+
   public boolean hasUser(String username) {
     return users.stream().anyMatch(user -> user.getUser().getUsername().equals(username));
   }
-  
+
+  public boolean hasTenantAdmin(String username) {
+    return users.stream().anyMatch(
+        user -> user.getUser().getUsername().equals(username) && user.hasRole(Role.TENANT_ADMIN));
+  }
+
   public Set<TenantUser> getTenantUserAdmins() {
     return users.stream().filter(user -> user.hasRole(Role.TENANT_ADMIN))
         .collect(Collectors.toSet());
   }
-  
+
   public Optional<TenantUser> getUser(String userId) {
     return users.stream().filter(user -> user.getUser().getUsername().equals(userId)).findAny();
   }
@@ -145,22 +154,39 @@ public class Tenant {
   public Set<TenantUser> getUsers() {
     return users;
   }
-  
+
   public void setUsers(Set<TenantUser> users) {
     this.users = users;
   }
-  
+
   public void addUser(TenantUser user) {
     users.add(user);
     user.setTenant(this);
   }
-  
+
   public void removeUser(TenantUser user) {
-    users.remove(user);
+    user.getRoles().forEach(role -> role.setUser(null));
+    user.getRoles().clear();
     user.getUser().removeTenantUser(user);
     user.setTenant(null);
+    users.remove(user);
   }
   
+  public void removeUsers() {
+    if (users != null) {
+      Iterator<TenantUser> iter = users.iterator();
+      while (iter.hasNext()) {
+        TenantUser user = iter.next();
+  
+        user.getRoles().forEach(role -> role.setUser(null));
+        user.getRoles().clear();
+        user.getUser().removeTenantUser(user);
+        user.setTenant(null);
+        iter.remove();
+      }
+    }
+  }
+
   public User getOwner() {
     return owner;
   }
@@ -168,6 +194,11 @@ public class Tenant {
   public void setOwner(User owner) {
     this.owner = owner;
     owner.addOwnedTenant(this);
+  }
+
+  public void unsetOwner() {
+    owner.removeOwnedTenant(this);
+    this.owner = null;
   }
 
   public List<Generator> getGenerators() {

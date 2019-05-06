@@ -61,7 +61,7 @@ public class User {
       mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true,
+  @OneToMany(/*cascade = CascadeType.ALL,*/ fetch = FetchType.EAGER, orphanRemoval = true,
       mappedBy = "owner")
   private Set<Tenant> ownedTenants = new HashSet<Tenant>();
 
