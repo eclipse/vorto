@@ -276,7 +276,6 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         } else { // node already exists, so just update it.
           Node fileNode = nodeIt.nextNode();
           fileNode.addMixin(VORTO_META);
-          fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
           fileNode.addMixin(MIX_LAST_MODIFIED);
           Node contentNode = fileNode.getNode(JCR_CONTENT);
           Binary binary =
