@@ -74,9 +74,47 @@ import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation implements IModelRepository {
 
-  private static Logger logger = Logger.getLogger(ModelRepository.class);
+  private static final String VORTO_TAGS = "vorto:tags";
+
+  private static final String VORTO_REFERENCES = "vorto:references";
+
+  private static final String VORTO_META = "vorto:meta";
+
+  private static final String VORTO_AUTHOR = "vorto:author";
+
+  private static final String VORTO_STATE = "vorto:state";
+
+  private static final String VORTO_DISPLAYNAME = "vorto:displayname";
 
   private static final String VORTO_NODE_TYPE = "vorto:type";
+  
+  private static final String VORTO_DESCRIPTION = "vorto:description";
+  
+  private static final String JCR_LAST_MODIFIED_BY = "jcr:lastModifiedBy";
+
+  private static final String JCR_LAST_MODIFIED = "jcr:lastModified";
+
+  private static final String JCR_CREATED = "jcr:created";
+  
+  private static final String JCR_DATA = "jcr:data";
+  
+  private static final String JCR_CONTENT = "jcr:content";
+  
+  private static final String MIX_LAST_MODIFIED = "mix:lastModified";
+  
+  private static final String MIX_REFERENCEABLE = "mix:referenceable";
+  
+  private static final String NT_FOLDER = "nt:folder";
+  
+  private static final String NT_FILE = "nt:file";
+  
+  private static final String NT_RESOURCE = "nt:resource";
+  
+  private static final String MODE_ACCESS_CONTROLLABLE = "mode:accessControllable";
+  
+  private static final String ATTACHMENTS_NODE = "attachments";
+  
+  private static Logger logger = Logger.getLogger(ModelRepository.class);
 
   private IModelRetrievalService modelRetrievalService;
 
@@ -129,20 +167,20 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     Node folderNode = fileNode.getParent();
     ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(folderNode.getPath()),
         fileNode.getProperty(VORTO_NODE_TYPE).getString());
-    resource.setDescription(fileNode.getProperty("vorto:description").getString());
-    resource.setDisplayName(fileNode.getProperty("vorto:displayname").getString());
-    resource.setCreationDate(fileNode.getProperty("jcr:created").getDate().getTime());
-    if (fileNode.hasProperty("jcr:lastModified")) {
-      resource.setModificationDate(fileNode.getProperty("jcr:lastModified").getDate().getTime());
+    resource.setDescription(fileNode.getProperty(VORTO_DESCRIPTION).getString());
+    resource.setDisplayName(fileNode.getProperty(VORTO_DISPLAYNAME).getString());
+    resource.setCreationDate(fileNode.getProperty(JCR_CREATED).getDate().getTime());
+    if (fileNode.hasProperty(JCR_LAST_MODIFIED)) {
+      resource.setModificationDate(fileNode.getProperty(JCR_LAST_MODIFIED).getDate().getTime());
     }
-    if (fileNode.hasProperty("jcr:lastModifiedBy")) {
-      resource.setLastModifiedBy(fileNode.getProperty("jcr:lastModifiedBy").getString());
+    if (fileNode.hasProperty(JCR_LAST_MODIFIED_BY)) {
+      resource.setLastModifiedBy(fileNode.getProperty(JCR_LAST_MODIFIED_BY).getString());
     }
-    if (fileNode.hasProperty("vorto:state")) {
-      resource.setState(fileNode.getProperty("vorto:state").getString());
+    if (fileNode.hasProperty(VORTO_STATE)) {
+      resource.setState(fileNode.getProperty(VORTO_STATE).getString());
     }
-    if (fileNode.hasProperty("vorto:author")) {
-      resource.setAuthor(fileNode.getProperty("vorto:author").getString());
+    if (fileNode.hasProperty(VORTO_AUTHOR)) {
+      resource.setAuthor(fileNode.getProperty(VORTO_AUTHOR).getString());
     }
 
     if (resource.getType() == ModelType.InformationModel) {
@@ -161,7 +199,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
         Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
         Node fileItem = (Node) fileNode.getPrimaryItem();
-        InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
+        InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
 
         final String fileContent = IOUtils.toString(is);
 
@@ -188,8 +226,8 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
       try {
         rootNode.getNode(pathBuilder.toString());
       } catch (PathNotFoundException pathNotFound) {
-        Node addedNode = rootNode.addNode(pathBuilder.toString(), "nt:folder");
-        addedNode.setPrimaryType("nt:folder");
+        Node addedNode = rootNode.addNode(pathBuilder.toString(), NT_FOLDER);
+        addedNode.setPrimaryType(NT_FOLDER);
       }
     }
 
@@ -215,21 +253,21 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
       try {
         Node folderNode = createNodeForModelId(session, modelId);
-        folderNode.addMixin("mix:referenceable");
-        folderNode.addMixin("vorto:meta");
-        folderNode.addMixin("mix:lastModified");
+        folderNode.addMixin(MIX_REFERENCEABLE);
+        folderNode.addMixin(VORTO_META);
+        folderNode.addMixin(MIX_LAST_MODIFIED);
 
         NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
         if (!nodeIt.hasNext()) { // new node
-          Node fileNode = folderNode.addNode(fileName, "nt:file");
-          fileNode.addMixin("vorto:meta");
-          fileNode.setProperty("vorto:author", userContext.getUsername());
-          fileNode.addMixin("mode:accessControllable");
-          folderNode.addMixin("mix:lastModified");
-          Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+          Node fileNode = folderNode.addNode(fileName, NT_FILE);
+          fileNode.addMixin(VORTO_META);
+          fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
+          fileNode.addMixin(MODE_ACCESS_CONTROLLABLE);
+          folderNode.addMixin(MIX_LAST_MODIFIED);
+          Node contentNode = fileNode.addNode(JCR_CONTENT, NT_RESOURCE);
           Binary binary =
               session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
-          Property input = contentNode.setProperty("jcr:data", binary);
+          Property input = contentNode.setProperty(JCR_DATA, binary);
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
             throw new FatalModelRepositoryException(
@@ -237,13 +275,13 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
           }
         } else { // node already exists, so just update it.
           Node fileNode = nodeIt.nextNode();
-          fileNode.addMixin("vorto:meta");
-          fileNode.setProperty("vorto:author", userContext.getUsername());
-          fileNode.addMixin("mix:lastModified");
-          Node contentNode = fileNode.getNode("jcr:content");
+          fileNode.addMixin(VORTO_META);
+          fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
+          fileNode.addMixin(MIX_LAST_MODIFIED);
+          Node contentNode = fileNode.getNode(JCR_CONTENT);
           Binary binary =
               session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
-          Property input = contentNode.setProperty("jcr:data", binary);
+          Property input = contentNode.setProperty(JCR_DATA, binary);
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
             throw new FatalModelRepositoryException(
@@ -305,12 +343,12 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     ModelInfo resource = createMinimalModelInfo(fileNode);
     resource.setFileName(fileNode.getName());
 
-    if (folderNode.hasProperty("vorto:references")) {
+    if (folderNode.hasProperty(VORTO_REFERENCES)) {
       Value[] referenceValues = null;
       try {
-        referenceValues = folderNode.getProperty("vorto:references").getValues();
+        referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
       } catch (Exception ex) {
-        referenceValues = new Value[] {folderNode.getProperty("vorto:references").getValue()};
+        referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
       }
 
       if (referenceValues != null) {
@@ -440,7 +478,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         }
         Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
         Node fileItem = (Node) fileNode.getPrimaryItem();
-        InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
+        InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
         return (ModelResource) modelParserFactory.getParser(fileNode.getName()).parse(is);
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -476,15 +514,15 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   @Override
   public ModelInfo updateMeta(ModelInfo model) {
     updateProperty(model.getId(), fileNode -> {
-      fileNode.setProperty("vorto:author", model.getAuthor());
-      fileNode.setProperty("vorto:state", model.getState());
+      fileNode.setProperty(VORTO_AUTHOR, model.getAuthor());
+      fileNode.setProperty(VORTO_STATE, model.getState());
     });
 
     return model;
   }
 
   public ModelId updateState(ModelId modelId, String state) {
-    return updateProperty(modelId, node -> node.setProperty("vorto:state", state));
+    return updateProperty(modelId, node -> node.setProperty(VORTO_STATE, state));
   }
 
   private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
@@ -494,7 +532,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Node fileNode =
             folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
                 : null;
-        fileNode.addMixin("mix:lastModified");
+        fileNode.addMixin(MIX_LAST_MODIFIED);
         nodeConsumer.accept(fileNode);
         session.save();
         return modelId;
@@ -529,13 +567,13 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Node fileNode = (Node) folderNode.getNode(fileContent.getFileName());
         contentNode = (Node) fileNode.getPrimaryItem();
       } else {
-        Node fileNode = folderNode.addNode(fileContent.getFileName(), "nt:file");
-        contentNode = fileNode.addNode("jcr:content", "nt:resource");
+        Node fileNode = folderNode.addNode(fileContent.getFileName(), NT_FILE);
+        contentNode = fileNode.addNode(JCR_CONTENT, NT_RESOURCE);
       }
 
       Binary binary = session.getValueFactory()
           .createBinary(new ByteArrayInputStream(fileContent.getContent()));
-      contentNode.setProperty("jcr:data", binary);
+      contentNode.setProperty(JCR_DATA, binary);
       session.save();
 
       return null;
@@ -561,7 +599,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         }
 
         Node fileItem = (Node) fileNode.getPrimaryItem();
-        InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
+        InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
 
         final String fileContent = IOUtils.toString(is);
         return Optional.of(new FileContent(fileNode.getName(), fileContent.getBytes()));
@@ -591,10 +629,10 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
         Node attachmentFolderNode = null;
-        if (!modelFolderNode.hasNode("attachments")) {
-          attachmentFolderNode = modelFolderNode.addNode("attachments", "nt:folder");
+        if (!modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+          attachmentFolderNode = modelFolderNode.addNode(ATTACHMENTS_NODE, NT_FOLDER);
         } else {
-          attachmentFolderNode = modelFolderNode.getNode("attachments");
+          attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
         }
 
         String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId())
@@ -603,19 +641,19 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Node contentNode = null;
         if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
           Node attachmentNode = (Node) attachmentFolderNode.getNode(fileContent.getFileName());
-          attachmentNode.addMixin("vorto:meta");
-          attachmentNode.setProperty("vorto:tags", tagIds, PropertyType.STRING);
+          attachmentNode.addMixin(VORTO_META);
+          attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
           contentNode = (Node) attachmentNode.getPrimaryItem();
         } else {
-          Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), "nt:file");
-          attachmentNode.addMixin("vorto:meta");
-          attachmentNode.setProperty("vorto:tags", tagIds, PropertyType.STRING);
-          contentNode = attachmentNode.addNode("jcr:content", "nt:resource");
+          Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), NT_FILE);
+          attachmentNode.addMixin(VORTO_META);
+          attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
+          contentNode = attachmentNode.addNode(JCR_CONTENT, NT_RESOURCE);
         }
 
         Binary binary = session.getValueFactory()
             .createBinary(new ByteArrayInputStream(fileContent.getContent()));
-        contentNode.setProperty("jcr:data", binary);
+        contentNode.setProperty(JCR_DATA, binary);
         session.save();
 
         return null;
@@ -632,16 +670,16 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
-        if (modelFolderNode.hasNode("attachments")) {
-          Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+        if (modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+          Node attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
           List<Attachment> attachments = new ArrayList<Attachment>();
           NodeIterator nodeIt = attachmentFolderNode.getNodes();
           while (nodeIt.hasNext()) {
             Node fileNode = (Node) nodeIt.next();
             Attachment attachment = Attachment.newInstance(modelId, fileNode.getName());
-            if (fileNode.hasProperty("vorto:tags")) {
+            if (fileNode.hasProperty(VORTO_TAGS)) {
               final List<Value> tags =
-                  Arrays.asList(fileNode.getProperty("vorto:tags").getValues());
+                  Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
               attachment.setTags(
                   tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
             }
@@ -685,12 +723,12 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
-        if (modelFolderNode.hasNode("attachments")) {
-          Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+        if (modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+          Node attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
           if (attachmentFolderNode.hasNode(fileName)) {
             Node attachment = (Node) attachmentFolderNode.getNode(fileName).getPrimaryItem();
             return Optional.of(new FileContent(fileName,
-                IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream())));
+                IOUtils.toByteArray(attachment.getProperty(JCR_DATA).getBinary().getStream())));
           }
         }
         return Optional.empty();
@@ -714,8 +752,8 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
-        if (modelFolderNode.hasNode("attachments")) {
-          Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+        if (modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+          Node attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
           if (attachmentFolderNode.hasNode(fileName)) {
             Node attachmentNode = attachmentFolderNode.getNode(fileName);
             attachmentNode.remove();
@@ -735,7 +773,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     if (existingModel == null) {
       throw new ModelNotFoundException("Model could not be found");
 
-    } else if (existingId.getVersion() == newVersion) {
+    } else if (existingId.getVersion().equals(newVersion)) {
       throw new ModelAlreadyExistsException();
     } else {
       ModelId newModelId = ModelId.newVersion(existingId, newVersion);

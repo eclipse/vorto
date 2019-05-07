@@ -72,7 +72,7 @@ public class OfficialNamespaceRequest extends AbstractMessage {
   @Override
   public String getContent() {
     return String.format(
-        "User '%s' has requested the official namespace '%s' for tenant '%d' on '%s'",
+        "User '%s' has requested the official namespace '%s' for tenant '%s' on '%s'",
         requestingUser, namespace, tenantId,
         new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(requestDate));
   }

@@ -117,6 +117,10 @@ public class Tenant {
     this.namespaces.remove(ns);
     ns.setTenant(null);
   }
+  
+  public boolean hasNamespace(String namespace) {
+    return this.namespaces.stream().map(Namespace::getName).anyMatch(namespace::equals);
+  }
 
   public void addGenerator(Generator generator) {
     generators.add(generator);
@@ -148,7 +152,7 @@ public class Tenant {
   }
 
   public Optional<TenantUser> getUser(String userId) {
-    return users.stream().filter(user -> user.getUser().getUsername().equals(userId)).findAny();
+    return users.stream().filter(user -> user.getUser().getUsername().equals(userId)).findFirst();
   }
 
   public Set<TenantUser> getUsers() {
