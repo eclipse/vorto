@@ -1,6 +1,6 @@
 {
-  "name": "vorto-mapper",
-  "version": "0.1.2",
+  "name": "vorto-mapping-utility",
+  "version": "0.10.1",
   "description": "Maps arbitrary device json payload to vorto compliant json using mapping specification.",
   "main": "vortoMappingEngine.js",
   "dependencies": {
@@ -15,17 +15,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/someshku/vorto-mapping-javascript.git"
+    "url": "https://github.com/eclipse/vorto.git"
   },
   "keywords": [
     "vorto",
     "vorto mapper",
-    "vorto mapping engine"
+    "vorto mapping engine",
+    "vorto mapping utility",
+    "iot",
+    "eclipse vorto"
   ],
   "author": "Somesh Kumar",
   "license": "EPL 2.0",
   "bugs": {
-    "url": "https://github.com/someshku/vorto-mapping-javascript/issues"
+    "url": "https://github.com/eclipse/vorto/issues"
   },
-  "homepage": "https://github.com/someshku/vorto-mapping-javascript#readme"
+  "homepage": "https://www.eclipse.org/vorto"
 }
