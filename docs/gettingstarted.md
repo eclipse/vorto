@@ -17,8 +17,10 @@ With the following tutorials, you are going to learn to connect devices that are
 - [Connect a Java - based device](tutorials/connect_javadevice.md)
 - [Connect an ESP8266 - based device](tutorials/connect_esp8266.md)
 - [Integrate a RaspberryPi with Python](tutorials/mqtt-python.md)
-- [Map arbitrary device payload to Bosch IoT Suite payload](../mapping-engine/Readme.md)
-- [Map binary camera payload](https://github.com/eclipse/vorto-examples/blob/master/vorto-connector/Readme.md)
+- Map arbitrary device payload to Vorto compliant data structures
+  * [Mapping Engine for Java](../mapping-engine/Readme.md)
+  * [Mapping Engine for Node.js](../mapping-engine-nodejs/README.md)
+  * [Example: Mapping Security Camera binary data](https://github.com/eclipse/vorto-examples/blob/master/vorto-connector/Readme.md)
 
 
 ## Prototyping 
