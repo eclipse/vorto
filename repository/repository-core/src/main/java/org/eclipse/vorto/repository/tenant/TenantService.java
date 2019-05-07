@@ -105,7 +105,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     if (tenant == null) {
       logger.info("Adding new tenant '{}'", tenantId);
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
-          authenticationProvider.orElse(null), authorizationProvider.orElse(null));
+          authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
       tenant.setUsers(newTenantAdmins);
       tenant.setOwner(owner);
@@ -116,7 +116,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
       logger.info("Updating tenant '{}' - {}", tenantId, tenant);
       tenant = updateTenant(tenant, defaultNamespace, namespaces,
-          authenticationProvider.orElse(null), authorizationProvider.orElse(null));
+          authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
 
       updateTenantAdmins(tenantAdmins, tenant);
       eventType = EventType.TENANT_UPDATED;
@@ -133,8 +133,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private void updateTenantAdmins(Set<String> newTenantAdmins, Tenant tenant) {
     Set<String> tenantUsers = tenant.getUsers().stream().map(user -> user.getUser().getUsername())
         .collect(Collectors.toSet());
-    Set<String> oldTenantAdmins = tenant.getTenantAdmins().stream().map(User::getUsername)
-        .collect(Collectors.toSet());
+    Set<String> oldTenantAdmins =
+        tenant.getTenantAdmins().stream().map(User::getUsername).collect(Collectors.toSet());
     Set<String> tenantUserButNotAdmin = Sets.difference(tenantUsers, oldTenantAdmins);
     Set<String> totallyNewAdmins = Sets.difference(newTenantAdmins, tenantUsers);
     Set<String> upgradedToAdmins = Sets.intersection(newTenantAdmins, tenantUserButNotAdmin);
@@ -253,7 +253,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     PreConditions.notNull(tenant, "Tenant should not be null");
 
     tenant.removeUsers();
-    
+
     tenant.unsetOwner();
 
     tenantRepo.delete(tenant);
@@ -264,8 +264,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Tenant updateTenant(Tenant tenant, String defaultNamespace,
-      Optional<Set<String>> namespaces, String authenticationProvider,
-      String authorizationProvider) {
+      Optional<Set<String>> namespaces, String authenticationProvider, String authorizationProvider,
+      IUserContext user) {
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
 
@@ -277,11 +277,16 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     // Make sure namespaces are unique across tenants
     checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
 
-    for (String ns : tenantNamespaces) {
-      // add namespace if we don't have it
-      if (tenant.getNamespaces().stream().noneMatch(tns -> tns.getName().equals(ns))) {
-        tenant.getNamespaces().add(Namespace.newNamespace(ns));
-      }
+    Set<String> oldNamespaces =
+        tenant.getNamespaces().stream().map(ns -> ns.getName()).collect(Collectors.toSet());
+    Set<String> newNamespaces = Sets.difference(tenantNamespaces, oldNamespaces);
+
+    if (!user.isSysAdmin()) {
+      checkForPrivatePrefix(newNamespaces);
+    }
+
+    for (String ns : newNamespaces) {
+      tenant.addNamesspace(Namespace.newNamespace(ns));
     }
 
     tenant.setDefaultNamespace(defaultNamespace);
@@ -298,18 +303,37 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Tenant newTenant(String tenantId, String defaultNamespace,
-      Optional<Set<String>> namespaces, String authenticationProvider,
-      String authorizationProvider) {
+      Optional<Set<String>> namespaces, String authenticationProvider, String authorizationProvider,
+      IUserContext user) {
 
     Set<String> tenantNamespaces = checkForConflict(combine(namespaces, defaultNamespace),
         this::conflictsWithExistingNamespace);
+
+    if (!user.isSysAdmin()) {
+      checkForPrivatePrefix(tenantNamespaces);
+    }
 
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
     tenant.setAuthenticationProvider(
         getAuthenticationProvider(authenticationProvider, AuthenticationProvider.GITHUB));
     tenant.setAuthorizationProvider(
         getAuthorizationProvider(authorizationProvider, AuthorizationProvider.DB));
+
     return tenant;
+  }
+
+  private void checkForPrivatePrefix(Set<String> tenantNamespaces) {
+    List<String> invalidNamespaces = tenantNamespaces.stream().filter(ns -> !isPrivateNamespace(ns))
+        .collect(Collectors.toList());
+
+    if (!invalidNamespaces.isEmpty()) {
+      throw new NewNamespaceNotPrivateException(invalidNamespaces);
+    }
+  }
+
+  private boolean isPrivateNamespace(String namespace) {
+    return namespace.startsWith(Namespace.privateNamespacePrefix)
+        && !namespace.equals(Namespace.privateNamespacePrefix);
   }
 
   private Set<String> checkIfSuperset(Set<String> newNamespaces, Tenant tenant) {

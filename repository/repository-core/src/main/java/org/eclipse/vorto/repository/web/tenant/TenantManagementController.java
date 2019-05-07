@@ -15,14 +15,12 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -30,6 +28,7 @@ import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 import org.eclipse.vorto.repository.notification.message.OfficialNamespaceRequest;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
+import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
@@ -53,7 +52,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
 import io.swagger.annotations.ApiParam;
 
 @RestController
@@ -98,14 +96,7 @@ public class TenantManagementController {
     if (tenantRequest.getTenantAdmins() == null || tenantRequest.getTenantAdmins().isEmpty()) {
       return new ResponseEntity<>(Result.failure("Empty tenantAdmin"), HttpStatus.BAD_REQUEST);
     }
-
-    if (!(userContext.isSysAdmin() || isPrivateNamespace(tenantRequest.getDefaultNamespace(),
-        tenantRequest.getNamespaces()))) {
-      return new ResponseEntity<>(
-          Result.failure("Namespace request doesn't start with vorto.private"),
-          HttpStatus.BAD_REQUEST);
-    }
-
+    
     try {
 
       tenantService.createOrUpdateTenant(tenantId, tenantRequest.getDefaultNamespace(),
@@ -121,7 +112,8 @@ public class TenantManagementController {
     } catch (IllegalArgumentException 
         | TenantAdminDoesntExistException 
         | UpdateNotAllowedException
-        | NewNamespacesNotSupersetException e) {
+        | NewNamespacesNotSupersetException
+        | NewNamespaceNotPrivateException e) {
       return new ResponseEntity<>(Result.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
       logger.error(e);
@@ -129,14 +121,6 @@ public class TenantManagementController {
           Result.failure("Internal error. Consult the vorto administrators!"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  private boolean isPrivateNamespace(String defaultNamespace, Set<String> namespaces) {
-    Set<String> namespaceRequest = Sets.newHashSet(namespaces);
-    namespaceRequest.add(defaultNamespace);
-    return namespaceRequest.stream()
-        .allMatch(ns -> ns.startsWith(Namespace.privateNamespacePrefix)
-            && !ns.equals(Namespace.privateNamespacePrefix));
   }
 
   @PreAuthorize("isAuthenticated()")
