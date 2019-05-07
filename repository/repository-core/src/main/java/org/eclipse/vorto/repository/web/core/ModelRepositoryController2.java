@@ -477,7 +477,7 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       return new ResponseEntity<>(getPolicyManager(tenantId).getPolicyEntries(modelID),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
-      ex.printStackTrace();
+      logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
