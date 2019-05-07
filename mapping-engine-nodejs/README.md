@@ -48,26 +48,26 @@ Mapping adds device specific information to an Information Model. Since the repr
 
 To create a mapping go to your newly created model and press the **Create Mapping Spec** Button.
 
-![create mapping spec button](./images/create_mapping_key.png)
+![create mapping spec button](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/create_mapping_key.png)
 
 Now add a Mapping key to uniquely identify your mapping to the device it belongs to, like acme_temperature_monitor (connected temperature sensor from Acme Corporation).
 
-![platform key](./images/specify_mapping_key.png)
+![platform key](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/specify_mapping_key.png)
 
 Click Create and the web editor opens allowing you to add mapping expression for the Function Blocks you added. You can write XPath 3.1 like notation. Behind the scenes the engine uses [fotonxpath](https://www.npmjs.com/package/fontoxpath) to apply XPath expressions on the DOM created using the device json. To add functionality that may not be possible using xpath alone, you can also use/create custom JavaScript functions (courtesy fotonxpath) . Once you have written your xpath expressions, press Save.
 
-![xpath](./images/xpath.png)
+![xpath](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/xpath.png)
 
 <br></br>
 Custom function to convert Fahrenheit to Celsius and round-off to two decimal places.
 
-![xpath](./images/custom_function.png)
+![xpath](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/custom_function.png)
 
 ### Step 2: Test the Mapping Specification
 
 On the right hand-side, define the device payload(in JSON format) and click **Map**: 
 
-![mapping editor test](./images/mapping_editor_test.png)
+![mapping editor test](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/mapping_editor_test.png)
 
 Satisfied with the results, save it.
 
@@ -75,7 +75,7 @@ Satisfied with the results, save it.
 
 Download it to use with our nodejs library:
 
-![download json spec](./images/download_spec.png)
+![download json spec](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/download_spec.png)
 
 ## Usage
 ```javascript
