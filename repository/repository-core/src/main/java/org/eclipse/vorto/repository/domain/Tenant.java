@@ -113,11 +113,16 @@ public class Tenant {
     this.namespaces = namespaces;
   }
 
+  public void addNamesspace(Namespace namespace) {
+    this.namespaces.add(namespace);
+    namespace.setTenant(this);
+  }
+
   public void removeNamespace(Namespace ns) {
     this.namespaces.remove(ns);
     ns.setTenant(null);
   }
-  
+
   public boolean hasNamespace(String namespace) {
     return this.namespaces.stream().map(Namespace::getName).anyMatch(namespace::equals);
   }
@@ -175,13 +180,13 @@ public class Tenant {
     user.setTenant(null);
     users.remove(user);
   }
-  
+
   public void removeUsers() {
     if (users != null) {
       Iterator<TenantUser> iter = users.iterator();
       while (iter.hasNext()) {
         TenantUser user = iter.next();
-  
+
         user.getRoles().forEach(role -> role.setUser(null));
         user.getRoles().clear();
         user.getUser().removeTenantUser(user);
@@ -241,8 +246,13 @@ public class Tenant {
   public String toString() {
     return "Tenant [id=" + id + ", tenantId=" + tenantId + ", defaultNamespace=" + defaultNamespace
         + ", authenticationProvider=" + authenticationProvider + ", authorizationProvider="
-        + authorizationProvider + ", namespaces=" + namespaces + ", users=" + users
+        + authorizationProvider + ", namespaces=" + toString(namespaces) + ", users=" + users
         + ", generators=" + generators + "]";
+  }
+
+  private String toString(Set<Namespace> namespaces) {
+    return String.join(",",
+        namespaces.stream().map(ns -> ns.getName()).collect(Collectors.toList()));
   }
 
   @Override
