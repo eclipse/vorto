@@ -135,8 +135,8 @@ public class TenantManagementController {
     Set<String> namespaceRequest = Sets.newHashSet(namespaces);
     namespaceRequest.add(defaultNamespace);
     return namespaceRequest.stream()
-        .allMatch(ns -> ns.startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)
-            && !ns.equals(Namespace.PRIVATE_NAMESPACE_PREFIX));
+        .allMatch(ns -> ns.startsWith(Namespace.privateNamespacePrefix)
+            && !ns.equals(Namespace.privateNamespacePrefix));
   }
 
   @PreAuthorize("isAuthenticated()")

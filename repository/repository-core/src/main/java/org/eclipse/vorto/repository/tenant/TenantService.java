@@ -45,6 +45,8 @@ import com.google.common.collect.Sets;
 @Component
 public class TenantService implements ITenantService, ApplicationEventPublisherAware {
 
+  private static final String TENANT_ID = "tenantId";
+
   private static final Logger logger = LoggerFactory.getLogger(TenantService.class);
 
   private ITenantRepository tenantRepo;
@@ -81,7 +83,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       Optional<String> authenticationProvider, Optional<String> authorizationProvider,
       IUserContext userContext) {
 
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNull(userContext, "userContext should not be null");
     PreConditions.notNullOrEmpty(userContext.getUsername(), "userContext.getUsername()");
     PreConditions.notNullOrEmpty(defaultNamespace, "defaultNamespace");
@@ -131,7 +133,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private void updateTenantAdmins(Set<String> newTenantAdmins, Tenant tenant) {
     Set<String> tenantUsers = tenant.getUsers().stream().map(user -> user.getUser().getUsername())
         .collect(Collectors.toSet());
-    Set<String> oldTenantAdmins = tenant.getTenantAdmins().stream().map(user -> user.getUsername())
+    Set<String> oldTenantAdmins = tenant.getTenantAdmins().stream().map(User::getUsername)
         .collect(Collectors.toSet());
     Set<String> tenantUserButNotAdmin = Sets.difference(tenantUsers, oldTenantAdmins);
     Set<String> totallyNewAdmins = Sets.difference(newTenantAdmins, tenantUsers);
@@ -148,8 +150,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     upgradedToAdmins.forEach(admin -> {
       logger.info("Upgrading user '{}' in Tenant '{}' to tenant_admin", admin,
           tenant.getTenantId());
-      Optional<TenantUser> upgradedUser = tenant.getUsers().stream()
-          .filter(user -> user.getUser().getUsername().equals(admin)).findFirst();
+      Optional<TenantUser> upgradedUser = tenant.getUser(admin);
       if (upgradedUser.isPresent()) {
         upgradedUser.get().addRoles(Role.TENANT_ADMIN);
       }
@@ -158,12 +159,11 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     demotedToUsers.forEach(user -> {
       logger.info("Removing tenant_admin rights from user '{}' in Tenant '{}'", user,
           tenant.getTenantId());
-      Optional<TenantUser> _demotedUser = tenant.getUsers().stream()
-          .filter(_user -> _user.getUser().getUsername().equals(user)).findFirst();
-      if (_demotedUser.isPresent()) {
-        TenantUser demotedUser = _demotedUser.get();
+      Optional<TenantUser> maybeDemotedUser = tenant.getUser(user);
+      if (maybeDemotedUser.isPresent()) {
+        TenantUser demotedUser = maybeDemotedUser.get();
         demotedUser.getRoles().removeIf(userRole -> userRole.getRole() == Role.TENANT_ADMIN);
-        if (demotedUser.getRoles().size() < 1) {
+        if (demotedUser.getRoles().isEmpty()) {
           tenant.removeUser(demotedUser);
         }
       }
@@ -210,7 +210,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   public boolean updateTenantNamespaces(String tenantId, Set<String> namespaces) {
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNullOrEmpty(namespaces, "namespaces");
 
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
@@ -221,12 +221,12 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       Set<String> tenantNamespaces = checkIfSuperset(namespaces, tenant);
 
       // Make sure namespaces are unique across tenants
-      tenantNamespaces = checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
+      checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
 
       tenant.getNamespaces().clear();
       tenant.getNamespaces().addAll(Namespace.toNamespace(tenantNamespaces, tenant));
 
-      tenant = tenantRepo.save(tenant);
+      tenantRepo.save(tenant);
 
       return true;
     }
@@ -235,7 +235,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   public boolean addNamespacesToTenant(String tenantId, Set<String> namespaces) {
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNullOrEmpty(namespaces, "namespaces");
 
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
@@ -243,7 +243,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       Set<String> newNamespaces =
           checkForConflict(namespaces, namespaceOwnedByAnotherTenant(tenant));
       tenant.getNamespaces().addAll(Namespace.toNamespace(newNamespaces, tenant));
-      tenant = tenantRepo.save(tenant);
+      tenantRepo.save(tenant);
     }
 
     return false;
@@ -272,14 +272,14 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     // We should check if new namespaces is superset of old namespaces to make sure
     // we are not removing any namespace from the old namespaces that are already
     // being used by the models of the users of this tenant
-    tenantNamespaces = checkIfSuperset(tenantNamespaces, tenant);
+    checkIfSuperset(tenantNamespaces, tenant);
 
     // Make sure namespaces are unique across tenants
-    tenantNamespaces = checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
+    checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
 
     for (String ns : tenantNamespaces) {
       // add namespace if we don't have it
-      if (!tenant.getNamespaces().stream().anyMatch(_ns -> _ns.getName().equals(ns))) {
+      if (tenant.getNamespaces().stream().noneMatch(tns -> tns.getName().equals(ns))) {
         tenant.getNamespaces().add(Namespace.newNamespace(ns));
       }
     }
@@ -293,12 +293,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Predicate<String> namespaceOwnedByAnotherTenant(Tenant tenant) {
-    return namespace -> !namespaceOwnedByTenant(tenant, namespace)
+    return namespace -> !tenant.hasNamespace(namespace)
         && conflictsWithExistingNamespace(namespace);
-  }
-
-  private boolean namespaceOwnedByTenant(Tenant tenant, String namespace) {
-    return tenant.getNamespaces().stream().map(ns -> ns.getName()).anyMatch(namespace::equals);
   }
 
   private Tenant newTenant(String tenantId, String defaultNamespace,
@@ -318,7 +314,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   private Set<String> checkIfSuperset(Set<String> newNamespaces, Tenant tenant) {
     List<String> oldNamespaces =
-        tenant.getNamespaces().stream().map(ns -> ns.getName()).collect(Collectors.toList());
+        tenant.getNamespaces().stream().map(Namespace::getName).collect(Collectors.toList());
     if (!newNamespaces.containsAll(oldNamespaces)) {
       throw new NewNamespacesNotSupersetException();
     }
