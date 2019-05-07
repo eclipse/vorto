@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -127,18 +126,28 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
 
     List<Attachment> imageAttachments =
         getRepo(modelID).getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+
     if (imageAttachments.isEmpty()) {
       response.setStatus(404);
       return;
     }
-    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getName() + ".png");
-    response.setContentType(APPLICATION_OCTET_STREAM);
+
+    Optional<FileContent> imageContent =
+        getModelRepository(tenantId, SecurityContextHolder.getContext().getAuthentication())
+            .getAttachmentContent(modelID, imageAttachments.get(0).getFilename());
+
+    if (!imageContent.isPresent()) {
+      response.setStatus(404);
+      return;
+    }
+
     try {
-      FileContent imageContent =
-          getModelRepository(tenantId, SecurityContextHolder.getContext().getAuthentication())
-              .getAttachmentContent(modelID, imageAttachments.get(0).getFilename()).get();
-      IOUtils.copy(new ByteArrayInputStream(imageContent.getContent()), response.getOutputStream());
+      response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getName() + ".png");
+      response.setContentType(APPLICATION_OCTET_STREAM);
+      IOUtils.copy(new ByteArrayInputStream(imageContent.get().getContent()),
+          response.getOutputStream());
       response.flushBuffer();
+
     } catch (IOException e) {
       throw new GenericApplicationException("Error copying file.", e);
     }
@@ -168,7 +177,8 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       getModelRepository(tenantId).attachFile(modelID,
           new FileContent(file.getOriginalFilename(), file.getBytes()), user, Attachment.TAG_IMAGE);
     } catch (IOException e) {
-      throw new GenericApplicationException("error in attaching file to model '" + modelId + "'", e);
+      throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
+          e);
     }
     return new ResponseEntity<>(false, HttpStatus.CREATED);
   }
@@ -238,8 +248,9 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
         () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    
-    if (!accountService.hasRole(tenantId, authentication, Role.rolePrefix + Role.MODEL_CREATOR.name())) {
+
+    if (!accountService.hasRole(tenantId, authentication,
+        Role.rolePrefix + Role.MODEL_CREATOR.name())) {
       throw new NotAuthorizedException(modelID);
     }
 
@@ -349,9 +360,11 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
         if (tenant.isPresent()) {
           IModelRepository modelRepo = getModelRepository(tenant.get().getTenantId());
           ModelInfo modelInfo = modelRepo.getById(modelId);
-          FileContent modelContent = modelRepo.getFileContent(modelId, Optional.empty()).get();
-          modelsMap.put(modelInfo, modelContent);
-          modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
+          Optional<FileContent> modelContent = modelRepo.getFileContent(modelId, Optional.empty());
+          if (modelContent.isPresent()) {
+            modelsMap.put(modelInfo, modelContent.get());
+            modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
+          }
         }
       }
     }
@@ -480,10 +493,15 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       final String tenantId = getTenant(modelID).orElseThrow(
           () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
 
-      return new ResponseEntity<>(getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
-          .filter(p -> p.getPrincipalType() == PrincipalType.User
-              && p.getPrincipalId().equals(user.getName()))
-          .findFirst().get(), HttpStatus.OK);
+      Optional<PolicyEntry> policyEntry = getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+            .filter(p -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName()))
+            .findFirst();
+      
+      if (policyEntry.isPresent()) {
+        return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
+      }
+      
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (NoSuchElementException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -144,8 +144,11 @@ public class ModelController2 extends AbstractRepositoryController {
 
     if (!mappingResource.isEmpty()) {
 
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+      
       IModelWorkspace workspace =
-          getWorkspaceForModel(getTenant(modelID).get(), mappingResource.get(0).getId());
+          getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
 
       ModelContent result = new ModelContent();
       result.setRoot(modelID);
