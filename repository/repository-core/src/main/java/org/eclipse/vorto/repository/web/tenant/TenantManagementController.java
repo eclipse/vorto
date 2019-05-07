@@ -95,7 +95,7 @@ public class TenantManagementController {
       return new ResponseEntity<>(Result.failure("Empty namespace"), HttpStatus.BAD_REQUEST);
     }
 
-    if (tenantRequest.getTenantAdmins() == null || tenantRequest.getTenantAdmins().size() < 1) {
+    if (tenantRequest.getTenantAdmins() == null || tenantRequest.getTenantAdmins().isEmpty()) {
       return new ResponseEntity<>(Result.failure("Empty tenantAdmin"), HttpStatus.BAD_REQUEST);
     }
 
@@ -132,7 +132,7 @@ public class TenantManagementController {
   }
 
   private boolean isPrivateNamespace(String defaultNamespace, Set<String> namespaces) {
-    Set<String> namespaceRequest = Sets.newHashSet();
+    Set<String> namespaceRequest = Sets.newHashSet(namespaces);
     namespaceRequest.add(defaultNamespace);
     return namespaceRequest.stream()
         .allMatch(ns -> ns.startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)
@@ -148,9 +148,8 @@ public class TenantManagementController {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
 
-    Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(() -> {
-      return new IllegalArgumentException("TenantID '" + tenantId + "' doesnt exist.");
-    });
+    Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(() -> 
+      new IllegalArgumentException("TenantID '" + tenantId + "' doesnt exist."));
 
     IUserContext userContext =
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
@@ -162,7 +161,6 @@ public class TenantManagementController {
     try {
       return new ResponseEntity<>(tenantService.deleteTenant(tenant, userContext), HttpStatus.OK);
     } catch (Exception e) {
-      e.printStackTrace();
       logger.error(e);
       return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -205,7 +203,7 @@ public class TenantManagementController {
   private Predicate<Tenant> hasMemberWithRole(String username, Role role) {
     return tenant -> tenant.getUsers().stream()
         .anyMatch(user -> user.getUser().getUsername().equals(username)
-            && user.getRoles().size() > 0 && user.hasRole(role));
+            && !user.getRoles().isEmpty() && user.hasRole(role));
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -328,7 +326,7 @@ public class TenantManagementController {
       }
     }
 
-    return new ResponseEntity<Boolean>(Boolean.valueOf(hasSentEmail), HttpStatus.OK);
+    return new ResponseEntity<>(Boolean.valueOf(hasSentEmail), HttpStatus.OK);
   }
 
   public static class Result {
