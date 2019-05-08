@@ -37,9 +37,6 @@ public class ModelRepositorySupervisor implements ApplicationListener<AppEvent> 
   @Autowired
   private ModelRepositoryFactory repositoryFactory;
 
-  public ModelRepositorySupervisor() {
-  }
-
   @Override
   public void onApplicationEvent(AppEvent event) {
     if (event.getEventType() == EventType.USER_DELETED) {

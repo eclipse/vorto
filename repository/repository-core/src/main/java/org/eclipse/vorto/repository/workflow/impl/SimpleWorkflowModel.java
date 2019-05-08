@@ -47,19 +47,19 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	private String description;
 	
 	
-	private static DefaultAction ACTION_INITAL = new DefaultAction("start");
-	public static DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger an internal review process, done by the Vorto Team. Once approved, your model will be released.");
-	public static DefaultAction ACTION_CLAIM = new DefaultAction("Claim","Claiming the model makes you owner and responsible for the model having full access.");
-	public static DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
-	public static DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
-	public static DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
-	public static DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated but remains publicly visible.");
+	private static final DefaultAction ACTION_INITAL = new DefaultAction("start");
+	public static final DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger an internal review process, done by the Vorto Team. Once approved, your model will be released.");
+	public static final DefaultAction ACTION_CLAIM = new DefaultAction("Claim","Claiming the model makes you owner and responsible for the model having full access.");
+	public static final DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
+	public static final DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
+	public static final DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
+	public static final DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated but remains publicly visible.");
 
 	
-	public static DefaultState STATE_DRAFT = new DefaultState("Draft","A draft model is only viewable and editable by the model owner.");
-	public static DefaultState STATE_IN_REVIEW = new DefaultState("InReview","Being reviewed by the Vorto Team.");
-	public static DefaultState STATE_RELEASED = new DefaultState("Released","A released model has been successfully reviewed and can viewed by everybody.");
-	public static DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
+	public static final DefaultState STATE_DRAFT = new DefaultState("Draft","A draft model is only viewable and editable by the model owner.");
+	public static final DefaultState STATE_IN_REVIEW = new DefaultState("InReview","Being reviewed by the Vorto Team.");
+	public static final DefaultState STATE_RELEASED = new DefaultState("Released","A released model has been successfully reviewed and can viewed by everybody.");
+	public static final DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
 
 	
 	private static final IWorkflowCondition ONLY_OWNER_EXCLUDING_ANONYMOUS = new IsOwnerCondition();
@@ -76,9 +76,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy(repositoryFactory);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
-		//final IWorkflowFunction removePolicies = new RemovePolicies(repositoryFactory);
 		final IWorkflowFunction claimOwnership = new ClaimOwnership(repositoryFactory);
-		//final IWorkflowFunction grantAnonymousAccessPolicy = new GrantAnonymousAccessPolicy(repositoryFactory);
 		final IWorkflowFunction removeModelReviewerPolicy = new RemoveModelReviewerPolicy(repositoryFactory);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
@@ -96,8 +94,6 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		//ACTION_APPROVE.setFunctions(removePolicies);
-		//ACTION_APPROVE.setFunctions(grantAnonymousAccessPolicy, removeModelReviewerPolicy);
 		ACTION_APPROVE.setFunctions(removeModelReviewerPolicy);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);

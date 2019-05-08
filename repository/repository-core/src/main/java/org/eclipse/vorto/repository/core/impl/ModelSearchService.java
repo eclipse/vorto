@@ -35,7 +35,7 @@ public class ModelSearchService implements IModelSearchService {
 
   @Override
   public Map<String, List<ModelInfo>> search(String expression) {
-    Map<String, List<ModelInfo>> modelResourcesMap = new HashMap<String, List<ModelInfo>>();
+    Map<String, List<ModelInfo>> modelResourcesMap = new HashMap<>();
     for (String tenant : tenantsSupplier.get()) {
       IModelRepository modelRepo = modelRepoSource.apply(tenant);
       modelResourcesMap.put(tenant, modelRepo.search(expression));
