@@ -261,25 +261,20 @@
 										<br>
 										<div class="row">
 											<div class="col-sm-3">
-												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
-												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
+												<label ng-show="isEditingVisible(model)" class="ng-binding">Model Editor</label>
+												<label ng-show="!isEditingVisible(model)" class="ng-binding">Model Preview</label>
 											</div>
 											<div ng-hide="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
 											    class="col-sm-9">
 											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/development/core-bundles/docs/quickhelp_dsl.md">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
-												
-												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_SYS_ADMIN') || (permission !== 'READ' && !model.released)"
-												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
-												    ng-click="saveModel()" role="button">
-													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_SYS_ADMIN') || (permission !== 'READ' && !model.released)"
+												<a ng-show="isEditingVisible(model)"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
-													<span class="fa fa-save" aria-hidden="true"></span>
-													</i>&nbsp;Save</a>
-												
+													<span ng-if="!isLoading" class="fa fa-save" aria-hidden="true"></span>
+													<i ng-if="isLoading" class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
+													
 												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Reference</a>

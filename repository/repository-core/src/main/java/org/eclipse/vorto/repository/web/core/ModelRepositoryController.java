@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -37,6 +39,7 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -388,12 +391,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    Optional<PolicyEntry> policyEntry =
-        getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
-            .filter(p -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName())
-                || p.getPrincipalType() == PrincipalType.Role && hasRole(user, tenantId, p.getPrincipalId()))
-            .findFirst();
-
+    List<PolicyEntry> policyEntries = getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+        .filter(userHasPolicyEntry(user, tenantId))
+        .collect(Collectors.toList());
+    
+    Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
+    
     if (policyEntry.isPresent()) {
       return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
     } else {
@@ -401,8 +404,28 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  private boolean hasRole(Authentication user, String tenantId, String role) {
-    return accountService.hasRole(tenantId, user, role);
+  private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {
+    Optional<PolicyEntry> full = policyEntries.stream().filter(p -> p.getPermission() == Permission.FULL_ACCESS).findFirst();
+    if (full.isPresent()) {
+      return full;
+    }
+    
+    Optional<PolicyEntry> modify = policyEntries.stream().filter(p -> p.getPermission() == Permission.MODIFY).findFirst();
+    if (modify.isPresent()) {
+      return modify;
+    }
+    
+    Optional<PolicyEntry> read = policyEntries.stream().filter(p -> p.getPermission() == Permission.READ).findFirst();
+    if (read.isPresent()) {
+      return read;
+    }
+    
+    return Optional.empty();
+  }
+  
+  private Predicate<PolicyEntry> userHasPolicyEntry(Authentication user, String tenantId) {
+    return (p) -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName()) ||
+        p.getPrincipalType() == PrincipalType.Role && accountService.hasRole(tenantId, user, p.getPrincipalId());
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
