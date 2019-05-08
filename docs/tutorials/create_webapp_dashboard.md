@@ -1,4 +1,4 @@
-# Using the Vorto Dashboard
+# Generate a Node.js Dashboard that reads device data from Bosch IoT Suite and visualizes it in Vorto UI Widgets.
 
 This tutorial teaches you how to use the Vorto Dashboard and quickly display the data of the integrated things.
 we will use our [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) that is already released and available for you to use.
@@ -66,7 +66,7 @@ If your device isn't integrated and sending data already, check out these tutori
 <br />
 
 ## What's next?
-
+- Extend the Dashboard by [creating custom UI widgets](https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/extending.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)
