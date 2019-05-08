@@ -36,9 +36,3 @@ script:
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
     else mvn --fail-fast -q clean package -P checkstyle;
     fi 
-    
-deploy:
-  provider: script
-  script: bash docker/docker_push
-  on:
-    branch: master
