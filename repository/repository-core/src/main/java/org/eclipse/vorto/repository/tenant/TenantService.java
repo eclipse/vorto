@@ -320,10 +320,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     
     checkForConflict(tenantNamespaces, this::conflictsWithExistingNamespace);
 
-    if (!user.isSysAdmin()) {
-      checkForPrivatePrefix(tenantNamespaces);
-    }
-
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
     tenant.setAuthenticationProvider(
         getAuthenticationProvider(authenticationProvider, AuthenticationProvider.GITHUB));
