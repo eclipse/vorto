@@ -307,16 +307,11 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       IUserContext user) {
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
-    
     if (!user.isSysAdmin()) {
       checkForPrivatePrefix(tenantNamespaces);
     }
     
     checkForConflict(tenantNamespaces, this::conflictsWithExistingNamespace);
-
-    if (!user.isSysAdmin()) {
-      checkForPrivatePrefix(tenantNamespaces);
-    }
 
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
     tenant.setAuthenticationProvider(
