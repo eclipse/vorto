@@ -26,6 +26,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public class SpringUserUtils {
 
+  private SpringUserUtils() {
+    // Hide the default constructor
+  }
+
   public static void refreshSpringSecurityUser(User user) {
     // We only need to replace the authorities as that might be the only thing that changed
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,7 +60,7 @@ public class SpringUserUtils {
   }
 
   public static Set<Role> authorityListToSet(Collection<? extends GrantedAuthority> authorities) {
-    return AuthorityUtils.authorityListToSet(authorities).stream().map(a -> Role.of(a))
+    return AuthorityUtils.authorityListToSet(authorities).stream().map(Role::of)
         .collect(Collectors.toSet());
   }
 }
