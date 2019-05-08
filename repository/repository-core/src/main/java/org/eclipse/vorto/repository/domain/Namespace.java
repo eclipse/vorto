@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
 @Table(name = "namespace")
 public class Namespace {
 
-  public static final String privateNamespacePrefix = "vorto.private.";
+  public static final String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
