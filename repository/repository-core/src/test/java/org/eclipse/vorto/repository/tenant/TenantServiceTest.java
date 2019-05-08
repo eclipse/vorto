@@ -112,18 +112,18 @@ public class TenantServiceTest {
   public void testNewTenantOneNamespaceWithConflict() {
     Mockito.when(tenantRepo.findByTenantId("myTenantId")).thenReturn(null);
     Mockito.when(nsRepo.findAll())
-        .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test")));
+        .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
 
     TenantService tenantService = getTenantService();
 
     try {
-      tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
+      tenantService.createOrUpdateTenant("myTenantId", "vorto.private.test", Sets.newHashSet("admin"),
           Optional.empty(), Optional.empty(), Optional.empty(), UserContext.user("admin", null));
       fail("Passing a namespace that already exist should throw an exception");
     } catch (NamespaceExistException e) {
-      assertEquals(e.getMessage(), "Namespace 'com.test' already exist.");
+      assertEquals(e.getMessage(), "Namespace 'vorto.private.test' already exist.");
     }
   }
 
@@ -131,7 +131,7 @@ public class TenantServiceTest {
   public void testNewTenantOneNamespaceAllDefault() {
     Mockito.when(tenantRepo.findByTenantId("myTenantId")).thenReturn(null);
     Mockito.when(nsRepo.findAll())
-        .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
+        .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
 
@@ -139,19 +139,19 @@ public class TenantServiceTest {
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
 
-    tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
+    tenantService.createOrUpdateTenant("myTenantId", "vorto.private.test", Sets.newHashSet("admin"),
         Optional.empty(), Optional.empty(), Optional.empty(), UserContext.user("admin", null));
 
     ArgumentCaptor<Tenant> argCaptor = ArgumentCaptor.forClass(Tenant.class);
     Mockito.verify(tenantRepo).save(argCaptor.capture());
 
     assertEquals(argCaptor.getValue().getTenantId(), "myTenantId");
-    assertEquals(argCaptor.getValue().getDefaultNamespace(), "com.test");
+    assertEquals(argCaptor.getValue().getDefaultNamespace(), "vorto.private.test");
     assertEquals(argCaptor.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor.getValue().getNamespaces().size(), 1);
     assertEquals(argCaptor.getValue().getNamespaces().toArray(new Namespace[1])[0].getName(),
-        "com.test");
+        "vorto.private.test");
   }
 
   @Test
@@ -166,27 +166,27 @@ public class TenantServiceTest {
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
 
-    tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
-        Optional.of(Sets.newHashSet("com.test")), Optional.empty(), Optional.empty(),
+    tenantService.createOrUpdateTenant("myTenantId", "vorto.private.test", Sets.newHashSet("admin"),
+        Optional.of(Sets.newHashSet("vorto.private.test")), Optional.empty(), Optional.empty(),
         UserContext.user("admin", null));
 
     ArgumentCaptor<Tenant> argCaptor2 = ArgumentCaptor.forClass(Tenant.class);
     Mockito.verify(tenantRepo).save(argCaptor2.capture());
 
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
-    assertEquals(argCaptor2.getValue().getDefaultNamespace(), "com.test");
+    assertEquals(argCaptor2.getValue().getDefaultNamespace(), "vorto.private.test");
     assertEquals(argCaptor2.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 1);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
-        .anyMatch(ns -> ns.getName().equals("com.test")));
+        .anyMatch(ns -> ns.getName().equals("vorto.private.test")));
   }
 
   @Test
   public void testNewTenantMultipleNamespaceAllDefault() {
     Mockito.when(tenantRepo.findByTenantId("myTenantId")).thenReturn(null);
     Mockito.when(nsRepo.findAll())
-        .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
+        .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
 
@@ -194,24 +194,24 @@ public class TenantServiceTest {
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
 
-    tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
-        Optional.of(Sets.newHashSet("com.test1", "com.test2")), Optional.empty(), Optional.empty(),
+    tenantService.createOrUpdateTenant("myTenantId", "vorto.private.test", Sets.newHashSet("admin"),
+        Optional.of(Sets.newHashSet("vorto.private.test1", "vorto.private.test2")), Optional.empty(), Optional.empty(),
         UserContext.user("admin", null));
 
     ArgumentCaptor<Tenant> argCaptor2 = ArgumentCaptor.forClass(Tenant.class);
     Mockito.verify(tenantRepo).save(argCaptor2.capture());
 
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
-    assertEquals(argCaptor2.getValue().getDefaultNamespace(), "com.test");
+    assertEquals(argCaptor2.getValue().getDefaultNamespace(), "vorto.private.test");
     assertEquals(argCaptor2.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 3);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
-        .anyMatch(ns -> ns.getName().equals("com.test")));
+        .anyMatch(ns -> ns.getName().equals("vorto.private.test")));
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
-        .anyMatch(ns -> ns.getName().equals("com.test1")));
+        .anyMatch(ns -> ns.getName().equals("vorto.private.test1")));
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
-        .anyMatch(ns -> ns.getName().equals("com.test2")));
+        .anyMatch(ns -> ns.getName().equals("vorto.private.test2")));
   }
 
   @Test

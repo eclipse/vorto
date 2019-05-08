@@ -115,7 +115,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       }
 
       logger.info("Updating tenant '{}' - {}", tenantId, tenant);
-      tenant = updateTenant(tenant, defaultNamespace, namespaces,
+      updateTenant(tenant, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
 
       updateTenantAdmins(tenantAdmins, tenant);
@@ -269,14 +269,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
 
-    // We should check if new namespaces is superset of old namespaces to make sure
-    // we are not removing any namespace from the old namespaces that are already
-    // being used by the models of the users of this tenant
-    checkIfSuperset(tenantNamespaces, tenant);
-
-    // Make sure namespaces are unique across tenants
-    checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
-
     Set<String> oldNamespaces =
         tenant.getNamespaces().stream().map(ns -> ns.getName()).collect(Collectors.toSet());
     Set<String> newNamespaces = Sets.difference(tenantNamespaces, oldNamespaces);
@@ -284,6 +276,14 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     if (!user.isSysAdmin()) {
       checkForPrivatePrefix(newNamespaces);
     }
+    
+    // We should check if new namespaces is superset of old namespaces to make sure
+    // we are not removing any namespace from the old namespaces that are already
+    // being used by the models of the users of this tenant
+    checkIfSuperset(tenantNamespaces, tenant);
+
+    // Make sure namespaces are unique across tenants
+    checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
 
     for (String ns : newNamespaces) {
       tenant.addNamesspace(Namespace.newNamespace(ns));
@@ -306,12 +306,13 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       Optional<Set<String>> namespaces, String authenticationProvider, String authorizationProvider,
       IUserContext user) {
 
-    Set<String> tenantNamespaces = checkForConflict(combine(namespaces, defaultNamespace),
-        this::conflictsWithExistingNamespace);
-
+    Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
+    
     if (!user.isSysAdmin()) {
       checkForPrivatePrefix(tenantNamespaces);
     }
+    
+    checkForConflict(tenantNamespaces, this::conflictsWithExistingNamespace);
 
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
     tenant.setAuthenticationProvider(
@@ -332,8 +333,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private boolean isPrivateNamespace(String namespace) {
-    return namespace.startsWith(Namespace.privateNamespacePrefix)
-        && !namespace.equals(Namespace.privateNamespacePrefix);
+    return namespace.startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)
+        && !namespace.equals(Namespace.PRIVATE_NAMESPACE_PREFIX);
   }
 
   private Set<String> checkIfSuperset(Set<String> newNamespaces, Tenant tenant) {
