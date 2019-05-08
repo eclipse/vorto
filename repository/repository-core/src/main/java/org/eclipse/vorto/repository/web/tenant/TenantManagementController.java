@@ -33,6 +33,7 @@ import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
+import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.eclipse.vorto.repository.web.tenant.dto.NamespacesRequest;
 import org.eclipse.vorto.repository.web.tenant.dto.TenantDto;
@@ -99,7 +100,7 @@ public class TenantManagementController {
     
     try {
 
-      tenantService.createOrUpdateTenant(tenantId, tenantRequest.getDefaultNamespace(),
+      tenantService.createOrUpdateTenant(ControllerUtils.sanitize(tenantId), tenantRequest.getDefaultNamespace(),
           tenantRequest.getTenantAdmins(), Optional.ofNullable(tenantRequest.getNamespaces()),
           Optional.ofNullable(tenantRequest.getAuthenticationProvider()),
           Optional.ofNullable(tenantRequest.getAuthorizationProvider()), userContext);
@@ -131,12 +132,14 @@ public class TenantManagementController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
+    
+    String tenantID = ControllerUtils.sanitize(tenantId);
 
-    Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(() -> 
-      new IllegalArgumentException("TenantID '" + tenantId + "' doesnt exist."));
+    Tenant tenant = tenantService.getTenant(tenantID).orElseThrow(() -> 
+      new IllegalArgumentException("TenantID '" + tenantID + "' doesnt exist."));
 
     IUserContext userContext =
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantID);
 
     if (!(userContext.isSysAdmin() || owner(tenant, userContext.getAuthentication()))) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
@@ -200,8 +203,10 @@ public class TenantManagementController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
     }
+    
+    String tenantID = ControllerUtils.sanitize(tenantId);
 
-    return tenantService.getTenant(tenantId).flatMap(tenant -> {
+    return tenantService.getTenant(tenantID).flatMap(tenant -> {
       if (isSysAdmin || tenant.getOwner().getUsername().equals(user.getName())) {
         return Optional.of(TenantDto.fromTenant(tenant));
       }
@@ -221,13 +226,15 @@ public class TenantManagementController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
+    
+    String tenantID = ControllerUtils.sanitize(tenantId);
 
     if (namespacesRequest.getNamespaces() == null || namespacesRequest.getNamespaces().isEmpty()) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
 
     try {
-      tenantService.updateTenantNamespaces(tenantId, namespacesRequest.getNamespaces());
+      tenantService.updateTenantNamespaces(tenantID, namespacesRequest.getNamespaces());
 
       return new ResponseEntity<>(true, HttpStatus.OK);
     } catch (NewNamespacesNotSupersetException e) {
@@ -248,13 +255,15 @@ public class TenantManagementController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
+    
+    String tenantID = ControllerUtils.sanitize(tenantId);
 
     if (namespacesRequest.getNamespaces() == null || namespacesRequest.getNamespaces().isEmpty()) {
       return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
     }
 
     try {
-      tenantService.addNamespacesToTenant(tenantId, namespacesRequest.getNamespaces());
+      tenantService.addNamespacesToTenant(tenantID, namespacesRequest.getNamespaces());
 
       return new ResponseEntity<>(true, HttpStatus.OK);
     } catch (NamespaceExistException e) {
@@ -298,7 +307,7 @@ public class TenantManagementController {
     for (User admin : userAccountService.getSystemAdministrators()) {
       if (admin.hasEmailAddress()) {
         OfficialNamespaceRequest officialNamespaceRequest =
-            new OfficialNamespaceRequest(admin, tenantId, namespace, user.getName(), new Date());
+            new OfficialNamespaceRequest(admin, ControllerUtils.sanitize(tenantId), namespace, user.getName(), new Date());
         try {
           notificationServices.sendNotification(officialNamespaceRequest);
           hasSentEmail = true;
