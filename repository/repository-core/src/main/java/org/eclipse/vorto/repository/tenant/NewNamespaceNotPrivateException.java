@@ -12,17 +12,17 @@
  */
 package org.eclipse.vorto.repository.tenant;
 
-public class NewNamespacesNotSupersetException extends RuntimeException {
+import java.util.List;
+import org.eclipse.xtext.util.Strings;
+
+public class NewNamespaceNotPrivateException extends RuntimeException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 7316742295272367380L;
+  private static final long serialVersionUID = -4438741182469165758L;
 
-  public NewNamespacesNotSupersetException() {
-    super("The requested namespaces is not a superset of the old namespaces");
+  public NewNamespaceNotPrivateException(List<String> nonPrivateNamespaces) {
+    super("Non-private namespaces are not allowed : " + Strings.concat(",", nonPrivateNamespaces));
   }
-  
-  
-
 }

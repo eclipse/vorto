@@ -15,7 +15,7 @@ package org.eclipse.vorto.repository.init;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -27,13 +27,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Sets;
 
 @Component
 public class RepositoryInitializer {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Value("${server.admin:#{null}}")
   private String[] admins;
@@ -70,7 +71,7 @@ public class RepositoryInitializer {
 
   private void createAdminUser(String username) {
     if (!userAccountService.exists(username)) {
-      LOGGER.info("Creating admin user: {}", username);
+      logger.info("Creating admin user: {}", username);
       User user = User.create(username);
       userAccountService.saveUser(user);
     }
@@ -83,19 +84,53 @@ public class RepositoryInitializer {
 
   private void createTenantIfNotExisting(PredefinedTenant tenant) {
     if (!tenantService.tenantExist(tenant.getTenantId())) {
-      LOGGER.info("Creating predefined tenant: {}", tenant);
+      logger.info("Creating predefined tenant: {}", tenant);
 
       tenantService.createOrUpdateTenant(tenant.getTenantId(), tenant.getDefaultNamespace(),
           Sets.newHashSet(admins), Optional.empty(),
           Optional.of(tenant.getAuthenticationProvider()),
           Optional.of(tenant.getAuthorizationProvider()),
-          UserContext.user(admins[0], tenant.getTenantId()));
+          createAdminContext(admins[0], tenant.getTenantId()));
     }
+  }
+  
+  private IUserContext createAdminContext(String userId, String tenantId) {
+    return new IUserContext() {
+      @Override
+      public Authentication getAuthentication() {
+        return null;
+      }
+
+      @Override
+      public String getUsername() {
+        return userId;
+      }
+
+      @Override
+      public String getTenant() {
+        return tenantId;
+      }
+
+      @Override
+      public String getHashedUsername() {
+        return null;
+      }
+
+      @Override
+      public boolean isAnonymous() {
+        return false;
+      }
+
+      @Override
+      public boolean isSysAdmin() {
+        return true;
+      }
+    };
   }
 
   private void createUser(String user) {
     if (!userAccountService.exists(user)) {
-      LOGGER.info("Creating technical user: {}", user);
+      logger.info("Creating technical user: {}", user);
       userAccountService.create(user);
     }
   }

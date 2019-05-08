@@ -62,9 +62,9 @@ public class ModelRetrievalService implements IModelRetrievalService {
   public Optional<Entry<String, FileContent>> getContent(ModelId modelId) {
     for (String tenant : tenantsSupplier.get()) {
       IModelRepository modelRepo = modelRepoSource.apply(tenant);
-      Optional<FileContent> _fileContent = modelRepo.getFileContent(modelId, Optional.empty());
-      if (_fileContent.isPresent()) {
-        return Optional.of(Maps.immutableEntry(tenant, _fileContent.get()));
+      Optional<FileContent> fileContent = modelRepo.getFileContent(modelId, Optional.empty());
+      if (fileContent.isPresent()) {
+        return Optional.of(Maps.immutableEntry(tenant, fileContent.get()));
       }
     }
     
@@ -78,7 +78,7 @@ public class ModelRetrievalService implements IModelRetrievalService {
     for (String tenant : tenantsSupplier.get()) {
       IModelRepository modelRepo = modelRepoSource.apply(tenant);
       List<ModelInfo> modelsReferencing = modelRepo.getModelsReferencing(modelId);
-      if (modelsReferencing != null && modelsReferencing.size() > 0) {
+      if (modelsReferencing != null && !modelsReferencing.isEmpty()) {
         modelReferencesMap.put(tenant, modelsReferencing);
       }
     }

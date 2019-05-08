@@ -14,7 +14,9 @@ package org.eclipse.vorto.repository.web.tenant.dto;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 
 public class TenantDto {
   private String tenantId;
@@ -27,13 +29,13 @@ public class TenantDto {
   public static TenantDto fromTenant(Tenant tenant) {
     TenantDto dto = new TenantDto();
     dto.setTenantId(tenant.getTenantId());
-    dto.setAdmins(tenant.getTenantAdmins().stream().map(user -> user.getUsername())
+    dto.setAdmins(tenant.getTenantAdmins().stream().map(User::getUsername)
         .collect(Collectors.toList()));
     dto.setAuthenticationProvider(tenant.getAuthenticationProvider().toString());
     dto.setAuthorizationProvider(tenant.getAuthorizationProvider().toString());
     dto.setDefaultNamespace(tenant.getDefaultNamespace());
     dto.setNamespaces(
-        tenant.getNamespaces().stream().map(ns -> ns.getName()).collect(Collectors.toList()));
+        tenant.getNamespaces().stream().map(Namespace::getName).collect(Collectors.toList()));
     return dto;
   }
 

@@ -35,6 +35,7 @@ import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -74,8 +75,10 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
-    logger.info("getModelInfo: [" + modelId + "]");
-    ModelInfo resource = getModelRepository(tenantId).getById(ModelId.fromPrettyFormat(modelId));
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
+    ModelInfo resource = getModelRepository(tenantId).getById(modelID);
 
     if (resource == null) {
       throw new ModelNotFoundException("Model does not exist", null);
@@ -131,8 +134,11 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    String sanitizedPlatformKey = ControllerUtils.sanitize(targetplatformKey);
+    
     List<ModelInfo> mappingResource =
-        getModelRepository(tenantId).getMappingModelsForTargetPlatform(modelID, targetplatformKey);
+        getModelRepository(tenantId).getMappingModelsForTargetPlatform(modelID, sanitizedPlatformKey);
     if (!mappingResource.isEmpty()) {
 
       IModelWorkspace workspace = getWorkspaceForModel(tenantId, mappingResource.get(0).getId());

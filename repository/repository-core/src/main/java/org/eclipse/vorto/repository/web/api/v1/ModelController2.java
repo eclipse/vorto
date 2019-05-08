@@ -79,10 +79,11 @@ public class ModelController2 extends AbstractRepositoryController {
           required = true) final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
-    logger.info("getModelInfo: [" + modelId + "]");
-    ModelId _modelId = ModelId.fromPrettyFormat(modelId);
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
 
-    ModelInfo resource = getRepo(_modelId).getById(_modelId);
+    ModelInfo resource = getRepo(modelID).getById(modelID);
 
     if (resource == null) {
       throw new ModelNotFoundException("Model does not exist", null);
@@ -108,7 +109,7 @@ public class ModelController2 extends AbstractRepositoryController {
     }
 
     final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+        () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
 
     IModelWorkspace workspace = getWorkspaceForModel(tenantId, modelID);
 
@@ -145,7 +146,7 @@ public class ModelController2 extends AbstractRepositoryController {
     if (!mappingResource.isEmpty()) {
 
       final String tenantId = getTenant(modelID).orElseThrow(
-          () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+          () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
       
       IModelWorkspace workspace =
           getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
@@ -212,7 +213,7 @@ public class ModelController2 extends AbstractRepositoryController {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+        () -> new ModelNotFoundException("The tenant for '" + modelID.getPrettyFormat() + "' could not be found."));
 
     logger.info("Download of Model file : [" + modelID.toString() + "]");
 

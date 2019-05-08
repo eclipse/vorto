@@ -126,7 +126,7 @@
 		<div class="form-group">
 			<label>{{ dialog.label }}</label>
 			<div class="input-group">
-				<span ng-show="dialog.prefix != null" class="input-group-addon">{{ dialog.prefix }}</span>
+				<span ng-if="dialog.prefix != null && dialog.prefix !== ''" class="input-group-addon">{{ dialog.prefix }}</span>
 				<input name="value" type="text" ng-model="value" class="form-control" required>
 			</div>
 		</div>    
