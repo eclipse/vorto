@@ -57,6 +57,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
@@ -428,9 +429,9 @@ public class ModelRepositoryController2 extends AbstractRepositoryController {
       }
 
       List<ModelInfo> mappingResources =
-          modelRepository.getMappingModelsForTargetPlatform(modelID, targetPlatform);
+          modelRepository.getMappingModelsForTargetPlatform(modelID, ControllerUtils.sanitize(targetPlatform));
 
-      List<ModelId> mappingModelIds = mappingResources.stream().map(modelInfo -> modelInfo.getId())
+      List<ModelId> mappingModelIds = mappingResources.stream().map(ModelInfo::getId)
           .collect(Collectors.toList());
 
       final String fileName =
