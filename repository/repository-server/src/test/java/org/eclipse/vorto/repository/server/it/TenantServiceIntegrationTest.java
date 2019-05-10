@@ -38,6 +38,24 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
 
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+  private String createTenantRequest = tenantRequest("vorto.private.abc.xyz");
+
+  private List<String> badTenantRequests = Arrays.asList(gson.toJson(newTenantRequest("com2")),
+      new Gson().toJson(newTenantRequest("vorto.private")),
+      new Gson().toJson(newTenantRequest("vorto")),
+      new Gson().toJson(newTenantRequest("vorto.private.")));
+
+  private List<String> nonConflictingTenantRequests =
+      Arrays.asList(gson.toJson(newTenantRequest("vorto.private.xyz.ecm")),
+          new Gson().toJson(newTenantRequest("vorto.private.abc1")),
+          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz1")));
+
+  private List<String> conflictingTenantRequests =
+      Arrays.asList(gson.toJson(newTenantRequest("vorto.private.abc")),
+          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz")),
+          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc")),
+          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc.ecm")));
+  
   @Override
   protected void setUpTest() throws Exception {
 
@@ -54,6 +72,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     repositoryServer.perform(put("/rest/tenants/tenantWithWrongPrecondition2")
         .content(tenantRequest("vorto.private.precondition", (String[]) null))
         .contentType("application/json").with(userCreator)).andExpect(status().isBadRequest());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -66,6 +86,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
       System.out.println(reply);
       assertTrue(reply.contains("\"tenantId\":\"myTenant\""));
     }).andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -88,6 +110,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
         .andExpect(status().isBadRequest());
 
     checkAdminCount(2);
+    
+    assertTrue(true);
   }
 
   private void checkAdminCount(int count) throws Exception {
@@ -139,6 +163,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
         .contentType("application/json").with(userStandard)).andDo(result -> {
           assertTrue(result.getResponse().getContentAsString().contains("superset"));
         }).andExpect(status().isBadRequest());
+    
+    assertTrue(true);
   }
 
   public void verify(String tenantId, String... namespaces) throws Exception {
@@ -175,6 +201,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     repositoryServer.perform(
         put("/rest/tenants/myTenant2/namespaces").contentType("application/json").with(userAdmin))
         .andExpect(status().isBadRequest());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -203,6 +231,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     repositoryServer.perform(
         post("/rest/tenants/myTenant3/namespaces").contentType("application/json").with(userAdmin))
         .andExpect(status().isBadRequest());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -218,6 +248,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
         .contentType("application/json").with(userStandard)).andDo(result -> {
           assertEquals("false", result.getResponse().getContentAsString());
         }).andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -230,6 +262,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
         .andDo(result -> {
           System.out.println(result.getResponse().getContentAsString());
         }).andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -246,6 +280,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
                 "Request: " + badTenantRequest + " Reply:" + result.getResponse().getStatus());
           }).andExpect(status().isBadRequest());
     }
+    
+    assertTrue(true);
   }
 
   @Test
@@ -272,6 +308,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
                 + result.getResponse().getStatus());
           }).andExpect(status().isOk());
     }
+    
+    assertTrue(true);
   }
 
   @Test
@@ -282,12 +320,16 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
           System.out
               .println("Request: " + officialNs + " Reply:" + result.getResponse().getStatus());
         }).andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   @Test
   public void testTenantNotFound() throws Exception {
     repositoryServer.perform(get("/rest/tenants/myTenantNotFound").with(userCreator))
         .andExpect(status().isNotFound());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -303,12 +345,16 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
 
     repositoryServer.perform(get("/rest/tenants/myTenant").with(userCreator))
         .andExpect(status().isNotFound());
+    
+    assertTrue(true);
   }
 
   @Test
   public void testDeleteTenantPreconditions() throws Exception {
     repositoryServer.perform(delete("/rest/tenants/tenantThatDoesntExist").with(userCreator))
         .andExpect(status().isBadRequest());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -318,6 +364,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
 
     repositoryServer.perform(delete("/rest/tenants/myTenant").with(nonTenantUser))
         .andExpect(status().isForbidden());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -349,6 +397,8 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
           System.out.println("tenants.size() = " + tenants.size());
           assertTrue(tenants.size() <= 0);
         }).andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   private List<TenantDto> toTenantList(MvcResult result) throws UnsupportedEncodingException {
@@ -375,25 +425,9 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     repositoryServer
         .perform(get("/rest/tenants/getTenant").contentType("application/json").with(nonTenantUser))
         .andExpect(status().isNotFound());
+    
+    assertTrue(true);
   }
-
-  private String createTenantRequest = tenantRequest("vorto.private.abc.xyz");
-
-  private List<String> badTenantRequests = Arrays.asList(gson.toJson(newTenantRequest("com2")),
-      new Gson().toJson(newTenantRequest("vorto.private")),
-      new Gson().toJson(newTenantRequest("vorto")),
-      new Gson().toJson(newTenantRequest("vorto.private.")));
-
-  private List<String> nonConflictingTenantRequests =
-      Arrays.asList(gson.toJson(newTenantRequest("vorto.private.xyz.ecm")),
-          new Gson().toJson(newTenantRequest("vorto.private.abc1")),
-          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz1")));
-
-  private List<String> conflictingTenantRequests =
-      Arrays.asList(gson.toJson(newTenantRequest("vorto.private.abc")),
-          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz")),
-          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc")),
-          new Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc.ecm")));
 
   private String tenantRequest(String ns) {
     return gson.toJson(newTenantRequest(ns));
