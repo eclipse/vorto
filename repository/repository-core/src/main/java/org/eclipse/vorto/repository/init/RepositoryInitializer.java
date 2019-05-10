@@ -73,6 +73,8 @@ public class RepositoryInitializer {
     if (!userAccountService.exists(username)) {
       logger.info("Creating admin user: {}", username);
       User user = User.create(username);
+      // TODO : set to be configurable from configuration file
+      user.setEmailAddress("vorto-dev@bosch-si.com");
       userAccountService.saveUser(user);
     }
   }
