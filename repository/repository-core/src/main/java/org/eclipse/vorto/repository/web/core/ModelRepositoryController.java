@@ -1,11 +1,12 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -47,6 +48,8 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.ControllerUtils;
+import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
@@ -106,22 +109,35 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    IModelRepository modelRepo =
+        getModelRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
+
     List<Attachment> imageAttachments =
-        getModelRepository(tenantId).getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+        modelRepo.getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+
     if (imageAttachments.isEmpty()) {
       response.setStatus(404);
       return;
     }
-    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getName() + ".png");
-    response.setContentType(APPLICATION_OCTET_STREAM);
+
+    Optional<FileContent> imageContent =
+        modelRepo.getAttachmentContent(modelID, imageAttachments.get(0).getFilename());
+
+    if (!imageContent.isPresent()) {
+      response.setStatus(404);
+      return;
+    }
+
     try {
-      FileContent imageContent =
-          getModelRepository(tenantId, SecurityContextHolder.getContext().getAuthentication())
-              .getAttachmentContent(modelID, imageAttachments.get(0).getFilename()).get();
-      IOUtils.copy(new ByteArrayInputStream(imageContent.getContent()), response.getOutputStream());
+      response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getName() + ".png");
+      response.setContentType(APPLICATION_OCTET_STREAM);
+      IOUtils.copy(new ByteArrayInputStream(imageContent.get().getContent()),
+          response.getOutputStream());
       response.flushBuffer();
+
     } catch (IOException e) {
-      throw new RuntimeException("Error copying file.", e);
+      throw new GenericApplicationException("Error copying file.", e);
     }
   }
 
@@ -147,7 +163,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
               new FileContent(file.getOriginalFilename(), file.getBytes()), user,
               Attachment.TAG_IMAGE);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
+          e);
     }
     return new ResponseEntity<>(false, HttpStatus.CREATED);
   }
@@ -210,16 +227,18 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType,
       @RequestBody(required = false) List<ModelProperty> properties) throws WorkflowException {
-    // Todo Add Validation to this
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    if (getModelRepository(tenantId).exists(modelID)) {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    IUserContext userContext = UserContext.user(authentication, tenantId);
+
+    IModelRepository modelRepo = getModelRepository(userContext);
+
+    if (modelRepo.exists(modelID)) {
       throw new ModelAlreadyExistsException();
     } else {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-      IUserContext userContext = UserContext.user(authentication, tenantId);
-
       String modelTemplate = null;
 
       if (modelType == ModelType.InformationModel && properties != null) {
@@ -228,11 +247,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         modelTemplate = new ModelTemplate().createModelTemplate(modelID, modelType);
       }
 
-      ModelInfo savedModel = getModelRepository(tenantId, authentication).save(modelID,
-          modelTemplate.getBytes(), modelID.getName() + modelType.getExtension(), userContext);
+      ModelInfo savedModel = modelRepo.save(modelID, modelTemplate.getBytes(),
+          modelID.getName() + modelType.getExtension(), userContext);
       this.workflowService.start(modelID, userContext);
       return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
-
     }
   }
 
@@ -267,13 +285,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       final @PathVariable String modelId) {
+
     Objects.requireNonNull(modelId, "modelId must not be null");
+
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
       getModelRepository(tenantId, authentication).removeModel(ModelId.fromPrettyFormat(modelId));
       return new ResponseEntity<>(false, HttpStatus.OK);
-    } catch (FatalModelRepositoryException | NullPointerException nullPointerException) {
-      logger.error(nullPointerException);
+    } catch (FatalModelRepositoryException | NullPointerException e) {
+      logger.error(e);
       return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
   }
@@ -330,8 +351,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
       }
 
-      List<ModelInfo> mappingResources =
-          modelRepository.getMappingModelsForTargetPlatform(modelID, targetPlatform);
+      List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelID,
+          ControllerUtils.sanitize(targetPlatform));
 
       final String fileName =
           modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID.getVersion() + ".zip";
@@ -350,7 +371,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       final @PathVariable String modelId) {
+    
     Objects.requireNonNull(modelId, "model ID must not be null");
+    
     try {
       return new ResponseEntity<>(
           getDiagnosticService(tenantId).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
@@ -374,7 +397,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           getPolicyManager(tenantId).getPolicyEntries(ModelId.fromPrettyFormat(modelId)),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
-      ex.printStackTrace();
+      logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -392,11 +415,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     List<PolicyEntry> policyEntries = getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
-        .filter(userHasPolicyEntry(user, tenantId))
-        .collect(Collectors.toList());
-    
+        .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
+
     Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
-    
+
     if (policyEntry.isPresent()) {
       return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
     } else {
@@ -405,27 +427,31 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {
-    Optional<PolicyEntry> full = policyEntries.stream().filter(p -> p.getPermission() == Permission.FULL_ACCESS).findFirst();
+    Optional<PolicyEntry> full =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.FULL_ACCESS).findFirst();
     if (full.isPresent()) {
       return full;
     }
-    
-    Optional<PolicyEntry> modify = policyEntries.stream().filter(p -> p.getPermission() == Permission.MODIFY).findFirst();
+
+    Optional<PolicyEntry> modify =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.MODIFY).findFirst();
     if (modify.isPresent()) {
       return modify;
     }
-    
-    Optional<PolicyEntry> read = policyEntries.stream().filter(p -> p.getPermission() == Permission.READ).findFirst();
+
+    Optional<PolicyEntry> read =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.READ).findFirst();
     if (read.isPresent()) {
       return read;
     }
-    
+
     return Optional.empty();
   }
-  
+
   private Predicate<PolicyEntry> userHasPolicyEntry(Authentication user, String tenantId) {
-    return (p) -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName()) ||
-        p.getPrincipalType() == PrincipalType.Role && accountService.hasRole(tenantId, user, p.getPrincipalId());
+    return (p) -> 
+      (p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName())) || 
+      (p.getPrincipalType() == PrincipalType.Role && accountService.hasRole(tenantId, user, p.getPrincipalId()));
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getPolicyManager(#tenantId, authentication)"
