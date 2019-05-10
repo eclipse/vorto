@@ -69,8 +69,6 @@ public class ImportController {
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
   public ResponseEntity<UploadModelResponse> uploadModel(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
       @RequestParam("key") String key) {
@@ -82,7 +80,7 @@ public class ImportController {
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext(tenantId));
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
 
       if (!result.isValid()) {
         return validResponse(new UploadModelResponse(
@@ -107,16 +105,13 @@ public class ImportController {
     }
   }
 
-  private UserContext getUserContext(String tenantId) {
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(),
-        tenantId);
+  private UserContext getUserContext() {
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication());
   }
 
   @RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
   public ResponseEntity<List<ModelInfo>> doImport(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
       @RequestParam("key") String key) {
@@ -125,7 +120,7 @@ public class ImportController {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
 
-      IUserContext user = getUserContext(tenantId);
+      IUserContext user = getUserContext();
       List<ModelInfo> importedModels = importer.doImport(handleId, user);
       for (ModelInfo modelInfo : importedModels) {
         workflowService.start(modelInfo.getId(), user);

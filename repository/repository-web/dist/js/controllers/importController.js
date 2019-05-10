@@ -49,6 +49,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                 headers: { 'Content-Type': undefined }
             })
                 .success(function (result) {
+                	console.log("-erle- : " + JSON.stringify(result));
                     $scope.isLoading = false;
                     $scope.uploadResult = result;
                     $scope.showResultBox = true;

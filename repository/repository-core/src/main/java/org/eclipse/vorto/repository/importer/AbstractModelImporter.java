@@ -105,7 +105,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
       
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
     
-      List<ValidationReport> validationResult = this.validate(fileUpload, user);
+      List<ValidationReport> validationResult = validate(fileUpload, user);
       postValidate(validationResult, user);
       reports.addAll(validationResult);
       
@@ -168,10 +168,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
                 report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
                 report.setValid(false);
               } else {
-                // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-                // migration has taken place
-                if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername())
-                    || m.getAuthor().equals(user.getUsername())) {
+                if (isAdmin(user) || m.getAuthor().equals(user.getUsername())) {
                   report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
                   report.setValid(true);
                 } else {
@@ -180,10 +177,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
                 }
               }
             }
-          } else {
+          } /*else {
             report.setMessage(ValidationReport.ERROR_USER_NOT_AUTHORIZED_IN_TENANT);
             report.setValid(false);
-          }
+          }*/
         } catch (Exception e) {
           logger.error("Error while validating the model " + report.getModel().getId(), e);
           report.setMessage(new StatusMessage(

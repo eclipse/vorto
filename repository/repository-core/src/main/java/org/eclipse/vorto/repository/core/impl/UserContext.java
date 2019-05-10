@@ -37,17 +37,19 @@ public class UserContext implements IUserContext {
   public static UserContext user(Authentication authentication, String tenant) {
     return new UserContext(authentication, tenant);
   }
+  
+  public static UserContext user(Authentication authentication) {
+    return new UserContext(authentication, null);
+  }
 
   private UserContext() {}
 
   private UserContext(Authentication authentication, String tenant) {
+    this(authentication.getName(), tenant);
     this.authentication = authentication;
-    this.username = authentication.getName();
-    this.tenant = tenant;
   }
 
   private UserContext(String username, String tenant) {
-    this.authentication = null;
     this.username = username;
     this.tenant = tenant;
   }

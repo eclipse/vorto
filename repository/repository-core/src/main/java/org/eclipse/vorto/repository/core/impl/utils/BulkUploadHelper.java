@@ -41,6 +41,7 @@ import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdVal
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
+import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
@@ -176,7 +177,9 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new DuplicateModelValidation(modelRepoFactory, this.userRepository));
+        .add(new UserHasAccessToNamespaceValidation(userRepository));
+    bulkUploadValidators
+        .add(new DuplicateModelValidation(modelRepoFactory, userRepository));
     bulkUploadValidators
         .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators

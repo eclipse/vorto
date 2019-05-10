@@ -14,11 +14,10 @@ package org.eclipse.vorto.repository.tenant;
 
 import java.util.Optional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.utils.PreConditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.google.common.base.Strings;
@@ -63,28 +62,11 @@ public class TenantUserService implements ITenantUserService {
   }
   
   public Optional<Tenant> getTenantOfUserAndNamespace(String userId, String namespace) {
-    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
-      throw new IllegalArgumentException("userId should not be null or blank");
-    }
-    
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      throw new IllegalArgumentException("namespace should not be null or blank");
-    }
+    PreConditions.notNullOrEmpty(userId, "userId should not be null or blank");
+    PreConditions.notNullOrEmpty(namespace, "namespace should not be null or blank");
     
     User user = userAccountService.getUser(userId);
-    if (user.getTenantUsers() != null) {
-      for(TenantUser tenantUser : user.getTenantUsers()) {
-        if (tenantUser.getTenant() != null && tenantUser.getTenant().getNamespaces() != null) {
-          for(Namespace ns : tenantUser.getTenant().getNamespaces()) {
-            if (namespace.startsWith(ns.getName())) {
-              return Optional.of(tenantUser.getTenant());
-            }
-          }
-        }
-      }
-    }
-    
-    return Optional.empty();
+    return user.getTenants().stream().filter(tenant -> tenant.owns(namespace)).findFirst();
   }
 
 }

@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
 import com.google.common.collect.Lists;
 
@@ -80,6 +81,14 @@ public class Namespace {
 
   public void setTenant(Tenant tenant) {
     this.tenant = tenant;
+  }
+  
+  public boolean owns(ModelId modelId) {
+    return in(getName(), components(modelId.getNamespace()));
+  }
+  
+  public boolean owns(String namespace) {
+    return in(getName(), components(namespace));
   }
   
   public boolean isInConflictWith(String namespace) {
