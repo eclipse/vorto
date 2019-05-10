@@ -37,7 +37,6 @@ script:
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
     else mvn --fail-fast -q clean package -P checkstyle;
     fi
-
 before_deploy:
   - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
   - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
@@ -53,10 +52,13 @@ deploy:
     script: bash build-scripts/repackage-deploy-repo.sh
     skip_cleanup: true
     on:
-      branch: development
+      branch: 
+        - development
+        - master
   - provider: script
     script: bash build-scripts/repackage-deploy-gen.sh
     skip_cleanup: true
     on:
-      branch: development
-
+      branch: 
+        - development
+        - master
