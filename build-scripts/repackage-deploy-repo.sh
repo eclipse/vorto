@@ -3,6 +3,8 @@
 # this script is to repackage repository jar with neccessory jars
 #
 pwd
+export GIT_BRANCH=$TRAVIS_BRANCH
+echo "this is branch name: $GIT_BRANCH"
 
 # copying the mariadb java client
 mkdir ./wgetDownload
@@ -23,6 +25,7 @@ cd aws-upload/tmp
 jar -xvf infomodelrepository.jar
 rm -f infomodelrepository.jar
 cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
+aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
 jar -cvmf0 META-INF/MANIFEST.MF infomodelrepository-dbclient.jar .
 cd ../..
 echo "pwd : $(pwd)"
