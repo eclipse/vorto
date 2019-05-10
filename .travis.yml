@@ -30,13 +30,15 @@ install:
   - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
   - pip install --user awscli
 script:
-  - remark -i .remark_ignore -f -u validate-links .
-  - remark -i .remark_ignore -u lint-no-dead-urls .
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-    else mvn --fail-fast -q clean package -P checkstyle;
-    fi
+#  - remark -i .remark_ignore -f -u validate-links .
+#  - remark -i .remark_ignore -u lint-no-dead-urls .
+#  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+#    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
+#    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+#    else mvn --fail-fast -q clean package -P checkstyle;
+#    fi
+
+  -  mvn clean package -DskipTests
 
 before_deploy:
   - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
