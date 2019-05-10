@@ -12,11 +12,12 @@
  */
 package org.eclipse.vorto.repository.web.tenant.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class NamespacesRequest {
 
-  private Set<String> namespaces;
+  private Set<String> namespaces = new HashSet<>();
 
   public Set<String> getNamespaces() {
     return namespaces;

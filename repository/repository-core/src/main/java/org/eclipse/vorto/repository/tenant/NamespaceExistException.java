@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.tenant;
 
+import java.util.Set;
+
 public class NamespaceExistException extends RuntimeException {
 
   /**
@@ -21,6 +23,10 @@ public class NamespaceExistException extends RuntimeException {
 
   public NamespaceExistException(String namespace) {
     super("Namespace '" + namespace + "' already exist.");
+  }
+  
+  public NamespaceExistException(Set<String> namespaces) {
+    super("Namespaces '" + String.join(",", namespaces) + "' already exist.");
   }
   
 }

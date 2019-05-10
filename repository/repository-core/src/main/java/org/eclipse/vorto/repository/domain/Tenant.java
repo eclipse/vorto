@@ -1,11 +1,12 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -113,7 +114,7 @@ public class Tenant {
     this.namespaces = namespaces;
   }
 
-  public void addNamesspace(Namespace namespace) {
+  public void addNamespace(Namespace namespace) {
     this.namespaces.add(namespace);
     namespace.setTenant(this);
   }
@@ -121,6 +122,19 @@ public class Tenant {
   public void removeNamespace(Namespace ns) {
     this.namespaces.remove(ns);
     ns.setTenant(null);
+  }
+  
+  public void removeNamespace(String ns) {
+    if (namespaces != null) {
+      Iterator<Namespace> iter = namespaces.iterator();
+      while (iter.hasNext()) {
+        Namespace namespace = iter.next();
+        if (namespace.getName().equals(ns)) {
+          namespace.setTenant(null);
+          iter.remove();
+        }
+      }
+    }
   }
 
   public boolean hasNamespace(String namespace) {

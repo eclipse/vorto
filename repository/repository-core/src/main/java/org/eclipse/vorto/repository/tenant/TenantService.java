@@ -1,11 +1,12 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -209,22 +210,13 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return Lists.newArrayList(tenantRepo.findAll());
   }
 
-  public boolean updateTenantNamespaces(String tenantId, Set<String> namespaces) {
+  public boolean updateTenantNamespaces(String tenantId, Set<String> namespaces, IUserContext userContext) {
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNullOrEmpty(namespaces, "namespaces");
 
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     if (tenant != null) {
-      // We should check if new namespaces is superset of old namespaces to make sure
-      // we are not removing any namespace from the old namespaces that are already
-      // being used by the models of the users of this tenant
-      Set<String> tenantNamespaces = checkIfSuperset(namespaces, tenant);
-
-      // Make sure namespaces are unique across tenants
-      checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
-
-      tenant.getNamespaces().clear();
-      tenant.getNamespaces().addAll(Namespace.toNamespace(tenantNamespaces, tenant));
+      updateTenantNamespace(tenant, namespaces, userContext);
 
       tenantRepo.save(tenant);
 
@@ -233,6 +225,31 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     return false;
   }
+  
+  public void updateTenantNamespace(Tenant tenant, Set<String> namespaces, IUserContext user) {
+    PreConditions.notNull(tenant, TENANT_ID);
+    PreConditions.notNull(namespaces, "namespaces");
+    
+    Set<String> oldNamespaces =
+        tenant.getNamespaces().stream().map(Namespace::getName).collect(Collectors.toSet());
+    Set<String> removedNamespaces = Sets.difference(oldNamespaces, namespaces);
+    Set<String> newNamespaces = Sets.difference(namespaces, oldNamespaces);
+    
+    if (!user.isSysAdmin()) {
+      checkForPrivatePrefix(newNamespaces);
+    }
+    
+    // We should check if new namespaces is superset of old namespaces to make sure
+    // we are not removing any namespace from the old namespaces that are already
+    // being used by the models of the users of this tenant
+    checkIfSuperset(namespaces, tenant);
+
+    // Make sure namespaces are unique across tenants
+    checkForConflict(namespaces, namespaceOwnedByAnotherTenant(tenant));
+    
+    removedNamespaces.forEach(ns -> tenant.removeNamespace(ns));
+    newNamespaces.forEach(ns -> tenant.addNamespace(Namespace.newNamespace(ns)));
+  }
 
   public boolean addNamespacesToTenant(String tenantId, Set<String> namespaces) {
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
@@ -240,6 +257,14 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     if (tenant != null) {
+      Set<String> oldNamespaces =
+          tenant.getNamespaces().stream().map(Namespace::getName).collect(Collectors.toSet());
+      
+      Set<String> commonNamespaces = Sets.intersection(namespaces, oldNamespaces);
+      if (!commonNamespaces.isEmpty()) {
+        throw new NamespaceExistException(commonNamespaces);
+      }
+      
       Set<String> newNamespaces =
           checkForConflict(namespaces, namespaceOwnedByAnotherTenant(tenant));
       tenant.getNamespaces().addAll(Namespace.toNamespace(newNamespaces, tenant));
@@ -269,25 +294,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
 
-    Set<String> oldNamespaces =
-        tenant.getNamespaces().stream().map(ns -> ns.getName()).collect(Collectors.toSet());
-    Set<String> newNamespaces = Sets.difference(tenantNamespaces, oldNamespaces);
-
-    if (!user.isSysAdmin()) {
-      checkForPrivatePrefix(newNamespaces);
-    }
-    
-    // We should check if new namespaces is superset of old namespaces to make sure
-    // we are not removing any namespace from the old namespaces that are already
-    // being used by the models of the users of this tenant
-    checkIfSuperset(tenantNamespaces, tenant);
-
-    // Make sure namespaces are unique across tenants
-    checkForConflict(tenantNamespaces, namespaceOwnedByAnotherTenant(tenant));
-
-    for (String ns : newNamespaces) {
-      tenant.addNamesspace(Namespace.newNamespace(ns));
-    }
+    updateTenantNamespace(tenant, tenantNamespaces, user);
 
     tenant.setDefaultNamespace(defaultNamespace);
     tenant.setAuthenticationProvider(
@@ -307,7 +314,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       IUserContext user) {
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
-    
     if (!user.isSysAdmin()) {
       checkForPrivatePrefix(tenantNamespaces);
     }

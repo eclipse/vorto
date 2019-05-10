@@ -61,7 +61,7 @@ public class User {
       mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
 
-  @OneToMany(/*cascade = CascadeType.ALL,*/ fetch = FetchType.EAGER, orphanRemoval = true,
+  @OneToMany(/* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER, orphanRemoval = true,
       mappedBy = "owner")
   private Set<Tenant> ownedTenants = new HashSet<Tenant>();
 
@@ -150,10 +150,8 @@ public class User {
     }
 
     return tenantUsers.stream()
-        .filter(user -> 
-          user.getTenant() != null && 
-          user.getTenant().getTenantId() != null && 
-          user.getTenant().getTenantId().equals(tenantId))
+        .filter(user -> user.getTenant() != null && user.getTenant().getTenantId() != null
+            && user.getTenant().getTenantId().equals(tenantId))
         .findFirst();
   }
 
@@ -166,7 +164,8 @@ public class User {
       return Collections.emptySet();
     }
 
-    return tenantUsers.stream().map(tu -> tu.getTenant()).collect(Collectors.toSet());
+    return tenantUsers.stream().filter(tu -> tu.getTenant() != null).map(tu -> tu.getTenant())
+        .collect(Collectors.toSet());
   }
 
   public boolean isSysAdmin(String tenantId) {
