@@ -31,227 +31,273 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
 
+  private String tenant = "/tenants/playground";
 
-    @Override protected void setUpTest() throws Exception {
-        //accountService = context.getBean(IUserAccountService.class);
-        testModel = TestModel.TestModelBuilder.aTestModel().build();
-        testModel.createModel(repositoryServer, userCreator);
+  @Override
+  protected void setUpTest() throws Exception {
+    // accountService = context.getBean(IUserAccountService.class);
+    testModel = TestModel.TestModelBuilder.aTestModel().build();
+    testModel.createModel(repositoryServer, userCreator);
+  }
+
+  private ResultActions createImage(String filename, String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
+    MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
+        getClass().getClassLoader().getResourceAsStream("models/" + filename));
+    MockMultipartHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.fileUpload("/rest" + tenant + "/models/" + modelId + "/images");
+    return repositoryServer.perform(builder.file(file).with(request -> {
+      request.setMethod("POST");
+      return request;
+    }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+  }
+
+  @Test
+  public void getModelImage() throws Exception {
+    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
+        .andExpect(status().isCreated());
+
+    this.repositoryServer.perform(
+        get("/rest" + tenant + "/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .andExpect(status().isOk());
+
+  }
+
+  @Test
+  public void uploadModelImage() throws Exception {
+    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
+        .andExpect(status().isCreated());
+    createImage("model_image.png", testModel.prettyName, userAdmin).andExpect(status().isCreated());
+  }
+
+  @Ignore
+  @Test
+  public void saveModel() throws Exception {
+    // Test normal save
+    String testModelId = "com.test:TrackingDevice:1.0.0";
+    String locationModelId = "com.test:Location:1.0.0";
+
+    // making sure the model is not there
+    try {
+      repositoryServer
+          .perform(delete("/rest" + tenant + "/models/" + testModelId).with(userAdmin));
+      repositoryServer
+          .perform(delete("/rest" + tenant + "/models/" + locationModelId).with(userAdmin));
+    } catch (Exception e) {
+      // expected if the user isn't there
     }
 
-    private ResultActions createImage(String filename, String modelId,
-        SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
-            getClass().getClassLoader().getResourceAsStream("models/" + filename));
-        MockMultipartHttpServletRequestBuilder builder =
-            MockMvcRequestBuilders.fileUpload("/rest/tenants/playground/models/" + modelId + "/images");
-        return repositoryServer.perform(builder.file(file).with(request -> {
-            request.setMethod("POST");
-            return request;
-        }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
-    }
+    this.createModel(userCreator, "Location.fbmodel", locationModelId);
+    this.createModel(userCreator, "TrackingDevice.infomodel", testModelId);
+    String json = createContent("TrackingDevice.infomodel");
 
-    @Test public void getModelImage() throws Exception {
-        createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
-            .andExpect(status().isCreated());
-
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/images").with(userAdmin))
-            .andExpect(status().isOk());
-
-    }
-
-    @Test public void uploadModelImage() throws Exception {
-        createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
-            .andExpect(status().isCreated());
-        createImage("model_image.png", testModel.prettyName, userAdmin)
-            .andExpect(status().isCreated());
-    }
-
-    @Ignore
-    @Test public void saveModel() throws Exception {
-        //Test normal save
-        String testModelId = "com.test:TrackingDevice:1.0.0";
-        String locationModelId = "com.test:Location:1.0.0";
-        
-        //making sure the model is not there
-        try {
-          repositoryServer.perform(delete("/rest/tenants/playground/models/" + testModelId).with(userAdmin));
-          repositoryServer.perform(delete("/rest/tenants/playground/models/" + locationModelId).with(userAdmin));
-        } catch (Exception e) {
-          // expected if the user isn't there
-        }
-        
-        this.createModel(userCreator, "Location.fbmodel", locationModelId);
-        this.createModel(userCreator, "TrackingDevice.infomodel", testModelId);
-        String json = createContent("TrackingDevice.infomodel");
-
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userAdmin)).andExpect(status().isOk());
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userCreator)).andExpect(status().isOk());
-        // test with existing Model but user has no read permission
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userStandard)).andExpect(status().isUnauthorized());
-        // test save with non existitng modelid
-        this.repositoryServer.perform(put("/rest/tenants/playground/models/com.test1:TrackinDevice:0.0.1")
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModelId)
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-            .andExpect(status().isNotFound());
-        // test save with broken model
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json.replace("infomodel", "tinfomodel")).with(userAdmin))
-            .andExpect(status().isBadRequest());
-        // test save with changed model id
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json.replace("TrackingDevice", "RackingDevice")).with(userAdmin))
-            .andExpect(status().isBadRequest());
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + testModelId).with(userAdmin));
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + locationModelId).with(userAdmin));
-    }
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModelId)
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
+        .andExpect(status().isOk());
+    // test with existing Model but user has no read permission
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModelId)
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userStandard))
+        .andExpect(status().isUnauthorized());
+    // test save with non existitng modelid
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/com.test1:TrackinDevice:0.0.1")
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .andExpect(status().isNotFound());
+    // test save with broken model
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModelId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.replace("infomodel", "tinfomodel")).with(userAdmin))
+        .andExpect(status().isBadRequest());
+    // test save with changed model id
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModelId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.replace("TrackingDevice", "RackingDevice")).with(userAdmin))
+        .andExpect(status().isBadRequest());
+    repositoryServer
+        .perform(delete("/rest" + tenant + "/models/" + testModelId).with(userAdmin));
+    repositoryServer
+        .perform(delete("/rest" + tenant + "/models/" + locationModelId).with(userAdmin));
+  }
 
-    @Test public void createModelWithAPI() throws Exception {
-        String modelId = "com.test.Location:1.0.0";
-        String fileName = "Location.fbmodel";
-        repositoryServer.perform(
-            post("/rest/tenants/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-                .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
-        repositoryServer.perform(
-            post("/rest/tenants/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-                .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isConflict());
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin));
-    }
+  @Test
+  public void createModelWithAPI() throws Exception {
+    String modelId = "com.test.Location:1.0.0";
+    String fileName = "Location.fbmodel";
+    repositoryServer.perform(
+        post("/rest" + tenant + "/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+    repositoryServer.perform(
+        post("/rest" + tenant + "/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isConflict());
+    repositoryServer.perform(delete("/rest" + tenant + "/models/" + modelId).with(userAdmin));
+  }
 
-    @Test public void createVersionOfModel() throws Exception {
-        TestModel testModel = TestModel.TestModelBuilder.aTestModel().build();
-        testModel.createModel(repositoryServer,userAdmin);
-        repositoryServer.perform(
-            post("/rest/tenants/playground/models/" + testModel.prettyName + "/versions/1.0.1").with(userAdmin)
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
-        repositoryServer.perform(
-            post("/rest/tenants/playground/models/com.test1:Location:1.0.0/versions/1.0.1").with(userAdmin)
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + testModel.prettyName).with(userAdmin));
+  @Test
+  public void createVersionOfModel() throws Exception {
+    TestModel testModel = TestModel.TestModelBuilder.aTestModel().build();
+    testModel.createModel(repositoryServer, userAdmin);
+    repositoryServer
+        .perform(post("/rest" + tenant + "/models/" + testModel.prettyName + "/versions/1.0.1")
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+    repositoryServer
+        .perform(post("/rest" + tenant + "/models/com.test1:Location:1.0.0/versions/1.0.1")
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+    repositoryServer
+        .perform(delete("/rest" + tenant + "/models/" + testModel.prettyName).with(userAdmin));
 
-    }
+  }
 
-    @Test public void deleteModelResource() throws Exception {
-        String modelId = "com.test.Location:1.0.0";
-        String fileName = "Location.fbmodel";
-        String json = createContent("Location.fbmodel");
-        
-        //making sure the model is not there
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin))
-          .andExpect(status().isNotFound());
-        
-        this.createModel(userCreator, fileName, modelId);
-        repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + modelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userAdmin)).andExpect(status().isNotFound());
+  @Test
+  public void deleteModelResource() throws Exception {
+    String modelId = "com.test.Location:1.0.0";
+    String fileName = "Location.fbmodel";
+    String json = createContent("Location.fbmodel");
 
-        //delete non existent model
-        repositoryServer.perform(delete("/rest/tenants/playground/models/com.test:ASDASD:0.0.1").with(userAdmin))
-          .andExpect(status().isNotFound());
-    }
+    // making sure the model is not there
+    repositoryServer.perform(delete("/rest" + tenant + "/models/" + modelId).with(userAdmin))
+        .andExpect(status().isNotFound());
 
-    @Test public void getUserModels() throws Exception {
-        this.repositoryServer.perform(get("/rest/tenants/playground/models/mine/download").with(userAdmin))
-            .andExpect(status().isOk());
-    }
+    this.createModel(userCreator, fileName, modelId);
+    repositoryServer.perform(delete("/rest" + tenant + "/models/" + modelId).with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + modelId)
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .andExpect(status().isNotFound());
 
-    @Test public void downloadMappingsForPlatform() throws Exception {
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/download/mappings/test")
-                .with(userAdmin)).andExpect(status().isOk());
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/com.test:Test1:1.0.0/download/mappings/test").with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
+    // delete non existent model
+    repositoryServer
+        .perform(delete("/rest" + tenant + "/models/com.test:ASDASD:0.0.1").with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
 
-    @Test public void runDiagnostics() throws Exception {
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/diagnostics").with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer
-            .perform(get("/rest/tenants/playground/models/test:Test123:1.0.0/diagnostics").with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
+  @Test
+  public void getUserModels() throws Exception {
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/mine/download").with(userAdmin))
+        .andExpect(status().isOk());
+  }
 
-    @Test public void getPolicies() throws Exception {
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policies").with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policies").with(userCreator))
-            .andExpect(status().isOk());
-        this.repositoryServer
-            .perform(get("/rest/tenants/playground/models/test:Test123:1.0.0/policies").with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
+  @Test
+  public void downloadMappingsForPlatform() throws Exception {
+    this.repositoryServer.perform(
+        get("/rest" + tenant + "/models/" + testModel.prettyName + "/download/mappings/test")
+            .with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/com.test:Test1:1.0.0/download/mappings/test")
+            .with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
 
-    @Test public void getUserPolicy() throws Exception {
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(nonTenantUser))
-            .andExpect(status().isNotFound());
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userCreator))
-            .andExpect(status().isOk());
-    }
+  @Test
+  public void runDiagnostics() throws Exception {
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/diagnostics")
+            .with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(
+            get("/rest" + tenant + "/models/test:Test123:1.0.0/diagnostics").with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
 
-    @Test public void addValidPolicyEntry() throws Exception {
-        String json =
-            "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
-        //Valid creation of policy
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModel.prettyName + "/policies")
-                .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer.perform(
-            get("/rest/tenants/playground/models/" + testModel.prettyName + "/policy").with(userCreator))
-            .andExpect(result -> result.getResponse().getContentAsString().contains(
-                "{\"principalId\":\"user3\",\"principalType\":\"User\",\"permission\":\"READ\",\"adminPolicy\":false}"));
-    }
+  @Test
+  public void getPolicies() throws Exception {
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .with(userCreator))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/test:Test123:1.0.0/policies").with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
 
-    @Test public void editOwnPolicyEntry() throws Exception {
-        String json =
-            "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
-        //Try changing current user policy
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModel.prettyName + "/policies")
-                .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
-            .andExpect(status().isBadRequest());
-    }
+  @Test
+  public void getUserPolicy() throws Exception {
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy")
+            .with(nonTenantUser))
+        .andExpect(status().isNotFound());
+    this.repositoryServer.perform(
+        get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy").with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy")
+            .with(userCreator))
+        .andExpect(status().isOk());
+  }
 
-    @Test public void addInvalidPolicyEntry() throws Exception {
-        String json =
-            "{\"principalId\":\"user3\", \"principalType\": \"AUser\", \"permission\":\"READ\"}";
-        //Try changing current user policy
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModel.prettyName + "/policies")
-                .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-            .andExpect(status().isBadRequest());
-    }
+  @Test
+  public void addValidPolicyEntry() throws Exception {
+    String json =
+        "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+    // Valid creation of policy
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer
+        .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy")
+            .with(userCreator))
+        .andExpect(result -> result.getResponse().getContentAsString().contains(
+            "{\"principalId\":\"user3\",\"principalType\":\"User\",\"permission\":\"READ\",\"adminPolicy\":false}"));
+  }
 
-    @Test public void removePolicyEntry() throws Exception {
-        String json =
-            "{\"principalId\":\"user2\", \"principalType\": \"User\", \"permission\":\"READ\"}";
-        //Valid creation of policy
-        this.repositoryServer.perform(
-            put("/rest/tenants/playground/models/" + testModel.prettyName + "/policies")
-                .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-            .andExpect(status().isOk());
-        repositoryServer.perform(
-            delete("/rest/tenants/playground/models/" + testModel.prettyName + "/policies/user2/User")
-                .with(userAdmin)).andExpect(status().isOk());
-    }
+  @Test
+  public void editOwnPolicyEntry() throws Exception {
+    String json =
+        "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+    // Try changing current user policy
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void addInvalidPolicyEntry() throws Exception {
+    String json =
+        "{\"principalId\":\"user3\", \"principalType\": \"AUser\", \"permission\":\"READ\"}";
+    // Try changing current user policy
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void removePolicyEntry() throws Exception {
+    String json =
+        "{\"principalId\":\"user2\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+    // Valid creation of policy
+    this.repositoryServer
+        .perform(put("/rest" + tenant + "/models/" + testModel.prettyName + "/policies")
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .andExpect(status().isOk());
+    repositoryServer.perform(
+        delete("/rest" + tenant + "/models/" + testModel.prettyName + "/policies/user2/User")
+            .with(userAdmin))
+        .andExpect(status().isOk());
+  }
+
+  public void setTenant(String tenant) {
+    this.tenant = tenant;
+  }
 }
