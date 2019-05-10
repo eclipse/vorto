@@ -1,11 +1,12 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional information regarding copyright
- * ownership.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -86,10 +87,6 @@ public class TenantManagementController {
     IUserContext userContext =
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
 
-    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
-      return new ResponseEntity<>(Result.failure("Empty TenantId"), HttpStatus.BAD_REQUEST);
-    }
-
     if (Strings.nullToEmpty(tenantRequest.getDefaultNamespace()).trim().isEmpty()) {
       return new ResponseEntity<>(Result.failure("Empty namespace"), HttpStatus.BAD_REQUEST);
     }
@@ -97,11 +94,12 @@ public class TenantManagementController {
     if (tenantRequest.getTenantAdmins() == null || tenantRequest.getTenantAdmins().isEmpty()) {
       return new ResponseEntity<>(Result.failure("Empty tenantAdmin"), HttpStatus.BAD_REQUEST);
     }
-    
+
     try {
 
-      tenantService.createOrUpdateTenant(ControllerUtils.sanitize(tenantId), tenantRequest.getDefaultNamespace(),
-          tenantRequest.getTenantAdmins(), Optional.ofNullable(tenantRequest.getNamespaces()),
+      tenantService.createOrUpdateTenant(ControllerUtils.sanitize(tenantId),
+          tenantRequest.getDefaultNamespace(), tenantRequest.getTenantAdmins(),
+          Optional.ofNullable(tenantRequest.getNamespaces()),
           Optional.ofNullable(tenantRequest.getAuthenticationProvider()),
           Optional.ofNullable(tenantRequest.getAuthorizationProvider()), userContext);
 
@@ -110,11 +108,8 @@ public class TenantManagementController {
     } catch (NamespaceExistException e) {
       return new ResponseEntity<>(Result.failure("Namespace request already exist"),
           HttpStatus.CONFLICT);
-    } catch (IllegalArgumentException 
-        | TenantAdminDoesntExistException 
-        | UpdateNotAllowedException
-        | NewNamespacesNotSupersetException
-        | NewNamespaceNotPrivateException e) {
+    } catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
+        | NewNamespacesNotSupersetException | NewNamespaceNotPrivateException e) {
       return new ResponseEntity<>(Result.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
       logger.error(e);
@@ -129,20 +124,16 @@ public class TenantManagementController {
   public ResponseEntity<Boolean> removeTenant(@ApiParam(value = "The id of the tenant",
       required = true) final @PathVariable String tenantId) {
 
-    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-    
     String tenantID = ControllerUtils.sanitize(tenantId);
 
-    Tenant tenant = tenantService.getTenant(tenantID).orElseThrow(() -> 
-      new IllegalArgumentException("TenantID '" + tenantID + "' doesnt exist."));
+    Tenant tenant = tenantService.getTenant(tenantID).orElseThrow(
+        () -> new IllegalArgumentException("TenantID '" + tenantID + "' doesnt exist."));
 
     IUserContext userContext =
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantID);
 
     if (!(userContext.isSysAdmin() || owner(tenant, userContext.getAuthentication()))) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
+      return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
 
     try {
@@ -184,7 +175,8 @@ public class TenantManagementController {
   }
 
   private Predicate<Tenant> isOwner(String username) {
-    return tenant -> tenant.getOwner().getUsername().equals(username);
+    return tenant -> tenant.getOwner().getUsername().equals(username)
+        || tenant.hasTenantAdmin(username);
   }
 
   private Predicate<Tenant> hasMemberWithRole(String username, Role role) {
@@ -199,15 +191,15 @@ public class TenantManagementController {
       required = true) final @PathVariable String tenantId, final Principal user) {
 
     boolean isSysAdmin = UserContext.isSysAdmin((Authentication) user);
-    
+
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
     }
-    
+
     String tenantID = ControllerUtils.sanitize(tenantId);
 
     return tenantService.getTenant(tenantID).flatMap(tenant -> {
-      if (isSysAdmin || tenant.getOwner().getUsername().equals(user.getName())) {
+      if (isSysAdmin || isOwner(user.getName()).test(tenant)) {
         return Optional.of(TenantDto.fromTenant(tenant));
       }
       return Optional.empty();
@@ -223,22 +215,21 @@ public class TenantManagementController {
       @ApiParam(value = "The information needed to update the namespaces of tenant",
           required = true) final @RequestBody NamespacesRequest namespacesRequest) {
 
-    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-    
     String tenantID = ControllerUtils.sanitize(tenantId);
+    
+    IUserContext userContext =
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantID);
 
     if (namespacesRequest.getNamespaces() == null || namespacesRequest.getNamespaces().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     try {
-      tenantService.updateTenantNamespaces(tenantID, namespacesRequest.getNamespaces());
+      tenantService.updateTenantNamespaces(tenantID, namespacesRequest.getNamespaces(), userContext);
 
       return new ResponseEntity<>(true, HttpStatus.OK);
     } catch (NewNamespacesNotSupersetException e) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     } catch (NamespaceExistException e) {
       return new ResponseEntity<>(false, HttpStatus.CONFLICT);
     }
@@ -252,14 +243,10 @@ public class TenantManagementController {
       @RequestBody @ApiParam(value = "The information needed to update the namespaces of tenant",
           required = true) final NamespacesRequest namespacesRequest) {
 
-    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-    
     String tenantID = ControllerUtils.sanitize(tenantId);
 
     if (namespacesRequest.getNamespaces() == null || namespacesRequest.getNamespaces().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -275,11 +262,6 @@ public class TenantManagementController {
   @GetMapping(value = "/namespaces/{namespace}/valid", produces = "application/json")
   public ResponseEntity<Boolean> validNamespace(@ApiParam(value = "The namespace to validate",
       required = true) final @PathVariable String namespace) {
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-
     return new ResponseEntity<>(!tenantService.conflictsWithExistingNamespace(namespace),
         HttpStatus.OK);
   }
@@ -292,22 +274,14 @@ public class TenantManagementController {
       @ApiParam(value = "The namespace to request",
           required = true) final @PathVariable String namespace) {
 
-    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(false, HttpStatus.PRECONDITION_FAILED);
-    }
-
     Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
     boolean hasSentEmail = false;
 
     for (User admin : userAccountService.getSystemAdministrators()) {
       if (admin.hasEmailAddress()) {
-        OfficialNamespaceRequest officialNamespaceRequest =
-            new OfficialNamespaceRequest(admin, ControllerUtils.sanitize(tenantId), namespace, user.getName(), new Date());
+        OfficialNamespaceRequest officialNamespaceRequest = new OfficialNamespaceRequest(admin,
+            ControllerUtils.sanitize(tenantId), ControllerUtils.sanitize(namespace), user.getName(), new Date());
         try {
           notificationServices.sendNotification(officialNamespaceRequest);
           hasSentEmail = true;
