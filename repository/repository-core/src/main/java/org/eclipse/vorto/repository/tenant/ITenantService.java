@@ -77,7 +77,7 @@ public interface ITenantService {
    * @param namespaces
    * @return
    */
-  boolean updateTenantNamespaces(String tenantId, Set<String> namespaces);
+  boolean updateTenantNamespaces(String tenantId, Set<String> namespaces, IUserContext userContext);
 
   /**
    * Add namespaces to tenant
