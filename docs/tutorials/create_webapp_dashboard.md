@@ -29,8 +29,7 @@ Once set up, the dashboard displays the latest state of your things in a visuall
 **2.** Download the [Vorto Dashboard](https://download.eclipse.org/vorto/downloads/vorto-webui.zip) from the generator in the Vorto Repository.   
 <img src="../images/tutorials/vorto_dashboard/download_UI.PNG" height="500"/>
 
-**3.** After unzipping the just downloaded file, use your Terminal to install the necessary dependencies using `npm install`. 
-> Make sure you `cd` into the right folder first.
+**3.** Unzip the just downloaded file.
 
 <br />
 
@@ -45,11 +44,14 @@ Once set up, the dashboard displays the latest state of your things in a visuall
 <br />
 
 ## Start the dashboard
-**5.** Once all the dependencies are installed and you've entered the credentials into the `config.json` file, do a simple `npm start` within the same directory to start the application.
+**5.** Before we can start and run our dashboard we first need to install the necessary dependencies. Use your Terminal to install the necessary dependencies using `npm install`. 
+> Make sure you `cd` into the right folder first.
+
+**6.** Once all the dependencies are installed and you've entered the credentials into the `config.json` file, do a simple `npm start` within the same directory to start the application.
 > You will see a log entry telling you the port the application is running on.    
 Default is `localhost:8080`. Open this URL in your browser.
 
-**6.** If everything is running correctly, you will see something like this in your Terminal:
+**7.** If everything is running correctly, you will see something like this in your Terminal:
 ```bash
 $ npm start
 
@@ -60,7 +62,7 @@ App running on port 8080
 => Successfully pulled 5 things.
 ```
 
-**7.** You will now be able to see your things inside of the Vorto Dashboard.
+**8.** You will now be able to see your things inside of the Vorto Dashboard.
 If your device isn't integrated and sending data already, check out these tutorials on how to start sending device data to the cloud.
 
 <br />
