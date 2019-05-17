@@ -50,9 +50,6 @@ then
   aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
 else
   echo "the artifact is not deployed to either production or development environment in AWS"
-  # uploading to s3
-  echo "uploading to s3 bucket"
-  aws s3 cp ./aws-upload/${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
 fi
 
 echo "finished running repackage-deploy-gen.sh"
