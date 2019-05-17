@@ -28,9 +28,12 @@ cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
 
 if [[ "$GIT_BRANCH" == "master" ]] 
 then
-aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod ./BOOT-INF/classes --recursive
-else 
-aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod ./BOOT-INF/classes --recursive
+elif [[ "$GIT_BRANCH" == "development" ]] 
+then 
+  aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
+else
+  echo "no extra files are include from S3Bucket"
 fi
 
 jar -cvmf0 META-INF/MANIFEST.MF infomodelrepository-dbclient.jar .
@@ -45,7 +48,17 @@ ls -l ./aws-upload
 
 if [[ "$GIT_BRANCH" == "master" ]]
 then
-  echo "please add the script to deploy to production env in AWS"
+  # uploading to s3 bucket
+  echo "uploading to s3 bucket"
+  aws s3 cp ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
+
+  # versioning the artifact in EBS
+  echo "versioning the artifact at EBS"
+  aws elasticbeanstalk create-application-version --application-name "test-application" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository in prod" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+
+  # updating environment in EBS
+  echo "update environment in EBS"
+  aws elasticbeanstalk update-environment --application-name "test-application" --environment-name "VortoTestApp-env" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo"
 elif [[ "$GIT_BRANCH" == "development" ]] 
 then 
   # uploading to s3 bucket
@@ -54,12 +67,15 @@ then
 
   # versioning the artifact in EBS
   echo "versioning the artifact at EBS"
-  aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+  aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository in dev" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
   # updating environment in EBS
   echo "update environment in EBS"
   aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortoreposerver-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo"
 else 
   echo "the artifact is not deployed to either production or development environment in AWS"
+  # uploading to s3 bucket
+  echo "uploading to s3 bucket"
+  aws s3 cp ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VORTO_S3_BUCKET --acl "private" --storage-class "STANDARD_IA" --only-show-errors --no-guess-mime-type
 fi
 echo "finished running repackage-deploy-repo.sh"
