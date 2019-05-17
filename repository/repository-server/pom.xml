@@ -204,6 +204,17 @@
 			<version>${project.version}</version>
             <type>test-jar</type>
         </dependency>
+ 			<!--  following two jars are need to have models stored in database -->
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-cachestore-jdbc</artifactId>
+			</dependency>
+
+			<dependency>
+				<groupId>com.mchange</groupId>
+				<artifactId>c3p0</artifactId>
+			</dependency>
+
 	</dependencies>
 
 	<build>
