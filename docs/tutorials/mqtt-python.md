@@ -170,15 +170,23 @@ infomodel.cpuTemperature.value = {
 **9.** Before we can run the script, we need to install additional dependencies. The bundle contains a file called `requirements.txt`. This file describes the dependencies that still have to be installed in order to run the script.      
 Install the dependencies using the `pip install -r requirements.txt` command which looks at the current `requirements.txt` file and installs the dependecies listed there.
 
-**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiTutorialApp.py`
+**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiTutorialApp.py`.
+After starting the script using you Terminal, you should be able to observe the sensor data being sent to Hub. This will looks something like this:
 
+```bash
+Publish Payload:  {"topic": "com.bosch.xyz.sandbox/raspbi123/things/twin/commands/modify","headers": {"response-required": false},"path": "/features/location/properties","value" : {"status" : {"latitude": 1.34749, "longitude": 103.841133}, "configuration" : {} } }  to Topic:  telemetry/t0e7d25ea57db4191ab41415a432f5a50_hub/com.bosch.xyz.sandbox:raspbi123
+Publish Payload:  {"topic": "com.bosch.xyz.sandbox/raspbi123/things/twin/commands/modify","headers": {"response-required": false},"path": "/features/battery/properties","value" : {"status" : {"remainingCapacity": {"value": 86}, "value": {"currentMeasured": 86, "minMeasured": 0, "maxMeasured": 100}}, "configuration" : {"remainingCapacityAmpHour": 0} } }  to Topic:  telemetry/t0e7d25ea57db4191ab41415a432f5a50_hub/com.bosch.xyz.sandbox:raspbi123
+```
+
+> If you don't see the Terminal outputting this kind of sensor data packages, unfold the following section.
 <details>
     <summary>
         <b>
             Your script is not sending data?
         </b>
     </summary> 
-    
+
+#### Enable Logging
 If you started the script and you can't see any data being sent your script most likely contains an error in the way the values are assigned to the attributes.
 
 In order to see the error message, you need to add a logger to the script.   
@@ -198,6 +206,24 @@ client = mqtt.Client(hono_clientId)
 logger = logging.getLogger(__name__)
 client.enable_logger(logger)
 ```
+
+#### Reset the Bridge (Connection of the Asset Communication Package)
+If you see the sensor data being sent as shown in the `Publish Payload:...` example above but you still can't see any changes in the Dashboard or SwaggerUI API when retrieving the current state of the Thing, the connection between Hub and Things might have corrupted at some point.
+
+This is simple to solve. This so called "Bridge" is created by default one subscribing to the Asset Communication.
+1. Head over to your [Subscriptions page](https://accounts.bosch-iot-suite.com/subscriptions/) and click on the **Go to Dashboard** button of your Asset Communication Subscription.
+
+2. On the newly opened tab, click on the **Connection** tab that will display all the connections you've set up.
+By default there will be a **Telemetry Bosch IoT Hub** connection.
+
+> **Note** that if there is a problem, you will see a triangle with an exclamation mark inside that indicates some failed connection.
+
+3. Click on the connection and hit the **Close connection** button. Wait until the connection is closed.
+
+4. Once the connection was closed, re-open it by clicking the **Open connection** button.
+
+5. After the connection has been re-established, **restart your sensor data sending script** and observe.
+
 </details>
 
 **11**. We can now verify that there is data incoming by either using
