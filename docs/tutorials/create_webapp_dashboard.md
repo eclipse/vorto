@@ -17,25 +17,29 @@ Once set up, the dashboard displays the latest state of your things in a visuall
 
 ## Steps
 1. Download and install the Vorto Dashboard
-1. Copy Client ID, Client secret, scope into the config.json file.
-1. [Create more Things](./create_thing.md).
+1. Create a `config.json` file with the Client ID, Client secret, scope from your OAuth2 Client
+1. [Create more Things](./create_thing.md)
 
 <br />
 
 ## Download and install the Vorto Dashboard
-**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
-<img src="../images/tutorials/create_thing/code_generators.png" />
-
-**2.** Download the [Vorto Dashboard](https://download.eclipse.org/vorto/downloads/vorto-webui.zip) from the generator in the Vorto Repository.   
-<img src="../images/tutorials/vorto_dashboard/download_UI.PNG" height="500"/>
-
-**3.** Unzip the just downloaded file.
+**1.** Download and install the Vorto Dashboard by using NPM. In your Terminal type `npm install -g vorto-dashboard`. 
+This will install the dashboard as a global dependency which will allow you to call it as `vorto-dashboard` from the Terminal. 
 
 <br />
 
-## Copy Client ID, Client secret, and scope into the config.json file.
-**4.** While the dependencies are being installed, open the `config.json` file and insert client_id, secret and scope from your [Already created OAuth2 Client](https://accounts.bosch-iot-suite.com/oauth2-clients).   
-![entering config data](../images/tutorials/vorto_dashboard/configJson.png)
+## Create a `config.json` file with the Client ID, Client secret, scope from your OAuth2 Client
+**2.** While the dependencies are being installed, create the `config.json` file and insert client_id, secret and scope from your [Already created OAuth2 Client](https://accounts.bosch-iot-suite.com/oauth2-clients).   
+The content of the file has to look like this:
+
+```js
+{
+  "client_id": "<YOUR_CLIENT_ID>",
+  "client_secret": "<YOUR_CLIENT_SECRET",
+  "scope": "<YOUR_SCOPE>",
+  "intervalMS": 10000
+}
+```
 
 ![oauth client config](../images/tutorials/vorto_dashboard/oauth_client_details.png)
 
@@ -44,26 +48,47 @@ Once set up, the dashboard displays the latest state of your things in a visuall
 <br />
 
 ## Start the dashboard
-**5.** Before we can start and run our dashboard we first need to install the necessary dependencies. Use your Terminal to install the necessary dependencies using `npm install`. 
-> Make sure you `cd` into the right folder first.
 
-**6.** Once all the dependencies are installed and you've entered the credentials into the `config.json` file, do a simple `npm start` within the same directory to start the application.
-> You will see a log entry telling you the port the application is running on.    
-Default is `localhost:8080`. Open this URL in your browser.
+**3.** Once the dashboard is installed and you've created the `config.json` file, do a simple `vorto-dashboard <PATH_TO_CONFIG.JSON>` like e.g. `vorto-dashboard ./config.json` if it is in your current directory.
 
-**7.** If everything is running correctly, you will see something like this in your Terminal:
+**4.** If everything is running correctly, you will see something like this in your Terminal:
 ```bash
-$ npm start
-
-> vorto_dashboard@0.1.0 start /home/tim/dashboard_test
-> node index.js
-
 App running on port 8080
 => Successfully pulled 5 things.
 ```
+Open `localhost:8080` this URL in your browser.
 
-**8.** You will now be able to see your things inside of the Vorto Dashboard.
+
+**5.** You will now be able to see your things inside of the Vorto Dashboard.
 If your device isn't integrated and sending data already, check out these tutorials on how to start sending device data to the cloud.
+
+<details>
+    <summary>
+        <b>
+            Not displaying any data?
+        </b>
+    </summary> 
+
+#### Reset the Bridge (Connection of the Asset Communication Package)
+Switch back to the tutorial about [integrating a device](./mqtt-python.md) and double check that data is being sent.
+
+If you see the sensor data being sent as shown in the `Publish Payload:...` but you still can't see any changes in the Dashboard or SwaggerUI API when retrieving the current state of the Thing, the connection between Hub and Things might have corrupted at some point.
+
+This is simple to solve. This so called "Bridge" is created by default one subscribing to the Asset Communication.
+1. Head over to your [Subscriptions page](https://accounts.bosch-iot-suite.com/subscriptions/) and click on the **Go to Dashboard** button of your Asset Communication Subscription.
+
+2. On the newly opened tab, click on the **Connection** tab that will display all the connections you've set up.
+By default there will be a **Telemetry Bosch IoT Hub** connection.
+
+> **Note** that if there is a problem, you will see a triangle with an exclamation mark inside that indicates some failed connection.
+
+3. Click on the connection and hit the **Close connection** button. Wait until the connection is closed.
+
+4. Once the connection was closed, re-open it by clicking the **Open connection** button.
+
+5. After the connection has been re-established, **restart your sensor data sending script** and observe.
+
+</details>
 
 <br />
 
