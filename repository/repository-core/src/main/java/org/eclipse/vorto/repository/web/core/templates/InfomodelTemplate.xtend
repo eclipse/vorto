@@ -21,6 +21,7 @@ class InfomodelTemplate {
 
 	def String createModelTemplate(ModelId modelId, List<ModelProperty> properties) {
 		'''
+			vortolang 1.0
 			namespace «modelId.namespace»
 			version «modelId.version»
 			displayname "«modelId.name»"
