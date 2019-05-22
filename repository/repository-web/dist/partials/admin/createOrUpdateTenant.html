@@ -2,7 +2,7 @@
 	<div class="modal-header">
 		<button ng-disabled="isCreatingOrUpdating" type="button" class="close"
 			ng-click="cancel()">&times;</button>
-		<h4 class="modal-title">{{ mode }} Tenant</h4>
+		<h4 class="modal-title">Update Namespace</h4>
 	</div>
 	<div class="modal-body">
 		<div class="row" ng-show="errorMessage !== ''">
@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	
-		<div class="form-group">
+		<!--<div class="form-group">
 			<label for="tenantIdInput" class="col-sm-2 control-label">Tenant ID</label>
 			<div class="col-sm-10">
 				<input name="tenantId" type="text" class="form-control" id="tenantIdInput" placeholder="Tenant Id" ng-model="tenant.tenantId" ng-readonly="tenant.edit">
@@ -26,11 +26,10 @@
 					<option>GITHUB</option>
 				</select>
 			</div>
-		</div>
+		</div>-->
 	
 		<div class="row">
-	
-			<div class="col-sm-6">
+			<!-- <div ng-if="tenant.edit" class="col-sm-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
@@ -48,8 +47,8 @@
 								<div class="row">
 									<div class="col-sm-10">{{ admin }}</div>
 									<div class="col-sm-2">
-										<button type="button" class="btn btn-danger pull-right btn-xs" ng-click="removeAdmin(admin)">
-											<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+										<button type="button" class="btn btn-default pull-right btn-xs" ng-click="removeAdmin(admin)">
+											Delete
 										</button>
 									</div>
 								</div>
@@ -57,22 +56,21 @@
 						</ul>
 					</div>
 				</div>
+			</div> -->
 	
-			</div>
-	
-			<div class="col-sm-6">
+			<div ng-if="tenant.edit" class="col-sm-10" style="width: 580px;">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<div class="row">
-							<div class="col-sm-10">Namespaces</div>
-							<div class="col-sm-2">
+						<div class="row" style="width: 580px;">
+							<div class="col-sm-8">Namespaces</div>
+							<div class="col-sm-3">
 								<button type="button" class="btn btn-primary pull-right" ng-click="addNamespace()">
 									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 								</button>
 							</div>
 						</div>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="width: 550px;">
 						<ul class="list-group">
 							<li class="list-group-item" ng-repeat="namespace in tenant.namespaces">
 								<div class="row">
@@ -81,14 +79,14 @@
 									</div>
 									<div class="col-sm-3">
 										<button type="button"
-											class="btn btn-info pull-right btn-xs" ng-click="setDefault(namespace)">
-											<span class="glyphicon glyphicon-star" aria-hidden="true"></span>Set
+											class="btn btn-default btn-xs" ng-click="setDefault(namespace)">
+											Set
 											Default
 										</button>
 									</div>
 									<div class="col-sm-1">
-										<button type="button" class="btn btn-danger pull-right btn-xs" ng-click="removeNamespace(namespace)" ng-hide="readonlyNamespace(namespace)">
-											<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+										<button type="button" class="btn btn-default pull-right btn-xs" ng-click="removeNamespace(namespace)" >
+											&nbsp;Delete
 										</button>
 									</div>
 								</div>
@@ -97,13 +95,26 @@
 					</div>
 				</div>
 			</div>
-	
+	<div ng-if="!tenant.edit" class="col-sm-6 pull-center">
+		<div class="panel panel-default">
+		<div>
+			Namespace
+		</div>	
+		<div >
+			<input class="form-control"  ng-change="checkDefaultValue()" ng-model="tenant.createNameSpaceId">
 		</div>
-	
+		</div>
+	</div>
+	</div>
 		<div class="form-group">
-			<div class="col-sm-12">
+			<div class="col-sm-6">
+				<a href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace" >Request Official Namespace
+				</a>
+				</div>
+			<div class="col-sm-6">
+				<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
 				<button type="button" class="btn btn-primary pull-right" ng-disabled="isInvalid() || isCreatingOrUpdating" ng-click="createOrUpdateTenant()">
-					<i class="fa fa-refresh fa-spin" ng-show="isCreatingOrUpdating"></i>{{ mode }} Tenant
+					Apply Changes
 				</button>
 			</div>
 		</div>
@@ -126,14 +137,14 @@
 		<div class="form-group">
 			<label>{{ dialog.label }}</label>
 			<div class="input-group">
-				<span ng-if="dialog.prefix != null && dialog.prefix !== ''" class="input-group-addon">{{ dialog.prefix }}</span>
+				<span ng-show="dialog.prefix != null" class="input-group-addon">{{ dialog.prefix }}</span>
 				<input name="value" type="text" ng-model="value" class="form-control" required>
 			</div>
 		</div>    
 	</div>
 	<div class="modal-footer">
 	    <button class="btn btn-primary" type="button" ng-click="add()" ng-disabled="form.$invalid || isAdding">
-			<i class="fa fa-refresh fa-spin" ng-show="isAdding"></i>Add
+			Add
 		</button>
 	</div>
 </form>

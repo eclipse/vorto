@@ -16,12 +16,14 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -78,7 +80,8 @@ public class AccountController {
     }
     
     if (user.getRoles().stream()
-        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN) || role.equals(UserRole.ROLE_TENANT_ADMIN))) {
+        //.anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN) || role.equals(UserRole.ROLE_TENANT_ADMIN))) {
+    	.anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
@@ -96,7 +99,8 @@ public class AccountController {
 
   private Role[] toRoles(TenantUserDto user) {
     Set<Role> roles = user.getRoles().stream()
-        .filter(role -> !(role.equals(UserRole.ROLE_SYS_ADMIN) || role.equals(UserRole.ROLE_TENANT_ADMIN)))
+        //.filter(role -> !(role.equals(UserRole.ROLE_SYS_ADMIN) || role.equals(UserRole.ROLE_TENANT_ADMIN)))
+    	.filter(role -> !(role.equals(UserRole.ROLE_SYS_ADMIN)))
         .map(strRole -> Role.valueOf(strRole.replace(Role.rolePrefix, ""))).collect(Collectors.toSet());
     return roles.toArray(new Role[roles.size()]);
   }
@@ -148,8 +152,17 @@ public class AccountController {
     try {
       Optional<Tenant> _tenant = tenantService.getTenant(tenantId);
       if (_tenant.isPresent()) {
-        return new ResponseEntity<>(_tenant.get().getUsers().stream()
-            .map(TenantUserDto::fromTenantUser).collect(Collectors.toList()), HttpStatus.OK);
+    	  Set<TenantUser> tenantUserSet= _tenant.get().getUsers();
+    	  Set<TenantUserDto> tenantUserDtoSet = new HashSet<>();
+    	  for(TenantUser tenantUser : tenantUserSet){
+    		  TenantUserDto tenantUserDto = TenantUserDto.fromTenantUser(tenantUser);
+    		  tenantUserDtoSet.add(tenantUserDto);
+    		}
+    	  return new ResponseEntity<>(tenantUserDtoSet,HttpStatus.OK);
+       /* return new ResponseEntity<>(_tenant.get().getUsers().stream()
+            .map(TenantUserDto::fromTenantUser).collect(Collectors.toList()), HttpStatus.OK);*/
+        
+        
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }

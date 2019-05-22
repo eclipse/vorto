@@ -188,6 +188,12 @@ ul.nav a {
     border-color: #ccc;
 }
 
+.btn-red {
+    color: #333;
+    background-color: #F00;
+    border-color: #ccc;
+}
+
 .btn-success {
     background-color: #6CB674; /* Old browsers */
     background-image: -moz-linear-gradient(top, #6CB674 0%, #3AA843 50%, #348B38 100%); /* FF3.6+ */

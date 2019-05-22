@@ -103,8 +103,11 @@ public class DefaultUserAccountService
       TenantUser user = _user.get();
       
       Set<UserRole> oldUserRolesToRemove =
-          user.getRoles().stream().filter(userRole -> 
-            userRole.getRole() != Role.TENANT_ADMIN && userRole.getRole() != Role.SYS_ADMIN)
+          user.getRoles().stream()
+          	//.filter(userRole -> 
+            //userRole.getRole() != Role.TENANT_ADMIN && userRole.getRole() != Role.SYS_ADMIN)
+          	.filter(userRole -> 
+          	userRole.getRole() != Role.SYS_ADMIN)
           .collect(Collectors.toSet());
       
       oldUserRolesToRemove.forEach(_userRole -> user.removeRole(_userRole));
