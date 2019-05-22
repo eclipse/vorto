@@ -27,14 +27,16 @@ import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
 import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 
 public class ModelValidationHelper {
 
   private List<IModelValidator> validators = new ArrayList<IModelValidator>();
 
-  public ModelValidationHelper(IModelRepositoryFactory modelRepoFactory, IUserAccountService userRepository) {
-    this.validators.add(new UserHasAccessToNamespaceValidation(userRepository));
-    this.validators.add(new DuplicateModelValidation(modelRepoFactory, userRepository));
+  public ModelValidationHelper(IModelRepositoryFactory modelRepoFactory, IUserAccountService userRepository, 
+      ITenantService tenantService) {
+    this.validators.add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
+    this.validators.add(new DuplicateModelValidation(modelRepoFactory, tenantService));
     this.validators.add(new ModelReferencesValidation(modelRepoFactory));
     this.validators.add(new TypeImportValidation());
   }

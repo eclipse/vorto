@@ -33,7 +33,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    bulkUploadHelper = new BulkUploadHelper(repositoryFactory, this.accountService);
+    bulkUploadHelper = new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService);
   }
 
   @Test

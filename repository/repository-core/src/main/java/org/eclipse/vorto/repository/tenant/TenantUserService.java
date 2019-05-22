@@ -50,7 +50,7 @@ public class TenantUserService implements ITenantUserService {
     }
 
     Tenant tenant = tenantService.getTenant(tenantId)
-        .orElseThrow(() -> new TenantDoesntExistException(tenantId));
+        .orElseThrow(() -> TenantDoesntExistException.missingTenant(tenantId));
 
     User user = userAccountService.getUser(userId);
     if (user != null) {

@@ -12,15 +12,14 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import java.util.Optional;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
-import org.eclipse.vorto.repository.domain.Role;
-import org.springframework.security.core.Authentication;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -28,36 +27,29 @@ import org.springframework.security.core.Authentication;
 public class DuplicateModelValidation implements IModelValidator {
 
   private IModelRepositoryFactory modelRepoFactory;
+  
+  private ITenantService tenantService;
 
-  private IUserAccountService userRepository;
-
-  public DuplicateModelValidation(IModelRepositoryFactory modelRepoFactory,
-      IUserAccountService userRepo) {
+  public DuplicateModelValidation(IModelRepositoryFactory modelRepoFactory, 
+      ITenantService tenantService) {
     this.modelRepoFactory = modelRepoFactory;
-    this.userRepository = userRepo;
+    this.tenantService = tenantService;
   }
 
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
-    IModelPolicyManager policyManager = modelRepoFactory.getPolicyManager(context.getUserContext());
-    IModelRetrievalService modelRetrievalService =
-        modelRepoFactory.getModelRetrievalService(context.getUserContext());
-    if (modelRetrievalService.getModel(modelResource.getId()).isPresent() && (!isAdmin(context)
-        && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
-      throw new ValidationException("Model already exists", modelResource);
+    Optional<String> tenant = tenantService.getTenantFromNamespace(modelResource.getId().getNamespace())
+        .map(tn -> tn.getTenantId());
+    
+    if (tenant.isPresent()) {
+      IModelPolicyManager policyManager = modelRepoFactory.getPolicyManager(tenant.get(), context.getUserContext().getAuthentication());
+      IModelRetrievalService modelRetrievalService =
+          modelRepoFactory.getModelRetrievalService(context.getUserContext().getAuthentication());
+      if (modelRetrievalService.getModel(modelResource.getId()).isPresent() && (!context.getUserContext().isSysAdmin()
+          && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
+        throw new ValidationException("Model already exists", modelResource);
+      }
     }
-  }
-
-  private boolean isAdmin(InvocationContext context) {
-    assert (context != null);
-    assert (context.getUserContext() != null);
-    assert (context.getUserContext().getUsername() != null);
-    assert (userRepository != null);
-
-    Authentication authentication = context.getUserContext().getAuthentication();
-
-    return authentication.getAuthorities().stream()
-        .anyMatch(ga -> ga.getAuthority().equals(Role.rolePrefix + Role.SYS_ADMIN));
   }
 }

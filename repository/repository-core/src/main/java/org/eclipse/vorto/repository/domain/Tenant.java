@@ -258,7 +258,7 @@ public class Tenant {
   }
   
   public boolean owns(ModelId modelId) {
-    return getNamespaces().stream().anyMatch(ns -> ns.owns(modelId));
+    return getNamespaces() != null && getNamespaces().stream().anyMatch(ns -> ns.owns(modelId));
   }
   
   public boolean owns(String namespace) {

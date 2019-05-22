@@ -44,6 +44,7 @@ import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.util.StringUtils;
 
@@ -52,11 +53,14 @@ public class BulkUploadHelper {
   private IUserAccountService userRepository;
   
   private IModelRepositoryFactory modelRepoFactory;
+  
+  private ITenantService tenantService;
 
   public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory, 
-		  IUserAccountService userRepository) {
+		  IUserAccountService userRepository, ITenantService tenantService) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
+    this.tenantService = tenantService;
   }
 
   public List<ValidationReport> uploadMultiple(byte[] content, String zipFileName,
@@ -177,9 +181,9 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new UserHasAccessToNamespaceValidation(userRepository));
+        .add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
     bulkUploadValidators
-        .add(new DuplicateModelValidation(modelRepoFactory, userRepository));
+        .add(new DuplicateModelValidation(modelRepoFactory, tenantService));
     bulkUploadValidators
         .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators

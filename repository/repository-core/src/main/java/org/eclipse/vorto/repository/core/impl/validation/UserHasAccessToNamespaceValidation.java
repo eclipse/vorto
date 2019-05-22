@@ -16,23 +16,35 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 
 public class UserHasAccessToNamespaceValidation implements IModelValidator {
 
   private IUserAccountService userRepository;
+  private ITenantService tenantService;
   
-  public UserHasAccessToNamespaceValidation(IUserAccountService userRepository) {
+  public UserHasAccessToNamespaceValidation(IUserAccountService userRepository, 
+      ITenantService tenantService) {
     this.userRepository = userRepository;
+    this.tenantService = tenantService;
   }
 
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
     
+    if (context.getUserContext().isSysAdmin()) {
+      if (!tenantService.getTenantFromNamespace(modelResource.getId().getNamespace()).isPresent()) {
+        throw new ValidationException("There is no tenant that owns the namespace '" + 
+            modelResource.getId().getNamespace() + "'.", modelResource);
+      }
+      return;
+    }
+    
     User user = userRepository.getUser(context.getUserContext().getUsername());
     if (user.getTenants().stream().noneMatch(tenant -> tenant.owns(modelResource.getId()))) {
-      System.out.println("-erle- : here!!!");
-      throw new ValidationException("User isn't allowed to import model [" + modelResource.getId().getPrettyFormat() + "].", modelResource);
+      throw new ValidationException("User doesn't have a tenant that owns the namespace '" + 
+          modelResource.getId().getNamespace() + "'.", modelResource);
     }
   }
 
