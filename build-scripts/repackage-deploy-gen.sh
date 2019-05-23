@@ -26,11 +26,11 @@ aws s3 cp ./aws-upload/${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://
 
 # updating the application-version
 echo "versioning the artifact in EBS"
-aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+aws elasticbeanstalk create-application-version --application-name "Vorto-Dev-Environment" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
 # updating  environment
 echo "updating environment in EBS"
-aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortogenerators-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
+aws elasticbeanstalk update-environment --application-name "Vorto-Dev-Environment" --environment-name "vorto-official-generators-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
 
 echo "finished running repackage-deploy-gen.sh"
 

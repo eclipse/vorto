@@ -49,10 +49,10 @@ aws s3 cp ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar s3://$VOR
 
 # versioning the artifact in EBS
 echo "versioning the artifact at EBS"
-aws elasticbeanstalk create-application-version --application-name "VortoRepoServer" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+aws elasticbeanstalk create-application-version --application-name "Vorto-Dev-Environment" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
 # updating environment in EBS
 echo "update environment in EBS"
-aws elasticbeanstalk update-environment --application-name "VortoRepoServer" --environment-name "Vortoreposerver-env-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo"
+aws elasticbeanstalk update-environment --application-name "Vorto-Dev-Environment" --environment-name "vorto-dev" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo"
 echo "finished running repackage-deploy-repo.sh"
 
