@@ -71,6 +71,7 @@ repositoryControllers.controller("tenantManagementController",
                     	tenant.label = "Please specify a namespace for your repository";
                     	tenant.title = "Create Repository";
                     	tenant.createNameSpaceId = $rootScope.displayName;
+                    	tenant.sysAdmin = $rootScope.hasAuthority("ROLE_SYS_ADMIN");
                         return tenant;
                     },
                     tenants: function() {
@@ -168,6 +169,9 @@ repositoryControllers.controller("createOrUpdateTenantController",
         $scope.createOrUpdateTenant = function() {
         	$scope.isCreatingOrUpdating = true;
         	var defaultValue = 'vorto.private.';
+        	if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+            	defaultValue = "";
+        	}
 			if($scope.mode == "Create"){
 				$scope.tenant.tenantId = Math.random();
 				$scope.tenant.createNameSpaceId = defaultValue + $scope.tenant.createNameSpaceId;
@@ -280,12 +284,18 @@ repositoryControllers.controller("createOrUpdateTenantController",
         };
         
         $scope.addNamespace = function() {
+        	var prefix = $rootScope.privateNamespacePrefix;
+        	if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+            	var prefix = "";
+        	}
             $scope.addItem({
                 title: "Add Namespace",
                 label: "Namespace",
-                prefix: "vorto.private.",
+                //prefix: "vorto.private.",
+                prefix: prefix,
                 validate: function(value, resultFn) {
-                    if ($scope.tenant.namespaces.includes($rootScope.privateNamespacePrefix + value)) {
+                    //if ($scope.tenant.namespaces.includes($rootScope.privateNamespacePrefix + value)) {
+                	if ($scope.tenant.namespaces.includes(prefix + value)) {
                         resultFn({
                             valid: false,
                             errorMessage: "You already have this namespace."
@@ -293,7 +303,8 @@ repositoryControllers.controller("createOrUpdateTenantController",
                         return;
                     }
                     
-                    $http.get("./rest/namespaces/" + $rootScope.privateNamespacePrefix + value + "/valid")
+                    //$http.get("./rest/namespaces/" + $rootScope.privateNamespacePrefix + value + "/valid")
+                	$http.get("./rest/namespaces/" + prefix + value + "/valid")
                         .then(function(result) {
                             if (result.data) {
                                 resultFn({ valid: true });
@@ -312,7 +323,8 @@ repositoryControllers.controller("createOrUpdateTenantController",
                         });
                 },
                 successFn: function(value) {
-                    $scope.tenant.namespaces.push($rootScope.privateNamespacePrefix + value);
+                    //$scope.tenant.namespaces.push($rootScope.privateNamespacePrefix + value);
+                	$scope.tenant.namespaces.push(prefix + value);
                     if ($scope.tenant.namespaces.length == 1) {
                     	$scope.tenant.defaultNamespace = $scope.tenant.namespaces[0]; 
                     }

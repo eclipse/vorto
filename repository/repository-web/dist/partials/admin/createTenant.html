@@ -34,7 +34,7 @@
 		<div class="form-group">
 			<label>{{ tenant.label }}</label>
 			<div class="input-group">
-				<span  class="input-group-addon">{{ tenant.prefixText }}</span>
+				<span  ng-if="!tenant.sysAdmin" class="input-group-addon">{{ tenant.prefixText }}</span>
 				<input type="text" ng-model="tenant.createNameSpaceId" class="form-control" required>
 			</div>
 			<div>
