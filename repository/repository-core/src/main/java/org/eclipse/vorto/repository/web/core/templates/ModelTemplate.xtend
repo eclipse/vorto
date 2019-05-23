@@ -19,6 +19,7 @@ class ModelTemplate {
 	
 	def String createModelTemplate(ModelId modelId, ModelType modelType) {
 		'''
+		vortolang 1.0
 		namespace «modelId.namespace»
 		version «modelId.version»
 		displayname "«modelId.name»"

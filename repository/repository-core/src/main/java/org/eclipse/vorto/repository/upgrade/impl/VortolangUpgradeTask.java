@@ -44,7 +44,7 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
   private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
     @Override
     public boolean shouldExecuteTask() {
-      return false;
+      return shouldUpgrade;
     }
   };
 
