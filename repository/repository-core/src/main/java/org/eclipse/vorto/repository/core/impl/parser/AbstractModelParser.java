@@ -171,10 +171,15 @@ public abstract class AbstractModelParser implements IModelParser {
     return dependencies.stream().map(fileContent -> {
       Optional<Resource> maybeDependency =
           createResource(fileContent.getFileName(), fileContent.getContent(), resourceSet);
-      return maybeDependency.map(dependency -> {
+      return maybeDependency.flatMap(dependency -> {
         Model dependencyModel = (Model) dependency.getContents().get(0);
-        return new ModelId(dependencyModel.getName(), dependencyModel.getNamespace(),
-            dependencyModel.getVersion());
+        if (dependencyModel.getName() != null && 
+            dependencyModel.getNamespace() != null && 
+            dependencyModel.getVersion() != null) {
+          return Optional.of(new ModelId(dependencyModel.getName(), dependencyModel.getNamespace(),
+              dependencyModel.getVersion()));
+        }
+        return Optional.empty();
       }).orElse(null);
     }).collect(Collectors.toList());
   }

@@ -136,9 +136,12 @@ public class BulkUploadHelper {
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {
         parsingResult.invalidModels.add(ValidationReport
-            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), grammarProblem));
-      } catch (UnsupportedOperationException fileNotSupportedException) {
-        // Do nothing. Don't process the file
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                grammarProblem));
+      } catch (Exception e) {
+        parsingResult.invalidModels.add(ValidationReport
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                "File cannot be processed to a Vorto model."));
       }
     });
 
@@ -164,7 +167,8 @@ public class BulkUploadHelper {
     return fileContents;
   }
 
-  private ModelInfo trytoCreateModelFromCorruptFile(String fileName) {
+  // TODO: try to guess the modelinfo based on the content of the file, instead of the filename
+  private ModelInfo trytoCreateModelFromCorruptFile(String fileName, byte[] fileContent) {
     try {
       final String modelName = fileName.substring(0, fileName.lastIndexOf("."));
       final ModelType type = ModelType.fromFileName(fileName);
