@@ -8,7 +8,7 @@ The package is an effort to making it easier for developers to map arbitrary dev
 
 ## Installation
 ```bash
-npm install vorto-mapping-utility
+npm install vorto-mapper
 ```
 
 ## Example Scenario
@@ -79,7 +79,7 @@ Download it to use with our nodejs library:
 
 ## Usage
 ```javascript
-const VortoMapper = require("vorto-mapping-utility")
+const VortoMapper = require("vorto-mapper")
 
 const vortoMapper = new VortoMapper();
 
