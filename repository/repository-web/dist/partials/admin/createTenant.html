@@ -1,0 +1,39 @@
+<form class="form-horizontal" name="tenantForm">
+   <div class="modal-header">
+      <button ng-disabled="isCreatingOrUpdating" type="button" class="close"
+         ng-click="cancel()">&times;</button>
+      <h4 class="modal-title">{{ mode }} Repository</h4>
+   </div>
+   <div class="modal-body">
+      <div class="row" ng-show="errorMessage !== ''">
+         <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ errorMessage }}
+         </div>
+      </div>
+      <div class="row">
+         <div ng-if="!tenant.edit">
+            <div class="form-group align="center"">
+                <label for="userId" class="col-sm-2 control-label">&nbsp;&nbsp;Namespace:</label>
+               <div class="col-sm-8">
+                  <input class="form-control ng-pristine ng-valid ng-touched" id="userId" ng-change="checkDefaultValue()" ng-model="tenant.createNameSpaceId">
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+         <div class="col-sm-6">
+            <a href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace" >Request Official Namespace
+            </a>
+         </div>
+         <div class="col-sm-6">
+            <button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
+           <!--  <button type="button" class="btn btn-primary pull-right" ng-disabled="isInvalid() || isCreatingOrUpdating" ng-click="createOrUpdateTenant()">
+            {{ mode }} Repository
+            </button> -->
+			<button class="btn btn-primary pull-right" type="button" ng-disabled="isInvalid() || isCreatingOrUpdating" ng-click="createOrUpdateTenant()">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add</button>
+         </div>
+      </div>
+</form>
