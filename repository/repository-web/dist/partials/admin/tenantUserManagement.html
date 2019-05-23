@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
-	<h4 class="modal-title">Manage Users</h4>
+	<h4 class="modal-title">Manage Collaborators</h4>
 </div>
 <div class="modal-body">
 	<div class="row">
@@ -11,7 +11,7 @@
 		</div>
 		<div class="col-sm-4">
 			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingTenantUsers" ng-click="createOrUpdateUser(newUser())">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add New User</button>
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create</button>
 		</div>
 	</div> 
 	<div class="row" style="height: 10px;"></div>
@@ -20,7 +20,7 @@
 			<table class="table table-striped table-bordered table-condensed">
 				<thead>
 					<tr>
-						<th class="col-md-3">User</th>
+						<th class="col-md-3">Collaborator</th>
 						<th class="col-md-7">Role</th>
 						<th class="col-md-2">Actions</th>
 					</tr>
@@ -36,12 +36,28 @@
 							<span class="label label-danger" ng-show="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">ADMIN</span>
 						</td>
 						<td>
-							<div class="btn-group btn-group-justified" role="group">
+							<!--<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<button type="button" class="btn btn-sm btn-info" ng-click="createOrUpdateUser(editableUser(tenantUser))">Edit</button>
+									<button type="button" class="btn btn-primary" ng-click="createOrUpdateUser(editableUser(tenantUser))">Edit </button>
+									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
+									<i class="fa fa-pencil fa-2x"  aria-hidden="true"></i>
+									</a>
 								</div>
 								<div class="btn-group" role="group">
 									<button type="button" class="btn btn-sm btn-danger" ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">Delete</button>
+								</div>
+							</div>-->
+							<div>
+								<div>
+									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
+									<i class="fa fa-pencil fa-2x"  aria-hidden="true"></i>
+									</a>
+								<!-- <div class="btn-group" role="group">
+									<button type="button" class="btn btn-sm btn-danger" ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">Delete</button>
+								</div> -->
+									<a ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)" data-toggle="tooltip" data-placement="bottom" title="Delete Collaborator">
+									<i class="fa fa-trash fa-2x"  aria-hidden="true"></i>
+									</a>
 								</div>
 							</div>
 						</td>
@@ -52,5 +68,5 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-warning" type="button" ng-click="cancel()">Close</button>
+	<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
 </div>

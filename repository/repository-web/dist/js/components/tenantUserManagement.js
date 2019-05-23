@@ -38,7 +38,8 @@ repositoryControllers.controller("tenantUserManagementController",
                 roleModelCreator : true,
                 roleModelPromoter : true,
                 roleModelReviewer : true,
-                roleUser : true
+                roleUser : true,
+                roleAdmin : true
             };
         };
         
@@ -49,7 +50,8 @@ repositoryControllers.controller("tenantUserManagementController",
                 roleModelCreator : user.roles.includes("ROLE_MODEL_CREATOR"),
                 roleModelPromoter : user.roles.includes("ROLE_MODEL_PROMOTER"),
                 roleModelReviewer : user.roles.includes("ROLE_MODEL_REVIEWER"),
-                roleUser : user.roles.includes("ROLE_USER")
+                roleUser : user.roles.includes("ROLE_USER"),
+                roleAdmin : user.roles.includes("ROLE_TENANT_ADMIN")
             };
         };
         
@@ -150,6 +152,9 @@ repositoryControllers.controller("createOrUpdateUserController",
             
             if ($scope.user.roleUser) {
                 roles.push("ROLE_USER")
+            }
+            if ($scope.user.roleAdmin) {
+                roles.push("ROLE_TENANT_ADMIN")
             }
             return roles;
         };
