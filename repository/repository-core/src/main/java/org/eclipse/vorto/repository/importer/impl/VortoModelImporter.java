@@ -68,12 +68,12 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepoFactory(), getUserRepository());
+          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           user);
     } else {
       ModelValidationHelper validationHelper =
-          new ModelValidationHelper(getModelRepoFactory(), getUserRepository());
+          new ModelValidationHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
         return Arrays.asList(validationHelper.validate(modelInfo, user));

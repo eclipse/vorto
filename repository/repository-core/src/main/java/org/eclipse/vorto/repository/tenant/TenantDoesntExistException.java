@@ -19,8 +19,16 @@ public class TenantDoesntExistException extends RuntimeException {
    */
   private static final long serialVersionUID = 2055829944408233458L;
 
-  public TenantDoesntExistException(String tenantId) {
-    super("Tenant '" + tenantId + "' doesn't exist.");
+  public static TenantDoesntExistException missingForNamespace(String namespace) {
+    return new TenantDoesntExistException("Tenant doesn't exist for namespace '" + namespace + "'");
+  }
+  
+  public static TenantDoesntExistException missingTenant(String tenantId) {
+    return new TenantDoesntExistException("Tenant '" + tenantId + "' doesn't exist.");
+  }
+  
+  private TenantDoesntExistException(String msg) {
+    super(msg);
   }
   
 }

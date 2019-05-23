@@ -44,6 +44,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
@@ -70,6 +71,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
   
   @Autowired
   private IUserAccountService userRepository;
+  
+  @Autowired    
+  private ITenantService tenantService;
 
   @Autowired
   private ModelParserFactory modelParserFactory;
@@ -105,7 +109,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
       
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
     
-      List<ValidationReport> validationResult = this.validate(fileUpload, user);
+      List<ValidationReport> validationResult = validate(fileUpload, user);
       postValidate(validationResult, user);
       reports.addAll(validationResult);
       
@@ -168,10 +172,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
                 report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
                 report.setValid(false);
               } else {
-                // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-                // migration has taken place
-                if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername())
-                    || m.getAuthor().equals(user.getUsername())) {
+                if (isAdmin(user) || m.getAuthor().equals(user.getUsername())) {
                   report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
                   report.setValid(true);
                 } else {
@@ -180,9 +181,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
                 }
               }
             }
-          } else {
-            report.setMessage(ValidationReport.ERROR_USER_NOT_AUTHORIZED_IN_TENANT);
-            report.setValid(false);
           }
         } catch (Exception e) {
           logger.error("Error while validating the model " + report.getModel().getId(), e);
@@ -374,6 +372,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public void setTenantUserService(ITenantUserService tenantUserService) {
     this.tenantUserService = tenantUserService;
   }
+  
+  public void setTenantService(ITenantService tenantService) {
+    this.tenantService = tenantService;
+  }
 
   public ITemporaryStorage getUploadStorage() {
     return uploadStorage;
@@ -393,5 +395,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   public ITenantUserService getTenantUserService() {
     return tenantUserService;
+  }
+
+  public ITenantService getTenantService() {
+    return tenantService;
   }
 }

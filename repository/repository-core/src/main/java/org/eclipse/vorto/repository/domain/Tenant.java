@@ -34,6 +34,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
 
 @Entity
@@ -254,6 +255,14 @@ public class Tenant {
 
   public void setAuthorizationProvider(AuthorizationProvider authorizationProvider) {
     this.authorizationProvider = authorizationProvider;
+  }
+  
+  public boolean owns(ModelId modelId) {
+    return getNamespaces() != null && getNamespaces().stream().anyMatch(ns -> ns.owns(modelId));
+  }
+  
+  public boolean owns(String namespace) {
+    return getNamespaces().stream().anyMatch(ns -> ns.owns(namespace));
   }
 
   @Override

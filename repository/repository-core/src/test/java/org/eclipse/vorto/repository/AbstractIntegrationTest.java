@@ -53,6 +53,7 @@ import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -99,6 +100,8 @@ public abstract class AbstractIntegrationTest {
 
   @Before
   public void beforeEach() throws Exception {
+    when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
+    
     when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
 
     when(userRepository.findByUsername("erle")).thenReturn(getUser("erle", playgroundTenant));
@@ -163,6 +166,7 @@ public abstract class AbstractIntegrationTest {
     this.importer.setModelParserFactory(modelParserFactory);
     this.importer.setModelRepoFactory(repositoryFactory);
     this.importer.setTenantUserService(tenantUserService);
+    this.importer.setTenantService(tenantService);
 
     this.workflow =
         new DefaultWorkflowService(repositoryFactory, accountService, notificationService);

@@ -41,8 +41,10 @@ import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdVal
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
+import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.util.StringUtils;
 
@@ -51,11 +53,14 @@ public class BulkUploadHelper {
   private IUserAccountService userRepository;
   
   private IModelRepositoryFactory modelRepoFactory;
+  
+  private ITenantService tenantService;
 
   public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory, 
-		  IUserAccountService userRepository) {
+		  IUserAccountService userRepository, ITenantService tenantService) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
+    this.tenantService = tenantService;
   }
 
   public List<ValidationReport> uploadMultiple(byte[] content, String zipFileName,
@@ -131,9 +136,12 @@ public class BulkUploadHelper {
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {
         parsingResult.invalidModels.add(ValidationReport
-            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), grammarProblem));
-      } catch (UnsupportedOperationException fileNotSupportedException) {
-        // Do nothing. Don't process the file
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                grammarProblem));
+      } catch (Exception e) {
+        parsingResult.invalidModels.add(ValidationReport
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                "File cannot be processed to a Vorto model."));
       }
     });
 
@@ -159,7 +167,8 @@ public class BulkUploadHelper {
     return fileContents;
   }
 
-  private ModelInfo trytoCreateModelFromCorruptFile(String fileName) {
+  // TODO: try to guess the modelinfo based on the content of the file, instead of the filename
+  private ModelInfo trytoCreateModelFromCorruptFile(String fileName, byte[] fileContent) {
     try {
       final String modelName = fileName.substring(0, fileName.lastIndexOf("."));
       final ModelType type = ModelType.fromFileName(fileName);
@@ -176,7 +185,9 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new DuplicateModelValidation(modelRepoFactory, this.userRepository));
+        .add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
+    bulkUploadValidators
+        .add(new DuplicateModelValidation(modelRepoFactory, tenantService));
     bulkUploadValidators
         .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators

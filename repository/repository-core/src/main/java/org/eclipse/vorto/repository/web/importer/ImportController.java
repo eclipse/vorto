@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
@@ -23,6 +24,8 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.web.importer.dto.ImporterInfo;
 import org.eclipse.vorto.repository.web.importer.dto.UploadModelResponse;
@@ -65,12 +68,13 @@ public class ImportController {
 
   @Autowired
   private IWorkflowService workflowService;
+  
+  @Autowired
+  private ITenantService tenantService;
 
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
   public ResponseEntity<UploadModelResponse> uploadModel(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
       @RequestParam("key") String key) {
@@ -82,7 +86,7 @@ public class ImportController {
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext(tenantId));
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
 
       if (!result.isValid()) {
         return validResponse(new UploadModelResponse(
@@ -107,16 +111,9 @@ public class ImportController {
     }
   }
 
-  private UserContext getUserContext(String tenantId) {
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(),
-        tenantId);
-  }
-
   @RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
   public ResponseEntity<List<ModelInfo>> doImport(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
       @RequestParam("key") String key) {
@@ -125,10 +122,9 @@ public class ImportController {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
 
-      IUserContext user = getUserContext(tenantId);
-      List<ModelInfo> importedModels = importer.doImport(handleId, user);
+      List<ModelInfo> importedModels = importer.doImport(handleId, getUserContext());
       for (ModelInfo modelInfo : importedModels) {
-        workflowService.start(modelInfo.getId(), user);
+        workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
       }
 
       return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);
@@ -154,5 +150,16 @@ public class ImportController {
   private ResponseEntity<UploadModelResponse> validResponse(
       UploadModelResponse successModelResponse) {
     return new ResponseEntity<UploadModelResponse>(successModelResponse, HttpStatus.OK);
+  }
+
+  private UserContext getUserContext() {
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  private IUserContext getUserContext(ModelId id) {
+    String tenant = tenantService.getTenantFromNamespace(id.getNamespace())
+        .map(tn -> tn.getTenantId())
+        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(id.getNamespace()));
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenant);
   }
 }

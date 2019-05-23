@@ -47,6 +47,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
@@ -93,6 +94,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @Autowired
   private ModelParserFactory modelParserFactory;
+  
+  @Autowired
+  private ITenantService tenantService;
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -203,7 +207,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       }
 
       ModelValidationHelper validationHelper =
-          new ModelValidationHelper(getModelRepositoryFactory(), this.accountService);
+          new ModelValidationHelper(getModelRepositoryFactory(), this.accountService, tenantService);
       ValidationReport validationReport = validationHelper.validate(modelInfo, userContext);
       if (validationReport.isValid()) {
         modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),

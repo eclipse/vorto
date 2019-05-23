@@ -451,7 +451,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.openDeleteDialog = function (model) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model) {
+				controller: function ($scope, model, tenantId) {
 					$scope.model = model;
 
 					$scope.delete = function () {
@@ -470,6 +470,9 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
+					},
+					tenantId: function() {
+					    return $scope.tenantId;
 					}
 				}
 			});
@@ -485,7 +488,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.openCreateModelVersionDialog = function (action) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope,model) {
+				controller: function ($scope,model, tenantId) {
 					$scope.errorMessage = null;
 					$scope.model = model;
 					$scope.modelVersion = "";
@@ -515,6 +518,9 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
+					},
+					tenantId: function() {
+					    return $scope.tenantId;
 					}
 				}
 			});
