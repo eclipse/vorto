@@ -1,5 +1,5 @@
 {
-  "name": "vorto-mapping-utility",
+  "name": "vorto-mapper",
   "version": "0.10.1",
   "description": "Maps arbitrary device json payload to vorto compliant json using mapping specification.",
   "main": "vortoMappingEngine.js",
