@@ -9,7 +9,8 @@ jobs:
       node_js:
         - '10'
         
-      install: true
+      script:
+        - echo "skipping tests"
      
       before_deploy:
         - echo "Preparing for deploy to NPM" 
