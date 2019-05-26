@@ -30,11 +30,11 @@ then
 
   # updating the application-version
   echo "versioning the artifact in EBS"
-  aws elasticbeanstalk create-application-version --application-name "test-application" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators in prod" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+  aws elasticbeanstalk create-application-version --application-name "Vorto-Prod-Environment" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for offical generators in prod" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${GEN_ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
   # updating  environment
   echo "updating environment in EBS"
-  aws elasticbeanstalk update-environment --application-name "test-application" --environment-name "OfficialGen-prod-env" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
+  aws elasticbeanstalk update-environment --application-name "Vorto-Prod-Environment" --environment-name "vorto-official-generators-prod" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_official_gen"
 elif [[ "$GIT_BRANCH" == "development" ]] 
 then 
   # uploading to s3
@@ -53,3 +53,4 @@ else
 fi
 
 echo "finished running repackage-deploy-gen.sh"
+
