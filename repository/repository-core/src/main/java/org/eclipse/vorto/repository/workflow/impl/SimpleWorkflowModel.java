@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.workflow.impl.conditions.HasRoleCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsLoggedIn;
-import org.eclipse.vorto.repository.workflow.impl.conditions.IsOwnerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
 import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
@@ -62,7 +63,6 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public static final DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
 
 	
-	private static final IWorkflowCondition ONLY_OWNER_EXCLUDING_ANONYMOUS = new IsOwnerCondition();
 	private static final IWorkflowCondition IS_ANONYMOUS_MODEL = new IsAnonymousModel();
 	private static final IWorkflowCondition IS_LOGGED_IN = new IsLoggedIn();
 		
@@ -72,6 +72,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
+		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, Role.MODEL_PROMOTER);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy(repositoryFactory);
@@ -87,7 +88,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_CLAIM.setFunctions(claimOwnership);
 		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
-		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER_EXCLUDING_ANONYMOUS,isAdminCondition));
+		ACTION_RELEASE.setConditions(new OrCondition(isPromoterCondition, isAdminCondition));
 		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		ACTION_RELEASE.setFunctions(pendingWorkItemNotification,grantReviewerModelAccess);
 		
@@ -100,14 +101,13 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));
 		
 		ACTION_WITHDRAW.setTo(STATE_DRAFT);
-		ACTION_WITHDRAW.setConditions(ONLY_OWNER_EXCLUDING_ANONYMOUS);
+		ACTION_WITHDRAW.setConditions(isPromoterCondition);
 		
 		ACTION_DEPRECATE.setTo(STATE_DEPRECATED);
-		ACTION_DEPRECATE.setConditions(isAdminCondition);
+		ACTION_DEPRECATE.setConditions(new OrCondition(isPromoterCondition, isAdminCondition));
 		
 		STATE_DRAFT.setActions(ACTION_RELEASE,ACTION_CLAIM);
 		STATE_IN_REVIEW.setActions(ACTION_APPROVE,ACTION_REJECT,ACTION_WITHDRAW);
-		
 		STATE_RELEASED.setActions(ACTION_DEPRECATE);
 	}
 	

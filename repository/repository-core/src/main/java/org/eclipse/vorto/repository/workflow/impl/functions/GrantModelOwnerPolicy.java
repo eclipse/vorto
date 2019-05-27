@@ -43,6 +43,7 @@ public class GrantModelOwnerPolicy implements IWorkflowFunction {
         PolicyEntry.of(model.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS),
         PolicyEntry.of(Role.USER.name(), PrincipalType.Role, Permission.READ),
         PolicyEntry.of(Role.MODEL_CREATOR.name(), PrincipalType.Role, Permission.FULL_ACCESS),
+        PolicyEntry.of(Role.MODEL_PROMOTER.name(), PrincipalType.Role, Permission.FULL_ACCESS),
         PolicyEntry.of(Role.SYS_ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
   }
 }
