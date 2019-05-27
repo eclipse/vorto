@@ -109,13 +109,16 @@ public abstract class AbstractIntegrationTest {
     when(userRepository.findByUsername("admin")).thenReturn(getUser("admin", playgroundTenant));
 
     when(userRepository.findByUsername("creator")).thenReturn(getUser("creator", playgroundTenant));
+    
+    when(userRepository.findByUsername("promoter")).thenReturn(getUser("promoter", playgroundTenant));
 
     when(userRepository.findByUsername("reviewer"))
         .thenReturn(getUser("reviewer", playgroundTenant));
 
     when(userRepository.findAll()).thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant),
         getUser("erle", playgroundTenant), getUser("alex", playgroundTenant),
-        getUser("creator", playgroundTenant), getUser("reviewer", playgroundTenant)));
+        getUser("creator", playgroundTenant), getUser("reviewer", playgroundTenant), 
+        getUser("promoter", playgroundTenant)));
 
     when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
@@ -258,6 +261,7 @@ public abstract class AbstractIntegrationTest {
     playground.addUser(createTenantUser("admin",
         Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
     playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
+    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
     playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
 
     return playground;

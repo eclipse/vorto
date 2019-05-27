@@ -61,7 +61,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
     ModelInfo model = importModel("creator", "Color.type");
     IUserContext user = createUserContext("creator", "playground");
     workflow.start(model.getId(), user);
-    model = workflow.doAction(model.getId(), createUserContext("creator", "playground"),
+    model = workflow.doAction(model.getId(), createUserContext("promoter", "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
     assertEquals(0,
@@ -70,7 +70,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
         workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), user).size());
 
     assertEquals(1, workflow
-        .getPossibleActions(model.getId(), createUserContext("creator", "playground")).size());
+        .getPossibleActions(model.getId(), createUserContext("promoter", "playground")).size());
   }
 
   @Test(expected = WorkflowException.class)
@@ -85,18 +85,18 @@ public class WorkflowTest extends AbstractIntegrationTest {
   public void testApproveModelByAdminInReviewState() throws Exception {
     ModelInfo model = importModel("creator", "Color.type");
     IUserContext creator = createUserContext("creator", "playground");
-    IUserContext admin = createUserContext("admin", "playground");
+    IUserContext promoter = createUserContext("promoter", "playground");
+    IUserContext reviewer = createUserContext("reviewer", "playground");
 
     workflow.start(model.getId(), creator);
 
-    model = workflow.doAction(model.getId(), creator, SimpleWorkflowModel.ACTION_RELEASE.getName());
+    model = workflow.doAction(model.getId(), promoter, SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
 
-    assertEquals(1, workflow.getPossibleActions(model.getId(), creator).size());
-    assertEquals(2, workflow
-        .getPossibleActions(model.getId(), createUserContext("admin", "playground")).size());
+    assertEquals(1, workflow.getPossibleActions(model.getId(), promoter).size());
+    assertEquals(2, workflow.getPossibleActions(model.getId(), reviewer).size());
 
-    model = workflow.doAction(model.getId(), admin, SimpleWorkflowModel.ACTION_APPROVE.getName());
+    model = workflow.doAction(model.getId(), reviewer, SimpleWorkflowModel.ACTION_APPROVE.getName());
     assertEquals(1,
         workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName(), creator).size());
     assertEquals(0,
@@ -110,12 +110,13 @@ public class WorkflowTest extends AbstractIntegrationTest {
   public void testApproveModelByModelReviewerInReviewState() throws Exception {
     ModelInfo model = importModel("creator", "Color.type");
     IUserContext user = createUserContext("creator", "playground");
+    IUserContext promoter = createUserContext("promoter", "playground");
     workflow.start(model.getId(), user);
 
-    model = workflow.doAction(model.getId(), user, SimpleWorkflowModel.ACTION_RELEASE.getName());
+    model = workflow.doAction(model.getId(), promoter, SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
 
-    assertEquals(1, workflow.getPossibleActions(model.getId(), user).size());
+    assertEquals(1, workflow.getPossibleActions(model.getId(), promoter).size());
     assertEquals(2, workflow
         .getPossibleActions(model.getId(), createUserContext("reviewer", "playground")).size());
     model = workflow.doAction(model.getId(), createUserContext("reviewer", "playground"),
@@ -132,13 +133,14 @@ public class WorkflowTest extends AbstractIntegrationTest {
   @Test
   public void testRejectModelByModelReviewerInReviewState() throws Exception {
     ModelInfo model = importModel("creator", "Color.type");
-    IUserContext user = createUserContext("creator", "playground");
-    workflow.start(model.getId(), user);
+    IUserContext creator = createUserContext("creator", "playground");
+    IUserContext promoter = createUserContext("promoter", "playground");
+    workflow.start(model.getId(), creator);
 
-    model = workflow.doAction(model.getId(), user, SimpleWorkflowModel.ACTION_RELEASE.getName());
+    model = workflow.doAction(model.getId(), promoter, SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
 
-    assertEquals(1, workflow.getPossibleActions(model.getId(), user).size());
+    assertEquals(1, workflow.getPossibleActions(model.getId(), promoter).size());
 
     assertEquals(2, workflow
         .getPossibleActions(model.getId(), createUserContext("reviewer", "playground")).size());
@@ -147,22 +149,21 @@ public class WorkflowTest extends AbstractIntegrationTest {
         SimpleWorkflowModel.ACTION_REJECT.getName());
 
     assertEquals(0,
-        workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName(), user).size());
+        workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName(), creator).size());
     assertEquals(0,
-        workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), user).size());
+        workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), creator).size());
     assertEquals(1,
-        workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName(), user).size());
-    assertEquals(1, workflow
-        .getPossibleActions(model.getId(), createUserContext("creator", "playground")).size());
+        workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName(), creator).size());
+    assertEquals(1, workflow.getPossibleActions(model.getId(), promoter).size());
   }
 
   @Test(expected = WorkflowException.class)
   public void testApproveModelByUserInReviewState() throws Exception {
     ModelInfo model = importModel("creator", "Color.type");
-    IUserContext creator = createUserContext("alex", "playground");
+    IUserContext creator = createUserContext("creator", "playground");
     workflow.start(model.getId(), creator);
 
-    model = workflow.doAction(model.getId(), creator, SimpleWorkflowModel.ACTION_RELEASE.getName());
+    model = workflow.doAction(model.getId(), createUserContext("promoter", "playground"), SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
     model = workflow.doAction(model.getId(), creator, SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
