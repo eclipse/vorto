@@ -37,7 +37,7 @@ public class RepositoryInitializer {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Value("${server.admin:#{null}}")
-  private String[] admins;
+  private String admins;
 
   @Value("${oauth2.verification.eidp.technicalUsers:}")
   private String[] ciamTechnicalUsers;
@@ -59,14 +59,18 @@ public class RepositoryInitializer {
 
   @EventListener(ApplicationReadyEvent.class)
   public void initRepo() {
-    Stream.of(admins).forEach(this::createAdminUser);
+    Stream.of(getAdmins(admins)).forEach(this::createAdminUser);
 
     predefinedTenants.getPredefinedTenants().forEach(this::createTenantIfNotExisting);
 
-    Stream.of(admins).forEach(this::addSysAdRole);
+    Stream.of(getAdmins(admins)).forEach(this::addSysAdRole);
 
     Stream.concat(Stream.of(ciamTechnicalUsers), Stream.of(keycloakTechnicalUsers))
         .forEach(this::createUser);
+  }
+
+  private String[] getAdmins(String admins) {
+    return admins.split(";");
   }
 
   private void createAdminUser(String username) {
@@ -89,10 +93,10 @@ public class RepositoryInitializer {
       logger.info("Creating predefined tenant: {}", tenant);
 
       tenantService.createOrUpdateTenant(tenant.getTenantId(), tenant.getDefaultNamespace(),
-          Sets.newHashSet(admins), Optional.empty(),
+          Sets.newHashSet(getAdmins(admins)), Optional.empty(),
           Optional.of(tenant.getAuthenticationProvider()),
           Optional.of(tenant.getAuthorizationProvider()),
-          createAdminContext(admins[0], tenant.getTenantId()));
+          createAdminContext(getAdmins(admins)[0], tenant.getTenantId()));
     }
   }
   
