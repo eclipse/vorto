@@ -45,6 +45,7 @@ import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
+import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -95,6 +96,8 @@ public abstract class AbstractIntegrationTest {
   protected TenantService tenantService = Mockito.mock(TenantService.class);
 
   protected TenantUserService tenantUserService = null;
+  
+  private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
   private Tenant playgroundTenant = playgroundTenant();
 
@@ -122,6 +125,7 @@ public abstract class AbstractIntegrationTest {
 
     when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
+    when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
 
     ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor();
 
@@ -130,6 +134,7 @@ public abstract class AbstractIntegrationTest {
     accountService.setUserRepository(userRepository);
     accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
     accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
+    accountService.setTenantRepo(tenantRepo);
     
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.setErrorMessageProvider(new ErrorMessageProvider());
@@ -138,7 +143,7 @@ public abstract class AbstractIntegrationTest {
     RepositoryConfiguration config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(null, modelSearchUtil,
+    repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
         attachmentValidator, modelParserFactory, null, config, tenantService) {
 
       @Override
