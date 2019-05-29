@@ -207,6 +207,8 @@ logger = logging.getLogger(__name__)
 client.enable_logger(logger)
 ```
 
+<br />
+
 #### Reset the Bridge (Connection of the Asset Communication Package)
 If you see the sensor data being sent as shown in the `Publish Payload:...` example above but you still can't see any changes in the Dashboard or SwaggerUI API when retrieving the current state of the Thing, the connection between Hub and Things might have corrupted at some point.
 
@@ -223,6 +225,30 @@ By default there will be a **Telemetry Bosch IoT Hub** connection.
 4. Once the connection was closed, re-open it by clicking the **Open connection** button.
 
 5. After the connection has been re-established, **restart your sensor data sending script** and observe.
+
+</details>
+
+<details>
+    <summary>
+        <b>
+            Your get an error message?
+        </b>
+    </summary> 
+
+#### `getaddr` - Double check your connection.
+If you started the script and you get an `getaddr` error, this means that the address resolution could not take place. This can have several reasons.    
+However, it's most likely that you either are not connected to the internet or a **proxy** is blocking the sending of sensor data.
+
+Unfortunately, for now you can't set any proxy. **Please switch to a network without Proxy.**
+
+<br />
+
+#### `Connection to MQTT broker failed: 4` - Double check your configuration 
+If you see the sensor a log message with the error value of `4`, this means that the connection was refused due to some bad user name or password. However, this can relate to any of the fields in the configuration tab.
+
+Therefore you have to go in and double check every field of the configuration section for an additional space or some character that does not belong there.
+
+>  Please note that if you have followed the other tutorials, this error is **definitely** due to a fault in entering the credentials correctly.
 
 </details>
 
