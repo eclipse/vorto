@@ -51,7 +51,7 @@ public class DefaultUserAccountService
     implements IUserAccountService, ApplicationEventPublisherAware {
 
   @Value("${server.admin:#{null}}")
-  private String admins;
+  private String[] admins;
 
   @Autowired
   private IUserRepository userRepository;
@@ -184,7 +184,7 @@ public class DefaultUserAccountService
   }
 
   private boolean isConfiguredAsAdmin(String username) {
-    return admins != null && Arrays.asList(admins.split(";")).contains(username);
+    return admins != null && Arrays.asList(admins).contains(username);
   }
 
   @Transactional

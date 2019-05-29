@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.init;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
@@ -37,7 +38,7 @@ public class RepositoryInitializer {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Value("${server.admin:#{null}}")
-  private String admins;
+  private String[] admins;
 
   @Value("${oauth2.verification.eidp.technicalUsers:}")
   private String[] ciamTechnicalUsers;
@@ -59,18 +60,14 @@ public class RepositoryInitializer {
 
   @EventListener(ApplicationReadyEvent.class)
   public void initRepo() {
-    Stream.of(getAdmins(admins)).forEach(this::createAdminUser);
+    Stream.of(admins).forEach(this::createAdminUser);
 
     predefinedTenants.getPredefinedTenants().forEach(this::createTenantIfNotExisting);
 
-    Stream.of(getAdmins(admins)).forEach(this::addSysAdRole);
+    Stream.of(admins).forEach(this::addSysAdRole);
 
     Stream.concat(Stream.of(ciamTechnicalUsers), Stream.of(keycloakTechnicalUsers))
         .forEach(this::createUser);
-  }
-
-  private String[] getAdmins(String admins) {
-    return admins.split(";");
   }
 
   private void createAdminUser(String username) {
@@ -83,6 +80,7 @@ public class RepositoryInitializer {
     }
   }
 
+  @Transactional
   private void addSysAdRole(String username) {
     tenantUserService.addRolesToUser(Tenant.STANDARDIZATION_TENANT_ID, username, Role.SYS_ADMIN,
         Role.TENANT_ADMIN, Role.USER, Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER);
@@ -93,10 +91,10 @@ public class RepositoryInitializer {
       logger.info("Creating predefined tenant: {}", tenant);
 
       tenantService.createOrUpdateTenant(tenant.getTenantId(), tenant.getDefaultNamespace(),
-          Sets.newHashSet(getAdmins(admins)), Optional.empty(),
+          Sets.newHashSet(admins), Optional.empty(),
           Optional.of(tenant.getAuthenticationProvider()),
           Optional.of(tenant.getAuthorizationProvider()),
-          createAdminContext(getAdmins(admins)[0], tenant.getTenantId()));
+          createAdminContext(admins[0], tenant.getTenantId()));
     }
   }
   
