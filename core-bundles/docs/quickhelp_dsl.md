@@ -160,6 +160,8 @@ Example Mapping that maps a function block to a specific LwM2M Object:
 
 The following example defines a mapping that references another mapping for re-use:
 
+	vortolang 1.0
+
 	namespace com.mycompany.mapping.lwm2m
 	version 1.0.0
 	using com.mycompany.tisensortag.Accelerometer;1.0.0

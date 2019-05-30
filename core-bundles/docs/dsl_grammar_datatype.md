@@ -9,7 +9,7 @@ The following code represents the Data Type Model DSL syntax.
     qualifiedName: id ('.' id)*;
 
     entity:
-       ('vortolang' 1.0)?
+       'vortolang' 1.0
        'namespace' qualifiedName
        'version' version
        ('displayname' displayname)?
@@ -22,7 +22,7 @@ The following code represents the Data Type Model DSL syntax.
     ;
 
     enumeration:
-       ('vortolang' 1.0)?
+       'vortolang' 1.0
        'namespace' qualifiedName
        'version' version
        (modelReference)*
@@ -60,11 +60,6 @@ The following code represents the Data Type Model DSL syntax.
     constraintIntervalType: int| signedint| float| datetime| string;
 
     id: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
-
-    string:  
-        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
-    ;
 
     date:  
         ('0'..'9')('0'..'9')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')('-')
