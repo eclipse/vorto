@@ -12,15 +12,12 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
-import org.eclipse.vorto.repository.actuator.GeneratorsHealthCheck;
-import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
 import org.eclipse.vorto.repository.sso.TokenUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RepositoryConfiguration extends BaseConfiguration {
@@ -56,11 +53,5 @@ public class RepositoryConfiguration extends BaseConfiguration {
     } else {
       return TokenUtils.accessTokenProvider();
     }
-  }
-
-  @Bean
-  public GeneratorsHealthCheck generatorsHealthCheck(
-      final IGeneratorLookupRepository registeredGeneratorsRepository) {
-    return new GeneratorsHealthCheck(registeredGeneratorsRepository, new RestTemplate());
   }
 }

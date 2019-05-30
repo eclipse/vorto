@@ -12,11 +12,9 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,8 +27,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -67,11 +63,6 @@ public class Tenant {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
   private Set<TenantUser> users = new HashSet<TenantUser>();
-
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(name = "tenant_generator", joinColumns = @JoinColumn(name = "tenant_id"),
-      inverseJoinColumns = @JoinColumn(name = "generator_id"))
-  private List<Generator> generators = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "owner_id")
@@ -140,16 +131,6 @@ public class Tenant {
 
   public boolean hasNamespace(String namespace) {
     return this.namespaces.stream().map(Namespace::getName).anyMatch(namespace::equals);
-  }
-
-  public void addGenerator(Generator generator) {
-    generators.add(generator);
-    generator.getTenants().add(this);
-  }
-
-  public void removeGenerator(Generator generator) {
-    generators.remove(generator);
-    generator.getTenants().remove(this);
   }
 
   public Set<User> getTenantAdmins() {
@@ -225,14 +206,6 @@ public class Tenant {
     this.owner = null;
   }
 
-  public List<Generator> getGenerators() {
-    return generators;
-  }
-
-  public void setGenerators(List<Generator> generators) {
-    this.generators = generators;
-  }
-
   public String getDefaultNamespace() {
     return defaultNamespace;
   }
@@ -270,7 +243,7 @@ public class Tenant {
     return "Tenant [id=" + id + ", tenantId=" + tenantId + ", defaultNamespace=" + defaultNamespace
         + ", authenticationProvider=" + authenticationProvider + ", authorizationProvider="
         + authorizationProvider + ", namespaces=" + toString(namespaces) + ", users=" + users
-        + ", generators=" + generators + "]";
+        + "]";
   }
 
   private String toString(Set<Namespace> namespaces) {

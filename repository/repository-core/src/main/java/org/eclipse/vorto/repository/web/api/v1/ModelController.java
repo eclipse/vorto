@@ -15,22 +15,14 @@ package org.eclipse.vorto.repository.web.api.v1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.vorto.core.api.model.mapping.EntitySource;
-import org.eclipse.vorto.core.api.model.mapping.EnumSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
-import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.conversion.NativeVortoJsonConverter;
 import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -38,7 +30,6 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
-import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,21 +91,10 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String modelId) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    if (!getModelRepository(tenantId).exists(modelID)) {
-      throw new ModelNotFoundException("Model does not exist", null);
-    }
-
-    IModelWorkspace workspace = getWorkspaceForModel(tenantId, modelID);
-
-    ModelContent result = new ModelContent();
-    result.setRoot(modelID);
-
-    workspace.get().stream().forEach(model -> {
-      result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-          ModelDtoFactory.createResource(model, Optional.empty()));
-    });
-
-    return result;
+    
+    NativeVortoJsonConverter converter = new NativeVortoJsonConverter(this.getModelRepository(tenantId));
+    return converter.convertTo(modelID, Optional.empty());
+    
   }
 
   @ApiOperation(
@@ -134,56 +114,10 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+       
+    NativeVortoJsonConverter converter = new NativeVortoJsonConverter(this.getModelRepository(tenantId));
     
-    String sanitizedPlatformKey = ControllerUtils.sanitize(targetplatformKey);
-    
-    List<ModelInfo> mappingResource =
-        getModelRepository(tenantId).getMappingModelsForTargetPlatform(modelID, sanitizedPlatformKey);
-    if (!mappingResource.isEmpty()) {
-
-      IModelWorkspace workspace = getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
-
-      ModelContent result = new ModelContent();
-      result.setRoot(modelID);
-
-      workspace.get().stream().forEach(model -> {
-        if (!(model instanceof MappingModel)) {
-          Optional<Model> mappingModel =
-              workspace.get().stream().filter(p -> p instanceof MappingModel)
-                  .filter(p -> isMappingForModel((MappingModel) p, model)).findFirst();
-          if (mappingModel.isPresent()) {
-            result.getModels().put(
-                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                ModelDtoFactory.createResource(model,
-                    Optional.of((MappingModel) mappingModel.get())));
-          }
-        }
-      });
-
-      return result;
-
-    } else {
-      throw new ModelNotFoundException("Content for provided target platform key does not exist",
-          null);
-    }
-  }
-
-  private boolean isMappingForModel(MappingModel p, Model model) {
-    if (p.getRules().isEmpty() || p.getRules().get(0).getSources().isEmpty()) {
-      return false;
-    }
-    Source mappingSource = p.getRules().get(0).getSources().get(0);
-    if (mappingSource instanceof InfomodelSource) {
-      return EcoreUtil.equals(((InfomodelSource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof FunctionBlockSource) {
-      return EcoreUtil.equals(((FunctionBlockSource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof EntitySource) {
-      return EcoreUtil.equals(((EntitySource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof EnumSource) {
-      return EcoreUtil.equals(((EnumSource) mappingSource).getModel(), model);
-    } else {
-      return false;
-    }
+    return converter.convertTo(modelID, Optional.of(ControllerUtils.sanitize(targetplatformKey)));
   }
 
   @ApiOperation(value = "Downloads the model file")

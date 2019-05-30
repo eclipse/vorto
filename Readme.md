@@ -16,22 +16,9 @@
 
 Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
 
-## Repository Plugin SDK
+## Vorto Plugin SDK
 
-The Repository Plugin SDK helps you build and deploy various extensions to the Vorto Repository:
-
-<table>
-	<tr>
-		<th>Code Generator Plugin</th>
-		<td>Learn how to write your own generator and deploy and hook it into the Vorto Repository as a (micro) service</td>
-		<td><a href="plugin-sdk/Readme.md">Read more</a></td>
-	</tr>
-	<tr>
-		<th>Importer Plugin</th>
-		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it into the Vorto Repository.</td>
-		<td><a href="repository/repository-importer/Readme.md">Read more</a></td>
-	</tr>
-</table>
+[Read here](plugin-sdk/Readme.md) how to customize the Vorto Repository with different plugin types.
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
