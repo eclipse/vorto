@@ -34,6 +34,15 @@ public class PluginConfiguration {
   // ++++++++++++++++++++++ GENERATOR PLUGINS +++++++++++++++++++++++++++++++++++++++
   
   @Bean
+  @Profile("local-test")
+  public IGeneratorPluginService generatorPluginServiceLocalIntegrationTestProfile() {
+    DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
+    service.setGeneratorMetrics(generatorMetrics);
+    service.setModelRepositoryFactory(modelRepositoryFactory);
+    return service;
+  }
+  
+  @Bean
   @Profile("local")
   public IGeneratorPluginService generatorPluginServiceLocalProfile() {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
