@@ -34,10 +34,15 @@ public class GeneratorPluginInfo extends PluginInfo {
     
   }
   
-  public GeneratorPluginInfo(String key, String apiVersion, String endpointUrl) {
+  public GeneratorPluginInfo(String key, String apiVersion, String endpointUrl, String...tags) {
     this.setKey(key);
     this.setApiVersion(apiVersion);
     this.setBaseEndpointUrl(endpointUrl);
+    if (tags != null && tags.length > 0) {
+      this.setTags(tags);
+    } else {
+      this.setTags(new String[] {"production"});
+    } 
   }
    
   public String getImage32x32() {
@@ -73,7 +78,7 @@ public class GeneratorPluginInfo extends PluginInfo {
   }
 
   public String getInfoUrl() {
-    return infoUrl;
+    return this.getDocumentationUrl();
   }
 
   public void setInfoUrl(String infoUrl) {
@@ -110,7 +115,7 @@ public class GeneratorPluginInfo extends PluginInfo {
     
   @Deprecated
   public String getCreator() {
-    return creator;
+    return this.getVendor();
   }
 
   @Deprecated

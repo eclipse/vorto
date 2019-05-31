@@ -91,6 +91,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
         GeneratorPluginInfo pluginLoadedFromServer = loadfromRemote(plugin);
         pluginLoadedFromServer.setApiVersion(plugin.getApiVersion());
         pluginLoadedFromServer.setBaseEndpointUrl(plugin.getBaseEndpointUrl());
+        pluginLoadedFromServer.setTags(plugin.getTags());
         this.generatorsPlugins.put(serviceKey, pluginLoadedFromServer);
         plugin = pluginLoadedFromServer;
     }
