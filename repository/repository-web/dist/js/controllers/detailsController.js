@@ -397,13 +397,16 @@ repositoryControllers.controller('DetailsController',
 					$scope.takeWorkflowAction = function () {
 						$http.put('./rest/tenants/' + tenantId + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
 							.success(function (result) {
+								console.log(JSON.stringify(result));
 								if (result.hasErrors) {
 									$scope.hasErrors = true;
 									$scope.errorMessage = result.errorMessage;
 								} else {
 									modalInstance.close();
 								}
-
+							})
+							.error(function (data, status, headers, config) {
+								console.log(JSON.stringify(data) + ":" + JSON.stringify(status) + ":" + JSON.stringify(headers));
 							});
 					};
 

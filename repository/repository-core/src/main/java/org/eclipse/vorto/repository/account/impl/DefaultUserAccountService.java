@@ -287,4 +287,8 @@ public class DefaultUserAccountService
   public void setTenantUserRepo(ITenantUserRepo tenantUserRepo) {
     this.tenantUserRepo = tenantUserRepo;
   }
+
+  public void setTenantRepo(ITenantRepository tenantRepo) {
+    this.tenantRepo = tenantRepo;
+  }
 }

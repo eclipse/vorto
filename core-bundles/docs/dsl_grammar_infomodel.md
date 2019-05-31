@@ -1,7 +1,7 @@
 ## Information Model DSL Grammar Reference
 
     InformationModel:
-        ('vortolang' 1.0)?
+        'vortolang' 1.0
         'namespace' qualifiedName
         'version' version
         (modelReference)*
@@ -19,11 +19,6 @@
     functionblockProperty: 
     	('mandatory' | 'optional')? ('multiple')? id 'as' [fbs::functionblockModel|qualifiedName]
         (description)?;
-
-    string:
-        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
-    ;
 
     qualifiedName: id ('.' id)*;
 

@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.init;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
@@ -79,6 +80,7 @@ public class RepositoryInitializer {
     }
   }
 
+  @Transactional
   private void addSysAdRole(String username) {
     tenantUserService.addRolesToUser(Tenant.STANDARDIZATION_TENANT_ID, username, Role.SYS_ADMIN,
         Role.TENANT_ADMIN, Role.USER, Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER);

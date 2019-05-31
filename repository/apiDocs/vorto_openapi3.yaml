@@ -1,0 +1,1196 @@
+openapi: 3.0.0
+
+info:
+
+  title: Eclipse Vorto API
+
+  description: Documentation of public API's for Eclipse Vorto.
+
+  contact:
+
+    name: Eclipse Vorto Team
+
+    url: https://www.eclipse.org/vorto
+
+    email: vorto-dev@eclipse.org
+
+  version: '0.11.0'
+
+servers:
+
+- url: http://vorto.eclipse.org/api/v1
+
+  description: Eclipse Vorto production environment
+
+  variables: {}
+
+paths:
+
+  /search/models:
+
+    get:
+
+      tags:
+
+      - Models
+
+      summary: Search for models
+
+      description: "This resource can be used to search for models. It allows free-text search using the model's *Display name*, *Name* or *Description* attributes. These values can be set using the Model Editor in the Model Details page, e.g. if there are models with names: *Light* and *Lightbulb*, searching with keyword *light* will fetch both. If you want to include unpublished or private models in search, you must login."
+
+      operationId: SearchForModels
+
+      parameters:
+
+      - name: expression
+
+        in: query
+
+        description: Free-text search expression
+
+        required: true
+
+        style: form
+
+        explode: true
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successful retrieval of search result
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                type: array
+
+                items:
+
+                  $ref: '#/components/schemas/ModelInfo'
+
+                description: Successful retrieval of search result
+
+        400:
+
+          description: The request could not be completed, invalid search expression.
+
+      deprecated: false
+
+  /generators/{serviceKey}:
+
+    get:
+
+      tags:
+
+      - Generators
+
+      summary: Retrieve information for a specific generator
+
+      description: Returns information corresponding to a specific generator identified using its 'servicekey'.
+
+      operationId: RetrieveInformationForASpecificGenerator
+
+      parameters:
+
+      - name: serviceKey
+
+        in: path
+
+        description: ServiceKey of the generator
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: OK
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                $ref: '#/components/schemas/GeneratorInfo'
+
+      deprecated: false
+
+  /generators:
+
+    get:
+
+      tags:
+
+      - Generators
+
+      summary: List all registered generators
+
+      description: Returns a list of all generators registered with the Vorto Repository.  The generators are grouped under 'production', 'infra' and 'demo' tags.
+
+      operationId: ListAllRegisteredGenerators
+
+      parameters:
+
+      - name: orderBy
+
+        in: query
+
+        description: Order results using the tag of your choice
+
+        style: form
+
+        explode: true
+
+        schema:
+
+          $ref: '#/components/schemas/orderBy'
+
+      responses:
+
+        200:
+
+          description: Retrieved generators successfully
+
+          headers: {}
+
+          content:
+
+            text/plain:
+
+              schema:
+
+                type: object
+
+                description: Retrieved generators successfully
+
+      deprecated: false
+
+  /models/{modelId}:
+
+    get:
+
+      tags:
+
+      - Models
+
+      summary: Retrieve the meta-info of a model
+
+      description: Returns the meta information of the model using its `modelId`.  If you want to search unpublished or private models, you must login.
+
+      operationId: Retrieve the metaInfo of a model
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of vorto model, e.g. com.bosch.bcds:XDK:2.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successful retrieval of model info
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                $ref: '#/components/schemas/ModelInfo'
+
+        400:
+
+          description: The request could not be completed, invalid input.
+
+        401:
+
+          description: The request could not be completed, invalid authentication.
+
+        403:
+
+          description: The request could not be completed, unauthorized.
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+  /models/{modelId}/content:
+
+    get:
+
+      tags:
+
+      - Models
+
+      summary: Retrieve model content
+
+      description: Returns the complete model content including all resolved references for a given `modelId`.  If you want to retrieve an unpublished or private model, you must login.
+
+      operationId: RetrieveModelContent
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of Vorto model, e.g. com.bosch.bcds:XDK:2.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successful retrieval of model content
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                $ref: '#/components/schemas/ModelContent'
+
+        400:
+
+          description: The request could not be completed, invalid input.
+
+        401:
+
+          description: The request could not be completed, invalid authentication.
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+  /generators/{serviceKey}/models/{modelId}:
+
+    get:
+
+      tags:
+
+      - Generators
+
+      summary: Invoke generator for a model
+
+      description: Invoke a generator for a specific model using the `service key` and `modelId`.
+
+      operationId: InvokeGeneratorForAModel
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of the vorto model in *namespace.name:version* format, e.g. com.mycompany:Car:1.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      - name: serviceKey
+
+        in: path
+
+        description: ServiceKey of the generator
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Code was successfully generated.
+
+          headers: {}
+
+        400:
+
+          description: The request could not be completed, invalid input.
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+  /models/{modelId}/content/{targetplatformKey}:
+
+    get:
+
+      tags:
+
+      - Models
+
+      summary: Retrieve model content for a platform
+
+      description: Returns the complete model content including all resolved references and platform specific attributes for a given `modelId`. Platform specific attributes can be defined using mappings.  If there are no platform specific attributes available the call will return 404.  If you want to retrieve an unpublished or private model, you must login.
+
+      operationId: RetrieveModelContentForAPlatform
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The modelId of vorto model, e.g. com.ipso.smartobjects:Pressure:1.1.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      - name: targetplatformKey
+
+        in: path
+
+        description: The key of the targetplatform, e.g. lwm2m
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successful retrieval of model content
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                $ref: '#/components/schemas/ModelContent'
+
+        400:
+
+          description: The request could not be completed, invalid input.
+
+        401:
+
+          description: The request could not be completed, invalid authentication.
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+  /models/{modelId}/file:
+
+    get:
+
+      tags:
+
+      - Models
+
+      summary: Download a model
+
+      description: Downloads the desired model using its `modelId`. If you also require the dependencies set `includeDependencies` flag to `true`. If you want to download an unpublished or private model, you must login.
+
+      operationId: DownloadAModel
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of vorto model, e.g. com.bosch.bcds:XDK:2.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      - name: includeDependencies
+
+        in: query
+
+        description: Optional parameter, set it to `true` if you also require the dependencies.
+
+        style: form
+
+        explode: true
+
+        schema:
+
+          $ref: '#/components/schemas/includeDependencies'
+
+      responses:
+
+        200:
+
+          description: Successful download of model file
+
+          headers: {}
+
+        400:
+
+          description: The request could not be completed, invalid parameters.
+
+        401:
+
+          description: The request could not be completed, missing authentication.
+
+        404:
+
+          description: The request could not be completed, model not found.
+
+      deprecated: false
+
+  /attachments/{modelId}/files/{filename}:
+
+    delete:
+
+      tags:
+
+      - Attachments
+
+      summary: Delete a specific attachment
+
+      description: Deletes an attachment linked to a model using its `filename` and `modelId`. You must be logged in to perform this operation on your model.
+
+      operationId: DeleteASpecificAttachment
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of the vorto model in *namespace.name:version* format, e.g. com.mycompany:MySensor:1.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      - name: filename
+
+        in: path
+
+        description: The name of the attachment file you wish to delete
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successfully deleted the attachment
+
+          headers: {}
+
+        401:
+
+          description: The request could not be completed, unauthorized (only owners and administrators can delete attachments).
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+      servers:
+
+      - url: http://vorto.eclipse.org/api/v1
+
+        variables: {}
+
+    get:
+
+      tags:
+
+      - Attachments
+
+      summary: Retrieve a specific attachment
+
+      description: Returns a specific attachment from a model by using`modelId` and `filename`.  If you want to perform this operation for an unpublished or private model, you must login.
+
+      operationId: RetrieveASpecificAttachment
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of the vorto model in *namespace.name:version* format, e.g. com.bosch.bcds:XDK:2.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      - name: filename
+
+        in: path
+
+        description: The name of the attached file that you want to retrieve
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successfully retrieved the attachment
+
+          headers: {}
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+  /attachments/{modelId}:
+
+    get:
+
+      tags:
+
+      - Attachments
+
+      summary: List all attachments for a model
+
+      description: Returns list of attachments related to a model identified using its `modelId`. If you want to retrieve the list of attachments for an unpublished or private model, you must login.
+
+      operationId: ListAllAttachmentsForAModel
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The ID of the vorto model in *namespace.name:version* format, e.g. com.bosch.bcds:XDK:2.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      responses:
+
+        200:
+
+          description: Successfully retrieved list of attachments
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                type: array
+
+                items:
+
+                  $ref: '#/components/schemas/Attachment'
+
+                description: Successfully retrieved list of attachments
+
+        404:
+
+          description: The request could not be completed, resource not found.
+
+      deprecated: false
+
+    put:
+
+      tags:
+
+      - Attachments
+
+      summary: Upload an attachment
+
+      description: Upload an attachment for your model by selecting the desired `file` and `modelId`.
+
+      operationId: UploadAnAttachment
+
+      parameters:
+
+      - name: modelId
+
+        in: path
+
+        description: The identifier of the vorto model in *namespace.name:version* format, e.g. com.mycompany:MySensor:1.0.0
+
+        required: true
+
+        style: simple
+
+        explode: false
+
+        schema:
+
+          type: string
+
+      requestBody:
+
+        content:
+
+          multipart/form-data:
+
+            schema:
+
+              required:
+
+              - file
+
+              type: object
+
+              properties:
+
+                file:
+
+                  type: string
+
+                  description: The file to be uploaded as attachmment
+
+                  format: binary
+
+        required: false
+
+      responses:
+
+        200:
+
+          description: OK
+
+          headers: {}
+
+          content:
+
+            application/json:
+
+              schema:
+
+                $ref: '#/components/schemas/AttachResult'
+
+      deprecated: false
+
+components:
+
+  schemas:
+
+    AttachResult:
+
+      title: AttachResult
+
+      type: object
+
+      properties:
+
+        attachment:
+
+          $ref: '#/components/schemas/Attachment'
+
+        errorMessage:
+
+          type: string
+
+        success:
+
+          type: boolean
+
+    ModelInfo:
+
+      title: ModelInfo
+
+      type: object
+
+      properties:
+
+        author:
+
+          type: string
+
+        creationDate:
+
+          type: string
+
+          format: date-time
+
+        description:
+
+          type: string
+
+        displayName:
+
+          type: string
+
+        fileName:
+
+          type: string
+
+        hasImage:
+
+          type: boolean
+
+        id:
+
+          $ref: '#/components/schemas/ModelId'
+
+        imported:
+
+          type: boolean
+
+        mappingReference:
+
+          $ref: '#/components/schemas/ModelId'
+
+        modificationDate:
+
+          type: string
+
+          format: date-time
+
+        platformMappings:
+
+          type: object
+
+          additionalProperties:
+
+            $ref: '#/components/schemas/ModelId'
+
+        referencedBy:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/ModelId'
+
+        references:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/ModelId'
+
+        released:
+
+          type: boolean
+
+        state:
+
+          type: string
+
+        stereotypes:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/Stereotype'
+
+        targetPlatformKey:
+
+          type: string
+
+        type:
+
+          $ref: '#/components/schemas/Type'
+
+        vortolang:
+
+          type: string
+
+    ModelContent:
+
+      title: ModelContent
+
+      type: object
+
+      properties:
+
+        models:
+
+          type: object
+
+          additionalProperties:
+
+            $ref: '#/components/schemas/AbstractModel'
+
+        root:
+
+          $ref: '#/components/schemas/ModelId'
+
+    AbstractModel:
+
+      title: AbstractModel
+
+      type: object
+
+      properties:
+
+        description:
+
+          type: string
+
+        displayName:
+
+          type: string
+
+        fileName:
+
+          type: string
+
+        id:
+
+          $ref: '#/components/schemas/ModelId'
+
+        mappingReference:
+
+          $ref: '#/components/schemas/ModelId'
+
+        references:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/ModelId'
+
+        stereotypes:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/Stereotype'
+
+        targetPlatformKey:
+
+          type: string
+
+        type:
+
+          $ref: '#/components/schemas/Type'
+
+        vortolang:
+
+          type: string
+
+    Stereotype:
+
+      title: Stereotype
+
+      type: object
+
+      properties:
+
+        attributes:
+
+          type: object
+
+          additionalProperties:
+
+            type: string
+
+        name:
+
+          type: string
+
+    Attachment:
+
+      title: Attachment
+
+      type: object
+
+      properties:
+
+        filename:
+
+          type: string
+
+        modelId:
+
+          $ref: '#/components/schemas/ModelId'
+
+        tags:
+
+          type: array
+
+          items:
+
+            $ref: '#/components/schemas/Tag'
+
+    Tag:
+
+      title: Tag
+
+      type: object
+
+      properties:
+
+        id:
+
+          type: string
+
+        label:
+
+          type: string
+
+    GeneratorInfo:
+
+      title: GeneratorInfo
+
+      type: object
+
+      properties:
+
+        amountOfDownloads:
+
+          type: integer
+
+          format: int32
+
+        configKeys:
+
+          type: array
+
+          items:
+
+            type: string
+
+        configTemplate:
+
+          type: string
+
+        creator:
+
+          type: string
+
+        description:
+
+          type: string
+
+        documentationUrl:
+
+          type: string
+
+        image144x144:
+
+          type: string
+
+        image32x32:
+
+          type: string
+
+        infoUrl:
+
+          type: string
+
+        key:
+
+          type: string
+
+        name:
+
+          type: string
+
+        tags:
+
+          type: array
+
+          items:
+
+            type: string
+
+    ModelId:
+
+      title: ModelId
+
+      type: object
+
+      properties:
+
+        name:
+
+          type: string
+
+        namespace:
+
+          type: string
+
+        prettyFormat:
+
+          type: string
+
+        version:
+
+          type: string
+
+    includeDependencies:
+
+      title: includeDependencies
+
+      enum:
+
+      - false
+
+      - true
+
+      type: string
+
+      example: false
+
+    orderBy:
+
+      title: orderBy
+
+      enum:
+
+      - demo
+
+      - infra
+
+      - production
+
+      type: string
+
+      example: demo
+
+    Type:
+
+      title: Type
+
+      enum:
+
+      - Functionblock
+
+      - InformationModel
+
+      - Datatype
+
+      - Mapping
+
+      type: string
+
+      example: Functionblock
+

@@ -1,10 +1,27 @@
 ## Mapping Model DSL Grammar Reference
 
+    'infomodelmapping' '{'
+		'targetplatform' id
+		(rule)*
+	'}'
+    ;
 
     'functionblockmapping' '{'
         'targetplatform' id
         (rule)*
     '}'
+    ;
+    
+    'entitymapping' '{'
+		'targetplatform' id
+		(rule)*
+	'}'
+	;
+	
+	'enummapping' '{'
+		'targetplatform' id
+		(rule)*
+	'}'
     ;
 
     rule:
@@ -63,11 +80,6 @@
 
     id:
         '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
-    ;
-
-    string  :
-        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
     ;
 
 ### Mapping DSL Semantics
