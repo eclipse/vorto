@@ -13,7 +13,6 @@
 package org.eclipse.vorto.codegen.spi.service;
 
 import java.io.ByteArrayInputStream;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -63,7 +61,6 @@ import com.google.common.base.Throwables;
 public class VortoService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(VortoService.class);
-  private static final String TENANT = "default";
 
   @Autowired
   private AbstractGeneratorConfiguration env;
@@ -222,42 +219,6 @@ public class VortoService {
       LOGGER.error("Error downloading the URL [" + url + "]", e);
       return Optional.empty();
     }
-  }
-
-  public void register(Generator generator) {
-    String serviceUrl = getServiceUrl(generator);
-    LOGGER.info(String.format(
-        "Registering Generator[%s] on URL[%s] to [%s/rest/" + TENANT + "/generators/%s]",
-        generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(),
-        generator.getInstance().getServiceKey()));
-
-    restTemplate.put(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}",
-        getEntity(serviceUrl, Optional.of(getGeneratorCredentials())),
-        generator.getInstance().getServiceKey());
-  }
-
-  private String getGeneratorCredentials() {
-    if (!"".equals(this.generatorUsername) && !"".equals(this.generatorPassword)) {
-      return this.generatorUsername + ":" + this.generatorPassword;
-    } else {
-      return null;
-    }
-
-  }
-
-  private HttpEntity<String> getEntity(String serviceUrl, Optional<String> basicCredentials) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (basicCredentials.isPresent()) {
-      headers.add("Authorization",
-          "Basic " + Base64.getEncoder().encodeToString(basicCredentials.get().getBytes()));
-    }
-    return new HttpEntity<String>(serviceUrl, headers);
-  }
-
-  private String getServiceUrl(Generator generator) {
-    return String.format("%s/rest/generators/%s/generate", env.getAppServiceUrl(),
-        generator.getInstance().getServiceKey());
   }
 
   @PostConstruct

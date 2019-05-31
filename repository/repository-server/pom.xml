@@ -30,11 +30,6 @@
 			<artifactId>repository-server-config</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>importer-ipso</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Spring Boot dependencies -->
 		<dependency>

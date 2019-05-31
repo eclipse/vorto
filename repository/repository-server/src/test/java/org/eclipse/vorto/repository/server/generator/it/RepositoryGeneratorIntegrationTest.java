@@ -23,11 +23,13 @@ import java.util.List;
 
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.google.gson.reflect.TypeToken;
 
+@Ignore
 public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegrationTest {
 
   protected void setUpTest() throws Exception {

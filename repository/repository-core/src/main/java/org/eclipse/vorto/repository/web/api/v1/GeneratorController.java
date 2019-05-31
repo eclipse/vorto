@@ -26,19 +26,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.generation.GeneratedOutput;
-import org.eclipse.vorto.repository.generation.GeneratorInfo;
-import org.eclipse.vorto.repository.generation.IGeneratorService;
+import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.slf4j.Logger;
@@ -53,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,7 +73,7 @@ public class GeneratorController extends AbstractRepositoryController {
   private static final Logger LOGGER = LoggerFactory.getLogger(GeneratorController.class);
 
   @Autowired
-  private IGeneratorService generatorService;
+  private IGeneratorPluginService generatorService;
 
   @Autowired
   private ITenantService tenantService;
@@ -225,15 +222,15 @@ public class GeneratorController extends AbstractRepositoryController {
 				    + "<br/>The generators are grouped under 'production', 'infra' and 'demo' tags.")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved generators successfully")})
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<GeneratorInfo> getRegisteredGeneratorServices(
+  public Collection<GeneratorPluginInfo> getRegisteredGeneratorServices(
       @ApiParam(value = "Prioritize results with given tag", allowableValues = "demo,infra,production",
           required = false) @RequestParam(value = "orderBy", required = false,
               defaultValue = "production") String orderBy) {
-    List<GeneratorInfo> generatorInfoResult = new ArrayList<>();
+    List<GeneratorPluginInfo> generatorInfoResult = new ArrayList<>();
 
-    for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys()) {
+    for (String serviceKey : this.generatorService.getKeys()) {
       try {
-        generatorInfoResult.add(this.generatorService.getGeneratorServiceInfo(serviceKey, false));
+        generatorInfoResult.add(this.generatorService.getPluginInfo(serviceKey, false));
       } catch (Throwable t) {
         LOGGER.warn(
             "Generator " + serviceKey + " appears to be offline or not deployed. Skipping...");
@@ -271,10 +268,10 @@ public class GeneratorController extends AbstractRepositoryController {
 		  notes = "This method retrieves information of a specific generator. The input that needs to be passed is the 'servicekey' of the generator.")
   @RequestMapping(value = "/{serviceKey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public GeneratorInfo getGeneratorInfo(
+  public GeneratorPluginInfo getGeneratorInfo(
       @ApiParam(value = "generator service key", required = true) @PathVariable String serviceKey) {
 
-    return this.generatorService.getGeneratorServiceInfo(serviceKey, true);
+    return this.generatorService.getPluginInfo(serviceKey, true);
   }
 
 }

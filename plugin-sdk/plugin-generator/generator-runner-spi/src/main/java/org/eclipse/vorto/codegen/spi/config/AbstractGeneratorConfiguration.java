@@ -52,9 +52,6 @@ public abstract class AbstractGeneratorConfiguration
   @Autowired
   private GeneratorRepository generatorRepo;
 
-  @Autowired
-  private VortoService vorto;
-
   @PostConstruct
   public void init() {
     ModelWorkspaceReader.init();
@@ -144,7 +141,6 @@ public abstract class AbstractGeneratorConfiguration
     try {
       doSetup();
       generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
-      generatorRepo.list().stream().forEach(vorto::register);
 
     } catch (RuntimeException e) {
       LOGGER.error("Error registering generators", e);

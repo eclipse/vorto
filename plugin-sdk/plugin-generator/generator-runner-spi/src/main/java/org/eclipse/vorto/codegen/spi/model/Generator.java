@@ -12,13 +12,11 @@
  */
 package org.eclipse.vorto.codegen.spi.model;
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.spi.templates.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.codegen.spi.exception.GeneratorCreationException;
+import org.eclipse.vorto.codegen.spi.templates.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.codegen.spi.templates.IGeneratorConfigUITemplate;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 
@@ -27,21 +25,7 @@ public class Generator {
   private IVortoCodeGenerator instance;
   private IGeneratorConfigUITemplate configUi = null;
 
-  private static final IGeneratorConfigUITemplate EMPTY_TEMPLATE =
-      new IGeneratorConfigUITemplate() {
-
-        @Override
-        public Set<String> getKeys() {
-          return Collections.emptySet();
-        }
-
-        @Override
-        public String getContent(GeneratorServiceInfo serviceInfo) {
-          return "";
-        }
-      };
-
-   public static Generator create(String configFile,
+  public static Generator create(String configFile,
     	      Class<? extends IVortoCodeGenerator> generatorClass, IGeneratorConfigUITemplate configTemplate) {
 	Objects.requireNonNull(configFile);
     Objects.requireNonNull(generatorClass);
