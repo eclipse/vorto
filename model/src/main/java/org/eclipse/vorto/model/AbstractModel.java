@@ -14,6 +14,7 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractButton;
 
 public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 
@@ -23,6 +24,7 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
   protected ModelType type;
   protected String displayName;
   protected String description;
+  protected String category;
   protected String fileName;
 
   protected List<ModelId> references = new ArrayList<>();
@@ -95,6 +97,53 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
     this.fileName = fileName;
   }
 
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+
+
+  public static abstract class Builder<T extends AbstractModel> {
+    protected T model;
+    
+    public Builder(T model) {
+      this.model = model;
+      vortolang("1.0");
+    }
+    
+    public Builder<T> vortolang(String lang) {
+      this.model.setVortolang(lang);
+      return this;
+    }
+    
+    public Builder<T> description(String description) {
+      this.model.setDescription(description);
+      return this;
+    }
+    
+    public Builder<T> displayname(String displayname) {
+      this.model.setDisplayName(displayname);
+      return this;
+    }
+    
+    public Builder<T> reference(ModelId reference) {
+      this.model.references.add(reference);
+      return this;
+    }
+    
+    public Builder<T> category(String category) {
+      this.model.setCategory(category);
+      return this;
+    }
+    
+    public T build() {
+      return this.model;
+    }
+  }
 
 
 }

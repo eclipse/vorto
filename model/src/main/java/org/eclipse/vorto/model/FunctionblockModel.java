@@ -25,12 +25,16 @@ public class FunctionblockModel extends AbstractModel {
 
   private List<Operation> operations = new ArrayList<>();
 
-  public FunctionblockModel(ModelId modelId, ModelType modelType) {
-    super(modelId, modelType);
+  public FunctionblockModel(ModelId modelId) {
+    super(modelId, ModelType.Functionblock);
   }
 
   protected FunctionblockModel() {
 
+  }
+  
+  public static FunctionblockModelBuilder Builder(ModelId id) {
+    return new FunctionblockModelBuilder(id);
   }
 
   public List<ModelProperty> getConfigurationProperties() {
@@ -99,4 +103,30 @@ public class FunctionblockModel extends AbstractModel {
         + ", events=" + events + ", operations=" + operations + "]";
   }
 
+  public static class FunctionblockModelBuilder extends Builder<FunctionblockModel> {
+
+    private FunctionblockModelBuilder(ModelId id) {
+      super(new FunctionblockModel(id));
+    }
+
+    public FunctionblockModelBuilder statusProperty(ModelProperty property) {
+      this.model.getStatusProperties().add(property);
+      return this;
+    }
+    
+    public FunctionblockModelBuilder configurationProperty(ModelProperty property) {
+      this.model.getConfigurationProperties().add(property);
+      return this;
+    }
+    
+    public FunctionblockModelBuilder event(ModelEvent event) {
+      this.model.getEvents().add(event);
+      return this;
+    }
+    
+    public FunctionblockModelBuilder operation(Operation operation) {
+      this.model.getOperations().add(operation);
+      return this;
+    }
+  }
 }

@@ -169,6 +169,7 @@ public class ModelDtoFactory {
     infoResource.setDisplayName(model.getDisplayname());
     infoResource.setReferences(model.getReferences().stream()
         .map(reference -> createModelId(reference)).collect(Collectors.toList()));
+    infoResource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       MappingModel _mappingModel = mappingModel.get();
@@ -212,6 +213,7 @@ public class ModelDtoFactory {
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (model.getFunctionblock().getConfiguration() != null) {
       resource
@@ -499,13 +501,14 @@ public class ModelDtoFactory {
 
   private static EntityModel createResource(Entity model, Optional<MappingModel> mappingModel) {
     EntityModel resource = new EntityModel(
-        new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Datatype);
+        new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
     resource.setProperties(model.getProperties().stream().map(p -> createProperty(p, mappingModel))
         .collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
@@ -533,6 +536,7 @@ public class ModelDtoFactory {
         .collect(Collectors.toList()));
     resource.setLiterals(
         model.getEnums().stream().map(p -> createLiteral(p)).collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());

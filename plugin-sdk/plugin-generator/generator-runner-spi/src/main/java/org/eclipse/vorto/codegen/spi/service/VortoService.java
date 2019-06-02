@@ -27,14 +27,12 @@ import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.spi.config.AbstractGeneratorConfiguration;
-import org.eclipse.vorto.codegen.spi.exception.NotFoundException;
 import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
@@ -157,25 +155,13 @@ public class VortoService {
     IModelWorkspace workspace = IModelWorkspace.newReader()
         .addZip(new ZipInputStream(new ByteArrayInputStream(modelResources.get()))).read();
 
-    return toInformationModel(
-        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get());
+    return Optional.of(Utils.toInformationModel(
+        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get()));
   }
 
   private String urlForModel(String namespace, String name, String version) {
     return String.format("%s/api/v1/models/%s/file?includeDependencies=true", env.getVortoRepoUrl(),
         new ModelId(name, namespace, version).getPrettyFormat());
-  }
-
-  private Optional<InformationModel> toInformationModel(Model model) {
-    if (model instanceof InformationModel) {
-      return Optional.of((InformationModel) model);
-    } else if (model instanceof FunctionblockModel) {
-      return Optional.of(Utils.wrapFunctionBlock((FunctionblockModel) model));
-    }
-
-    throw new NotFoundException(
-        String.format("[Model %s.%s:%s] is not an Information Model or a Function Block",
-            model.getNamespace(), model.getName(), model.getVersion()));
   }
 
   public List<MappingModel> getMappings(String generatorKey, String namespace, String name,

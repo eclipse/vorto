@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.core.api.model.mapping.EntitySource;
 import org.eclipse.vorto.core.api.model.mapping.EnumSource;
@@ -25,10 +26,11 @@ import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.conversion.IModelConverter;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -36,17 +38,17 @@ import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 
-public class NativeVortoJsonConverter implements IModelConverter<ModelContent>{
+public class ModelIdToModelContentConverter implements IModelConverter<ModelId,ModelContent>{
 
   private IModelRepository repository;
   
-  public NativeVortoJsonConverter(IModelRepository repository) {
+  public ModelIdToModelContentConverter(IModelRepository repository) {
     this.repository = repository;
   }
   
   
   @Override
-  public ModelContent convertTo(ModelId modelId, Optional<String> platformKey) {
+  public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
     if (!repository.exists(modelId)) {
       throw new ModelNotFoundException("Model does not exist", null);
     }
@@ -135,11 +137,4 @@ public class NativeVortoJsonConverter implements IModelConverter<ModelContent>{
       return false;
     }
   }
-
-  @Override
-  public IModelWorkspace convertFrom(ModelContent source) {
-    
-    return null;
-  }
-
 }

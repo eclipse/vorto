@@ -10,12 +10,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.vorto.model.AbstractModel;
-import org.eclipse.vorto.model.ModelId;
 
 public class ModelContent {
 
@@ -44,5 +42,27 @@ public class ModelContent {
     return "ModelContent [root=" + root + ", models=" + models + "]";
   }
 
+  public static Builder Builder(AbstractModel root) {
+    return new Builder(root);
+  }
+
+  public static class Builder {
+    private ModelContent content;
+    
+    public Builder(AbstractModel root) {
+      this.content = new ModelContent();
+      this.content.setRoot(root.getId());
+      this.content.models.put(root.getId(), root);
+    }
+    
+    public Builder withDependency(AbstractModel model) {
+      this.content.models.put(model.getId(), model);
+      return this;
+    }
+    
+    public ModelContent build() {
+      return this.content;
+    }
+  }
 
 }

@@ -18,12 +18,14 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.conversion.NativeVortoJsonConverter;
-import org.eclipse.vorto.repository.core.ModelContent;
+import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -92,8 +95,8 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     
-    NativeVortoJsonConverter converter = new NativeVortoJsonConverter(this.getModelRepository(tenantId));
-    return converter.convertTo(modelID, Optional.empty());
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.getModelRepository(tenantId));
+    return converter.convert(modelID, Optional.empty());
     
   }
 
@@ -115,9 +118,9 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
        
-    NativeVortoJsonConverter converter = new NativeVortoJsonConverter(this.getModelRepository(tenantId));
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.getModelRepository(tenantId));
     
-    return converter.convertTo(modelID, Optional.of(ControllerUtils.sanitize(targetplatformKey)));
+    return converter.convert(modelID, Optional.of(ControllerUtils.sanitize(targetplatformKey)));
   }
 
   @ApiOperation(value = "Downloads the model file")

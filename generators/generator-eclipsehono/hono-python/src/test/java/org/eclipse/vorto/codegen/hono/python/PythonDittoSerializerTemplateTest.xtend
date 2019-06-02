@@ -13,7 +13,7 @@
 package org.eclipse.vorto.codegen.hono.python
 
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.testutils.GeneratorTestUtils
+import org.eclipse.vorto.core.api.model.BuilderUtils
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
@@ -26,7 +26,7 @@ class PythonDittoSerializerTemplateTest {
 	def void testSerializeFb() {
 		var template = new PythonDittoSerializerTemplate();
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",PrimitiveType.FLOAT)
 		   .withStatusProperty("unit",PrimitiveType.STRING).build();	
 					
