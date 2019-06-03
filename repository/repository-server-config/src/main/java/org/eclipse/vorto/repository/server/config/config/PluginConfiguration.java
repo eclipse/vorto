@@ -60,6 +60,8 @@ public class PluginConfiguration {
   @Profile("int")
   public IGeneratorPluginService generatorPluginServiceIntProfile() {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
+    service.setGeneratorMetrics(generatorMetrics);
+    service.setModelRepositoryFactory(modelRepositoryFactory);
     service.registerPlugin(new GeneratorPluginInfo("boschiotsuite","1","http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
     service.registerPlugin(new GeneratorPluginInfo("eclipseditto","1","http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
     service.registerPlugin(new GeneratorPluginInfo("eclipsehono","1","http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
@@ -71,6 +73,8 @@ public class PluginConfiguration {
   @Profile("aws")
   public IGeneratorPluginService generatorPluginServiceProdProfile() {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
+    service.setGeneratorMetrics(generatorMetrics);
+    service.setModelRepositoryFactory(modelRepositoryFactory);
     service.registerPlugin(new GeneratorPluginInfo("boschiotsuite","1","http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
     service.registerPlugin(new GeneratorPluginInfo("eclipseditto","1","http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
     service.registerPlugin(new GeneratorPluginInfo("eclipsehono","1","http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
