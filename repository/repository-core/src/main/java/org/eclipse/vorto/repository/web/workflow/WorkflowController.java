@@ -56,7 +56,7 @@ public class WorkflowController {
   @ApiOperation(value = "Transitions the model state to the next for the provided action.")
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}/actions/{actionName}",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_MODEL_PROMOTER')")
+  @PreAuthorize("hasRole('ROLE_MODEL_PROMOTER') || hasRole('ROLE_MODEL_REVIEWER')")
   public WorkflowResponse executeAction(
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
