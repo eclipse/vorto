@@ -64,6 +64,8 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private RestTemplate restTemplate = null;
 
+  private static final DefaultGeneratorConfigUI DEFAULT_CONFIG = new DefaultGeneratorConfigUI();
+  
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGeneratorPluginService.class);
 
   public DefaultGeneratorPluginService() {
@@ -92,6 +94,11 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
         pluginLoadedFromServer.setApiVersion(plugin.getApiVersion());
         pluginLoadedFromServer.setBaseEndpointUrl(plugin.getBaseEndpointUrl());
         pluginLoadedFromServer.setTags(plugin.getTags());
+        
+        if (pluginLoadedFromServer.getConfigTemplate() == null || pluginLoadedFromServer.getConfigTemplate().length() == 0) {
+          pluginLoadedFromServer.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
+        }
+        
         this.generatorsPlugins.put(serviceKey, pluginLoadedFromServer);
         plugin = pluginLoadedFromServer;
     }
@@ -286,5 +293,12 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
     this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
+  /**
+   * Removes the cached plugin meta data for the given plugin key
+   * @param pluginKey
+   */
+  public void clearPluginCache(String pluginKey) {
+    generatorsPlugins.remove(pluginKey);
+  }
 
 }
