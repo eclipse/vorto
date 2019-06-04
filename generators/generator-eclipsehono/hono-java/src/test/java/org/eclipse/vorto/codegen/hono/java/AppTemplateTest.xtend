@@ -19,7 +19,7 @@ class AppTemplateTest {
 		   .withStatusProperty("unit",PrimitiveType.STRING).build();
 		   
 		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"temperature");	
+		im.withFunctionBlock(fbm,"temperature","some description",true);	
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);

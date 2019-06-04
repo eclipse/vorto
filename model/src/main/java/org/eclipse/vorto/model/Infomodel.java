@@ -14,21 +14,22 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.vorto.model.AbstractModel;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
 
 public class Infomodel extends AbstractModel {
 
   private List<ModelProperty> functionblocks = new ArrayList<ModelProperty>();
 
 
-  public Infomodel(ModelId modelId, ModelType modelType) {
-    super(modelId, modelType);
+  public Infomodel(ModelId modelId) {
+    super(modelId, ModelType.InformationModel);
   }
 
   protected Infomodel() {
 
+  }
+  
+  public static InfomodelBuilder Builder(ModelId id) {
+    return new InfomodelBuilder(id);
   }
 
   public List<ModelProperty> getFunctionblocks() {
@@ -42,6 +43,19 @@ public class Infomodel extends AbstractModel {
   @Override
   public String toString() {
     return "InfomodelDto [functionblocks=" + functionblocks + "]";
+  }
+  
+  
+  public static class InfomodelBuilder extends Builder<Infomodel> {
+
+    private InfomodelBuilder(ModelId id) {
+      super(new Infomodel(id));
+    }
+
+    public InfomodelBuilder withProperty(ModelProperty property) {
+      this.model.getFunctionblocks().add(property);
+      return this;
+    }
   }
 
 }

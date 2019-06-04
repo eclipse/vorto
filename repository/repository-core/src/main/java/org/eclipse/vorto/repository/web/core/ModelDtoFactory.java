@@ -158,8 +158,7 @@ public class ModelDtoFactory {
   private static Infomodel createResource(InformationModel model,
       Optional<MappingModel> mappingModel) {
     Infomodel infoResource =
-        new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelType.InformationModel);
+        new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
 
     for (FunctionblockProperty property : model.getProperties()) {
       infoResource.getFunctionblocks().add(createProperty(property, mappingModel));
@@ -207,8 +206,7 @@ public class ModelDtoFactory {
       Optional<MappingModel> mappingModel) {
     org.eclipse.vorto.model.FunctionblockModel resource =
         new org.eclipse.vorto.model.FunctionblockModel(
-            new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelType.Functionblock);
+            new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
@@ -262,10 +260,9 @@ public class ModelDtoFactory {
   private static Operation createOperation(
       org.eclipse.vorto.core.api.model.functionblock.Operation o,
       Optional<MappingModel> mappingModel) {
-    Operation operation = new Operation();
+    Operation operation = new Operation(o.getName());
     operation.setBreakable(o.isBreakable());
     operation.setDescription(o.getDescription());
-    operation.setName(o.getName());
     operation.setParams(
         o.getParams().stream().map(p -> createParam(p, mappingModel)).collect(Collectors.toList()));
 
@@ -529,7 +526,7 @@ public class ModelDtoFactory {
 
   private static EnumModel createResource(Enum model, Optional<MappingModel> mappingModel) {
     EnumModel resource = new EnumModel(
-        new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Datatype);
+        new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))

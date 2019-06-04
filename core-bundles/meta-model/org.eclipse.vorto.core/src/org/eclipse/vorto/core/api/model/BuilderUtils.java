@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.core.api.model;
 
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
@@ -25,6 +26,9 @@ import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.functionblock.Operation;
+import org.eclipse.vorto.core.api.model.functionblock.Param;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -54,13 +58,13 @@ public abstract class BuilderUtils {
     prop.setType(createPrimitiveType(type));
     return prop;
   }
-
+  
   private static PrimitivePropertyType createPrimitiveType(PrimitiveType type) {
     PrimitivePropertyType typeObj = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
     typeObj.setType(type);
     return typeObj;
   }
-
+  
   public static FunctionblockBuilder newFunctionblock(ModelId modelId) {
     return (FunctionblockBuilder)new FunctionblockBuilder().withId(modelId);
   }
@@ -115,7 +119,11 @@ public abstract class BuilderUtils {
         model.getReferences().add(id.asModelReference());
       }
       return this;
-      
+    }
+    
+    public ModelBuilder<T> withReference(ModelId references) {
+      model.getReferences().add(references.asModelReference());
+      return this;
     }
 
     public T build() {
@@ -176,10 +184,12 @@ public abstract class BuilderUtils {
       super(InformationModelFactory.eINSTANCE.createInformationModel());
     }
 
-    public InformationModelBuilder withFunctionBlock(FunctionblockModel fbm, String propertyName) {
+    public InformationModelBuilder withFunctionBlock(FunctionblockModel fbm, String propertyName, String description, boolean isMultiple) {
       FunctionblockProperty property =
           InformationModelFactory.eINSTANCE.createFunctionblockProperty();
       property.setName(propertyName);
+      property.setDescription(description);
+      property.setMultiplicity(isMultiple);
       property.setType(fbm);
       this.model.getProperties().add(property);
       return this;
@@ -233,6 +243,20 @@ public abstract class BuilderUtils {
       this.fb.getConfiguration().getProperties().add(BuilderUtils.createProperty(name, type));
       return this;
     }
+    
+    public FunctionblockBuilder withOperation(String operationName, ReturnType returnType, String description, boolean breakable, Param... params) {
+      Operation operation = FunctionblockFactory.eINSTANCE.createOperation();
+      operation.setName(operationName);
+      operation.setDescription(description);
+      operation.setBreakable(breakable);
+      operation.setReturnType(returnType);
+      if (params != null && params.length > 0) {
+        operation.getParams().addAll(Arrays.asList(params));
+      }
+      
+      this.fb.getOperations().add(operation);
+      return this;
+    }    
   }
 
 }
