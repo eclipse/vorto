@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.web.generation;
 import java.util.Collection;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
+import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPluginService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -46,5 +47,11 @@ public class GeneratorController extends AbstractRepositoryController {
       @ApiParam(value = "The upper limit number of top code generator list",
           required = true) final @PathVariable int top) {
     return this.generatorService.getMostlyUsed(top);
+  }
+  
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @RequestMapping(value = "/plugincache/{pluginkey}/remove", method = RequestMethod.GET)
+  public void removeCachedPlugin(final @PathVariable String pluginkey) {
+    ((DefaultGeneratorPluginService)generatorService).clearPluginCache(pluginkey);
   }
 }
