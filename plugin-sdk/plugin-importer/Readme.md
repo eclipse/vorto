@@ -7,24 +7,21 @@ But how can existing (standardized) device descriptions be integreated into the 
 
 The version 2 is the new and simpler way of providing importers and plugging them into the Vorto Repository.  
 
-Each Importer must make sure to provide two endpoints, that are called by the Vorto Repository upon model import:
-
-<table>
-	<tr>
-		<th>Source File Validation</th>
-		<td>
-			Performs a pre-validation check on the source file before the actual conversion can take place. 
-		</td>
-	</tr>
-	<tr>
-		<th>Source File Conversion</th>
-		<td>
-			Performs the actual conversion, whereby the source file is translated into Vorto DSL files and returned as a ZIP archive. The Vorto Repository accepts this archive in order to import them into the Vorto Repository. 
-		</td
-	</tr>
-</table>
+Each Importer must make sure to provide two endpoints, which are called by the Vorto Repository during the entire model import process.
 
 [Download OpenAPI spec](docs/importer-openapi.yml)
+
+### 1. File Validation
+
+The import process begins with a pre-validation check on the file which is to be imported. Here the importer plugin reports back to the repository, if it accepts the file and a file conversion can take place safely.
+
+![](docs/importer-plugin-validation.png)
+
+### 2. File Conversion
+
+Once the file was accepted by the importer plugin, the repository invokes this endpoint, whereby the importer converts the file to Vorto models and returns them as a ZIP archive.
+
+![](docs/importer-plugin-import.png)
 
 ### Example
 

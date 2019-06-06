@@ -8,6 +8,8 @@ An example of a generator could be generating a piece of device firmware that co
 
 The version 2 is the new way of providing generators and plugging them into the Vorto Repository. Compared to Version 1, it is much simpler with less communication overhead to the Vorto Repository to load data.  
 
+![](docs/generator-plugin-v2.png)
+
 Each Generator must make sure to provide two endpoints, that are called by the Vorto Repository upon code generation:
 
 <table>
