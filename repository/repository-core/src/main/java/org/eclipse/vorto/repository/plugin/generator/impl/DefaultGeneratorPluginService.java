@@ -160,7 +160,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/api/2/plugins/generators/{pluginkey}" + attachRequestParams(requestParams),
-        HttpMethod.GET, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);
+        HttpMethod.PUT, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);
 
     return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response),
         response.getHeaders().getContentLength());
