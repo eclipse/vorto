@@ -75,9 +75,6 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
             }
           }
         });
-      } else {
-        throw new ModelNotFoundException("Content for provided target platform key does not exist",
-            null);
       }
     } else {
       IModelWorkspace workspace = getWorkspaceForModel(modelId);
