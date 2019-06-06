@@ -24,7 +24,7 @@ class PythonDittoSerializerTemplateTest {
 	
 	@Test
 	def void testSerializeFb() {
-		var template = new PythonDittoSerializerTemplate();
+		var template = new PythonDittoSerializerTemplate(); 
 		
 		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",PrimitiveType.FLOAT)

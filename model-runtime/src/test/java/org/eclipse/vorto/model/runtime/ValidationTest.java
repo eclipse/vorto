@@ -51,7 +51,7 @@ public class ValidationTest {
 
   private FunctionblockModel createModel(PrimitiveType type) {
     FunctionblockModel fbModel = new FunctionblockModel(
-        ModelId.fromPrettyFormat("default:TestFB:1.0.0"), ModelType.Functionblock);
+        ModelId.fromPrettyFormat("default:TestFB:1.0.0"));
     List<ModelProperty> properties = new ArrayList<>();
     properties.add(ModelProperty.createPrimitiveProperty("prop", true, type));
     fbModel.setStatusProperties(properties);

@@ -23,6 +23,7 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
+import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
@@ -35,24 +36,25 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.model.model.VortoLangVersion;
 
 public abstract class BuilderUtils {
 
-  private static Property createProperty(String name, Type type) {
+  public static Property createProperty(String name, Type type) {
     Property prop = DatatypeFactory.eINSTANCE.createProperty();
     prop.setName(name);
     prop.setType(createObjectType(type));
     return prop;
   }
 
-  private static ObjectPropertyType createObjectType(Type type) {
+  public static ObjectPropertyType createObjectType(Type type) {
     ObjectPropertyType typeObj = DatatypeFactory.eINSTANCE.createObjectPropertyType();
     typeObj.setType(type);
     return typeObj;
   }
 
-  private static Property createProperty(String name, PrimitiveType type) {
+  public static Property createProperty(String name, PrimitiveType type) {
     Property prop = DatatypeFactory.eINSTANCE.createProperty();
     prop.setName(name);
     prop.setType(createPrimitiveType(type));
@@ -75,6 +77,10 @@ public abstract class BuilderUtils {
 
   public static EntityBuilder newEntity(ModelId modelId) {
     return (EntityBuilder)new EntityBuilder().withId(modelId);
+  }
+  
+  public static EventBuilder newEvent(String name) {
+    return new EventBuilder(name);
   }
 
   public abstract static class ModelBuilder<T extends Model> {
@@ -122,7 +128,10 @@ public abstract class BuilderUtils {
     }
     
     public ModelBuilder<T> withReference(ModelId references) {
-      model.getReferences().add(references.asModelReference());
+      ModelReference referenceToBeAdded = references.asModelReference();
+      if (!model.getReferences().stream().filter(ref -> (ref.getImportedNamespace().equals(referenceToBeAdded.getImportedNamespace()) && ref.getVersion().equals(referenceToBeAdded.getVersion()))).findAny().isPresent()) {
+        model.getReferences().add(referenceToBeAdded);
+      }     
       return this;
     }
 
@@ -130,11 +139,43 @@ public abstract class BuilderUtils {
       return (T)model;
     }
   }
+  
+  public static class EventBuilder {
+    private Event event;
+    public EventBuilder(String name) {
+      this.event = FunctionblockFactory.eINSTANCE.createEvent();
+      this.event.setName(name);
+    }
+    
+    public EventBuilder withProperty(Property property) {
+      this.event.getProperties().add(property);
+      return this;
+    }
+    
+    public EventBuilder withProperty(String name, PrimitiveType type) {
+      this.event.getProperties().add(BuilderUtils.createProperty(name, type));
+      return this;
+    }
+
+    public EventBuilder withProperty(String name, Type objectType) {
+      this.event.getProperties().add(BuilderUtils.createProperty(name, objectType));
+      return this;
+    }
+    
+    public Event build() {
+      return event;
+    }
+  }
 
   public static class EntityBuilder extends ModelBuilder<Entity>{
 
     public EntityBuilder() {
       super(DatatypeFactory.eINSTANCE.createEntity());
+    }
+    
+    public EntityBuilder withProperty(Property property) {
+      this.model.getProperties().add(property);
+      return this;
     }
 
     public EntityBuilder withProperty(String name, PrimitiveType type) {
@@ -225,6 +266,25 @@ public abstract class BuilderUtils {
       this.fb.getStatus().getProperties().add(BuilderUtils.createProperty(name, type));
       return this;
     }
+    
+    public FunctionblockBuilder withStatusProperty(Property property) {
+      if (this.fb.getStatus() == null) {
+        Status status = FunctionblockFactory.eINSTANCE.createStatus();
+        this.fb.setStatus(status);
+      }
+
+      this.fb.getStatus().getProperties().add(property);
+      return this;
+    }
+
+    public FunctionblockBuilder withConfiguration(Property property) {
+      if (this.fb.getConfiguration() == null) {
+        Configuration configuration = FunctionblockFactory.eINSTANCE.createConfiguration();
+        this.fb.setConfiguration(configuration);
+      }
+      this.fb.getConfiguration().getProperties().add(property);
+      return this;
+    }
 
     public FunctionblockBuilder withConfiguration(String name, PrimitiveType type) {
       if (this.fb.getConfiguration() == null) {
@@ -241,6 +301,11 @@ public abstract class BuilderUtils {
         this.fb.setConfiguration(configuration);
       }
       this.fb.getConfiguration().getProperties().add(BuilderUtils.createProperty(name, type));
+      return this;
+    }
+    
+    public FunctionblockBuilder withEvent(Event event) {
+      this.fb.getEvents().add(event);
       return this;
     }
     

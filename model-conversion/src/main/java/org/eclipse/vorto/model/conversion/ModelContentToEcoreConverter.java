@@ -18,8 +18,13 @@ import java.util.stream.Collectors;
 import org.eclipse.vorto.core.api.model.BuilderUtils;
 import org.eclipse.vorto.core.api.model.BuilderUtils.EntityBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.EnumBuilder;
+import org.eclipse.vorto.core.api.model.BuilderUtils.EventBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.FunctionblockBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.InformationModelBuilder;
+import org.eclipse.vorto.core.api.model.BuilderUtils.ModelBuilder;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.Presence;
+import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.DictonaryParam;
@@ -31,11 +36,15 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnDictonaryType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
+import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
+import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
+import org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.model.AbstractModel;
+import org.eclipse.vorto.model.Constraint;
 import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
@@ -53,10 +62,13 @@ import org.eclipse.vorto.model.PrimitiveType;
  */
 public class ModelContentToEcoreConverter implements IModelConverter<ModelContent, Model> {
 
-  public ModelContentToEcoreConverter() {
+  static {
     DatatypePackageImpl.init();
+    FunctionblockPackageImpl.init();
+    InformationModelPackageImpl.init();
+    MappingPackageImpl.init();
   }
-
+  
   @Override
   public Model convert(ModelContent source, Optional<String> platformKey) {
     AbstractModel model = source.getModels().get(source.getRoot());
@@ -95,6 +107,41 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     
     return builder.build();
   }
+  
+  private Property createProperty(ModelProperty sourceProperty, ModelBuilder<?> builder, ModelContent context) {
+    Property property = null;
+    if (sourceProperty.getType() instanceof PrimitiveType) {
+      property = BuilderUtils.createProperty(sourceProperty.getName(), org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+          .valueOf(((PrimitiveType) sourceProperty.getType()).name()));
+    } else if (sourceProperty.getType() instanceof org.eclipse.vorto.model.ModelId) {      
+      AbstractModel referencedModel =
+          context.getModels().get((org.eclipse.vorto.model.ModelId) sourceProperty.getType());
+      
+      Type convertedReference = (Type)convert(referencedModel, context);
+      builder.withReference(ModelIdFactory.newInstance(convertedReference));
+      property = BuilderUtils.createProperty(sourceProperty.getName(), convertedReference);
+    } else if (sourceProperty.getType() instanceof DictionaryType) {
+      //FIXME
+    } else {
+      throw new UnsupportedOperationException("type must be either primitive, object or dictionary");
+    }
+    
+    property.setDescription(sourceProperty.getDescription());
+    Presence presence = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createPresence();
+    presence.setMandatory(sourceProperty.isMandatory());
+    property.setPresence(presence);
+    
+    org.eclipse.vorto.core.api.model.datatype.ConstraintRule rule = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraintRule();
+    for (Constraint constraint : sourceProperty.getConstraints()) {
+      org.eclipse.vorto.core.api.model.datatype.Constraint eConstraint = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraint();
+      eConstraint.setConstraintValues(constraint.getValue());
+      eConstraint.setType(ConstraintIntervalType.valueOf(constraint.getType().name()));
+      rule.getConstraints().add(eConstraint);
+    }
+    property.setConstraintRule(rule);
+    
+    return property;
+  }
 
   private Model convertFunctionblock(FunctionblockModel model, ModelContent context) {
     FunctionblockBuilder builder =
@@ -105,32 +152,14 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     builder.withDisplayName(model.getDisplayName());
     builder.withVortolang(model.getVortolang());
 
-    for (ModelProperty property : model.getStatusProperties()) {
-      if (property.getType() instanceof PrimitiveType) {
-        builder.withStatusProperty(property.getName(),
-            org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-                .valueOf(((PrimitiveType) property.getType()).name()));
-      } else if (property.getType() instanceof org.eclipse.vorto.model.ModelId) {
-        AbstractModel referencedModel =
-            context.getModels().get((org.eclipse.vorto.model.ModelId) property.getType());
-        Type convertedReference = (Type) convert(referencedModel, context);
-        builder.withReference(ModelIdFactory.newInstance(convertedReference));
-        builder.withStatusProperty(property.getName(), convertedReference);
-      }
+    for (ModelProperty sourceProperty : model.getStatusProperties()) {
+      Property property = createProperty(sourceProperty, builder, context);
+      builder.withStatusProperty(property);
     }
 
-    for (ModelProperty property : model.getConfigurationProperties()) {
-      if (property.getType() instanceof PrimitiveType) {
-        builder.withConfiguration(property.getName(),
-            org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-                .valueOf(((PrimitiveType) property.getType()).name()));
-      } else if (property.getType() instanceof org.eclipse.vorto.model.ModelId) {
-        AbstractModel referencedModel =
-            context.getModels().get((org.eclipse.vorto.model.ModelId) property.getType());
-        Type convertedReference = (Type) convert(referencedModel, context);
-        builder.withReference(ModelIdFactory.newInstance(convertedReference));
-        builder.withConfiguration(property.getName(), convertedReference);
-      }
+    for (ModelProperty sourceProperty : model.getConfigurationProperties()) {
+      Property property = createProperty(sourceProperty, builder, context);
+      builder.withConfiguration(property);
     }
 
     for (Operation operation : model.getOperations()) {
@@ -140,11 +169,19 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     }
     
     for (ModelEvent event : model.getEvents()) {
+     EventBuilder eventBuilder = BuilderUtils.newEvent(event.getName());
+      
+     for (ModelProperty sourceProperty : event.getProperties()) {
+       Property property = createProperty(sourceProperty, builder, context);
+       eventBuilder.withProperty(property);
+     }
      
+     builder.withEvent(eventBuilder.build());
     }
 
     return builder.build();
   }
+  
 
   private Param[] createParams(List<org.eclipse.vorto.model.Param> params, ModelContent context) {
     List<Param> ecoreParams = new ArrayList<>();
@@ -229,17 +266,10 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     builder.withReferences(entity.getReferences().stream()
         .map(r -> new ModelId(ModelType.Datatype, r.getName(), r.getNamespace(), r.getVersion()))
         .collect(Collectors.toList()));
-    for (ModelProperty property : entity.getProperties()) {
-      if (property.getType() instanceof PrimitiveType) {
-        builder.withProperty(property.getName(),
-            org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-                .valueOf(((PrimitiveType) property.getType()).name()));
-      } else if (property.getType() instanceof org.eclipse.vorto.model.ModelId) {
-        AbstractModel referencedModel =
-            context.getModels().get((org.eclipse.vorto.model.ModelId) property.getType());
-        Type convertedReference = (Type) convert(referencedModel, context);
-        builder.withProperty(property.getName(), convertedReference);
-      }
+    
+    for (ModelProperty sourceProperty : entity.getProperties()) {
+      Property property = createProperty(sourceProperty, builder, context);
+      builder.withProperty(property);
     }
     return builder.build();
 

@@ -168,7 +168,7 @@ class PythonAppTemplateTest {
 		   .withStatusProperty("otherProp",PrimitiveType.STRING).build();
 		   
 		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"temperature");	
+		im.withFunctionBlock(fbm,"temperature",null,false);	
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
