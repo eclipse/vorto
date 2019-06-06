@@ -73,9 +73,6 @@ public class NativeVortoJsonConverter implements IModelConverter<ModelContent>{
             }
           }
         });
-      } else {
-        throw new ModelNotFoundException("Content for provided target platform key does not exist",
-            null);
       }
     } else {
       IModelWorkspace workspace = getWorkspaceForModel(modelId);

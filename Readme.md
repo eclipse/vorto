@@ -16,9 +16,10 @@
 
 Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
 
-## Vorto Plugin SDK
+## Developer Guide
 
-[Read here](plugin-sdk/Readme.md) how to customize the Vorto Repository with different plugin types.
+- [Vorto DSL Reader](utilities/Readme.md) which lets you parse Vorto DSL files (requires Java)
+- [Plugin SDK](plugin-sdk/Readme.md) that lets you extend Vorto with different plugin types
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
