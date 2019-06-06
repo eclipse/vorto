@@ -39,7 +39,9 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.conversion.ModelContentToEcoreConverter;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -78,6 +80,22 @@ public class VortoService {
   @Value("${server.config.generatorPassword:#{null}}")
   private String generatorPassword;
 
+  private static final ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+  
+  public IGenerationResult generate(ModelContent model, String pluginkey, Map<String,String> params) {
+    LOGGER.info(String.format("Generating for [%s]", model.getRoot().getPrettyFormat()));
+    
+    Model converted = converter.convert(model, Optional.empty());
+    
+    Generator generator =
+        repo.get(pluginkey).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", pluginkey)));
+    
+    InvocationContext invocationContext = InvocationContext.simpleInvocationContext(params);
+    
+    InformationModel infomodel = Utils.toInformationModel(converted);
+    
+    return generate(generator.getInstance(), infomodel, invocationContext);
+  }
 
   public IGenerationResult generate(String key, String namespace, String name, String version,
       Map<String, String> parameters, Optional<String> headerAuth) {

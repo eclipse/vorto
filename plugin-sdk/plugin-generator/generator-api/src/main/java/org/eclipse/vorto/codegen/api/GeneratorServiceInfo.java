@@ -25,6 +25,7 @@ public class GeneratorServiceInfo {
   private String name;
   private String description;
   private String creator;
+  private String vendor;
   private String documentationUrl;
   private String image32x32;
   private String image144x144;
@@ -122,6 +123,12 @@ public class GeneratorServiceInfo {
     this.configKeys = configKeys;
   }
 
+  public String getVendor() {
+    return this.creator;
+  }
 
+  public void setVendor(String vendor) {
+    this.vendor = vendor;
+  }
 
 }

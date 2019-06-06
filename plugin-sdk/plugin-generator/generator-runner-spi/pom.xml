@@ -67,6 +67,12 @@
 			<artifactId>generator-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>model-conversion</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 				
 		<!-- Generator dependencies -->
 		

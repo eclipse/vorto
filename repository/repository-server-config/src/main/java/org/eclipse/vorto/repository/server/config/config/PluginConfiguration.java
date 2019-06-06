@@ -48,9 +48,9 @@ public class PluginConfiguration {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
-    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite","1","http://localhost:8081/generatorgateway"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipseditto","1","http://localhost:8081/generatorgateway"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipsehono","1","http://localhost:8081/generatorgateway"));
+    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite","2","http://localhost:8081/generatorgateway"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipseditto","2","http://localhost:8081/generatorgateway"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipsehono","2","http://localhost:8081/generatorgateway"));
     service.registerPlugin(new GeneratorPluginInfo("jsonschema","2","https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     return service;
   }
