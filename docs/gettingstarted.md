@@ -43,11 +43,11 @@ For a more in depth introduction into the concepts, feel free to **[read the blo
 3. [**Describe your first device**](tutorials/describe_device-in-5min.md) in 5 minutes using the Vorto Web Editor - [(5min video)](.)
 > You can also describe new devices using the [Vorto Eclipse IDE](tutorials/describe_device_with_eclipse_ide.md)
 
-4. **Provision your device** to [create a new digital twin](tutorials/create_thing.md) inside Bosch IoT Things - [(9min video)](.)
+4. **Provision your device** to [create a new digital twin](tutorials/create_thing.md) inside Bosch IoT Things - [(9min video)](https://www.youtube.com/watch?v=N3IGlCGzJIc)
 
-5. **Integrate your device** using [Python](tutorials/mqtt-python.md) / [Java](tutorials/connect_javadevice.md) / [Arduino](tutorials/connect_esp8266.md) - [(8min video)](.)
+5. **Integrate your device** using [Python](tutorials/mqtt-python.md) / [Java](tutorials/connect_javadevice.md) / [Arduino](tutorials/connect_esp8266.md) - [(10min video)](https://www.youtube.com/watch?v=QGEXC83JkRc)
 
-6. **Visualize your sensor data** using the [Vorto Dashboard](tutorials/create_webapp_dashboard.md) - [(4min video)](.)
+6. **Visualize your sensor data** using the [Vorto Dashboard](tutorials/create_webapp_dashboard.md) - [(7min video)](https://www.youtube.com/watch?v=B4HcJVA7NlU)
 > You can also use the [Bosch IoT Things SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2#/Things) to validate your data if you're using the Bosch IoT Suite.
 
 <br />
