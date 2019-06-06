@@ -49,6 +49,7 @@ import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IModel;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelEvent;
@@ -71,11 +72,11 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
   
   @Override
   public Model convert(ModelContent source, Optional<String> platformKey) {
-    AbstractModel model = source.getModels().get(source.getRoot());
+    IModel model = source.getModels().get(source.getRoot());
     return convert(model, source);
   }
 
-  private Model convert(AbstractModel model, ModelContent context) {
+  private Model convert(IModel model, ModelContent context) {
     if (model instanceof EntityModel) {
       return convertEntity((EntityModel) model, context);
     } else if (model instanceof EnumModel) {
@@ -114,7 +115,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       property = BuilderUtils.createProperty(sourceProperty.getName(), org.eclipse.vorto.core.api.model.datatype.PrimitiveType
           .valueOf(((PrimitiveType) sourceProperty.getType()).name()));
     } else if (sourceProperty.getType() instanceof org.eclipse.vorto.model.ModelId) {      
-      AbstractModel referencedModel =
+      IModel referencedModel =
           context.getModels().get((org.eclipse.vorto.model.ModelId) sourceProperty.getType());
       
       Type convertedReference = (Type)convert(referencedModel, context);

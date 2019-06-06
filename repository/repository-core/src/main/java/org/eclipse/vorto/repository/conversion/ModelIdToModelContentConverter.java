@@ -75,6 +75,13 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
             }
           }
         });
+      } else {
+        IModelWorkspace workspace = getWorkspaceForModel(modelId);
+
+        workspace.get().stream().forEach(model -> {
+          result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+              ModelDtoFactory.createResource(model, Optional.empty()));
+        });
       }
     } else {
       IModelWorkspace workspace = getWorkspaceForModel(modelId);

@@ -33,6 +33,7 @@ public class BaseConfiguration {
 	@Bean
 	public Jackson2ObjectMapperBuilder objectMapperBuilder() {
 	    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+	  
 	    builder.deserializerByType(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
 
 			@Override

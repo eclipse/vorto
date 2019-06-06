@@ -158,7 +158,6 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
     ModelContent content = converter.convert(modelId, Optional.of(serviceKey));
 
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/api/2/plugins/generators/{pluginkey}" + attachRequestParams(requestParams),
         HttpMethod.PUT, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);

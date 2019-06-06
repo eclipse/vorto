@@ -14,7 +14,6 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractButton;
 
 public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 

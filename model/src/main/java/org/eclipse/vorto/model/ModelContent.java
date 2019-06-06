@@ -19,7 +19,7 @@ public class ModelContent {
 
   private ModelId root = null;
 
-  private Map<ModelId, AbstractModel> models = new HashMap<ModelId, AbstractModel>();
+  private Map<ModelId, IModel> models = new HashMap<ModelId, IModel>();
 
   public ModelId getRoot() {
     return root;
@@ -29,11 +29,11 @@ public class ModelContent {
     this.root = root;
   }
 
-  public Map<ModelId, AbstractModel> getModels() {
+  public Map<ModelId, IModel> getModels() {
     return models;
   }
 
-  public void setModels(Map<ModelId, AbstractModel> models) {
+  public void setModels(Map<ModelId, IModel> models) {
     this.models = models;
   }
 

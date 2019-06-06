@@ -1,7 +1,6 @@
 package org.eclipse.vorto.codegen.spi.controllers;
 
 import java.io.ByteArrayInputStream;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -9,9 +8,7 @@ import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.service.VortoService;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelContent;
-import org.eclipse.vorto.model.conversion.ModelContentToEcoreConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -40,12 +37,12 @@ public class GeneratorControllerV2 {
     return generator.getFullInfo();
   }
   
-  @RequestMapping(value = "/{pluginkey}",
-      method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "/{pluginkey}", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET})
   public ResponseEntity<InputStreamResource> generate(
       final @PathVariable String pluginkey, @RequestBody ModelContent model, final HttpServletRequest request) {
     return responseFromResult(vorto.generate(model,pluginkey, GatewayUtils.mapFromRequest(request)));
   } 
+  
   
   private ResponseEntity<InputStreamResource> responseFromResult(IGenerationResult result) {
     return ResponseEntity.ok().contentLength(result.getContent().length)
