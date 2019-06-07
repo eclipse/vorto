@@ -91,7 +91,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
   }
 
   private Model convertInformationModel(Infomodel model, ModelContent context) {
-    InformationModelBuilder builder = BuilderUtils.newInformationModel(new ModelId(ModelType.Functionblock, model.getId().getName(),
+    InformationModelBuilder builder = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel, model.getId().getName(),
         model.getId().getNamespace(), model.getId().getVersion()));
     
     builder.withCategory(model.getCategory());

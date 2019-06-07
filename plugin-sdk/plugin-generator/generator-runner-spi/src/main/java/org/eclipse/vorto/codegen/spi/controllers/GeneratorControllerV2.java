@@ -1,3 +1,14 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.codegen.spi.controllers;
 
 import java.io.ByteArrayInputStream;
@@ -28,22 +39,24 @@ public class GeneratorControllerV2 {
 
   @Autowired
   private GeneratorRepository repo;
-  
+
   @RequestMapping(value = "/{pluginkey}/info", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public GeneratorServiceInfo info(final @PathVariable String pluginkey) {
-    Generator generator =
-        repo.get(pluginkey).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", pluginkey)));
+    Generator generator = repo.get(pluginkey)
+        .orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", pluginkey)));
     return generator.getFullInfo();
   }
-  
-  @RequestMapping(value = "/{pluginkey}", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET})
-  public ResponseEntity<InputStreamResource> generate(
-      final @PathVariable String pluginkey, @RequestBody ModelContent model, final HttpServletRequest request) {
-    return responseFromResult(vorto.generate(model,pluginkey, GatewayUtils.mapFromRequest(request)));
-  } 
-  
-  
+
+  @RequestMapping(value = "/{pluginkey}",
+      method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET})
+  public ResponseEntity<InputStreamResource> generate(final @PathVariable String pluginkey,
+      @RequestBody ModelContent model, final HttpServletRequest request) {
+    return responseFromResult(
+        vorto.generate(model, pluginkey, GatewayUtils.mapFromRequest(request)));
+  }
+
+
   private ResponseEntity<InputStreamResource> responseFromResult(IGenerationResult result) {
     return ResponseEntity.ok().contentLength(result.getContent().length)
         .header("content-disposition", "attachment; filename = " + result.getFileName())

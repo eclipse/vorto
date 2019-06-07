@@ -31,4 +31,6 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
     addGenerator(Generator.create("/generators/generator_template.properties",
         CodeGeneratorTemplateGenerator.class));
   }
+  
+  
 }

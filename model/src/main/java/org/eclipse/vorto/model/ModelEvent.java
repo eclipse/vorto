@@ -14,7 +14,6 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.vorto.model.Param.Builder;
 
 public class ModelEvent {
 

@@ -13,7 +13,6 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.vorto.model.EntityModel.EntityBuilder;
 
 public class EnumModel extends AbstractModel {
 

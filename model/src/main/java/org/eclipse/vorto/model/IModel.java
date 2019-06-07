@@ -13,19 +13,7 @@
 package org.eclipse.vorto.model;
 
 import java.util.Collection;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = Infomodel.class, name = "infomodel"),
-    @JsonSubTypes.Type(value = FunctionblockModel.class, name = "functionblock"),
-    @JsonSubTypes.Type(value = EntityModel.class, name = "entity"),
-    @JsonSubTypes.Type(value = EnumModel.class, name = "enum")
-})
 public interface IModel {
 
   /**
