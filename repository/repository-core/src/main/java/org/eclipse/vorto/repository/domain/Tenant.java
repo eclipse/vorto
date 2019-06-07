@@ -29,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
@@ -129,6 +130,16 @@ public class Tenant {
     }
   }
 
+  private void removeAllNamespaces() {
+    if (namespaces != null) {
+      Iterator<Namespace> iter = namespaces.iterator();
+      while (iter.hasNext()) {
+        iter.next();
+        iter.remove();
+      }
+    }
+  }
+  
   public boolean hasNamespace(String namespace) {
     return this.namespaces.stream().map(Namespace::getName).anyMatch(namespace::equals);
   }
@@ -170,21 +181,17 @@ public class Tenant {
   }
 
   public void removeUser(TenantUser user) {
-    user.getRoles().forEach(role -> role.setUser(null));
-    user.getRoles().clear();
+    users.remove(user);
     user.getUser().removeTenantUser(user);
     user.setTenant(null);
-    users.remove(user);
   }
 
-  public void removeUsers() {
+  private void removeUsers() {
     if (users != null) {
       Iterator<TenantUser> iter = users.iterator();
       while (iter.hasNext()) {
         TenantUser user = iter.next();
 
-        user.getRoles().forEach(role -> role.setUser(null));
-        user.getRoles().clear();
         user.getUser().removeTenantUser(user);
         user.setTenant(null);
         iter.remove();
@@ -200,10 +207,17 @@ public class Tenant {
     this.owner = owner;
     owner.addOwnedTenant(this);
   }
-
-  public void unsetOwner() {
+  
+  private void unsetOwner() {
     owner.removeOwnedTenant(this);
     this.owner = null;
+  }
+  
+  @PreRemove
+  private void removeRelationships() {
+    removeAllNamespaces();
+    removeUsers();
+    unsetOwner();
   }
 
   public String getDefaultNamespace() {
