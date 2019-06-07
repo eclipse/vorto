@@ -35,8 +35,7 @@ public class WorkflowUpgradeTaskTest extends AbstractIntegrationTest {
     super.beforeEach();
     IUserContext admin = createUserContext("admin");
 
-    IModelRepository modelRepository = getModelRepository(admin);
-    modelRepository.restore(
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 
     task = new WorkflowUpgradeTask(repositoryFactory,

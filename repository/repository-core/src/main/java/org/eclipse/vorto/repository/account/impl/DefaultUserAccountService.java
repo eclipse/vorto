@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.google.common.collect.Sets;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -79,9 +77,9 @@ public class DefaultUserAccountService
 
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
 
-    Optional<TenantUser> _user = tenant.getUser(userId);
-    if (_user.isPresent()) {
-      tenant.removeUser(_user.get());
+    Optional<TenantUser> maybeUser = tenant.getUser(userId);
+    if (maybeUser.isPresent()) {
+      tenant.removeUser(maybeUser.get());
     }
 
     tenantRepo.save(tenant);
@@ -98,17 +96,14 @@ public class DefaultUserAccountService
 
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
 
-    Optional<TenantUser> _user = tenant.getUser(userId);
-    if (_user.isPresent()) {
-      TenantUser user = _user.get();
+    Optional<TenantUser> maybeUser = tenant.getUser(userId);
+    if (maybeUser.isPresent()) {
+      TenantUser user = maybeUser.get();
       
       Set<UserRole> oldUserRolesToRemove =
           user.getRoles().stream()
-          	//.filter(userRole -> 
-            //userRole.getRole() != Role.TENANT_ADMIN && userRole.getRole() != Role.SYS_ADMIN)
-          	.filter(userRole -> 
-          	userRole.getRole() != Role.SYS_ADMIN)
-          .collect(Collectors.toSet());
+          	.filter(userRole -> userRole.getRole() != Role.SYS_ADMIN)
+          	.collect(Collectors.toSet());
       
       oldUserRolesToRemove.forEach(_userRole -> user.removeRole(_userRole));
       
@@ -168,23 +163,8 @@ public class DefaultUserAccountService
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
-    User user = createUser(username);
-    user = userRepository.save(user);
-    return user;
-  }
 
-  private User createUser(String username) {
-    Set<Role> roles = Sets.newHashSet(Role.USER);
-    if (isConfiguredAsAdmin(username)) {
-      roles.add(Role.SYS_ADMIN);
-    }
-
-    return User.create(username, tenantRepo.findByTenantId(Tenant.STANDARDIZATION_TENANT_ID),
-        roles.toArray(new Role[roles.size()]));
-  }
-
-  private boolean isConfiguredAsAdmin(String username) {
-    return admins != null && Arrays.asList(admins).contains(username);
+    return userRepository.save(User.create(username));
   }
 
   @Transactional
@@ -204,7 +184,7 @@ public class DefaultUserAccountService
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
     } else {
-      User user = createUser(username);
+      User user = create(username);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
       user.addTenantUser(tenantUser);
       return userRepository.save(user);
@@ -230,16 +210,11 @@ public class DefaultUserAccountService
   }
 
   @Override
+  @Transactional
   public void delete(final String userId) {
     User userToDelete = userRepository.findByUsername(userId);
 
     if (userToDelete != null) {
-      if (userToDelete.getTenantUsers() != null) {
-        userToDelete.getTenantUsers().forEach(tu -> {
-          tenantUserRepo.delete(tu);
-        });
-      }
-      
       userRepository.delete(userToDelete);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
       if (userToDelete.hasEmailAddress()) {

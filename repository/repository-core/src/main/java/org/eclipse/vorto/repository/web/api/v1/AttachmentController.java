@@ -75,7 +75,7 @@ public class AttachmentController extends AbstractRepositoryController {
 			  		+ "</pre>")
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:owner')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public AttachResult attach(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",

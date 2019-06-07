@@ -81,14 +81,37 @@ public class AccountControllerTest extends AbstractIntegrationTest {
             .andExpect(status().isNotFound());
     }
 
-    @Test public void deleteUserAccount() throws Exception{
+    @Test public void deleteUserAccount() throws Exception {
         if(accountService.getUser(testUser) == null){
             accountService.create(testUser, "playground", Role.USER);
         }
+        
+        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
+          .andExpect(status().isOk());
+        
         this.repositoryServer.perform(
             delete("/rest/accounts/"+testUser)
                 .content(testMail).with(userAdmin))
             .andExpect(status().isNoContent());
+        
+        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
+          .andExpect(status().isNotFound());
     }
 
+    @Test public void deleteUserFromTenant() throws Exception {
+      if(accountService.getUser(testUser) == null){
+          accountService.create(testUser, "playground", Role.USER);
+      }
+      
+      this.repositoryServer.perform(get("/rest/tenants/playground/users/"+testUser).with(userAdmin))
+      .andExpect(status().isOk());
+      
+      this.repositoryServer.perform(
+          delete("/rest/tenants/playground/users/"+testUser)
+              .content(testMail).with(userAdmin))
+          .andExpect(status().isOk());
+      
+      this.repositoryServer.perform(get("/rest/tenants/playground/users/"+testUser).with(userAdmin))
+        .andExpect(status().isNotFound());
+    }
 }

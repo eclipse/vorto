@@ -2,10 +2,11 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 	function ($location, $scope, $rootScope, $http, $uibModalInstance) {
 
 	$scope.deleteAccount = function() {
-	   	$http.delete('./rest/' + $rootScope.tenant + '/users/'+$rootScope.user)
+	   	$http.delete('./rest/accounts/'+$rootScope.user)
 	       .then(function(response) {
+	    	   console.log(JSON.stringify(response));
 	           $scope.user = response.data;
-	           if (response.status === 200){
+	           if (response.status === 204){
 	        	   $rootScope.logout();
 	        	   $uibModalInstance.dismiss("cancel");
 	           }

@@ -44,7 +44,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
     diagnostician.setRepoDiagnostics(modelDiagnostics);
 
     try {
-      getModelRepository(admin).restore(IOUtils.toByteArray(
+      getRepoManager(admin).restore(IOUtils.toByteArray(
           new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-baseline.xml")
               .getInputStream()));
     } catch (Exception e) {
@@ -71,7 +71,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
     diagnostician.setRepoDiagnostics(modelDiagnostics);
 
     try {
-      getModelRepository(admin).restore(IOUtils.toByteArray(
+      getRepoManager(admin).restore(IOUtils.toByteArray(
           new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-missingreference.xml")
               .getInputStream()));
     } catch (Exception e) {

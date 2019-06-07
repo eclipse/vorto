@@ -33,7 +33,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
     
     IUserContext admin = createUserContext("admin");
     
-    byte[] backedUpContent = getModelRepository(admin).backup();
+    byte[] backedUpContent = getRepoManager(admin).backup();
     assertNotNull(backedUpContent);
   }
 
@@ -43,7 +43,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
     
     assertEquals(0, getModelRepository(admin).search("*").size());
     
-    getModelRepository(admin).restore(
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
     
     assertEquals(4, getModelRepository(admin).search("*").size());
@@ -53,12 +53,12 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
   public void testRestoreBackupExistingData() throws Exception {
     IUserContext admin = createUserContext("admin");
     
-    getModelRepository(admin).restore(
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
     assertEquals(4, getModelRepository(admin).search("*").size());
     
     System.out.println(getModelRepository(admin).search(("*")));
-    getModelRepository(admin).restore(
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
     assertEquals(4, getModelRepository(admin).search("*").size());
     System.out.println(getModelRepository(admin).search(("*")));
@@ -71,7 +71,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
     IUserContext admin = createUserContext("admin");
     
     try {
-      getModelRepository(admin).restore(
+      getRepoManager(admin).restore(
           IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
     } catch (Exception e1) {
       fail("Should not have occurred because backup is valid");
@@ -79,7 +79,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
     assertEquals(4, getModelRepository(admin).search("*").size());
 
     try {
-      getModelRepository(admin).restore(IOUtils.toByteArray(
+      getRepoManager(admin).restore(IOUtils.toByteArray(
           new ClassPathResource("sample_models/vortobackup_corrupt.xml").getInputStream()));
       fail("Exception that vorto backup could not be restored expected");
     } catch (Exception e) {

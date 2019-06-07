@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.tenant;
 
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -36,6 +37,7 @@ public class TenantUserService implements ITenantUserService {
   }
 
   @Override
+  @Transactional
   public void addRolesToUser(String tenantId, String userId, Role... roles) {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       throw new IllegalArgumentException("tenantId should not be null or blank");

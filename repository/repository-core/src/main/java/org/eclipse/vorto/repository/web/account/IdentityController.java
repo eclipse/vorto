@@ -126,6 +126,7 @@ public class IdentityController {
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.CREATED);
   }
 
+  @Deprecated
   @RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.DELETE)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> removeUserRole(@PathVariable("username") final String userName,
@@ -138,6 +139,7 @@ public class IdentityController {
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
+  @Deprecated
   @RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> getUserRoles(@PathVariable("username") final String userName) {

@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IModelSearchService;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
@@ -177,6 +179,13 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
   }
 
   @Override
+  public IRepositoryManager getRepositoryManager(String tenant, Authentication user) {
+    RepositoryManager repoManager = new RepositoryManager();
+    repoManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    return repoManager;
+  }
+  
+  @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
     ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService);
     policyManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
@@ -241,20 +250,20 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     EditableDocument workspaces =
         editor.getOrCreateDocument(RepositoryConfiguration.FieldName.WORKSPACES);
 
-    Object[] tenants = new String[] {"default"};
+    Collection<String> tenants = new ArrayList<>();
+    tenants.add("default");
+    
     try {
       Collection<String> currentTenants = getTenants();
-      if (currentTenants.size() > 0) {
-        tenants = currentTenants.toArray();
-      }
+      tenants.addAll(currentTenants);
     } catch (Exception e) {
       LOGGER.error(
           "Error while retrieving tenants during modeshape initialization. Using 'default' as workspace.",
           e);
     }
-
+    
     workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants);
-
+    
     return new RepositoryConfiguration(editor, repoConfig.getName());
   }
 
