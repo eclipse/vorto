@@ -104,7 +104,7 @@ repositoryControllers.controller("createOrUpdateUserController",
     ["$rootScope", "$scope", "$uibModalInstance", "$http", "user", "tenantId",
     function($rootScope, $scope, $uibModalInstance, $http, user, tenantId) {
         
-        $scope.mode = user.edit ? "Update" : "Create";
+        $scope.mode = user.edit ? "Update" : "Add";
         $scope.user = user;
         $scope.tenantId = tenantId;
         $scope.isCurrentlyAddingOrUpdating = false;
