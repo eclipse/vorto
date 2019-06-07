@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.conversion.NativeVortoJsonConverter;
+import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
@@ -152,12 +153,11 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   private GeneratedOutput doGenerateWithApiVersion2(IUserContext userContext, ModelId modelId,
       String serviceKey, Map<String, String> requestParams, String baseUrl) {
 
-    NativeVortoJsonConverter converter =
-        new NativeVortoJsonConverter(this.modelRepositoryFactory.getRepository(userContext));
-    ModelContent content = converter.convertTo(modelId, Optional.of(serviceKey));
+    ModelIdToModelContentConverter converter =
+        new ModelIdToModelContentConverter(this.modelRepositoryFactory.getRepository(userContext));
+    ModelContent content = converter.convert(modelId, Optional.of(serviceKey));
 
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/api/2/plugins/generators/{pluginkey}" + attachRequestParams(requestParams),
         HttpMethod.PUT, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);

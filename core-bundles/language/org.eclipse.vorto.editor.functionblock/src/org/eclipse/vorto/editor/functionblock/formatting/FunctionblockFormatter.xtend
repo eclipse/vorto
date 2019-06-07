@@ -25,7 +25,7 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension FunctionblockGrammarAccess f
 
 	
-	override protected void configureFormatting(FormattingConfig c) {
+	override protected void configureFormatting(FormattingConfig c) { 
 		
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)

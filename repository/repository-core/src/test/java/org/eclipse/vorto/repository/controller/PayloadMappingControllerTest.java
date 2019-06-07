@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.model.IReferenceType;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
@@ -37,7 +40,6 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
-import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
@@ -55,6 +57,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;

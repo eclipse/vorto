@@ -13,7 +13,7 @@
 package org.eclipse.vorto.codegen.bosch.templates
 
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.testutils.GeneratorTestUtils
+import org.eclipse.vorto.core.api.model.BuilderUtils
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
@@ -26,12 +26,12 @@ class ProvisionDeviceScriptTemplateTest {
 	def void testCreateScriptWithSingleFb() {
 		var template = new ProvisionDeviceScriptTemplate();
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",PrimitiveType.FLOAT)
 		   .withStatusProperty("unit",PrimitiveType.STRING).build();	
 		
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"cpuTemperature");
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"cpuTemperature",null,false);
 		
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated.replaceAll("\\\\r\\\\n", "\\\\n"));
@@ -96,13 +96,13 @@ class ProvisionDeviceScriptTemplateTest {
 	def void testCreateScriptWithMultipleFbs() {
 		var template = new ProvisionDeviceScriptTemplate();
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",PrimitiveType.FLOAT)
 		   .withStatusProperty("unit",PrimitiveType.STRING).build();	
 		
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"cpuTemperature");
-		im.withFunctionBlock(fbm,"outdoorTemperature")
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"cpuTemperature",null,false);
+		im.withFunctionBlock(fbm,"outdoorTemperature",null,false)
 		
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
@@ -167,19 +167,19 @@ class ProvisionDeviceScriptTemplateTest {
 	def void testCreateScriptWithFbContainingNestedDatatypes() {
 		var template = new ProvisionDeviceScriptTemplate();
 		
-		var _enum = GeneratorTestUtils.newEnum(new ModelId(ModelType.Datatype,"Units","org.eclipse.vorto.types","1.0.0"))
+		var _enum = BuilderUtils.newEnum(new ModelId(ModelType.Datatype,"Units","org.eclipse.vorto.types","1.0.0"))
 		_enum.withLiterals("F","C")
 		
-		var _entity = GeneratorTestUtils.newEntity(new ModelId(ModelType.Datatype,"SensorValue","org.eclipse.vorto.types","1.0.0"))
+		var _entity = BuilderUtils.newEntity(new ModelId(ModelType.Datatype,"SensorValue","org.eclipse.vorto.types","1.0.0"))
 		_entity.withProperty("value",PrimitiveType.FLOAT)
 		_entity.withProperty("unit", _enum.build())
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",_entity.build)
 		   .build();	
 		
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"cpuTemperature");
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"cpuTemperature",null,false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
 		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n") ,getExpectedTemplate3.replaceAll("\\\\r\\\\n", "\\\\n"));
@@ -243,15 +243,15 @@ class ProvisionDeviceScriptTemplateTest {
 	def void testCreateScriptWithFbContainingEnum() {
 		var template = new ProvisionDeviceScriptTemplate();
 		
-		var _enum = GeneratorTestUtils.newEnum(new ModelId(ModelType.Datatype,"Units","org.eclipse.vorto.types","1.0.0"))
+		var _enum = BuilderUtils.newEnum(new ModelId(ModelType.Datatype,"Units","org.eclipse.vorto.types","1.0.0"))
 		_enum.withLiterals("F","C")
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("unit",_enum.build)
 		   .build();	
 		
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"cpuTemperature");
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"RPi","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"cpuTemperature",null,false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
 		Assert.assertEquals(generated.replaceAll("\\\\r\\\\n", "\\\\n"), getExpectedTemplate4.replaceAll("\\\\r\\\\n", "\\\\n"));

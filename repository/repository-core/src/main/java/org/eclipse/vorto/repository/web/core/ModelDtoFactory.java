@@ -158,8 +158,7 @@ public class ModelDtoFactory {
   private static Infomodel createResource(InformationModel model,
       Optional<MappingModel> mappingModel) {
     Infomodel infoResource =
-        new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelType.InformationModel);
+        new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
 
     for (FunctionblockProperty property : model.getProperties()) {
       infoResource.getFunctionblocks().add(createProperty(property, mappingModel));
@@ -169,6 +168,7 @@ public class ModelDtoFactory {
     infoResource.setDisplayName(model.getDisplayname());
     infoResource.setReferences(model.getReferences().stream()
         .map(reference -> createModelId(reference)).collect(Collectors.toList()));
+    infoResource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       MappingModel _mappingModel = mappingModel.get();
@@ -206,12 +206,12 @@ public class ModelDtoFactory {
       Optional<MappingModel> mappingModel) {
     org.eclipse.vorto.model.FunctionblockModel resource =
         new org.eclipse.vorto.model.FunctionblockModel(
-            new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelType.Functionblock);
+            new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (model.getFunctionblock().getConfiguration() != null) {
       resource
@@ -260,10 +260,9 @@ public class ModelDtoFactory {
   private static Operation createOperation(
       org.eclipse.vorto.core.api.model.functionblock.Operation o,
       Optional<MappingModel> mappingModel) {
-    Operation operation = new Operation();
+    Operation operation = new Operation(o.getName());
     operation.setBreakable(o.isBreakable());
     operation.setDescription(o.getDescription());
-    operation.setName(o.getName());
     operation.setParams(
         o.getParams().stream().map(p -> createParam(p, mappingModel)).collect(Collectors.toList()));
 
@@ -499,13 +498,14 @@ public class ModelDtoFactory {
 
   private static EntityModel createResource(Entity model, Optional<MappingModel> mappingModel) {
     EntityModel resource = new EntityModel(
-        new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Datatype);
+        new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
     resource.setProperties(model.getProperties().stream().map(p -> createProperty(p, mappingModel))
         .collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
@@ -526,13 +526,14 @@ public class ModelDtoFactory {
 
   private static EnumModel createResource(Enum model, Optional<MappingModel> mappingModel) {
     EnumModel resource = new EnumModel(
-        new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Datatype);
+        new ModelId(model.getName(), model.getNamespace(), model.getVersion()));
     resource.setDescription(model.getDescription());
     resource.setDisplayName(model.getDisplayname());
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
     resource.setLiterals(
         model.getEnums().stream().map(p -> createLiteral(p)).collect(Collectors.toList()));
+    resource.setCategory(model.getCategory());
 
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());

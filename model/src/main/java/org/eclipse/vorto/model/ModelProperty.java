@@ -27,6 +27,10 @@ public class ModelProperty extends AbstractProperty {
     property.setMandatory(isMandatory);
     return property;
   }
+  
+  public static Builder Builder(String name, IReferenceType type) {
+    return new Builder(name, type);
+  }
 
   public List<IPropertyAttribute> getAttributes() {
     return attributes;
@@ -43,5 +47,39 @@ public class ModelProperty extends AbstractProperty {
         + ", constraints=" + constraints + "]";
   }
 
+  public static class Builder {
+    private ModelProperty property;
+    public Builder(String name, IReferenceType type) {
+      this.property = new ModelProperty();
+      this.property.setMandatory(true);
+      this.property.setName(name);
+      this.property.setType(type);
+    }
+    
+    public Builder optional() {
+      this.property.setMandatory(false);
+      return this;
+    }
+    
+    public Builder multiple() {
+      this.property.setMultiple(true);
+      return this;
+    }
+    
+    public Builder withConstraint(ConstraintType type, String value) {
+      this.property.getConstraints().add(new Constraint(type, value));
+      return this;
+    }
+    
+    public Builder withAttributeMeasurementUnit(EnumLiteral literal) {
+      this.property.getAttributes().add(new EnumAttributeProperty(EnumAttributePropertyType.MEASUREMENT_UNIT, literal));
+      return this;
+    }
+    
+    public ModelProperty build() {
+      return property;
+    }
+  }
+  
 
 }

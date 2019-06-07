@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -32,6 +34,7 @@ import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
@@ -62,7 +65,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -93,13 +98,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
           required = true) final @PathVariable String tenantId,
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
     
-    org.eclipse.vorto.repository.core.ModelContent infoModelContent =
+    ModelContent infoModelContent =
         modelController.getModelContentForTargetPlatform(tenantId, modelId, targetPlatform);
     
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
-      org.eclipse.vorto.repository.core.ModelContent infomodelContent =
+      ModelContent infomodelContent =
           modelController.getModelContent(tenantId, modelId);
       infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
     }
@@ -118,7 +123,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
         fbm = getModelContentByModelAndMappingId(tenantId, fbModelId.getPrettyFormat(),
             mappingId.getPrettyFormat());
       } else {
-        org.eclipse.vorto.repository.core.ModelContent fbmContent =
+        ModelContent fbmContent =
             modelController.getModelContent(tenantId, fbModelId.getPrettyFormat());
         fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
       }
@@ -139,7 +144,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
         .isEmpty()) {
       throw new ModelAlreadyExistsException();
     } else {
-      org.eclipse.vorto.repository.core.ModelContent modelContent =
+      ModelContent modelContent =
           this.modelController.getModelContent(tenantId, modelId);
       MappingSpecification spec = new MappingSpecification();
       spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));

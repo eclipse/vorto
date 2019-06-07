@@ -17,6 +17,19 @@ import org.eclipse.vorto.repository.plugin.PluginInfo;
 public class ImporterPluginInfo extends PluginInfo {
 
   private String fileType;
+  
+  protected ImporterPluginInfo() {    
+  }
+  
+  public ImporterPluginInfo(String pluginkey, String name, String description, String vendor, String baseUrl, String fileType) {
+    setKey(pluginkey);
+    setName(name);
+    setDescription(description);
+    setVendor(vendor);
+    setBaseEndpointUrl(baseUrl);
+    setFileType(fileType);
+    
+  }
 
   public String getFileType() {
     return fileType;

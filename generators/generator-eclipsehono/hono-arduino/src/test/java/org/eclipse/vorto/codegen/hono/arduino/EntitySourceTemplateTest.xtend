@@ -13,10 +13,10 @@
 package org.eclipse.vorto.codegen.hono.arduino
 
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.BuilderUtils
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
-import org.eclipse.vorto.codegen.testutils.GeneratorTestUtils
 import org.junit.Assert
 import org.junit.Test
 
@@ -26,7 +26,7 @@ class EntitySourceTemplateTest {
 	def void testSerializeEntity() {
 		var template = new ArduinoEntitySoureTemplate
 		
-		var entity = GeneratorTestUtils.newEntity(new ModelId(ModelType.Datatype,"Temperature","org.eclipse.vorto","1.0.0"))
+		var entity = BuilderUtils.newEntity(new ModelId(ModelType.Datatype,"Temperature","org.eclipse.vorto","1.0.0"))
 			.withProperty("value",PrimitiveType.STRING)
 			.withProperty("unit",PrimitiveType.STRING).build()
 		
