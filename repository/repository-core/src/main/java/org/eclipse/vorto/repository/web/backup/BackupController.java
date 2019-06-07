@@ -16,12 +16,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Supplier;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +37,9 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/rest/tenants/{tenantId}/backups")
 public class BackupController extends AbstractRepositoryController {
 
+  private Supplier<Authentication> authSupplier = 
+      () -> SecurityContextHolder.getContext().getAuthentication();
+  
   @Value("${repo.config.maxBackupSize}")
   private long maxBackupSize;
 
@@ -50,7 +56,7 @@ public class BackupController extends AbstractRepositoryController {
           required = true) final @PathVariable String tenantId,
       final HttpServletResponse response) throws Exception {
 
-    byte[] backup = getModelRepository(tenantId).backup();
+    byte[] backup = getModelRepositoryFactory().getRepositoryManager(tenantId, authSupplier.get()).backup();
 
     response.setHeader(CONTENT_DISPOSITION,
         ATTACHMENT_FILENAME + "vortobackup_" + SIMPLEDATEFORMAT.format(new Date()) + ".xml");
@@ -74,6 +80,6 @@ public class BackupController extends AbstractRepositoryController {
       throw new UploadTooLargeException("backup", maxBackupSize);
     }
 
-    getModelRepository(tenantId).restore(file.getBytes());
+    getModelRepositoryFactory().getRepositoryManager(tenantId, authSupplier.get()).restore(file.getBytes());
   }
 }

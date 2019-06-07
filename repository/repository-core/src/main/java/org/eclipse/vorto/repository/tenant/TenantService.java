@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
@@ -79,6 +80,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return namespaces.stream().anyMatch(ns -> ns.isInConflictWith(namespace));
   }
 
+  @Transactional
   public Tenant createOrUpdateTenant(String tenantId, String defaultNamespace,
       Set<String> tenantAdmins, Optional<Set<String>> namespaces,
       Optional<String> authenticationProvider, Optional<String> authorizationProvider,
@@ -125,8 +127,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     tenant = tenantRepo.save(tenant);
 
-    logger.info("Sending event for {}", tenantId);
-    eventPublisher.publishEvent(new AppEvent(this, tenant, eventType));
+    logger.info("Sending update/create event for {}", tenantId);
+    eventPublisher.publishEvent(new AppEvent(this, userContext, eventType));
 
     return tenant;
   }
@@ -264,14 +266,10 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   public boolean deleteTenant(Tenant tenant, IUserContext userContext) {
     PreConditions.notNull(tenant, "Tenant should not be null");
-
-    tenant.removeUsers();
-
-    tenant.unsetOwner();
-
+    
+    eventPublisher.publishEvent(new AppEvent(this, userContext, EventType.TENANT_DELETED));
+    
     tenantRepo.delete(tenant);
-
-    eventPublisher.publishEvent(new AppEvent(this, tenant, EventType.TENANT_DELETED));
 
     return true;
   }

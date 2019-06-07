@@ -39,4 +39,6 @@ public interface IModelRepositoryFactory {
   IModelSearchService getModelSearchService(IUserContext userContext);
   
   IModelSearchService getModelSearchService();
+  
+  IRepositoryManager getRepositoryManager(String tenant, Authentication user);
 }

@@ -15,6 +15,8 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -33,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ModelRepositorySupervisor implements ApplicationListener<AppEvent> {
-
+  
   @Autowired
   private ModelRepositoryFactory repositoryFactory;
 
@@ -44,6 +46,11 @@ public class ModelRepositorySupervisor implements ApplicationListener<AppEvent> 
       makeModelsAnonymous(userId);
     } else if (event.getEventType() == EventType.TENANT_ADDED) {
       repositoryFactory.updateWorkspaces();
+    } else if (event.getEventType() == EventType.TENANT_DELETED) {
+      IUserContext userContext = (IUserContext) event.getSubject();
+      IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(), 
+          userContext.getAuthentication());
+      repoMgr.removeTenantWorkspace(userContext.getTenant());
     }
   }
 

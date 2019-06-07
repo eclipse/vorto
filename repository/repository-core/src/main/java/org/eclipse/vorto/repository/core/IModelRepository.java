@@ -181,17 +181,5 @@ public interface IModelRepository {
 	 * @return
 	 */
 	boolean exists(ModelId modelId);
-	
-	/**
-     * Backs up the given repository
-     * @return backup which can be use to restore at a later time
-     */
-	byte[] backup();
-	
-	/**
-	 * Restores a repository with the given data
-	 * @param data
-	 */
-	void restore(byte[] data);
 
 }

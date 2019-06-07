@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IModelSearchService;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
@@ -232,6 +233,10 @@ public abstract class AbstractIntegrationTest {
 
   protected IModelRepository getModelRepository(IUserContext userContext) {
     return repositoryFactory.getRepository(userContext);
+  }
+  
+  protected IRepositoryManager getRepoManager(IUserContext userContext) {
+    return repositoryFactory.getRepositoryManager(userContext.getTenant(), userContext.getAuthentication());
   }
 
   protected IUserContext createUserContext(String username) {

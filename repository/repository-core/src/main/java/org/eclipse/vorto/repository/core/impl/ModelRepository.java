@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.core.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -37,7 +35,6 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -808,62 +805,6 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
       } catch (AccessDeniedException e) {
         return true;
       }
-    });
-  }
-
-  @Override
-  public byte[] backup() {
-    return doInSession(session -> {
-      try {
-        return backupRepository(session);
-      } catch (IOException e) {
-        logger.error("Exception while making a backup", e);
-        throw new FatalModelRepositoryException(
-            "Something went wrong while making a backup of the system.", e);
-      }
-    });
-  }
-
-  private byte[] backupRepository(Session session) throws RepositoryException, IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    session.exportSystemView("/", baos, false, false);
-    baos.close();
-    return baos.toByteArray();
-  }
-
-  @Override
-  public void restore(byte[] data) {
-    doInSession(session -> {
-      byte[] oldData = null;
-      try {
-        oldData = backupRepository(session);
-
-        logger.info("Attempting to restore backup");
-        session.getWorkspace().importXML("/", new ByteArrayInputStream(data),
-            ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-        logger.info("Restored backup succesfully");
-
-      } catch (RepositoryException | IOException e) {
-        logger.error("Backup failed. Will try to revert the restoration with previous data.", e);
-        try {
-          logger.info("Reverting to old data.");
-          session.getWorkspace().importXML("/", new ByteArrayInputStream(oldData),
-              ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-          logger.info("Reverted the restoration succesfully");
-        } catch (RepositoryException | IOException ex) {
-          logger.error("Revert of restoration unsuccesfull", ex);
-        }
-        throw e;
-      }
-      return null;
-    });
-  }
-
-  public boolean createTenantWorkspace(final String tenantId) {
-    return doInSession(session -> {
-      Workspace workspace = session.getWorkspace();
-      workspace.createWorkspace(tenantId);
-      return true;
     });
   }
 }

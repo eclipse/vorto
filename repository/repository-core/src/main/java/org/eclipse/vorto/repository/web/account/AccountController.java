@@ -29,6 +29,7 @@ import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
+import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
@@ -127,7 +128,7 @@ public class AccountController {
 
     try {
 
-      LOGGER.info("Removing user [" + userId + "] from tenant [" + tenantId + "]");
+      LOGGER.info("Removing user [" + ControllerUtils.sanitize(userId) + "] from tenant [" + ControllerUtils.sanitize(tenantId) + "]");
       return new ResponseEntity<>(accountService.removeUserFromTenant(tenantId, userId),
           HttpStatus.OK);
 
