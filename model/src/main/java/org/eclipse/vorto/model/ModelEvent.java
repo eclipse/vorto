@@ -20,6 +20,10 @@ public class ModelEvent {
   private String name;
   private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 
+  public static Builder Builder(String name) {
+    return new Builder(name);
+  }
+  
   public String getName() {
     return name;
   }
@@ -41,6 +45,20 @@ public class ModelEvent {
     return "ModelEventDto [name=" + name + ", properties=" + properties + "]";
   }
 
-
+  public static class Builder {
+    private ModelEvent event;
+    public Builder(String name) {
+      this.event = new ModelEvent();
+    }
+    
+    public Builder withProperty(ModelProperty property) {
+      this.event.getProperties().add(property);
+      return this;
+    }
+    
+    public ModelEvent build() {
+      return event;
+    }
+  }
 
 }

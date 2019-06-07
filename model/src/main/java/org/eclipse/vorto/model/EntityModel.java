@@ -14,20 +14,21 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.vorto.model.AbstractModel;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
 
 public class EntityModel extends AbstractModel {
 
   private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 
-  public EntityModel(ModelId modelId, ModelType modelType) {
-    super(modelId, modelType);
+  public EntityModel(ModelId modelId) {
+    super(modelId, ModelType.Datatype);
   }
 
   protected EntityModel() {
 
+  }
+  
+  public static EntityBuilder Builder(ModelId id) {
+    return new EntityBuilder(id);
   }
 
   public List<ModelProperty> getProperties() {
@@ -44,4 +45,15 @@ public class EntityModel extends AbstractModel {
   }
 
 
+  public static class EntityBuilder extends Builder<EntityModel> {
+    
+    private EntityBuilder(ModelId id) {
+      super(new EntityModel(id));
+    }
+    
+    public EntityBuilder property(ModelProperty property) {
+      this.model.properties.add(property);
+      return this;
+    }
+  }
 }

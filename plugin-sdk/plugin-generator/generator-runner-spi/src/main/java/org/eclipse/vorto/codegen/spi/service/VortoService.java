@@ -27,21 +27,21 @@ import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.spi.config.AbstractGeneratorConfiguration;
-import org.eclipse.vorto.codegen.spi.exception.NotFoundException;
 import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.conversion.ModelContentToEcoreConverter;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -80,6 +80,22 @@ public class VortoService {
   @Value("${server.config.generatorPassword:#{null}}")
   private String generatorPassword;
 
+  private static final ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+  
+  public IGenerationResult generate(ModelContent model, String pluginkey, Map<String,String> params) {
+    LOGGER.info(String.format("Generating for [%s]", model.getRoot().getPrettyFormat()));
+    
+    Model converted = converter.convert(model, Optional.empty());
+    
+    Generator generator =
+        repo.get(pluginkey).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", pluginkey)));
+    
+    InvocationContext invocationContext = InvocationContext.simpleInvocationContext(params);
+    
+    InformationModel infomodel = Utils.toInformationModel(converted);
+    
+    return generate(generator.getInstance(), infomodel, invocationContext);
+  }
 
   public IGenerationResult generate(String key, String namespace, String name, String version,
       Map<String, String> parameters, Optional<String> headerAuth) {
@@ -157,25 +173,13 @@ public class VortoService {
     IModelWorkspace workspace = IModelWorkspace.newReader()
         .addZip(new ZipInputStream(new ByteArrayInputStream(modelResources.get()))).read();
 
-    return toInformationModel(
-        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get());
+    return Optional.of(Utils.toInformationModel(
+        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get()));
   }
 
   private String urlForModel(String namespace, String name, String version) {
     return String.format("%s/api/v1/models/%s/file?includeDependencies=true", env.getVortoRepoUrl(),
         new ModelId(name, namespace, version).getPrettyFormat());
-  }
-
-  private Optional<InformationModel> toInformationModel(Model model) {
-    if (model instanceof InformationModel) {
-      return Optional.of((InformationModel) model);
-    } else if (model instanceof FunctionblockModel) {
-      return Optional.of(Utils.wrapFunctionBlock((FunctionblockModel) model));
-    }
-
-    throw new NotFoundException(
-        String.format("[Model %s.%s:%s] is not an Information Model or a Function Block",
-            model.getNamespace(), model.getName(), model.getVersion()));
   }
 
   public List<MappingModel> getMappings(String generatorKey, String namespace, String name,

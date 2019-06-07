@@ -31,7 +31,7 @@ import org.eclipse.xtext.formatting.impl.FormattingConfig
 public class MappingFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension MappingGrammarAccess f
 
-	override protected void configureFormatting(FormattingConfig c) {
+	override protected void configureFormatting(FormattingConfig c) { 
 
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)	

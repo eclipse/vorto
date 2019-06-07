@@ -19,6 +19,16 @@ public class ReturnType {
   private boolean isPrimitive;
 
   private IReferenceType type = null;
+  
+  public ReturnType(IReferenceType type, boolean isMultiple) {
+    this.type = type;
+    this.isMultiple = isMultiple;
+    this.isPrimitive = type instanceof PrimitiveType;
+  }
+  
+  public ReturnType() {
+    
+  }
 
   public boolean isMultiple() {
     return isMultiple;
