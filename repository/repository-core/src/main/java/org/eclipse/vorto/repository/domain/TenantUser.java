@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.domain;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -123,6 +125,14 @@ public class TenantUser {
   public void removeRole(UserRole role) {
     roles.remove(role);
     role.setUser(null);
+  }
+  
+  @PreRemove
+  private void removeRoles() {
+    Iterator<UserRole> it = roles.iterator();
+    while(it.hasNext()) {
+      removeRole(it.next());
+    }
   }
 
   @Override

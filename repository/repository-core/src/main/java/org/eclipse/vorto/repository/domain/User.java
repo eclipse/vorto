@@ -17,11 +17,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +29,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import org.eclipse.vorto.repository.account.UserUtils;
 import org.hibernate.annotations.NaturalId;
@@ -57,11 +58,11 @@ public class User {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true,
+  @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true,
       mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
 
-  @OneToMany(/* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER, orphanRemoval = true,
+  @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true,
       mappedBy = "owner")
   private Set<Tenant> ownedTenants = new HashSet<Tenant>();
 
@@ -181,6 +182,24 @@ public class User {
     return roles.stream().anyMatch(e -> e == role);
   }
 
+  @PreRemove
+  private void removeTenantUserAndOwnedTenants() {
+    Iterator<Tenant> itOwnedTenants = ownedTenants.iterator();
+    while(itOwnedTenants.hasNext()) {
+      Tenant tenant = itOwnedTenants.next();
+      itOwnedTenants.remove();
+      tenant.setOwner(null);
+    }
+    
+    Iterator<TenantUser> itTenantUsers = tenantUsers.iterator();
+    while(itTenantUsers.hasNext()) {
+      TenantUser tenantUser = itTenantUsers.next();
+      itTenantUsers.remove();
+      tenantUser.setTenant(null);
+      tenantUser.setUser(null);
+    }
+  }
+  
   public Long getId() {
     return id;
   }
