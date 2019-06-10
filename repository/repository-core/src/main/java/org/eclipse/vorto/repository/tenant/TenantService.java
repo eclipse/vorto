@@ -96,11 +96,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     PreConditions.notNullOrEmpty(defaultNamespace, "defaultNamespace");
     PreConditions.notNullOrEmpty(tenantAdmins, "tenantAdmins should not be null or empty.");
     
-    
-
     for (String tenantAdmin : tenantAdmins) {
       PreConditions.notNullOrEmpty(tenantAdmin, "tenantAdmin");
-
       if (!userAccountService.exists(tenantAdmin)) {
         throw new TenantAdminDoesntExistException(tenantAdmin);
       }
@@ -112,23 +109,12 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     EventType eventType = EventType.TENANT_ADDED;
     
-
-    Collection<Tenant> tenants = getTenants();
-    User tenantOwner= null;
-    int countTenant =0;
-    for (Tenant tenantObj : tenants) {
-    	tenantOwner=tenantObj.getOwner();
-    	if(owner.getUsername().equalsIgnoreCase(tenantOwner.getUsername())) {
-    		countTenant++;
-    	}
-    }
     if (tenant == null) {
       logger.info("Adding new tenant '{}'", tenantId);
-      if(restrictTenantConfig!=null) {
-    	  if(!userContext.isSysAdmin() && countTenant>=Integer.parseInt(restrictTenantConfig)) {
-    		  throw new RestrictTenantPerOwnerException(owner.getUsername(), restrictTenantConfig);
-    	  }
+      if (!userContext.isSysAdmin() && overTenantLimit(owner, restrictTenantConfig)) {
+        throw new RestrictTenantPerOwnerException(owner.getUsername(), restrictTenantConfig);
       }
+      
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
@@ -153,6 +139,20 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     eventPublisher.publishEvent(new AppEvent(this, userContext, eventType));
 
     return tenant;
+  }
+  
+  private boolean overTenantLimit(User owner, String restrictTenantConfig) {
+    if (restrictTenantConfig != null) {
+      return getTenantCountOfUser(owner) >= Integer.parseInt(restrictTenantConfig);
+    }
+    return false;
+  }
+
+  private int getTenantCountOfUser(User owner) {
+    Collection<Tenant> tenants = getTenants();
+    return (int) tenants.stream()
+        .filter(tenant -> tenant.getOwner().getUsername().equalsIgnoreCase(owner.getUsername()))
+        .count();
   }
 
   private void updateTenantAdmins(Set<String> newTenantAdmins, Tenant tenant) {
@@ -289,7 +289,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   public boolean deleteTenant(Tenant tenant, IUserContext userContext) {
     PreConditions.notNull(tenant, "Tenant should not be null");
     
-    eventPublisher.publishEvent(new AppEvent(this, userContext, EventType.TENANT_DELETED));
+    eventPublisher.publishEvent(new AppEvent(this, tenant, userContext, EventType.TENANT_DELETED));
     
     tenantRepo.delete(tenant);
 
@@ -395,7 +395,4 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       return defaultVal;
     }
   }
-
-
-
 }
