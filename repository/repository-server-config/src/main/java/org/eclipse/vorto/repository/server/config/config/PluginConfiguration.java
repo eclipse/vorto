@@ -98,7 +98,7 @@ public class PluginConfiguration {
   
   
   @Bean
-  @Profile("local")
+  @Profile({ "local", "int" })
   public IModelImporter createExampleImporter() {
     ImporterPluginInfo info = new ImporterPluginInfo("lwm2m", "LwM2M",
         "Converts LwM2M descriptions to Vorto", "Vorto Team",

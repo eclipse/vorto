@@ -9,7 +9,7 @@ servers:
   variables: {}
 paths:
   /{pluginkey}/file_conversion:
-    get:
+    post:
       tags:
       - Importer Plugin
       summary: File Conversion
