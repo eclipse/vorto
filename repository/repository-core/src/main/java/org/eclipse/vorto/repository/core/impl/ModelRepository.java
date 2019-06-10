@@ -730,6 +730,8 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         return Optional.empty();
       } catch (PathNotFoundException e) {
         return Optional.empty();
+      } catch (AccessDeniedException e) {
+        throw new NotAuthorizedException(modelId);
       } catch (IOException | RepositoryException e) {
         throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
       }

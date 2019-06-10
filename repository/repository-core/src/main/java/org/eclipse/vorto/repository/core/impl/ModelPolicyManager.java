@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
@@ -58,21 +57,16 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
-        final Node folderNode = session.getNode(modelIdHelper.getFullPath());
-
-        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          throw new ModelNotFoundException("Could not find model with ID " + modelId);
-        }
-        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
+        Node nodeToGetPolicies = session.getNode(modelIdHelper.getFullPath());
+        
         AccessControlManager acm = session.getAccessControlManager();
 
         AccessControlList acl = null;
-        AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
+        AccessControlPolicyIterator it = acm.getApplicablePolicies(nodeToGetPolicies.getPath());
         if (it.hasNext()) {
           acl = (AccessControlList) it.nextAccessControlPolicy();
         } else {
-          acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
+          acl = (AccessControlList) acm.getPolicies(nodeToGetPolicies.getPath())[0];
         }
 
         for (AccessControlEntry entry : acl.getAccessControlEntries()) {
@@ -95,22 +89,16 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
-        final Node folderNode = session.getNode(modelIdHelper.getFullPath());
-        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          logger.warn("Cannot add policy entry to model " + modelId);
-          session.logout();
-          return null;
-        }
-        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
+        Node nodeToAddPolicy = session.getNode(modelIdHelper.getFullPath());
+        
         AccessControlManager acm = session.getAccessControlManager();
 
         AccessControlList acl = null;
-        AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
+        AccessControlPolicyIterator it = acm.getApplicablePolicies(nodeToAddPolicy.getPath());
         if (it.hasNext()) {
           acl = (AccessControlList) it.nextAccessControlPolicy();
         } else {
-          acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
+          acl = (AccessControlList) acm.getPolicies(nodeToAddPolicy.getPath())[0];
         }
 
         final AccessControlList _acl = acl;
@@ -149,7 +137,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
           }
         }
 
-        acm.setPolicy(fileNode.getPath(), _acl);
+        acm.setPolicy(nodeToAddPolicy.getPath(), _acl);
         session.save();
         return null;
       } catch (AccessDeniedException ex) {
@@ -184,20 +172,19 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         try {
           ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
-          final Node folderNode = session.getNode(modelIdHelper.getFullPath());
-          Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
+          Node nodeToRemovePolicy = session.getNode(modelIdHelper.getFullPath());
+          
           AccessControlManager acm = session.getAccessControlManager();
 
           AccessControlList acl = null;
-          AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
+          AccessControlPolicyIterator it = acm.getApplicablePolicies(nodeToRemovePolicy.getPath());
           if (it.hasNext()) {
             acl = (AccessControlList) it.nextAccessControlPolicy();
           } else {
-            acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
+            acl = (AccessControlList) acm.getPolicies(nodeToRemovePolicy.getPath())[0];
           }
 
-          acm.removePolicy(fileNode.getPath(), acl);
+          acm.removePolicy(nodeToRemovePolicy.getPath(), acl);
           session.save();
 
           return null;
@@ -211,23 +198,13 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
   @Override
   public boolean hasPermission(final ModelId modelId, final Permission permission) {
     return doInSession(session -> {
-      try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-
-        Node folderNode = session.getNode(modelIdHelper.getFullPath());
-
-        if (permission == Permission.READ) {
-          return folderNode.getNodes(FILE_NODES).hasNext();
-        } else {
-          return this.getPolicyEntries(modelId).stream().filter(userFilter(session))
-              .filter(p -> hasPermission(p.getPermission(), permission)).findAny().isPresent();
-        }
-      } catch (AccessDeniedException e) {
-        return false;
-      }
+      return this.getPolicyEntries(modelId).stream()
+          .filter(userFilter(session).and(p -> hasPermission(p.getPermission(), permission)))
+          .findAny()
+          .isPresent();
     });
   }
-
+  
   private Predicate<PolicyEntry> userFilter(Session session) {
     return p -> {
       if (p.getPrincipalType() == PrincipalType.User) {
