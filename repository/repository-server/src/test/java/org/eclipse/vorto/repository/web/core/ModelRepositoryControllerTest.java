@@ -251,7 +251,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy")
             .with(nonTenantUser))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isUnauthorized());
     this.repositoryServer.perform(
         get("/rest" + tenant + "/models/" + testModel.prettyName + "/policy").with(userAdmin))
         .andExpect(status().isOk());

@@ -125,8 +125,6 @@ public class AttachmentController extends AbstractRepositoryController {
           @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  // @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or
-  // hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public List<Attachment> getAttachments(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -156,8 +154,6 @@ public class AttachmentController extends AbstractRepositoryController {
       value = {@ApiResponse(code = 200, message = "Successfully retrieved the attachment"),
           @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
-  // @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or
-  // hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public void getAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
