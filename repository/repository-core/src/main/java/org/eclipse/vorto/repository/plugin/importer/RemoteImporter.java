@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -72,7 +73,7 @@ public class RemoteImporter extends AbstractModelImporter {
     ImportValidationResult result = validationResult.getBody();
 
     if (result.isValid()) {
-      return Arrays.asList(ValidationReport.valid(null));
+      return Arrays.asList(ValidationReport.valid(new ModelInfo(result.getModelId(),org.eclipse.vorto.model.ModelType.Functionblock)));
     } else {
       return Arrays.asList(ValidationReport.invalid(result.getMessage()));
     }
