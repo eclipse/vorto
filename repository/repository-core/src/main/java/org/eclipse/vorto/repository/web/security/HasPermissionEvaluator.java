@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.web.security;
 
 import java.io.Serializable;
+import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -95,13 +96,19 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
 
+    final String role = (String) permission;
+    
     if (targetType.equals(Tenant.class.getName())) {
-      final String role = (String) permission;
       final String tenantId = (String) targetId;
       return accountService.hasRole(tenantId, authentication, role);
+    } else if ("ModelId".equals(targetType)) {                                               
+      final ModelId modelId = ModelId.fromPrettyFormat((String) targetId);                   
+      Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
+      if (tenant.isPresent()) {                                                              
+        return accountService.hasRole(tenant.get().getTenantId(), authentication, role);     
+      } 
     }
-
-    return false;
+    
+    return false;  
   }
-
 }

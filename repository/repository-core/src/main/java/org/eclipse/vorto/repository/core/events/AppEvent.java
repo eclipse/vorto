@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.events;
 
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.springframework.context.ApplicationEvent;
 
 public class AppEvent extends ApplicationEvent {
@@ -23,12 +24,19 @@ public class AppEvent extends ApplicationEvent {
 
   private Object subject;
 
+  private IUserContext userContext;
+  
   private EventType eventType;
 
   public AppEvent(Object source, Object subject, EventType eventType) {
     super(source);
     this.subject = subject;
     this.eventType = eventType;
+  }
+  
+  public AppEvent(Object source, Object subject, IUserContext userContext, EventType eventType) {
+    this(source, subject, eventType);
+    this.userContext = userContext;
   }
 
   public Object getSubject() {
@@ -45,5 +53,13 @@ public class AppEvent extends ApplicationEvent {
 
   public void setEventType(EventType eventType) {
     this.eventType = eventType;
+  }
+
+  public IUserContext getUserContext() {
+    return userContext;
+  }
+
+  public void setUserContext(IUserContext userContext) {
+    this.userContext = userContext;
   }
 }
