@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.plugin.importer;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
@@ -66,22 +66,18 @@ public class RemoteImporter extends AbstractModelImporter {
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-    ResponseEntity<ImportValidationResult[]> validationResult =
+    ResponseEntity<ImportValidationResult> validationResult =
         restTemplate.postForEntity(this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_validation",
-            requestEntity, ImportValidationResult[].class,this.info.getKey());
+            requestEntity, ImportValidationResult.class,this.info.getKey());
 
-    ImportValidationResult[] result = validationResult.getBody();
+    ImportValidationResult result = validationResult.getBody();
 
-    List<ValidationReport> report = new ArrayList<ValidationReport>();
-    for (ImportValidationResult item : result) {
-      if (item.isValid()) {
-        report.add(ValidationReport.valid(new ModelInfo(item.getModelId(),org.eclipse.vorto.model.ModelType.Functionblock)));
-      } else {
-        report.add(ValidationReport.invalid(item.getMessage()));
-      }
+    if (result.isValid()) {
+      return Arrays.asList(ValidationReport.valid(new ModelInfo(result.getModelId(),org.eclipse.vorto.model.ModelType.Functionblock)));
+    } else {
+      return Arrays.asList(ValidationReport.invalid(result.getMessage()));
     }
-    
-    return report;
+
   }
 
   @Override
