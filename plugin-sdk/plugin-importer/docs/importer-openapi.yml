@@ -60,13 +60,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationResult'
+                type: array
+                items: 
+                  $ref: '#/components/schemas/ValidationResult'
       deprecated: false
       servers:
       - url: /api/2/plugins/importers
         variables: {}
 components:
   schemas:
+    ModelId:
+      title: ModelId
+      type: object
+      properties:
+        name:
+          type: string
+        namespace:
+          type: string
+        version:
+          type: string
+        prettyFormat:
+          type: string
     ValidationResult:
       title: ValidationResult
       required:
@@ -80,5 +94,8 @@ components:
         message:
           type: string
           description: Info Message about the validation
+        modelId:
+          $ref: '#/components/schemas/ModelId'
+          description: ModelId of the target, that is going to be imported
       description: Validation status of whether the source file is valid or not
 tags: []

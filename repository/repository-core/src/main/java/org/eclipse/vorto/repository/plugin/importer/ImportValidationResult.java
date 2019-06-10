@@ -12,10 +12,13 @@
  */
 package org.eclipse.vorto.repository.plugin.importer;
 
+import org.eclipse.vorto.model.ModelId;
+
 public class ImportValidationResult {
   
   private boolean valid;
   private String message;
+  private ModelId modelId;
   
   public boolean isValid() {
     return valid;
@@ -29,6 +32,13 @@ public class ImportValidationResult {
   public void setMessage(String message) {
     this.message = message;
   }
+  public ModelId getModelId() {
+    return modelId;
+  }
+  public void setModelId(ModelId modelId) {
+    this.modelId = modelId;
+  }
+  
   
   
 }
