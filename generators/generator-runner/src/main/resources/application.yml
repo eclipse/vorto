@@ -1,4 +1,0 @@
-server:
-  config:
-    generatorUser: ${generatorUser}
-    generatorPassword: ${generatorPassword}
