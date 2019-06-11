@@ -56,7 +56,7 @@ public class PluginConfiguration {
         new GeneratorPluginInfo("eclipseditto", "2", "http://localhost:8081/generatorgateway"));
     service.registerPlugin(
         new GeneratorPluginInfo("eclipsehono", "2", "http://localhost:8081/generatorgateway"));
-    service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
+    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     return service;
   }
@@ -74,7 +74,7 @@ public class PluginConfiguration {
         "http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
     service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "1",
         "http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
-    service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
+    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     return service;
   }
