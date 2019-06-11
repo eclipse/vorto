@@ -51,11 +51,11 @@ public class PluginConfiguration {
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
     service.registerPlugin(
-        new GeneratorPluginInfo("boschiotsuite", "2", "http://localhost:8081/generatorgateway"));
+        new GeneratorPluginInfo("boschiotsuite", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(
-        new GeneratorPluginInfo("eclipseditto", "2", "http://localhost:8081/generatorgateway"));
+        new GeneratorPluginInfo("eclipseditto", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(
-        new GeneratorPluginInfo("eclipsehono", "2", "http://localhost:8081/generatorgateway"));
+        new GeneratorPluginInfo("eclipsehono", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
@@ -68,12 +68,12 @@ public class PluginConfiguration {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
-    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "1",
-        "http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "1",
-        "http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "1",
-        "http://vorto-generators-dev.eu-central-1.elasticbeanstalk.com:8080"));
+    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
@@ -85,12 +85,14 @@ public class PluginConfiguration {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
-    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "1",
-        "http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "1",
-        "http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "1",
-        "http://vorto-generators.eu-central-1.elasticbeanstalk.com:8080"));
+    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
+    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
+    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production","demo"));
     return service;
   }
 
