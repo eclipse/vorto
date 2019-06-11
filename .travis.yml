@@ -29,7 +29,7 @@ jobs:
   
   
     - stage: deploy
-      name: "Deploy Repository and Official Generators"
+      name: "Deploy Repository"
 
       language: java
 
@@ -75,18 +75,9 @@ jobs:
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
         - export ARTIFACT_NAME=infomodelrepository
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-        - export GEN_ARTIFACT_NAME=generator-runner-exec
-        - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${GEN_ARTIFACT_NAME}"
       deploy:
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
-          skip_cleanup: true
-          on:
-            branch: 
-              - development
-              - master
-        - provider: script
-          script: bash build-scripts/repackage-deploy-gen.sh
           skip_cleanup: true
           on:
             branch: 

@@ -12,26 +12,6 @@ services:
       - docker/vorto-variables.env
     networks:
       - backend
-  generators:
-    depends_on:
-      - "repository"
-    image: eclipsevorto/vorto-generators
-    volumes:
-      - ./docker/config/generators/:/code/config
-    env_file:
-      - docker/vorto-variables.env
-    networks:
-      - backend
-  3rd-party-generators:
-    depends_on:
-      - "repository"
-    image: eclipsevorto/vorto-generators-3rd-party
-    volumes:
-      - ./docker/config/3rd-party-generators/:/code/config
-    env_file:
-      - docker/vorto-variables.env
-    networks:
-      - backend
   db:
     volumes:
        - /opt/mysql_data:/var/lib/mysql
