@@ -41,7 +41,16 @@ public class ApplicationConfig {
 
   public static final String USER_ADMIN = "user1";
   public static final String USER_STANDARD = "user2";
+  public static final String USER_STANDARD2 = "userstandard2";
+  public static final String USER_STANDARD3 = "userstandard3";
+  public static final String USER_STANDARD4 = "userstandard4";
+  public static final String USER_STANDARD5 = "userstandard5";
+  public static final String USER_STANDARD6 = "userstandard6";
+  public static final String USER_STANDARD7 = "userstandard7";
+  public static final String USER_STANDARD8 = "userstandard8";
   public static final String USER_CREATOR = "user3";
+  public static final String USER_CREATOR2 = "usercreator2";
+  public static final String USER_CREATOR3 = "usercreator3";
   public static final String NON_TENANT_USER = "user4";
 
 
@@ -55,7 +64,17 @@ public class ApplicationConfig {
     
     accountService.create(USER_ADMIN, "playground", USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
     accountService.create(USER_STANDARD, "playground", USER);
+    accountService.create(USER_STANDARD2, "playground", USER);
+    accountService.create(USER_STANDARD3, "playground", USER);
+    accountService.create(USER_STANDARD4, "playground", USER);
+    accountService.create(USER_STANDARD5, "playground", USER);
+    accountService.create(USER_STANDARD6, "playground", USER);
+    accountService.create(USER_STANDARD7, "playground", USER);
+    accountService.create(USER_STANDARD8, "playground", USER);
     accountService.create(USER_CREATOR, "playground", USER, MODEL_CREATOR);
+    accountService.create(USER_CREATOR2, "playground", USER, MODEL_CREATOR);
+    accountService.create(USER_CREATOR3, "playground", USER, MODEL_CREATOR);
+    
   }
   
   protected IUserContext createUserContext(String username, String tenantId) {

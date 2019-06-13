@@ -83,7 +83,16 @@ public abstract class AbstractIntegrationTest {
 
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard2;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard3;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard4;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard5;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard6;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard7;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard8;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator2;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator3;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor nonTenantUser;
 
   protected Gson gson = new Gson();
@@ -104,8 +113,26 @@ public abstract class AbstractIntegrationTest {
         Sets.newHashSet(USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
     userStandard = user(ApplicationConfig.USER_STANDARD).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard2 = user(ApplicationConfig.USER_STANDARD2).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard3 = user(ApplicationConfig.USER_STANDARD3).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard4 = user(ApplicationConfig.USER_STANDARD4).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard5 = user(ApplicationConfig.USER_STANDARD5).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard6 = user(ApplicationConfig.USER_STANDARD6).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard7 = user(ApplicationConfig.USER_STANDARD7).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userStandard8 = user(ApplicationConfig.USER_STANDARD8).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
     userCreator = user(ApplicationConfig.USER_CREATOR).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+    userCreator2 = user(ApplicationConfig.USER_CREATOR2).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+    userCreator3 = user(ApplicationConfig.USER_CREATOR3).password("pass")
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
     nonTenantUser = user(ApplicationConfig.NON_TENANT_USER).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
     
