@@ -38,6 +38,7 @@ import org.eclipse.vorto.repository.utils.PreConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,9 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private IUserAccountService userAccountService;
 
   private ApplicationEventPublisher eventPublisher = null;
+  
+  @Value("${config.restrictTenant}")
+  private String restrictTenantConfig;
 
   public TenantService(@Autowired ITenantRepository tenantRepo,
       @Autowired INamespaceRepository namespaceRepo,
@@ -91,6 +95,8 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     PreConditions.notNullOrEmpty(userContext.getUsername(), "userContext.getUsername()");
     PreConditions.notNullOrEmpty(defaultNamespace, "defaultNamespace");
     PreConditions.notNullOrEmpty(tenantAdmins, "tenantAdmins should not be null or empty.");
+    
+    
 
     for (String tenantAdmin : tenantAdmins) {
       PreConditions.notNullOrEmpty(tenantAdmin, "tenantAdmin");
@@ -105,8 +111,24 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     EventType eventType = EventType.TENANT_ADDED;
+    
+
+    Collection<Tenant> tenants = getTenants();
+    User tenantOwner= null;
+    int countTenant =0;
+    for (Tenant tenantObj : tenants) {
+    	tenantOwner=tenantObj.getOwner();
+    	if(owner.getUsername().equalsIgnoreCase(tenantOwner.getUsername())) {
+    		countTenant++;
+    	}
+    }
     if (tenant == null) {
       logger.info("Adding new tenant '{}'", tenantId);
+      if(restrictTenantConfig!=null) {
+    	  if(countTenant>=Integer.parseInt(restrictTenantConfig)) {
+    		  throw new RestrictTenantPerOwnerException(owner.getUsername(), restrictTenantConfig);
+    	  }
+      }
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
@@ -373,5 +395,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       return defaultVal;
     }
   }
+
+
 
 }
