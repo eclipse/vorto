@@ -71,3 +71,6 @@ mail:
   login:
     username:
     password:
+
+config:
+  restrictTenant: 2

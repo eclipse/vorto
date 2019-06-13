@@ -16,7 +16,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.assertj.core.util.Lists;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -26,7 +31,9 @@ import org.eclipse.vorto.repository.domain.AuthorizationProvider;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.junit.Test;
@@ -36,13 +43,23 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import wiremock.com.google.common.collect.Sets;
+import org.junit.Before;
 
 public class TenantServiceTest {
 
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
-
+  protected TenantService tenantServiceObj = Mockito.mock(TenantService.class);
+  private Tenant playgroundTenant = playgroundTenant();
+  
+  
+  
+  @Before
+  public void beforeEach() throws Exception {
+	  List<Tenant> tenantList = new ArrayList<Tenant>();
+	  Mockito.when(tenantRepo.findAll()).thenReturn(tenantList);
+  }
   @Test
   public void testPreconditions() {
     Mockito.when(accountService.exists("admin")).thenReturn(false);
@@ -194,6 +211,8 @@ public class TenantServiceTest {
     TenantService tenantService = getTenantService();
 
     tenantService.setApplicationEventPublisher(Mockito.mock(ApplicationEventPublisher.class));
+    
+    
 
     tenantService.createOrUpdateTenant("myTenantId", "vorto.private.test", Sets.newHashSet("admin"),
         Optional.of(Sets.newHashSet("vorto.private.test1", "vorto.private.test2")), Optional.empty(), Optional.empty(),
@@ -215,6 +234,7 @@ public class TenantServiceTest {
         .anyMatch(ns -> ns.getName().equals("vorto.private.test2")));
   }
 
+  
   @Test
   public void testUpdateTenantWithSupersetProblem() {
     Tenant myTenantId =
@@ -224,9 +244,10 @@ public class TenantServiceTest {
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin"))
         .thenReturn(User.create("admin", myTenantId, Role.SYS_ADMIN));
+    
+    
 
     TenantService tenantService = getTenantService();
-
     try {
       tenantService.createOrUpdateTenant("myTenantId", "com.test", Sets.newHashSet("admin"),
           Optional.of(Sets.newHashSet("com.test1")), Optional.empty(), Optional.empty(),
@@ -331,4 +352,36 @@ public class TenantServiceTest {
   private TenantService getTenantService() {
     return new TenantService(tenantRepo, nsRepo, accountService);
   }
+  
+  private Tenant playgroundTenant() {
+	    UserRole roleUser = new UserRole(Role.USER);
+	    UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
+	    UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
+	    UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
+	    UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
+	    UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
+
+	    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
+	        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
+
+	    playground.addUser(createTenantUser("alex",
+	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
+	    playground.addUser(createTenantUser("erle",
+	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
+	    playground.addUser(createTenantUser("admin",
+	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
+	    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
+	    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
+	    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
+
+	    return playground;
+	  }
+  
+  private TenantUser createTenantUser(String name, Set<UserRole> roles) {
+	    User _user = User.create(name);
+	    TenantUser user = new TenantUser();
+	    user.setRoles(roles);
+	    _user.addTenantUser(user);
+	    return user;
+	  }
 }

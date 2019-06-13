@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.notification.message.OfficialNamespaceReques
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
+import org.eclipse.vorto.repository.tenant.RestrictTenantPerOwnerException;
 import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
@@ -108,7 +109,10 @@ public class TenantManagementController {
     } catch (NamespaceExistException e) {
       return new ResponseEntity<>(Result.failure("Namespace request already exist"),
           HttpStatus.CONFLICT);
-    } catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
+    }catch (RestrictTenantPerOwnerException e) {
+        return new ResponseEntity<>(Result.failure("An owner can have only 2 repositories"),
+            HttpStatus.CONFLICT);
+      }catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
         | NewNamespacesNotSupersetException | NewNamespaceNotPrivateException e) {
       return new ResponseEntity<>(Result.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
