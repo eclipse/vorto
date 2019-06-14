@@ -25,10 +25,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
@@ -44,7 +41,6 @@ import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
-import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.stereotype.Component;
 
@@ -77,12 +73,12 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   /**
-   * changes the namespace of the uploaded vorto model, whereby it ignores
+   * changes the namespace of the uploaded vorto model(s) , if target namespace is specified
    */
   @Override
   protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
     if (targetNamespace.isPresent()) {
-      if (fileUpload.getFileExtension().endsWith(".zip")) {
+      if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
         ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
         
         getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)

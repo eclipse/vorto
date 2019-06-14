@@ -46,7 +46,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     assertEquals(false,uploadResult.isValid());
     assertEquals(MessageSeverity.ERROR,uploadResult.getReport().get(0).getMessage().getSeverity());
 
-    assertEquals("1) User does not own the target namespace 'vorto.private.alex'.",uploadResult.getReport().get(0).getMessage().getMessage());
+    assertEquals("1) You do not own the target namespace 'vorto.private.alex'.",uploadResult.getReport().get(0).getMessage().getMessage());
   }
   
   @Test

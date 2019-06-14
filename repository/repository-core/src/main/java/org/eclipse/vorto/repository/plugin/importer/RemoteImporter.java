@@ -19,6 +19,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
@@ -71,10 +72,14 @@ public class RemoteImporter extends AbstractModelImporter {
         requestEntity, ImportValidationResult.class, this.info.getKey());
 
     ImportValidationResult result = validationResult.getBody();
+    
 
     if (result.isValid()) {
-      return Arrays.asList(ValidationReport.valid(
-          new ModelInfo(result.getModelId(), org.eclipse.vorto.model.ModelType.Functionblock)));
+      ModelInfo modelInfo = new ModelInfo(result.getModelId(), org.eclipse.vorto.model.ModelType.Functionblock);
+      
+      ModelValidationHelper validationHelper = new ModelValidationHelper(this.modelRepoFactory, this.userRepository, this.tenantService); 
+      ValidationReport report = validationHelper.validate(modelInfo, user);
+      return Arrays.asList(report);
     } else {
       return Arrays.asList(ValidationReport.invalid(result.getMessage()));
     }

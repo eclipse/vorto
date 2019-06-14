@@ -63,19 +63,19 @@ public abstract class AbstractModelImporter implements IModelImporter {
   private ITemporaryStorage uploadStorage;
 
   @Autowired
-  private IModelRepositoryFactory modelRepoFactory;
+  protected IModelRepositoryFactory modelRepoFactory;
 
   @Autowired
   private ITenantUserService tenantUserService;
 
   @Autowired
-  private IUserAccountService userRepository;
+  protected IUserAccountService userRepository;
 
   @Autowired
-  private ITenantService tenantService;
+  protected ITenantService tenantService;
 
   @Autowired
-  private ModelParserFactory modelParserFactory;
+  protected ModelParserFactory modelParserFactory;
 
   private Set<String> supportedFileExtensions = new HashSet<>();
 
