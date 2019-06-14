@@ -16,9 +16,6 @@ This guide will walk you through the process of migrating your existing Vorto mo
 4. Log in to new [Vorto Repository](https://vorto.eclipse.org)
 5. Click **Import** and select the zip file you downloaded in Step-3
 6. Now select your desired namespace from the dropdown (your model will be imported into this namespace)
-
-	![upload model](../images/tutorials/migrate_model/upload_model.png)
-
 7. Click **Upload** 
 8. If all goes well you will receive a success message *model is valid and ready for import*
 9. Click **Import** to finish uploading
