@@ -164,14 +164,6 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 			}
 		}
 	}
-
-	@Check
-	def checkPropertyName(Property property) {
-		var name = property.name
-		if (name.endsWith('TS')) {
-			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)
-		}
-	}
 	
 	@Check
 	def checkPropertyIfInReferences(Property property) {
