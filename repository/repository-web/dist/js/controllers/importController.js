@@ -7,6 +7,37 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         $scope.fileAdded = false;
         $scope.beingUploaded = false;
         $scope.beingCheckedIn = false;
+        $scope.targetNamespace = null;
+
+		$scope.getNamespaces = function() {
+        	$scope.userNamespaces = [];
+            	$http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
+                	.then(function(result) {
+                    	var tenants = result.data;
+                        if (tenants != null) {
+                        	for(var i=0; i < tenants.length; i++) {
+                            	if (tenants[i].namespaces != null) {
+                                	for(var k=0; k < tenants[i].namespaces.length; k++) {
+                                    	$scope.userNamespaces.push({
+                                        	tenant: tenants[i].tenantId,
+                                            namespace: tenants[i].namespaces[k]
+                                        }); 
+                                    }
+                                }
+                             }
+                         }
+                         if ($scope.userNamespaces.length > 0) {
+                         	$scope.userNamespaces.sort(function (a, b) {
+                            	return a.namespace.localeCompare(b.namespace);
+                            });
+                            $scope.targetNamespace = $scope.userNamespaces[0].namespace; 
+                            }
+                       }, function(reason) {
+                                // TODO : handling of failures
+          			});
+         };
+                    
+         $scope.getNamespaces();
 
         $scope.uploadModel = function () {
             $scope.showResultBox = false;
@@ -20,7 +51,12 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                upload('./rest/importers/', fileToUpload);
+                if ($scope.targetNamespace !== null && $scope.targetNamespace.namespace !== undefined) {
+                	upload('./rest/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
+                } else {
+                	upload('./rest/importers', fileToUpload);
+                }
+                
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
             }
@@ -102,7 +138,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                     } else if (status == 401) {
                         $scope.error = "Unauthorized Operation";
                     } else if (status == 400) {
-                        $scope.error = "Bad Request. Server Down";
+                        $scope.error = "Bad Request";
                     } else if (status == 500) {
                         $scope.error = "Internal Server Error";
                     } else {

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -40,7 +40,7 @@ public class MappingTest extends AbstractIntegrationTest {
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())),
+                    new ClassPathResource("sample_models/Color.type").getInputStream())), Optional.empty(),
             createUserContext("admin", "playground"));
     assertEquals(true, uploadResult.isValid());
     assertNotNull(uploadResult.getHandleId());
@@ -64,7 +64,7 @@ public class MappingTest extends AbstractIntegrationTest {
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())),
+                    new ClassPathResource("sample_models/Color.type").getInputStream())),Optional.empty(),
             userContext);
     assertEquals(true, uploadResult.isValid());
     assertEquals(0, repositoryFactory.getRepository(userContext).search("*").size());
@@ -84,6 +84,7 @@ public class MappingTest extends AbstractIntegrationTest {
         FileUpload.create("sample.mapping",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/sample.mapping").getInputStream())),
+        Optional.empty(),
         createUserContext("admin", "playground"));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
     this.importer.doImport(uploadResult.getHandleId(), createUserContext("alex", "playground"));

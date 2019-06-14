@@ -206,6 +206,7 @@ public abstract class AbstractIntegrationTest {
           FileUpload.create(modelName,
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/" + modelName).getInputStream())),
+          Optional.empty(),
           userContext);
       return this.importer.doImport(uploadResult.getHandleId(), userContext).get(0);
     } catch (Exception ex) {

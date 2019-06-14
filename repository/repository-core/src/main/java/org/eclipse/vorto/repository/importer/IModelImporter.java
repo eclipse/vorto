@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.importer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -49,10 +50,11 @@ public interface IModelImporter {
    * {@link IModelImporter#doImport(String,UserContext)}}
    * 
    * @param fileUpload
-   * @param callerId
+   * @param targetNamespace namespace that the uploaded model will be converted to. If not present, the original model namespace is taken
+   * @param userContext
    * @return result about information of the uploaded content and the upload handle.
    */
-  UploadModelResult upload(FileUpload fileUpload, IUserContext userContext);
+  UploadModelResult upload(FileUpload fileUpload, Optional<String> targetNamespace, IUserContext userContext);
 
   /**
    * @pre {@link UploadModelResult#isValid() == true}}
