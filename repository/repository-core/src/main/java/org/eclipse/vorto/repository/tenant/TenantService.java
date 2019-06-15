@@ -124,7 +124,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     }
     if (tenant == null) {
       logger.info("Adding new tenant '{}'", tenantId);
-      if(restrictTenantConfig!=null) {
+      if(restrictTenantConfig!=null && !userContext.isSysAdmin()) {
     	  if(countTenant>=Integer.parseInt(restrictTenantConfig)) {
     		  throw new RestrictTenantPerOwnerException(owner.getUsername(), restrictTenantConfig);
     	  }
