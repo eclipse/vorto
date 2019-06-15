@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -32,6 +33,28 @@ import org.springframework.core.io.ClassPathResource;
 
 public class ModelImporterTest extends AbstractIntegrationTest {
 
+  
+  @Test
+  public void testUploadFileWithoutVortolang() throws Exception {
+    IUserContext alex = createUserContext("alex", "playground");
+    
+    UploadModelResult uploadResult = this.importer.upload(
+        FileUpload.create("ColorEnum.type",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/model_without_vortolang.type").getInputStream())),
+        Optional.empty(),
+        alex);
+    
+    assertEquals(true,uploadResult.isValid());
+    
+    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), alex);
+    
+    IModelRepository repository = repositoryFactory.getRepository(alex);
+    String content = new String(repository.getFileContent(imported.get(0).getId(), Optional.empty()).get().getContent(),"utf-8");
+     
+    assertTrue(content.contains("vortolang 1.0"));
+  }
+  
   @Test
   public void testUploadFileWithUnownedNamespace() throws Exception {
     IUserContext alex = createUserContext("alex", "playground");
