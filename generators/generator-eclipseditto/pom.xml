@@ -17,7 +17,6 @@
 			<artifactId>org.eclipse.vorto.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>generator-api</artifactId>

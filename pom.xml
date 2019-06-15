@@ -120,6 +120,7 @@
         <module>model</module>
         <module>model-runtime</module>
         <module>model-conversion</module>
+		<module>model-refactoring</module>
         <module>device-adapter</module>
         <module>plugin-sdk</module>
         <module>generators</module>

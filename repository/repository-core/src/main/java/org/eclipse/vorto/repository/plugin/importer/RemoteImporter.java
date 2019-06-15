@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -20,6 +19,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
@@ -62,18 +62,24 @@ public class RemoteImporter extends AbstractModelImporter {
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
     body.add("file", new FileContentResource(fileUpload));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-    ResponseEntity<ImportValidationResult> validationResult =
-        restTemplate.postForEntity(this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_validation",
-            requestEntity, ImportValidationResult.class,this.info.getKey());
+    ResponseEntity<ImportValidationResult> validationResult = restTemplate.postForEntity(
+        this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_validation",
+        requestEntity, ImportValidationResult.class, this.info.getKey());
 
     ImportValidationResult result = validationResult.getBody();
+    
 
     if (result.isValid()) {
-      return Arrays.asList(ValidationReport.valid(new ModelInfo(result.getModelId(),org.eclipse.vorto.model.ModelType.Functionblock)));
+      ModelInfo modelInfo = new ModelInfo(result.getModelId(), org.eclipse.vorto.model.ModelType.Functionblock);
+      
+      ModelValidationHelper validationHelper = new ModelValidationHelper(this.modelRepoFactory, this.userRepository, this.tenantService); 
+      ValidationReport report = validationHelper.validate(modelInfo, user);
+      return Arrays.asList(report);
     } else {
       return Arrays.asList(ValidationReport.invalid(result.getMessage()));
     }
@@ -90,14 +96,15 @@ public class RemoteImporter extends AbstractModelImporter {
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-    ResponseEntity<byte[]> validationResult =
-        restTemplate.postForEntity(this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_conversion",
-            requestEntity, byte[].class,this.info.getKey());
+    ResponseEntity<byte[]> validationResult = restTemplate.postForEntity(
+        this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_conversion",
+        requestEntity, byte[].class, this.info.getKey());
 
     IModelWorkspace workspace = IModelWorkspace.newReader()
         .addZip(new ZipInputStream(new ByteArrayInputStream(validationResult.getBody()))).read();
-    
-    return workspace.get().stream().map(model -> new ModelResource(model)).collect(Collectors.toList());
+
+    return workspace.get().stream().map(model -> new ModelResource(model))
+        .collect(Collectors.toList());
   }
 
 }

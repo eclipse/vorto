@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -77,7 +78,7 @@ public class ImportController {
   public ResponseEntity<UploadModelResponse> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
-      @RequestParam("key") String key) {
+      @RequestParam("key") String key,  @RequestParam(required=false,value="targetNamespace") String targetNamespace) {
     if (file.getSize() > maxModelSize) {
       throw new UploadTooLargeException("model", maxModelSize);
     }
@@ -86,7 +87,7 @@ public class ImportController {
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Optional.ofNullable(targetNamespace), getUserContext());
 
       if (!result.isValid()) {
         return validResponse(new UploadModelResponse(

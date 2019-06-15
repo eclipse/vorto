@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -21,9 +20,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import org.apache.log4j.Logger;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.refactor.ChangeSet;
+import org.eclipse.vorto.model.refactor.RefactoringTask;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -36,6 +41,7 @@ import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,7 +50,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
-  
+
+  private static Logger logger = Logger.getLogger(VortoModelImporter.class);
+
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
 
@@ -62,6 +70,43 @@ public class VortoModelImporter extends AbstractModelImporter {
 
   protected boolean handleZipUploads() {
     return false;
+  }
+
+  /**
+   * changes the namespace of the uploaded vorto model(s) , if target namespace is specified
+   */
+  @Override
+  protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
+    if (targetNamespace.isPresent()) {
+      if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
+        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
+        
+        getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
+            .forEach(extractedFile -> {
+              zipFile.addToZip(refactor(extractedFile, targetNamespace.get()));
+            });
+              
+        return zipFile.getFileUpload();
+      } else {
+        return refactor(fileUpload, targetNamespace.get());
+      }
+    } else {
+      return fileUpload;
+    }
+  }
+
+  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) {
+    IModelWorkspace workspace =
+        IModelWorkspace.newReader().addFile(new ByteArrayInputStream(fileUpload.getContent()),
+            ModelType.fromFileName(fileUpload.getFileName())).read();
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(targetNamespace).execute();
+    ModelResource resource = new ModelResource(changeSet.get().get(0));
+    try {
+      return FileUpload.create(fileUpload.getFileName(), resource.toDSL());
+    } catch (IOException e) {
+      logger.error("Could not serialize model to DSL", e);
+      return fileUpload;
+    }
   }
 
   @Override
@@ -145,5 +190,38 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent,
       IUserContext user) {
     // no need to process the imported file further
+  }
+
+  private static class ZipUploadFile {
+
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private ZipOutputStream zos = new ZipOutputStream(baos);
+
+    private String fileName;
+
+    private ZipUploadFile(String fileName) {
+      this.fileName = fileName;
+    }
+
+    public void addToZip(FileUpload file) {
+      try {
+        ZipEntry zipEntry = new ZipEntry(file.getFileName());
+        zos.putNextEntry(zipEntry);
+        zos.write(file.getContent());
+        zos.closeEntry();
+      } catch (Exception ex) {
+        // entry possible exists already, so skipping TODO: ugly hack!!
+      }
+    }
+
+    public FileUpload getFileUpload() {
+      try {
+        zos.close();
+        baos.close();
+      } catch (Exception ex) {
+      }
+
+      return FileUpload.create(fileName, baos.toByteArray());
+    }
   }
 }

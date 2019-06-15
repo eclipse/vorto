@@ -51,7 +51,6 @@ repository.factory('openCreateModelDialog',
                         $scope.userNamespaces = [];
                         $http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
                             .then(function(result) {
-                                console.log("-erle- : " + JSON.stringify(result));
                                 var tenants = result.data;
                                 if (tenants != null) {
                                     for(var i=0; i < tenants.length; i++) {

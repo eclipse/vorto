@@ -27,8 +27,6 @@ class DatatypeSystemMessage {
 	public static final String ERROR_DUPLICATED_PROPERTY_NAME = 'Property name has been defined'
 
 	public static final String ERROR_ENTITYNAME_INVALID_CAMELCASE = 'Entity name must begin with a capital letter'
-	public static final String ERROR_PROPNAME_SUFFIX_TS = 'Invalid property name with suffix "TS"'
-	public static final String ERROR_ENTITYNAME_SUFFIX_REPLY = 'Invalid property name with suffix "Reply"'
 	public static final String ERROR_DUPLICATED_CONSTRAINT = 'Constraint Type has been defined'
 	public static final String ERROR_CONSTRAINT_ENTITY = 'Constraint cannot be imposed on Entity or Enum'
 

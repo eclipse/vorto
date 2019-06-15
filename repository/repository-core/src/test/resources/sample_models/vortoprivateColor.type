@@ -1,0 +1,10 @@
+vortolang 1.0
+
+namespace vorto.private.alex
+version 1.0.0
+displayname "ColorEnum"
+description "Datatype for ColorEnum"
+
+enum ColorEnum {
+  RED, GREEN, BLUE
+}

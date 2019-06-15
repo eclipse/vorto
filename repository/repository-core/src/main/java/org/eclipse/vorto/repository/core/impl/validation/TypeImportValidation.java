@@ -46,6 +46,9 @@ public class TypeImportValidation implements IModelValidator {
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
+    if (!(modelResource instanceof ModelResource)) {
+      return; // do not check types if passed resource is not a parse emf model resource
+    }
     Collection<String> unImportedReferences = Lists.newArrayList();
 
     ModelResource emfModel = (ModelResource) modelResource;

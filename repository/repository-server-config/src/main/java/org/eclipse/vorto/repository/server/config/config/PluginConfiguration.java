@@ -11,7 +11,10 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
+import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
@@ -19,6 +22,8 @@ import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPlugin
 import org.eclipse.vorto.repository.plugin.generator.impl.IGeneratorMetrics;
 import org.eclipse.vorto.repository.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.plugin.importer.RemoteImporter;
+import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +37,21 @@ public class PluginConfiguration {
 
   @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
+  
+  @Autowired
+  private ModelParserFactory modelParserFactory;
+  
+  @Autowired
+  private IUserAccountService userAccountService;
+  
+  @Autowired
+  private ITenantService tenantService;
+  
+  @Autowired
+  private ITenantUserService tenantUserService;
+  
+  @Autowired
+  private ITemporaryStorage fileStorage;
 
   // ++++++++++++++++++++++ GENERATOR PLUGINS +++++++++++++++++++++++++++++++++++++++
 
@@ -105,6 +125,16 @@ public class PluginConfiguration {
     ImporterPluginInfo info = new ImporterPluginInfo("lwm2m", "LwM2M",
         "Converts LwM2M descriptions to Vorto", "Vorto Team",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development", ".xml");
-    return new RemoteImporter(info);
+    return createImporter(info);
+  }
+  
+  private RemoteImporter createImporter(ImporterPluginInfo info) {
+    RemoteImporter importer = new RemoteImporter(info);
+    importer.setModelParserFactory(this.modelParserFactory);
+    importer.setModelRepoFactory(this.modelRepositoryFactory);
+    importer.setTenantUserService(tenantUserService);
+    importer.setTenantService(tenantService);
+    importer.setUploadStorage(fileStorage);
+    return importer;
   }
 }

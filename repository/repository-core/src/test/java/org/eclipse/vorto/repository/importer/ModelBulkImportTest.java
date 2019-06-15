@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -116,6 +117,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
             FileUpload.create("sample_models/lwm2m/lwm2m.zip",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/lwm2m/lwm2m.zip").getInputStream())),
+            Optional.empty(),
             alex);
 
     assertEquals(false, uploadResult.isValid());

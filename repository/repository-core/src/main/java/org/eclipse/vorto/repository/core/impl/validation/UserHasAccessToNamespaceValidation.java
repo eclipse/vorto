@@ -35,15 +35,15 @@ public class UserHasAccessToNamespaceValidation implements IModelValidator {
     
     if (context.getUserContext().isSysAdmin()) {
       if (!tenantService.getTenantFromNamespace(modelResource.getId().getNamespace()).isPresent()) {
-        throw new ValidationException("There is no tenant that owns the namespace '" + 
-            modelResource.getId().getNamespace() + "'.", modelResource);
+        throw new ValidationException("The target namespace '" + 
+            modelResource.getId().getNamespace() + "' is currently not owned by anybody.", modelResource);
       }
       return;
     }
     
     User user = userRepository.getUser(context.getUserContext().getUsername());
     if (user.getTenants().stream().noneMatch(tenant -> tenant.owns(modelResource.getId()))) {
-      throw new ValidationException("User doesn't have a tenant that owns the namespace '" + 
+      throw new ValidationException("You do not own the target namespace '" + 
           modelResource.getId().getNamespace() + "'.", modelResource);
     }
   }

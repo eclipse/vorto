@@ -24,6 +24,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>model-refactoring</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.vorto.utilities</groupId>
 			<artifactId>dsl-reader</artifactId>
 			<version>${project.version}</version>
