@@ -276,20 +276,6 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSendOfficialNamespaceRequest() throws Exception {
-    addTenant("myTenant5", "vorto.private.mytenant5", "user2",userStandard);
-
-    repositoryServer
-        .perform(post("/rest/tenants/myTenant5/namespaces/com.mytenant.five/requestOfficial")
-            .contentType("application/json").with(userStandard))
-        .andDo(result -> {
-          System.out.println(result.getResponse().getContentAsString());
-        }).andExpect(status().isOk());
-    
-    assertTrue(true);
-  }
-
-  @Test
   public void testCreateTenantWithBadRequest() throws Exception {
     repositoryServer.perform(put("/rest/tenants/myTenant").content(createTenantRequest)
         .contentType("application/json").with(userCreator)).andExpect(status().isOk());
