@@ -1,6 +1,6 @@
 repositoryControllers.controller('SearchController', 
-    ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog',
-    function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog) {
+    ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog', '$timeout',
+    function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog, $timeout) {
 
     $scope.models = [];
     $scope.filteredModels = [];
@@ -18,7 +18,7 @@ repositoryControllers.controller('SearchController',
  
     $scope.searchOnEnter = function(keyEvent) {
         if (keyEvent.keyCode === 13) {
-            $scope.search();
+        	$scope.search();  
         }
     };
 
@@ -47,7 +47,6 @@ repositoryControllers.controller('SearchController',
 
         $http.get('./api/v1/search/models?expression=' + filter).success(
             function(data, status, headers, config) {
-                console.log("" + JSON.stringify(data));
             	$scope.models = data;
             	$scope.modelsTotal = data.length;
                 $scope.isLoading = false;

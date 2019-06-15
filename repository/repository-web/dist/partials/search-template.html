@@ -10,7 +10,7 @@
 		<br/><br/>
 		<div class="row">
 			<div class="col-md-6">
-				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-change="search()">
+				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-model-options="{ debounce: 1000 }" ng-change="search()">
 				<span ng-show="isLoading"><i class='fa fa-refresh fa-spin'></i>&nbsp; Searching ...</span>
 			</div>
 			<div class="col-md-6">
