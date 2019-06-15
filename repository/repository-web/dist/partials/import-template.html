@@ -52,13 +52,13 @@
 					<td> {{browsedFile}} </td>
 				</tr>
 			</table>
-			<small>Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',&nbsp;')}}</small>
+			<div class="input-description">Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',&nbsp;')}}</div>
 		</div>
 		<div class="col-md-5" ng-show="selectedImporter.key === 'Vorto'">
 			<select class="form-control" id="targetNamespace" ng-model="targetNamespace" ng-options="item.namespace for item in userNamespaces">
 	    		<option value="">-- Optional: Select target namespace --</option>
 	    	</select>
-	    	<small>If specified, the uploaded model(s) will be converted to the target namespace.</small>
+	    	<div class="input-description">If specified, the uploaded model(s) will be converted to the target namespace.</div>
 		</div>
 	</div>  			
 	<br/>

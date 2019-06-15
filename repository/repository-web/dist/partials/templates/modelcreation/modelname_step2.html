@@ -15,7 +15,8 @@
 	    		<div class="col-sm-6">
 	    			<div class="input-group">
 						<span class="input-group-addon"><strong>.</strong></span>
-						<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^[a-zA-Z_][\w]*(\.[a-zA-Z_][\w]*)*/" placeholder="sub-domain">
+						<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" placeholder="sub-domain">
+						<div class="invalid-input" ng-show="createModelForm.modelNamespace.$error.pattern">Sub-domain cannot contain any special characters and must be lowercase.</div>
 					</div>
 	    		</div>
 	    	</div>
@@ -23,12 +24,12 @@
 		<div class="form-group">
 			   	<label>Name</label>
 		        <input type="text" class="form-control" name="modelName" ng-model="modelName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
-		        <div ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
+		        <div class="invalid-input" ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
 		</div>
 		<div class="form-group">
 		    	<label>Version</label>
 		        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
-				<div ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
+				<div class="invalid-input" ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
 		</div>
 	</form>
 </div>

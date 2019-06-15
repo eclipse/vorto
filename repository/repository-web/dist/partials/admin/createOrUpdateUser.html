@@ -69,6 +69,7 @@
 	<div class="modal-footer">	
 		<div class="form-group">
 			<div class="col-sm-12">
+				<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
 				<button type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">
 					<i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i>{{ mode }}
 				</button>

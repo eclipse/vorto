@@ -107,10 +107,10 @@ public class TenantManagementController {
       return new ResponseEntity<>(Result.success(), HttpStatus.OK);
 
     } catch (NamespaceExistException e) {
-      return new ResponseEntity<>(Result.failure("Namespace request already exist"),
+      return new ResponseEntity<>(Result.failure("Namespace already exist"),
           HttpStatus.CONFLICT);
     }catch (RestrictTenantPerOwnerException e) {
-        return new ResponseEntity<>(Result.failure("An owner can have only 2 repositories"),
+        return new ResponseEntity<>(Result.failure("Namespace Quota of 1 exceeded."),
             HttpStatus.CONFLICT);
       }catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
         | NewNamespacesNotSupersetException | NewNamespaceNotPrivateException e) {
