@@ -21,7 +21,6 @@ repositoryControllers.controller("tenantUserManagementController",
             $http.get("./rest/tenants/" + tenantId + "/users")
                 .then(function(result) {
                     $scope.isRetrievingTenantUsers = false;
-                    console.log(JSON.stringify(result));
                     $scope.userTenantUsers = result.data;
                 }, function(reason) {
                     $scope.isRetrievingTenantUsers = false;
@@ -83,10 +82,8 @@ repositoryControllers.controller("tenantUserManagementController",
         	dialog.setCallback("Confirm", function() {
 	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.username)
 	                .then(function(result) {
-	                    console.log("SUCCESS:" + JSON.stringify(result));
 	                    $scope.getTenantUsers($scope.tenant.tenantId);
 	                }, function(reason) {
-	                    console.log("ERROR:" + JSON.stringify(reason));
 	                    // TODO : Show error on window
 	                });
         	});
@@ -118,16 +115,13 @@ repositoryControllers.controller("createOrUpdateUserController",
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    console.log(JSON.stringify($scope.getRoles($scope.user)));
                     $http.put("./rest/tenants/" + $scope.tenantId + "/users/" + $scope.user.username, {
                             "username": $scope.user.username,
                             "roles" : $scope.getRoles($scope.user)
                         })
                         .then(function(result) {
-                            console.log("SUCCESS:" + JSON.stringify(result));
                             $uibModalInstance.close($scope.user); 
                         }, function(reason) {
-                            console.log("ERROR:" + JSON.stringify(result));
                             // TODO : do proper error handling
                         });
                 } else {
@@ -171,7 +165,6 @@ repositoryControllers.controller("createOrUpdateUserController",
                 .then(function(result) {
                     callback({ valid: true });
                 }, function(reason) {
-                    console.log("ERROR:" + JSON.stringify(reason));
                     if (reason.status == 404) {
                         callback({
                             valid: false,

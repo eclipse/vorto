@@ -77,9 +77,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.displayName = user.displayName;
             $rootScope.authenticated = true;
             $rootScope.authority = user.roles;
-            
-            console.log(JSON.stringify(user));
-            
+                        
         } else {
             $rootScope.userInfo = null;
             $rootScope.user = null;

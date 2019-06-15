@@ -73,4 +73,4 @@ mail:
     password:
 
 config:
-  restrictTenant: 2
+  restrictTenant: 1

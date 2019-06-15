@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -270,20 +270,6 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     repositoryServer.perform(get("/rest/namespaces/vorto.private.mytenant4/valid")
         .contentType("application/json").with(userStandard)).andDo(result -> {
           assertEquals("false", result.getResponse().getContentAsString());
-        }).andExpect(status().isOk());
-    
-    assertTrue(true);
-  }
-
-  @Test
-  public void testSendOfficialNamespaceRequest() throws Exception {
-    addTenant("myTenant5", "vorto.private.mytenant5", "user2",userStandard);
-
-    repositoryServer
-        .perform(post("/rest/tenants/myTenant5/namespaces/com.mytenant.five/requestOfficial")
-            .contentType("application/json").with(userStandard))
-        .andDo(result -> {
-          System.out.println(result.getResponse().getContentAsString());
         }).andExpect(status().isOk());
     
     assertTrue(true);

@@ -1843,5 +1843,19 @@ input[type=file]::-webkit-file-upload-button {
     background: rgba(153, 153, 153, 0.1);
 }
 
+.invalid-input {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.input-description {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color:grey;
+}
+
 
     

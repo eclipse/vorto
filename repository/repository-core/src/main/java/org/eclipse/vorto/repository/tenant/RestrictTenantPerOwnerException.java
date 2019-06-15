@@ -20,7 +20,7 @@ public class RestrictTenantPerOwnerException extends RuntimeException {
   private static final long serialVersionUID = -7363697265612882884L;
 
   public RestrictTenantPerOwnerException(String owner, String restrictTenant) {
-    super("Owner '" + owner + "' cannot have more than '" + restrictTenant + "' repositories.");
+    super("Owner '" + owner + "' cannot have more than '" + restrictTenant + "' namespaces.");
   }
 
 }
