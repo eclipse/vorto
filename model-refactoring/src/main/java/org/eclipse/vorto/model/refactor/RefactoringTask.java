@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 
 public class RefactoringTask {
@@ -43,14 +45,25 @@ public class RefactoringTask {
       final String oldNamespace = model.getNamespace();
       if(!ignoreNamespaceList.contains(oldNamespace)) {
         model.setNamespace(targetNamespace);
-        model.getReferences().stream().forEach(reference -> {
-          reference.setImportedNamespace(reference.getImportedNamespace().replace(oldNamespace,targetNamespace));
-        });
+        ModelId newModelId = ModelIdFactory.newInstance(model);
+        ModelId oldModelId = new ModelId(newModelId.getModelType(),newModelId.getName(),oldNamespace,newModelId.getVersion());
+        updateReferences(oldModelId,newModelId);
         changedModels.add(model);
       }
 
     });
     return this;
+  }
+  
+  private void updateReferences(ModelId oldId, ModelId newId ) {
+    workspace.get().forEach(model -> {
+      model.getReferences().stream().forEach(reference -> {
+        if (reference.getImportedNamespace().equals(oldId.getNamespace()+"."+oldId.getName())) {
+          reference.setImportedNamespace(newId.getNamespace()+"."+newId.getName());
+          changedModels.add(model);
+        }
+      });
+    });
   }
   
   public ChangeSet execute() {

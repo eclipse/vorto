@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
@@ -43,6 +44,7 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.stereotype.Component;
 
 /**
@@ -80,13 +82,22 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
     if (targetNamespace.isPresent()) {
       if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
-        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
-        
+        ModelWorkspaceReader reader = IModelWorkspace.newReader();
         getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
             .forEach(extractedFile -> {
-              zipFile.addToZip(refactor(addVortolangIfMissing(extractedFile), targetNamespace.get()));
+              reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
             });
-              
+        IModelWorkspace workspace = reader.read();  
+        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(targetNamespace.get()).execute();
+        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
+        for (Model model : changeSet.get()) {
+          ModelResource resource = new ModelResource(model);
+          try {
+            zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
+          } catch (IOException e) {
+            logger.error("Could not serialize model to DSL", e);
+          }
+        }
         return zipFile.getFileUpload();
       } else {
         return refactor(addVortolangIfMissing(fileUpload), targetNamespace.get());
