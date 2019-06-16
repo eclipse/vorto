@@ -80,6 +80,8 @@ public class PluginConfiguration {
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
+    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }
 
@@ -100,6 +102,8 @@ public class PluginConfiguration {
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
+    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }
 
@@ -118,6 +122,8 @@ public class PluginConfiguration {
     service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production","demo"));
     service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
+        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
+    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }

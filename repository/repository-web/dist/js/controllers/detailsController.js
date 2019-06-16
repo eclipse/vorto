@@ -210,8 +210,13 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
+					if ($rootScope.authenticated) {
+						$scope.getUserPolicy();
+					}
+					
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
+					
 					$scope.modelIsLoading = false;
 
 				}).error(function (error, status) {					
@@ -771,6 +776,38 @@ repositoryControllers.controller('DetailsController',
 			});
 		};
 		
+		$scope.getPolicies = function() {
+			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies')
+				.success(function (result) {
+					$scope.aclEntries = result;
+				});
+		};
+	
+			$scope.getUserPolicy = function() {
+				$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policy')
+					.success(function (result) {
+						console.log("Policy for model = " + JSON.stringify(result));
+						$scope.permission = result.permission;
+						if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+							$scope.modelEditor.setReadOnly(true);
+						}
+	
+						if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_SYS_ADMIN")) { // load policies only if user is model owner
+							$scope.getPolicies();
+						}
+					}).error(function (data, status, headers, config) {
+						// TODO : should be unnecessary
+						$scope.permission = "READ";
+						if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+							$scope.modelEditor.setReadOnly(true);
+						}
+	
+						if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+							$scope.getPolicies();
+						}
+					});
+			};
+		
 		$scope.diagnoseModel = function () {
 			$http.get('./rest/' + $scope.tenantId + '/models/' + $scope.modelId + '/diagnostics')
 				.success(function (result) {
@@ -783,7 +820,7 @@ repositoryControllers.controller('DetailsController',
 		}
 		
 		$scope.isEditingVisible = function(model) {
-			return $rootScope.hasAuthority('ROLE_SYS_ADMIN') || ($scope.permission !== 'READ' && !model.released);
+			return $scope.permission !== 'READ' && !model.released;
 		};
 	}
 ]);
