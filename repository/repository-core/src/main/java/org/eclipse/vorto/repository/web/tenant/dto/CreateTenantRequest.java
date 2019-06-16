@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.web.tenant.dto;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CreateTenantRequest {
   private String authenticationProvider;
@@ -22,7 +23,7 @@ public class CreateTenantRequest {
   private Set<String> namespaces;
 
   public String getDefaultNamespace() {
-    return defaultNamespace;
+    return defaultNamespace != null ? defaultNamespace.toLowerCase() : defaultNamespace;
   }
 
   public void setDefaultNamespace(String defaultNamespace) {
@@ -38,7 +39,7 @@ public class CreateTenantRequest {
   }
 
   public Set<String> getNamespaces() {
-    return namespaces;
+    return namespaces != null ? namespaces.stream().map(n -> n.toLowerCase()).collect(Collectors.toSet()) : namespaces;
   }
 
   public void setNamespaces(Set<String> namespaces) {
