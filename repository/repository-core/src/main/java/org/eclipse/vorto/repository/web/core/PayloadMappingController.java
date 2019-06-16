@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -65,9 +63,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -99,13 +95,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
     
     ModelContent infoModelContent =
-        modelController.getModelContentForTargetPlatform(tenantId, modelId, targetPlatform);
+        modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
     
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
       ModelContent infomodelContent =
-          modelController.getModelContent(tenantId, modelId);
+          modelController.getModelContent(modelId);
       infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
     }
     
@@ -124,7 +120,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
             mappingId.getPrettyFormat());
       } else {
         ModelContent fbmContent =
-            modelController.getModelContent(tenantId, fbModelId.getPrettyFormat());
+            modelController.getModelContent(fbModelId.getPrettyFormat());
         fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
       }
 
@@ -145,7 +141,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
       throw new ModelAlreadyExistsException();
     } else {
       ModelContent modelContent =
-          this.modelController.getModelContent(tenantId, modelId);
+          this.modelController.getModelContent(modelId);
       MappingSpecification spec = new MappingSpecification();
       spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
       for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {

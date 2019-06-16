@@ -210,10 +210,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
-					if ($rootScope.authenticated) {
-						$scope.getUserPolicy();
-					}
-
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
 					$scope.modelIsLoading = false;
@@ -786,145 +782,8 @@ repositoryControllers.controller('DetailsController',
 			$scope.diagnoseModel();
 		}
 		
-		$scope.getPolicies = function() {
-			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies')
-				.success(function (result) {
-					$scope.aclEntries = result;
-				});
-		};
-		
-		$scope.getUserPolicy = function() {
-			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policy')
-				.success(function (result) {
-					console.log("Policy for model = " + JSON.stringify(result));
-					$scope.permission = result.permission;
-					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
-						$scope.modelEditor.setReadOnly(true);
-					}
-					
-					if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_SYS_ADMIN")) { // load policies only if user is model owner
-						$scope.getPolicies();
-					}
-				}).error(function (data, status, headers, config) {
-					// TODO : should be unnecessary
-					$scope.permission = "READ";
-					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-						$scope.modelEditor.setReadOnly(true);
-					}
-					
-					if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-						$scope.getPolicies();
-					}
-				});
-		};
-		
 		$scope.isEditingVisible = function(model) {
 			return $rootScope.hasAuthority('ROLE_SYS_ADMIN') || ($scope.permission !== 'READ' && !model.released);
 		};
-		
-		$scope.modifyPermission = function(entry) {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				controller: function ($scope, model, tenantId) {
-					$scope.model = model;
-					$scope.isLoading = false;
-					$scope.editMode = true;
-					$scope.applyOnDependencies = false;
-					$scope.entry = {
-						"permission" : entry.permission,
-						"principalId" : entry.principalId,
-						"principalType" : entry.principalType
-					};
-					
-					$scope.createEntry = function (entry) {
-						$scope.isLoading = true;
-						$http.put('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat + '/policies',entry)
-							.success(function (result) {
-								$scope.isLoading = false;
-								modalInstance.close();
-						});
-					};
-
-					$scope.cancel = function () {
-						modalInstance.dismiss();
-					};
-				},
-				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "lg",
-				resolve: {
-					model: function () {
-						return $scope.model;
-					},
-				    tenantId: function () {
-                        return $scope.tenantId;
-                    } 
-				}
-			});
-			
-			modalInstance.result.then(
-				function (data) {
-					$scope.getPolicies();
-				});
-		};
-		
-		$scope.removePermission = function(entry) {
-			$http.delete('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies/'+entry.principalId+'/'+entry.principalType)
-				.success(function (result) {
-					$scope.getPolicies();
-				});
-		};
-		
-		$scope.openCreatePolicyEntryDialog = function (model) {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				controller: function ($scope, model, tenantId) {
-					$scope.model = model;
-					$scope.isLoading = false;
-					$scope.editMode = false;
-					$scope.applyOnDependencies = false;
-					$scope.entry = {
-						"permission" : "READ",
-						"principalId" : "",
-						"principalType" : "User"
-					};
-					$scope.createEntry = function (entry) {
-						if (entry.principalId === $rootScope.user) {
-							$scope.errorMessage = "You cannot create policy for yourself!";
-							return;
-						}
-						$scope.isLoading = true;
-						$http.put('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat + '/policies',entry)
-							.success(function (result) {
-								$scope.isLoading = false;
-								modalInstance.close();
-						}).error(function (data, status, headers, config) {
-								console.log(status);
-								$scope.isLoading = false;
-								$scope.errorMessage = data.message;
-							});
-					};
-
-					$scope.cancel = function () {
-						modalInstance.dismiss();
-					};
-				},
-				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "lg",
-				resolve: {
-					model: function () {
-						return $scope.model;
-					},
-					tenantId: function() {
-					    return $scope.tenantId;
-					}
-				}
-			});
-			
-			modalInstance.result.then(
-				function (data) {
-					$scope.getPolicies();
-				});
-		};
 	}
-	
 ]);

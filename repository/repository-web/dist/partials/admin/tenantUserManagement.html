@@ -36,26 +36,12 @@
 							<span class="label label-danger" ng-show="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">ADMIN</span>
 						</td>
 						<td>
-							<!--<div class="btn-group btn-group-justified" role="group">
-								<div class="btn-group" role="group">
-									<button type="button" class="btn btn-primary" ng-click="createOrUpdateUser(editableUser(tenantUser))">Edit </button>
-									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
-									<i class="fa fa-pencil fa-2x"  aria-hidden="true"></i>
-									</a>
-								</div>
-								<div class="btn-group" role="group">
-									<button type="button" class="btn btn-sm btn-danger" ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">Delete</button>
-								</div>
-							</div>-->
 							<div>
 								<div>
-									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
+									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" ng-hide="tenantUser.username === user" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
 									<i class="fa fa-pencil fa-2x"  aria-hidden="true"></i>
 									</a>
-								<!-- <div class="btn-group" role="group">
-									<button type="button" class="btn btn-sm btn-danger" ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">Delete</button>
-								</div> -->
-									<a ng-click="deleteUser(tenantUser)" ng-hide="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)" data-toggle="tooltip" data-placement="bottom" title="Delete Collaborator">
+									<a ng-click="deleteUser(tenantUser)" ng-hide="tenantUser.username === user" data-toggle="tooltip" data-placement="bottom" title="Delete Collaborator">
 									<i class="fa fa-trash fa-2x"  aria-hidden="true"></i>
 									</a>
 								</div>
