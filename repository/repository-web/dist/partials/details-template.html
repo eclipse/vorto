@@ -277,7 +277,7 @@
 													<span ng-if="!isLoading" class="fa fa-save" aria-hidden="true"></span>
 													<i ng-if="isLoading" class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
 													
-												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
+												<a class="btn btn-sm btn-default pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Reference</a>
 												
@@ -405,7 +405,7 @@
 		<div class="col-md-3 col-xs-6">
 			<div class="text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
 				<div class="row text-center">
-					<label ng-show="isLoadingGenerators"><i class="fa fa-refresh fa-spin"></i>&nbsp;Code-Generators</label>
+					<label ng-show="isLoadingGenerators"><i class="fa fa-refresh fa-spin"></i>&nbsp;Official Plugins</label>
 					<label ng-show="!isLoadingGenerators">Official Plugins</label>
 				</div>
 				<div class="generator-list">
@@ -426,7 +426,7 @@
 								</div>
 							</a>
 							<a ng-show="canGenerate" ng-click="openGeneratorConfig(generator)">
-								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click for details">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
 									</span>
@@ -444,14 +444,14 @@
 			<div class="text-center modelGen" ng-hide="platformDemoGeneratorMatrix.length === 0 || model.type === 'Datatype' || model.type === 'Mapping'">
 				<div class="row text-center">
 					<label ng-show="isLoadingGenerators"><i class="fa fa-refresh fa-spin"></i>&nbsp;Experimental Plugins</label>
-					<label ng-show="!isLoadingGenerators">Experimental Generators</label>
+					<label ng-show="!isLoadingGenerators">Experimental Plugins</label>
 				</div>
 				<div class="generator-list">
 					<div class="row" ng-repeat="row in platformDemoGeneratorMatrix">
 						<!--genbox -->
 						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
 							<a ng-click="openGeneratorConfig(generator)">
-								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click for details">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
 									</span>

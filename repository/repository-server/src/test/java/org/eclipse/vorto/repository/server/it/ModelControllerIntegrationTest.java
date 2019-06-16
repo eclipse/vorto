@@ -26,7 +26,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testModelAccess() throws Exception {
-    repositoryServer.perform(get("/api/v1/tenants/playground/models/" + testModel.prettyName).with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName).with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -36,7 +36,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetModelContent() throws Exception {
-    repositoryServer.perform(get("/api/v1/tenants/playground/models/" + testModel.prettyName + "/content").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -46,7 +46,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testModelFileDownloadContent() throws Exception {
-    repositoryServer.perform(get("/api/v1/tenants/playground/models/" + testModel.prettyName + "/file").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userCreator))
         .andExpect(status().isOk());
     
     assertTrue(true);
