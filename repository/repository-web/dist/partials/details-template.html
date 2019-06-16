@@ -171,7 +171,7 @@
 															</ul>
 														</div>
 													</div>
-													<div ng-hide="modelReferences.show">-</div>
+													<div ng-hide="modelReferences.show"><i>No references</i></div>
 												</dd>
 												<dt>Used By: </dt>
 												<dd>
@@ -204,9 +204,9 @@
 															</ul>
 														</div>
 													</div>
-													<div ng-hide="modelReferencedBy.show">-</div>
+													<div ng-hide="modelReferencedBy.show"><i>Not referenced by any model</i></div>
 												</dd>
-												<div ng-hide="model.type === 'Mapping'">
+												<div ng-hide="model.type === 'Mapping' || modelMappings.length === 0">
 													<dt>Mappings: </dt>
 													<dd>
 														<div ng-show="modelMappings">
@@ -233,10 +233,12 @@
 														<div ng-show="modelMappings.length === 0">-</div>
 													</dd>
 												</div>
-												<dt>Model File:</dt>
+												<dt>Downloads:</dt>
 												<dd>
-													<a ng-href="./api/v1/tenants/{{tenantId}}/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
-														<i class="fa fa-fw fa-download"></i>ZIP archive</a>
+													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
+														<i class="fa fa-fw fa-download"></i>Vorto DSL</a>
+													<a ng-hide="model.type === 'Mapping' || model.type === 'Datatype'" ng-href="./api/v1/generators/jsonschema/models/{{model.id.prettyFormat}}" class="pull-center">
+														<i class="fa fa-fw fa-download"></i>JSON Schema</a>
 												</dd>
 												<dt ng-show="hasAuthority('ROLE_SYS_ADMIN')">
 													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
