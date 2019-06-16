@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "Connectivity"
+description "Functionblock for Connectivity"
+category connectivity
+
+using org.eclipse.vorto.types.ConnectivityStatus; 1.0.0
+using org.eclipse.vorto.types.SomeUnit; 1.0.0
+
+functionblock Connectivity {
+	status {
+		optional rssi as int
+		optional snr as int
+		mandatory lastSeen as long
+		optional status as ConnectivityStatus	
+	}
+}

@@ -33,6 +33,19 @@ import org.springframework.core.io.ClassPathResource;
 
 public class ModelImporterTest extends AbstractIntegrationTest {
 
+  @Test
+  public void testUploadZipFile() throws Exception {
+    IUserContext alex = createUserContext("alex", "playground");
+    
+    UploadModelResult uploadResult = this.importer.upload(
+        FileUpload.create("models.zip",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/models.zip").getInputStream())),
+        Optional.of("org.eclipse.vorto"),
+        alex);
+    
+    assertEquals(true,uploadResult.isValid());
+  }
   
   @Test
   public void testUploadFileWithoutVortolang() throws Exception {
