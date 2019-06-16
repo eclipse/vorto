@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.web.api.v1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
@@ -23,16 +24,27 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.vorto.core.api.model.mapping.EntitySource;
+import org.eclipse.vorto.core.api.model.mapping.EnumSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
+import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.ControllerUtils;
+import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,10 +62,13 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "/models")
 @RestController("modelRepositoryController")
-@RequestMapping(value = "/api/v1/tenants/{tenantId}/models")
+@RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
-  private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
+  @Autowired
+  private ITenantService tenantService;
+
+  private static Logger logger = Logger.getLogger(ModelController.class);
 
   @ApiOperation(value = "Returns a full model by its model ID")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model info"),
@@ -63,8 +78,6 @@ public class ModelController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
   public ModelInfo getModelInfo(
-      @ApiParam(value = "The tenantId of the tenant that owns the model",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "modelId must not be null");
@@ -72,7 +85,8 @@ public class ModelController extends AbstractRepositoryController {
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
     
     logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
-    ModelInfo resource = getModelRepository(tenantId).getById(modelID);
+
+    ModelInfo resource = getRepo(modelID).getById(modelID);
 
     if (resource == null) {
       throw new ModelNotFoundException("Model does not exist", null);
@@ -88,16 +102,29 @@ public class ModelController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
   public ModelContent getModelContent(
-      @ApiParam(value = "The tenantId of the tenant that owns the model",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.getModelRepository(tenantId));
-    return converter.convert(modelID, Optional.empty());
-    
+
+    if (!getRepo(modelID).exists(modelID)) {
+      throw new ModelNotFoundException("Model does not exist", null);
+    }
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
+
+    IModelWorkspace workspace = getWorkspaceForModel(tenantId, modelID);
+
+    ModelContent result = new ModelContent();
+    result.setRoot(modelID);
+
+    workspace.get().stream().forEach(model -> {
+      result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+          ModelDtoFactory.createResource(model, Optional.empty()));
+    });
+
+    return result;
   }
 
   @ApiOperation(
@@ -109,18 +136,65 @@ public class ModelController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
   public ModelContent getModelContentForTargetPlatform(
-      @ApiParam(value = "The tenantId of the tenant that owns the model",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "The key of the targetplatform, e.g. lwm2m",
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-       
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.getModelRepository(tenantId));
-    
-    return converter.convert(modelID, Optional.of(ControllerUtils.sanitize(targetplatformKey)));
+
+    List<ModelInfo> mappingResource =
+        getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey);
+
+    if (!mappingResource.isEmpty()) {
+
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
+      
+      IModelWorkspace workspace =
+          getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
+
+      ModelContent result = new ModelContent();
+      result.setRoot(modelID);
+
+      workspace.get().stream().forEach(model -> {
+        if (!(model instanceof MappingModel)) {
+          Optional<Model> mappingModel =
+              workspace.get().stream().filter(p -> p instanceof MappingModel)
+                  .filter(p -> isMappingForModel((MappingModel) p, model)).findFirst();
+          if (mappingModel.isPresent()) {
+            result.getModels().put(
+                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+                ModelDtoFactory.createResource(model,
+                    Optional.of((MappingModel) mappingModel.get())));
+          }
+        }
+      });
+
+      return result;
+
+    } else {
+      throw new ModelNotFoundException("Content for provided target platform key does not exist",
+          null);
+    }
+  }
+
+  private boolean isMappingForModel(MappingModel p, Model model) {
+    if (p.getRules().isEmpty() || p.getRules().get(0).getSources().isEmpty()) {
+      return false;
+    }
+    Source mappingSource = p.getRules().get(0).getSources().get(0);
+    if (mappingSource instanceof InfomodelSource) {
+      return EcoreUtil.equals(((InfomodelSource) mappingSource).getModel(), model);
+    } else if (mappingSource instanceof FunctionBlockSource) {
+      return EcoreUtil.equals(((FunctionBlockSource) mappingSource).getModel(), model);
+    } else if (mappingSource instanceof EntitySource) {
+      return EcoreUtil.equals(((EntitySource) mappingSource).getModel(), model);
+    } else if (mappingSource instanceof EnumSource) {
+      return EcoreUtil.equals(((EnumSource) mappingSource).getModel(), model);
+    } else {
+      return false;
+    }
   }
 
   @ApiOperation(value = "Downloads the model file")
@@ -130,8 +204,6 @@ public class ModelController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
   public void downloadModelById(
-      @ApiParam(value = "The tenantId of the tenant that owns the model",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "Set true if dependencies shall be included",
@@ -142,6 +214,9 @@ public class ModelController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelID.getPrettyFormat() + "' could not be found."));
 
     logger.info("Download of Model file : [" + modelID.toString() + "]");
 
@@ -154,7 +229,7 @@ public class ModelController extends AbstractRepositoryController {
         IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
         response.flushBuffer();
       } catch (IOException e) {
-        throw new RuntimeException("Error copying file.", e);
+        throw new GenericApplicationException("Error copying file.", e);
       }
     } else {
       createSingleModelContent(tenantId, modelID, response);
@@ -174,7 +249,21 @@ public class ModelController extends AbstractRepositoryController {
       return baos.toByteArray();
 
     } catch (Exception ex) {
-      throw new RuntimeException(ex);
+      throw new GenericApplicationException("Error while generating zip file.", ex);
     }
+  }
+
+  private IModelRepository getRepo(ModelId modelId) {
+    Optional<String> tenant = getTenant(modelId);
+    if (!tenant.isPresent()) {
+      throw new ModelNotFoundException("The tenant for '" + modelId + "' could not be found.");
+    }
+
+    return getModelRepository(tenant.get(), SecurityContextHolder.getContext().getAuthentication());
+  }
+
+  private Optional<String> getTenant(ModelId modelId) {
+    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+        .map(tenant -> tenant.getTenantId());
   }
 }

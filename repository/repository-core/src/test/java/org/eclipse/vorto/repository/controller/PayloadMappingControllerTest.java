@@ -111,7 +111,7 @@ public class PayloadMappingControllerTest {
     when(repo.save(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(null);
 
-    when(modelController.getModelContent(Matchers.eq("playground"), Matchers.eq("com.mycompany:ColorLightIM:1.0.0")))
+    when(modelController.getModelContent(Matchers.eq("com.mycompany:ColorLightIM:1.0.0")))
         .thenReturn(getModelContent());
 
     when(workflowService.start(Matchers.any(), Matchers.any())).thenReturn(null);
@@ -157,12 +157,12 @@ public class PayloadMappingControllerTest {
     ModelController modelController = Mockito.mock(ModelController.class);
 
     try {
-      when(modelController.getModelContentForTargetPlatform(Matchers.eq("playground"),
+      when(modelController.getModelContentForTargetPlatform(
           Matchers.eq("com.mycompany:ColorLightIM:1.0.0"), Matchers.any()))
               .thenReturn(modelContentForSample1());
 
       when(modelController
-          .getModelContent(Matchers.eq("playground"), Matchers.eq("org.eclipse.vorto.examples.fb:ColorLight:1.0.0")))
+          .getModelContent(Matchers.eq("org.eclipse.vorto.examples.fb:ColorLight:1.0.0")))
               .thenReturn(modelContentForSample2());
 
       PayloadMappingController controller = new PayloadMappingController();

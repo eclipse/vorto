@@ -65,7 +65,7 @@ public class AttachmentController extends AbstractRepositoryController {
   @Autowired
   private ITenantService tenantService;
 
-  @ApiOperation(value = "Upload a file to be attached to a model",
+  @ApiOperation(hidden=true,value = "Upload a file to be attached to a model",
 		  notes = "This method is used to upload a single file attached to the specific modelId."
 			  		+ "<br/>"
 			  		+ "<pre>"
@@ -187,7 +187,7 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Delete a file attachment for a model", 
+  @ApiOperation(hidden=true,value = "Delete a file attachment for a model", 
 		  notes = "This API call deletes a specific file attached to a specific model"
 		  		+ "<br/><pre>"
 		  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
