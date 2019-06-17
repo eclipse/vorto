@@ -1429,7 +1429,7 @@ legend.results-border {
 }
 
 footer {
-    padding: 12px 10px 25px;
+    padding: 10px;
     background-color: #fff;
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -1440,6 +1440,10 @@ footer {
 
 .copyright {
 	color: #3a5a82;
+}
+
+footer ul.quicklinks {
+    margin: 0;
 }
 
 footer ul.quicklinks a {
@@ -1857,5 +1861,8 @@ input[type=file]::-webkit-file-upload-button {
     color:grey;
 }
 
-
-    
+.v-center-content {
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
