@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.codegen.bosch;
 
+import org.eclipse.vorto.codegen.bosch.templates.BoschGeneratorConfigUI;
 import org.eclipse.vorto.codegen.bosch.templates.ProvisionDeviceScriptTemplate;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -26,9 +27,13 @@ import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
 
 public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
+  private static final String KEY = "boschiotsuite";
+  
+  private static final BoschGeneratorConfigUI CONFIG_TEMPLATE = new BoschGeneratorConfigUI();
+
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
 
-    GenerationResultZip output = new GenerationResultZip(infomodel, "boschiotsuite");
+    GenerationResultZip output = new GenerationResultZip(infomodel, KEY);
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
@@ -65,26 +70,16 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
     return honoGenerator.generate(infomodel, context);
   }
 
-//  @Override
-//  public String getServiceKey() {
-//    return "boschiotsuite";
-//  }
-
-//  @Override
-//  public GeneratorInfo getInfo() {
-//    return GeneratorInfo.basicInfo("Bosch IoT Suite",
-//        "Generates source code templates for integrating devices with the Bosch IoT Suite.",
-//        "Eclipse Vorto Team").production().withChoiceConfigurationItem("language",
-//            "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"),
-//            ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java"),
-//            ChoiceItem.of("Bosch IoT Gateway Software", "gateway"))
-//    		.withBinaryConfigurationItem("provision", "Device Provisioning Script (requires Postman)");
-//  }
-
   @Override
   public GeneratorPluginInfo getMeta() {
-    // TODO Auto-generated method stub
-    return null;
+    return GeneratorPluginInfo.Builder(KEY)
+        .withConfigurationKey("language","provision")
+        .withConfigurationTemplate(CONFIG_TEMPLATE.getContent().toString())
+        .withName("Bosch IoT Suite")
+        .withVendor("Eclipse Vorto Team")
+        .withDescription("Generates source code templates for integrating devices with the Bosch IoT Suite.")
+        .withDocumentationUrl("https://github.com/eclipse/vorto/blob/master/generators/generator-boschiotsuite/Readme.md")
+        .build();
   }
 
 }
