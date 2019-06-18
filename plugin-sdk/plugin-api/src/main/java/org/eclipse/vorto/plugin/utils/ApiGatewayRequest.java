@@ -114,7 +114,7 @@ public class ApiGatewayRequest {
     return requestNode.get(PATH_PARAMETERS).get(key).asText();
   }
 
-  public Map<String, String> getPathParams() {
+  public Map<String, String> getQueryParams() {
     Map<String, String> params = new HashMap<>();
     if (!requestNode.get(QUERY_STRING_PARAMETERS).isNull()) {
       Iterator<String> iter = requestNode.get(QUERY_STRING_PARAMETERS).fieldNames();
