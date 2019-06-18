@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class ZipDiff {
 
   private static Collection<String> zipFileExtensions =

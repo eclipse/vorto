@@ -11,9 +11,10 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.python
-import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
+
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
 class PythonFbTemplate implements IFileTemplate<FunctionblockModel> {
 	

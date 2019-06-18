@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.testutils;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class GeneratorTestException extends Exception {
 
   private static final long serialVersionUID = 3370665437307728734L;

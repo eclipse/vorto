@@ -12,14 +12,15 @@
  */
 package org.eclipse.vorto.codegen.bosch.templates
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 import org.eclipse.xtext.util.Strings
-import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
-import org.eclipse.vorto.core.api.model.datatype.Entity
 
 /**
  * Template that creates a Postman Script (collection) containing the requests 
@@ -144,15 +145,15 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	def String getJsonObjectType(ObjectPropertyType propertyType) {
-		if (propertyType.type instanceof org.eclipse.vorto.core.api.model.datatype.Enum) {
-			var literals = (propertyType.type as org.eclipse.vorto.core.api.model.datatype.Enum).enums;
+		if (propertyType.type instanceof Enum) {
+			var literals = (propertyType.type as Enum).enums;
 			if (literals.empty) {
 				return "\"\""
 			} else {
 				return "\""+literals.get(0).name+"\"";
 			}
 		} else {
-			return getEntityJson(propertyType.type as org.eclipse.vorto.core.api.model.datatype.Entity).toString();
+			return getEntityJson(propertyType.type as Entity).toString();
 		}
 	}
 	

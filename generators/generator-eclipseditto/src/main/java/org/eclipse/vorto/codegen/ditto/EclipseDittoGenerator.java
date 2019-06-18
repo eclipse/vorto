@@ -12,29 +12,28 @@
  */
 package org.eclipse.vorto.codegen.ditto;
 
-import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.GenerationResultZip;
-import org.eclipse.vorto.codegen.api.GeneratorInfo;
-import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.ditto.schema.SchemaValidatorTask;
-import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.GeneratorException;
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.plugin.generator.ICodeGenerator;
+import org.eclipse.vorto.plugin.generator.IGenerationResult;
+import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.ChainedCodeGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
 
 /**
  * Vorto Generator which generates JSON Schema files for Eclipse Ditto in order to validate whether
  * properties (state) and message payloads (operations, events) are in expeceted JSON format.
  */
-public final class EclipseDittoGenerator implements IVortoCodeGenerator {
+public final class EclipseDittoGenerator implements ICodeGenerator {
 
+  private static final String KEY = "eclipseditto";
   @Override
-  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
 
-    GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
+    GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,KEY );
 
     ChainedCodeGeneratorTask<InformationModel> generator =
         new ChainedCodeGeneratorTask<InformationModel>();
@@ -46,14 +45,11 @@ public final class EclipseDittoGenerator implements IVortoCodeGenerator {
   }
 
   @Override
-  public String getServiceKey() {
-    return "eclipseditto";
-  }
-
-  @Override
-  public GeneratorInfo getInfo() {
-    return GeneratorInfo.basicInfo("Eclipse Ditto",
-        "Creates JSON schema files in order to validate Things managed by Eclipse Ditto.",
-        "Eclipse Ditto Team").production();
+  public GeneratorPluginInfo getMeta() {
+    return GeneratorPluginInfo.Builder(KEY)
+        .withVendor("Eclipse Ditto Team")
+        .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse Ditto.")
+        .withDocumentationUrl("https://www.eclipse.org/ditto")
+        .build();
   }
 }

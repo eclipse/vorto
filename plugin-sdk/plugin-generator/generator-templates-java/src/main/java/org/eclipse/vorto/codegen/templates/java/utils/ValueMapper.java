@@ -16,6 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 public class ValueMapper {
 
   private static final List<String> KEYWORDS =

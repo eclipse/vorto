@@ -19,7 +19,7 @@
 		</dependency>		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>generator-api</artifactId>
+			<artifactId>plugin-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

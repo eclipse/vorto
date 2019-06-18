@@ -12,15 +12,15 @@
  */
 package org.eclipse.vorto.codegen.hono.java.model;
 
-import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
-import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.hono.java.Utils;
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldGetterTemplate;
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldSetterTemplate;
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldTemplate;
-import org.eclipse.vorto.codegen.templates.java.JavaEntityTemplate;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.utils.AbstractTemplateGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.ITemplate;
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldGetterTemplate;
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldSetterTemplate;
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldTemplate;
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaEntityTemplate;
 
 public class JavaClassGeneratorTask extends AbstractTemplateGeneratorTask<Entity> {
 

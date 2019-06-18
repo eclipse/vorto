@@ -24,6 +24,10 @@ import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaClassMethodParameterTemplate implements ITemplate<Param>{
 	
 	override getContent(Param property,InvocationContext invocationContext) {

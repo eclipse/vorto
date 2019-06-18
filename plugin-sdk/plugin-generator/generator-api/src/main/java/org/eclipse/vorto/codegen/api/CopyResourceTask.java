@@ -24,8 +24,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.apache.commons.io.FileUtils;
 
 /**
- * This generator task copies generator plugin resources to the target generated project.
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class CopyResourceTask<Context> implements ICodeGeneratorTask<Context> {
 
   private URL basePath;

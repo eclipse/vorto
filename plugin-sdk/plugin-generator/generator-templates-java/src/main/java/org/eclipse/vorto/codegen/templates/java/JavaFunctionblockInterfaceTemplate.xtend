@@ -23,6 +23,10 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel>{
 	
 	var String classPackage

@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.api;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public interface IGeneratorLookup {
   /**
    * Looks up a registered code generator in the platform by its service key

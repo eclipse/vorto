@@ -19,11 +19,9 @@ import java.util.zip.ZipOutputStream;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * Generation Result that stores all generated files as a zip archieve
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class GenerationResultZip implements IGeneratedWriter, IGenerationResult {
 
   private ZipOutputStream zos;

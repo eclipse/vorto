@@ -16,6 +16,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 class EclipseProjectParserHandler extends DefaultHandler {
 
   private final String[] path;

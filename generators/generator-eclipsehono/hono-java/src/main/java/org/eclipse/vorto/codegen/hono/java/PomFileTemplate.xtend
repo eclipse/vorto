@@ -14,9 +14,10 @@
  *
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.java
-import org.eclipse.vorto.codegen.api.IFileTemplate
+
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

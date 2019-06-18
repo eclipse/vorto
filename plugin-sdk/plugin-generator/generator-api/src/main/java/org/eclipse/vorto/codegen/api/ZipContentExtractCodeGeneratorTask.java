@@ -27,10 +27,9 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.xml.sax.SAXException;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<ModelId> {
 
   private static final String MAVEN_POM = "pom.xml";

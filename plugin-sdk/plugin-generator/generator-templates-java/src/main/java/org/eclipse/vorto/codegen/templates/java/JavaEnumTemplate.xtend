@@ -18,6 +18,10 @@ import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaEnumTemplate implements ITemplate<Enum>{
 	
 	var String enumPackage;

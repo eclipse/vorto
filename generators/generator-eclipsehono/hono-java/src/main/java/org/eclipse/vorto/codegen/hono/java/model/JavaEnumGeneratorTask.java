@@ -12,12 +12,12 @@
  */
 package org.eclipse.vorto.codegen.hono.java.model;
 
-import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
-import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.hono.java.Utils;
-import org.eclipse.vorto.codegen.templates.java.JavaEnumTemplate;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.utils.AbstractTemplateGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.ITemplate;
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaEnumTemplate;
 
 public class JavaEnumGeneratorTask extends AbstractTemplateGeneratorTask<Enum> {
 

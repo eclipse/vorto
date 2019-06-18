@@ -13,10 +13,9 @@
 package org.eclipse.vorto.codegen.api;
 
 /**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- * 
- *         Outputter for generated content produced by the {@link ICodeGenerator}
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public interface IGeneratedWriter {
 
   /**

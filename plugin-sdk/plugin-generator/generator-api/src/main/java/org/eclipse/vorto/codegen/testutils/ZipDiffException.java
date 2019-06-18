@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.testutils;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class ZipDiffException extends RuntimeException {
 
   private static final long serialVersionUID = -4011131944600211989L;

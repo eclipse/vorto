@@ -19,6 +19,10 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.conversion.ModelContentToEcoreConverter;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class IVortoCodeGeneratorAdapter {
 
 	private IVortoCodeGenerator adaptee;

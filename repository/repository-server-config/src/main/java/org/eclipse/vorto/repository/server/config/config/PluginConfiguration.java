@@ -11,16 +11,16 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.importer.IModelImporter;
-import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPluginService;
 import org.eclipse.vorto.repository.plugin.generator.impl.IGeneratorMetrics;
-import org.eclipse.vorto.repository.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.plugin.importer.RemoteImporter;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.ITenantUserService;
@@ -51,7 +51,7 @@ public class PluginConfiguration {
   private ITenantUserService tenantUserService;
   
   @Autowired
-  private ITemporaryStorage fileStorage;
+private ITemporaryStorage fileStorage;
 
   // ++++++++++++++++++++++ GENERATOR PLUGINS +++++++++++++++++++++++++++++++++++++++
 
@@ -71,16 +71,14 @@ public class PluginConfiguration {
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
     service.registerPlugin(
-        new GeneratorPluginInfo("boschiotsuite", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
+        GeneratorPluginConfiguration.of("boschiotsuite", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(
-        new GeneratorPluginInfo("eclipseditto", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
+        GeneratorPluginConfiguration.of("eclipseditto", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
     service.registerPlugin(
-        new GeneratorPluginInfo("eclipsehono", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
-    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
+        GeneratorPluginConfiguration.of("eclipsehono", "2", "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
+    service.registerPlugin(GeneratorPluginConfiguration.of("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
-        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("azure", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }
@@ -92,17 +90,15 @@ public class PluginConfiguration {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
-    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("boschiotsuite", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("eclipseditto", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("eclipsehono", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development"));
-    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
-        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("azure", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }
@@ -113,17 +109,15 @@ public class PluginConfiguration {
     DefaultGeneratorPluginService service = new DefaultGeneratorPluginService();
     service.setGeneratorMetrics(generatorMetrics);
     service.setModelRepositoryFactory(modelRepositoryFactory);
-    service.registerPlugin(new GeneratorPluginInfo("boschiotsuite", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("boschiotsuite", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipseditto", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("eclipseditto", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
-    service.registerPlugin(new GeneratorPluginInfo("eclipsehono", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("eclipsehono", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production"));
-    service.registerPlugin(new GeneratorPluginInfo("protobuf", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("protobuf", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Production","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("jsonschema", "2",
-        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
-    service.registerPlugin(new GeneratorPluginInfo("azure", "2",
+    service.registerPlugin(GeneratorPluginConfiguration.of("azure", "2",
         "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development","demo"));
     return service;
   }
@@ -135,13 +129,12 @@ public class PluginConfiguration {
   @Profile({ "local", "int" })
   public IModelImporter createExampleImporter() {
     ImporterPluginInfo info = new ImporterPluginInfo("lwm2m", "LwM2M",
-        "Converts LwM2M descriptions to Vorto", "Vorto Team",
-        "https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development", ".xml");
-    return createImporter(info);
+        "Converts LwM2M descriptions to Vorto", "Vorto Team",".xml");
+    return createImporter(info,"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development");
   }
   
-  private RemoteImporter createImporter(ImporterPluginInfo info) {
-    RemoteImporter importer = new RemoteImporter(info);
+  private RemoteImporter createImporter(ImporterPluginInfo info, String endpointUrl) {
+    RemoteImporter importer = new RemoteImporter(info,endpointUrl);
     importer.setModelParserFactory(this.modelParserFactory);
     importer.setModelRepoFactory(this.modelRepositoryFactory);
     importer.setTenantUserService(tenantUserService);
@@ -149,5 +142,5 @@ public class PluginConfiguration {
     importer.setUploadStorage(fileStorage);
     importer.setUserRepository(userAccountService);
     return importer;
-  }
+}
 }

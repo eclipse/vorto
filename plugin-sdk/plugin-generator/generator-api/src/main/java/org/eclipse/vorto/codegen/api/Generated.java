@@ -13,8 +13,9 @@
 package org.eclipse.vorto.codegen.api;
 
 /**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class Generated {
   public static final String ROOT_FOLDER_PATH = null;
 

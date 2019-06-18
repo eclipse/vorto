@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.codegen.ditto.schema.tasks;
 
-import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
@@ -22,6 +19,9 @@ import org.eclipse.vorto.core.api.model.functionblock.Fault;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
+import org.eclipse.vorto.plugin.generator.utils.AbstractTemplateGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.ICodeGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.ITemplate;
 
 public final class ValidationTaskFactory {
 

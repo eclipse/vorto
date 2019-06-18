@@ -10,11 +10,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.plugin;
+package org.eclipse.vorto.plugin;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class PluginInfo {
+public abstract class PluginInfo {
 
   private String key;
   private String name;
@@ -22,9 +20,6 @@ public class PluginInfo {
   private String vendor;
   private String documentationUrl;
   
-  @JsonIgnore
-  private String baseEndpointUrl;
-
   public String getKey() {
     return key;
   }
@@ -64,13 +59,37 @@ public class PluginInfo {
   public void setDocumentationUrl(String documentationUrl) {
     this.documentationUrl = documentationUrl;
   }
-
-  public String getBaseEndpointUrl() {
-    return baseEndpointUrl;
+  
+  public static class PluginBuilder<T extends PluginInfo> { 
+    
+    protected T info;
+    
+    public PluginBuilder(T info) {
+      this.info = info;
+    }
+    
+    public PluginBuilder<T> withDescription(String description) {
+      info.setDescription(description);
+      return this;
+    }
+    
+    public PluginBuilder<T> withName(String name) {
+      info.setName(name);
+      return this;
+    }
+    
+    public PluginBuilder<T> withVendor(String vendor) {
+      info.setVendor(vendor);
+      return this;
+    }
+    
+    public PluginBuilder<T> withDocumentationUrl(String documentationUrl) {
+      info.setDocumentationUrl(documentationUrl);
+      return this;
+    }
+    
+    public T build() {
+      return info;
+    }
   }
-
-  public void setBaseEndpointUrl(String baseEndpointUrl) {
-    this.baseEndpointUrl = baseEndpointUrl;
-  } 
-
 }

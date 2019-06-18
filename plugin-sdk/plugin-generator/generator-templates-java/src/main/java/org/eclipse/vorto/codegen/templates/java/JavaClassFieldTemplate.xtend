@@ -24,6 +24,10 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaClassFieldTemplate implements ITemplate<Property> {
 	override getContent(Property property,InvocationContext invocationContext) {
 		'''

@@ -14,23 +14,23 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.java.model
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.hono.java.Utils
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldGetterTemplate
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldSetterTemplate
-import org.eclipse.vorto.codegen.templates.java.JavaClassFieldTemplate
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldGetterTemplate
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldSetterTemplate
+import org.eclipse.vorto.plugin.generator.utils.javatemplates.JavaClassFieldTemplate
 
 class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 
-	private InformationModel informationModelContext;
+	InformationModel informationModelContext;
 	
-	private JavaClassFieldTemplate propertyTemplate;
-	private JavaClassFieldSetterTemplate propertySetterTemplate;
-	private JavaClassFieldGetterTemplate propertyGetterTemplate;
+	JavaClassFieldTemplate propertyTemplate;
+	JavaClassFieldSetterTemplate propertySetterTemplate;
+	JavaClassFieldGetterTemplate propertyGetterTemplate;
 	
 	new(InformationModel context) {
 		this.informationModelContext = context;

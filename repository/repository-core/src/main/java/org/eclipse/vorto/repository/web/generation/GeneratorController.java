@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.web.generation;
 
 import java.util.Collection;
-import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPluginService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -43,7 +43,7 @@ public class GeneratorController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/rankings/{top}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<GeneratorPluginInfo> getMostlyUsedGenerators(
+  public Collection<GeneratorPluginConfiguration> getMostlyUsedGenerators(
       @ApiParam(value = "The upper limit number of top code generator list",
           required = true) final @PathVariable int top) {
     return this.generatorService.getMostlyUsed(top);

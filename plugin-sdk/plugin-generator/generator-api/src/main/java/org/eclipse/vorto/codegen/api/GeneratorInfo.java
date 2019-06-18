@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class GeneratorInfo {
 
   private String name;

@@ -14,6 +14,10 @@ package org.eclipse.vorto.codegen.api;
 
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class SingleFileContentCodeGeneratorTask implements ICodeGeneratorTask<ModelId> {
 
   private String fileName;

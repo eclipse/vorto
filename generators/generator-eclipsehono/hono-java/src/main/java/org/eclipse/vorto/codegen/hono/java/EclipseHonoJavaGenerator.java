@@ -12,16 +12,6 @@
  */
 package org.eclipse.vorto.codegen.hono.java;
 
-import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.GenerationResultZip;
-import org.eclipse.vorto.codegen.api.GeneratorInfo;
-import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
-import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.hono.java.model.FunctionblockTemplate;
 import org.eclipse.vorto.codegen.hono.java.model.InformationModelTemplate;
 import org.eclipse.vorto.codegen.hono.java.model.JavaClassGeneratorTask;
@@ -29,36 +19,42 @@ import org.eclipse.vorto.codegen.hono.java.model.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.hono.java.service.IDataServiceTemplate;
 import org.eclipse.vorto.codegen.hono.java.service.hono.HonoDataService;
 import org.eclipse.vorto.codegen.hono.java.service.hono.HonoMqttClientTemplate;
-import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
-import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.GeneratorException;
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.plugin.generator.ICodeGenerator;
+import org.eclipse.vorto.plugin.generator.IGenerationResult;
+import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.ChainedCodeGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
+import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.plugin.generator.utils.IGeneratedWriter;
 
 /**
  * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector.
  * The data is compliant to a Vorto & Ditto format.
  *
  */
-public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
+public class EclipseHonoJavaGenerator implements ICodeGenerator {
 
   @Override
-  public IGenerationResult generate(InformationModel model, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-    GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
+  public IGenerationResult generate(InformationModel model, InvocationContext context) throws GeneratorException {
+    GenerationResultZip output = new GenerationResultZip(model, "hono-java");
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
-    result.append(generateJava(model, context, monitor));
+    result.append(generateJava(model, context));
 
 
     return output;
   }
 
-  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) {
-    GenerationResultZip output = new GenerationResultZip(infomodel, getServiceKey());
+  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context) {
+    GenerationResultZip output = new GenerationResultZip(infomodel, "hono-java");
     ChainedCodeGeneratorTask<InformationModel> generator =
         new ChainedCodeGeneratorTask<InformationModel>();
 
@@ -82,10 +78,10 @@ public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
 
       FunctionBlock fb = fbProperty.getType().getFunctionblock();
 
-      for (Entity entity : Utils.getReferencedEntities(fb)) {
+      for (Entity entity : org.eclipse.vorto.plugin.utils.Utils.getReferencedEntities(fb)) {
         generateForEntity(infomodel, entity, output);
       }
-      for (Enum en : Utils.getReferencedEnums(fb)) {
+      for (Enum en : org.eclipse.vorto.plugin.utils.Utils.getReferencedEnums(fb)) {
         generateForEnum(infomodel, en, output);
       }
     }
@@ -104,14 +100,20 @@ public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
   }
 
   @Override
-  public String getServiceKey() {
-    return "hono-java";
+  public GeneratorPluginInfo getMeta() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  @Override
-  public GeneratorInfo getInfo() {
-    return GeneratorInfo.basicInfo("Eclipse Hono Java Generator",
-        "Generates device java source code that integrates with Eclipse Hono and Eclipse Ditto.",
-        "Eclipse Vorto Team");
-  }
+//  @Override
+//  public String getServiceKey() {
+//    return "hono-java";
+//  }
+//
+//  @Override
+//  public GeneratorInfo getInfo() {
+//    return GeneratorInfo.basicInfo("Eclipse Hono Java Generator",
+//        "Generates device java source code that integrates with Eclipse Hono and Eclipse Ditto.",
+//        "Eclipse Vorto Team");
+//  }
 }

@@ -11,19 +11,18 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.python
-import org.eclipse.vorto.codegen.api.GenerationResultZip
-import org.eclipse.vorto.codegen.api.GeneratorInfo
-import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
-import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
-import org.eclipse.vorto.codegen.api.InvocationContext
+
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.ICodeGenerator
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip
+import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate
 
-class PythonGenerator implements IVortoCodeGenerator {
+class PythonGenerator implements ICodeGenerator {
 
-	override generate(InformationModel infomodel, InvocationContext context, IVortoCodeGenProgressMonitor monitor) {
-		var output = new GenerationResultZip(infomodel,getServiceKey());
+	override generate(InformationModel infomodel, InvocationContext context) {
+		var output = new GenerationResultZip(infomodel,"hono-python");
  		
 		var imTemplateGen = new GeneratorTaskFromFileTemplate(new PythonImTemplate())
  		imTemplateGen.generate(infomodel,context,output)		
@@ -52,14 +51,19 @@ class PythonGenerator implements IVortoCodeGenerator {
  		return output
 	}
 
-	override getServiceKey() {
-		return "hono-python";
-	}
-
-	override GeneratorInfo getInfo() {
-		return GeneratorInfo.basicInfo("Eclipse Hono Python Generator",
-			"This generator allows for easy implementation of a device sending telemetry data to an MQTT broker based on Eclipse Paho for Python.",
-			"Eclipse Vorto Team")
+//	override getServiceKey() {
+//		return "hono-python";
+//	}
+//
+//	override GeneratorInfo getInfo() {
+//		return GeneratorInfo.basicInfo("Eclipse Hono Python Generator",
+//			"This generator allows for easy implementation of a device sending telemetry data to an MQTT broker based on Eclipse Paho for Python.",
+//			"Eclipse Vorto Team")
+//		}
+		
+		override getMeta() {
+			throw new UnsupportedOperationException("TODO: auto-generated method stub")
 		}
+		
 	}
 	
