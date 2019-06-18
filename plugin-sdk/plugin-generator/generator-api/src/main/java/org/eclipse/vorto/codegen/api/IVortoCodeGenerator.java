@@ -15,10 +15,9 @@ package org.eclipse.vorto.codegen.api;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public interface IVortoCodeGenerator {
 
   /**

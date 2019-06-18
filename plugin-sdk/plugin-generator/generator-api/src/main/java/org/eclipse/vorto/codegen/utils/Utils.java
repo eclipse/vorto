@@ -31,6 +31,10 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class Utils {
 
   public static InformationModel toInformationModel(Model model) {

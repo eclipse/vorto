@@ -17,6 +17,10 @@ import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class GenerationResultBuilder {
 
   private IGenerationResult result;

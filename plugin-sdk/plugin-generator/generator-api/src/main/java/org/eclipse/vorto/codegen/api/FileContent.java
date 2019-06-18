@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.api;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class FileContent {
 
   private String fileName;

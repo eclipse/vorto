@@ -21,9 +21,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * AWS Lambda Gateway Response
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class ApiGatewayResponse {
   private final int statusCode;
   private final String body;

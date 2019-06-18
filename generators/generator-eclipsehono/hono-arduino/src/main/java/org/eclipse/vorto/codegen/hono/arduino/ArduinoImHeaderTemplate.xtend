@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
-class ArduinoImHeaderTemplate extends org.eclipse.vorto.codegen.hono.arduino.ArduinoTemplate<InformationModel> {
+class ArduinoImHeaderTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
 		return model.name + ".h";

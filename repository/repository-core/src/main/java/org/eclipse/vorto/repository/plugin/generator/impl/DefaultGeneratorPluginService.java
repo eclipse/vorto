@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -31,7 +31,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
 import org.eclipse.vorto.repository.plugin.generator.GenerationException;
-import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
-  private Map<String, GeneratorPluginInfo> generatorsPlugins = new HashMap<>();
+  private Map<String, GeneratorPluginConfiguration> generatorsPlugins = new HashMap<>();
 
   @Autowired
   private IGeneratorMetrics generatorMetrics;
@@ -65,15 +65,13 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private RestTemplate restTemplate = null;
 
-  private static final DefaultGeneratorConfigUI DEFAULT_CONFIG = new DefaultGeneratorConfigUI();
-  
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGeneratorPluginService.class);
 
   public DefaultGeneratorPluginService() {
     this.restTemplate = new RestTemplate();
   }
 
-  public void registerPlugin(GeneratorPluginInfo plugin) {
+  public void registerPlugin(GeneratorPluginConfiguration plugin) {
     this.generatorsPlugins.put(plugin.getKey(), plugin);
 
     if (generatorMetrics.findByGeneratorKey(plugin.getKey()) == null) {
@@ -87,43 +85,39 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   }
 
   @Override
-  public GeneratorPluginInfo getPluginInfo(String serviceKey, boolean includeConfigUI) {
-    GeneratorPluginInfo plugin = this.generatorsPlugins.get(serviceKey);
+  public GeneratorPluginConfiguration getPluginInfo(String serviceKey, boolean includeConfigUI) {
+    GeneratorPluginConfiguration plugin = this.generatorsPlugins.get(serviceKey);
 
     if (plugin.getName() == null) { // load from remote server
-        GeneratorPluginInfo pluginLoadedFromServer = loadfromRemote(plugin);
-        pluginLoadedFromServer.setApiVersion(plugin.getApiVersion());
-        pluginLoadedFromServer.setBaseEndpointUrl(plugin.getBaseEndpointUrl());
-        pluginLoadedFromServer.setTags(plugin.getTags());
-        
-        if (pluginLoadedFromServer.getConfigTemplate() == null || pluginLoadedFromServer.getConfigTemplate().length() == 0) {
-          pluginLoadedFromServer.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
-        }
-        
-        this.generatorsPlugins.put(serviceKey, pluginLoadedFromServer);
-        plugin = pluginLoadedFromServer;
+      GeneratorPluginConfiguration pluginLoadedFromServer = loadfromRemote(plugin);
+
+      this.generatorsPlugins.put(serviceKey, pluginLoadedFromServer);
+      plugin = pluginLoadedFromServer;
     }
 
     plugin.setAmountOfDownloads(
         this.generatorMetrics.findByGeneratorKey(serviceKey).getInvocationCount());
+    
     return plugin;
   }
 
-  private GeneratorPluginInfo loadfromRemote(GeneratorPluginInfo plugin) {
-    ResponseEntity<GeneratorPluginInfo> response;
-    if (plugin.isApiVersion("1")) {
-      response = restTemplate.getForEntity(
-          plugin.getBaseEndpointUrl()
-              + "/rest/generators/{pluginkey}/generate/info?includeConfigUI=true",
-          GeneratorPluginInfo.class, plugin.getKey());
-    } else {
-      response = restTemplate.getForEntity(
-          plugin.getBaseEndpointUrl()
-              + "/api/2/plugins/generators/{pluginkey}/info",
-          GeneratorPluginInfo.class, plugin.getKey());
-    }
+  private GeneratorPluginConfiguration loadfromRemote(GeneratorPluginConfiguration plugin) {
 
-    return response.getBody();
+    if (plugin.isApiVersion("1")) {
+      ResponseEntity<GeneratorPluginInfoV1> response = restTemplate.getForEntity(
+          plugin.getEndpointUrl()
+              + "/rest/generators/{pluginkey}/generate/info?includeConfigUI=true",
+          GeneratorPluginInfoV1.class, plugin.getKey());
+      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
+          plugin.getTags());
+    } else {
+      ResponseEntity<GeneratorPluginInfo> response = restTemplate.getForEntity(
+          plugin.getEndpointUrl() + "/api/2/plugins/generators/{pluginkey}/info",
+          GeneratorPluginInfo.class, plugin.getKey());
+
+      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
+          plugin.getTags());
+    }
   }
 
   @Override
@@ -139,14 +133,14 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
     generatorEntity.increaseInvocationCount();
     this.generatorMetrics.save(generatorEntity);
 
-    GeneratorPluginInfo plugin = this.getPluginInfo(serviceKey, false);
+    GeneratorPluginConfiguration plugin = this.getPluginInfo(serviceKey, false);
 
     if (plugin.isApiVersion("2")) {
       return doGenerateWithApiVersion2(userContext, modelId, serviceKey, requestParams,
-          plugin.getBaseEndpointUrl());
+          plugin.getEndpointUrl());
     } else {
       return doGenerateWithApiVersion1(userContext, modelId, serviceKey, requestParams,
-          plugin.getBaseEndpointUrl());
+          plugin.getEndpointUrl());
     }
   }
 
@@ -238,7 +232,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   }
 
   @Override
-  public Collection<GeneratorPluginInfo> getMostlyUsed(int top) {
+  public Collection<GeneratorPluginConfiguration> getMostlyUsed(int top) {
     List<GeneratorMetric> topResult = new ArrayList<GeneratorMetric>();
 
     for (GeneratorMetric entity : this.generatorMetrics.findByClassifier("platform")) {
@@ -259,7 +253,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
       }
     });
 
-    List<GeneratorPluginInfo> result = new ArrayList<>(top);
+    List<GeneratorPluginConfiguration> result = new ArrayList<>(top);
     int counter = 0;
     for (GeneratorMetric entity : topResult) {
       if (counter < top) {
@@ -295,6 +289,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   /**
    * Removes the cached plugin meta data for the given plugin key
+   * 
    * @param pluginKey
    */
   public void clearPluginCache(String pluginKey) {

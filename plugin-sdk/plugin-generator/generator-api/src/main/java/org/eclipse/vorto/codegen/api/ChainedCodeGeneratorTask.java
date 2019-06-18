@@ -16,10 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helper Generator Task that is able to execute many generator tasks for the same model element
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class ChainedCodeGeneratorTask<Element> implements ICodeGeneratorTask<Element> {
 
   private List<ICodeGeneratorTask<Element>> tasks = new ArrayList<ICodeGeneratorTask<Element>>();

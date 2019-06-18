@@ -11,8 +11,9 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.python
-import org.eclipse.vorto.codegen.api.IFileTemplate
+
 import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
 abstract class PythonTemplate <T extends Model> implements IFileTemplate<T> {
     public String rootPath;

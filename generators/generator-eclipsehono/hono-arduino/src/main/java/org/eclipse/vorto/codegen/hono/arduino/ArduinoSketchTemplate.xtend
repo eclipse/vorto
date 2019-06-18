@@ -13,7 +13,7 @@
 package org.eclipse.vorto.codegen.hono.arduino
 
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
 class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 	

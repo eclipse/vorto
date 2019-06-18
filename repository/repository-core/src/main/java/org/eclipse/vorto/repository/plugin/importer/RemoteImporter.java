@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
+import org.eclipse.vorto.plugin.importer.ImportValidationResult;
+import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
@@ -36,13 +38,16 @@ import org.springframework.web.client.RestTemplate;
 public class RemoteImporter extends AbstractModelImporter {
 
   private ImporterPluginInfo info;
+  
+  private String endpointUrl;
 
   private RestTemplate restTemplate;
 
-  public RemoteImporter(ImporterPluginInfo info) {
+  public RemoteImporter(ImporterPluginInfo info, String endpointUrl) {
     super(info.getFileType());
     this.info = info;
     this.restTemplate = new RestTemplate();
+    this.endpointUrl = endpointUrl;
   }
 
   @Override
@@ -68,7 +73,7 @@ public class RemoteImporter extends AbstractModelImporter {
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
     ResponseEntity<ImportValidationResult> validationResult = restTemplate.postForEntity(
-        this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_validation",
+        this.endpointUrl + "/api/2/plugins/importers/{pluginkey}/file_validation",
         requestEntity, ImportValidationResult.class, this.info.getKey());
 
     ImportValidationResult result = validationResult.getBody();
@@ -97,7 +102,7 @@ public class RemoteImporter extends AbstractModelImporter {
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
     ResponseEntity<byte[]> validationResult = restTemplate.postForEntity(
-        this.info.getBaseEndpointUrl() + "/api/2/plugins/importers/{pluginkey}/file_conversion",
+        this.endpointUrl + "/api/2/plugins/importers/{pluginkey}/file_conversion",
         requestEntity, byte[].class, this.info.getKey());
 
     IModelWorkspace workspace = IModelWorkspace.newReader()

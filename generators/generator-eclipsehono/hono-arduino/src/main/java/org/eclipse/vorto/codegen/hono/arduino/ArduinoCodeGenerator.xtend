@@ -12,22 +12,20 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.GenerationResultZip
-import org.eclipse.vorto.codegen.api.GeneratorInfo
-import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
-import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
-import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
-import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.GeneratorException
+import org.eclipse.vorto.plugin.generator.ICodeGenerator
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip
+import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate
+import org.eclipse.vorto.plugin.utils.Utils
 
-class ArduinoCodeGenerator implements IVortoCodeGenerator {
+class ArduinoCodeGenerator implements ICodeGenerator {
 
-	override generate(InformationModel infomodel, InvocationContext context, IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+	override generate(InformationModel infomodel, InvocationContext context) throws GeneratorException {
 
-		var output = new GenerationResultZip(infomodel,getServiceKey());
+		var output = new GenerationResultZip(infomodel,"arduinocodegenerator");
 		
 		var imHeaderTemplateGen = new GeneratorTaskFromFileTemplate(new ArduinoImHeaderTemplate())
 		imHeaderTemplateGen.generate(infomodel,context,output)
@@ -72,12 +70,16 @@ class ArduinoCodeGenerator implements IVortoCodeGenerator {
 		return output
 	}
 		
-	override getServiceKey() {
-		return "arduinocodegenerator";
-	}
+//	override getServiceKey() {
+//		return "arduinocodegenerator";
+//	}
+//	
+//	override getInfo() {
+//		return GeneratorInfo.basicInfo("Arduino","Generates Arduino C code that connects to Eclipse Hono via MQTT","Vorto Community").production();
+//	}
 	
-	override getInfo() {
-		return GeneratorInfo.basicInfo("Arduino","Generates Arduino C code that connects to Eclipse Hono via MQTT","Vorto Community").production();
+	override getMeta() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 }

@@ -20,6 +20,10 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 	
 	var String classPackage

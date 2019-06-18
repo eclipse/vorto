@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.api;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public interface IVortoCodeGenInfrastructureProgressMonitor {
 
   void monitorInfrastructureWarning(final String message);

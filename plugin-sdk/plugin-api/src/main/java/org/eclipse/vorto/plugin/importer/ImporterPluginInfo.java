@@ -10,9 +10,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.plugin.importer;
+package org.eclipse.vorto.plugin.importer;
 
-import org.eclipse.vorto.repository.plugin.PluginInfo;
+import org.eclipse.vorto.plugin.PluginInfo;
 
 public class ImporterPluginInfo extends PluginInfo {
 
@@ -21,12 +21,11 @@ public class ImporterPluginInfo extends PluginInfo {
   protected ImporterPluginInfo() {    
   }
   
-  public ImporterPluginInfo(String pluginkey, String name, String description, String vendor, String baseUrl, String fileType) {
+  public ImporterPluginInfo(String pluginkey, String name, String description, String vendor, String fileType) {
     setKey(pluginkey);
     setName(name);
     setDescription(description);
     setVendor(vendor);
-    setBaseEndpointUrl(baseUrl);
     setFileType(fileType);
     
   }

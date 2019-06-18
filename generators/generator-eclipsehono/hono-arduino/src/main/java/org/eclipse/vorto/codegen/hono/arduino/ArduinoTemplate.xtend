@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.PropertyType
-import org.eclipse.vorto.core.api.model.model.Model
-import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
+import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.plugin.utils.Utils
 
 abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 	

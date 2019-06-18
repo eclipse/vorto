@@ -12,39 +12,38 @@
  */
 package org.eclipse.vorto.codegen.bosch;
 
-import org.eclipse.vorto.codegen.api.GenerationResultZip;
-import org.eclipse.vorto.codegen.api.GeneratorInfo;
-import org.eclipse.vorto.codegen.api.GeneratorInfo.ChoiceItem;
-import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
-import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
+import org.eclipse.vorto.codegen.bosch.templates.BoschGeneratorConfigUI;
 import org.eclipse.vorto.codegen.bosch.templates.ProvisionDeviceScriptTemplate;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
-import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
-import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.GeneratorException;
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.plugin.generator.ICodeGenerator;
+import org.eclipse.vorto.plugin.generator.IGenerationResult;
+import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
+import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
+import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
 
-public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
+public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
-  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+  private static final String KEY = "boschiotsuite";
+  
+  private static final BoschGeneratorConfigUI CONFIG_TEMPLATE = new BoschGeneratorConfigUI();
 
-    GenerationResultZip output = new GenerationResultZip(infomodel, getServiceKey());
+  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
+
+    GenerationResultZip output = new GenerationResultZip(infomodel, KEY);
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
     String platform = invocationContext.getConfigurationProperties().getOrDefault("language", "");
     if (platform.equalsIgnoreCase("arduino")) {
-      result.append(generateArduino(infomodel, invocationContext, monitor));
+      result.append(generateArduino(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("python")) {
-      result.append(generatePython(infomodel, invocationContext, monitor));
+      result.append(generatePython(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("java")) {
-      result.append(generateJava(infomodel, invocationContext, monitor));
-    } else if (platform.equalsIgnoreCase("gateway")) {
-      result.append(generateGateway(infomodel, invocationContext, monitor));
+      result.append(generateJava(infomodel, invocationContext));
     } 
     
     String provisionScript = invocationContext.getConfigurationProperties().getOrDefault("provision", "false");
@@ -55,46 +54,32 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
     return output;
   }
 
-  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context) throws GeneratorException {
 
     EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
-    return honoGenerator.generate(infomodel, context, monitor);
+    return honoGenerator.generate(infomodel, context);
   }
 
-  private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+  private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context) throws GeneratorException {
     EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
-    return honoGenerator.generate(infomodel, context, monitor);
+    return honoGenerator.generate(infomodel, context);
   }
 
-  private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+  private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context) throws GeneratorException {
     EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
-    return honoGenerator.generate(infomodel, context, monitor);
-  }
-
-  private IGenerationResult generateGateway(InformationModel infomodel, InvocationContext context,
-      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-    ProSystGenerator generator = new ProSystGenerator();
-    return generator.generate(infomodel, context, monitor);
-
+    return honoGenerator.generate(infomodel, context);
   }
 
   @Override
-  public String getServiceKey() {
-    return "boschiotsuite";
-  }
-
-  @Override
-  public GeneratorInfo getInfo() {
-    return GeneratorInfo.basicInfo("Bosch IoT Suite",
-        "Generates source code templates for integrating devices with the Bosch IoT Suite.",
-        "Eclipse Vorto Team").production().withChoiceConfigurationItem("language",
-            "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"),
-            ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java"),
-            ChoiceItem.of("Bosch IoT Gateway Software", "gateway"))
-    		.withBinaryConfigurationItem("provision", "Device Provisioning Script (requires Postman)");
+  public GeneratorPluginInfo getMeta() {
+    return GeneratorPluginInfo.Builder(KEY)
+        .withConfigurationKey("language","provision")
+        .withConfigurationTemplate(CONFIG_TEMPLATE.getContent().toString())
+        .withName("Bosch IoT Suite")
+        .withVendor("Eclipse Vorto Team")
+        .withDescription("Generates source code templates for integrating devices with the Bosch IoT Suite.")
+        .withDocumentationUrl("https://github.com/eclipse/vorto/blob/master/generators/generator-boschiotsuite/Readme.md")
+        .build();
   }
 
 }

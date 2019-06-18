@@ -13,10 +13,9 @@
 package org.eclipse.vorto.codegen.api;
 
 /**
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public enum ServiceClassifier {
   /**
    * classifies a generator to be documentation related

@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.plugin.importer;
+package org.eclipse.vorto.plugin.importer;
 
 import org.eclipse.vorto.model.ModelId;
 

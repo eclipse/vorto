@@ -14,14 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ditto.schema
 
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.ditto.schema.tasks.template.ConstraintTemplate
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
 class Utils {
 	var static ConstraintTemplate constraintTemplate = new ConstraintTemplate()
 	
-	public static def getConstraintsContent(ConstraintRule constraintRule,InvocationContext invocationContext){
+	static def getConstraintsContent(ConstraintRule constraintRule,InvocationContext invocationContext){
 		'''
 		«IF constraintRule !== null»
 			«FOR constraint : constraintRule.constraints BEFORE ',\n' SEPARATOR ','»

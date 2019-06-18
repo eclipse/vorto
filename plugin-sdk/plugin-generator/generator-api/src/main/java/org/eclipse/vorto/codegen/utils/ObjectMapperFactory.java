@@ -38,6 +38,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class ObjectMapperFactory {
 
   private static ObjectMapper mapper = null;

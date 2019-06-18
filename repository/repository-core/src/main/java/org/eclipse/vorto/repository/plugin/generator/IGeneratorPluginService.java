@@ -40,7 +40,7 @@ public interface IGeneratorPluginService {
    * @param includeUITemplate
    * @return
    */
-  GeneratorPluginInfo getPluginInfo(String pluginKey, boolean includeUITemplate);
+  GeneratorPluginConfiguration getPluginInfo(String pluginKey, boolean includeUITemplate);
 
   /**
    * Returns the mostly used generators
@@ -48,7 +48,7 @@ public interface IGeneratorPluginService {
    * @param top the upper limit of results, e.g. top 3 or top 10
    * @return
    */
-  Collection<GeneratorPluginInfo> getMostlyUsed(int top);
+  Collection<GeneratorPluginConfiguration> getMostlyUsed(int top);
 
   /**
    * Invokes a code generator for a information model Id

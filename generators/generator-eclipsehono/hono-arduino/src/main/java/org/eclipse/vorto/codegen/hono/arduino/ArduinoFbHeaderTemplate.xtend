@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.codegen.utils.Utils
-
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.utils.Utils
 
 class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 	

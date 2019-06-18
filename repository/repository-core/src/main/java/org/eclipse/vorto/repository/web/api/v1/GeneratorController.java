@@ -35,7 +35,7 @@ import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
-import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginInfo;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -222,11 +222,11 @@ public class GeneratorController extends AbstractRepositoryController {
 				    + "<br/>The generators are grouped under 'production', 'infra' and 'demo' tags.")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved generators successfully")})
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<GeneratorPluginInfo> getRegisteredGeneratorServices(
+  public Collection<GeneratorPluginConfiguration> getRegisteredGeneratorServices(
       @ApiParam(value = "Prioritize results with given tag", allowableValues = "demo,infra,production",
           required = false) @RequestParam(value = "orderBy", required = false,
               defaultValue = "production") String orderBy) {
-    List<GeneratorPluginInfo> generatorInfoResult = new ArrayList<>();
+    List<GeneratorPluginConfiguration> generatorInfoResult = new ArrayList<>();
 
     for (String serviceKey : this.generatorService.getKeys()) {
       try {
@@ -268,7 +268,7 @@ public class GeneratorController extends AbstractRepositoryController {
 		  notes = "This method retrieves information of a specific generator. The input that needs to be passed is the 'servicekey' of the generator.")
   @RequestMapping(value = "/{serviceKey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public GeneratorPluginInfo getGeneratorInfo(
+  public GeneratorPluginConfiguration getGeneratorInfo(
       @ApiParam(value = "generator service key", required = true) @PathVariable String serviceKey) {
 
     return this.generatorService.getPluginInfo(serviceKey, true);

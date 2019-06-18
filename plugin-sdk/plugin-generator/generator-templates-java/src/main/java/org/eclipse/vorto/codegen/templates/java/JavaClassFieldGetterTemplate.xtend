@@ -24,6 +24,10 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaClassFieldGetterTemplate implements ITemplate<Property> {
 	
 	var String getterPrefix;
