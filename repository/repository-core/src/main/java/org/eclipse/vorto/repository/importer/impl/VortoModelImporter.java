@@ -15,6 +15,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
@@ -42,6 +44,7 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.stereotype.Component;
 
 /**
@@ -73,29 +76,64 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   /**
-   * changes the namespace of the uploaded vorto model, whereby it ignores
+   * changes the namespace of the uploaded vorto model(s) , if target namespace is specified
    */
   @Override
   protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
     if (targetNamespace.isPresent()) {
-      if (fileUpload.getFileExtension().endsWith(".zip")) {
-        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
-        
+      if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
+        ModelWorkspaceReader reader = IModelWorkspace.newReader();
         getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
             .forEach(extractedFile -> {
-              zipFile.addToZip(refactor(extractedFile, targetNamespace.get()));
+              reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
             });
-              
+        IModelWorkspace workspace = reader.read();  
+        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(targetNamespace.get()).execute();
+        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
+        for (Model model : changeSet.get()) {
+          ModelResource resource = new ModelResource(model);
+          try {
+            zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
+          } catch (IOException e) {
+            logger.error("Could not serialize model to DSL", e);
+          }
+        }
         return zipFile.getFileUpload();
       } else {
-        return refactor(fileUpload, targetNamespace.get());
+        return refactor(addVortolangIfMissing(fileUpload), targetNamespace.get());
       }
     } else {
-      return fileUpload;
+      return addVortolangIfMissing(fileUpload);
     }
   }
+  
+  /**
+   * adds Vortolang 1.0 attribute if the uploaded file does not define it.
+   * @param fileUpload
+   * @return
+   */
+  private FileUpload addVortolangIfMissing(FileUpload fileUpload) {
+    String currentModelContent = null;
+    try {
+      currentModelContent = new String(fileUpload.getContent(),"utf-8");
+    } catch (UnsupportedEncodingException e1) {
+        // ignore as encoding is supported
+    }
+    
+    if (!currentModelContent.contains("vortolang 1.0")) {
+      final String newline = System.getProperty("line.separator");
+      StringBuilder contentBuilder = new StringBuilder();
+      contentBuilder.append("vortolang 1.0");
+      contentBuilder.append(newline);
+      contentBuilder.append(newline);
+      contentBuilder.append(currentModelContent);
+      currentModelContent = contentBuilder.toString();
+    }
+    
+    return FileUpload.create(fileUpload.getFileName(), currentModelContent.getBytes());
+  }
 
-  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) {
+  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) { 
     IModelWorkspace workspace =
         IModelWorkspace.newReader().addFile(new ByteArrayInputStream(fileUpload.getContent()),
             ModelType.fromFileName(fileUpload.getFileName())).read();
