@@ -19,30 +19,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class GeneratorConfigUIBuilder {
+public class ConfigTemplateBuilder {
 
   private List<ConfigurationItem> configurationItems =
-      new ArrayList<GeneratorConfigUIBuilder.ConfigurationItem>();
+      new ArrayList<ConfigTemplateBuilder.ConfigurationItem>();
 
-  public static GeneratorConfigUIBuilder builder() {
-    GeneratorConfigUIBuilder info = new GeneratorConfigUIBuilder();
+  public static ConfigTemplateBuilder builder() {
+    ConfigTemplateBuilder info = new ConfigTemplateBuilder();
     return info;
   }
 
-  private GeneratorConfigUIBuilder() {}
+  private ConfigTemplateBuilder() {}
   
-  public GeneratorConfigUIBuilder withBinaryConfigurationItem(String key, String label) {
+  public ConfigTemplateBuilder withBinaryConfigurationItem(String key, String label) {
     this.configurationItems.add(new BinaryConfigurationItem(key, label));
     return this;
   }
 
-  public GeneratorConfigUIBuilder withChoiceConfigurationItem(String key, String label,
+  public ConfigTemplateBuilder withChoiceConfigurationItem(String key, String label,
       ChoiceItem... choices) {
     this.configurationItems.add(new ChoiceConfigurationItem(key, label, choices));
     return this;
   }
 
-  public GeneratorConfigUIBuilder withTextConfigurationItem(String key, String label,
+  public ConfigTemplateBuilder withTextConfigurationItem(String key, String label,
       Optional<String> defaultValue) {
     this.configurationItems.add(new TextConfigurationItem(key, label, defaultValue));
     return this;

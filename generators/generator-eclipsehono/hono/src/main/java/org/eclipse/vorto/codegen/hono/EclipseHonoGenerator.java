@@ -21,8 +21,8 @@ import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder;
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder.ChoiceItem;
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder;
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.ChoiceItem;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
 
@@ -69,7 +69,7 @@ public class EclipseHonoGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder("eclipsehono")
-        .withConfigurationTemplate(GeneratorConfigUIBuilder.builder()
+        .withConfigurationTemplate(ConfigTemplateBuilder.builder()
             .withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java")).build())
         .withVendor("Eclipse Vorto Team")
         .withDescription("Generates device code (Arduino, Python, Java) that integrates with Eclipse Hono and Eclipse Ditto.")

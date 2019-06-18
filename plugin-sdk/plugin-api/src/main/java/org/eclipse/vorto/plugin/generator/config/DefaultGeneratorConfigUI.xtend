@@ -17,10 +17,10 @@ package org.eclipse.vorto.plugin.generator.config
 import java.util.List
 import java.util.Set
 import java.util.stream.Collectors
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder.BinaryConfigurationItem
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder.ChoiceConfigurationItem
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder.ConfigurationItem
-import org.eclipse.vorto.plugin.generator.config.GeneratorConfigUIBuilder.TextConfigurationItem
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.ConfigurationItem
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.BinaryConfigurationItem
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.TextConfigurationItem
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.ChoiceConfigurationItem
 
 class DefaultGeneratorConfigUI {
 	
@@ -53,18 +53,18 @@ class DefaultGeneratorConfigUI {
 									<div class="col-sm-6">
 										<div class="box box-primary">
 											<div class="box-header with-border">
-												<h3 class="box-title">«item.label»</h3>
+												<h3 class="box-title">«item.getLabel»</h3>
 												<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
 											</div><!-- /.box-header -->
 											<div class="box-body">
 												«IF item instanceof ChoiceConfigurationItem»
-													«FOR choice : item.choices»
-														<p><input type="radio" ng-model="configParams.«item.key»" value="«choice.value»">&nbsp;«choice.label»</p>
+													«FOR choice : item.getChoices»
+														<p><input type="radio" ng-model="configParams.«item.getKey»" value="«choice.getValue»">&nbsp;«choice.getLabel»</p>
 													«ENDFOR»
 												«ELSEIF item instanceof BinaryConfigurationItem»
-													<input type="checkbox" ng-model="configParams.«item.key»"><i>&nbsp;Include</i>
+													<input type="checkbox" ng-model="configParams.«item.getKey»"><i>&nbsp;Include</i>
 												«ELSEIF item instanceof TextConfigurationItem»
-													<input type="input" ng-model="configParams.«item.key»" «IF (item as TextConfigurationItem).defaultValue.isPresent»value="«(item as TextConfigurationItem).defaultValue.get»"«ENDIF»>
+													<input type="input" ng-model="configParams.«item.getKey»" «IF (item as TextConfigurationItem).getDefaultValue.isPresent»value="«(item as TextConfigurationItem).getDefaultValue.get»"«ENDIF»>
 												«ENDIF»
 											</div><!-- /.box-body -->
 										</div><!-- /.box -->
@@ -84,7 +84,7 @@ class DefaultGeneratorConfigUI {
 	}
 	
 	def Set<String> getKeys() {
-		return configurationItems.stream.map[it.key].collect(Collectors.toSet)
+		return configurationItems.stream.map[it.getKey].collect(Collectors.toSet)
 	}
 	
 }
