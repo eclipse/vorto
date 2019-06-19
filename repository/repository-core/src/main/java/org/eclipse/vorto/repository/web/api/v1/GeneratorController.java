@@ -246,7 +246,7 @@ public class GeneratorController extends AbstractRepositoryController {
         }
       }
 
-      return genInfo1.getName().compareTo(genInfo2.getName());
+      return genInfo1.getKey().compareTo(genInfo2.getKey());
     });
 
     return generatorInfoResult;
