@@ -28,15 +28,14 @@ import org.eclipse.xtext.formatting.impl.FormattingConfig
 *
 * Also see {@link org.eclipse.xtext.xtext.XtextFormattingTokenSerializer} as an example
 */
-public class MappingFormatter extends AbstractDeclarativeFormatter {
+class MappingFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension MappingGrammarAccess f
 
 	override protected void configureFormatting(FormattingConfig c) { 
 
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)	
-		
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.vortolangKeyword_1);	
+		c.setLinewrap(2).before(f.findKeywords("namespace").get(0))	
 		c.setLinewrap(1).after(f.infoModelMappingModelAccess.namespaceAssignment_4);
 		c.setLinewrap(1).after(f.infoModelMappingModelAccess.versionAssignment_6);
 		c.setLinewrap(1).after(f.infoModelMappingModelAccess.displaynameAssignment_7_1)
