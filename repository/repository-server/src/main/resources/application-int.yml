@@ -20,3 +20,14 @@ spring:
     generate-ddl: true
   hibernate:
     ddl-auto: validate
+    
+    
+plugins : "[
+			{\"key\" : \"boschiotsuite\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\"},
+			{\"key\" : \"eclipseditto\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\"},
+		    {\"key\" : \"eclipsehono\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\"},
+		    {\"key\" : \"protobuf\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\",\"tag\" : \"demo\"},
+		    {\"key\" : \"jsonschema\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\",\"tag\" : \"demo\"},
+		    {\"key\" : \"azure\", \"pluginType\": \"generator\", \"apiVersion\" : \"2\" , \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\",\"tag\" : \"demo\"},
+		    {\"key\" : \"lwm2m\", \"pluginType\": \"importer\", \"name\" : \"LwM2M\" , \"fileType\" : \".xml\", \"description\" : \"Converts LwM2M descriptions to Vorto\", \"endpoint\" : \"https://iyno3mzx1h.execute-api.eu-central-1.amazonaws.com/Development\"}  
+		   ]"
