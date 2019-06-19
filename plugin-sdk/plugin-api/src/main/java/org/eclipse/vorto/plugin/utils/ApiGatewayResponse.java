@@ -15,6 +15,7 @@ package org.eclipse.vorto.plugin.utils;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,7 +65,7 @@ public class ApiGatewayResponse {
       private static final ObjectMapper objectMapper = new ObjectMapper();
 
       private int statusCode = 200;
-      private Map<String, String> headers = Collections.emptyMap();
+      private Map<String, String> headers = new HashMap<String, String>();
       private String rawBody;
       private Object objectBody;
       private byte[] binaryBody;

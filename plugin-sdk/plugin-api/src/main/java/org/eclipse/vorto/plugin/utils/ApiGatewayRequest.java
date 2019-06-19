@@ -139,7 +139,7 @@ public class ApiGatewayRequest {
   }
 
   private boolean isMultipartRequest() {
-    if (getBoundry() != null) {
+    if (this.requestNode.get("headers").has("Content-Type") && this.requestNode.get("headers").get("Content-Type").asText().contains("multipart/form-data")) {
       return true;
     }
     return false;

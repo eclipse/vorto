@@ -48,6 +48,7 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(KEY)
         .withVendor("Eclipse Ditto Team")
+        .withName("Eclipse Ditto")
         .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse Ditto.")
         .withDocumentationUrl("https://www.eclipse.org/ditto")
         .build();

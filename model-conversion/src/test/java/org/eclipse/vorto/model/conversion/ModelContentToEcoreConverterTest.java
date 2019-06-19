@@ -40,6 +40,7 @@ import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.ReturnType;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ModelContentToEcoreConverterTest {
 
@@ -253,7 +254,7 @@ public class ModelContentToEcoreConverterTest {
   }
   
   @Test
-  public void testConvertInformationModel() {
+  public void testConvertInformationModel() throws Exception {
     FunctionblockModel fbModel1 = FunctionblockModel
         .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
         .build();
@@ -287,6 +288,8 @@ public class ModelContentToEcoreConverterTest {
     assertEquals(fbModel1.getId().getNamespace(),fb.getNamespace());
     assertEquals(fbModel1.getId().getVersion(),fb.getVersion());
     assertTrue(property.eContainer() instanceof InformationModel);
+    
+    System.out.println(new ObjectMapper().writeValueAsString(ModelContent.Builder(infomodel).withDependency(fbModel1).withDependency(fbModel2).build()));
     
   }
 
