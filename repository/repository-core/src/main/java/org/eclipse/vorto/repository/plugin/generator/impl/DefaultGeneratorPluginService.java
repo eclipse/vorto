@@ -47,6 +47,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Invokes remote Code Generator either of API Version 1 or 2
@@ -151,6 +153,14 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
     ModelIdToModelContentConverter converter =
         new ModelIdToModelContentConverter(this.modelRepositoryFactory.getRepository(userContext));
     ModelContent content = converter.convert(modelId, Optional.of(serviceKey));
+    
+    try {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Generating with V2. Sending following json content "+ new ObjectMapper().writeValueAsString(content));
+      }
+    } catch (JsonProcessingException e) {
+      //
+    }
 
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
     ResponseEntity<byte[]> response = restTemplate.exchange(

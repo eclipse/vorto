@@ -12,6 +12,7 @@
 package org.eclipse.vorto.repository.server.config.config.plugins;
 
 import java.util.Arrays;
+import java.util.Base64;
 import javax.annotation.PostConstruct;
 import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -68,7 +69,7 @@ public class PluginConfiguration {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    Plugin[] plugins = mapper.readValue(this.pluginsJson, Plugin[].class);
+    Plugin[] plugins = mapper.readValue(Base64.getDecoder().decode(this.pluginsJson.getBytes()), Plugin[].class);
     
     if (plugins != null && plugins.length > 0) {
       Arrays.asList(plugins).stream().forEach(plugin -> {
