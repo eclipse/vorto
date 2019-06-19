@@ -2,6 +2,8 @@ vortolang 1.0
 
 namespace org.eclipse.vorto.examples.type
 version 1.0.0
+
 entity Farbe {
 	mandatory farbe as string "Überraschung"
+
 }

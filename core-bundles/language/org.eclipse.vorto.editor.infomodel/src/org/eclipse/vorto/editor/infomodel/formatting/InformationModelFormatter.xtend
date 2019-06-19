@@ -31,7 +31,7 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 			
 		//Basic information
 		c.setLinewrap(1).after(dsl.modelReferenceAccess.group)
-		c.setLinewrap(1).after(dsl.informationModelAccess.vortolangKeyword_1)
+		c.setLinewrap(2).before(dsl.findKeywords("namespace").get(0))
 		c.setLinewrap(1).after(dsl.informationModelAccess.namespaceAssignment_4)
 		c.setLinewrap(1).after(dsl.informationModelAccess.versionAssignment_6)
 		c.setLinewrap(1).after(dsl.informationModelAccess.displaynameAssignment_8)

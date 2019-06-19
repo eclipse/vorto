@@ -64,7 +64,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     
     IModelRepository repository = repositoryFactory.getRepository(alex);
     String content = new String(repository.getFileContent(imported.get(0).getId(), Optional.empty()).get().getContent(),"utf-8");
-     
+    System.out.println(content);
     assertTrue(content.contains("vortolang 1.0"));
   }
   
