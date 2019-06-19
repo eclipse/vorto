@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.importer.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.eclipse.vorto.repository.importer.IModelImportService;
@@ -33,6 +34,13 @@ public class DefaultModelImportService implements IModelImportService {
   @Override
   public Optional<IModelImporter> getImporterByKey(final String key) {
     return modelImporters.stream().filter(p -> p.getKey().equals(key)).findFirst();
+  }
+  
+  public void registerImporter(IModelImporter importer) {
+    if (modelImporters == null) {
+      this.modelImporters = new ArrayList<>();
+    }
+    this.modelImporters.add(importer);
   }
 
 }

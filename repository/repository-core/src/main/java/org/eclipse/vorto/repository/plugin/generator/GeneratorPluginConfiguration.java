@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.plugin.generator;
 
+import java.util.Collections;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.repository.plugin.generator.impl.GeneratorPluginInfoV1;
@@ -56,7 +57,7 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   
   public static GeneratorPluginConfiguration of (GeneratorPluginInfoV1 info, String endpointUrl, String... tags) {
     GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(info.getKey(),"1",endpointUrl,tags);   
-    config.setConfigKeys(info.getConfigKeys());
+    config.setConfigKeys(info.getConfigKeys() == null ? Collections.emptySet():info.getConfigKeys());
     if (info.getConfigTemplate() == null || info.getConfigTemplate().length() == 0) {
       config.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
     } else {
@@ -76,14 +77,14 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   
   public static GeneratorPluginConfiguration of (GeneratorPluginInfo info, String endpointUrl, String... tags) {
     GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(info.getKey(),"2",endpointUrl,tags);   
-    config.setConfigKeys(info.getConfigKeys());
+    config.setConfigKeys(info.getConfigKeys() == null ? Collections.emptySet():info.getConfigKeys());
     
     if (info.getConfigTemplate() == null || info.getConfigTemplate().length() == 0) {
       config.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
     } else {
       config.setConfigTemplate(info.getConfigTemplate());
     }
-    config.setName(info.getName());
+    config.setName(info.getName() == null ? info.getKey() : info.getName());
     config.setCreator(info.getVendor());
     config.setDescription(info.getDescription());
     config.setDocumentationUrl(info.getDocumentationUrl());

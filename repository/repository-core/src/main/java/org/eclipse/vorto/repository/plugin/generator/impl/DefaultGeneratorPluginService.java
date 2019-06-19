@@ -45,6 +45,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -52,7 +53,7 @@ import org.springframework.web.client.RestTemplate;
  * 
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-
+@Service
 public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private Map<String, GeneratorPluginConfiguration> generatorsPlugins = new HashMap<>();

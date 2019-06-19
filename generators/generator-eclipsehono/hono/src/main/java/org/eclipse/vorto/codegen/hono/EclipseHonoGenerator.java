@@ -72,6 +72,7 @@ public class EclipseHonoGenerator implements ICodeGenerator {
         .withConfigurationTemplate(ConfigTemplateBuilder.builder()
             .withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java")).build())
         .withVendor("Eclipse Vorto Team")
+        .withName("Eclipse Hono")
         .withDescription("Generates device code (Arduino, Python, Java) that sends device telemetry data to Eclipse Hono MQTT Connector.")
         .withDocumentationUrl("https://www.eclipse.org/hono")
         .build();
