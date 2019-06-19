@@ -36,14 +36,14 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)
-		c.setLinewrap(2).before(f.findKeywords("namespace").get(0))
+		c.setLinewrap(2).before(f.entityAccess.findKeywords("namespace").get(0))
 		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_3)
 		c.setLinewrap(1).after(f.entityAccess.versionAssignment_5)
 		c.setLinewrap(1).after(f.entityAccess.displaynameAssignment_6_1)
 		c.setLinewrap(1).after(f.entityAccess.descriptionAssignment_7_1)
 		c.setLinewrap(1).after(f.entityAccess.categoryAssignment_8_1)
 			
-		c.setLinewrap(1).after(f.enumAccess.vortolangKeyword_0)	
+		c.setLinewrap(2).before(f.enumAccess.findKeywords("namespace").get(0))
 		c.setLinewrap(1).after(f.enumAccess.namespaceAssignment_3)
 		c.setLinewrap(1).after(f.enumAccess.versionAssignment_5)
 		c.setLinewrap(1).after(f.enumAccess.displaynameAssignment_6_1)
