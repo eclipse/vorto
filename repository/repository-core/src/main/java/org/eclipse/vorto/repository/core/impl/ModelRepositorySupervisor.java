@@ -15,10 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepository;
-<<<<<<< b6f6430337700674972a12472cccf547a8d96c7e
 import org.eclipse.vorto.repository.core.IRepositoryManager;
-=======
->>>>>>> First stab at indexing.
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
