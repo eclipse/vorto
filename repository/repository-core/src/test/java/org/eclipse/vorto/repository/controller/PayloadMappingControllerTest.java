@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
@@ -42,6 +44,8 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.web.core.PayloadMappingController;
@@ -50,6 +54,7 @@ import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,7 +74,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 public class PayloadMappingControllerTest {
-
+	
+  
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
@@ -77,30 +83,41 @@ public class PayloadMappingControllerTest {
   public static void init() {
     ModelWorkspaceReader.init();
   }
+  
+ 
 
   @Test
   public void testCreateMappingSpecificationWithExistingMapping() throws Exception {
     IModelRepositoryFactory factory = Mockito.mock(IModelRepositoryFactory.class);
     IModelRepository repo = Mockito.mock(IModelRepository.class);
-
+    ITenantService iTenantService = Mockito.mock(ITenantService.class);
+    Tenant tenant =  new Tenant();
+    tenant.setTenantId("A");
+    
     when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any()))
         .thenReturn(Arrays.asList(new ModelInfo()));
-    
     when(factory.getRepository(Matchers.anyString(), Matchers.any())).thenReturn(repo);
-    
     //when(factory.getRepository(Matchers.anyObject())).thenReturn(repo);
 
+    when(iTenantService.getTenantFromNamespace(Matchers.any()))
+    .thenReturn(Optional.of(tenant));
+    
     PayloadMappingController controller = new PayloadMappingController();
     controller.setModelRepositoryFactory(factory);
+    controller.setTenantService(iTenantService);
+    
 
     thrown.expect(ModelAlreadyExistsException.class);
-    controller.createMappingSpecification("playground", "com.test:Device:1.0.0", "test");
+    controller.createMappingSpecification("com.test:Device:1.0.0", "test");
   }
 
   @Test
   public void testCreateMappingSpecificationWithNoExistingMapping() throws Exception {
     IModelRepositoryFactory factory = Mockito.mock(IModelRepositoryFactory.class);
     IModelRepository repo = Mockito.mock(IModelRepository.class);
+    ITenantService iTenantService = Mockito.mock(ITenantService.class);
+    Tenant tenant =  new Tenant();
+    tenant.setTenantId("A");
     
     ModelController modelController = Mockito.mock(ModelController.class);
     IWorkflowService workflowService = Mockito.mock(IWorkflowService.class);
@@ -121,15 +138,19 @@ public class PayloadMappingControllerTest {
     when(factory.getRepository(Matchers.anyString())).thenReturn(repo);
     
     when(factory.getRepository(Matchers.any(IUserContext.class))).thenReturn(repo);
+    
+    when(iTenantService.getTenantFromNamespace(Matchers.any()))
+    .thenReturn(Optional.of(tenant));
 
     PayloadMappingController controller = new PayloadMappingController();
     controller.setModelRepositoryFactory(factory);
     controller.setModelController(modelController);
     controller.setUserContextFn((tenantId) -> UserContext.user("erle", tenantId));
     controller.setWorkflowService(workflowService);
-
+    controller.setTenantService(iTenantService);
+    
     Map<String, Object> returnValue =
-        controller.createMappingSpecification("playground", "com.mycompany:ColorLightIM:1.0.0", "test");
+        controller.createMappingSpecification("com.mycompany:ColorLightIM:1.0.0", "test");
 
     assertTrue(returnValue.get("mappingId") != null);
     assertTrue(returnValue.get("spec") != null);
@@ -155,7 +176,9 @@ public class PayloadMappingControllerTest {
   @Test
   public void testGetMappingSpecs() {
     ModelController modelController = Mockito.mock(ModelController.class);
-
+    ITenantService iTenantService = Mockito.mock(ITenantService.class);
+    Tenant tenant =  new Tenant();
+    tenant.setTenantId("A");
     try {
       when(modelController.getModelContentForTargetPlatform(
           Matchers.eq("com.mycompany:ColorLightIM:1.0.0"), Matchers.any()))
@@ -164,12 +187,15 @@ public class PayloadMappingControllerTest {
       when(modelController
           .getModelContent(Matchers.eq("org.eclipse.vorto.examples.fb:ColorLight:1.0.0")))
               .thenReturn(modelContentForSample2());
+      
+      
 
       PayloadMappingController controller = new PayloadMappingController();
       controller.setModelController(modelController);
+      controller.setTenantService(iTenantService);
 
       IMappingSpecification mappingSpec =
-          controller.getMappingSpecification("playground", "com.mycompany:ColorLightIM:1.0.0", "test");
+          controller.getMappingSpecification("com.mycompany:ColorLightIM:1.0.0", "test");
 
       assertTrue(mappingSpec != null);
 

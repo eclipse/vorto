@@ -48,7 +48,7 @@ repositoryControllers.controller('DetailsController',
 
 			};
 
-			$http.put('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat, newContent)
+			$http.put('./rest/models/' + $scope.model.id.prettyFormat, newContent)
 				.success(function (result) {
 					$scope.isLoading = false;
 					$scope.message = result.message;
@@ -74,7 +74,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.uploadImage = function () {
 			var fd = new FormData();
 			fd.append('file', document.getElementById('imageFile').files[0]);
-			$http.post('./rest/tenants' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
+			$http.post('./rest/models/'  + $scope.model.id.prettyFormat + '/images/', fd, {
 					transformRequest: angular.identity,
 					headers: {
 						'Content-Type': undefined
@@ -285,7 +285,7 @@ repositoryControllers.controller('DetailsController',
 
 
 		$scope.modelId = $routeParams.modelId;
-		$scope.tenantId = $routeParams.tenantId;
+		
 		
 		$scope.getDetails($scope.modelId);
 		$scope.getContent($scope.modelId);
@@ -300,7 +300,7 @@ repositoryControllers.controller('DetailsController',
 
 		$scope.getCommentsForModelId = function (modelId) {
 
-			$http.get('./rest/' + $scope.tenantId + '/comments/' + modelId)
+			$http.get('./rest/comments/' + modelId)
 				.success(function (result) {
                     $scope.comments = result;
 					$scope.comments.reverse();
@@ -333,7 +333,7 @@ repositoryControllers.controller('DetailsController',
 				"content": $scope.newComment.value
 			};
 			
-			$http.post('./rest/' + $scope.tenantId + '/comments', comment)
+			$http.post('./rest/comments', comment)
 				.success(function (result) {
                     $scope.getCommentsForModelId($scope.modelId);
 				}).error(function (data, status, headers, config) {
@@ -377,7 +377,7 @@ repositoryControllers.controller('DetailsController',
 		 * Start - Workflow
 		 */
 		$scope.getWorkflowActions = function () {
-			$http.get('./rest/tenants/' + $scope.tenantId + '/workflows/' + $scope.modelId + '/actions')
+			$http.get('./rest/workflows/' + $scope.modelId + '/actions')
 				.success(function (result) {
 					$scope.workflowActions = result;
 				});
@@ -388,7 +388,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.openWorkflowActionDialog = function (action) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model, tenantId) {
+				controller: function ($scope, model) {
 					$scope.action = action;
 					$scope.actionModel = null;
 					$scope.model = model;
@@ -396,7 +396,7 @@ repositoryControllers.controller('DetailsController',
 					$scope.hasError = false;
 					
 					$scope.takeWorkflowAction = function () {
-						$http.put('./rest/tenants/' + tenantId + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
+						$http.put('./rest/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
 							.success(function (result) {
 								console.log(JSON.stringify(result));
 								if (result.hasErrors) {
@@ -412,7 +412,7 @@ repositoryControllers.controller('DetailsController',
 					};
 
 					$scope.getModel = function () {
-						$http.get('./rest/tenants/' + tenantId + '/workflows/' + $scope.model.id.prettyFormat)
+						$http.get('./rest/workflows/' + $scope.model.id.prettyFormat)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -437,9 +437,6 @@ repositoryControllers.controller('DetailsController',
 					},
 					model: function () {
 						return $scope.model;
-					},
-					tenantId: function() {
-					    return $scope.tenantId;
 					}
 				}
 			});
@@ -455,11 +452,11 @@ repositoryControllers.controller('DetailsController',
 		$scope.openDeleteDialog = function (model) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model, tenantId) {
+				controller: function ($scope, model) {
 					$scope.model = model;
 
 					$scope.delete = function () {
-						$http.delete('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat)
+						$http.delete('./rest/models/' + model.id.prettyFormat)
 							.success(function (result) {
 								modalInstance.close();
 							});
@@ -474,9 +471,6 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
-					},
-					tenantId: function() {
-					    return $scope.tenantId;
 					}
 				}
 			});
@@ -492,14 +486,14 @@ repositoryControllers.controller('DetailsController',
 		$scope.openCreateModelVersionDialog = function (action) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope,model, tenantId) {
+				controller: function ($scope,model) {
 					$scope.errorMessage = null;
 					$scope.model = model;
 					$scope.modelVersion = "";
 
 					$scope.createVersion = function () {
 						$scope.isLoading = true;
-						$http.post("./rest/tenants/" + tenantId + "/models/" + $scope.model.id.prettyFormat + "/versions/" + $scope.modelVersion, null)
+						$http.post("./rest/models/" + $scope.model.id.prettyFormat + "/versions/" + $scope.modelVersion, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
@@ -522,30 +516,27 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
-					},
-					tenantId: function() {
-					    return $scope.tenantId;
 					}
 				}
 			});
 
 			modalInstance.result.then(
 				function (model) {
-					$location.path("/details/" + $scope.tenantId + "/" + model.id.prettyFormat);
+					$location.path("/details/"  + model.id.prettyFormat);
 				});
 		};
 		
 		$scope.openPayloadMappingDialog = function () {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model, tenantId) {
+				controller: function ($scope, model) {
 					$scope.model = model;
 					$scope.errorMessage = null;
 					$scope.targetPlatform = "";
 	
 					$scope.create = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/' + tenantId + '/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
+						$http.post('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
 							.success(function (result) {
 								$scope.isLoading = false;
 								var data = {"targetPlatform" : $scope.targetPlatform, 
@@ -570,10 +561,7 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
-					},
-				    tenantId: function() {
-				        return $scope.tenantId;
-				    }
+					}
 				}
 			});
 
@@ -777,14 +765,14 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.getPolicies = function() {
-			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies')
+			$http.get('./rest/models/' + $scope.modelId + '/policies')
 				.success(function (result) {
 					$scope.aclEntries = result;
 				});
 		};
 	
 			$scope.getUserPolicy = function() {
-				$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policy')
+				$http.get('./rest/models/' + $scope.modelId + '/policy')
 					.success(function (result) {
 						console.log("Policy for model = " + JSON.stringify(result));
 						$scope.permission = result.permission;
@@ -809,7 +797,7 @@ repositoryControllers.controller('DetailsController',
 			};
 		
 		$scope.diagnoseModel = function () {
-			$http.get('./rest/' + $scope.tenantId + '/models/' + $scope.modelId + '/diagnostics')
+			$http.get('./rest/models/' + $scope.modelId + '/diagnostics')
 				.success(function (result) {
 					$scope.diagnostics = result;
 				});

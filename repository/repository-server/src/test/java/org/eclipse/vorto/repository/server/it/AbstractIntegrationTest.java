@@ -160,7 +160,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void deleteModel(String modelId) throws Exception {
-    repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin)
+    repositoryServer.perform(delete("/rest/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
 
@@ -173,10 +173,10 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void releaseModel(String modelId) throws Exception {
-    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Release")
+    repositoryServer.perform(put("/rest/workflows/" + modelId + "/actions/Release")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
 
-    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Approve")
+    repositoryServer.perform(put("/rest/workflows/" + modelId + "/actions/Approve")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
   }
   
@@ -188,7 +188,7 @@ public abstract class AbstractIntegrationTest {
     
     String publicPolicyEntryStr = new Gson().toJson(publicPolicyEntry);
     
-    repositoryServer.perform(put("/rest/tenants/playground/models/" + modelId + "/policies")
+    repositoryServer.perform(put("/rest/models/" + modelId + "/policies")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON).content(publicPolicyEntryStr));
   }
 
@@ -199,14 +199,29 @@ public abstract class AbstractIntegrationTest {
 
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
       String fileName, String modelId) throws Exception {
+		/*
+		 * repositoryServer .perform(post("/rest/tenants/playground/models/" + modelId +
+		 * "/" + ModelType.fromFileName(fileName))
+		 * .with(user).contentType(MediaType.APPLICATION_JSON))
+		 * .andExpect(status().isCreated());
+		 */
+    
     repositoryServer
-        .perform(post("/rest/tenants/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-            .with(user).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
+    .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+        .with(user).contentType(MediaType.APPLICATION_JSON))
+    .andExpect(status().isCreated());
+    
+		/*
+		 * repositoryServer .perform(put("/rest/tenants/playground/models/" +
+		 * modelId).with(user)
+		 * .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+		 * .andExpect(status().isOk());
+		 */
+    
     repositoryServer
-        .perform(put("/rest/tenants/playground/models/" + modelId).with(user)
-            .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
-        .andExpect(status().isOk());
+    .perform(put("/rest/models/" + modelId).with(user)
+        .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+    .andExpect(status().isOk());
   }
 
   protected String createContent(String fileName) throws Exception {

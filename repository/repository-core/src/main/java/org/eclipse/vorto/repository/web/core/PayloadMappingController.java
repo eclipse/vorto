@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +45,7 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -63,23 +66,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/{tenantId}/mappings")
+@RequestMapping(value = "/rest/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
 
-  private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
-      .user(SecurityContextHolder.getContext().getAuthentication().getName(), tenantId);
+	private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
+		      .user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
 
   @Autowired
   private ModelController modelController;
 
   @Autowired
   private IWorkflowService workflowService;
+  
+  @Autowired
+  private ITenantService tenantService;
+  
+  
 
   private static Logger logger = Logger.getLogger(PayloadMappingController.class);
 
@@ -90,106 +100,104 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
   public IMappingSpecification getMappingSpecification(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
-    
-    ModelContent infoModelContent =
-        modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
-    
-    Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
+	  ModelContent infoModelContent =
+		        modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+		    
+		    Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
-    if (infomodel == null) {
-      ModelContent infomodelContent =
-          modelController.getModelContent(modelId);
-      infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
-    }
-    
-    MappingSpecification specification = new MappingSpecification();
+		    if (infomodel == null) {
+		      ModelContent infomodelContent =
+		          modelController.getModelContent(modelId);
+		      infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
+		    }
+		    
+		    MappingSpecification specification = new MappingSpecification();
 
-    specification.setInfoModel(infomodel);
+		    specification.setInfoModel(infomodel);
 
-    for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
-      ModelId fbModelId = (ModelId) fbProperty.getType();
+		    for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
+		      ModelId fbModelId = (ModelId) fbProperty.getType();
 
-      ModelId mappingId = fbProperty.getMappingReference();
+		      ModelId mappingId = fbProperty.getMappingReference();
 
-      FunctionblockModel fbm = null;
-      if (mappingId != null) {
-        fbm = getModelContentByModelAndMappingId(tenantId, fbModelId.getPrettyFormat(),
-            mappingId.getPrettyFormat());
-      } else {
-        ModelContent fbmContent =
-            modelController.getModelContent(fbModelId.getPrettyFormat());
-        fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
-      }
+		      FunctionblockModel fbm = null;
+		      if (mappingId != null) {
+		        fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
+		            mappingId.getPrettyFormat());
+		      } else {
+		        ModelContent fbmContent =
+		            modelController.getModelContent(fbModelId.getPrettyFormat());
+		        fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
+		      }
 
-      specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
-    }
-    return specification;
+		      specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
+		    }
+		    return specification;
   }
 
   @PostMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-  public Map<String, Object> createMappingSpecification(@PathVariable final String tenantId,
+  public Map<String, Object> createMappingSpecification(
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
-    logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
-    
-    if (!getModelRepository(tenantId)
-        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
-        .isEmpty()) {
-      throw new ModelAlreadyExistsException();
-    } else {
-      ModelContent modelContent =
-          this.modelController.getModelContent(modelId);
-      MappingSpecification spec = new MappingSpecification();
-      spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
-      for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
-        spec.getProperties().put(property.getName(),
-            (FunctionblockModel) modelContent.getModels().get(property.getType()));
-      }
-      final ModelId createdId =
-          this.saveMappingSpecification(spec, tenantId, modelId, targetPlatform);
-      Map<String, Object> response = new HashMap<String, Object>();
-      response.put("mappingId", createdId.getPrettyFormat());
-      response.put("spec", spec);
-      return response;
+	  logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
+	    
+	    if (!getModelRepository(getTenant(modelId))
+	        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
+	        .isEmpty()) {
+	      throw new ModelAlreadyExistsException();
+	    } else {
+	      ModelContent modelContent =
+	          this.modelController.getModelContent(modelId);
+	      MappingSpecification spec = new MappingSpecification();
+	      spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
+	      for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
+	        spec.getProperties().put(property.getName(),
+	            (FunctionblockModel) modelContent.getModels().get(property.getType()));
+	      }
+	      final ModelId createdId =
+	          this.saveMappingSpecification(spec, modelId, targetPlatform);
+	      Map<String, Object> response = new HashMap<String, Object>();
+	      response.put("mappingId", createdId.getPrettyFormat());
+	      response.put("spec", spec);
+	      return response;
+	    }
     }
-  }
+  
 
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
   @PreAuthorize("hasRole('ROLE_USER')")
-  public List<ModelInfo> getMappingModels(@PathVariable final String tenantId,
+  public List<ModelInfo> getMappingModels(
       @PathVariable final String modelId,
       @PathVariable String targetPlatform) {
-    return getModelRepository(tenantId).getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
-        targetPlatform);
+	  return getModelRepository(getTenant(modelId)).getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
+		        targetPlatform);
   }
 
   @PutMapping(value = "/test")
   @PreAuthorize("hasRole('ROLE_USER')")
   public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest)
       throws Exception {
-    MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
+	  MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 
-    InfomodelValue mappedOutput =
-        engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
+	    InfomodelValue mappedOutput =
+	        engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
 
-    TestMappingResponse response = new TestMappingResponse();
-    response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
-    response.setReport(mappedOutput.validate());
-    return response;
+	    TestMappingResponse response = new TestMappingResponse();
+	    response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
+	    response.setReport(mappedOutput.validate());
+	    return response;
   }
 
   @PutMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
   public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
-      @PathVariable String tenant, @PathVariable String modelId,
+      @PathVariable String modelId,
       @PathVariable String targetPlatform) {
     logger.info("Saving mapping specification " + modelId + " with key " + targetPlatform);
 
-    IUserContext userContext = userContextFn.apply(tenant);
+    IUserContext userContext = userContextFn.apply(getTenant(modelId));
 
     final List<ModelId> publishedModelIds = new ArrayList<>();
 
@@ -205,28 +213,27 @@ public class PayloadMappingController extends AbstractRepositoryController {
           @ApiResponse(code = 404, message = "Model not found")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file")
-  public void downloadModelById(@PathVariable final String tenantId,
+  public void downloadModelById(
       @PathVariable final String modelId, @PathVariable String targetPlatform,
       final HttpServletResponse response) {
+	  Objects.requireNonNull(modelId, "modelId must not be null");
 
-    Objects.requireNonNull(modelId, "modelId must not be null");
+	    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
-        + modelID.getName() + "_" + modelID.getVersion() + "-mappingspec.json");
-    response.setContentType(APPLICATION_OCTET_STREAM);
-    try {
-      MappingSpecification spec =
-          (MappingSpecification) this.getMappingSpecification(tenantId, modelId, targetPlatform);
-      ObjectMapper mapper = new ObjectMapper();
-      IOUtils.copy(
-          new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
-          response.getOutputStream());
-      response.flushBuffer();
-    } catch (Exception e) {
-      throw new RuntimeException("Error copying file.", e);
-    }
+	    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
+	        + modelID.getName() + "_" + modelID.getVersion() + "-mappingspec.json");
+	    response.setContentType(APPLICATION_OCTET_STREAM);
+	    try {
+	      MappingSpecification spec =
+	          (MappingSpecification) this.getMappingSpecification(modelId, targetPlatform);
+	      ObjectMapper mapper = new ObjectMapper();
+	      IOUtils.copy(
+	          new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
+	          response.getOutputStream());
+	      response.flushBuffer();
+	    } catch (Exception e) {
+	      throw new RuntimeException("Error copying file.", e);
+	    }
   }
 
   @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Mapping Specification already exists.")
@@ -236,31 +243,32 @@ public class PayloadMappingController extends AbstractRepositoryController {
     // do logging
   }
 
-  public FunctionblockModel getModelContentByModelAndMappingId(final String tenantId, final String modelId,
+  public FunctionblockModel getModelContentByModelAndMappingId(final String modelId,
       final @PathVariable String mappingId) {
-    IModelRepository repository = getModelRepository(tenantId);
+	  //return payloadMappingController.getModelContentByModelAndMappingId(getTenant(modelId), modelId, mappingId);
+	  IModelRepository repository = getModelRepository(getTenant(modelId));
       
-    ModelInfo vortoModelInfo = repository.getById(ModelId.fromPrettyFormat(modelId));
-    ModelInfo mappingModelInfo = repository.getById(ModelId.fromPrettyFormat(mappingId));
+	    ModelInfo vortoModelInfo = repository.getById(ModelId.fromPrettyFormat(modelId));
+	    ModelInfo mappingModelInfo = repository.getById(ModelId.fromPrettyFormat(mappingId));
 
-    if (vortoModelInfo == null) {
-      throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
-    } else if (mappingModelInfo == null) {
-      throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
+	    if (vortoModelInfo == null) {
+	      throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
+	    } else if (mappingModelInfo == null) {
+	      throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
 
-    }
+	    }
 
-    IModelWorkspace mappingWorkspace = getWorkspaceForModel(tenantId, mappingModelInfo.getId());
+	    IModelWorkspace mappingWorkspace = getWorkspaceForModel(getTenant(modelId), mappingModelInfo.getId());
 
-    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
-        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace.get()
-            .stream()
-            .filter(
-                model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)
-            .findFirst().get();
+	    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
+	        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace.get()
+	            .stream()
+	            .filter(
+	                model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)
+	            .findFirst().get();
 
-    return ModelDtoFactory.createResource(fbm, Optional.of((MappingModel) mappingWorkspace.get()
-        .stream().filter(model -> model instanceof MappingModel).findFirst().get()));
+	    return ModelDtoFactory.createResource(fbm, Optional.of((MappingModel) mappingWorkspace.get()
+	        .stream().filter(model -> model instanceof MappingModel).findFirst().get()));
   }
 
   private FunctionblockModel initEmptyProperties(FunctionblockModel fbm) {
@@ -308,9 +316,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
     return createdModelId;
   }
 
-  public void setUserContextFn(Function<String, IUserContext> userContextFn) {
-    this.userContextFn = userContextFn;
-  }
+	
+	 public void setUserContextFn(Function<String, IUserContext> userContextFn) {
+	  this.userContextFn = userContextFn; }
+	 
 
   public void setModelController(ModelController modelController) {
     this.modelController = modelController;
@@ -319,4 +328,18 @@ public class PayloadMappingController extends AbstractRepositoryController {
   public void setWorkflowService(IWorkflowService workflowService) {
     this.workflowService = workflowService;
   }
+  
+  public void setTenantService(ITenantService tenantService) {
+		this.tenantService = tenantService;
+	}
+  private String getTenant(String modelId) {
+	    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
+	        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+	  }
+
+	  private Optional<String> getTenant(ModelId modelId) {
+	    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+	        .map(tenant -> tenant.getTenantId());
+	  }
+	
 }
