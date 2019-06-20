@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -116,14 +117,14 @@ public class ApiGatewayRequest {
 
   public Map<String, String> getQueryParams() {
     Map<String, String> params = new HashMap<>();
-    if (!requestNode.get(QUERY_STRING_PARAMETERS).isNull()) {
+    if (requestNode.get(QUERY_STRING_PARAMETERS) != null) {
       Iterator<String> iter = requestNode.get(QUERY_STRING_PARAMETERS).fieldNames();
       while (iter.hasNext()) {
         String fieldName = iter.next();
         params.put(fieldName, requestNode.get(QUERY_STRING_PARAMETERS).get(fieldName).asText());
       }
     }
-    return params;
+    return Collections.unmodifiableMap(params);
   }
 
   private byte[] getPlainInput() {

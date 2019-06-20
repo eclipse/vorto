@@ -33,13 +33,15 @@ import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
  */
 public class EclipseHonoGenerator implements ICodeGenerator {
 
+  private static final String KEY_LANGUAGE = "language";
+
   @Override
   public IGenerationResult generate(InformationModel model, InvocationContext context) throws GeneratorException {
     GenerationResultZip output = new GenerationResultZip(model, "eclipsehono");
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-    String platform = context.getConfigurationProperties().getOrDefault("language", "java");
+    String platform = context.getConfigurationProperties().getOrDefault(KEY_LANGUAGE, "java");
     if (platform.equalsIgnoreCase("arduino")) {
       result.append(generateArduino(model, context));
     } else if (platform.equalsIgnoreCase("python")) {
@@ -69,8 +71,9 @@ public class EclipseHonoGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder("eclipsehono")
+        .withConfigurationKey(KEY_LANGUAGE)
         .withConfigurationTemplate(ConfigTemplateBuilder.builder()
-            .withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java")).build())
+            .withChoiceConfigurationItem(KEY_LANGUAGE, "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java")).build())
         .withVendor("Eclipse Vorto Team")
         .withName("Eclipse Hono")
         .withDescription("Generates device code (Arduino, Python, Java) that sends device telemetry data to Eclipse Hono MQTT Connector.")

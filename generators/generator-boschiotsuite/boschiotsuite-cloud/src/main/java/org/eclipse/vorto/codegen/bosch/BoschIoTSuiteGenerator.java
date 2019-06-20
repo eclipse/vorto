@@ -27,6 +27,10 @@ import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
 
 public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
+  private static final String KEY_PROVISION = "provision";
+
+  private static final String KEY_LANGUAGE = "language";
+
   private static final String KEY = "boschiotsuite";
   
   private static final BoschGeneratorConfigUI CONFIG_TEMPLATE = new BoschGeneratorConfigUI();
@@ -37,7 +41,7 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-    String platform = invocationContext.getConfigurationProperties().getOrDefault("language", "");
+    String platform = invocationContext.getConfigurationProperties().getOrDefault(KEY_LANGUAGE, "");
     if (platform.equalsIgnoreCase("arduino")) {
       result.append(generateArduino(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("python")) {
@@ -46,7 +50,7 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
       result.append(generateJava(infomodel, invocationContext));
     } 
     
-    String provisionScript = invocationContext.getConfigurationProperties().getOrDefault("provision", "false");
+    String provisionScript = invocationContext.getConfigurationProperties().getOrDefault(KEY_PROVISION, "false");
     if ("true".equalsIgnoreCase(provisionScript)) {
         new GeneratorTaskFromFileTemplate<>(new ProvisionDeviceScriptTemplate()).generate(infomodel, invocationContext, output);
     }
@@ -73,7 +77,7 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(KEY)
-        .withConfigurationKey("language","provision")
+        .withConfigurationKey(KEY_LANGUAGE,KEY_PROVISION)
         .withConfigurationTemplate(CONFIG_TEMPLATE.getContent().toString())
         .withName("Bosch IoT Suite")
         .withVendor("Eclipse Vorto Team")

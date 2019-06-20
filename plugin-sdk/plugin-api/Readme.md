@@ -61,7 +61,7 @@ Once the file was accepted by the importer plugin, the repository invokes this e
 
 It is totally up to you, which language you choose to implement an importer, either Java, Go, Node.js etc.
 
-Check out our [importer example](https://github.com/eclipse/vorto-examples/tree/master/vorto-importers/lwm2m-importer), that is implemented and deployed as a serverless AWS Lambda function. 
+Check out our [importer example](https://github.com/eclipse/vorto-examples/tree/master/vorto-importers/lwm2m), that is implemented and deployed as serverless AWS Lambda functions. 
 
 # Register your plugin
 
