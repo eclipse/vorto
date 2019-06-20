@@ -12,6 +12,13 @@
 
 	<description>Vorto Model Repository - Server Configurations</description>
 
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -80,7 +87,21 @@
 			<artifactId>commons-compress</artifactId>
 			<version>1.18</version>
 		</dependency>
-
+		
+		<!-- AWS Elastic Search configuration (start) -->
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-core</artifactId>
+		    <version>1.11.574</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.awslabs</groupId>
+		    <artifactId>aws-request-signing-apache-interceptor</artifactId>
+		    <version>deb7941e85</version>
+		</dependency>
+		<!-- AWS Elastic Search configuration (end) -->
+		
 	</dependencies>
 
 </project>
