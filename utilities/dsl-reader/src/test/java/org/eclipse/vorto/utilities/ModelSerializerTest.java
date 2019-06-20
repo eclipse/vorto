@@ -11,11 +11,15 @@ import org.eclipse.vorto.core.api.model.BuilderUtils;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
+import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -119,6 +123,32 @@ public class ModelSerializerTest {
     resource.save(baos,optionsMap);
     
     assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_infomodel.infomodel")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
+    
+  }
+  
+  @Test
+  public void testSerializeMappingWithVortolang() throws Exception {
+    final Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
+    final XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+    
+    ModelWorkspaceReader.init();
+    IModelWorkspace workspace = IModelWorkspace.newReader()
+        .addFile(getClass().getClassLoader().getResourceAsStream("dsls/sample.mapping"),
+            org.eclipse.vorto.model.ModelType.Mapping)
+        .read();
+    
+    Model model = workspace.get().get(0);
+    
+    final Resource resource = resourceSet.createResource(URI.createURI(model.getName() + ".mapping"));
+    resource.getContents().add(model);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    
+    final Map<Object, Object> optionsMap = SaveOptions.newBuilder().format().getOptions().toOptionsMap();
+    optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
+    resource.save(baos,optionsMap);
+    
+    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/sample.mapping")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
     
   }
 }

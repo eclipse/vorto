@@ -54,12 +54,12 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public static final DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
 	public static final DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
 	public static final DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
-	public static final DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated but remains publicly visible.");
+	public static final DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated.");
 
 	
 	public static final DefaultState STATE_DRAFT = new DefaultState("Draft","A draft model is only viewable and editable by the model owner.");
-	public static final DefaultState STATE_IN_REVIEW = new DefaultState("InReview","Being reviewed by the Vorto Team.");
-	public static final DefaultState STATE_RELEASED = new DefaultState("Released","A released model has been successfully reviewed and can viewed by everybody.");
+	public static final DefaultState STATE_IN_REVIEW = new DefaultState("InReview","Being reviewed by collaborators with 'Reviewer' role.");
+	public static final DefaultState STATE_RELEASED = new DefaultState("Released","A released model cannot be changed or removed and can safely be consumed.");
 	public static final DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
 
 	

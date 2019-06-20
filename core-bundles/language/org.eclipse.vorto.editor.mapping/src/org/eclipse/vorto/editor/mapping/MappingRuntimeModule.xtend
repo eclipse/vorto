@@ -21,17 +21,22 @@ package org.eclipse.vorto.editor.mapping
 import org.eclipse.vorto.editor.mapping.scoping.MappingScopeProvider
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IScopeProvider
+import org.eclipse.vorto.editor.mapping.formatting.MappingFormatter
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 class MappingRuntimeModule extends AbstractMappingRuntimeModule {
 	
-	def override Class<? extends IScopeProvider> bindIScopeProvider() {
+	override Class<? extends IScopeProvider> bindIScopeProvider() {
 		return MappingScopeProvider;
 	}
 	
-	def override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
+	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
 		return QualifiedNameWithVersionProvider;
+	}
+	
+	override bindIFormatter(){
+		return MappingFormatter
 	}
 }

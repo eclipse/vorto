@@ -4,7 +4,7 @@ repositoryControllers.controller('SearchController',
 
     $scope.models = [];
     $scope.filteredModels = [];
-    $scope.modelType = $rootScope.authenticated === true ? 'all' : 'InformationModel';
+    $scope.modelType = 'all';
     $scope.modelState = $rootScope.authenticated === true ? 'all' :'Released';
     $scope.onlyMyModels = "false";
     $scope.queryFilter = "";
