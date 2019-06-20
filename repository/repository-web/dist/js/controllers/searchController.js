@@ -45,7 +45,7 @@ repositoryControllers.controller('SearchController',
         	}
         }
 
-        $http.get('./api/v1/search/models?expression=' + filter).success(
+        $http.get('./api/v1/search/indexedModels?expression=' + filter).success(
             function(data, status, headers, config) {
             	$scope.models = data;
             	$scope.modelsTotal = data.length;
