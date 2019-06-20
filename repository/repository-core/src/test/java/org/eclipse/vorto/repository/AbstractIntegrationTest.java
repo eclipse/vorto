@@ -13,6 +13,8 @@
 package org.eclipse.vorto.repository;
 
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +37,8 @@ import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.core.indexing.IIndexingService;
+import org.eclipse.vorto.repository.core.indexing.IndexingSupervisor;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -63,6 +67,7 @@ import org.mockito.MockitoAnnotations;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -96,6 +101,8 @@ public abstract class AbstractIntegrationTest {
   protected ModelRepositoryFactory repositoryFactory;
 
   protected TenantService tenantService = Mockito.mock(TenantService.class);
+  
+  protected IIndexingService indexingService = Mockito.mock(IIndexingService.class);
 
   protected TenantUserService tenantUserService = null;
   
@@ -130,11 +137,18 @@ public abstract class AbstractIntegrationTest {
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
 
     ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor();
-
+    IndexingSupervisor indexingSupervisor = new IndexingSupervisor(indexingService);
+    
+    Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
+    listeners.add(supervisor);
+    listeners.add(indexingSupervisor);
+    
+    ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
+    
     accountService = new DefaultUserAccountService();
     accountService.setNotificationService(notificationService);
     accountService.setUserRepository(userRepository);
-    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
+    accountService.setApplicationEventPublisher(eventPublisher);
     accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
     accountService.setTenantRepo(tenantRepo);
     
@@ -163,6 +177,7 @@ public abstract class AbstractIntegrationTest {
         return super.getRepository(createUserContext("admin", tenantId));
       }
     };
+    repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();
 
     supervisor.setRepositoryFactory(repositoryFactory);
@@ -254,7 +269,7 @@ public abstract class AbstractIntegrationTest {
     return UserContext.user(auth, tenantId);
   }
 
-  private Tenant playgroundTenant() {
+  protected Tenant playgroundTenant() {
     UserRole roleUser = new UserRole(Role.USER);
     UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
     UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
@@ -296,18 +311,20 @@ public abstract class AbstractIntegrationTest {
         .findAny().get();
   }
 
-  private class MockAppEventPublisher implements ApplicationEventPublisher {
-    private ModelRepositorySupervisor supervisor;
+  protected class MockAppEventPublisher implements ApplicationEventPublisher {
+    private Collection<ApplicationListener<AppEvent>> listeners;
 
-    public MockAppEventPublisher(ModelRepositorySupervisor supervisor) {
-      this.supervisor = supervisor;
+    public MockAppEventPublisher(Collection<ApplicationListener<AppEvent>> listeners) {
+      this.listeners = listeners;
     }
 
     @Override
     public void publishEvent(ApplicationEvent event) {
       if (event instanceof AppEvent) {
         AppEvent appEvent = (AppEvent) event;
-        supervisor.onApplicationEvent(appEvent);
+        for(ApplicationListener<AppEvent> listener : listeners) {
+          listener.onApplicationEvent(appEvent);
+        }
       }
     }
 
