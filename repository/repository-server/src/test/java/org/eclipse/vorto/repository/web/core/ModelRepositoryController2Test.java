@@ -20,7 +20,7 @@ public class ModelRepositoryController2Test extends ModelRepositoryControllerTes
 
   @Override
   protected void setUpTest() throws Exception {
-    super.setTenant("");
+    //super.setTenant("");
     super.setUpTest();
   }
 

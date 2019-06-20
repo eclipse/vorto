@@ -13,7 +13,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
         templateUrl : "webjars/repository-web/dist/partials/mapping/mappingcreator.html",
         controller : "MappingBuilderController"
-    }).when("/details/:tenantId/:modelId", {
+    }).when("/details/:modelId", {
         templateUrl : "webjars/repository-web/dist/partials/details-template.html",
         controller : "DetailsController"
     }).when("/generators", {

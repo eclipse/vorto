@@ -50,8 +50,13 @@ public class TestModel {
 
   public void createModel(MockMvc mockMvc,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1) throws Exception {
-    mockMvc.perform(post("/rest/tenants/playground/models/" + prettyName + "/InformationModel").with(user1)
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		/*
+		 * mockMvc.perform(post("/rest/tenants/playground/models/" + prettyName +
+		 * "/InformationModel").with(user1)
+		 * .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		 */
+    mockMvc.perform(post("/rest/models/" + prettyName + "/InformationModel").with(user1)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
   }
 
 

@@ -45,8 +45,7 @@ public class WorkflowController {
   @Autowired
   private IWorkflowService workflowService;
   
-  @Autowired
-  private WorkflowController_bk workflowController;
+ 
   
   @Autowired
   private ITenantService tenantService;

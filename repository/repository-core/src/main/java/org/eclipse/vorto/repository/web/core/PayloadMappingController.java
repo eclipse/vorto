@@ -89,8 +89,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @Autowired
   private ITenantService tenantService;
   
-  @Autowired
-  private PayloadMappingController_bk payloadMappingController;
+  
 
   private static Logger logger = Logger.getLogger(PayloadMappingController.class);
 
@@ -317,10 +316,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
     return createdModelId;
   }
 
-	/*
-	 * public void setUserContextFn(Function<String, IUserContext> userContextFn) {
-	 * this.userContextFn = userContextFn; }
-	 */
+	
+	 public void setUserContextFn(Function<String, IUserContext> userContextFn) {
+	  this.userContextFn = userContextFn; }
+	 
 
   public void setModelController(ModelController modelController) {
     this.modelController = modelController;
@@ -329,6 +328,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
   public void setWorkflowService(IWorkflowService workflowService) {
     this.workflowService = workflowService;
   }
+  
+  public void setTenantService(ITenantService tenantService) {
+		this.tenantService = tenantService;
+	}
   private String getTenant(String modelId) {
 	    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
 	        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
@@ -338,4 +341,5 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	    return tenantService.getTenantFromNamespace(modelId.getNamespace())
 	        .map(tenant -> tenant.getTenantId());
 	  }
+	
 }
