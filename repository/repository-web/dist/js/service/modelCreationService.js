@@ -155,7 +155,6 @@ repository.factory('openCreateModelDialog',
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
                                 } else {
                                     modalInstance.close({
-                                        //tenantId: tenantId,
                                         model: result
                                     });
                                 }
@@ -181,7 +180,7 @@ repository.factory('openCreateModelDialog',
               });
               
               modalInstance.result.then(function(result) {
-				  $location.path("/details/" +  "/" + result.model.id.prettyFormat);
+				  $location.path("/details/" + result.model.id.prettyFormat);
               });
         };
     }

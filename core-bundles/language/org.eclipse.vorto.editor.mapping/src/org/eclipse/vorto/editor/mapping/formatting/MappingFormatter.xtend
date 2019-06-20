@@ -33,30 +33,24 @@ class MappingFormatter extends AbstractDeclarativeFormatter {
 
 	override protected void configureFormatting(FormattingConfig c) { 
 
-		//Basic information
-		c.setLinewrap(1).after(f.modelReferenceAccess.group)	
-		c.setLinewrap(2).before(f.findKeywords("namespace").get(0))	
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.namespaceAssignment_4);
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.versionAssignment_6);
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.displaynameAssignment_7_1)
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.descriptionAssignment_8_1)
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.categoryAssignment_9_1)		
+		//Basic information	
+		c.setLinewrap(1).after(f.modelReferenceAccess.group)
 		
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.vortolangKeyword_1);
+		c.setLinewrap(2).before(f.functionBlockMappingModelAccess.findKeywords("namespace").get(0))	
 		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.namespaceAssignment_4);
 		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.versionAssignment_6);
 		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.displaynameAssignment_7_1)
 		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.descriptionAssignment_8_1)
 		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.categoryAssignment_9_1)	
 			
-		c.setLinewrap(1).after(f.entityMappingModelAccess.vortolangKeyword_1);	
+		c.setLinewrap(2).before(f.entityMappingModelAccess.findKeywords("namespace").get(0))	
 		c.setLinewrap(1).after(f.entityMappingModelAccess.namespaceAssignment_4);
 		c.setLinewrap(1).after(f.entityMappingModelAccess.versionAssignment_6);	
 		c.setLinewrap(1).after(f.entityMappingModelAccess.displaynameAssignment_7_1)
 		c.setLinewrap(1).after(f.entityMappingModelAccess.descriptionAssignment_8_1)
 		c.setLinewrap(1).after(f.entityMappingModelAccess.categoryAssignment_9_1)	
 		
-		c.setLinewrap(1).after(f.enumMappingModelAccess.vortolangKeyword_1);
+		c.setLinewrap(2).before(f.enumMappingModelAccess.findKeywords("namespace").get(0))	
 		c.setLinewrap(1).after(f.enumMappingModelAccess.namespaceAssignment_4);
 		c.setLinewrap(1).after(f.enumMappingModelAccess.versionAssignment_6);
 		c.setLinewrap(1).after(f.enumMappingModelAccess.displaynameAssignment_7_1)
@@ -103,15 +97,15 @@ class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}			
-				
+		
 		for (Keyword k : findKeywords("from")) {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}
-		for (Keyword k : findKeywords("to")) {
-			c.setLinewrap(1).before(k)
-			c.setNoLinewrap.after(k)
-		}
+//		for (Keyword k : findKeywords("to")) {
+//			c.setLinewrap(1).before(k)
+//			c.setNoLinewrap.after(k)
+//		}
 		
 				
 				

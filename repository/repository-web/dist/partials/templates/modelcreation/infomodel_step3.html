@@ -9,11 +9,11 @@
 				<div class="col-md-4 col-xs-12 form-group">
 					<input type="radio" name="modelType" ng-disabled="selected.properties.length > 0" ng-change="loadFunctionblocks('org.eclipse.vorto')" value="org.eclipse.vorto" ng-model="fbType">
 					org.eclipse.vorto &nbsp;&nbsp;
-					<input type="radio" name="modelType" ng-disabled="selected.properties.length > 0" ng-change="loadFunctionblocks('com.ipso.smartobjects')" value="org.smartobjects.ipso" ng-model="fbType">
-					LwM2M
+					<input type="radio" name="modelType" ng-disabled="selected.properties.length > 0" value="custom" ng-model="fbType">
+					Custom
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group" ng-hide="fbType === 'custom'">
   				<label for="property" class="col-sm-3 control-label">Properties:</label>
 					<div class="col-md-4 col-xs-12 form-group">
 						<select class="form-control" ng-change="generatePropertyName(selectedProperty.selectedFb)" ng-model="selectedProperty.selectedFb" ng-options="fb.id as fb.id.name for fb in functionblocks | orderBy: 'id.name' track by fb.id.name">
