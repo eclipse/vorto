@@ -13,12 +13,15 @@
 package org.eclipse.vorto.repository.web.comment;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.comment.ICommentService;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,24 +39,25 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/{tenantId}/comments")
+@RequestMapping(value = "/rest/comments")
 public class CommentController {
 
   @Autowired
   private ICommentService commentService;
+  
+  @Autowired
+  private ITenantService tenantService;
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_USER')")
   public List<Comment> getCommentsforModelId(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     return commentService.getCommentsforModelId(modelID).stream()
-        .map(comment -> ModelDtoFactory.createDto(comment,
-            UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(), tenantId)))
-        .collect(Collectors.toList());
+            .map(comment -> ModelDtoFactory.createDto(comment,
+                UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(), getTenant(modelId))))
+            .collect(Collectors.toList());
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
@@ -63,5 +67,15 @@ public class CommentController {
     commentService.createComment(comment);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
+  
+  private String getTenant(String modelId) {
+	    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
+	        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+	  }
+  
+  private Optional<String> getTenant(ModelId modelId) {
+	    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+	        .map(tenant -> tenant.getTenantId());
+	  }
 
 }

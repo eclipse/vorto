@@ -13,10 +13,14 @@
 package org.eclipse.vorto.repository.web.workflow;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.workflow.dto.WorkflowResponse;
 import org.eclipse.vorto.repository.web.workflow.dto.WorkflowState;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -35,22 +39,26 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/tenants/{tenantId}/workflows")
+@RequestMapping(value = "/rest/workflows")
 public class WorkflowController {
 
   @Autowired
   private IWorkflowService workflowService;
+  
+  @Autowired
+  private WorkflowController_bk workflowController;
+  
+  @Autowired
+  private ITenantService tenantService;
 
   @ApiOperation(value = "Returns the list of possible actions for a the specific model state")
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/actions",
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_USER')")
   public List<String> getPossibleActions(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
-    return workflowService.getPossibleActions(ModelId.fromPrettyFormat(modelId),
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId));
+	  return workflowService.getPossibleActions(ModelId.fromPrettyFormat(modelId),
+		        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId)));  
   }
 
   @ApiOperation(value = "Transitions the model state to the next for the provided action.")
@@ -58,20 +66,16 @@ public class WorkflowController {
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_MODEL_PROMOTER') || hasRole('ROLE_MODEL_REVIEWER')")
   public WorkflowResponse executeAction(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
-
-    try {
-      ModelInfo model = workflowService.doAction(ModelId.fromPrettyFormat(modelId),
-          UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId),
-          actionName);
-      return WorkflowResponse.create(model);
-    } catch (WorkflowException e) {
-      return WorkflowResponse.withErrors(e);
-    }
-
+	  try {
+	      ModelInfo model = workflowService.doAction(ModelId.fromPrettyFormat(modelId),
+	          UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId)),
+	          actionName);
+	      return WorkflowResponse.create(model);
+	    } catch (WorkflowException e) {
+	      return WorkflowResponse.withErrors(e);
+	    }
   }
 
   @ApiOperation(value = "Gets the model of the current workflow state")
@@ -79,13 +83,21 @@ public class WorkflowController {
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_USER')")
   public WorkflowState getState(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
-    
-    IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
-    
-    return new WorkflowState(
-        this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId), user).get());
-  }
+	  IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId));
+	    
+	    return new WorkflowState(
+	        this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId), user).get());
+	  }
+  
+  
+  private String getTenant(String modelId) {
+	    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
+	        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+	  }
+
+private Optional<String> getTenant(ModelId modelId) {
+	    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+	        .map(tenant -> tenant.getTenantId());
+	  }
 }
