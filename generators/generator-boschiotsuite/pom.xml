@@ -13,7 +13,6 @@
 
 	<modules>
 		<module>boschiotsuite-cloud</module>
-		<module>boschiotsuite-gateway</module>
 	</modules>
 	
 </project>

@@ -15,7 +15,7 @@ repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope'
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/' + $rootScope.tenant + '/generators/rankings/3').success(
+        $http.get('./rest/generators/rankings/3').success(
             function(data, status, headers, config) {
                 $scope.mostUsedGenerators = data;
             });
