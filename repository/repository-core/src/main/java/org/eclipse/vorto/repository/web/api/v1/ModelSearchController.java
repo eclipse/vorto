@@ -14,15 +14,26 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.indexing.IIndexingService;
+import org.eclipse.vorto.repository.core.indexing.IndexedModelInfo;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +52,37 @@ import io.swagger.annotations.ApiResponses;
 @RestController("modelSearchController")
 @RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
+  
+  @Autowired
+  private IIndexingService indexingService;
+  
+  @Autowired
+  private IUserAccountService userAccountService;
+
+  @RequestMapping(value = "/indexedModels", method = RequestMethod.GET,
+      produces = "application/json")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public List<IndexedModelInfo> searchIndex(
+      @ApiParam(value = "a free-text search expression", required = true) @RequestParam("expression") String expression) 
+              throws UnsupportedEncodingException {
+    
+    IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    
+    return indexingService.search(getTenants(user), URLDecoder.decode(expression, "utf-8"));
+  }
+  
+  private Optional<Collection<String>> getTenants(IUserContext user) {
+    if (user.isAnonymous()) {
+      return Optional.of(Collections.emptyList());
+    }
+    
+    if (user.isSysAdmin()) {
+      return Optional.empty();
+    }
+    
+    return Optional.of(userAccountService.getTenantsOfUser(user.getUsername()).stream()
+        .map(Tenant::getTenantId).collect(Collectors.toList()));
+  }
 
   @ApiOperation(value = "Finds models by free-text search expressions",
 		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
