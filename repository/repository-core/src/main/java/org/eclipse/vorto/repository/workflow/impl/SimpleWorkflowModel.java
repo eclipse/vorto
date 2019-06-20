@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.repository.workflow.impl.conditions.HasRoleCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
@@ -56,12 +57,10 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public static final DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
 	public static final DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated.");
 
-	
-	public static final DefaultState STATE_DRAFT = new DefaultState("Draft","A draft model is only viewable and editable by the model owner.");
-	public static final DefaultState STATE_IN_REVIEW = new DefaultState("InReview","Being reviewed by collaborators with 'Reviewer' role.");
-	public static final DefaultState STATE_RELEASED = new DefaultState("Released","A released model cannot be changed or removed and can safely be consumed.");
-	public static final DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
-
+	public static final DefaultState STATE_DRAFT = new DefaultState(ModelState.DRAFT.getName(), "A draft model is only viewable and editable by collaborators.");
+	public static final DefaultState STATE_IN_REVIEW = new DefaultState(ModelState.IN_REVIEW.getName(), "Being reviewed by collaborators with 'Reviewer' role.");
+	public static final DefaultState STATE_RELEASED = new DefaultState(ModelState.RELEASED.getName(),"A released model cannot be changed or removed and can safely be consumed.");
+	public static final DefaultState STATE_DEPRECATED = new DefaultState(ModelState.DEPRECATED.getName(),"A deprecated model indicates that the model is obsolete and shall not be used any more.");
 	
 	private static final IWorkflowCondition IS_ANONYMOUS_MODEL = new IsAnonymousModel();
 	private static final IWorkflowCondition IS_LOGGED_IN = new IsLoggedIn();
