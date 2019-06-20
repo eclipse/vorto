@@ -54,12 +54,14 @@ import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component("modelRepositoryFactory")
-public class ModelRepositoryFactory implements IModelRepositoryFactory {
+public class ModelRepositoryFactory implements IModelRepositoryFactory, ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
@@ -83,6 +85,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   @Autowired
   private TenantService tenantService;
+  
+  private ApplicationEventPublisher eventPublisher = null;
 
   private Repository repository;
 
@@ -127,6 +131,10 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     } catch (Exception e) {
       LOGGER.error("Error while waiting for the ModeShape engine to shutdown", e);
     }
+  }
+  
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.eventPublisher = applicationEventPublisher;
   }
   
   @Override
@@ -203,7 +211,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user));
 
     modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
-
+    modelRepository.setApplicationEventPublisher(eventPublisher);
+    
     return modelRepository;
   }
 
@@ -262,7 +271,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
           e);
     }
     
-    workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants);
+    workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants.toArray());
     
     return new RepositoryConfiguration(editor, repoConfig.getName());
   }
