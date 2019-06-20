@@ -11,13 +11,12 @@
  */
 package org.eclipse.vorto.plugin.generator.utils;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 
 public class GenerationResultBuilder {
@@ -33,12 +32,12 @@ public class GenerationResultBuilder {
     return builder;
   }
 
-  public GenerationResultBuilder append(IGenerationResult result) {
-    if (result == null) {
+  public GenerationResultBuilder append(IGenerationResult output) {
+    if (output == null) {
       return this;
     }
 
-    appendToResult(result.getContent(), ((IGeneratedWriter) result));
+    appendToResult(output.getContent(), ((IGeneratedWriter) result));
 
     return this;
   }
@@ -66,8 +65,10 @@ public class GenerationResultBuilder {
           } else {
             fileName = ze.getName();
           }
-
-          result.write(new Generated(fileName, folderName, new String(copyStream(zis), "utf-8")));
+          
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          IOUtils.copy(zis, baos);
+          result.write(new Generated(fileName, folderName, baos.toByteArray()));
         }
       }
     } catch (Exception ex) {
@@ -82,20 +83,4 @@ public class GenerationResultBuilder {
       }
     }
   }
-
-  private byte[] copyStream(InputStream in) throws IOException {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-    int size;
-    byte[] buffer = new byte[2048];
-
-    BufferedOutputStream bos = new BufferedOutputStream(out);
-
-    while ((size = in.read(buffer, 0, buffer.length)) != -1) {
-      bos.write(buffer, 0, size);
-    }
-    bos.flush();
-    bos.close();
-    return out.toByteArray();
-  } 
 }
