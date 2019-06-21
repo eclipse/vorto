@@ -200,7 +200,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     for (String tenantAdminId : tenantAdmins) {
       User user = userAccountService.getUser(tenantAdminId);
       tenantAdminUsers.add(TenantUser.createTenantUser(tenant, user, Role.TENANT_ADMIN, Role.USER,
-          Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER));
+          Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER, Role.MODEL_PUBLISHER));
     }
     return tenantAdminUsers;
   }

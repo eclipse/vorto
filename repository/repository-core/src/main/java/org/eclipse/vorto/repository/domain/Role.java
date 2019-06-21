@@ -31,7 +31,9 @@ public enum Role {
   // users with this role may start a release process for a model and deprecate a model
   MODEL_PROMOTER("readonly", "readwrite"),
   // user with this role may review models and either approve or reject them
-  MODEL_REVIEWER("readonly", "readwrite");
+  MODEL_REVIEWER("readonly", "readwrite"),
+  // user with this role may change the visibility of a model
+  MODEL_PUBLISHER("readonly", "readwrite");
 
   public static final String rolePrefix = "ROLE_";
 
