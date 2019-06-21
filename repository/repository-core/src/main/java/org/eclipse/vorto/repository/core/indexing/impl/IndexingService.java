@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -64,6 +66,8 @@ import com.google.common.base.Strings;
 
 @Component
 public class IndexingService implements IIndexingService {
+
+  private static final int MAX_SEARCH_RESULTS = 1000;
 
   private static final String TEXT = "text";
 
@@ -137,9 +141,8 @@ public class IndexingService implements IIndexingService {
   private boolean createIndexWithMapping(String index, Map<String, Object> mapping) {
     CreateIndexRequest request = new CreateIndexRequest(index);
     request.mapping(mapping); 
-    CreateIndexResponse createIndexResponse;
     try {
-      createIndexResponse = client.indices().create(request, RequestOptions.DEFAULT);
+      CreateIndexResponse createIndexResponse = client.indices().create(request, RequestOptions.DEFAULT);
       return createIndexResponse.isAcknowledged();
     } catch (IOException e) {
       throw new IndexingException("Error while creating index '" + index + "'.", e);
@@ -322,6 +325,9 @@ public class IndexingService implements IIndexingService {
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(makeElasticSearchQuery(searchParameters));
+    searchSourceBuilder.from(0);
+    searchSourceBuilder.size(MAX_SEARCH_RESULTS);
+    searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
     
     SearchRequest searchRequest = new SearchRequest(VORTO_INDEX);
     searchRequest.source(searchSourceBuilder);
