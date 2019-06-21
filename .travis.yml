@@ -50,6 +50,10 @@ jobs:
         directories:
           - '$HOME/.m2/repository'
           - '$HOME/.sonar/cache'
+      env:
+        global:
+          - AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
+          - AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
 
       before_install:
         - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
@@ -62,12 +66,10 @@ jobs:
       script:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
-        - AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
-        - AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-          mvn -Dserver.config.skipSslVerification=true --fail-fast -q clean package -DskipTests -P checkstyle;
+          mvn -Dserver.config.skipSslVerification=true -Daws.accessKeyId=$VORTO_AWS_ACCESS_KEY -Daws.secretKey=$VORTO_AWS_SECRET_KEY --fail-fast -q clean package -DskipTests -P checkstyle;
           mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-          else mvn -Dserver.config.skipSslVerification=true --fail-fast -q clean package -P checkstyle;
+          else mvn -Dserver.config.skipSslVerification=true -Daws.accessKeyId=$VORTO_AWS_ACCESS_KEY -Daws.secretKey=$VORTO_AWS_SECRET_KEY --fail-fast -q clean package -P checkstyle;
           fi
       before_deploy:
         - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
