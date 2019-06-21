@@ -14,6 +14,8 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.vorto.model.AbstractModel.Builder;
 
 public class ModelProperty extends AbstractProperty {
 
@@ -73,6 +75,12 @@ public class ModelProperty extends AbstractProperty {
     
     public Builder withAttributeMeasurementUnit(EnumLiteral literal) {
       this.property.getAttributes().add(new EnumAttributeProperty(EnumAttributePropertyType.MEASUREMENT_UNIT, literal));
+      return this;
+    }
+    
+    public Builder withStereotype(String stereoTypeName, Map<String,String> attributes,String targetPlatformKey) {
+      property.setTargetPlatformKey(targetPlatformKey);
+      property.addStereotype(Stereotype.create(stereoTypeName, attributes));
       return this;
     }
     

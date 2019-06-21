@@ -14,6 +14,7 @@ package org.eclipse.vorto.model.conversion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Collections;
 import java.util.Optional;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
@@ -26,6 +27,7 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.model.ConstraintType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
@@ -40,7 +42,6 @@ import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.ReturnType;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ModelContentToEcoreConverterTest {
 
@@ -159,6 +160,25 @@ public class ModelContentToEcoreConverterTest {
             .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
     assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
     assertEquals(1, model.getFunctionblock().getConfiguration().getProperties().size());
+  }
+  
+  @Test
+  public void testConvertFunctionblockWithPropertyMappings() {
+    final String targetPlatform = "testPlatform";
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", PrimitiveType.FLOAT).withStereotype("OBJECT", Collections.emptyMap(), targetPlatform).build())
+            .configurationProperty(ModelProperty.Builder("enable", PrimitiveType.BOOLEAN).build())
+            .withTargetPlatform(targetPlatform)
+            .build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    MappingModel model =
+        (MappingModel) converter
+            .convert(ModelContent.Builder(fbModel).build(), Optional.of(targetPlatform));
+    assertEquals(targetPlatform,model.getTargetPlatform());
+    
   }
 
   @Test
@@ -288,9 +308,7 @@ public class ModelContentToEcoreConverterTest {
     assertEquals(fbModel1.getId().getNamespace(),fb.getNamespace());
     assertEquals(fbModel1.getId().getVersion(),fb.getVersion());
     assertTrue(property.eContainer() instanceof InformationModel);
-    
-    System.out.println(new ObjectMapper().writeValueAsString(ModelContent.Builder(infomodel).withDependency(fbModel1).withDependency(fbModel2).build()));
-    
+        
   }
 
 }

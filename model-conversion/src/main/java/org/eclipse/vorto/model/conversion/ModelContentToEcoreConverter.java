@@ -21,8 +21,11 @@ import org.eclipse.vorto.core.api.model.BuilderUtils.EnumBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.EventBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.FunctionblockBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.InformationModelBuilder;
+import org.eclipse.vorto.core.api.model.BuilderUtils.MappingBuilder;
+import org.eclipse.vorto.core.api.model.BuilderUtils.MappingRuleBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.ModelBuilder;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.Type;
@@ -37,13 +40,17 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
+import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
+import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
+import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.Constraint;
 import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
@@ -56,6 +63,7 @@ import org.eclipse.vorto.model.ModelEvent;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Operation;
 import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.model.Stereotype;
 
 /**
  * Converts the Model Content (pojo) to Vorto ecore model
@@ -73,16 +81,16 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
   @Override
   public Model convert(ModelContent source, Optional<String> platformKey) {
     IModel model = source.getModels().get(source.getRoot());
-    return convert(model, source);
+    return convert(model, source,platformKey);
   }
 
-  private Model convert(IModel model, ModelContent context) {
+  private Model convert(IModel model, ModelContent context, Optional<String> platformKey) {
     if (model instanceof EntityModel) {
       return convertEntity((EntityModel) model, context);
     } else if (model instanceof EnumModel) {
       return convertEnum((EnumModel) model);
     } else if (model instanceof FunctionblockModel) {
-      return convertFunctionblock((FunctionblockModel) model, context);
+      return platformKey.isPresent() ? convertFunctionblockMapping((FunctionblockModel) model, context,platformKey.get()) : convertFunctionblock((FunctionblockModel) model, context);
     } else if (model instanceof Infomodel) {
       return convertInformationModel((Infomodel) model, context);
     } else {
@@ -90,7 +98,52 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     }
   }
 
-  private Model convertInformationModel(Infomodel model, ModelContent context) {
+  private Model convertFunctionblockMapping(FunctionblockModel model, ModelContent context,
+      String platformKey) {
+    MappingBuilder builder = BuilderUtils.newMapping(new ModelId(ModelType.InformationModel, model.getId().getName()+"Mapping",model.getId().getNamespace()+".mapping."+platformKey,model.getId().getVersion()),platformKey);
+    builder.withVortolang("1.0");
+    builder.withDescription("Mapping that contains "+platformKey+" specific meta data");
+    builder.withReference(ModelIdFactory.newInstance(ModelType.Functionblock, model.getId().getNamespace(), model.getId().getVersion(), model.getId().getVersion()));
+    
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel eFbm = convertFunctionblock(model, context);
+    
+    for (Stereotype stereotype : model.getStereotypes()) {
+      MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
+      ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
+      FunctionBlockSource source = MappingFactory.eINSTANCE.createFunctionBlockSource();
+      source.setModel(eFbm);
+      ruleBuilder.withSource(source);
+      builder.addRule(ruleBuilder.build());
+    }
+    
+    for (ModelProperty statusProperty : model.getStatusProperties()) {
+      for (Stereotype stereotype : statusProperty.getStereotypes()) {
+        MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
+        ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
+        StatusSource  source = MappingFactory.eINSTANCE.createStatusSource();
+        source.setModel(eFbm);
+        source.setProperty(eFbm.getFunctionblock().getStatus().getProperties().stream().filter(property -> property.getName().equals(statusProperty.getName())).findAny().get());
+        ruleBuilder.withSource(source);
+        builder.addRule(ruleBuilder.build());
+      }
+    }
+    
+    for (ModelProperty configProperty : model.getConfigurationProperties()) {
+      for (Stereotype stereotype : configProperty.getStereotypes()) {
+        MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
+        ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
+        ConfigurationSource  source = MappingFactory.eINSTANCE.createConfigurationSource();
+        source.setModel(eFbm);
+        source.setProperty(eFbm.getFunctionblock().getConfiguration().getProperties().stream().filter(property -> property.getName().equals(configProperty.getName())).findAny().get());
+        ruleBuilder.withSource(source);
+        builder.addRule(ruleBuilder.build());
+      }
+    }
+    
+    return builder.build();
+  }
+  
+  private InformationModel convertInformationModel(Infomodel model, ModelContent context) {
     InformationModelBuilder builder = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel, model.getId().getName(),
         model.getId().getNamespace(), model.getId().getVersion()));
     
@@ -118,7 +171,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       IModel referencedModel =
           context.getModels().get((org.eclipse.vorto.model.ModelId) sourceProperty.getType());
       
-      Type convertedReference = (Type)convert(referencedModel, context);
+      Type convertedReference = (Type)convert(referencedModel, context,Optional.empty());
       builder.withReference(ModelIdFactory.newInstance(convertedReference));
       property = BuilderUtils.createProperty(sourceProperty.getName(), convertedReference);
     } else if (sourceProperty.getType() instanceof DictionaryType) {
@@ -144,7 +197,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     return property;
   }
 
-  private Model convertFunctionblock(FunctionblockModel model, ModelContent context) {
+  private org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertFunctionblock(FunctionblockModel model, ModelContent context) {
     FunctionblockBuilder builder =
         BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock, model.getId().getName(),
             model.getId().getNamespace(), model.getId().getVersion()));
@@ -198,7 +251,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
         RefParam type  = FunctionblockFactory.eINSTANCE.createRefParam();
         type.setMultiplicity(param.isMultiple());
         type.setType((Type) convert(
-            context.getModels().get((org.eclipse.vorto.model.ModelId) param.getType()), context));
+            context.getModels().get((org.eclipse.vorto.model.ModelId) param.getType()), context,Optional.empty()));
         ecoreParams.add(type);
       } else if (param.getType() instanceof DictionaryType) {
         DictonaryParam type = FunctionblockFactory.eINSTANCE.createDictonaryParam();
@@ -227,7 +280,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
         ReturnObjectType type = FunctionblockFactory.eINSTANCE.createReturnObjectType();
         type.setMultiplicity(result.isMultiple());
         Type convertedType = ((Type) convert(
-            context.getModels().get((org.eclipse.vorto.model.ModelId) result.getType()), context));
+            context.getModels().get((org.eclipse.vorto.model.ModelId) result.getType()), context,Optional.empty()));
         builder.withReference(ModelIdFactory.newInstance(convertedType));
         type.setReturnType(convertedType);
         return type;
@@ -242,7 +295,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
 
   }
 
-  private Model convertEnum(EnumModel model) {
+  private org.eclipse.vorto.core.api.model.datatype.Enum convertEnum(EnumModel model) {
     EnumBuilder builder = BuilderUtils.newEnum(new ModelId(ModelType.Datatype,
         model.getId().getName(), model.getId().getNamespace(), model.getId().getVersion()));
     builder.withCategory(model.getCategory());
@@ -257,7 +310,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     return builder.build();
   }
 
-  private Model convertEntity(EntityModel entity, ModelContent context) {
+  private Entity convertEntity(EntityModel entity, ModelContent context) {
     EntityBuilder builder = BuilderUtils.newEntity(new ModelId(ModelType.Datatype,
         entity.getId().getName(), entity.getId().getNamespace(), entity.getId().getVersion()));
     builder.withCategory(entity.getCategory());
