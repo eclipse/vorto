@@ -62,8 +62,8 @@ jobs:
       script:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
-        - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
-        - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
+        - AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
+        - AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
           mvn -Dserver.config.skipSslVerification=true --fail-fast -q clean package -DskipTests -P checkstyle;
           mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
