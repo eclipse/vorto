@@ -13,9 +13,7 @@
 package org.eclipse.vorto.repository.importer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 
 /**
