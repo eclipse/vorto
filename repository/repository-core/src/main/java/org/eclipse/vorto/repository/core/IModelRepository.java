@@ -117,6 +117,15 @@ public interface IModelRepository {
     ModelId updateState(ModelId modelId, String state);
     
     /**
+     * Updates the visibility of the model
+     * 
+     * @param modelId the model Id
+     * @param visibility the visibility of the model
+     * @return
+     */
+    ModelId updateVisibility(ModelId modelId, String visibility);
+    
+    /**
      * adds the given file content to the model
      * @param id
      * @param fileContent
