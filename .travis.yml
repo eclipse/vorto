@@ -52,8 +52,8 @@ jobs:
           - '$HOME/.sonar/cache'
       env:
         global:
-          - AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
-          - AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
+          - AWS_ACCESS_KEY_ID=$VORTO_AWS_ACCESS_KEY
+          - AWS_SECRET_ACCESS_KEY=$VORTO_AWS_SECRET_KEY
 
       before_install:
         - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
