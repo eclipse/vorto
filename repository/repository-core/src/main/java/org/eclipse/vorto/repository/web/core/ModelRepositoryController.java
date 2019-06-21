@@ -461,10 +461,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
+    String tenantId = getTenant(modelId);
+    
     try {
       List<PolicyEntry> policyEntries =
-          getPolicyManager(getTenant(modelId)).getPolicyEntries(modelID).stream()
-              .filter(userHasPolicyEntry(user, getTenant(modelId))).collect(Collectors.toList());
+          getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+              .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
 
       Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
 
