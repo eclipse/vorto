@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.controller;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
@@ -29,11 +30,16 @@ import java.util.Optional;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
+import org.eclipse.vorto.model.IPropertyAttribute;
 import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.ModelReferenceDeserializer;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.PropertyAttributeDeserializer;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -57,6 +63,9 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -251,6 +260,32 @@ public class PayloadMappingControllerTest {
     } catch (Exception e) {
       fail("Got exception." + e.getMessage());
     }
+  }
+  
+  @Test
+  public void testSaveMappingSpecification() throws Exception {
+    
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(IPropertyAttribute.class, new PropertyAttributeDeserializer());
+    module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.registerModule(module);
+    
+    MappingSpecification spec = mapper.readValue(new ClassPathResource("mappingRequest2.json").getInputStream(), MappingSpecification.class);  
+    assertNotNull(spec);
+    assertNotNull(spec.getFunctionBlock("connectivity"));
+    System.out.println(spec);
+  }
+  
+  @Test
+  public void testDeserializeModelContentContainingMapping() throws Exception {
+    ModelContent content = ObjectMapperFactory.getInstance().readValue(new ClassPathResource("modelcontent_lwm2m.json").getInputStream(), ModelContent.class);  
+    assertNotNull(content);
+    assertNotNull(content.getModels().get(content.getRoot()));
+    System.out.println(content);
+
+    
   }
 
   private Gson gsonWithDeserializer() {

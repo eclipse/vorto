@@ -15,7 +15,6 @@ package org.eclipse.vorto.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.vorto.model.AbstractModel.Builder;
 
 public class ModelProperty extends AbstractProperty {
 

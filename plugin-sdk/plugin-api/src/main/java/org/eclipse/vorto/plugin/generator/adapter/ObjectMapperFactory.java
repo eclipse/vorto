@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -17,8 +16,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.BooleanAttributePropertyType;
+import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.EnumAttributePropertyType;
+import org.eclipse.vorto.model.EnumLiteral;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.IModel;
@@ -51,7 +54,7 @@ public class ObjectMapperFactory {
 
     return mapper;
   }
-
+  
   public static ObjectMapper getInstance() {
     return getInstance(null);
   }
@@ -60,10 +63,83 @@ public class ObjectMapperFactory {
     SimpleModule module = new SimpleModule();
     module.addDeserializer(IPropertyAttribute.class, new PropertyAttributeDeserializer());
     module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
+    module.addDeserializer(IModel.class, new ModelDeserializer());
     module.addDeserializer(Map.class, new ModelMapDeserializer());
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.registerModule(module);
   }
+  
+
+  @SuppressWarnings("serial")
+  public static class ModelMapDeserializer extends StdDeserializer<Map<Object,Object>> {
+
+    public ModelMapDeserializer() {
+      this(null);
+    }
+
+    public ModelMapDeserializer(Class<?> vc) {
+      super(vc);
+    }
+
+    @Override
+    public Map<Object, Object> deserialize(JsonParser parser, DeserializationContext context)
+        throws IOException, JsonProcessingException {
+      try {
+        HashMap<Object, Object> deserialized = new HashMap<>();
+        ObjectCodec oc = parser.getCodec();
+        JsonNode node = oc.readTree(parser);
+
+        Iterator<JsonNode> iterator = node.elements();
+        while (iterator.hasNext()) {
+          JsonNode childNode = iterator.next();
+          JsonNode type = childNode.get("type");
+          if (type == null) {
+            break;
+          }
+          IModel value = null;
+
+          if (ModelType.valueOf(type.asText()).equals(ModelType.InformationModel)) {
+            value = oc.treeToValue(childNode, Infomodel.class);
+          } else if (ModelType.valueOf(type.asText()).equals(ModelType.Functionblock)) {
+            value = oc.treeToValue(childNode, FunctionblockModel.class);
+          } else if (ModelType.valueOf(type.asText()).equals(ModelType.Datatype)
+              && childNode.has("literals")) {
+            value = oc.treeToValue(childNode, EnumModel.class);
+          } else {
+            value = oc.treeToValue(childNode, EntityModel.class);
+          }
+
+          if (value != null) {
+            deserialized.put(getModelId(childNode.get("id").get("prettyFormat").asText()), value);
+          }
+        }
+        
+        if (deserialized.isEmpty()) {
+          Iterator<String> fieldsIter = node.fieldNames();
+          while (fieldsIter.hasNext()) {
+            String field = fieldsIter.next();
+            deserialized.put(field, node.get(field).asText());
+          }
+        }
+        
+        return deserialized;
+      } catch (IOException ioEx) {
+        throw new RuntimeException(ioEx);
+      }
+    }
+
+    private ModelId getModelId(String modelId) {
+      try {
+        return ModelId.fromPrettyFormat(modelId);
+      } catch (IllegalArgumentException ex) {
+        final int versionIndex = modelId.indexOf(":");
+        return ModelId.fromReference(modelId.substring(0, versionIndex),
+            modelId.substring(versionIndex + 1));
+      }
+    }
+
+  }
+  
 
   @SuppressWarnings("serial")
   public static class PropertyAttributeDeserializer extends StdDeserializer<IPropertyAttribute> {
@@ -81,15 +157,22 @@ public class ObjectMapperFactory {
     public IPropertyAttribute deserialize(JsonParser parser, DeserializationContext context)
         throws IOException, JsonProcessingException {
 
-      try {
-        return parser.readValueAs(BooleanAttributeProperty.class);
-      } catch (IOException ioEx) {
-        try {
-          return parser.readValueAs(EnumAttributeProperty.class);
-        } catch (IOException ex) {
-          ex.printStackTrace();
-          return null;
-        }
+      ObjectCodec oc = parser.getCodec();
+      JsonNode node = oc.readTree(parser);
+
+      JsonNode value = node.get("value");
+      if (value.isBoolean()) {
+        BooleanAttributeProperty booleanAttribute = new BooleanAttributeProperty();
+        booleanAttribute.setType(BooleanAttributePropertyType.valueOf(node.get("type").asText()));
+        booleanAttribute.setValue(value.asBoolean());
+        return booleanAttribute;
+      } else {
+        EnumAttributeProperty enumAttribute = new EnumAttributeProperty();
+        enumAttribute.setType(EnumAttributePropertyType.MEASUREMENT_UNIT);
+        ModelId parent = new ModelId(value.get("parent").get("name").asText(),value.get("parent").get("namespace").asText(),value.get("parent").get("version").asText());
+        EnumLiteral literal = new EnumLiteral(value.get("name").asText(), value.get("description").asText(), parent);
+        enumAttribute.setValue(literal);
+        return enumAttribute;
       }
     }
 
@@ -117,69 +200,48 @@ public class ObjectMapperFactory {
         try {
           return parser.readValueAs(PrimitiveType.class);
         } catch (IOException ex) {
-          ex.printStackTrace();
-          return null;
+          return parser.readValueAs(DictionaryType.class);
         }
       }
     }
   }
-  
-  @SuppressWarnings("serial")
-  public static class ModelMapDeserializer extends StdDeserializer<HashMap<ModelId, IModel>> {
 
-    public ModelMapDeserializer() {
+  @SuppressWarnings("serial")
+  public static class ModelDeserializer extends StdDeserializer<IModel> {
+
+    public ModelDeserializer() {
       this(null);
     }
 
-    public ModelMapDeserializer(Class<?> vc) {
+    public ModelDeserializer(Class<?> vc) {
       super(vc);
     }
 
 
     @Override
-    public HashMap<ModelId, IModel> deserialize(JsonParser parser, DeserializationContext context)
+    public IModel deserialize(JsonParser parser, DeserializationContext context)
         throws IOException, JsonProcessingException {
 
       try {
-        HashMap<ModelId, IModel> deserialized = new HashMap<>();
         ObjectCodec oc = parser.getCodec();
         JsonNode node = oc.readTree(parser);
 
-        Iterator<JsonNode> iterator = node.elements();
-        while (iterator.hasNext()) {
-          JsonNode childNode = iterator.next();
-          JsonNode type = childNode.get("type");
-          IModel value = null;
+        JsonNode type = node.get("type");
 
-          if (ModelType.valueOf(type.asText()).equals(ModelType.InformationModel)) {
-            value = oc.treeToValue(childNode, Infomodel.class);
-          } else if (ModelType.valueOf(type.asText()).equals(ModelType.Functionblock)) {
-            value = oc.treeToValue(childNode, FunctionblockModel.class);
-          } else if (ModelType.valueOf(type.asText()).equals(ModelType.Datatype)
-              && childNode.has("literals")) {
-            value = oc.treeToValue(childNode, EnumModel.class);
-          } else {
-            value = oc.treeToValue(childNode, EntityModel.class);
-          }
-
-          if (value != null) {
-            deserialized.put(getModelId(childNode.get("id").get("prettyFormat").asText()), value);
-          }
+        if (ModelType.valueOf(type.asText()).equals(ModelType.InformationModel)) {
+          return oc.treeToValue(node, Infomodel.class);
+        } else if (ModelType.valueOf(type.asText()).equals(ModelType.Functionblock)) {
+          return oc.treeToValue(node, FunctionblockModel.class);
+        } else if (ModelType.valueOf(type.asText()).equals(ModelType.Datatype)
+            && node.has("literals")) {
+          return oc.treeToValue(node, EnumModel.class);
+        } else {
+          return oc.treeToValue(node, EntityModel.class);
         }
 
-        return deserialized;
+
       } catch (IOException ioEx) {
         throw new RuntimeException(ioEx);
-      }
-    }
-
-    private ModelId getModelId(String modelId) {
-      try {
-        return ModelId.fromPrettyFormat(modelId);
-      } catch (IllegalArgumentException ex) {
-        final int versionIndex = modelId.indexOf(":");
-        return ModelId.fromReference(modelId.substring(0, versionIndex),
-            modelId.substring(versionIndex + 1));
       }
     }
   }
