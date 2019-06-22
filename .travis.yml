@@ -67,6 +67,7 @@ jobs:
       script:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
+        - echo "AWS_ACCESS_KEY_ID =" $AWS_ACCESS_KEY_ID
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
           mvn -Dserver.config.skipSslVerification=true --fail-fast -q clean package -DskipTests -P checkstyle;
           mvn -Dserver.config.skipSslVerification=true clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
@@ -81,7 +82,7 @@ jobs:
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
         - export ARTIFACT_NAME=infomodelrepository
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-        
+
       deploy:
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
