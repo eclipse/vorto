@@ -30,7 +30,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                          	$scope.userNamespaces.sort(function (a, b) {
                             	return a.namespace.localeCompare(b.namespace);
                             });
-                            $scope.targetNamespace = $scope.userNamespaces[0].namespace; 
                             }
                        }, function(reason) {
                                 // TODO : handling of failures
@@ -51,11 +50,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                if ($scope.targetNamespace !== null && $scope.targetNamespace.namespace !== undefined) {
-                	upload('./rest/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
-                } else {
-                	upload('./rest/importers', fileToUpload);
-                }
+                upload('./rest/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
                 
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
@@ -69,7 +64,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.fileAdded = true;
             $scope.showCheckin = false;
             $scope.showResultBox = false;
-            $scope.fileAdded = true;
             $scope.$digest();
         };
 
@@ -85,7 +79,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                 headers: { 'Content-Type': undefined }
             })
                 .success(function (result) {
-                	console.log("-erle- : " + JSON.stringify(result));
                     $scope.isLoading = false;
                     $scope.uploadResult = result;
                     $scope.showResultBox = true;
@@ -172,7 +165,9 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         checkinSingle = function (handleId) {
-            $http.put('./rest/importers/' + handleId + '?key=' + $scope.selectedImporter.key)
+        	var importUrl = "./rest/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.namespace;
+
+            $http.put(importUrl)
                 .success(function (result) {
                     $scope.showResultBox = true;
                     $scope.beingCheckedIn = false;

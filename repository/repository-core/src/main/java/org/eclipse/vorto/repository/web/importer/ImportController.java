@@ -21,10 +21,12 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
@@ -78,7 +80,7 @@ public class ImportController {
   public ResponseEntity<UploadModelResponse> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
-      @RequestParam("key") String key,  @RequestParam(required=false,value="targetNamespace") String targetNamespace) {
+      @RequestParam("key") String key,  @RequestParam(required=true,value="targetNamespace") String targetNamespace) {
     if (file.getSize() > maxModelSize) {
       throw new UploadTooLargeException("model", maxModelSize);
     }
@@ -86,8 +88,9 @@ public class ImportController {
     LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
+      
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Optional.ofNullable(targetNamespace), getUserContext());
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Context.create(getUserContext(),Optional.of(targetNamespace)));
 
       if (!result.isValid()) {
         return validResponse(new UploadModelResponse(
@@ -103,7 +106,6 @@ public class ImportController {
       }
 
     } catch (IOException e) {
-      LOGGER.error("Error upload model." + e.getStackTrace());
       UploadModelResponse errorResponse =
           new UploadModelResponse("Error during upload. Try again. " + e.getMessage(),
               new UploadModelResult(null, Collections.emptyList()));
@@ -117,13 +119,13 @@ public class ImportController {
   public ResponseEntity<List<ModelInfo>> doImport(
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
-      @RequestParam("key") String key) {
+      @RequestParam("key") String key, @RequestParam(required=true,value="targetNamespace") String targetNamespace) {
     LOGGER.info("Importing Model with handleID " + handleId);
     try {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
-
-      List<ModelInfo> importedModels = importer.doImport(handleId, getUserContext());
+      
+      List<ModelInfo> importedModels = importer.doImport(handleId, Context.create(getUserContext(),Optional.of(targetNamespace)));
       for (ModelInfo modelInfo : importedModels) {
         workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
       }

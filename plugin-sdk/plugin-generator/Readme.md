@@ -1,43 +1,6 @@
-# Generator Plugin SDK
+# Generator Plugin SDK v1 (deprecated)
 
-Vorto Generator plugins are meant to help you to ease integration of devices into your application. 
-Generators are used to generate source code from Vorto Information Models. 
-An example of a generator could be generating a piece of device firmware that connects to the AWS cloud and send device data in such a way, that the AWS cloud expects it.
-
-![](docs/generator-plugin-v2.png)
-
-Each Generator must make sure to provide two endpoints, that are called by the Vorto Repository upon code generation:
-
-<table>
-	<tr>
-		<th>Generator Info</th>
-		<td>
-			Gives meta information about the generator plugin, such as description, vendor, logos, etc. This meta - information is displayed in the plugins overview of the repository. 
-		</td>
-	</tr>
-	<tr>
-		<th>Generator Execution</th>
-		<td>
-			Performs the actual code generation for a given Vorto model and returns the generated file(s).
-		</td
-	</tr>
-</table>
-
-[Download OpenAPI spec](docs/generator-openapi.yml)
-
-### Example
-
-It is totally up to you, which language you choose to implement a generator, either Java, Go, Node.js etc.
-
-Checkout our [generator example](https://github.com/eclipse/vorto-examples/tree/master/vorto-generators/v2), that is implemented in Node.js and deployed as a AWS Lambda function. 
-
-### Register your plugin
-
-Please send us an email([vorto-dev@eclipse.org](mailto:vorto-dev@eclipse.org)), containing the endpoint and the generator plugin key, and we will get in touch with you.
-
-## Version 1 (old)
-
-Vorto still provides the old way of creating and running Generators. The Vorto Repository still supports this API Version but it is highly recommended to use Version 2 (see above), as we might no longer support this version in future releases.
+The Vorto Repository still supports this API Version but it is highly recommended to use [SDK Version 2](../plugin-api/Readme.md), as we might no longer support this version in future releases.
 
 This tutorial will explain how to build a generator using API Version 1 with Java and run it as a docker container.
  
@@ -219,5 +182,5 @@ If a mapping key matches your service key, the context will be enriched by the m
 
 ### Share your generator with the community
 
-To share your generator with the community please send us an email([vorto-dev@eclipse.org](mailto:vorto-dev@eclipse.org)), containing the endpoint and the service key and we will be in touch.
+To share your generator with the community please send us an email([vorto-development](mailto:vorto-development@bosch-si.com)), containing the endpoint and the service key and we will be in touch.
 

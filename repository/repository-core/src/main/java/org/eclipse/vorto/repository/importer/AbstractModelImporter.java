@@ -90,7 +90,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   @Override
-  public UploadModelResult upload(FileUpload fileUpload,  Optional<String> targetNamespace, IUserContext user) {
+  public UploadModelResult upload(FileUpload fileUpload, Context context) {
     if (!this.supportedFileExtensions.contains(fileUpload.getFileExtension())) {
       return new UploadModelResult(null, Arrays.asList(ValidationReport.invalid(null,
           "File type is invalid. Must be " + this.supportedFileExtensions)));
@@ -100,16 +100,16 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
       getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
           .forEach(extractedFile -> {
-            extractedFile = preProcess(extractedFile,targetNamespace);
-            List<ValidationReport> validationResult = validate(extractedFile, user);
-            postValidate(validationResult, user);
+            extractedFile = preValidation(extractedFile,context);
+            List<ValidationReport> validationResult = validate(extractedFile, context);
+            postValidate(validationResult, context);
             reports.addAll(validationResult);
           });
 
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
-      fileUpload = preProcess(fileUpload,targetNamespace);
-      List<ValidationReport> validationResult = validate(fileUpload, user);
-      postValidate(validationResult,user);
+      fileUpload = preValidation(fileUpload,context);
+      List<ValidationReport> validationResult = validate(fileUpload, context);
+      postValidate(validationResult,context);
       reports.addAll(validationResult);
 
     }
@@ -124,14 +124,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     }
   }
   
-  /**
-   * Invoked before validation takes place
-   * 
-   * @param fileUpload uploaded file that needs to be validated
-   * @param targetNamespace optional target namespace, that the to be validated file need to be converted to
-   * @return
-   */
-  protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
+  protected FileUpload preValidation(FileUpload fileUpload, Context context) {
     return fileUpload;
   }
 
@@ -169,22 +162,22 @@ public abstract class AbstractModelImporter implements IModelImporter {
    * @param reports reports from the specific importer implementation
    * @param user currently performing the upload
    */
-  protected void postValidate(List<ValidationReport> reports, IUserContext user) {
+  protected void postValidate(List<ValidationReport> reports, Context context) {
     reports.forEach(report -> {
       if (report.getModel() != null) {
         try {
           Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(
-              user.getUsername(), report.getModel().getId().getNamespace());
+              context.getUser().getUsername(), report.getModel().getId().getNamespace());
           if (tenant.isPresent()) {
             IModelRepository modelRepository = modelRepoFactory
-                .getRepository(tenant.get().getTenantId(), user.getAuthentication());
+                .getRepository(tenant.get().getTenantId(), context.getUser().getAuthentication());
             ModelInfo m = modelRepository.getById(report.getModel().getId());
             if (m != null) {
               if (m.isReleased()) {
                 report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
                 report.setValid(false);
               } else {
-                if (isAdmin(user) || m.getAuthor().equals(user.getUsername())) {
+                if (isAdmin(context.getUser()) || m.getAuthor().equals(context.getUser().getUsername())) {
                   report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
                   report.setValid(true);
                 } else {
@@ -238,7 +231,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   @Override
-  public List<ModelInfo> doImport(String uploadHandleId, IUserContext user) {
+  public List<ModelInfo> doImport(String uploadHandleId, Context context) {
     StorageItem uploadedItem = this.uploadStorage.get(uploadHandleId);
 
     if (uploadedItem == null) {
@@ -254,13 +247,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
         getUploadedFilesFromZip(uploadedItem.getValue().getContent()).stream()
             .forEach(extractedFile -> {
-              List<ModelResource> resources = this.convert(extractedFile, user);
-              importedModels.addAll(sortAndSaveToRepository(resources, extractedFile, user));
+              List<ModelResource> resources = this.convert(extractedFile, context);
+              importedModels.addAll(sortAndSaveToRepository(resources, extractedFile, context));
             });
 
       } else {
-        List<ModelResource> resources = this.convert(uploadedItem.getValue(), user);
-        importedModels.addAll(sortAndSaveToRepository(resources, uploadedItem.getValue(), user));
+        List<ModelResource> resources = this.convert(uploadedItem.getValue(), context);
+        importedModels.addAll(sortAndSaveToRepository(resources, uploadedItem.getValue(), context));
       }
     } finally {
       this.uploadStorage.remove(uploadHandleId);
@@ -270,7 +263,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   private List<ModelInfo> sortAndSaveToRepository(List<ModelResource> resources,
-      FileUpload extractedFile, IUserContext user) {
+      FileUpload extractedFile, Context context) {
+    final IUserContext user = context.getUser();
+    
     List<ModelInfo> savedModels = new ArrayList<ModelInfo>();
     DependencyManager dm = new DependencyManager();
     for (ModelResource resource : resources) {
@@ -358,7 +353,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
    * @param user
    * @return
    */
-  protected abstract List<ValidationReport> validate(FileUpload fileUpload, IUserContext user);
+  protected abstract List<ValidationReport> validate(FileUpload fileUpload, Context context);
 
   /**
    * converts the given file upload content to Vorto DSL content
@@ -367,7 +362,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
    * @param user
    * @return Vorto DSL content
    */
-  protected abstract List<ModelResource> convert(FileUpload fileUpload, IUserContext user);
+  protected abstract List<ModelResource> convert(FileUpload fileUpload, Context context);
 
   public void setUploadStorage(ITemporaryStorage uploadStorage) {
     this.uploadStorage = uploadStorage;

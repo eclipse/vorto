@@ -36,7 +36,7 @@ public class ModelContent {
   public void setModels(Map<ModelId, IModel> models) {
     this.models = models;
   }
-
+  
   @Override
   public String toString() {
     return "ModelContent [root=" + root + ", models=" + models + "]";

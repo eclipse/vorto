@@ -14,6 +14,7 @@ package org.eclipse.vorto.model.conversion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Collections;
 import java.util.Optional;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
@@ -26,6 +27,9 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.StatusSource;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.model.ConstraintType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
@@ -40,7 +44,6 @@ import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.ReturnType;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ModelContentToEcoreConverterTest {
 
@@ -48,7 +51,8 @@ public class ModelContentToEcoreConverterTest {
   public void testConvertDatatype() {
     EntityModel entityModel =
         EntityModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Location:1.0.0"))
-            .property(ModelProperty.Builder("lng", PrimitiveType.FLOAT).withConstraint(ConstraintType.MIN, "0").build())
+            .property(ModelProperty.Builder("lng", PrimitiveType.FLOAT)
+                .withConstraint(ConstraintType.MIN, "0").build())
             .property(ModelProperty.Builder("lat", PrimitiveType.STRING).build())
             .description("Some description").displayname("Location").build();
 
@@ -69,7 +73,7 @@ public class ModelContentToEcoreConverterTest {
     assertNotNull(property1);
     assertEquals(org.eclipse.vorto.core.api.model.datatype.PrimitiveType.FLOAT,
         ((PrimitivePropertyType) property1.getType()).getType());
-    assertEquals(1,property1.getConstraintRule().getConstraints().size());
+    assertEquals(1, property1.getConstraintRule().getConstraints().size());
 
     Property property2 =
         model.getProperties().stream().filter(p -> p.getName().equals("lat")).findAny().get();
@@ -162,6 +166,27 @@ public class ModelContentToEcoreConverterTest {
   }
 
   @Test
+  public void testConvertFunctionblockWithPropertyMappings() {
+    final String targetPlatform = "testPlatform";
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", PrimitiveType.FLOAT)
+                .withStereotype("OBJECT", Collections.emptyMap(), targetPlatform).build())
+            .configurationProperty(ModelProperty.Builder("enable", PrimitiveType.BOOLEAN).build())
+            .withTargetPlatform(targetPlatform).build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    MappingModel model = (MappingModel) converter.convert(ModelContent.Builder(fbModel).build(),
+        Optional.of(targetPlatform));
+    assertEquals(targetPlatform, model.getTargetPlatform());
+    assertEquals(1, model.getRules().size());
+    assertEquals("OBJECT", ((StereoTypeTarget) model.getRules().get(0).getTarget()).getName());
+    assertTrue(model.getRules().get(0).getSources().get(0) instanceof StatusSource);
+    assertNotNull(((StatusSource)model.getRules().get(0).getSources().get(0)).getModel());
+  }
+
+  @Test
   public void testConvertFunctionblockOperationWithPrimitiveTypes() {
     FunctionblockModel fbModel =
         FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
@@ -213,8 +238,8 @@ public class ModelContentToEcoreConverterTest {
         (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter.convert(
             ModelContent.Builder(fbModel).withDependency(enumModel).build(), Optional.empty());
     assertEquals(2, model.getFunctionblock().getOperations().size());
-    
-    assertEquals(1,model.getReferences().size());
+
+    assertEquals(1, model.getReferences().size());
 
     org.eclipse.vorto.core.api.model.functionblock.Operation op1 = model.getFunctionblock()
         .getOperations().stream().filter(p -> p.getName().equals("op")).findAny().get();
@@ -231,66 +256,67 @@ public class ModelContentToEcoreConverterTest {
     assertEquals(2,
         ((Enum) (((ReturnObjectType) op2.getReturnType()).getReturnType())).getEnums().size());
   }
-  
+
   @Test
   public void testConvertFunctionblockWithEvents() {
     EnumModel enumModel =
         EnumModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Unit:1.0.0"))
             .literal("celcius", null).literal("kg", null).build();
 
-    FunctionblockModel fbModel = FunctionblockModel
-        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
-         .event(ModelEvent.Builder("Exceeded").withProperty(ModelProperty.Builder("unit", enumModel.getId()).build()).build())
-        .build();
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .event(ModelEvent.Builder("Exceeded")
+                .withProperty(ModelProperty.Builder("unit", enumModel.getId()).build()).build())
+            .build();
 
     ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
-    
+
     org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel model =
         (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter.convert(
             ModelContent.Builder(fbModel).withDependency(enumModel).build(), Optional.empty());
-    
-    assertEquals(1,model.getReferences().size());
-    assertEquals(1,model.getFunctionblock().getEvents().size());
+
+    assertEquals(1, model.getReferences().size());
+    assertEquals(1, model.getFunctionblock().getEvents().size());
   }
-  
+
   @Test
   public void testConvertInformationModel() throws Exception {
     FunctionblockModel fbModel1 = FunctionblockModel
-        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
-        .build();
-    
+        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0")).build();
+
     FunctionblockModel fbModel2 = FunctionblockModel
-        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Temperature:1.0.0"))
-        .build();
-    
-    Infomodel infomodel = Infomodel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:TestDevice:1.0.0"))
-        .withProperty(ModelProperty.Builder("sensor", fbModel1.getId()).build())
-        .withProperty(ModelProperty.Builder("temperature", fbModel2.getId()).build()).build();
-    
+        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Temperature:1.0.0")).build();
+
+    Infomodel infomodel =
+        Infomodel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:TestDevice:1.0.0"))
+            .withProperty(ModelProperty.Builder("sensor", fbModel1.getId()).build())
+            .withProperty(ModelProperty.Builder("temperature", fbModel2.getId()).build()).build();
+
     ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
-    
+
     org.eclipse.vorto.core.api.model.informationmodel.InformationModel model =
-        (org.eclipse.vorto.core.api.model.informationmodel.InformationModel) converter.convert(
-            ModelContent.Builder(infomodel).withDependency(fbModel1).withDependency(fbModel2).build(), Optional.empty());
-    
+        (org.eclipse.vorto.core.api.model.informationmodel.InformationModel) converter
+            .convert(ModelContent.Builder(infomodel).withDependency(fbModel1)
+                .withDependency(fbModel2).build(), Optional.empty());
+
     assertEquals(infomodel.getId().getNamespace(), model.getNamespace());
     assertEquals(infomodel.getId().getName(), model.getName());
     assertEquals(infomodel.getId().getVersion(), model.getVersion());
     assertEquals(infomodel.getDescription(), model.getDescription());
     assertEquals(infomodel.getDisplayName(), model.getDisplayname());
     assertEquals(infomodel.getCategory(), model.getCategory());
-    
-    assertEquals(2,model.getReferences().size());
-    
-    FunctionblockProperty property = model.getProperties().stream().filter(p -> p.getName().equals("sensor")).findAny().get();
-    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fb = (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) property.getType();
-    assertEquals(fbModel1.getId().getName(),fb.getName());
-    assertEquals(fbModel1.getId().getNamespace(),fb.getNamespace());
-    assertEquals(fbModel1.getId().getVersion(),fb.getVersion());
+
+    assertEquals(2, model.getReferences().size());
+
+    FunctionblockProperty property =
+        model.getProperties().stream().filter(p -> p.getName().equals("sensor")).findAny().get();
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fb =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) property.getType();
+    assertEquals(fbModel1.getId().getName(), fb.getName());
+    assertEquals(fbModel1.getId().getNamespace(), fb.getNamespace());
+    assertEquals(fbModel1.getId().getVersion(), fb.getVersion());
     assertTrue(property.eContainer() instanceof InformationModel);
-    
-    System.out.println(new ObjectMapper().writeValueAsString(ModelContent.Builder(infomodel).withDependency(fbModel1).withDependency(fbModel2).build()));
-    
+
   }
 
 }
