@@ -177,6 +177,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                     $scope.fileAdded = true;
                     $scope.isLoading = false;
                     $rootScope.modelsSaved = null;
+                    $scope.importedModels = result;
                 }).error(function (data, status, headers, config) {
                     if (status == 403) {
                         $scope.error = "Operation is Forbidden";
