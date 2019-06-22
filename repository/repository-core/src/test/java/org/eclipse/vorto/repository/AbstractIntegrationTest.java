@@ -40,6 +40,7 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
@@ -206,9 +207,8 @@ public abstract class AbstractIntegrationTest {
           FileUpload.create(modelName,
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/" + modelName).getInputStream())),
-          Optional.empty(),
-          userContext);
-      return this.importer.doImport(uploadResult.getHandleId(), userContext).get(0);
+          Context.create(userContext,Optional.empty()));
+      return this.importer.doImport(uploadResult.getHandleId(), Context.create(userContext,Optional.empty())).get(0);
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     } finally {
