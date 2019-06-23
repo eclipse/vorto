@@ -402,7 +402,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       }
 
       List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelID,
-          ControllerUtils.sanitize(targetPlatform));
+          ControllerUtils.sanitize(targetPlatform),Optional.empty());
 
       List<ModelId> mappingModelIds =
           mappingResources.stream().map(ModelInfo::getId).collect(Collectors.toList());

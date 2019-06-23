@@ -144,7 +144,7 @@ public class ModelController extends AbstractRepositoryController {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     List<ModelInfo> mappingResource =
-        getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey);
+        getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey, Optional.empty());
 
     if (!mappingResource.isEmpty()) {
 

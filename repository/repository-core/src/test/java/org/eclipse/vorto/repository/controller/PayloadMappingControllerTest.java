@@ -97,7 +97,7 @@ public class PayloadMappingControllerTest {
     Tenant tenant =  new Tenant();
     tenant.setTenantId("A");
     
-    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any()))
+    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any(),Matchers.any()))
         .thenReturn(Arrays.asList(new ModelInfo()));
     when(factory.getRepository(Matchers.anyString(), Matchers.any())).thenReturn(repo);
     //when(factory.getRepository(Matchers.anyObject())).thenReturn(repo);
@@ -125,7 +125,7 @@ public class PayloadMappingControllerTest {
     ModelController modelController = Mockito.mock(ModelController.class);
     IWorkflowService workflowService = Mockito.mock(IWorkflowService.class);
 
-    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.eq("test")))
+    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.eq("test"),Matchers.any()))
         .thenReturn(Collections.emptyList());
 
     when(repo.save(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))

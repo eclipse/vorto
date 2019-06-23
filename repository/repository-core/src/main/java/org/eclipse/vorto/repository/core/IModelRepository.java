@@ -89,9 +89,10 @@ public interface IModelRepository {
 	 * Gets the mapping model for the given modelId and the given target platform
 	 * @param modelId
 	 * @param targetPlatform
+	 * @param version of the mapping. If not specified, latest is taken
 	 * @return
 	 */
-	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) throws NotAuthorizedException;;
+	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform, Optional<String> version) throws NotAuthorizedException;;
 	
 	/**
 	 * Removes the model for the given ModelID

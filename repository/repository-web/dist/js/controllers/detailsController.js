@@ -122,8 +122,10 @@ repositoryControllers.controller('DetailsController',
 		$scope.getMappings = function () {
 			$scope.modelMappings = [];
 			for(var i = 0; i < Object.keys($scope.model.platformMappings).length;i++){
-				var key = Object.keys($scope.model.platformMappings)[i];
-				$http.get("./api/v1/models/" + $scope.model.platformMappings[key].prettyFormat + "?key=key").then(
+				
+				var id = Object.keys($scope.model.platformMappings)[i];
+				var key = $scope.model.platformMappings[id];
+				$http.get("./api/v1/models/" + id + "?key=key").then(
 				    (function(key) {
 				        return function(result) {
 				        	var mapping = {
@@ -214,8 +216,8 @@ repositoryControllers.controller('DetailsController',
 						$scope.getUserPolicy();
 					}
 					
-					if ($scope.model.references.length < 2) $scope.showReferences = true;
-					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
+					$scope.showReferences = false;
+					$scope.showUsages = false;
 					
 					$scope.modelIsLoading = false;
 
@@ -532,7 +534,7 @@ repositoryControllers.controller('DetailsController',
 				controller: function ($scope, model) {
 					$scope.model = model;
 					$scope.errorMessage = null;
-					$scope.targetPlatform = "";
+					$scope.targetPlatform = $scope.model.id.name.toLowerCase();
 	
 					$scope.create = function () {
 						$scope.isLoading = true;

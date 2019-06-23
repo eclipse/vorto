@@ -42,15 +42,15 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping.fbs
-		version 1.0.0
-		displayname "«propertyName»PayloadMapping"
-		description "«targetPlatform.toLowerCase.toFirstUpper» Payload Mapping for the «propertyName» property of the «specification.infoModel.displayName»"
+		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase».fbs
+		version «specification.infoModel.id.version»
+		displayname "«propertyName.toFirstUpper» Payload Mapping"
+		description "Maps the «propertyName.toFirstUpper» payload of the «specification.infoModel.id.prettyFormat»"
 		category payloadmapping
 		
 		using «fbm.id.namespace».«fbm.id.name»;«fbm.id.version»
 		
-		functionblockmapping «propertyName.toFirstUpper»PayloadMapping«targetPlatform.toLowerCase.toFirstUpper» {
+		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
 			targetplatform «targetPlatform»
 			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
@@ -138,6 +138,6 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	}
 	
 	override getModelId() {
-		return new ModelId(propertyName.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping.fbs","1.0.0");
+		return new ModelId(propertyName.toFirstUpper+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+".fbs",specification.infoModel.id.version);
 	}
 }

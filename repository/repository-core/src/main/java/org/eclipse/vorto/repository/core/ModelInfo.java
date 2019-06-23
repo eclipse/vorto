@@ -36,7 +36,7 @@ public class ModelInfo extends AbstractModel {
 
   protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 
-  protected Map<String, ModelId> platformMappings = new HashMap<>();
+  protected Map<String,String> platformMappings = new HashMap<>();
 
   public ModelInfo(ModelId modelId, ModelType modelType) {
     super(modelId, modelType);
@@ -80,11 +80,11 @@ public class ModelInfo extends AbstractModel {
     this.modificationDate = modificationDate;
   }
 
-  public Map<String, ModelId> getPlatformMappings() {
+  public Map<String,String> getPlatformMappings() {
     return this.platformMappings;
   }
 
-  public void setPlatformMappings(Map<String, ModelId> platformMappings) {
+  public void setPlatformMappings(Map<String,String> platformMappings) {
     this.platformMappings = platformMappings;
   }
 
@@ -146,7 +146,7 @@ public class ModelInfo extends AbstractModel {
 
   public void addPlatformMapping(String targetPlatform, ModelId mappingId) {
     if (targetPlatform != null && !targetPlatform.equals("")) {
-      this.platformMappings.put(targetPlatform, mappingId);
+      this.platformMappings.put(mappingId.getPrettyFormat(),targetPlatform);
     }
   }
 

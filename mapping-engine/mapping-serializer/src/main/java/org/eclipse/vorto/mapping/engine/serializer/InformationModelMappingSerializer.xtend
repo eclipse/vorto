@@ -36,28 +36,28 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping
-		version 1.0.0
-		displayname "«specification.infoModel.id.name»PayloadMapping"
-		description "«targetPlatform.toLowerCase.toFirstUpper» Payload Mapping for «specification.infoModel.displayName»"
+		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase»
+		version «specification.infoModel.id.version»
+		displayname "«specification.infoModel.id.name» Payload Mapping"
+		description "Payload Mapping for «specification.infoModel.id.name»"
 		category payloadmapping
 		
 		using «specification.infoModel.id.namespace».«specification.infoModel.id.name»;«specification.infoModel.id.version»
 		«var imports = new HashSet »
 		«FOR fbProperty : specification.infoModel.functionblocks»
-			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping.fbs"+"."+fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper+";1.0.0")»
+			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+".fbs"+"."+fbProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
 		«ENDFOR»
 		«FOR using : imports»
 		«using»
 		«ENDFOR»
 		
-		infomodelmapping «specification.infoModel.id.name»PayloadMapping«targetPlatform.toLowerCase.toFirstUpper» {
+		infomodelmapping «specification.infoModel.id.name»PayloadMapping {
 			targetplatform «targetPlatform»
 			«FOR stereotype : filterEmptyStereotypes(specification.infoModel.stereotypes)»
 			from «specification.infoModel.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 			«ENDFOR»
 			«FOR fbProperty : specification.infoModel.functionblocks»
-			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper»
+			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «fbProperty.name.toFirstUpper+"PayloadMapping"»
 			«ENDFOR»
 		}
 		'''
@@ -84,7 +84,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 	}
 	
 	override getModelId() {
-		return new ModelId(specification.infoModel.id.name+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping","1.0.0");
+		return new ModelId(specification.infoModel.id.name+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase,specification.infoModel.id.version);
 	}
 	
 }
