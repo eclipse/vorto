@@ -431,7 +431,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   }
 
   @Override
-  public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
+  public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,Optional<String> version) {
     logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
     List<ModelInfo> mappingResources = new ArrayList<>();
@@ -441,12 +441,15 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         ModelInfo referenceeModelResources = getBasicInfo(referenceeModelId);
         if (referenceeModelResources.getType() == ModelType.Mapping
             && isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
+          if (version.isPresent() && !referenceeModelResources.getId().getVersion().equals(version.get())) {
+            continue;
+          } 
           mappingResources.add(referenceeModelResources);
         }
       }
       for (ModelId referencedModelId : modelResource.getReferences()) {
         mappingResources
-            .addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform));
+            .addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform,version));
       }
     }
     return mappingResources;

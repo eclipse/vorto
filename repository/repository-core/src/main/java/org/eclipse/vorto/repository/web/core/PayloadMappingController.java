@@ -138,7 +138,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	  logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
 	    
 	    if (!getModelRepository(getTenant(modelId))
-	        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
+	        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform,Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()))
 	        .isEmpty()) {
 	      throw new ModelAlreadyExistsException();
 	    } else {
@@ -167,7 +167,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
       @PathVariable final String modelId,
       @PathVariable String targetPlatform) {
 	  return getModelRepository(getTenant(modelId)).getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
-		        targetPlatform);
+		        targetPlatform,Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()));
   }
 
   @PutMapping(value = "/test")

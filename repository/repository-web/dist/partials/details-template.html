@@ -223,8 +223,8 @@
 																			<span>
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
 																			</span>	
-																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}}</a>
-																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}/{{mapping.targetPlatform}}/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}}</a>												
+																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
+																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}/{{mapping.targetPlatform}}/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>												
 																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
 																	</li>
 																</ul>
@@ -654,24 +654,16 @@
 	<h3 class="modal-title"><center>Create Payload Mapping Specification</center></h3>
 </div>
 <div class="modal-body">
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 	<p>
-		Mapping Specifications define mapping rules that map arbitrary device data to the Vorto Function Blocks (semantic abstraction).
+		Creates a mapping specification that maps the <a target="_blank" ng-href="./#/details/{{model.id.prettyFormat}}">{{model.id.name}}</a> payload to normalized Vorto Function Blocks.
 	<p>
 	<img align="center" src="webjars/repository-web/dist/images/mappingspec.png" width="50%" />
-	<form id="createPayloadMappingForm" name="createPayloadMappingForm" novalidate>
-	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-    <div class="form-group">
-    	<label>Specify Mapping Key:</label>
-        <input type="text" class="form-control" name="targetPlatform" ng-model="targetPlatform" ng-pattern="/^[a-zA-Z]*$/" required>
-        <small style="color:grey;font-size:10px">Unique key for this device payload mapping, e.g. tisensor</small>
-        <div ng-show="createPayloadMappingForm.targetPlatform.$error.pattern">Please enter a valid target platform key. Example: blegatt</div>
-    </div>
-  </div>
-</form>
+</div>
 <div class="modal-footer">
 	<div class="align-right">
-	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createPayloadMappingForm.$invalid" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
-	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createPayloadMappingForm.$invalid" ng-click="create()">Create</button>
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()">Create</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </div>

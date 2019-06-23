@@ -97,7 +97,7 @@ public class MappingTest extends AbstractIntegrationTest {
     assertEquals(1,
         repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getMappingModelsForTargetPlatform(
-                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios")
+                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios",Optional.empty())
             .size());
   }
 
