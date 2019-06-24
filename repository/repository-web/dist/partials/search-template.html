@@ -85,6 +85,7 @@
 					                  <small class="namespace">{{model.id.namespace}}</small>
 					                  <p class="desc">{{model.description | limitTo : 80}}</p>
 					                  <span class="state state-{{model.state}}">{{model.state}}</span>
+					                  <span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
 					                </div>
 					                <div class="icon" ng-if="model.hasImage">
 					                  <img ng-src="rest/models/{{model.id.prettyFormat}}/images" />
@@ -102,6 +103,7 @@
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
+                  						<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
                 					</div>
 					                <div class="model-box-footer">
 					                   <small class="type">FB</small>
@@ -116,6 +118,7 @@
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
+                  						<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
                 					</div>
 					                <div class="model-box-footer">
 					                   <small class="type">DT</small>
@@ -130,6 +133,7 @@
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
+                  						<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
                 					</div>
 					                <div class="model-box-footer">
 					                   <small class="type"><i class="fa fa-exchange" aria-hidden="true"></i></small>

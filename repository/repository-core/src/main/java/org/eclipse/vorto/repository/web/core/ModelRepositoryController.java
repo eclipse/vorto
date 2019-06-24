@@ -52,6 +52,8 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
@@ -522,6 +524,24 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
     getPolicyManager(getTenant(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
         entry);
+  }
+  
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_USER')")
+  public void makeModelPublic(final @PathVariable String modelId) {
+    
+    IUserContext user = 
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), 
+            getTenant(ControllerUtils.sanitize(modelId)));
+    
+    if (!user.isSysAdmin() && !accountService.hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
+      // Forbidden error
+    }
+    
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
+      // Forbidden
+    }
   }
 
   private String getTenant(String modelId) {
