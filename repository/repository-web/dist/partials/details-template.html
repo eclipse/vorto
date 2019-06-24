@@ -1,3 +1,6 @@
+<div ng-if="errorLoading" class="row">
+		<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
+</div>
 <section ng-if="!errorLoading" class="content">
 	<ol class="breadcrumb">
 		<li>
