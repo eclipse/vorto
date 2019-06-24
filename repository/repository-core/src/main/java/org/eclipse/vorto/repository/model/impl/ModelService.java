@@ -32,8 +32,8 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.model.IModelService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
+import org.eclipse.vorto.repository.model.RepositoryAccessException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.google.common.cache.CacheBuilder;
@@ -47,12 +47,16 @@ public class ModelService implements IModelService {
   
   private static final String ANONYMOUS_ACCESS = "ANONYMOUS";
 
-  @Autowired
   private IModelRepositoryFactory repositoryFactory;
   
-  @Autowired
   private ITenantService tenantService;
   
+  public ModelService(@Autowired IModelRepositoryFactory repositoryFactory, 
+      @Autowired ITenantService tenantService) {
+    this.repositoryFactory = repositoryFactory;
+    this.tenantService = tenantService;
+  }
+
   @Override
   public void makeModelPublic(IUserContext user, ModelId modelId) {
     List<ModelId> accumulator = new ArrayList<>();
@@ -67,13 +71,16 @@ public class ModelService implements IModelService {
         .build(tenantNamespaceCacheLoader());
     
     try {
+      
       makeModelPublicRecursively(user, modelId, accumulator, modelRepoCache, policyMgrCache, tenantCache);
-    } catch (ExecutionException e) {
-      revertToPrivate(user, accumulator, modelRepoCache, policyMgrCache, tenantCache);
-    } catch(RuntimeException e) {
+      
+    } catch(ModelNamespaceNotOfficialException | ModelNotReleasedException e) {
       revertToPrivate(user, accumulator, modelRepoCache, policyMgrCache, tenantCache);
       throw e;
-    }
+    } catch (ExecutionException e) {
+      revertToPrivate(user, accumulator, modelRepoCache, policyMgrCache, tenantCache);
+      throw new RepositoryAccessException("Errors were thrown while accessing the repository.", e);
+    } 
   }
 
   private void makeModelPublicRecursively(
@@ -85,7 +92,7 @@ public class ModelService implements IModelService {
       LoadingCache<String, String> tenantCache) 
           throws ExecutionException {
     
-    if (!hasOfficialNamespace(modelId)) {
+    if (hasPrivateNamespace(modelId)) {
       throw new ModelNamespaceNotOfficialException(modelId);
     }
       
@@ -125,7 +132,7 @@ public class ModelService implements IModelService {
     return IModelRepository.VISIBILITY_PRIVATE.equals(modelInfo.getVisibility());
   }
   
-  private boolean hasOfficialNamespace(ModelId modelId) {
+  private boolean hasPrivateNamespace(ModelId modelId) {
     return modelId.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX);
   }
   
