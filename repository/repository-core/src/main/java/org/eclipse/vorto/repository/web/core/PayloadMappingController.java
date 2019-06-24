@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -66,10 +64,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -143,7 +138,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	  logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
 	    
 	    if (!getModelRepository(getTenant(modelId))
-	        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
+	        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform,Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()))
 	        .isEmpty()) {
 	      throw new ModelAlreadyExistsException();
 	    } else {
@@ -172,7 +167,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
       @PathVariable final String modelId,
       @PathVariable String targetPlatform) {
 	  return getModelRepository(getTenant(modelId)).getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
-		        targetPlatform);
+		        targetPlatform,Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()));
   }
 
   @PutMapping(value = "/test")

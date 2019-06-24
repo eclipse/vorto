@@ -57,7 +57,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
     result.setRoot(modelId);
 
     if (platformKey.isPresent()) {
-      List<ModelInfo> mappingResource = repository.getMappingModelsForTargetPlatform(modelId, platformKey.get());
+      List<ModelInfo> mappingResource = repository.getMappingModelsForTargetPlatform(modelId, platformKey.get(),Optional.empty());
       if (!mappingResource.isEmpty()) {
 
         IModelWorkspace workspace = getWorkspaceForModel(mappingResource.get(0).getId());

@@ -117,8 +117,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
             FileUpload.create("sample_models/lwm2m/lwm2m.zip",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/lwm2m/lwm2m.zip").getInputStream())),
-            Optional.empty(),
-            alex);
+            Context.create(alex, Optional.empty()));
 
     assertEquals(false, uploadResult.isValid());
     assertEquals(1, uploadResult.getReport().size());

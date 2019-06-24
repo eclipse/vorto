@@ -41,8 +41,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("models.zip",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/models.zip").getInputStream())),
-        Optional.of("org.eclipse.vorto"),
-        alex);
+        Context.create(alex,Optional.of("org.eclipse.vorto")));
     
     assertEquals(true,uploadResult.isValid());
   }
@@ -55,12 +54,11 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("ColorEnum.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/model_without_vortolang.type").getInputStream())),
-        Optional.empty(),
-        alex);
+        Context.create(alex,Optional.empty()));
     
     assertEquals(true,uploadResult.isValid());
     
-    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), alex);
+    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), Context.create(alex,Optional.empty()));
     
     IModelRepository repository = repositoryFactory.getRepository(alex);
     String content = new String(repository.getFileContent(imported.get(0).getId(), Optional.empty()).get().getContent(),"utf-8");
@@ -76,8 +74,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/vortoprivateColor.type").getInputStream())),
-        Optional.empty(),
-        alex);
+        Context.create(alex,Optional.empty()));
     
     assertEquals(false,uploadResult.isValid());
     assertEquals(MessageSeverity.ERROR,uploadResult.getReport().get(0).getMessage().getSeverity());
@@ -93,8 +90,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/vortoprivateColor.type").getInputStream())),
-        Optional.of("org.eclipse.vorto"),
-        alex);
+        Context.create(alex,Optional.of("org.eclipse.vorto")));
     
     assertEquals(true,uploadResult.isValid());
   }
@@ -107,12 +103,11 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/vortoprivateColor.type").getInputStream())),
-        Optional.of("org.eclipse.vorto"),
-        alex);
+        Context.create(alex,Optional.of("org.eclipse.vorto")));
     
     assertEquals(true,uploadResult.isValid());
     
-    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), alex);
+    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), Context.create(alex,Optional.of("org.eclipse.vorto")));
     assertEquals(1,imported.size());
     assertEquals("org.eclipse.vorto",imported.get(0).getId().getNamespace());
   }
@@ -135,8 +130,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
-        Optional.empty(),
-        alex);
+        Context.create(alex,Optional.empty()));
 
     assertTrue(uploadResult.hasWarnings());
     assertTrue(uploadResult.isValid());
@@ -155,8 +149,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
-        Optional.empty(),
-        alex);
+        Context.create(alex,Optional.empty()));
 
     assertFalse(uploadResult.hasWarnings());
     assertFalse(uploadResult.isValid());
@@ -173,8 +166,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color2.type").getInputStream())),
-            Optional.empty(),
-            createUserContext("erle", "playground"));
+            Context.create(createUserContext("erle", "playground"), Optional.empty()));
 
     assertFalse(uploadResult.hasWarnings());
     assertFalse(uploadResult.isValid());
@@ -194,10 +186,9 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
-        Optional.empty(),
-        admin);
+        Context.create(admin,Optional.empty()));
 
-    this.importer.doImport(uploadResult.getHandleId(), admin);
+    this.importer.doImport(uploadResult.getHandleId(), Context.create(admin,Optional.empty()));
     ModelFileContent content = repositoryFactory.getRepository(admin)
         .getModelContent(uploadResult.getReports().get(0).getModel().getId(), true);
 
@@ -222,8 +213,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
-        Optional.empty(),
-        admin);
+        Context.create(admin,Optional.empty()));
 
     assertFalse(uploadResult.hasWarnings());
     assertFalse(uploadResult.isValid());
@@ -241,8 +231,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color3.type").getInputStream())),
-            Optional.empty(),
-            createUserContext("admin", "playground"));
+            Context.create(createUserContext("admin", "playground"),Optional.empty()));
 
     assertFalse(uploadResult.hasWarnings());
     assertFalse(uploadResult.isValid());
@@ -257,8 +246,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("ColorLightIM.infomodel",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/ColorLightIM.infomodel").getInputStream())),
-        Optional.empty(),
-        createUserContext("admin", "playground"));
+        Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertFalse(uploadResult.isValid());
     assertEquals(1, uploadResult.getReports().get(0).getUnresolvedReferences().size());
   }
@@ -270,8 +258,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Color.type",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())),
-        Optional.empty(),
-        admin);
+        Context.create(admin,Optional.empty()));
     assertEquals(true, uploadResult.isValid());
     assertEquals(MessageSeverity.INFO, uploadResult.getReports().get(0).getMessage().getSeverity());
     assertNotNull(uploadResult.getHandleId());
@@ -294,13 +281,12 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color.type").getInputStream())),
-            Optional.empty(),
-            admin);
+            Context.create(admin,Optional.empty()));
     assertEquals(true, uploadResult.isValid());
     assertEquals(0, repositoryFactory.getRepository(admin).search("*").size());
 
     List<ModelInfo> modelInfos = importer.doImport(uploadResult.getHandleId(),
-        createUserContext("alex", "playground"));
+        Context.create(createUserContext("alex", "playground"),Optional.empty()));
     modelInfos.forEach(resource -> assertEquals(false, resource.getImported()));
 
     Thread.sleep(1000);
@@ -313,8 +299,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
         FileUpload.create("Colorlight.fbmodel",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/Colorlight.fbmodel").getInputStream())),
-        Optional.empty(),
-        createUserContext("admin", "playground"));
+        Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(false, uploadResult.isValid());
     assertNotNull(uploadResult.getReports().get(0).getMessage());
   }
@@ -326,8 +311,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/Corrupt-model_missingVersion.type")
                     .getInputStream())),
-            Optional.empty(),
-            createUserContext("admin", "playground"));
+            Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(false, uploadResult.isValid());
     assertNotNull(uploadResult.getReports().get(0).getMessage());
   }
@@ -337,8 +321,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     UploadModelResult uploadResult = this.importer.upload(
         FileUpload.create("sample_models/Corrupt-model_namespace.type", IOUtils.toByteArray(
             new ClassPathResource("sample_models/Corrupt-model_namespace.type").getInputStream())),
-        Optional.empty(),
-        createUserContext("admin", "playground"));
+        Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(false, uploadResult.isValid());
     assertNotNull(uploadResult.getReports().get(0).getMessage());
   }
@@ -350,8 +333,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             FileUpload.create("sample_models/Bogus.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color.typ").getInputStream())),
-            Optional.empty(),
-            createUserContext("admin", "playground"));
+            Context.create(createUserContext("admin", "playground"),Optional.empty()));
   }
 
   @Test
@@ -361,8 +343,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel")
                     .getInputStream())),
-            Optional.empty(),
-            createUserContext("alex", "playground"));
+            Context.create(createUserContext("alex", "playground"),Optional.empty()));
     assertEquals(false, uploadResult.isValid());
     assertNotNull(uploadResult.getReports().get(0).getMessage());
   }

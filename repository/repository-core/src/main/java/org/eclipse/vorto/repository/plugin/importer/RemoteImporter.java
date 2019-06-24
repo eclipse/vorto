@@ -12,17 +12,20 @@
 package org.eclipse.vorto.repository.plugin.importer;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
-import org.eclipse.vorto.plugin.importer.ImportValidationResult;
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.refactor.ChangeSet;
+import org.eclipse.vorto.model.refactor.RefactoringTask;
 import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.plugin.FileContentResource;
@@ -61,7 +64,7 @@ public class RemoteImporter extends AbstractModelImporter {
   }
 
   @Override
-  protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
+  protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -72,18 +75,18 @@ public class RemoteImporter extends AbstractModelImporter {
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-    ResponseEntity<ImportValidationResult> validationResult = restTemplate.postForEntity(
+    ResponseEntity<org.eclipse.vorto.plugin.importer.ValidationReport> validationResult = restTemplate.postForEntity(
         this.endpointUrl + "/api/2/plugins/importers/{pluginkey}/file_validation",
-        requestEntity, ImportValidationResult.class, this.info.getKey());
+        requestEntity, org.eclipse.vorto.plugin.importer.ValidationReport.class, this.info.getKey());
 
-    ImportValidationResult result = validationResult.getBody();
+    org.eclipse.vorto.plugin.importer.ValidationReport result = validationResult.getBody();
     
 
     if (result.isValid()) {
-      ModelInfo modelInfo = new ModelInfo(result.getModelId(), org.eclipse.vorto.model.ModelType.Functionblock);
+      ModelInfo modelInfo = new ModelInfo(new ModelId(fileUpload.getName(), context.getTargetNamespace().get(), "1.0.0"), org.eclipse.vorto.model.ModelType.Functionblock);
       
       ModelValidationHelper validationHelper = new ModelValidationHelper(this.modelRepoFactory, this.userRepository, this.tenantService); 
-      ValidationReport report = validationHelper.validate(modelInfo, user);
+      ValidationReport report = validationHelper.validate(modelInfo, context.getUser());
       return Arrays.asList(report);
     } else {
       return Arrays.asList(ValidationReport.invalid(result.getMessage()));
@@ -92,7 +95,7 @@ public class RemoteImporter extends AbstractModelImporter {
   }
 
   @Override
-  protected List<ModelResource> convert(FileUpload fileUpload, IUserContext user) {
+  protected List<ModelResource> convert(FileUpload fileUpload, Context context) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -101,15 +104,21 @@ public class RemoteImporter extends AbstractModelImporter {
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-    ResponseEntity<byte[]> validationResult = restTemplate.postForEntity(
+    ResponseEntity<byte[]> conversionResult = restTemplate.postForEntity(
         this.endpointUrl + "/api/2/plugins/importers/{pluginkey}/file_conversion",
         requestEntity, byte[].class, this.info.getKey());
-
+        
     IModelWorkspace workspace = IModelWorkspace.newReader()
-        .addZip(new ZipInputStream(new ByteArrayInputStream(validationResult.getBody()))).read();
+        .addZip(new ZipInputStream(new ByteArrayInputStream(conversionResult.getBody()))).read();
+    
+    List<ModelResource> resources = new ArrayList<>();
+    
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(context.getTargetNamespace().get()).execute();
+    for (Model model : changeSet.get()) {
+      resources.add(new ModelResource(model));
+    }
+    
+    return resources;
 
-    return workspace.get().stream().map(model -> new ModelResource(model))
-        .collect(Collectors.toList());
   }
-
 }

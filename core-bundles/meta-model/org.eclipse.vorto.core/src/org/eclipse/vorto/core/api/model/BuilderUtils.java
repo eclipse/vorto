@@ -13,6 +13,7 @@ package org.eclipse.vorto.core.api.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
@@ -34,6 +35,12 @@ import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
+import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
@@ -79,6 +86,10 @@ public abstract class BuilderUtils {
     return (EntityBuilder)new EntityBuilder().withId(modelId);
   }
   
+  public static MappingBuilder newMapping(ModelId modelId, String targetPlatformKey) {
+    return (MappingBuilder)new MappingBuilder().withTargetPlatformKey(targetPlatformKey).withId(modelId);
+  }
+    
   public static EventBuilder newEvent(String name) {
     return new EventBuilder(name);
   }
@@ -137,6 +148,56 @@ public abstract class BuilderUtils {
 
     public T build() {
       return (T)model;
+    }
+  }
+  
+  public static class MappingBuilder extends ModelBuilder<MappingModel> {
+
+    public MappingBuilder() {
+      super(MappingFactory.eINSTANCE.createMappingModel());
+    }
+    
+    public MappingBuilder withTargetPlatformKey(String targetPlatformKey) {
+      this.model.setTargetPlatform(targetPlatformKey);
+      return this;
+    }
+    
+    public MappingBuilder addRule(MappingRule rule) {
+      this.model.getRules().add(rule);
+      return this;
+    }
+  
+  }
+      
+  public static class MappingRuleBuilder {
+    
+    private MappingRule rule;
+    
+    public MappingRuleBuilder() {
+      this.rule = MappingFactory.eINSTANCE.createMappingRule();
+    }
+    
+    public MappingRuleBuilder withSource(Source source) {
+      this.rule.getSources().add(source);
+      return this;
+    }
+    
+    public MappingRuleBuilder withStereotypeTarget(String name, Map<String,String> attributes) {
+      StereoTypeTarget target = MappingFactory.eINSTANCE.createStereoTypeTarget();
+      target.setName(name);
+      for (String key : attributes.keySet()) {
+        String value = attributes.get(key);
+        Attribute attribute = MappingFactory.eINSTANCE.createAttribute();
+        attribute.setName(key);
+        attribute.setValue(value);
+        target.getAttributes().add(attribute);
+      }
+      this.rule.setTarget(target);
+      return this;
+    }
+    
+    public MappingRule build() {
+      return rule;
     }
   }
   

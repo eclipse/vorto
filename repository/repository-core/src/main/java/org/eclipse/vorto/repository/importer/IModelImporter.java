@@ -13,11 +13,8 @@
 package org.eclipse.vorto.repository.importer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 
 /**
  * Importer is in charge of converting model files to Vorto Information Models and store them in the
@@ -43,29 +40,28 @@ public interface IModelImporter {
    * @return a list of file extensions that the importer handles
    */
   Set<String> getSupportedFileExtensions();
-
+  
   /**
    * Uploads model content and validates it. If the model is valid, the returned upload handle is
    * used to import the model into the repository via
-   * {@link IModelImporter#doImport(String,UserContext)}}
-   * 
    * @param fileUpload
-   * @param targetNamespace namespace that the uploaded model will be converted to. If not present, the original model namespace is taken
-   * @param userContext
+   * @param context
    * @return result about information of the uploaded content and the upload handle.
    */
-  UploadModelResult upload(FileUpload fileUpload, Optional<String> targetNamespace, IUserContext userContext);
+  UploadModelResult upload(FileUpload fileUpload, Context context);
+
 
   /**
+   * Performs the actual conversion for the uploaded file
+   * 
    * @pre {@link UploadModelResult#isValid() == true}}
    * 
    * @post model was stored in persistence layer.
    * 
-   *       Checks in a new model into the repository
-   * @param uploadHandle
-   * @param user user context
-   * @return model that was been checked in
+   * @param uploadHandleId
+   * @param context
+   * @return
+   * @throws ModelImporterException
    */
-  List<ModelInfo> doImport(String uploadHandleId, IUserContext user) throws ModelImporterException;
-
+  List<ModelInfo> doImport(String uploadHandleId, Context context) throws ModelImporterException;
 }

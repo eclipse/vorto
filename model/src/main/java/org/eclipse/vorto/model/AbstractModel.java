@@ -14,6 +14,9 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.vorto.model.FunctionblockModel.FunctionblockModelBuilder;
+import org.eclipse.vorto.model.ModelProperty.Builder;
 
 public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 
@@ -139,10 +142,20 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
       return this;
     }
     
+    public Builder<T> withStereotype(String stereoTypeName, Map<String,String> attributes,String targetPlatformKey) {
+      model.setTargetPlatformKey(targetPlatformKey);
+      model.addStereotype(Stereotype.create(stereoTypeName, attributes));
+      return this;
+    }
+    
+    public Builder<T> withTargetPlatform(String targetPlatformKey) {
+      model.setTargetPlatformKey(targetPlatformKey);
+      return this;
+    }
+    
     public T build() {
       return this.model;
     }
   }
-
 
 }

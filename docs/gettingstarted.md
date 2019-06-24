@@ -65,6 +65,7 @@ If you want to see the full process of creating, integrating and visualizing sen
 - [Describe a TI SensorTag](tutorials/describe_tisensor.md)
 - [Describe a device in 5 minutes](tutorials/describe_device-in-5min.md) 
 - [Vorto DSL Grammar Reference](../core-bundles/docs/quickhelp_dsl.md)
+- [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
 
 #### Vorto Repository
 
@@ -74,12 +75,10 @@ If you want to see the full process of creating, integrating and visualizing sen
 
 #### Developer Guide
 
+- [Developing Vorto Plugins](../plugin-sdk/Readme.md)
 - [Parse Vorto DSL files with Java](../utilities/Readme.md)
 - Map arbitrary device payload to Vorto compliant data structures
   * [Mapping Engine for Java](../mapping-engine/Readme.md)
   * [Mapping Engine for Node.js](../mapping-engine-nodejs/README.md)
   * [Example: Mapping Security Camera binary data](https://github.com/eclipse/vorto-examples/blob/master/vorto-connector/Readme.md)
-- [Generator Plugin SDK](../plugin-sdk/plugin-generator/Readme.md)
-- [Importer Plugin SDK](../plugin-sdk/plugin-importer/Readme.md)
-- [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
 

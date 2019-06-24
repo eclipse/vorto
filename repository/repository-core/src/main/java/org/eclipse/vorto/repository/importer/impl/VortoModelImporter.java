@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -40,6 +39,7 @@ import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
@@ -79,8 +79,8 @@ public class VortoModelImporter extends AbstractModelImporter {
    * changes the namespace of the uploaded vorto model(s) , if target namespace is specified
    */
   @Override
-  protected FileUpload preProcess(FileUpload fileUpload, Optional<String> targetNamespace) {
-    if (targetNamespace.isPresent()) {
+  protected FileUpload preValidation(FileUpload fileUpload, Context context) {
+    if (context.getTargetNamespace().isPresent()) {
       if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
         ModelWorkspaceReader reader = IModelWorkspace.newReader();
         getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
@@ -88,7 +88,7 @@ public class VortoModelImporter extends AbstractModelImporter {
               reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
             });
         IModelWorkspace workspace = reader.read();  
-        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(targetNamespace.get()).execute();
+        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(context.getTargetNamespace().get()).execute();
         ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
         for (Model model : changeSet.get()) {
           ModelResource resource = new ModelResource(model);
@@ -100,7 +100,7 @@ public class VortoModelImporter extends AbstractModelImporter {
         }
         return zipFile.getFileUpload();
       } else {
-        return refactor(addVortolangIfMissing(fileUpload), targetNamespace.get());
+        return refactor(addVortolangIfMissing(fileUpload), context.getTargetNamespace().get());
       }
     } else {
       return addVortolangIfMissing(fileUpload);
@@ -148,18 +148,18 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   @Override
-  protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
+  protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
           new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
-          user);
+          context.getUser());
     } else {
       ModelValidationHelper validationHelper =
           new ModelValidationHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
-        return Arrays.asList(validationHelper.validate(modelInfo, user));
+        return Arrays.asList(validationHelper.validate(modelInfo, context.getUser()));
       } catch (ValidationException ex) {
         return Arrays.asList(ValidationReport.invalid(null, ex));
       }
@@ -167,7 +167,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   @Override
-  protected List<ModelResource> convert(FileUpload fileUpload, IUserContext user) {
+  protected List<ModelResource> convert(FileUpload fileUpload, Context context) {
     List<ModelResource> result = new ArrayList<ModelResource>();
 
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {

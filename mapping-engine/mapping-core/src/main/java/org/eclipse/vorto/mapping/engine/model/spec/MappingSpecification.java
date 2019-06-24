@@ -75,4 +75,12 @@ public class MappingSpecification implements IMappingSpecification {
     }
     return library;
   }
+
+  @Override
+  public String toString() {
+    return "MappingSpecification [infoModel=" + infoModel + ", properties=" + properties + "]";
+  }
+  
+  
+  
 }

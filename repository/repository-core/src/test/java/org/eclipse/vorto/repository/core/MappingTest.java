@@ -26,6 +26,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
@@ -40,8 +41,7 @@ public class MappingTest extends AbstractIntegrationTest {
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())), Optional.empty(),
-            createUserContext("admin", "playground"));
+                    new ClassPathResource("sample_models/Color.type").getInputStream())), Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(true, uploadResult.isValid());
     assertNotNull(uploadResult.getHandleId());
     ModelInfo resource = uploadResult.getReports().get(0).getModel();
@@ -64,8 +64,7 @@ public class MappingTest extends AbstractIntegrationTest {
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())),Optional.empty(),
-            userContext);
+                    new ClassPathResource("sample_models/Color.type").getInputStream())),Context.create(userContext,Optional.empty()));
     assertEquals(true, uploadResult.isValid());
     assertEquals(0, repositoryFactory.getRepository(userContext).search("*").size());
 
@@ -77,17 +76,16 @@ public class MappingTest extends AbstractIntegrationTest {
 
     when(userRepository.findAll()).thenReturn(users);
 
-    this.importer.doImport(uploadResult.getHandleId(), createUserContext("alex", "playground"));
+    this.importer.doImport(uploadResult.getHandleId(),Context.create(createUserContext("alex", "playground"),Optional.empty()));
     assertEquals(1, repositoryFactory.getRepository(userContext).search("*").size());
 
     uploadResult = this.importer.upload(
         FileUpload.create("sample.mapping",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/sample.mapping").getInputStream())),
-        Optional.empty(),
-        createUserContext("admin", "playground"));
+        Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
-    this.importer.doImport(uploadResult.getHandleId(), createUserContext("alex", "playground"));
+    this.importer.doImport(uploadResult.getHandleId(), Context.create(createUserContext("alex", "playground"),Optional.empty()));
     assertEquals(1, repositoryFactory.getRepository(userContext).search("Mapping").size());
   }
 
@@ -99,7 +97,7 @@ public class MappingTest extends AbstractIntegrationTest {
     assertEquals(1,
         repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getMappingModelsForTargetPlatform(
-                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios")
+                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios",Optional.empty())
             .size());
   }
 
@@ -131,6 +129,6 @@ public class MappingTest extends AbstractIntegrationTest {
     ModelInfo colorInfo = repositoryFactory.getRepository(createUserContext("admin", "playground"))
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     assertEquals(1, colorInfo.getPlatformMappings().size());
-    assertEquals("ios", colorInfo.getPlatformMappings().keySet().iterator().next());
+    assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0", colorInfo.getPlatformMappings().keySet().iterator().next());
   }
 }

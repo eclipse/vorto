@@ -13,31 +13,33 @@
 package org.eclipse.vorto.repository.controller;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
+import org.eclipse.vorto.model.IPropertyAttribute;
 import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.ModelReferenceDeserializer;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.PropertyAttributeDeserializer;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -54,7 +56,6 @@ import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -62,7 +63,9 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -94,7 +97,7 @@ public class PayloadMappingControllerTest {
     Tenant tenant =  new Tenant();
     tenant.setTenantId("A");
     
-    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any()))
+    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any(),Matchers.any()))
         .thenReturn(Arrays.asList(new ModelInfo()));
     when(factory.getRepository(Matchers.anyString(), Matchers.any())).thenReturn(repo);
     //when(factory.getRepository(Matchers.anyObject())).thenReturn(repo);
@@ -122,7 +125,7 @@ public class PayloadMappingControllerTest {
     ModelController modelController = Mockito.mock(ModelController.class);
     IWorkflowService workflowService = Mockito.mock(IWorkflowService.class);
 
-    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.eq("test")))
+    when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.eq("test"),Matchers.any()))
         .thenReturn(Collections.emptyList());
 
     when(repo.save(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
@@ -257,6 +260,32 @@ public class PayloadMappingControllerTest {
     } catch (Exception e) {
       fail("Got exception." + e.getMessage());
     }
+  }
+  
+  @Test
+  public void testSaveMappingSpecification() throws Exception {
+    
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(IPropertyAttribute.class, new PropertyAttributeDeserializer());
+    module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.registerModule(module);
+    
+    MappingSpecification spec = mapper.readValue(new ClassPathResource("mappingRequest2.json").getInputStream(), MappingSpecification.class);  
+    assertNotNull(spec);
+    assertNotNull(spec.getFunctionBlock("connectivity"));
+    System.out.println(spec);
+  }
+  
+  @Test
+  public void testDeserializeModelContentContainingMapping() throws Exception {
+    ModelContent content = ObjectMapperFactory.getInstance().readValue(new ClassPathResource("modelcontent_lwm2m.json").getInputStream(), ModelContent.class);  
+    assertNotNull(content);
+    assertNotNull(content.getModels().get(content.getRoot()));
+    System.out.println(content);
+
+    
   }
 
   private Gson gsonWithDeserializer() {
