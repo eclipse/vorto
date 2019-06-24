@@ -7,7 +7,9 @@ pipeline {
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
-              sh 'mvn -P coverage clean install'
+				withCredentials([string(credentialsId: 'aws-elastic-search-token', variable: 'AWS_ACCESS_TOKEN', variable: 'AWS_SECRET_KEY')]) {
+					sh 'mvn -Dserver.config.skipSslVerification=true -Daws.accessKeyId=$AWS_ACCESS_TOKEN -Daws.secretKey=$AWS_SECRET_KEY -P coverage clean install'
+				}
             }
         }
       }
