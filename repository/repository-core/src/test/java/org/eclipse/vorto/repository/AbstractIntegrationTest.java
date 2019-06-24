@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -220,6 +221,14 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
+  protected ModelInfo releaseModel(ModelId modelId) throws WorkflowException {
+    workflow.doAction(modelId, createUserContext("promoter"),
+        SimpleWorkflowModel.ACTION_RELEASE.getName());
+    
+    return workflow.doAction(modelId, createUserContext("reviewer"),
+        SimpleWorkflowModel.ACTION_APPROVE.getName());
+  }
+  
   protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
@@ -259,11 +268,12 @@ public abstract class AbstractIntegrationTest {
     UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
     UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
     UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
+    UserRole rolePublisher = new UserRole(Role.MODEL_PUBLISHER);
     UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
     UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
 
     Tenant playground = Tenant.newTenant("playground", "org.eclipse",
-        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
+        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings", "vorto.private.playground"));
 
     playground.addUser(createTenantUser("alex",
         Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
@@ -274,6 +284,7 @@ public abstract class AbstractIntegrationTest {
     playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
     playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
     playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
+    playground.addUser(createTenantUser("publisher", Sets.newHashSet(roleUser, rolePublisher)));
 
     return playground;
   }
