@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace vorto.private.playground
+version 1.0.0
+displayname "Point3d"
+description "Datatype for Point3d"
+
+entity Point3d {
+  x as float
+  y as float
+  z as float
+}
