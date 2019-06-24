@@ -224,6 +224,8 @@ repositoryControllers.controller('DetailsController',
 				}).error(function (error, status) {					
 					if(status == 401) {
 						$location.path('/login');
+					} else if (status == 403) {
+						$scope.errorLoading = 'No permission to access model';
 					} else {
 						$scope.errorLoading = error.message;
 					}
