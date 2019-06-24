@@ -12,10 +12,8 @@
  */
 package org.eclipse.vorto.repository.core.indexing;
 
-import java.util.Map;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.elasticsearch.search.SearchHit;
 
 public class IndexedModelInfo {
   private String tenantId;
@@ -26,23 +24,6 @@ public class IndexedModelInfo {
   private String author;
   private String state;
   private String visibility;
-
-  public static IndexedModelInfo fromSearchHit(SearchHit searchHit) {
-    IndexedModelInfo modelInfo = new IndexedModelInfo();
-    
-    Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
-    
-    modelInfo.setTenantId((String) sourceAsMap.get("tenantId"));
-    modelInfo.setModelId((String) sourceAsMap.get("modelId"));
-    modelInfo.setType(ModelType.valueOf((String) sourceAsMap.get("modelType")));
-    modelInfo.setState((String) sourceAsMap.get("state"));
-    modelInfo.setVisibility((String) sourceAsMap.get("visibility"));
-    modelInfo.setAuthor((String) sourceAsMap.get("author"));
-    modelInfo.setDescription((String) sourceAsMap.get("description"));
-    modelInfo.setDisplayName((String) sourceAsMap.get("displayName"));
-    
-    return modelInfo;
-  }
   
   public String getTenantId() {
     return tenantId;
