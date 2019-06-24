@@ -71,8 +71,6 @@ import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation implements IModelRepository {
 
-  private static final String VISIBILITY_PRIVATE = "private";
-
   private static final String VORTO_VISIBILITY = "vorto:visibility";
 
   private static final String VORTO_TAGS = "vorto:tags";

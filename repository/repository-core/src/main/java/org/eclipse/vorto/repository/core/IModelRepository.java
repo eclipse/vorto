@@ -24,7 +24,10 @@ import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
  *
  */
 public interface IModelRepository {
-	
+  
+    public static final String VISIBILITY_PRIVATE = "private";
+    public static final String VISIBILITY_PUBLIC = "public";
+  
 	/**
 	 * Searches model resources for the given expression
 	 * @param queryExpression

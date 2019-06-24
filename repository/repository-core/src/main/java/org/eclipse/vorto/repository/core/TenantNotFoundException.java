@@ -22,5 +22,9 @@ public class TenantNotFoundException extends ModelRepositoryException {
   public TenantNotFoundException(String tenantId, Throwable cause) {
     super("No tenant '" + tenantId + "'", cause);
   }
+  
+  public TenantNotFoundException(String namespace) {
+    super("Tenant not found for namespace '" + namespace + "'");
+  }
 
 }
