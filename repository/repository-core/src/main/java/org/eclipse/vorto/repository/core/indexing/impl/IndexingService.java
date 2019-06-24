@@ -57,6 +57,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
@@ -67,31 +68,29 @@ import com.google.common.base.Strings;
 @Component
 public class IndexingService implements IIndexingService {
 
-  private static final int MAX_SEARCH_RESULTS = 1000;
+  public static final String TEXT = "text";
 
-  private static final String TEXT = "text";
-
-  private static final String KEYWORD = "keyword";
-
-  private static final String PUBLIC = "public";
-
-  private static final String PRIVATE = "private";
-
-  private static final String VISIBILITY = "visibility";
-
-  private static final String STATE = "state";
-
-  private static final String DESCRIPTION = "description";
+  public static final String KEYWORD = "keyword";
+  
+  private static final String MODEL_TYPE = "modelType";
 
   private static final String DISPLAY_NAME = "displayName";
 
+  private static final String DESCRIPTION = "description";
+
   private static final String AUTHOR = "author";
 
-  private static final String MODEL_TYPE = "modelType";
+  private static final String STATE = "state";
 
   private static final String MODEL_ID = "modelId";
 
   private static final String TENANT_ID = "tenantId";
+
+  private static final String VISIBILITY = "visibility";
+
+  private static final int MAX_SEARCH_RESULTS = 1000;
+
+  private static final String PUBLIC = "public";
 
   private static final String DOC = "_doc";
 
@@ -99,14 +98,18 @@ public class IndexingService implements IIndexingService {
 
   private static Logger logger = Logger.getLogger(IndexingService.class);
   
+  private Collection<IIndexFieldSupplier> fieldSuppliers;
+  
   private Pattern searchExprPattern = Pattern.compile("name:(\\w+)\\*");
   
   private Pattern authorExprPattern = Pattern.compile("author:(\\w+)");
   
   private RestHighLevelClient client;
   
-  public IndexingService(@Autowired RestHighLevelClient client) {
+  public IndexingService(@Autowired RestHighLevelClient client,
+      @Autowired Collection<IIndexFieldSupplier> fieldSuppliers) {
     this.client = client;
+    this.fieldSuppliers = fieldSuppliers;
   }
 
   @PostConstruct
@@ -147,19 +150,18 @@ public class IndexingService implements IIndexingService {
     } catch (IOException e) {
       throw new IndexingException("Error while creating index '" + index + "'.", e);
     }
-    
   }
   
   private Map<String, Object> createMappingForIndex() {
     Map<String, Object> properties = new HashMap<>();
     properties.put(TENANT_ID, createPropertyWithType(KEYWORD));
-    properties.put(MODEL_ID, createPropertyWithType(KEYWORD));
-    properties.put(MODEL_TYPE, createPropertyWithType(KEYWORD));
-    properties.put(AUTHOR, createPropertyWithType(KEYWORD));
-    properties.put(DISPLAY_NAME, createPropertyWithType(TEXT));
-    properties.put(DESCRIPTION, createPropertyWithType(TEXT));
-    properties.put(STATE, createPropertyWithType(KEYWORD));
-    properties.put(VISIBILITY, createPropertyWithType(KEYWORD));
+    
+    for(IIndexFieldSupplier supplier : fieldSuppliers) {
+      IIndexFieldCreator creator = supplier.creator();
+      creator.getFields().forEach((key, value) -> {
+        properties.put(key, createPropertyWithType(value));
+      });
+    }
     
     Map<String, Object> mapping = new HashMap<>();
     mapping.put("properties", properties);
@@ -239,7 +241,7 @@ public class IndexingService implements IIndexingService {
   @Override
   public void indexModel(ModelInfo modelInfo, String tenantId) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     
     logger.info("Indexing model '" + modelInfo.getId() + "'");
     
@@ -256,13 +258,13 @@ public class IndexingService implements IIndexingService {
   private IndexRequest createIndexRequest(ModelInfo modelInfo, String tenantId) {
     Map<String, Object> jsonMap = new HashMap<>();
     jsonMap.put(TENANT_ID, tenantId);
-    jsonMap.put(MODEL_ID, modelInfo.getId().getPrettyFormat());
-    jsonMap.put(MODEL_TYPE, modelInfo.getType().toString());
-    jsonMap.put(AUTHOR, modelInfo.getAuthor());
-    jsonMap.put(DISPLAY_NAME, modelInfo.getDisplayName());
-    jsonMap.put(DESCRIPTION, modelInfo.getDescription());
-    jsonMap.put(STATE, modelInfo.getState());
-    jsonMap.put(VISIBILITY, PRIVATE);
+    
+    for(IIndexFieldSupplier supplier : fieldSuppliers) {
+      IIndexFieldExtractor extractor = supplier.extractor();
+      extractor.extractFields(modelInfo).forEach((key, value) -> {
+        jsonMap.put(key, value);
+      });
+    }
     
     return new IndexRequest(VORTO_INDEX, DOC, modelInfo.getId().getPrettyFormat())
         .source(jsonMap);
@@ -289,11 +291,12 @@ public class IndexingService implements IIndexingService {
 
   private Map<String, Object> updateMap(ModelInfo modelInfo) {
     Map<String, Object> jsonMap = new HashMap<>();
-    jsonMap.put(AUTHOR, modelInfo.getAuthor());
-    jsonMap.put(DESCRIPTION, modelInfo.getDescription());
-    jsonMap.put(DISPLAY_NAME, modelInfo.getDisplayName());
-    jsonMap.put(STATE, modelInfo.getState());
-    jsonMap.put(VISIBILITY, PRIVATE);
+    for(IIndexFieldSupplier supplier : fieldSuppliers) {
+      IIndexFieldExtractor extractor = supplier.extractor();
+      extractor.extractFields(modelInfo).forEach((key, value) -> {
+        jsonMap.put(key, value);
+      });
+    }
     return jsonMap;
   }
 
@@ -336,10 +339,27 @@ public class IndexingService implements IIndexingService {
       logger.info("Search Expression: " + searchExpression + " Elastic Search: " + searchRequest.toString());
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
-      return Stream.of(hits.getHits()).map(IndexedModelInfo::fromSearchHit).collect(Collectors.toList());
+      return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
       throw new IndexingException("Error while querying the index for '" + Strings.nullToEmpty(searchExpression) + "' expression", e);
     }
+  }
+  
+  private IndexedModelInfo fromSearchHit(SearchHit searchHit) {
+    IndexedModelInfo modelInfo = new IndexedModelInfo();
+    
+    Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
+    
+    modelInfo.setTenantId((String) sourceAsMap.get(TENANT_ID));
+    modelInfo.setModelId((String) sourceAsMap.get(MODEL_ID));
+    modelInfo.setType(ModelType.valueOf((String) sourceAsMap.get(MODEL_TYPE)));
+    modelInfo.setState((String) sourceAsMap.get(STATE));
+    modelInfo.setVisibility((String) sourceAsMap.get(VISIBILITY));
+    modelInfo.setAuthor((String) sourceAsMap.get(AUTHOR));
+    modelInfo.setDescription((String) sourceAsMap.get(DESCRIPTION));
+    modelInfo.setDisplayName((String) sourceAsMap.get(DISPLAY_NAME));
+    
+    return modelInfo;
   }
   
   private SearchParameters makeSearchParams(Optional<Collection<String>> tenantIds, String searchExpression) {
@@ -395,7 +415,7 @@ public class IndexingService implements IIndexingService {
       if (params.tenantIds.get().isEmpty()) {
         queryBuilder = queryBuilder.must(isPublic());
       } else {
-        queryBuilder = queryBuilder.must(or(isPublic(), isUnderTenants(params.tenantIds.get())));
+        queryBuilder = queryBuilder.must(or(isPublic(), isOwnedByTenants(params.tenantIds.get())));
       }
     }
     
@@ -420,7 +440,7 @@ public class IndexingService implements IIndexingService {
     return QueryBuilders.termQuery(VISIBILITY, PUBLIC);
   }
   
-  private QueryBuilder isUnderTenants(Collection<String> tenants) {
+  private QueryBuilder isOwnedByTenants(Collection<String> tenants) {
     return QueryBuilders.termsQuery(TENANT_ID, tenants);
   }
   
