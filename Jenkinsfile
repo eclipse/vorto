@@ -3,12 +3,16 @@ pipeline {
     stages{
       stage("Build"){
         steps{
+			sh 'printenv'
+			sh 'echo Proxy Host = $PROXY_HOST'
+			sh 'echo Proxy Port = $PROXY_PORT'
+			sh 'echo Proxy User = $PROXY_USER'
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
 				withCredentials([string(credentialsId: 'aws-elastic-search-token', variable: 'AWS_ACCESS_TOKEN', variable: 'AWS_SECRET_KEY')]) {
-					sh 'mvn -Dserver.config.skipSslVerification=true -Dhttp.proxyUser=${env.PROXY_USER} -Dhttp.proxyPassword=${env.PROXY_PWD} -Dhttp.proxyHost=${env.PROXY_HOST} -Dhttp.proxyPort=${env.PROXY_PORT} -Daws.accessKeyId=$AWS_ACCESS_TOKEN -Daws.secretKey=$AWS_SECRET_KEY -P coverage clean install'
+					sh 'mvn -Dserver.config.skipSslVerification=true -Dhttp.proxyUser=$PROXY_USER -Dhttp.proxyPassword=$PROXY_PWD -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Daws.accessKeyId=$AWS_ACCESS_TOKEN -Daws.secretKey=$AWS_SECRET_KEY -P coverage clean install'
 				}
             }
         }
