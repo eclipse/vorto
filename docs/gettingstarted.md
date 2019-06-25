@@ -84,5 +84,5 @@ If you want to see the full process of creating, integrating and visualizing sen
 - Map arbitrary device payload to Vorto compliant data structures
   * [Mapping Engine for Java](../mapping-engine/Readme.md)
   * [Mapping Engine for Node.js](../mapping-engine-nodejs/README.md)
-  * [Example: Mapping Security Camera binary data](https://github.com/eclipse/vorto-examples/blob/master/vorto-connector/Readme.md)
+  * [Eclipse Hono Payload Normalizer](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber)
 
