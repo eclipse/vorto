@@ -9,18 +9,23 @@ import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.model.impl.ModelService;
+import org.eclipse.vorto.repository.model.impl.ModelVisibilityService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
 
 public class ModelVisibilityTest extends AbstractIntegrationTest {
 
+  private IModelService getModelService() {
+    return new ModelService(new ModelVisibilityService(repositoryFactory, tenantService));
+  }
+  
   private void importAndMakePublic(String filename, String modelId) {
     importModel("creator", filename);
     
     IUserContext publisher = createUserContext("publisher");
     
-    IModelService modelService = new ModelService(repositoryFactory, tenantService);
+    IModelService modelService = getModelService();
     
     modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat(modelId));
   }
@@ -53,7 +58,7 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     IUserContext reviewer = createUserContext("reviewer");
     
-    IModelService modelService = new ModelService(repositoryFactory, tenantService);
+    IModelService modelService = getModelService();
     
     modelService.makeModelPublic(reviewer, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
@@ -74,7 +79,7 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     IUserContext publisher = createUserContext("publisher");
     
-    IModelService modelService = new ModelService(repositoryFactory, tenantService);
+    IModelService modelService = getModelService();
     
     modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
@@ -82,6 +87,8 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
         .getById(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
     assertEquals("public", modelInfo.getVisibility());
+    
+    hasAnonymousPolicy("com.mycompany:Point3d:1.0.0");
   }
   
   private void checkCorrectness(String modelId, String visibility, String state) {
@@ -109,7 +116,7 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     IUserContext publisher = createUserContext("publisher");
     
-    IModelService modelService = new ModelService(repositoryFactory, tenantService);
+    IModelService modelService = getModelService();
     
     try {
       modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3D:1.0.0"));
@@ -117,6 +124,9 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     } catch(ModelNamespaceNotOfficialException e) {
       assertTrue(e.getMessage().contains("vorto.private.playground:Point2d:1.0.0"));
     }
+    
+    checkCorrectness("vorto.private.playground:Point2d:1.0.0", "private", "Released");
+    checkCorrectness("com.mycompany:Point3D:1.0.0", "private", "Released");
   }
   
   @Test
@@ -136,7 +146,7 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     IUserContext publisher = createUserContext("publisher");
     
-    IModelService modelService = new ModelService(repositoryFactory, tenantService);
+    IModelService modelService = getModelService();
     
     modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point4D:1.0.0"));
     
@@ -150,6 +160,6 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
   public boolean hasAnonymousPolicy(String modelId) {
     IModelPolicyManager policyMgr = repositoryFactory.getPolicyManager(createUserContext("creator"));
     return policyMgr.getPolicyEntries(ModelId.fromPrettyFormat(modelId))
-        .stream().anyMatch(policyEntry -> ModelService.ANONYMOUS_ACCESS.equals(policyEntry.getPrincipalId()));
+        .stream().anyMatch(policyEntry -> IModelPolicyManager.ANONYMOUS_ACCESS_POLICY.equals(policyEntry.getPrincipalId()));
   }
 }
