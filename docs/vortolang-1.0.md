@@ -1,4 +1,4 @@
-# Digital Twin Vorto Language
+# Vorto Language for Digital Twins
 
 **Version 1.0**
 
@@ -10,7 +10,6 @@
 [Event](#event)<br>
 [Operation](#operation)<br>
 [Primitive Types](#primitive-types)<br>
-[Array](#array)<br>
 [Enum](#enum)<br>
 [Dictionary](#dictionary)<br>
 [Entity](#entity)<br>
@@ -20,7 +19,7 @@
 
 ## Introduction
 
-This document specifies the Digital Twin Vorto Language (vortolang 1.0), a language for describing models and interfaces for IoT Digital Twins. Digital twins are models of entities in the physical world such as a (multi) sensor device, smart power plant, and other entities that participate in IoT solutions. Modeling enables IoT solutions and IoT platforms to provision, use, and configure IoT devices and logical entities from multiple sources in a single solution. Using the vortolang and describing the entities's capabilities, IoT platforms and IoT solutions can leverage the semantics of these IoT entities.
+This document specifies the Vorto Language (vortolang 1.0), a language for describing models and interfaces for IoT Digital Twins. Digital twins are models of entities in the physical world such as a (multi) sensor device, smart power plant, and other entities that participate in IoT solutions. Modeling enables IoT solutions and IoT platforms to provision, use, and configure IoT devices and logical entities from multiple sources in a single solution. Using the vortolang and describing the entities's capabilities, IoT platforms and IoT solutions can leverage the semantics of these IoT entities.
 
 ## Digital Twin Vorto Language
 
@@ -31,7 +30,7 @@ When writing a digital twin definition, it's necessary to specify the version of
 
 ## Information Models and Function Blocks
 
-There are two top-level metamodel classes: `Information Model` and `Function Block`. Information Models describe a complete digital twin, such as a physical device or a space (such as a room). Often, Information Models are associated with a product SKU, such as a "Bosch Dinion IP Starlight 8000MP" security camera, while Function Blocks describe the related capabilities of an digital twin (its status- and configuration properties, events, and operations). Function Blocks can be reused across different Information Models. Information Models are often made up of multiple Function Blocks (interfaces).
+There are two top-level metamodel classes: `Information Model` and `Function Block`. Information Models describe a complete digital twin, such as a physical device. Often, Information Models are associated with a product SKU, such as a "Bosch Dinion IP Starlight 8000MP" security camera, while Function Blocks describe the related capabilities of an digital twin (its status- and configuration properties, events, and operations). Function Blocks can be reused across different Information Models. Information Models are often made up of multiple Function Blocks (interfaces).
 
 <figure class="screenshot">
 	<img src="images/vortolang-meta.png">
@@ -41,7 +40,6 @@ There are two top-level metamodel classes: `Information Model` and `Function Blo
 
 An `Information Model` describes a complete digital twin, such as a physical device or a space (such as a room) and defines the set of interfaces as Function Blocks, implemented by the digital twin.
 
-Because an Information Model definition includes the fully qualified identity of the Function Blocks that it implements (including the full three-part version number), when a Function Block is changed and is assigned a new version number (and therefore a new ID), the Information Model does not automatically implement the changed Function Block (interface). If it is intended that the Information Model implements the changed Function Block, then the Information Model must also be updated.
 
 ### Information Model properties
 
