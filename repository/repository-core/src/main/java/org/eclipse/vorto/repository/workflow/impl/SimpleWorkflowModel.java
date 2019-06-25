@@ -99,7 +99,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		ACTION_APPROVE.setFunctions(removeModelReviewerPolicy, grantPublisherModelAccess);
+		ACTION_APPROVE.setFunctions(grantPublisherModelAccess, removeModelReviewerPolicy);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));

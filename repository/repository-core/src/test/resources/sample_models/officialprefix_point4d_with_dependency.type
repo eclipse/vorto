@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.mycompany
+version 1.0.0
+displayname "Point4D"
+description "Datatype for Point4D"
+
+using com.mycompany.Point3d ; 1.0.0
+
+entity Point4D {
+	a as Point3d 
+	b as float
+}

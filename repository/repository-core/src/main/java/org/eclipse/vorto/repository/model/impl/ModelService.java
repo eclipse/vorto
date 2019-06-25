@@ -45,7 +45,7 @@ public class ModelService implements IModelService {
 
   private static Logger logger = Logger.getLogger(ModelService.class);
   
-  private static final String ANONYMOUS_ACCESS = "ANONYMOUS";
+  public static final String ANONYMOUS_ACCESS = "ANONYMOUS";
 
   private IModelRepositoryFactory repositoryFactory;
   

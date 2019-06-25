@@ -221,7 +221,9 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
-  protected ModelInfo releaseModel(ModelId modelId) throws WorkflowException {
+  protected ModelInfo releaseModel(ModelId modelId, IUserContext creator) throws WorkflowException {
+    workflow.start(modelId, creator);
+    
     workflow.doAction(modelId, createUserContext("promoter"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     

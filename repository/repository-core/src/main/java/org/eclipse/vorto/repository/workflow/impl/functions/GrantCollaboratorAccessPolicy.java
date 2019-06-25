@@ -36,8 +36,7 @@ public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
 
   @Override
   public void execute(ModelInfo model, IUserContext user) {
-    logger.info("Restricting permission of model " + model.getId() + " to user '"
-        + user.getUsername() + "' and role 'admin'");
+    logger.info("Restricting permission of model " + model.getId() + " to collaborators within the tenant");
     repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication()).addPolicyEntry(
         model.getId(),
         PolicyEntry.of(Role.USER.name(), PrincipalType.Role, Permission.READ),
