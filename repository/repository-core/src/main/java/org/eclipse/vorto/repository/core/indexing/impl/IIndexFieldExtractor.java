@@ -22,4 +22,10 @@ public interface IIndexFieldExtractor {
    * @return a map where key is the field name and value is the value of the field
    */
   Map<String, String> extractFields(ModelInfo modelInfo);
+  
+  /**
+   * Returns a map with keys being the field names and values being the field type
+   * @return
+   */
+  Map<String, String> getFields();
 }

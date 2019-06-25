@@ -98,7 +98,7 @@ public class IndexingService implements IIndexingService {
 
   private static Logger logger = Logger.getLogger(IndexingService.class);
   
-  private Collection<IIndexFieldSupplier> fieldSuppliers;
+  private Collection<IIndexFieldExtractor> fieldExtractors;
   
   private Pattern searchExprPattern = Pattern.compile("name:(\\w+)\\*");
   
@@ -107,9 +107,9 @@ public class IndexingService implements IIndexingService {
   private RestHighLevelClient client;
   
   public IndexingService(@Autowired RestHighLevelClient client,
-      @Autowired Collection<IIndexFieldSupplier> fieldSuppliers) {
+      @Autowired Collection<IIndexFieldExtractor> fieldSuppliers) {
     this.client = client;
-    this.fieldSuppliers = fieldSuppliers;
+    this.fieldExtractors = fieldSuppliers;
   }
 
   @PostConstruct
@@ -156,9 +156,8 @@ public class IndexingService implements IIndexingService {
     Map<String, Object> properties = new HashMap<>();
     properties.put(TENANT_ID, createPropertyWithType(KEYWORD));
     
-    for(IIndexFieldSupplier supplier : fieldSuppliers) {
-      IIndexFieldCreator creator = supplier.creator();
-      creator.getFields().forEach((key, value) -> {
+    for(IIndexFieldExtractor extractor : fieldExtractors) {
+      extractor.getFields().forEach((key, value) -> {
         properties.put(key, createPropertyWithType(value));
       });
     }
@@ -259,8 +258,7 @@ public class IndexingService implements IIndexingService {
     Map<String, Object> jsonMap = new HashMap<>();
     jsonMap.put(TENANT_ID, tenantId);
     
-    for(IIndexFieldSupplier supplier : fieldSuppliers) {
-      IIndexFieldExtractor extractor = supplier.extractor();
+    for(IIndexFieldExtractor extractor : fieldExtractors) {
       extractor.extractFields(modelInfo).forEach((key, value) -> {
         jsonMap.put(key, value);
       });
@@ -291,8 +289,7 @@ public class IndexingService implements IIndexingService {
 
   private Map<String, Object> updateMap(ModelInfo modelInfo) {
     Map<String, Object> jsonMap = new HashMap<>();
-    for(IIndexFieldSupplier supplier : fieldSuppliers) {
-      IIndexFieldExtractor extractor = supplier.extractor();
+    for(IIndexFieldExtractor extractor : fieldExtractors) {
       extractor.extractFields(modelInfo).forEach((key, value) -> {
         jsonMap.put(key, value);
       });
@@ -339,6 +336,7 @@ public class IndexingService implements IIndexingService {
       logger.info("Search Expression: " + searchExpression + " Elastic Search: " + searchRequest.toString());
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
+      logger.info("Number of hits: " + hits.getTotalHits());
       return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
       throw new IndexingException("Error while querying the index for '" + Strings.nullToEmpty(searchExpression) + "' expression", e);
