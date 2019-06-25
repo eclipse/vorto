@@ -9,6 +9,10 @@ So the question is, how can we find out **which devices have the type of functio
 	<img src="https://www.eclipse.org/vorto/images/vorto.png" width="100px" />
 </p>
 
+<p align="center">
+<a href="vortolang-1.0.md"><b>Vortolang 1.0 Specification</b></a>
+</p>
+
 <br />
 
 ## Concepts
@@ -17,8 +21,8 @@ By adding a layer of abstraction, we create a consistent interface that allows u
 
 The Vorto project is built on **four main components**:
 
-- **Vorto DSL**:
-The Vorto DSL is a readable and easily understood domain-specific language that was specifically designed to be usable even by non-developers. It is used to create the abstract models of different devices.
+- **Vorto Language (DSL)**:
+The Vorto language is a readable and easily understood domain-specific language that was specifically designed to be usable even by non-developers. It is used to create the abstract models of different devices.  [Read more](vortolang-1.0.md)
 
 - **Metamodel**:
 The metamodel is used to define the relationship between the different entities like Information Models, Function Blocks, and Datatypes.
@@ -36,7 +40,7 @@ For a more in depth introduction into the concepts, feel free to **[read the blo
 ## Learning Path
 
 
-1. **Understand the Vorto DSL** using the [Vorto DSL Grammar Reference](../core-bundles/docs/quickhelp_dsl.md)
+1. **[Understanding the Vorto Language](vortolang-1.0.md)**
 
 2. [**Create your Repository and manage namespaces**](tutorials/create_repository.md) to get ready for describing devices.
 
