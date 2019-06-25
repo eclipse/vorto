@@ -53,10 +53,12 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.model.IModelService;
+import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
+import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -107,6 +109,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @Autowired
   private IWorkflowService workflowService;
+  
+  @Autowired
+  private IModelService modelService;
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -527,21 +532,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
   
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_USER')")
-  public void makeModelPublic(final @PathVariable String modelId) {
+  @GetMapping(value = "/{modelId:.+}/makePublic")
+  public ResponseEntity<String> makeModelPublic(final @PathVariable String modelId) {
     
     IUserContext user = 
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(), 
             getTenant(ControllerUtils.sanitize(modelId)));
     
-    if (!user.isSysAdmin() && !accountService.hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
-      // Forbidden error
+    if (!user.isSysAdmin() && 
+        !accountService.hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
+      return new ResponseEntity<>("Only users with Publisher roles are allowed to make models public", 
+          HttpStatus.UNAUTHORIZED);
     }
     
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
     
     if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
-      // Forbidden
+      return new ResponseEntity<>("Only models with official namespace can be made public", HttpStatus.FORBIDDEN);
     }
+    
+    try {
+      modelService.makeModelPublic(user, ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
+    } catch(ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+    
+    return new ResponseEntity<>("SUCCESS", HttpStatus.OK); 
   }
 
   private String getTenant(String modelId) {
