@@ -9,7 +9,7 @@
 [Properties](#properties)<br>
 [Event](#event)<br>
 [Operation](#operation)<br>
-[Primitive Schemas](#primitive-schemas)<br>
+[Primitive Types](#primitive-types)<br>
 [Array](#array)<br>
 [Enum](#enum)<br>
 [Dictionary](#dictionary)<br>
