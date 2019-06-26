@@ -3,9 +3,12 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
-[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
+[Eclipse Vorto](http://www.eclipse.org/vorto) provides a language for describing models and interfaces for IoT Digital Twins. Digital twins are models of entities in the physical world such as a (multi) sensor device, smart power plant, and other entities that participate in IoT solutions. Modeling enables IoT solutions and IoT platforms to provision, use, and configure IoT devices and logical entities from multiple sources in a single solution. Using the vortolang and describing the entities's capabilities, IoT platforms and IoT solutions can leverage the semantics of these IoT entities.
 
 <img src="docs/images/vorto_cover.png"/>
+<p align="center">
+<a href="docs/vortolang-1.0.md"><b>Vortolang 1.0 Specification</b></a>
+</p>
 
 
 ## Getting Started with Vorto
@@ -14,11 +17,10 @@
 
 ## Vorto Examples
 
-Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
+Check out our [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that use Vorto models. 
 
 ## Developer Guide
 
-- [Vorto DSL Reader](utilities/Readme.md) which lets you parse Vorto DSL files (requires Java)
 - [Plugin SDK](plugin-sdk/Readme.md) that lets you extend Vorto with different plugin types
 
 ## Contact us
