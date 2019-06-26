@@ -11,8 +11,8 @@ pipeline {
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
-                withCredentials([string(credentialsId: 'aws-elastic-search-token', variable: 'AWS_ACCESS_TOKEN', variable: 'AWS_SECRET_KEY')]) {
-                    sh 'mvn -Dserver.config.skipSslVerification=true -Dhttp.proxyUser=$PROXY_USER -Dhttp.proxyPassword=$PROXY_PWD -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Daws.accessKeyId=$AWS_ACCESS_TOKEN -Daws.secretKey=$AWS_SECRET_KEY -P coverage clean install'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-elastic-search-token', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    sh 'mvn -Dserver.config.skipSslVerification=true -Dhttp.proxyUser=$PROXY_USER -Dhttp.proxyPassword=$PROXY_PWD -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Daws.accessKeyId=$AWS_ACCESS_KEY_ID -Daws.secretKey=$AWS_SECRET_ACCESS_KEY -P coverage clean install'
                 }
             }
         }
