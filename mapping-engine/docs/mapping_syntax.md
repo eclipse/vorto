@@ -55,3 +55,78 @@ mapping LWM2M {
     }
 }
 ```
+
+<br />
+
+## Comparing Payloads
+To understand the difference of the normalized, mapped payload and the target platform specific ones a little bit better, let's compare the normalized Vorto payload coming out of the Mapping Engine with two target platform specific payloads that can be used with the platforms.
+
+We will be using the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) as an example.
+It has 3 features, temperature, battery, and location.     
+In the **normalized Vorto format**, the location feature, e.g. looks like this.
+
+```json
+{
+  "location": {
+    "status": {
+      "latitude": 0,
+      "longitude": 0
+    }
+  }
+}
+```
+
+It is very minimalistic and only contains the status value for the location feature.
+
+When looking at the **Eclipse Ditto specific format** of the exact same feature, we can see that we also have a reference to the according Function Block of the Vorto Repository.
+
+```json
+{
+  "location": {
+      "definition": [
+        "org.eclipse.vorto:Location:1.0.0"
+      ],
+      "properties": {
+        "status": {
+          "latitude": 0,
+          "longitude": 0
+        },
+        "configuration": {}
+      }
+  }
+}
+```
+
+In addition to the reference we also see another level of attributes, the configuration.
+
+To contrast the Eclipse Ditto specific payload, let's look at the **payload of the AWS IoT Service**. The format looks quite different in terms of naming.
+
+```json
+{
+  "state": {
+    "reported": {
+      "location": {
+        "latitude": 0,
+        "longitude": 0
+      }
+    }
+  },
+  "metadata": {
+    "reported": {
+      "location": {
+        "latitude": {
+          "timestamp": 1561344504
+        },
+        "longitude": {
+          "timestamp": 1561344504
+        }
+      }
+    }
+  },
+  "version": 2,
+  "timestamp": 1561344697
+}
+```
+
+However when looking at the core element, which is the *reported state*, we can see that it simply holds the latitude and longitude values mapped to the location attribute.
+All other attributes like the *metadata*, *version*, and *timestamps* have been added by AWS IoT.
