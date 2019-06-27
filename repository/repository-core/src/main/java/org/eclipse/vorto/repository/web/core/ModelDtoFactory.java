@@ -123,6 +123,7 @@ public class ModelDtoFactory {
     dto.setLastModifiedBy(resource.getLastModifiedBy());
     dto.setImported(resource.getImported());
     dto.setAuthor(resource.getAuthor());
+    dto.setVisibility(resource.getVisibility());
   }
 
   public static Comment createDto(Comment comment, IUserContext userContext) {
