@@ -41,6 +41,6 @@ public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
 
     logger.info("Adding access of model " + model.getId() + " to non-tenant member users");
     policyManager.addPolicyEntry(model.getId(),
-        PolicyEntry.of("ANONYMOUS", PrincipalType.User, Permission.READ));
+        PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY, PrincipalType.User, Permission.READ));
   }
 }
