@@ -22,7 +22,6 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +54,6 @@ public class ModelSearchController extends AbstractRepositoryController {
           @ApiResponse(code = 400, message = "Malformed search expression")})
   @RequestMapping(value = "/models", method = RequestMethod.GET,
 	      produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_USER')")
   public List<ModelInfoDto> searchByExpression(
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
