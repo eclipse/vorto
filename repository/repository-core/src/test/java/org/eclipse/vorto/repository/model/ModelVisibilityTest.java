@@ -1,6 +1,7 @@
 package org.eclipse.vorto.repository.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.eclipse.vorto.model.ModelId;
@@ -88,7 +89,7 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     assertEquals("public", modelInfo.getVisibility());
     
-    hasAnonymousPolicy("com.mycompany:Point3d:1.0.0");
+    assertTrue(hasAnonymousPolicy("com.mycompany:Point3d:1.0.0"));
   }
   
   private void checkCorrectness(String modelId, String visibility, String state) {
@@ -127,6 +128,9 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     checkCorrectness("vorto.private.playground:Point2d:1.0.0", "private", "Released");
     checkCorrectness("com.mycompany:Point3D:1.0.0", "private", "Released");
+    
+    assertFalse(hasAnonymousPolicy("vorto.private.playground:Point2d:1.0.0"));
+    assertFalse(hasAnonymousPolicy("com.mycompany:Point3D:1.0.0"));
   }
   
   @Test
@@ -153,8 +157,8 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     checkCorrectness("com.mycompany:Point3d:1.0.0", "public", "Released");
     checkCorrectness("com.mycompany:Point4D:1.0.0", "public", "Released");
     
-    hasAnonymousPolicy("com.mycompany:Point3d:1.0.0");
-    hasAnonymousPolicy("com.mycompany:Point4D:1.0.0");
+    assertTrue(hasAnonymousPolicy("com.mycompany:Point3d:1.0.0"));
+    assertTrue(hasAnonymousPolicy("com.mycompany:Point4D:1.0.0"));
   }
   
   public boolean hasAnonymousPolicy(String modelId) {
