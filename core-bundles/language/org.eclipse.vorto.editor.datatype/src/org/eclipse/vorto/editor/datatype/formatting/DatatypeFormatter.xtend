@@ -39,16 +39,16 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).before(f.entityAccess.findKeywords("namespace").get(0)) 
 		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_3)
 		c.setLinewrap(1).after(f.entityAccess.versionAssignment_5)
-		c.setLinewrap(1).after(f.entityAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.entityAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.entityAccess.categoryAssignment_8_1)
+		c.setLinewrap(1).after(f.entityAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(f.entityAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(f.entityAccess.categoryAssignment_6_2_1)
 			
 		c.setLinewrap(2).before(f.enumAccess.findKeywords("namespace").get(0))
 		c.setLinewrap(1).after(f.enumAccess.namespaceAssignment_3)
 		c.setLinewrap(1).after(f.enumAccess.versionAssignment_5)
-		c.setLinewrap(1).after(f.enumAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.enumAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.enumAccess.categoryAssignment_8_1)
+		c.setLinewrap(1).after(f.enumAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(f.enumAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(f.enumAccess.categoryAssignment_6_2_1)
 				
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
@@ -83,7 +83,7 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		c.setNoSpace().before(f.propertyAccess.commaKeyword_6_3_0)
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_6_3_0)	
 		
-		c.setNoSpace().before(f.enumAccess.commaKeyword_13_1_0)
+		c.setNoSpace().before(f.enumAccess.commaKeyword_11_1_0)
 		
 		//Property description
 		c.setNoLinewrap().before(f.propertyAccess.descriptionAssignment_8)
