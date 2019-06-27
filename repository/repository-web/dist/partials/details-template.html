@@ -42,13 +42,13 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
+			<div ng-show="canCreateModels">
 				<a class="btn btn-default pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && model.type === 'InformationModel' ">
+			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
 				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>

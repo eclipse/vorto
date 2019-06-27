@@ -1,8 +1,8 @@
 repositoryControllers.controller('DetailsController', 
     ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
-     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog',
+     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 'TenantService' ,
     function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog) {
+        $timeout, $window, $timeout, openCreateModelDialog, TenantService) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -211,6 +211,18 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferences();
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
+					
+					var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
+					promise.then(
+						function(namespaces) {
+							for (entry of namespaces) {
+								if (entry.namespace === $scope.model.id.namespace) {
+									$scope.canCreateModels = true;
+									return;
+								}
+							}
+						$scope.canCreateModels = false;
+					});
 					
 					if ($rootScope.authenticated) {
 						$scope.getUserPolicy();

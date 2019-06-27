@@ -34,11 +34,11 @@ repositoryControllers.controller("tenantUserManagementController",
             return {
                 edit: false,
                 username : "",
-                roleModelCreator : true,
-                roleModelPromoter : true,
-                roleModelReviewer : true,
+                roleModelCreator : false,
+                roleModelPromoter : false,
+                roleModelReviewer : false,
                 roleUser : true,
-                roleAdmin : true
+                roleAdmin : false
             };
         };
         
