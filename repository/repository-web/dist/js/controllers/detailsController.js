@@ -1,8 +1,9 @@
 repositoryControllers.controller('DetailsController', 
     ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
-     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 'TenantService' ,
+     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 
+     'TenantService', 'dialogConfirm',
     function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog, TenantService) {
+        $timeout, $window, $timeout, openCreateModelDialog, TenantService, dialogConfirm) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -825,6 +826,28 @@ repositoryControllers.controller('DetailsController',
 		
 		$scope.isEditingVisible = function(model) {
 			return $scope.permission !== 'READ' && !model.released;
+		};
+		
+		$scope.hasOfficialPrefix = function(model) {
+			return !model.id.namespace.startsWith($rootScope.privateNamespacePrefix);
+		};
+		
+		$scope.makePublic = function(model) {
+			var dialog = dialogConfirm($scope, "Are you sure you want to make the model '" + model.id.prettyFormat + "' public?", ["Confirm", "Cancel"]);
+			
+			dialog.setCallback("Confirm", function() {
+	            $http.post('./rest/models/' + model.id.prettyFormat + '/makePublic')
+	                .then(function(result) {
+	                	$timeout(function () {
+							$window.location.reload();
+						}, 250);
+	                }, function(reason) {
+	                    // TODO : Show error on window
+	                	console.log(JSON.stringify(reason));
+	                });
+        	});
+        	
+        	dialog.run();
 		};
 	}
 ]);
