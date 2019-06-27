@@ -1,9 +1,9 @@
 repositoryControllers.controller('DetailsController', 
     ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
      '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 
-     'TenantService', 'dialogConfirm',
+     'TenantService', 'confirmPublish',
     function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog, TenantService, dialogConfirm) {
+        $timeout, $window, $timeout, openCreateModelDialog, TenantService, confirmPublish) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -833,9 +833,9 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.makePublic = function(model) {
-			var dialog = dialogConfirm($scope, "Are you sure you want to make the model '" + model.id.prettyFormat + "' public?", ["Confirm", "Cancel"]);
+			var dialog = confirmPublish($scope);
 			
-			dialog.setCallback("Confirm", function() {
+			dialog.setConfirmCallback(function() {
 	            $http.post('./rest/models/' + model.id.prettyFormat + '/makePublic')
 	                .then(function(result) {
 	                	$timeout(function () {
