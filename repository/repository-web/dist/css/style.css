@@ -1867,6 +1867,14 @@ input[type=file]::-webkit-file-upload-button {
 .model-box.mp:hover {
     background: rgba(153, 153, 153, 0.1);
 }
+.visibilityIcon {
+    width: 13px;
+    height: 40px;
+    position: absolute;
+    right:0;
+	top:0;
+	border: 0px;
+}
 
 .invalid-input {
     width: 100%;
