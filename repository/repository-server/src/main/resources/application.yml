@@ -45,7 +45,7 @@ github:
 
 eidp:
   oauth2:
-    enabled: false
+    enabled: true
     client:
       clientId: ${eidp_clientid}
       clientSecret: ${eidp_clientSecret}
