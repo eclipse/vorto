@@ -12,35 +12,44 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import java.util.Collection;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
-import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
+public class RemoveRoleAccessPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(GrantAnonymousAccessPolicy.class);
+  private static final Logger logger = LoggerFactory.getLogger(RemoveRoleAccessPolicy.class);
+  
+  private Role roleToRemove;
 
-
-  public GrantAnonymousAccessPolicy(IModelRepositoryFactory repositoryFactory) {
+  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Role roleToRemove) {
     this.repositoryFactory = repositoryFactory;
+    this.roleToRemove = roleToRemove;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user) {
     IModelPolicyManager policyManager =
         repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
-
-    logger.info("Adding access of model " + model.getId() + " to non-tenant member users");
-    policyManager.addPolicyEntry(model.getId(),
-        PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY, PrincipalType.User, Permission.READ));
+    
+    logger.info("Removing full access of model to " + roleToRemove.name() + " for " + model.getId());
+    Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
+    for (PolicyEntry policy : policies) {
+      if (policy.getPrincipalId().equals(roleToRemove.name()) && 
+          policy.getPrincipalType() == PrincipalType.Role) {
+        policyManager.removePolicyEntry(model.getId(), policy);
+        break;
+      }
+    }
   }
 }

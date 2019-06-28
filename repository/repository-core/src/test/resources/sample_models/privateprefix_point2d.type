@@ -1,0 +1,10 @@
+vortolang 1.0
+
+namespace vorto.private.playground
+version 1.0.0
+displayname "Point2d"
+description "Datatype for Point2d"
+
+entity Point2d {
+	x as float y as float
+}

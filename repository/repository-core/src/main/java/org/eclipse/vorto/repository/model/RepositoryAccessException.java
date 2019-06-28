@@ -10,21 +10,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.model;
 
-public class TenantNotFoundException extends ModelRepositoryException {
+public class RepositoryAccessException extends RuntimeException {
 
   /**
    * 
    */
-  private static final long serialVersionUID = 6204999779117905073L;
+  private static final long serialVersionUID = -6206541670433453902L;
 
-  public TenantNotFoundException(String tenantId, Throwable cause) {
-    super("No tenant '" + tenantId + "'", cause);
+  public RepositoryAccessException(String arg0, Throwable arg1) {
+    super(arg0, arg1);
   }
-  
-  public TenantNotFoundException(String namespace) {
-    super("Tenant not found for namespace '" + namespace + "'");
-  }
-
 }

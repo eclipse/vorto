@@ -52,13 +52,18 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.model.IModelService;
+import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
+import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
+import org.eclipse.vorto.repository.web.Status;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
@@ -105,6 +110,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @Autowired
   private IWorkflowService workflowService;
+  
+  @Autowired
+  private IModelService modelService;
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -461,10 +469,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
+    String tenantId = getTenant(modelId);
+    
     try {
       List<PolicyEntry> policyEntries =
-          getPolicyManager(getTenant(modelId)).getPolicyEntries(modelID).stream()
-              .filter(userHasPolicyEntry(user, getTenant(modelId))).collect(Collectors.toList());
+          getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+              .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
 
       Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
 
@@ -490,7 +500,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     if (attemptChangePolicyOfCurrentUser(entry)) {
       throw new IllegalArgumentException("Cannot change policy of current user");
-    } else if (!entry.getPrincipalId().equals("ANONYMOUS")
+    } else if (!entry.getPrincipalId().equals(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)
         && !this.accountService.exists(entry.getPrincipalId())) {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
@@ -520,6 +530,36 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
     getPolicyManager(getTenant(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
         entry);
+  }
+  
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_USER')")
+  @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
+  public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
+    
+    IUserContext user = 
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), 
+            getTenant(ControllerUtils.sanitize(modelId)));
+    
+    if (!user.isSysAdmin() && 
+        !accountService.hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
+      return new ResponseEntity<>(Status.fail("Only users with Publisher roles are allowed to make models public"), 
+          HttpStatus.UNAUTHORIZED);
+    }
+    
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
+      return new ResponseEntity<>(Status.fail("Only models with official namespace can be made public"), HttpStatus.FORBIDDEN);
+    }
+    
+    try {
+      logger.info("Making the model '" + ControllerUtils.sanitize(modelId) + "' public.");
+      modelService.makeModelPublic(user, ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
+    } catch(ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
+      return new ResponseEntity<>(Status.fail(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+    
+    return new ResponseEntity<>(Status.success(), HttpStatus.OK); 
   }
 
   private String getTenant(String modelId) {

@@ -12,9 +12,6 @@
 		{{model.id.name}}
 		<small>{{model.type}}</small>
 	</h2>
-	<div ng-if="errorLoading" class="row">
-		<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
-	</div>
 	<div ng-if="diagnostics != null && diagnostics.length > 0" class="row">
 		<div class="alert alert-danger" ng-repeat="diagnostic in diagnostics">
 			<span class="glyphicon glyphicon-remove invalid"></span>
@@ -39,6 +36,13 @@
 				<button class="btn btn-danger pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
+				<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+			
+			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS') && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
+				<button class="btn btn-default pull-left"  role="button"
+				    ng-click="makePublic(model)">
+					<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Publish</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
@@ -132,6 +136,10 @@
 												<dd class="ng-binding">{{model.id.namespace}}</dd>
 												<dt>Version:</dt>
 												<dd class="ng-binding">{{model.id.version}}</dd>
+												<dt>Visibility:</dt>
+												<dd class="ng-binding">
+													<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
+                                                </dd>
 												<dt>Created By:</dt>
 												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>Created On:</dt>

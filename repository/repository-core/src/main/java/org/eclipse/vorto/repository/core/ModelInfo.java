@@ -33,7 +33,7 @@ public class ModelInfo extends AbstractModel {
   protected boolean hasImage = false;
   protected String state;
   protected Boolean imported = false;
-
+  protected String visibility = "private";
   protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 
   protected Map<String,String> platformMappings = new HashMap<>();
@@ -106,6 +106,14 @@ public class ModelInfo extends AbstractModel {
   
   public String getLastModifiedBy() {
     return lastModifiedBy;
+  }
+  
+  public String getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
   }
 
   public void setLastModifiedBy(String lastModifiedBy) {

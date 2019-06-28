@@ -20,6 +20,8 @@ import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 public interface IModelPolicyManager {
 	
+    public static final String ANONYMOUS_ACCESS_POLICY = "ANONYMOUS";
+  
 	/**
 	 * Gets a list of all policies for the given model
 	 * @param modelId

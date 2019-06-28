@@ -23,21 +23,20 @@ import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GrantModelOwnerPolicy implements IWorkflowFunction {
+public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(GrantModelOwnerPolicy.class);
+  private static final Logger logger = LoggerFactory.getLogger(GrantCollaboratorAccessPolicy.class);
 
 
-  public GrantModelOwnerPolicy(IModelRepositoryFactory repositoryFactory) {
+  public GrantCollaboratorAccessPolicy(IModelRepositoryFactory repositoryFactory) {
     this.repositoryFactory = repositoryFactory;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user) {
-    logger.info("Restricting permission of model " + model.getId() + " to user '"
-        + user.getUsername() + "' and role 'admin'");
+    logger.info("Restricting permission of model " + model.getId() + " to collaborators within the tenant");
     repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication()).addPolicyEntry(
         model.getId(),
         PolicyEntry.of(Role.USER.name(), PrincipalType.Role, Permission.READ),

@@ -10,21 +10,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.model;
 
-public class TenantNotFoundException extends ModelRepositoryException {
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.IUserContext;
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 6204999779117905073L;
-
-  public TenantNotFoundException(String tenantId, Throwable cause) {
-    super("No tenant '" + tenantId + "'", cause);
-  }
+public interface IModelService {
   
-  public TenantNotFoundException(String namespace) {
-    super("Tenant not found for namespace '" + namespace + "'");
-  }
-
+  /**
+   * Sets the visibility of the given model to Public. It also sets all the references of the modelId to Public 
+   * 
+   * @param modelId the model to make public
+   */
+  void makeModelPublic(IUserContext userContext, ModelId modelId);
+  
 }
