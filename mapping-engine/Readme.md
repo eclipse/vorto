@@ -4,6 +4,8 @@ Vorto abstracts device data using Function Blocks, thus helping to reduce tight-
 
 In this tutorial, we are going to walk you through the process of creating a Vorto mapping specification for an Information Model and execute it with the Vorto Payload Mapping Engine.
 
+![mapping schematic drawing](./docs/vorto_mappings_schema.png)
+
 ## Prerequisite
 
 To work through this tutorial, you will need:
