@@ -38,17 +38,18 @@ FunctionblockModel:
 ;
 
 FunctionBlock:
-	(configuration = Configuration)? &
-	(status = Status)?	&
-	(fault = Fault)? &
+	{FunctionBlock}
+	(((configuration = Configuration)?) &
+	((status = Status)?)	&
+	((fault = Fault)?) &
 	
-	('events' '{'
+	(('events' '{'
 		(events += Event)*
-	'}')? &
+	'}')?) &
 	
 	('operations' '{'
 		(operations += Operation)*
-	'}')?		
+	'}')?)		
 ;
 
 Configuration:
