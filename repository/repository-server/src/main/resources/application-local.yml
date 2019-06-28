@@ -8,7 +8,7 @@ server:
   contextPath: /infomodelrepository
   use-forward-headers: true
   ssl:
-    key-store: src/main/resources/keystore-selfsigned.jks
-    key-store-password: Vorto123!
+    key-store: src/main/resources/selfsigned.jks
+    key-store-password: bosch123!
     keyStoreType: jks
-    keyAlias: vorto-selfsigned
+    keyAlias: tomcat
