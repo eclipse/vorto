@@ -7,8 +7,15 @@
         <p></p>
 
         <div ng-show="context.githubEnabled">
-          <a href="github/login" class="btn btn-primary btn-block"> <img src="webjars/repository-web/dist/images/github-social.png" alt="Github" />
-            Sign in using Github
+          <a href="github/login" class="btn btn-default btn-block"> <img src="webjars/repository-web/dist/images/github-social.png" alt="Sign in with Github" />
+            Sign in with Github
+          </a>
+        </div>
+        <br>
+        <br>
+        <div ng-show="context.eidpEnabled">
+          <a href="eidp/login" class="btn btn-default btn-block"> <img src="webjars/repository-web/dist/images/bosch-social.png" alt="Sign in with Bosch ID" />
+            Sign in with Bosch ID
           </a>
         </div>
       </div>

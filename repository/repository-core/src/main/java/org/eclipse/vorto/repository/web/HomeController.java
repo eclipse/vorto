@@ -41,7 +41,12 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 public class HomeController {
 
+  private static final String LOGINTYPE_GITHUB = "GITHUB";
+
+  private static final String LOGINTYPE_BOSCH_ID = "BOSCH_ID";
+
   private static final String LOGIN_TYPE = "loginType";
+
   private static final String LOGOUT_URL = "/logout";
 
   @Value("${github.oauth2.enabled}")
@@ -74,9 +79,6 @@ public class HomeController {
   @Value("${server.config.supportEmail:#{null}}")
   private String supportEmail;
 
-  @Value("${server.config.singleTenantMode:#{true}}")
-  private boolean singleTenantMode;
-
   @Autowired
   private IUserAccountService accountService;
   
@@ -107,11 +109,15 @@ public class HomeController {
     map.put("displayName", getDisplayName(oauth2User));
     map.put("isRegistered", Boolean.toString(userAccount != null));
     map.put("needUpdate", Boolean.toString(needUpdate(userAccount, updateCutoff)));
-    Map<String, String> userDetails =
-        ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
-    map.put("loginType", userDetails.get(LOGIN_TYPE));
+    Map<String, Object> userDetails =
+        ((Map<String, Object>) oauth2User.getUserAuthentication().getDetails());
+    map.put(LOGIN_TYPE, getLoginType(userDetails));
 
     return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+  }
+
+  private String getLoginType(Map<String, Object> userDetails) {
+    return userDetails.containsKey("sub") ? LOGINTYPE_BOSCH_ID : LOGINTYPE_GITHUB;
   }
 
   private boolean needUpdate(User user, Date updateCutoff) {
@@ -140,22 +146,16 @@ public class HomeController {
   }
 
   @RequestMapping(value = {"/context"}, method = RequestMethod.GET)
-  public Map<String, Object> globalContext(final HttpServletRequest request) {
+  public Map<String, Object> globalContext(final HttpServletRequest request, Principal user) {
+    
     Map<String, Object> context = new LinkedHashMap<>();
 
     context.put("githubEnabled", githubEnabled);
     context.put("eidpEnabled", eidpEnabled);
-    context.put("authenticatedSearchMode", authenticatedSearchMode || !singleTenantMode);
-    context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
+    context.put("authenticatedSearchMode", authenticatedSearchMode);
+    context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request),user));
     context.put("attachmentAllowedSize", attachmentAllowedSize);
     context.put("supportEmail", supportEmail);
-    if (singleTenantMode) {
-      context.put("tenant", "default");
-    } else {
-      // TODO : we need to check if the user is logged-in, and if so, extract his tenant
-      context.put("tenant", "default");
-    }
-
     return context;
   }
 
@@ -168,8 +168,22 @@ public class HomeController {
 
   }
 
-  private String getLogoutEndpointUrl(String baseUrl) {
-    if (eidpEnabled) {
+  private String getLogoutEndpointUrl(String baseUrl,Principal user) {
+    
+    if (user == null) {
+      return "";
+    }
+    
+    OAuth2Authentication oauth2User = (OAuth2Authentication) user;
+    
+    @SuppressWarnings("unchecked")
+    Map<String, Object> userDetails =
+        ((Map<String, Object>) oauth2User.getUserAuthentication().getDetails());
+    
+    String loginType = getLoginType(userDetails);
+    
+    
+    if (LOGINTYPE_BOSCH_ID.equals(loginType)) {
       String idToken = "";
       if (SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
         idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation()
