@@ -12,3 +12,9 @@ server:
     key-store-password: bosch123!
     keyStoreType: jks
     keyAlias: tomcat
+    
+eidp:
+  oauth2:
+    enabled: true
+    resource:
+      logoutRedirectUrl: https://localhost:8443/infomodelrepository/logout
