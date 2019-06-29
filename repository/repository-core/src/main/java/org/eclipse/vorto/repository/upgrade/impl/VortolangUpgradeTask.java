@@ -62,7 +62,7 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
     final String newline = System.getProperty("line.separator");
     for (ModelInfo modelInfo : searchResult) {
       ModelRepository modelRepository =
-          (ModelRepository) repositoryFactory.getRepository(modelInfo.getId().getNamespace());
+          (ModelRepository) repositoryFactory.getRepositoryByModel(modelInfo.getId());
       Optional<FileContent> content =
           modelRepository.getFileContent(modelInfo.getId(), Optional.of(modelInfo.getFileName()));
       if (content.isPresent()) {

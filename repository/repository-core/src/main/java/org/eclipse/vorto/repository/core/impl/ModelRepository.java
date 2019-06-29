@@ -129,14 +129,17 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   private ModelParserFactory modelParserFactory;
   
   private ApplicationEventPublisher eventPublisher = null;
+  
+  private ModelRepositoryFactory repositoryFactory;
 
   public ModelRepository(ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator, ModelParserFactory modelParserFactory,
-      IModelRetrievalService modelRetrievalService) {
+      IModelRetrievalService modelRetrievalService, ModelRepositoryFactory repositoryFactory) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.modelRetrievalService = modelRetrievalService;
+    this.repositoryFactory = repositoryFactory;
   }
   
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -459,26 +462,26 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     ModelInfo modelResource = getById(modelId);
     if (modelResource != null) {
       for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
-        ModelInfo referenceeModelResources = getBasicInfo(referenceeModelId);
-        if (referenceeModelResources.getType() == ModelType.Mapping
-            && isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
-          if (version.isPresent() && !referenceeModelResources.getId().getVersion().equals(version.get())) {
+        ModelResource referenceeModelResource = this.repositoryFactory.getRepositoryByModel(referenceeModelId).getEMFResource(referenceeModelId);
+        if (referenceeModelResource.getType() == ModelType.Mapping
+            && isTargetPlatformMapping(referenceeModelResource, targetPlatform)) {
+          if (version.isPresent() && !referenceeModelResource.getId().getVersion().equals(version.get())) {
             continue;
           } 
-          mappingResources.add(referenceeModelResources);
+          mappingResources.add(referenceeModelResource);
         }
       }
       for (ModelId referencedModelId : modelResource.getReferences()) {
+        
         mappingResources
-            .addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform,version));
+            .addAll(this.repositoryFactory.getRepositoryByModel(referencedModelId).getMappingModelsForTargetPlatform(referencedModelId, targetPlatform,version));
       }
     }
     return mappingResources;
   }
 
-  private boolean isTargetPlatformMapping(ModelInfo model, String targetPlatform) {
+  private boolean isTargetPlatformMapping(ModelResource emfResource, String targetPlatform) {
     try {
-      ModelResource emfResource = getEMFResource(model.getId());
       return emfResource.matchesTargetPlatform(targetPlatform);
     } catch (FatalModelRepositoryException e) {
       throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);

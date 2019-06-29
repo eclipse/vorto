@@ -36,6 +36,8 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
   
   public static final String MODEL_HASIMAGE = "hasImage";
   
+  public static final String MODEL_CREATIONDATE = "createdOn";
+  
   @Override
   public Map<String, String> extractFields(ModelInfo modelInfo) {
     Map<String, String> basicFields = new HashMap<>();
@@ -47,6 +49,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.DESCRIPTION, modelInfo.getDescription());
     basicFields.put(BasicIndexFieldExtractor.STATE, modelInfo.getState());
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, Boolean.toString(modelInfo.isHasImage()));
+    basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, Long.toString(modelInfo.getCreationDate().getTime()));
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, PRIVATE);
     
     return basicFields;
@@ -64,6 +67,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, FieldType.KEY);
     return basicFields;
   }
 

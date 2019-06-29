@@ -128,8 +128,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    IModelRepository modelRepo = getModelRepository(getTenant(modelId),
-        SecurityContextHolder.getContext().getAuthentication());
+    IModelRepository modelRepo = getModelRepository(modelID);
 
     List<Attachment> imageAttachments =
         modelRepo.getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);

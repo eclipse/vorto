@@ -159,27 +159,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     });
   }
   
-//  @Override
-//  public IModelSearchService getModelSearchService(Authentication user) {
-//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-//      return getRepository(tenant, user);
-//    });
-//  }
-//
-//  @Override
-//  public IModelSearchService getModelSearchService(IUserContext userContext) {
-//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-//      return getRepository(tenant, userContext.getAuthentication());
-//    });
-//  }
-//
-//  @Override
-//  public IModelSearchService getModelSearchService() {
-//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-//      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
-//    });
-//  }
-  
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
     Diagnostician diagnostics = new Diagnostician(repoDiagnostics);
@@ -209,7 +188,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user));
+        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this);
 
     modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);

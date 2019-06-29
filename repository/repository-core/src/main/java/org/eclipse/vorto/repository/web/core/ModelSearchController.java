@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -31,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 
 /**
+ * Used by the model creation dialog to fetch all released models by a certain namespace.
+ * TODO: Extend API Search Service to support better search criteria, which would make this implemention obsolete!
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Api(value = "/search")

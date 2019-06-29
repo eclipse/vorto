@@ -107,10 +107,7 @@ public class ModelController extends AbstractRepositoryController {
       throw new ModelNotFoundException("Model does not exist", null);
     }
 
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
-
-    IModelWorkspace workspace = getWorkspaceForModel(tenantId, modelID);
+    IModelWorkspace workspace = getWorkspaceForModel(modelID);
 
     ModelContent result = new ModelContent();
     result.setRoot(modelID);
@@ -143,12 +140,9 @@ public class ModelController extends AbstractRepositoryController {
         getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey, Optional.empty());
 
     if (!mappingResource.isEmpty()) {
-
-      final String tenantId = getTenant(modelID).orElseThrow(
-          () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
       
       IModelWorkspace workspace =
-          getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
+          getWorkspaceForModel(mappingResource.get(0).getId());
 
       ModelContent result = new ModelContent();
       result.setRoot(modelID);

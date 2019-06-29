@@ -14,21 +14,14 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,9 +43,6 @@ public class ModelSearchController extends AbstractRepositoryController {
   @Autowired
   private ISearchService searchService;
   
-  @Autowired
-  private IUserAccountService userAccountService;
-  
   @ApiOperation(value = "Finds models by free-text search expressions",
 		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
 		  		+ "* Please note that this search works on the model's 'displayname' or 'name' and NOT on the 'namespace' or"
@@ -70,10 +60,8 @@ public class ModelSearchController extends AbstractRepositoryController {
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
-    
-    IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
-    
-    List<ModelInfo> result = searchService.search(getTenants(user),URLDecoder.decode(expression, "utf-8"));
+        
+    List<ModelInfo> result = searchService.search(Optional.empty(),URLDecoder.decode(expression, "utf-8"));
 
     return result.stream().sorted(new Comparator<ModelInfo>() {
       public int compare(ModelInfo o1, ModelInfo o2) {
@@ -81,20 +69,7 @@ public class ModelSearchController extends AbstractRepositoryController {
       }
     }).collect(Collectors.toList());
   }
-  
-  private Optional<Collection<String>> getTenants(IUserContext user) {
-    if (user.isAnonymous()) {
-      return Optional.of(Collections.emptyList());
-    }
-
-    if (user.isSysAdmin()) {
-      return Optional.empty();
-    }
-
-    return Optional.of(userAccountService.getTenantsOfUser(user.getUsername()).stream()
-        .map(Tenant::getTenantId).collect(Collectors.toList()));
-  }
-
+   
   public ISearchService getSearchService() {
     return searchService;
   }

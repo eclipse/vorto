@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.search;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -360,7 +361,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     modelInfo.setDescription((String) sourceAsMap.get(BasicIndexFieldExtractor.DESCRIPTION));
     modelInfo.setDisplayName((String) sourceAsMap.get(BasicIndexFieldExtractor.DISPLAY_NAME));
     modelInfo.setHasImage(Boolean.getBoolean((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_HASIMAGE)));
-
+    String createdOn = (String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_CREATIONDATE);
+    modelInfo.setCreationDate(new Date(Long.parseLong(createdOn)));
     return modelInfo;
   }
 

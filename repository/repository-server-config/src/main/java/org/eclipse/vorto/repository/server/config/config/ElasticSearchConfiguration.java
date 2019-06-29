@@ -48,6 +48,7 @@ import com.google.common.base.Strings;
  *
  */
 @Configuration
+@Profile(value = {"prod","docker-local"})
 public class ElasticSearchConfiguration {
   
   @Value("${server.config.skipSslVerification:false}")
@@ -87,7 +88,7 @@ public class ElasticSearchConfiguration {
   private ITenantService tenantService;
   
   @Bean
-  @Profile(value = {"int","prod","local-docker"})
+  @Profile(value = {"prod","local-docker"})
   public ISearchService elasticSearch() {
     return new ElasticSearchService(client,repositoryFactory,tenantService);
   }
@@ -102,7 +103,7 @@ public class ElasticSearchConfiguration {
   }
   
   @Bean
-  @Profile({ "local", "local-test", "prod", "int" })
+  @Profile({ "prod" })
   public RestHighLevelClient awsIndexingClient() {
     logger.info("Creating an elastic server client with config(serviceName=" + 
         serviceName + " region=" + region + " aesEndpoint=" + aesEndpoint);

@@ -39,7 +39,7 @@ public class CheckStatesOfDependenciesValidator implements IWorkflowValidator {
   @Override
   public void validate(ModelInfo model, IAction currentAction, IUserContext user) throws InvalidInputException {
     for (ModelId referencedModelId : model.getReferences()) {
-      ModelInfo referencedModel = modelRepositoryFactory.getRepository(user.getTenant(), user.getAuthentication())
+      ModelInfo referencedModel = modelRepositoryFactory.getRepositoryByModel(referencedModelId)
           .getById(referencedModelId);
       if (referencedModel == null) {
         throw new InvalidInputException(
