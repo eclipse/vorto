@@ -78,8 +78,6 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
   private static final String VORTO_VISIBILITY = "vorto:visibility";
 
-  private static final String VORTO_VISIBILITY = "vorto:visibility";
-
   private static final String VORTO_TAGS = "vorto:tags";
 
   private static final String VORTO_REFERENCES = "vorto:references";

@@ -27,13 +27,8 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-<<<<<<< HEAD
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
-import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-=======
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
->>>>>>> feature/issue-1612-Elastic-Search
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,11 +66,7 @@ public class ModelSearchController extends AbstractRepositoryController {
           @ApiResponse(code = 400, message = "Malformed search expression")})
   @RequestMapping(value = "/models", method = RequestMethod.GET,
 	      produces = "application/json")
-<<<<<<< HEAD
-  public List<ModelInfoDto> searchByExpression(
-=======
   public List<ModelInfo> searchByExpression(
->>>>>>> feature/issue-1612-Elastic-Search
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
