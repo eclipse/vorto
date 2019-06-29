@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.eclipse.vorto.model.ModelId;
 import org.springframework.security.core.Authentication;
 
 public interface IModelRepositoryFactory {
@@ -27,6 +28,10 @@ public interface IModelRepositoryFactory {
   IModelRepository getRepository(IUserContext userContext);
   
   IModelRepository getRepository(String tenant);
+  
+  IModelRepository getRepositoryByNamespace(String namespace);
+  
+  IModelRepository getRepositoryByModel(ModelId modelId);
 
   IModelRetrievalService getModelRetrievalService(Authentication user);
   
@@ -34,11 +39,11 @@ public interface IModelRepositoryFactory {
   
   IModelRetrievalService getModelRetrievalService();
 
-  IModelSearchService getModelSearchService(Authentication user);
-  
-  IModelSearchService getModelSearchService(IUserContext userContext);
-  
-  IModelSearchService getModelSearchService();
+//  IModelSearchService getModelSearchService(Authentication user);
+//  
+//  IModelSearchService getModelSearchService(IUserContext userContext);
+//  
+//  IModelSearchService getModelSearchService();
   
   IRepositoryManager getRepositoryManager(String tenant, Authentication user);
 }

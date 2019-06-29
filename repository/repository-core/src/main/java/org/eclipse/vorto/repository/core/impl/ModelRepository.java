@@ -76,6 +76,8 @@ import com.google.common.collect.Lists;
 public class ModelRepository extends AbstractRepositoryOperation implements IModelRepository,
   ApplicationEventPublisherAware {
 
+  private static final String VORTO_VISIBILITY = "vorto:visibility";
+
   private static final String VORTO_TAGS = "vorto:tags";
 
   private static final String VORTO_REFERENCES = "vorto:references";
@@ -190,6 +192,11 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     if (fileNode.hasProperty(VORTO_AUTHOR)) {
       resource.setAuthor(fileNode.getProperty(VORTO_AUTHOR).getString());
     }
+    if (fileNode.hasProperty(VORTO_VISIBILITY)) {
+      resource.setVisibility(fileNode.getProperty(VORTO_VISIBILITY).getString());
+    } else {
+      resource.setVisibility(VISIBILITY_PRIVATE);
+    }
 
     if (resource.getType() == ModelType.InformationModel) {
       resource
@@ -270,6 +277,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
           Node fileNode = folderNode.addNode(fileName, NT_FILE);
           fileNode.addMixin(VORTO_META);
           fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
+          fileNode.setProperty(VORTO_VISIBILITY, VISIBILITY_PRIVATE);
           fileNode.addMixin(MODE_ACCESS_CONTROLLABLE);
           folderNode.addMixin(MIX_LAST_MODIFIED);
           Node contentNode = fileNode.addNode(JCR_CONTENT, NT_RESOURCE);
@@ -536,8 +544,14 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     return model;
   }
 
+  @Override
   public ModelId updateState(ModelId modelId, String state) {
     return updateProperty(modelId, node -> node.setProperty(VORTO_STATE, state));
+  }
+  
+  @Override
+  public ModelId updateVisibility(ModelId modelId, String visibility) {
+    return updateProperty(modelId, node -> node.setProperty(VORTO_VISIBILITY, visibility));
   }
 
   private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
@@ -674,7 +688,8 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
             .createBinary(new ByteArrayInputStream(fileContent.getContent()));
         contentNode.setProperty(JCR_DATA, binary);
         session.save();
-
+        
+        eventPublisher.publishEvent(new AppEvent(this, getBasicInfo(modelId), userContext, EventType.MODEL_UPDATED));
         return null;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -830,6 +845,13 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
       } catch (AccessDeniedException e) {
         return true;
       }
+    });
+  }
+
+  @Override
+  public String getTenantId() {
+    return doInSession(session -> {
+      return session.getWorkspace().getName();
     });
   }
 }

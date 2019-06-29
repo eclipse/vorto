@@ -63,11 +63,10 @@ jobs:
       script:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
-        - echo "AWS_ACCESS_KEY_ID =" $AWS_ACCESS_KEY_ID
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
           mvn --fail-fast -q clean package -DskipTests -P checkstyle;
           mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-          else mvn -DskipTests --fail-fast -q clean package -P checkstyle;
+          else mvn --fail-fast -q clean package -P checkstyle;
           fi
 
       before_deploy:

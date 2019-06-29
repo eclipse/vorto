@@ -1482,6 +1482,28 @@ footer ul.quicklinks a {
     background-color: red;
 }
 
+.visibility {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    text-transform: capitalize
+}
+
+.visibility-public {
+	background-color: blue;
+}
+
+.visibility-private {
+	background-color: grey;
+}
+
 input[type=file]::-webkit-file-upload-button {
     color: #fff;
     border-color: #2d5e8d;
@@ -1844,6 +1866,14 @@ input[type=file]::-webkit-file-upload-button {
 
 .model-box.mp:hover {
     background: rgba(153, 153, 153, 0.1);
+}
+.visibilityIcon {
+    width: 13px;
+    height: 40px;
+    position: absolute;
+    right:0;
+	top:0;
+	border: 0px;
 }
 
 .invalid-input {

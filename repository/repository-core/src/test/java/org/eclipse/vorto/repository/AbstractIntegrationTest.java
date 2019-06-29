@@ -19,26 +19,24 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.impl.ModelRepositorySupervisor;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.core.indexing.IIndexingService;
-import org.eclipse.vorto.repository.core.indexing.IndexingSupervisor;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -49,6 +47,10 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.search.IIndexingService;
+import org.eclipse.vorto.repository.search.ISearchService;
+import org.eclipse.vorto.repository.search.IndexingEventListener;
+import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -110,6 +112,8 @@ public abstract class AbstractIntegrationTest {
 
   private Tenant playgroundTenant = playgroundTenant();
 
+  protected ISearchService searchService = null;
+  
   @Before
   public void beforeEach() throws Exception {
     when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
@@ -136,8 +140,8 @@ public abstract class AbstractIntegrationTest {
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
 
-    ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor();
-    IndexingSupervisor indexingSupervisor = new IndexingSupervisor(indexingService);
+    ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
+    IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
     
     Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
     listeners.add(supervisor);
@@ -168,11 +172,6 @@ public abstract class AbstractIntegrationTest {
       }
 
       @Override
-      public IModelSearchService getModelSearchService() {
-        return super.getModelSearchService(createUserContext("admin"));
-      }
-
-      @Override
       public IModelRepository getRepository(String tenantId) {
         return super.getRepository(createUserContext("admin", tenantId));
       }
@@ -184,6 +183,9 @@ public abstract class AbstractIntegrationTest {
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
     
     tenantUserService = new TenantUserService(tenantService, accountService);
+    
+    searchService = new SimpleSearchService(tenantService, repositoryFactory);
+    supervisor.setSearchService(searchService);
 
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -235,6 +237,16 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
+  protected ModelInfo releaseModel(ModelId modelId, IUserContext creator) throws WorkflowException {
+    workflow.start(modelId, creator);
+    
+    workflow.doAction(modelId, createUserContext("promoter"),
+        SimpleWorkflowModel.ACTION_RELEASE.getName());
+    
+    return workflow.doAction(modelId, createUserContext("reviewer"),
+        SimpleWorkflowModel.ACTION_APPROVE.getName());
+  }
+  
   protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
@@ -274,11 +286,12 @@ public abstract class AbstractIntegrationTest {
     UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
     UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
     UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
+    UserRole rolePublisher = new UserRole(Role.MODEL_PUBLISHER);
     UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
     UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
 
     Tenant playground = Tenant.newTenant("playground", "org.eclipse",
-        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
+        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings", "vorto.private.playground"));
 
     playground.addUser(createTenantUser("alex",
         Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
@@ -289,6 +302,7 @@ public abstract class AbstractIntegrationTest {
     playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
     playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
     playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
+    playground.addUser(createTenantUser("publisher", Sets.newHashSet(roleUser, rolePublisher)));
 
     return playground;
   }

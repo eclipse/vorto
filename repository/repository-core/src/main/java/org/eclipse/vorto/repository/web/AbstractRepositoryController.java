@@ -30,7 +30,6 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -57,7 +56,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   private static Logger logger = Logger.getLogger(AbstractRepositoryController.class);  
   
   @Autowired
-  private IModelRepositoryFactory modelRepositoryFactory;
+  protected IModelRepositoryFactory modelRepositoryFactory;
 
   protected static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -231,9 +230,9 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
-  public IModelSearchService getModelSearchService() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return modelRepositoryFactory.getModelSearchService(auth);
-  }
+//  public IModelSearchService getModelSearchService() {
+//    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//    return modelRepositoryFactory.getModelSearchService(auth);
+//  }
 
 }

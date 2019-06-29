@@ -12,9 +12,6 @@
 		{{model.id.name}}
 		<small>{{model.type}}</small>
 	</h2>
-	<div ng-if="errorLoading" class="row">
-		<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
-	</div>
 	<div ng-if="diagnostics != null && diagnostics.length > 0" class="row">
 		<div class="alert alert-danger" ng-repeat="diagnostic in diagnostics">
 			<span class="glyphicon glyphicon-remove invalid"></span>
@@ -42,13 +39,20 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
+			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS') && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
+				<button class="btn btn-default pull-left"  role="button"
+				    ng-click="makePublic(model)">
+					<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Publish</button>
+				<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+			
+			<div ng-show="canCreateModels">
 				<a class="btn btn-default pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && model.type === 'InformationModel' ">
+			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
 				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
@@ -132,6 +136,10 @@
 												<dd class="ng-binding">{{model.id.namespace}}</dd>
 												<dt>Version:</dt>
 												<dd class="ng-binding">{{model.id.version}}</dd>
+												<dt>Visibility:</dt>
+												<dd class="ng-binding">
+													<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
+                                                </dd>
 												<dt>Created By:</dt>
 												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>Created On:</dt>

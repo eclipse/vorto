@@ -38,9 +38,12 @@ Entity:
    'vortolang' lang=VortoLangVersion
    'namespace' namespace = QualifiedName
    'version' version = VERSION
-   ('displayname' displayname=STRING)?      
-   ('description' description=STRING)? 
+   
+   (
+   (('displayname' displayname=STRING)?) & 
+   (('description' description=STRING)?)  &
    ('category' category=CATEGORY)?   
+   )
    (references += ModelReference)*	
   'entity' name = ID ('extends' superType = [Entity|QualifiedName])? '{'
   	 (properties += Property)*
@@ -51,9 +54,10 @@ Enum:
    'vortolang' lang=VortoLangVersion
    'namespace' namespace = QualifiedName
    'version' version = VERSION
-   ('displayname' displayname=STRING)?      
-   ('description' description=STRING)? 
-   ('category' category=CATEGORY)?      
+   
+   ((('displayname' displayname=STRING)?) & 
+   (('description' description=STRING)?) &
+   ('category' category=CATEGORY)?)     
    (references += ModelReference)*	
 	'enum' name = ID '{'
 		( enums += EnumLiteral (',' enums += EnumLiteral)* )?

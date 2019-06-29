@@ -1,8 +1,9 @@
 repositoryControllers.controller('DetailsController', 
     ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
-     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog',
+     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 
+     'TenantService', 'confirmPublish',
     function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog) {
+        $timeout, $window, $timeout, openCreateModelDialog, TenantService, confirmPublish) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -211,6 +212,18 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferences();
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
+					
+					var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
+					promise.then(
+						function(namespaces) {
+							for (entry of namespaces) {
+								if (entry.namespace === $scope.model.id.namespace) {
+									$scope.canCreateModels = true;
+									return;
+								}
+							}
+						$scope.canCreateModels = false;
+					});
 					
 					if ($rootScope.authenticated) {
 						$scope.getUserPolicy();
@@ -813,6 +826,28 @@ repositoryControllers.controller('DetailsController',
 		
 		$scope.isEditingVisible = function(model) {
 			return $scope.permission !== 'READ' && !model.released;
+		};
+		
+		$scope.hasOfficialPrefix = function(model) {
+			return !model.id.namespace.startsWith($rootScope.privateNamespacePrefix);
+		};
+		
+		$scope.makePublic = function(model) {
+			var dialog = confirmPublish($scope);
+			
+			dialog.setConfirmCallback(function() {
+	            $http.post('./rest/models/' + model.id.prettyFormat + '/makePublic')
+	                .then(function(result) {
+	                	$timeout(function () {
+							$window.location.reload();
+						}, 250);
+	                }, function(reason) {
+	                    // TODO : Show error on window
+	                	console.log(JSON.stringify(reason));
+	                });
+        	});
+        	
+        	dialog.run();
 		};
 	}
 ]);

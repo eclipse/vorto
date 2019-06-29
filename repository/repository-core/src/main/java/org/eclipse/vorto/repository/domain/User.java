@@ -58,8 +58,7 @@ public class User {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
-  @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true,
-      mappedBy = "user")
+  @OneToMany(orphanRemoval = true, mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
 
   @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true,

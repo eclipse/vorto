@@ -26,7 +26,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
-import org.eclipse.vorto.repository.core.indexing.IndexingSupervisor;
+import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -126,7 +126,7 @@ public class IndexingTest extends AbstractIntegrationTest {
         Mockito.mock(INamespaceRepository.class), 
         Mockito.mock(IUserAccountService.class));
     
-    IndexingSupervisor indexingSupervisor = new IndexingSupervisor(indexingService);
+    IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
     Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
     listeners.add(indexingSupervisor);
     

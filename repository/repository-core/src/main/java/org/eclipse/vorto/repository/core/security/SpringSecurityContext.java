@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.core.security;
 
 import java.util.Set;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.UserRole;
@@ -67,7 +68,7 @@ public class SpringSecurityContext implements SecurityContext {
     }
 
     // grant non-members of the tenant (including anonymous users) access to models
-    if (rolesInTenant.size() < 1 && "ANONYMOUS".equals(principalName)) {
+    if (IModelPolicyManager.ANONYMOUS_ACCESS_POLICY.equals(principalName)) {
       return true;
     }
 

@@ -11,9 +11,7 @@ pipeline {
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-elastic-search-token', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    sh 'mvn -Dserver.config.skipSslVerification=true -Dhttp.proxyUser=$PROXY_USER -Dhttp.proxyPassword=$PROXY_PWD -Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Daws.accessKeyId=$AWS_ACCESS_KEY_ID -Daws.secretKey=$AWS_SECRET_ACCESS_KEY -P coverage clean install'
-                }
+					sh 'mvn -P coverage clean install'
             }
         }
       }
@@ -113,24 +111,10 @@ pipeline {
                 }
                 // push docker containers
                 sh "docker push eclipsevorto/vorto-repo:${env.BRANCH_NAME}"
-                // run ansible
-                //dir('ansible') {
-                //  git(branch: 'master',
-                  //    credentialsId: 'eclipsevorto-jenkins',
-                  //    url: 'https://github.com/bsinno/vorto-ansible.git')
-                  //    ansiblePlaybook(
-                  //        playbook: 'deploy_eclipse.yml'
-                  //        )
-                  //}
               }
             }
         }
       }
-      // post {
-      //   always {
-      //     cleanWs(patterns: [[pattern: '.repository', type: 'EXCLUDE']])
-      //   }
-      // }
     }
 }
 

@@ -31,6 +31,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
+		
 
 		<!-- Spring Boot dependencies -->
 		<dependency>
@@ -101,6 +103,12 @@
 		    <version>deb7941e85</version>
 		</dependency>
 		<!-- AWS Elastic Search configuration (end) -->
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-elasticsearch</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 	</dependencies>
 

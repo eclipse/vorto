@@ -12,9 +12,8 @@
  */
 package org.eclipse.vorto.repository.web.admin;
 
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.indexing.IIndexingService;
-import org.eclipse.vorto.repository.core.indexing.IndexingResult;
+import org.eclipse.vorto.repository.search.IIndexingService;
+import org.eclipse.vorto.repository.search.IndexingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +28,10 @@ public class IndexingController {
   @Autowired
   private IIndexingService indexingServices;
   
-  @Autowired
-  private IModelRepositoryFactory repositoryFactory;
-  
   @RequestMapping(value = "/rest/reindex", method = RequestMethod.POST)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<IndexingResult> reindexModels() {
-    IndexingResult result = indexingServices.reindexAllModels(repositoryFactory.getModelSearchService().search(""));
+    IndexingResult result = indexingServices.reindexAllModels();
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
   

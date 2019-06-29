@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
@@ -182,7 +183,7 @@ public abstract class AbstractIntegrationTest {
   
   public void setPublic(String modelId) throws Exception {
     PolicyEntry publicPolicyEntry = new PolicyEntry();
-    publicPolicyEntry.setPrincipalId("ANONYMOUS");
+    publicPolicyEntry.setPrincipalId(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY);
     publicPolicyEntry.setPermission(Permission.READ);
     publicPolicyEntry.setPrincipalType(PrincipalType.User);
     

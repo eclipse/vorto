@@ -163,9 +163,9 @@ repositoryControllers.controller("createOrUpdateTenantController",
                 if ($scope.tenant.namespaces.length == 1) {
                 	$scope.tenant.defaultNamespace = $scope.tenant.namespaces[0]; 
                 }
-				$scope.tenant.admins.push($rootScope.displayName);
+				$scope.tenant.admins.push($rootScope.user);
 			}
-			$scope.tenant.authenticationProvider="GITHUB";
+			$scope.tenant.authenticationProvider=$rootScope.context.loginType;
             $http.put("./rest/tenants/" + $scope.tenant.tenantId, {
                 "tenantAdmins" : $scope.tenant.admins,
                 "authenticationProvider" : $scope.tenant.authenticationProvider,
@@ -188,7 +188,7 @@ repositoryControllers.controller("createOrUpdateTenantController",
    			var result           = '';
    			var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 			var charactersLength = characters.length;
-			for ( var i = 0; i < 10; i++ ) {
+			for ( var i = 0; i < 20; i++ ) {
 				result += characters.charAt(Math.floor(Math.random() * charactersLength));
 			}
    			return result;

@@ -18,27 +18,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.core.indexing.IIndexingService;
-import org.eclipse.vorto.repository.core.indexing.IndexedModelInfo;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
-import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,38 +46,13 @@ import io.swagger.annotations.ApiResponses;
 @RestController("modelSearchController")
 @RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
-  
+
   @Autowired
-  private IIndexingService indexingService;
+  private ISearchService searchService;
   
   @Autowired
   private IUserAccountService userAccountService;
-
-  @RequestMapping(value = "/indexedModels", method = RequestMethod.GET,
-      produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public List<IndexedModelInfo> searchIndex(
-      @ApiParam(value = "a free-text search expression", required = true) @RequestParam("expression") String expression) 
-              throws UnsupportedEncodingException {
-    
-    IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
-    
-    return indexingService.search(getTenants(user), URLDecoder.decode(expression, "utf-8"));
-  }
   
-  private Optional<Collection<String>> getTenants(IUserContext user) {
-    if (user.isAnonymous()) {
-      return Optional.of(Collections.emptyList());
-    }
-    
-    if (user.isSysAdmin()) {
-      return Optional.empty();
-    }
-    
-    return Optional.of(userAccountService.getTenantsOfUser(user.getUsername()).stream()
-        .map(Tenant::getTenantId).collect(Collectors.toList()));
-  }
-
   @ApiOperation(value = "Finds models by free-text search expressions",
 		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
 		  		+ "* Please note that this search works on the model's 'displayname' or 'name' and NOT on the 'namespace' or"
@@ -97,33 +66,42 @@ public class ModelSearchController extends AbstractRepositoryController {
           @ApiResponse(code = 400, message = "Malformed search expression")})
   @RequestMapping(value = "/models", method = RequestMethod.GET,
 	      produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public List<ModelInfoDto> searchByExpression(
+  public List<ModelInfo> searchByExpression(
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
+    
+    IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    
+    List<ModelInfo> result = searchService.search(getTenants(user),URLDecoder.decode(expression, "utf-8"));
 
-    Map<String, List<ModelInfo>> modelResourcesMap =
-        getModelSearchService().search(URLDecoder.decode(expression, "utf-8"));
-
-    List<ModelInfoDto> modelResources = concatenateAllResults(modelResourcesMap);
-
-    return modelResources.stream().sorted(new Comparator<ModelInfo>() {
+    return result.stream().sorted(new Comparator<ModelInfo>() {
       public int compare(ModelInfo o1, ModelInfo o2) {
         return o1.getCreationDate().after(o2.getCreationDate()) ? -1 : +1;
       }
     }).collect(Collectors.toList());
   }
+  
+  private Optional<Collection<String>> getTenants(IUserContext user) {
+    if (user.isAnonymous()) {
+      return Optional.of(Collections.emptyList());
+    }
 
-  private List<ModelInfoDto> concatenateAllResults(Map<String, List<ModelInfo>> modelResourcesMap) {
-    List<ModelInfoDto> result = Lists.newArrayList();
+    if (user.isSysAdmin()) {
+      return Optional.empty();
+    }
 
-    modelResourcesMap.forEach((tenantId, modelInfos) -> {
-      result.addAll(
-          modelInfos.stream().map(modelInfo -> ModelDtoFactory.createDto(tenantId, modelInfo))
-              .collect(Collectors.toList()));
-    });
-
-    return result;
+    return Optional.of(userAccountService.getTenantsOfUser(user.getUsername()).stream()
+        .map(Tenant::getTenantId).collect(Collectors.toList()));
   }
+
+  public ISearchService getSearchService() {
+    return searchService;
+  }
+
+  public void setSearchService(ISearchService searchService) {
+    this.searchService = searchService;
+  }
+  
+  
 }

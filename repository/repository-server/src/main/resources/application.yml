@@ -7,7 +7,6 @@ server:
     authenticatedSearchMode: false
     generatorUser: generator
     generatorPassword: 123
-    skipSslVerification: false
 
 spring:
   jackson.serialization.write-dates-as-timestamps: false
@@ -51,7 +50,7 @@ eidp:
       clientId: ${eidp_clientid}
       clientSecret: ${eidp_clientSecret}
       accessTokenUri: https://identity.bosch.com/connect/token
-      userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
+      userAuthorizationUri: https://identity.bosch.com/connect/authorize
       clientAuthenticationScheme: form
       resource: https://vorto.eclipse.org
       scope:
@@ -59,8 +58,9 @@ eidp:
         - email
         - profile
     resource:
-      userInfoUri: https://accounts.bosch.com/adfs/userinfo
-      logoutRedirectUrl:
+      logoutEndpointUrl: https://identity.bosch.com/connect/endsession
+      userInfoUri: https://identity.bosch.com/connect/userinfo
+      logoutRedirectUrl: 
       preferTokenInfo: true
 
 mail:

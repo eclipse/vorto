@@ -19,6 +19,7 @@
 	<modules>
 		<module>repository-api</module>
 		<module>repository-core</module>
+		<module>repository-elasticsearch</module>
 		<module>repository-java-client</module>
 		<module>repository-server</module>
 		<module>repository-server-config</module>

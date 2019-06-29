@@ -30,6 +30,7 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
 
     DefaultResolver resolver = new DefaultResolver();
     resolver.setRepositoryFactory(repositoryFactory);
+    resolver.setSearchService(searchService);
     assertEquals(new ModelId("ColorLightIM", "com.mycompany", "1.0.0"),
         resolver.resolve(new BluetoothQuery("4810")));
 

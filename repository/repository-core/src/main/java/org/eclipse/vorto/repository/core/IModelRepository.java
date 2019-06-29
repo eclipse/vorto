@@ -24,7 +24,10 @@ import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
  *
  */
 public interface IModelRepository {
-	
+  
+    public static final String VISIBILITY_PRIVATE = "private";
+    public static final String VISIBILITY_PUBLIC = "public";
+  
 	/**
 	 * Searches model resources for the given expression
 	 * @param queryExpression
@@ -117,6 +120,15 @@ public interface IModelRepository {
     ModelId updateState(ModelId modelId, String state);
     
     /**
+     * Updates the visibility of the model
+     * 
+     * @param modelId the model Id
+     * @param visibility the visibility of the model
+     * @return
+     */
+    ModelId updateVisibility(ModelId modelId, String visibility);
+    
+    /**
      * adds the given file content to the model
      * @param id
      * @param fileContent
@@ -183,4 +195,9 @@ public interface IModelRepository {
 	 */
 	boolean exists(ModelId modelId);
 
+	/**
+	 * 
+	 * @return
+	 */
+	String getTenantId();
 }

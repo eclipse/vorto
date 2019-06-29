@@ -81,7 +81,13 @@
 							<div ng-if="model.type === 'InformationModel'" class="model-box im">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
 					                <div class="inner">
-					                  <span class="model-name">{{model.id.name}}</span>
+									  <span class="model-name">{{model.id.name}}</span>
+									  <div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  <i class="fa fa-globe" aria-hidden="true"></i>
+                                      </div>
+                                      <div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      <i class="fa fa-lock" aria-hidden="true"></i>
+                                      </div>
 					                  <small class="namespace">{{model.id.namespace}}</small>
 					                  <p class="desc">{{model.description | limitTo : 80}}</p>
 					                  <span class="state state-{{model.state}}">{{model.state}}</span>
@@ -98,7 +104,13 @@
               				<div ng-if="model.type === 'Functionblock'" class="model-box fb">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
@@ -112,7 +124,13 @@
               				<div ng-if="model.type === 'Datatype'" class="model-box dt">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
@@ -126,10 +144,17 @@
               				<div ng-if="model.type === 'Mapping'" class="model-box mp">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
+                  						
                 					</div>
 					                <div class="model-box-footer">
 					                   <small class="type"><i class="fa fa-exchange" aria-hidden="true"></i></small>
