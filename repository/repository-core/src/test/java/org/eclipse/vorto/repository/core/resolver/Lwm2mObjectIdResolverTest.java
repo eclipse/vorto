@@ -30,6 +30,8 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 
     DefaultResolver lwm2mResolver = new DefaultResolver();
     lwm2mResolver.setRepositoryFactory(repositoryFactory);
+    lwm2mResolver.setSearchService(searchService);
+
     assertEquals(new ModelId("ColorLight", "com.mycompany.fb", "1.0.0"),
         lwm2mResolver.resolve(new LWM2MQuery("2")));
 
@@ -44,6 +46,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 
     DefaultResolver lwm2mResolver = new DefaultResolver();
     lwm2mResolver.setRepositoryFactory(repositoryFactory);
+    lwm2mResolver.setSearchService(searchService);
     assertNull(lwm2mResolver.resolve(new LWM2MQuery("3")));
   }
 }

@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -26,6 +27,7 @@ import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IDiagnostics;
@@ -33,7 +35,6 @@ import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
@@ -54,12 +55,14 @@ import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component("modelRepositoryFactory")
-public class ModelRepositoryFactory implements IModelRepositoryFactory {
+public class ModelRepositoryFactory implements IModelRepositoryFactory, ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
@@ -83,6 +86,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   @Autowired
   private TenantService tenantService;
+  
+  private ApplicationEventPublisher eventPublisher = null;
 
   private Repository repository;
 
@@ -129,6 +134,10 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     }
   }
   
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.eventPublisher = applicationEventPublisher;
+  }
+  
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
     return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
@@ -150,26 +159,26 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     });
   }
   
-  @Override
-  public IModelSearchService getModelSearchService(Authentication user) {
-    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, user);
-    });
-  }
-
-  @Override
-  public IModelSearchService getModelSearchService(IUserContext userContext) {
-    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, userContext.getAuthentication());
-    });
-  }
-
-  @Override
-  public IModelSearchService getModelSearchService() {
-    return new ModelSearchService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
-    });
-  }
+//  @Override
+//  public IModelSearchService getModelSearchService(Authentication user) {
+//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
+//      return getRepository(tenant, user);
+//    });
+//  }
+//
+//  @Override
+//  public IModelSearchService getModelSearchService(IUserContext userContext) {
+//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
+//      return getRepository(tenant, userContext.getAuthentication());
+//    });
+//  }
+//
+//  @Override
+//  public IModelSearchService getModelSearchService() {
+//    return new ModelSearchService(tenantsSupplier, (tenant) -> {
+//      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
+//    });
+//  }
   
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
@@ -203,7 +212,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user));
 
     modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
-
+    modelRepository.setApplicationEventPublisher(eventPublisher);
+    
     return modelRepository;
   }
 
@@ -262,7 +272,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
           e);
     }
     
-    workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants);
+    workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants.toArray());
     
     return new RepositoryConfiguration(editor, repoConfig.getName());
   }
@@ -297,4 +307,17 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     return tenantWorkspaces;
   }
 
+  @Override
+  public IModelRepository getRepositoryByNamespace(String namespace) {
+    Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
+    if (tenant.isPresent()) {
+      return this.getRepository(tenant.get().getTenantId());
+    }
+    return null;
+  }
+
+  @Override
+  public IModelRepository getRepositoryByModel(ModelId modelId) {
+    return getRepositoryByNamespace(modelId.getNamespace());
+  }
 }

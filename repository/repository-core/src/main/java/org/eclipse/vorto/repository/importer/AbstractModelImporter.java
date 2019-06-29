@@ -38,6 +38,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -280,7 +281,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
           IModelRepository modelRepository =
               modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
           ModelInfo importedModel = modelRepository.save(resource.getId(),
-              ((ModelResource) resource).toDSL(), createFileName(resource), user);
+              ((ModelResource) resource).toDSL(), createFileName(resource), UserContext.user(user.getAuthentication(), tenant.get().getTenantId()));
           savedModels.add(importedModel);
           postProcessImportedModel(importedModel,
               new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
@@ -288,7 +289,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
           throw new ModelImporterException("User not authorized in tenant ");
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error("Problem importing model", e);
         throw new ModelImporterException("Problem importing model", e);
       }
     });

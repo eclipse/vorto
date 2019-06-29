@@ -10,24 +10,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.search;
 
-import java.util.List;
-import java.util.Map;
+public class IndexingException extends RuntimeException {
 
-/**
- * Provides model retrieval across tenants
- * 
- * @author ERM1SGP
- *
- */
-public interface IModelSearchService {
-  
   /**
    * 
-   * @param expression
-   * @return a map whose string is the tenantId where the model list comes from
    */
-  Map<String, List<ModelInfo>> search(String expression); 
-  
+  private static final long serialVersionUID = 5669367995036425070L;
+
+  public IndexingException(String arg0, Throwable arg1) {
+    super(arg0, arg1);
+  }
 }

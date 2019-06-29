@@ -13,6 +13,8 @@
 package org.eclipse.vorto.repository;
 
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,14 +25,13 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.impl.ModelRepositorySupervisor;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -46,6 +47,10 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.search.IIndexingService;
+import org.eclipse.vorto.repository.search.ISearchService;
+import org.eclipse.vorto.repository.search.IndexingEventListener;
+import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -64,6 +69,7 @@ import org.mockito.MockitoAnnotations;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -97,6 +103,8 @@ public abstract class AbstractIntegrationTest {
   protected ModelRepositoryFactory repositoryFactory;
 
   protected TenantService tenantService = Mockito.mock(TenantService.class);
+  
+  protected IIndexingService indexingService = Mockito.mock(IIndexingService.class);
 
   protected TenantUserService tenantUserService = null;
   
@@ -104,6 +112,8 @@ public abstract class AbstractIntegrationTest {
 
   private Tenant playgroundTenant = playgroundTenant();
 
+  protected ISearchService searchService = null;
+  
   @Before
   public void beforeEach() throws Exception {
     when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
@@ -130,12 +140,19 @@ public abstract class AbstractIntegrationTest {
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
 
-    ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor();
-
+    ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
+    IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
+    
+    Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
+    listeners.add(supervisor);
+    listeners.add(indexingSupervisor);
+    
+    ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
+    
     accountService = new DefaultUserAccountService();
     accountService.setNotificationService(notificationService);
     accountService.setUserRepository(userRepository);
-    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
+    accountService.setApplicationEventPublisher(eventPublisher);
     accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
     accountService.setTenantRepo(tenantRepo);
     
@@ -155,21 +172,20 @@ public abstract class AbstractIntegrationTest {
       }
 
       @Override
-      public IModelSearchService getModelSearchService() {
-        return super.getModelSearchService(createUserContext("admin"));
-      }
-
-      @Override
       public IModelRepository getRepository(String tenantId) {
         return super.getRepository(createUserContext("admin", tenantId));
       }
     };
+    repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();
 
     supervisor.setRepositoryFactory(repositoryFactory);
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
     
     tenantUserService = new TenantUserService(tenantService, accountService);
+    
+    searchService = new SimpleSearchService(tenantService, repositoryFactory);
+    supervisor.setSearchService(searchService);
 
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -265,7 +281,7 @@ public abstract class AbstractIntegrationTest {
     return UserContext.user(auth, tenantId);
   }
 
-  private Tenant playgroundTenant() {
+  protected Tenant playgroundTenant() {
     UserRole roleUser = new UserRole(Role.USER);
     UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
     UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
@@ -309,18 +325,20 @@ public abstract class AbstractIntegrationTest {
         .findAny().get();
   }
 
-  private class MockAppEventPublisher implements ApplicationEventPublisher {
-    private ModelRepositorySupervisor supervisor;
+  protected class MockAppEventPublisher implements ApplicationEventPublisher {
+    private Collection<ApplicationListener<AppEvent>> listeners;
 
-    public MockAppEventPublisher(ModelRepositorySupervisor supervisor) {
-      this.supervisor = supervisor;
+    public MockAppEventPublisher(Collection<ApplicationListener<AppEvent>> listeners) {
+      this.listeners = listeners;
     }
 
     @Override
     public void publishEvent(ApplicationEvent event) {
       if (event instanceof AppEvent) {
         AppEvent appEvent = (AppEvent) event;
-        supervisor.onApplicationEvent(appEvent);
+        for(ApplicationListener<AppEvent> listener : listeners) {
+          listener.onApplicationEvent(appEvent);
+        }
       }
     }
 
