@@ -160,7 +160,7 @@ public interface IModelRepository {
 	 * @param modelId
 	 * @return list of attachments of the given model
 	 */
-	List<Attachment> getAttachments(ModelId modelId) throws NotAuthorizedException;;
+	List<Attachment> getAttachments(ModelId modelId) throws NotAuthorizedException;
 	
 	/**
 	 * Gets a list of attachments having the given tag 
@@ -168,7 +168,7 @@ public interface IModelRepository {
 	 * @param attachmentTag
 	 * @return
 	 */
-	List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag) throws NotAuthorizedException;;
+	List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag) throws NotAuthorizedException;
 	
 	/**
 	 * Gets the content of the attachment
@@ -177,7 +177,7 @@ public interface IModelRepository {
 	 * @param fileName the filename of the attachment
 	 * @return
 	 */
-	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName) throws NotAuthorizedException;;
+	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName) throws NotAuthorizedException;
 	
 	/**
 	 * Deletes the attachment
@@ -186,7 +186,7 @@ public interface IModelRepository {
 	 * @param fileName the filename of the attachment
 	 * @return
 	 */
-	boolean deleteAttachment(ModelId modelId, String fileName) throws NotAuthorizedException;;
+	boolean deleteAttachment(ModelId modelId, String fileName) throws NotAuthorizedException;
 	
 	/**
 	 * Checks if the given model ID exists in the repository
@@ -195,4 +195,9 @@ public interface IModelRepository {
 	 */
 	boolean exists(ModelId modelId);
 
+	/**
+	 * 
+	 * @return
+	 */
+	String getTenantId();
 }

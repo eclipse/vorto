@@ -16,17 +16,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
-import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -41,6 +40,9 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
 
+  @Autowired
+  private ISearchService searchService;
+  
   @ApiOperation(value = "Finds models by free-text search expressions",
 		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
 		  		+ "* Please note that this search works on the model's 'displayname' or 'name' and NOT on the 'namespace' or"
@@ -54,32 +56,27 @@ public class ModelSearchController extends AbstractRepositoryController {
           @ApiResponse(code = 400, message = "Malformed search expression")})
   @RequestMapping(value = "/models", method = RequestMethod.GET,
 	      produces = "application/json")
-  public List<ModelInfoDto> searchByExpression(
+  public List<ModelInfo> searchByExpression(
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
+        
+    List<ModelInfo> result = searchService.search(Optional.empty(),URLDecoder.decode(expression, "utf-8"));
 
-    Map<String, List<ModelInfo>> modelResourcesMap =
-        getModelSearchService().search(URLDecoder.decode(expression, "utf-8"));
-
-    List<ModelInfoDto> modelResources = concatenateAllResults(modelResourcesMap);
-
-    return modelResources.stream().sorted(new Comparator<ModelInfo>() {
+    return result.stream().sorted(new Comparator<ModelInfo>() {
       public int compare(ModelInfo o1, ModelInfo o2) {
         return o1.getCreationDate().after(o2.getCreationDate()) ? -1 : +1;
       }
     }).collect(Collectors.toList());
   }
-
-  private List<ModelInfoDto> concatenateAllResults(Map<String, List<ModelInfo>> modelResourcesMap) {
-    List<ModelInfoDto> result = Lists.newArrayList();
-
-    modelResourcesMap.forEach((tenantId, modelInfos) -> {
-      result.addAll(
-          modelInfos.stream().map(modelInfo -> ModelDtoFactory.createDto(tenantId, modelInfo))
-              .collect(Collectors.toList()));
-    });
-
-    return result;
+   
+  public ISearchService getSearchService() {
+    return searchService;
   }
+
+  public void setSearchService(ISearchService searchService) {
+    this.searchService = searchService;
+  }
+  
+  
 }

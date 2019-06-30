@@ -48,6 +48,14 @@
 				</form>
 				</br>
 				<hr>
+				<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
+				<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
+				<h3>Reindex</h3>
+				<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
+				<a ng-click="reindex()" class="btn btn-primary" ng-disabled="isReindexing">
+					<i ng-show="isReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Reindex</a>
+				</br>
+				<hr>
 				<h3>Backup</h3>
 				<p>Download the entire repository content (for backup).</p>
 				<a ng-href="rest/{{tenant}}/backups" class="btn btn-primary">

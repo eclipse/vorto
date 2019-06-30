@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.web.diagnostics;
+package org.eclipse.vorto.repository.web.admin;
 
 import java.util.Collection;
 import org.eclipse.vorto.repository.core.Diagnostic;
@@ -35,7 +35,7 @@ public class DiagnosticsController {
 
   @Autowired
   private ITenantService tenantService;
-
+  
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public Collection<Diagnostic> diagnose() {

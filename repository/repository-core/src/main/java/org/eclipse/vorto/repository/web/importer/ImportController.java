@@ -26,7 +26,6 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
-import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;

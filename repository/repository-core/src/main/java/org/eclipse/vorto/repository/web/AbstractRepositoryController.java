@@ -30,7 +30,6 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -57,7 +56,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   private static Logger logger = Logger.getLogger(AbstractRepositoryController.class);  
   
   @Autowired
-  private IModelRepositoryFactory modelRepositoryFactory;
+  protected IModelRepositoryFactory modelRepositoryFactory;
 
   protected static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -181,14 +180,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     }
   }
 
-  protected IModelWorkspace getWorkspaceForModel(final String tenantId, final ModelId modelId) {
-    List<ModelInfo> allModels = getModelWithAllDependencies(tenantId, modelId);
+  protected IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
+    List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
     DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
     allModels = dm.getSorted();
 
     ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
     for (ModelInfo model : allModels) {
-      FileContent modelContent = getModelRepository(tenantId)
+      FileContent modelContent = getModelRepository(model.getId())
           .getFileContent(model.getId(), Optional.of(model.getFileName())).get();
       workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
     }
@@ -197,14 +196,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   }
 
 
-  private List<ModelInfo> getModelWithAllDependencies(String tenantId, ModelId modelId) {
+  private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
     List<ModelInfo> modelInfos = new ArrayList<>();
 
-    ModelInfo modelResource = getModelRepository(tenantId).getById(modelId);
+    ModelInfo modelResource = getModelRepository(modelId).getById(modelId);
     modelInfos.add(modelResource);
 
     for (ModelId reference : modelResource.getReferences()) {
-      modelInfos.addAll(getModelWithAllDependencies(tenantId, reference));
+      modelInfos.addAll(getModelWithAllDependencies(reference));
     }
 
     return modelInfos;
@@ -216,6 +215,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   
   protected IModelRepository getModelRepository(String tenantId, Authentication auth) {
     return modelRepositoryFactory.getRepository(tenantId, auth);
+  }
+  
+  protected IModelRepository getModelRepository(ModelId modelId) {
+    return modelRepositoryFactory.getRepositoryByModel(modelId);
   }
   
   protected IModelRepository getModelRepository(String tenantId) {
@@ -231,9 +234,9 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
-  public IModelSearchService getModelSearchService() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return modelRepositoryFactory.getModelSearchService(auth);
-  }
+//  public IModelSearchService getModelSearchService() {
+//    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//    return modelRepositoryFactory.getModelSearchService(auth);
+//  }
 
 }

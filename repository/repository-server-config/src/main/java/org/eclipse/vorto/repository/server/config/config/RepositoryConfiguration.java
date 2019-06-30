@@ -12,10 +12,16 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.search.ISearchService;
+import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.sso.TokenUtils;
+import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
@@ -36,6 +42,12 @@ public class RepositoryConfiguration extends BaseConfiguration {
 
   @Value("${repo.configFile}")
   private String repositoryConfigFile = null;
+  
+  @Autowired
+  private ITenantService tenantService;
+  
+  @Autowired
+  private IModelRepositoryFactory repositoryFactory;
 
   @Bean
   public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
@@ -53,5 +65,11 @@ public class RepositoryConfiguration extends BaseConfiguration {
     } else {
       return TokenUtils.accessTokenProvider();
     }
+  }
+  
+  @Bean
+  @Profile(value = {"local","local-test", "int"})
+  public SimpleSearchService simpleSearch() {
+    return new SimpleSearchService(this.tenantService, this.repositoryFactory);
   }
 }

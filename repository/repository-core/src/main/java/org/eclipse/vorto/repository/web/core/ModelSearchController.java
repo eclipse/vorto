@@ -16,21 +16,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 
 /**
+ * Used by the model creation dialog to fetch all released models by a certain namespace.
+ * TODO: Extend API Search Service to support better search criteria, which would make this implemention obsolete!
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Api(value = "/search")
@@ -38,12 +39,15 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = "/rest/search")
 public class ModelSearchController extends AbstractRepositoryController {
 
+  @Autowired
+  private ISearchService searchService;
+  
   @RequestMapping(value = "/releases", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
   public Collection<ModelInfo> getReleasedModels(@RequestParam("type") String type,
       @RequestParam("namespace") String namespace) {
 
-    Collection<ModelInfo> result = reduce(getModelSearchService().search("namespace:" + namespace));
+    Collection<ModelInfo> result = searchService.search("namespace:" + namespace);
 
     result = result.stream()
         .filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
@@ -55,16 +59,6 @@ public class ModelSearchController extends AbstractRepositoryController {
       public int compare(ModelInfo model1, ModelInfo model2) {
         return model1.getId().getName().compareTo(model2.getId().getName());
       }
-    });
-
-    return result;
-  }
-  
-  private List<ModelInfo> reduce(Map<String, List<ModelInfo>> modelResourcesMap) {
-    List<ModelInfo> result = Lists.newArrayList();
-
-    modelResourcesMap.forEach((tenantId, modelInfos) -> {
-      result.addAll(modelInfos);
     });
 
     return result;

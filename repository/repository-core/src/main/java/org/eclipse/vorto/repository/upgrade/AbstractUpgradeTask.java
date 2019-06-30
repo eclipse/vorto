@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
-import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,9 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
-  protected IModelSearchService modelSearchService;
+  protected ISearchService modelSearchService;
 
-  public AbstractUpgradeTask(IModelSearchService modelSearchService) {
+  public AbstractUpgradeTask(ISearchService modelSearchService) {
     this.modelSearchService = modelSearchService;
   }
 
@@ -36,11 +36,11 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
     return Optional.empty();
   }
 
-  public IModelSearchService getModelSearchService() {
+  public ISearchService getModelSearchService() {
     return modelSearchService;
   }
 
-  public void setModelSearchService(IModelSearchService modelSearchService) {
+  public void setModelSearchService(ISearchService modelSearchService) {
     this.modelSearchService = modelSearchService;
   }
 

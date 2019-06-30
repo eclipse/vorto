@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -44,13 +42,11 @@ import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -111,10 +107,7 @@ public class ModelController extends AbstractRepositoryController {
       throw new ModelNotFoundException("Model does not exist", null);
     }
 
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
-
-    IModelWorkspace workspace = getWorkspaceForModel(tenantId, modelID);
+    IModelWorkspace workspace = getWorkspaceForModel(modelID);
 
     ModelContent result = new ModelContent();
     result.setRoot(modelID);
@@ -147,12 +140,9 @@ public class ModelController extends AbstractRepositoryController {
         getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey, Optional.empty());
 
     if (!mappingResource.isEmpty()) {
-
-      final String tenantId = getTenant(modelID).orElseThrow(
-          () -> new ModelNotFoundException("Tenant for model '" + modelID.getPrettyFormat() + "' doesn't exist", null));
       
       IModelWorkspace workspace =
-          getWorkspaceForModel(tenantId, mappingResource.get(0).getId());
+          getWorkspaceForModel(mappingResource.get(0).getId());
 
       ModelContent result = new ModelContent();
       result.setRoot(modelID);
@@ -254,12 +244,7 @@ public class ModelController extends AbstractRepositoryController {
   }
 
   private IModelRepository getRepo(ModelId modelId) {
-    Optional<String> tenant = getTenant(modelId);
-    if (!tenant.isPresent()) {
-      throw new ModelNotFoundException("The tenant for '" + modelId + "' could not be found.");
-    }
-
-    return getModelRepository(tenant.get(), SecurityContextHolder.getContext().getAuthentication());
+    return modelRepositoryFactory.getRepositoryByModel(modelId);
   }
 
   private Optional<String> getTenant(ModelId modelId) {

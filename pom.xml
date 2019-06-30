@@ -154,6 +154,7 @@
 					<outputDirectory>xtend-gen</outputDirectory>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -162,6 +163,9 @@
 					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>UTF-8</encoding>
 					<inputEncoding>UTF-8</inputEncoding>
+					<excludes>
+						<exclude>**/AllTests.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>

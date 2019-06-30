@@ -102,6 +102,7 @@ public class ModelVisibilityService {
     }
     
     if (isPrivate(modelInfo)) {
+      logger.info("Changing visibility of model "+modelId.getPrettyFormat()+" to public.");
       // Add public visibility property
       repository.updateVisibility(modelId, IModelRepository.VISIBILITY_PUBLIC);
 
