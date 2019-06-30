@@ -69,7 +69,7 @@ public class RepositoryConfiguration extends BaseConfiguration {
   
   @Bean
   @Profile(value = {"local","local-test", "int"})
-  public ISearchService simpleSearch() {
+  public SimpleSearchService simpleSearch() {
     return new SimpleSearchService(this.tenantService, this.repositoryFactory);
   }
 }

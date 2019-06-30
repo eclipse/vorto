@@ -89,7 +89,7 @@ public class ElasticSearchConfiguration {
   
   @Bean
   @Profile(value = {"prod","local-docker"})
-  public ISearchService elasticSearch() {
+  public ElasticSearchService elasticSearch() {
     return new ElasticSearchService(client,repositoryFactory,tenantService);
   }
   
