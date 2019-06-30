@@ -83,6 +83,8 @@ class OperationResponseValidationTemplate implements ITemplate<Operation> {
 							«enumValidationTemplate.getContent(enum, invocationContext)»
 							«ENDIF»
 						«ENDIF»
+						«ELSE»
+						"type": "object"
 					«ENDIF»
 				«ENDIF»
 			}
