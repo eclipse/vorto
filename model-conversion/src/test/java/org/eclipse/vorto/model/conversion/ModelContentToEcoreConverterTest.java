@@ -202,28 +202,6 @@ public class ModelContentToEcoreConverterTest {
 
   }
 
-
-  @Test
-  public void testConvertFunctionblockWithPropertyMappings() {
-    final String targetPlatform = "testPlatform";
-    FunctionblockModel fbModel =
-        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
-            .statusProperty(ModelProperty.Builder("value", PrimitiveType.FLOAT)
-                .withStereotype("OBJECT", Collections.emptyMap(), targetPlatform).build())
-            .configurationProperty(ModelProperty.Builder("enable", PrimitiveType.BOOLEAN).build())
-            .withTargetPlatform(targetPlatform).build();
-
-    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
-
-    MappingModel model = (MappingModel) converter.convert(ModelContent.Builder(fbModel).build(),
-        Optional.of(targetPlatform));
-    assertEquals(targetPlatform, model.getTargetPlatform());
-    assertEquals(1, model.getRules().size());
-    assertEquals("OBJECT", ((StereoTypeTarget) model.getRules().get(0).getTarget()).getName());
-    assertTrue(model.getRules().get(0).getSources().get(0) instanceof StatusSource);
-    assertNotNull(((StatusSource)model.getRules().get(0).getSources().get(0)).getModel());
-  }
-
   @Test
   public void testConvertFunctionblockWithPropertyMappings() {
     final String targetPlatform = "testPlatform";
