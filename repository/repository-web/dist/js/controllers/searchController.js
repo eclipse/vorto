@@ -7,6 +7,7 @@ repositoryControllers.controller('SearchController',
     $scope.modelType = 'all';
     $scope.modelState = $rootScope.authenticated === true ? 'all' :'Released';
     $scope.onlyMyModels = "false";
+    $scope.onlyPublicModels = "false";
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
     $scope.isLoading = false;
@@ -26,7 +27,7 @@ repositoryControllers.controller('SearchController',
     	$scope.isLoading = true;
     	var filter = "";
     	       
-        if ($scope.modelState === 'all' && $scope.modelType === 'all' && $scope.onlyMyModels === false) {
+        if ($scope.modelState === 'all' && $scope.modelType === 'all' && $scope.onlyMyModels === false && $scope.onlyPublicModels === false) {
         	filter = $scope.queryFilter;
         } else {
         	if ($scope.modelType !== 'all') {
@@ -38,6 +39,10 @@ repositoryControllers.controller('SearchController',
         	
         	if ($scope.onlyMyModels === true) {
         		filter += "author:"+$rootScope.user+" ";
+        	}
+        	
+        	if ($scope.onlyPublicModels === true) {
+        		filter += "visibility:public";
         	}
         	
         	if ($scope.queryFilter !== "") {

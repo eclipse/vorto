@@ -1,5 +1,5 @@
-repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
-	function ($location, $rootScope, $scope, $http, $uibModal, $timeout ) {
+repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', 'TenantService',
+	function ($location, $rootScope, $scope, $http, $uibModal, $timeout, TenantService ) {
 		
 	$scope.saveSettings = function() {
 		 $http.put("./rest/accounts/" + $rootScope.user, $scope.user.email).success(

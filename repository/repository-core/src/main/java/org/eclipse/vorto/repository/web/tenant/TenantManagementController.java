@@ -125,7 +125,7 @@ public class TenantManagementController {
 
   @PreAuthorize("isAuthenticated()")
   @DeleteMapping(value = "/tenants/{tenantId:.+}", produces = "application/json")
-  public ResponseEntity<Boolean> removeTenant(@ApiParam(value = "The id of the tenant",
+  public ResponseEntity<Object> removeTenant(@ApiParam(value = "The id of the tenant",
       required = true) final @PathVariable String tenantId) {
 
     String tenantID = ControllerUtils.sanitize(tenantId);
@@ -140,12 +140,7 @@ public class TenantManagementController {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
 
-    try {
-      return new ResponseEntity<>(tenantService.deleteTenant(tenant, userContext), HttpStatus.OK);
-    } catch (Exception e) {
-      logger.error(e);
-      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return new ResponseEntity<>(tenantService.deleteTenant(tenant, userContext), HttpStatus.OK);
   }
 
   private boolean owner(Tenant tenant, Principal user) {

@@ -96,4 +96,5 @@ public interface ITenantService {
    * @return
    */
   boolean deleteTenant(Tenant tenant, IUserContext userContext);
+  
 }

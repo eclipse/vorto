@@ -103,22 +103,52 @@ repositoryControllers.controller("tenantManagementController",
                 $scope.getTenants();
                 $rootScope.init();
             });
-        }      
+        }  
         
-        $scope.deleteTenant = function(tenant) {
-        	var dialog = dialogConfirm($scope, "Are you sure you want to remove this namespace " + "?", ["Yes, Delete", "Cancel"]);
-        	
-        	dialog.setCallback("Yes, Delete", function() {
-        		$http.delete("./rest/tenants/" + tenant.tenantId)
-	                .then(function(result) {
-	                    $scope.getTenants();
-	                }, function(reason) {
-	                    $scope.getTenants();
-	                });
-        	});
-        	
-        	dialog.run();
-        };
+        $scope.openDeleteDialog = function (tenant) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope) {
+					$scope.hasPublicModels = false;
+					
+					$scope.delete = function() {
+						$http.delete("./rest/tenants/" + tenant.tenantId)
+	                	.then(function(result) {
+	                    	modalInstance.close();
+	                	}, function(reason) {
+	                    	modalInstance.close();
+	                	});
+					};
+					
+					$scope.getPublicModelsForTenant = function() {
+						$http.get("./rest/search/public?tenantId="+tenant.tenantId).success(
+                            function(data, status, headers, config) {
+                            	console.log(data);
+                                $scope.hasPublicModels = data.length > 0;
+                            }).error(function(data, status, headers, config) {
+                                console.log("Problem getting data from repository");
+                            });
+					};
+					
+					$scope.getPublicModelsForTenant();
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "deleteNamespace.html",
+				size: "lg",
+				resolve: {
+					tenant: function () {
+                        return tenant;
+                    }
+				}
+			});
+
+			modalInstance.result.finally(function(result) {
+                $scope.getTenants();
+            });
+		};    
     }
 ]);
 

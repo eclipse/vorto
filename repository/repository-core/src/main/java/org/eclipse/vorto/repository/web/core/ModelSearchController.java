@@ -63,4 +63,10 @@ public class ModelSearchController extends AbstractRepositoryController {
 
     return result;
   }
+  
+  @RequestMapping(value = "/public", method = RequestMethod.GET)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Collection<ModelInfo> getPublicModels(@RequestParam("tenantId") String tenantId) {
+    return getModelRepository(tenantId).search("visibility:public");
+  }
 }

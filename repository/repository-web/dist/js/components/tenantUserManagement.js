@@ -12,7 +12,7 @@ repositoryControllers.controller("tenantUserManagementController",
         };
         
         $scope.$on("USER_CONTEXT_UPDATED", function(evt, data) {
-            $scope.getTenants();
+           // $scope.getTenants();
         });
         
         $scope.getTenantUsers = function(tenantId) {
@@ -37,6 +37,7 @@ repositoryControllers.controller("tenantUserManagementController",
                 roleModelCreator : false,
                 roleModelPromoter : false,
                 roleModelReviewer : false,
+                roleModelPublisher : false,
                 roleUser : true,
                 roleAdmin : false
             };
