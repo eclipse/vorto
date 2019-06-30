@@ -14,12 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.plugin.generator.utils.javatemplates
 
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.ITemplate
 
@@ -41,8 +43,26 @@ class JavaClassFieldTemplate implements ITemplate<Property> {
 					«addFieldAnnotations(property)»
 					private «namespaceOfDatatype»«(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
 				«ENDIF»
+			«ELSEIF property.type instanceof DictionaryPropertyType»
+				«var DictionaryPropertyType dictionary = property.type as DictionaryPropertyType»
+				«addFieldAnnotations(property)»
+				«IF dictionary.keyType !== null && dictionary.valueType !== null»
+				private java.util.Map<«getPropertyType(dictionary.keyType)»,«getPropertyType(dictionary.valueType)»> «ValueMapper.normalize(property.name)»;
+				«ELSE»
+				private java.util.Map «ValueMapper.normalize(property.name)»;
+				«ENDIF»
 			«ENDIF»
 		'''
+	}
+	
+	def String getPropertyType(PropertyType propertyType) {
+		if (propertyType instanceof PrimitivePropertyType) {
+			return ValueMapper.mapSimpleDatatype((propertyType as PrimitivePropertyType).type as PrimitiveType);
+		} else if(propertyType instanceof ObjectPropertyType) {
+			return (propertyType as ObjectPropertyType).type.name.toFirstUpper
+		} else {
+			return "java.util.Map"
+		}
 	}
 	
 	protected def addFieldAnnotations(Property property) {

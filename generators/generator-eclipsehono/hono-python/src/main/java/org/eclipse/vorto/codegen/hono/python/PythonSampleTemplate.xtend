@@ -21,6 +21,7 @@ import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 
 class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 
@@ -175,7 +176,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 				«ELSE»
 					«prefix».«property.name» = 0
 				«ENDIF»
-			«ELSE»
+			«ELSEIF property.type instanceof ObjectPropertyType»
 				«var objectType = property.type as ObjectPropertyType»
 				«IF objectType.type instanceof Enum»
 					«prefix».«property.name» = "«(objectType.type as Enum).enums.get(0).name»"
@@ -190,6 +191,10 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 						«ENDFOR»
 					}
 				«ENDIF»
+			«ELSE» // property type is a dictionary type
+				«prefix».«property.name» = {
+					// add your dictionary object keys and values here
+				}
 			«ENDIF»
 		'''
 	}

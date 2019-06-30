@@ -49,7 +49,6 @@ public class RemoteImporter extends AbstractModelImporter {
   public RemoteImporter(ImporterPluginInfo info, String endpointUrl) {
     super(info.getFileType());
     this.info = info;
-    this.restTemplate = new RestTemplate();
     this.endpointUrl = endpointUrl;
   }
 
@@ -121,4 +120,13 @@ public class RemoteImporter extends AbstractModelImporter {
     return resources;
 
   }
+
+  public RestTemplate getRestTemplate() {
+    return restTemplate;
+  }
+
+  public void setRestTemplate(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+  
 }

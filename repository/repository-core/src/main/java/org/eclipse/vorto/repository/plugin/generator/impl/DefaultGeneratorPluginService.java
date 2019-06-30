@@ -66,12 +66,12 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
 
+  @Autowired
   private RestTemplate restTemplate = null;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGeneratorPluginService.class);
 
   public DefaultGeneratorPluginService() {
-    this.restTemplate = new RestTemplate();
   }
 
   public void registerPlugin(GeneratorPluginConfiguration plugin) {

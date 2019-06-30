@@ -20,6 +20,7 @@ import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip
 import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.plugin.utils.Utils
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo
 
 class ArduinoCodeGenerator implements ICodeGenerator {
 
@@ -69,17 +70,14 @@ class ArduinoCodeGenerator implements ICodeGenerator {
 		
 		return output
 	}
-		
-//	override getServiceKey() {
-//		return "arduinocodegenerator";
-//	}
-//	
-//	override getInfo() {
-//		return GeneratorInfo.basicInfo("Arduino","Generates Arduino C code that connects to Eclipse Hono via MQTT","Vorto Community").production();
-//	}
-	
+			
 	override getMeta() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		return GeneratorPluginInfo.Builder("arduinocodegenerator")
+        .withVendor("Eclipse Hono Team")
+        .withName("Eclipse Hono")
+        .withDescription("Generates Arduino C code that connects to Eclipse Hono via MQTT")
+        .withDocumentationUrl("https://www.eclipse.org/hono")
+        .build();
 	}
 
 }

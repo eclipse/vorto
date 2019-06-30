@@ -101,19 +101,11 @@ public class EclipseHonoJavaGenerator implements ICodeGenerator {
 
   @Override
   public GeneratorPluginInfo getMeta() {
-    // TODO Auto-generated method stub
-    return null;
+    return GeneratorPluginInfo.Builder("hono-java")
+        .withVendor("Eclipse Hono Team")
+        .withName("Eclipse Hono")
+        .withDescription("Creates Java code that sends telemetry data to Hono MQTT Connector.")
+        .withDocumentationUrl("https://www.eclipse.org/hono")
+        .build();
   }
-
-//  @Override
-//  public String getServiceKey() {
-//    return "hono-java";
-//  }
-//
-//  @Override
-//  public GeneratorInfo getInfo() {
-//    return GeneratorInfo.basicInfo("Eclipse Hono Java Generator",
-//        "Generates device java source code that integrates with Eclipse Hono and Eclipse Ditto.",
-//        "Eclipse Vorto Team");
-//  }
 }
