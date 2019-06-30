@@ -59,8 +59,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   private IUserAccountService userAccountService;
   
-  private IModelRepositoryFactory repositoryFactory;
-
   private ApplicationEventPublisher eventPublisher = null;
   
   @Value("${config.restrictTenant}")
