@@ -80,7 +80,7 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 							],
 							"body": {
 								"mode": "raw",
-								"raw": "«Strings.convertToJavaString(getJson(element).toString)»"
+								"raw": "«Strings.convertToJavaString(getJson(element).toString,true)»"
 							},
 							"description": "Provisions the «element.name» in the Bosch IoT Suite"
 						},
@@ -184,7 +184,7 @@ class ProvisionDeviceScriptTemplate implements IFileTemplate<InformationModel> {
 		} else if (propertyType.type === PrimitiveType.BYTE) {
 			return "\"\""
 		} else if (propertyType.type === PrimitiveType.DATETIME) {
-			return "2019-04-01T18:25:43-00:00"
+			return "\"2019-04-01T18:25:43-00:00\""
 		} else if (propertyType.type === PrimitiveType.DOUBLE) {
 			return 0.0
 		} else if (propertyType.type === PrimitiveType.FLOAT) {
