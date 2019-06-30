@@ -54,7 +54,7 @@ public class ObjectMapperFactory {
 
     return mapper;
   }
-  
+
   public static ObjectMapper getInstance() {
     return getInstance(null);
   }
@@ -68,10 +68,10 @@ public class ObjectMapperFactory {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.registerModule(module);
   }
-  
+
 
   @SuppressWarnings("serial")
-  public static class ModelMapDeserializer extends StdDeserializer<Map<Object,Object>> {
+  public static class ModelMapDeserializer extends StdDeserializer<Map<Object, Object>> {
 
     public ModelMapDeserializer() {
       this(null);
@@ -113,7 +113,7 @@ public class ObjectMapperFactory {
             deserialized.put(getModelId(childNode.get("id").get("prettyFormat").asText()), value);
           }
         }
-        
+
         if (deserialized.isEmpty()) {
           Iterator<String> fieldsIter = node.fieldNames();
           while (fieldsIter.hasNext()) {
@@ -121,7 +121,7 @@ public class ObjectMapperFactory {
             deserialized.put(field, node.get(field).asText());
           }
         }
-        
+
         return deserialized;
       } catch (IOException ioEx) {
         throw new RuntimeException(ioEx);
@@ -139,7 +139,7 @@ public class ObjectMapperFactory {
     }
 
   }
-  
+
 
   @SuppressWarnings("serial")
   public static class PropertyAttributeDeserializer extends StdDeserializer<IPropertyAttribute> {
@@ -169,8 +169,11 @@ public class ObjectMapperFactory {
       } else {
         EnumAttributeProperty enumAttribute = new EnumAttributeProperty();
         enumAttribute.setType(EnumAttributePropertyType.MEASUREMENT_UNIT);
-        ModelId parent = new ModelId(value.get("parent").get("name").asText(),value.get("parent").get("namespace").asText(),value.get("parent").get("version").asText());
-        EnumLiteral literal = new EnumLiteral(value.get("name").asText(), value.get("description").asText(), parent);
+        ModelId parent = new ModelId(value.get("parent").get("name").asText(),
+            value.get("parent").get("namespace").asText(),
+            value.get("parent").get("version").asText());
+        EnumLiteral literal =
+            new EnumLiteral(value.get("name").asText(), value.get("description").asText(), parent);
         enumAttribute.setValue(literal);
         return enumAttribute;
       }
@@ -194,14 +197,15 @@ public class ObjectMapperFactory {
     public IReferenceType deserialize(JsonParser parser, DeserializationContext context)
         throws IOException, JsonProcessingException {
 
-      try {
-        return parser.readValueAs(ModelId.class);
-      } catch (IOException ioEx) {
-        try {
-          return parser.readValueAs(PrimitiveType.class);
-        } catch (IOException ex) {
-          return parser.readValueAs(DictionaryType.class);
-        }
+      ObjectCodec oc = parser.getCodec();
+      JsonNode node = oc.readTree(parser);
+      if (node.has("type")) {
+        return oc.treeToValue(node, DictionaryType.class);
+      } else if (node.has("namespace")) {
+        return oc.treeToValue(node, ModelId.class);
+      } else {
+        return oc.treeToValue(node, PrimitiveType.class);
+
       }
     }
   }

@@ -51,7 +51,7 @@ The following code represents the Data Type Model DSL syntax.
     primitiveType : 'string' | 'int' | 'float' | 'boolean' | 'dateTime' |
         'double' | 'long' | 'short' | 'base64Binary' | 'byte' ;
 
-    complexPrimitiveType : 'Dictionary' ('[' type ',' type ']')?
+    complexPrimitiveType : 'dictionary' ('[' type ',' type ']')?
 
     presence : 'mandatory' | 'optional';
 
@@ -232,19 +232,19 @@ The following are the primitive types supported in Vorto
 
 #### Dictionary
 
-A *Dictionary* is a type that contains a *Key* and a *Value*. It is declared with the keyword `Dictionary`
+A *dictionary* is a type that contains a *key* and a *value*. It is declared with the keyword `dictionary`
 followed by an optional bracket (`[ .. ]`) if you wish to indicate the *type* of its *key* and *value*. The *type* can
-be a *primitive* type, an *Entity* type, an *Enum* or another *Dictionary*.
+be a *primitive* type, an *Entity* type, an *Enum* or another *dictionary*.
 
 **Example**
   
-    mandatory lookupTable as Dictionary[string, Color] "Lookup table conversion for color"
+    mandatory lookupTable as dictionary[string, Color] "Lookup table conversion for color"
 
-    mandatory lookupRGBTable as Dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
+    mandatory lookupRGBTable as dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
 
-    mandatory temperatureLabelConversion as Dictionary[int, string] "map of temperature to description"
+    mandatory temperatureLabelConversion as dictionary[int, string] "map of temperature to description"
 
-    mandatory noKeyAndValueTypeMap as Dictionary "example of a map with no key and value types"
+    mandatory noKeyAndValueTypeMap as dictionary "example of a map with no key and value types"
 
 #### Attributes
 

@@ -111,6 +111,11 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 					}
 				«ENDIF»
 			«ENDIF»
+			«ELSE»
+			"«property.name»": {
+			«IF !property.description.nullOrEmpty»"description": "«property.description»",«ENDIF»
+			"type": "object"
+			}
 		«ENDIF»
 		'''
 	

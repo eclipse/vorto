@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.Optional;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
@@ -31,6 +32,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.model.ConstraintType;
+import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -163,6 +165,41 @@ public class ModelContentToEcoreConverterTest {
             .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
     assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
     assertEquals(1, model.getFunctionblock().getConfiguration().getProperties().size());
+  }
+  
+  @Test
+  public void testConvertFunctionblockWithDictionaryTypeWithoutParameters() {
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", new DictionaryType(null, null)).build())
+            .build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel model =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
+            .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
+    assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
+    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0).getType() instanceof DictionaryPropertyType);
+  }
+  
+  @Test
+  public void testConvertFunctionblockWithDictionaryTypeWithPrimitiveParameters() {
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", new DictionaryType(PrimitiveType.STRING, PrimitiveType.INT)).build())
+            .build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel model =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
+            .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
+    assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
+    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0).getType() instanceof DictionaryPropertyType);
+    assertNotNull(((DictionaryPropertyType)model.getFunctionblock().getStatus().getProperties().get(0).getType()).getKeyType() instanceof PrimitivePropertyType);
+    assertNotNull(((DictionaryPropertyType)model.getFunctionblock().getStatus().getProperties().get(0).getType()).getValueType() instanceof PrimitivePropertyType);
+
   }
 
   @Test

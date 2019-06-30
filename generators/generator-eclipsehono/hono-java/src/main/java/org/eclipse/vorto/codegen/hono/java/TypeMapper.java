@@ -47,7 +47,7 @@ public class TypeMapper {
   public static String getRandomValue(PropertyType type) {
     if (type instanceof ObjectPropertyType) {
       return "\"\"";
-    } else {
+    } else if (type instanceof PrimitivePropertyType) {
       PrimitivePropertyType primitiveType = (PrimitivePropertyType) type;
       if (primitiveType.getType().compareTo(PrimitiveType.STRING) == 0) {
         return "\"\"";
@@ -68,6 +68,8 @@ public class TypeMapper {
       } else if (primitiveType.getType().compareTo(PrimitiveType.BYTE) == 0) {
         return "(byte) new java.util.Random().nextInt(100)";
       }
+    } else {
+      return "\"\"";
     }
     return "";
   }

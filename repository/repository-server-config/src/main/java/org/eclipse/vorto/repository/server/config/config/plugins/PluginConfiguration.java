@@ -29,6 +29,7 @@ import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -60,6 +61,9 @@ public class PluginConfiguration {
   
   @Autowired
   private DefaultModelImportService importerPluginService;
+  
+  @Autowired
+  private RestTemplate restTemplate;
   
   @PostConstruct
   public void registerPlugins() throws Exception {
@@ -98,6 +102,7 @@ public class PluginConfiguration {
     importer.setTenantService(tenantService);
     importer.setUploadStorage(fileStorage);
     importer.setUserRepository(userAccountService);
+    importer.setRestTemplate(restTemplate);
     return importer;
 }
 }

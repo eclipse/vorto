@@ -30,7 +30,7 @@ abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 		if (type instanceof PrimitivePropertyType) {
 			return toCppPrimitive((type as PrimitivePropertyType).getType);
 		} else if (type instanceof DictionaryPropertyType){
-			return "map<"+type((type as DictionaryPropertyType).keyType)+","+type((type as DictionaryPropertyType).valueType)+">";
+			return "map()"
 		} else {
 			return (type as ObjectPropertyType).getType().namespace.replace(".","_") + "::" + (type as ObjectPropertyType).getType().name
 		}

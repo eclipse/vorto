@@ -98,6 +98,11 @@ class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 					}
 				«ENDIF»
 			«ENDIF»
+			«ELSE»
+			"«param.name»": {
+				«IF !param.description.nullOrEmpty»"description": "«param.description»",«ENDIF»
+				"type": "object"
+			}
 		«ENDIF»
 		'''
 	

@@ -12,18 +12,24 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.sso.TokenUtils;
 import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.utils.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RepositoryConfiguration extends BaseConfiguration {
@@ -71,5 +77,14 @@ public class RepositoryConfiguration extends BaseConfiguration {
   @Profile(value = {"local","local-test", "int"})
   public SimpleSearchService simpleSearch() {
     return new SimpleSearchService(this.tenantService, this.repositoryFactory);
+  }
+  
+  @Bean
+  public RestTemplate restTemplate() {
+    RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
+    List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+    interceptors.add(new LoggingInterceptor());
+    restTemplate.setInterceptors(interceptors);
+    return restTemplate;
   }
 }

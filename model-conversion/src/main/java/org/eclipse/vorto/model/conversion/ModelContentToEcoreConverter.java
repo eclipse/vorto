@@ -25,9 +25,14 @@ import org.eclipse.vorto.core.api.model.BuilderUtils.MappingBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.MappingRuleBuilder;
 import org.eclipse.vorto.core.api.model.BuilderUtils.ModelBuilder;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.DictonaryParam;
@@ -57,6 +62,7 @@ import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.IModel;
+import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelEvent;
@@ -163,23 +169,9 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
   }
   
   private Property createProperty(ModelProperty sourceProperty, ModelBuilder<?> builder, ModelContent context) {
-    Property property = null;
-    if (sourceProperty.getType() instanceof PrimitiveType) {
-      property = BuilderUtils.createProperty(sourceProperty.getName(), org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-          .valueOf(((PrimitiveType) sourceProperty.getType()).name()));
-    } else if (sourceProperty.getType() instanceof org.eclipse.vorto.model.ModelId) {      
-      IModel referencedModel =
-          context.getModels().get((org.eclipse.vorto.model.ModelId) sourceProperty.getType());
-      
-      Type convertedReference = (Type)convert(referencedModel, context,Optional.empty());
-      builder.withReference(ModelIdFactory.newInstance(convertedReference));
-      property = BuilderUtils.createProperty(sourceProperty.getName(), convertedReference);
-    } else if (sourceProperty.getType() instanceof DictionaryType) {
-      //FIXME
-    } else {
-      throw new UnsupportedOperationException("type must be either primitive, object or dictionary");
-    }
-    
+    Property property = DatatypeFactory.eINSTANCE.createProperty();
+    property.setName(sourceProperty.getName());
+    property.setType(createPropertyType(sourceProperty.getType(), builder, context));   
     property.setDescription(sourceProperty.getDescription());
     Presence presence = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createPresence();
     presence.setMandatory(sourceProperty.isMandatory());
@@ -195,6 +187,36 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     property.setConstraintRule(rule);
     
     return property;
+  }
+  
+  private PropertyType createPropertyType(IReferenceType referenceType,ModelBuilder<?> builder, ModelContent context) {
+    if (referenceType instanceof PrimitiveType) {
+      PrimitivePropertyType primitive = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
+      primitive.setType(org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+          .valueOf(((PrimitiveType) referenceType).name()));
+      return primitive;
+    } else if (referenceType instanceof org.eclipse.vorto.model.ModelId) {
+      IModel referencedModel =
+          context.getModels().get((org.eclipse.vorto.model.ModelId)referenceType);
+      Type convertedReference = (Type)convert(referencedModel, context,Optional.empty());
+      builder.withReference(ModelIdFactory.newInstance(convertedReference));
+      ObjectPropertyType objType = DatatypeFactory.eINSTANCE.createObjectPropertyType();
+      objType.setType(convertedReference);
+      return objType;      
+    } else if (referenceType instanceof DictionaryType) {
+      DictionaryType dictionaryType = (DictionaryType)referenceType;
+      
+      DictionaryPropertyType dictionary = DatatypeFactory.eINSTANCE.createDictionaryPropertyType();
+      if (dictionaryType.getKey() != null) {
+        dictionary.setKeyType(createPropertyType(dictionaryType.getKey(), builder, context));
+      }
+      if (dictionaryType.getValue() != null) {
+        dictionary.setValueType(createPropertyType(dictionaryType.getValue(), builder, context));
+      }
+      return dictionary;
+    } else {
+      throw new UnsupportedOperationException("Reference type is not valie");
+    }
   }
 
   private org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertFunctionblock(FunctionblockModel model, ModelContent context) {
@@ -219,7 +241,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     for (Operation operation : model.getOperations()) {
       builder.withOperation(operation.getName(),
           createReturnTypeOrNull(operation.getResult(), builder, context),operation.getDescription(),
-          operation.isBreakable(), createParams(operation.getParams(), context));
+          operation.isBreakable(), createParams(operation.getParams(), builder, context));
     }
     
     for (ModelEvent event : model.getEvents()) {
@@ -237,7 +259,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
   }
   
 
-  private Param[] createParams(List<org.eclipse.vorto.model.Param> params, ModelContent context) {
+  private Param[] createParams(List<org.eclipse.vorto.model.Param> params, ModelBuilder<?> builder, ModelContent context) {
     List<Param> ecoreParams = new ArrayList<>();
     for (org.eclipse.vorto.model.Param param : params) {
       if (param.getType() instanceof PrimitiveType) {
@@ -256,6 +278,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       } else if (param.getType() instanceof DictionaryType) {
         DictonaryParam type = FunctionblockFactory.eINSTANCE.createDictonaryParam();
         type.setMultiplicity(param.isMultiple());
+        type.setType((DictionaryPropertyType)createPropertyType(param.getType(), builder, context));
         ecoreParams.add(type);
       } else {
         return null;
@@ -287,6 +310,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       } else if (result.getType() instanceof DictionaryType) {
         ReturnDictonaryType type = FunctionblockFactory.eINSTANCE.createReturnDictonaryType();
         type.setMultiplicity(result.isMultiple());
+        type.setReturnType((DictionaryPropertyType)createPropertyType(result.getType(), builder, context));
         return type;
       } else {
         return null;
