@@ -113,7 +113,7 @@ class ProvisionDeviceScriptTemplateTest {
 	}
 
 	def cleaned(String text) {
-		return StringUtils.normalizeSpace(text)
+		return StringUtils.normalizeSpace(text.replaceAll("\\\\r\\\\n", "\\\\n"))
 	}
 
 	def String getExpectedTemplate2() {
