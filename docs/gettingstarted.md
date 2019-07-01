@@ -42,9 +42,10 @@ For a more in depth introduction into the concepts, feel free to **[read the blo
 
 1. **[Understanding the Vorto Language](vortolang-1.0.md)**
 
-2. [**Create your Repository and manage namespaces**](tutorials/create_repository.md) to get ready for describing devices.
+2. **[Create and Manage your namespaces](tutorials/managing_namespaces.md)** to get ready for describing devices.
 
-3. [**Describe your first device**](tutorials/describe_device-in-5min.md) in 5 minutes using the Vorto Web Editor - [(5min video)](.)
+3. [**Describe your first device**](tutorials/describe_device-in-5min.md) in 5 minutes using the Vorto Web Editor
+
 > You can also describe new devices using the [Vorto Eclipse IDE](tutorials/describe_device_with_eclipse_ide.md)
 
 4. **Provision your device** to [create a new digital twin](tutorials/create_thing.md) inside Bosch IoT Things - [(9min video)](https://www.youtube.com/watch?v=N3IGlCGzJIc)
@@ -73,9 +74,11 @@ If you want to see the full process of creating, integrating and visualizing sen
 
 #### Vorto Repository
 
-- [Create your Repository and manage namespaces](tutorials/create_repository.md)
+- [Create and Manage your Namespaces](tutorials/managing_namespaces.md)
+- [Manage Collaborators](tutorials/managing_collaborators.md)
 - [Importing and releasing your models](tutorials/import_model.md)
 - [Creating a new version of your model](../repository/docs/model_versioning.md)
+- [Publishing Models](tutorials/publishing_models.md)
 
 #### Developer Guide
 
