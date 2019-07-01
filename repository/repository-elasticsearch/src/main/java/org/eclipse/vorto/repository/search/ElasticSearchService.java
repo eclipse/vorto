@@ -92,6 +92,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   private Pattern searchExprPattern = Pattern.compile("name:(\\w+)\\*");
 
   private Pattern authorExprPattern = Pattern.compile("author:(\\w+)");
+  
+  private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
 
   private RestHighLevelClient client;
 
@@ -393,8 +395,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (matcher.find()) {
       author = Optional.of(matcher.group(1));
     }
+    
+    Optional<String> visibility = Optional.empty();
+    matcher = visibilityExprPattern.matcher(searchExpression);
+    if (matcher.find()) {
+      visibility = Optional.of(matcher.group(1));
+    }
 
-    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, author);
+    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, author, visibility);
   }
 
   private QueryBuilder makeElasticSearchQuery(SearchParameters params) {
@@ -416,6 +424,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
     if (params.author.isPresent()) {
       queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
+    }
+    
+    if (params.visibility.isPresent()) {
+      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, params.visibility.get()));
     }
 
     if (params.tenantIds.isPresent()) {
@@ -457,14 +469,16 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     Optional<ModelState> state;
     Optional<ModelType> type;
     Optional<String> author;
+    Optional<String> visibility;
 
     public SearchParameters(Optional<Collection<String>> tenantIds, Optional<String> expression,
-        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author) {
+        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author, Optional<String> visibility) {
       this.tenantIds = tenantIds;
       this.expression = expression;
       this.state = state;
       this.type = type;
       this.author = author;
+      this.visibility = visibility;
     }
   }
 
