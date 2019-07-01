@@ -26,7 +26,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.search.ElasticSearchService;
-import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -48,7 +47,7 @@ import com.google.common.base.Strings;
  *
  */
 @Configuration
-@Profile(value = {"prod","docker-local"})
+@Profile(value = {"prod","int","docker-local"})
 public class ElasticSearchConfiguration {
   
   @Value("${server.config.skipSslVerification:false}")
@@ -103,7 +102,7 @@ public class ElasticSearchConfiguration {
   }
   
   @Bean
-  @Profile({ "prod" })
+  @Profile({ "prod" , "int"})
   public RestHighLevelClient awsIndexingClient() {
     logger.info("Creating an elastic server client with config(serviceName=" + 
         serviceName + " region=" + region + " aesEndpoint=" + aesEndpoint);

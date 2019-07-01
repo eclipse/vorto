@@ -74,7 +74,7 @@ public class RepositoryConfiguration extends BaseConfiguration {
   }
   
   @Bean
-  @Profile(value = {"local","local-test", "int"})
+  @Profile(value = {"local","local-test"})
   public SimpleSearchService simpleSearch() {
     return new SimpleSearchService(this.tenantService, this.repositoryFactory);
   }
