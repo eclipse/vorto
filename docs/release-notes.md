@@ -1,5 +1,40 @@
 # Release Notes
 
+## 0.11 
+
+The Vorto Team is providing the Eclipse Vorto Repository as a fully managed service with an availability of >99.5%. With this new release and its support of multi-tenancy, each organization will have full - control of their models, user access rights and approval workflows. Therefore, we are kindly asking all our users to migrate their models from the old Vorto Repository to the new Repository, in order to enjoy the new features (see below). For this, please follow our [migration guide](https://github.com/eclipse/vorto/tree/master/repository/migration/migration_0.11.md).
+
+### New Features
+
+
+Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blob/master/docs/gettingstarted.md) for details.
+
+**Vorto Repository Features**
+
+- Vortolang 1.0, the IoT language for Digital Twins
+- Multi - Tenancy, which lets users manage their own namespace(s) and collaborators via a self-service UI
+- Model visibility of Vorto Models to change models access from private to public 
+- Log-in with Github and Bosch ID OAuth Provider
+- Many stabilization and performance fixes
+
+[Click here](https://vorto.eclipse.org) and start using the new official Eclipse Vorto Repository.
+
+**Device Integration Features**
+
+- Payload Mapping Engine (Java and node.js), that lets you convert arbitrary (device) data to normalized Vorto-compliant data structure, fast and reliably.
+- Bosch IoT Suite Generator add-on: Generates a script to provision devices in the Bosch IoT Suite from Vorto models
+- JSON - Schema Generator, which creates JSON-Schema files from Vorto models
+
+
+**Developer SDK Features**
+
+- Plugin SDK Version 2, to build and run serverless Vorto generator- and importer plugins. The SDK provides utilities and many [source code examples](https://github.com/eclipse/vorto-examples)
+
+### Deprecation
+
+- Plugin SDK Version 1 is marked as deprecated in this release. However it is still supported to implement and run generator plugins based on Version 1.0. However we are recommending to migrate them to Plugin Version 2, as it is much easier and faster.
+
+
 ## 0.10.1
 
 **Bugfixes**

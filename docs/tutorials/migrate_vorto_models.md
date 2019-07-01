@@ -25,8 +25,6 @@ This guide will walk you through the process of migrating your existing Vorto mo
 9. Click **Import** to finish uploading
 
 ## What's next?
-- [Vorto DSL Grammar Reference](../../core-bundles/docs/quickhelp_dsl.md)
-- [Describe a device with Vorto](./describe_device-in-5min.md)
 
 
 

@@ -66,9 +66,9 @@ If you want to see the full process of creating, integrating and visualizing sen
 
 #### Vorto DSL
 
+- [Vortolang 1.0](vortolang-1.0.md)
 - [Describe a TI SensorTag](tutorials/describe_tisensor.md)
 - [Describe a device in 5 minutes](tutorials/describe_device-in-5min.md) 
-- [Vorto DSL Grammar Reference](../core-bundles/docs/quickhelp_dsl.md)
 - [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
 
 #### Vorto Repository

@@ -85,8 +85,8 @@ functionblock Humidity extends Humidity {
 }
 ```
 
-* The first property is called *configuration*. As stated in the [User Guide](../../core-bundles/docs/quickhelp_dsl.md), it consists of "Read- and Writable properties that can be set on the device". Looking at the specifications of our device, we can easily see that we can enable notifications, data collection and set the interval period on the sensor. This directly matches with the definition of settings that configure the functionality of the device for the future.
-We define the configuration of the notifications and data collection as *boolean*, as they can only have the status *enabled* or *disabled* (*true* or *false*). The interval period only accepts values from 100 ms to 2,550 ms with a resolution of 10 ms. We could use [*enum*](../../core-bundles/docs/quickhelp_dsl.md) as data type as we have a finite number of values, but we want to keep this model as generic as possible. Therefore we define the period as *int* in the model and specify it more in the *mappings*.
+* The first property is called *configuration*. As stated in the [User Guide](../vortolang-1.0.md), it consists of "Read- and Writable properties that can be set on the device". Looking at the specifications of our device, we can easily see that we can enable notifications, data collection and set the interval period on the sensor. This directly matches with the definition of settings that configure the functionality of the device for the future.
+We define the configuration of the notifications and data collection as *boolean*, as they can only have the status *enabled* or *disabled* (*true* or *false*). The interval period only accepts values from 100 ms to 2,550 ms with a resolution of 10 ms. We could use [*enum*](../vortolang-1.0.md) as data type as we have a finite number of values, but we want to keep this model as generic as possible. Therefore we define the period as *int* in the model and specify it more in the *mappings*.
 The *configuration* block now looks like this (the names can differ of course):
 
 ```

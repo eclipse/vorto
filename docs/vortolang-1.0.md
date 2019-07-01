@@ -14,7 +14,6 @@
 [Dictionary](#dictionary)<br>
 [Entity](#entity)<br>
 [Model Property](#model-property)<br>
-[Model Reference](#model-reference)<br>
 
 
 ## Introduction
@@ -23,14 +22,14 @@ This document specifies the Vorto Language (vortolang 1.0), a language for descr
 
 ## Digital Twin Vorto Language
 
-Digital twins are described using the vortolang, which is domain-specific language (DSL). This DSL underlies a very simple grammar, making it very easy to describe digital twin models. In order to be used in IoT Platforms and solutions, the vortolang can easily be converted into well adopted languages, such as JSON-LD, where there are many libraries available in the Open Source community to process these language files. At definition time, developers can use the vortolang without any knowledge about JSON-LD, and fully focus on describing the device capabilities in a very expressive way.
+Digital twins are described using the vortolang, which is domain-specific language (DSL). This DSL underlies a very simple grammar, making it very easy to describe digital twin models. In order to be used in IoT Platforms and solutions, the vortolang can easily be converted into well adopted languages, such as JSON-LD, where additional context-specific attributes can be added. Many (free) libraries are available to process these language files. At definition time, developers can use the vortolang without any knowledge about JSON-LD or others, and fully focus on describing the device capabilities in a very expressive way.
 
 The vortolang is made up of a set of metamodel classes (described later in more detail) that define the capabilities of digital twins. There are two top-level classes, `Information Model` and `Function Block`, that describe a digital twin and the capabilities of digital twins, respectively. There are three metamodel classes that describe capabilities: `Properties`, `Events`, and `Operations`. 
 When writing a digital twin definition, it's necessary to specify the version of the vortolang being used (currently ```1.0```) 
 
 ## Information Models and Function Blocks
 
-There are two top-level metamodel classes: `Information Model` and `Function Block`. Information Models describe a complete digital twin, such as a physical device. Often, Information Models are associated with a product SKU, such as a "Bosch Dinion IP Starlight 8000MP" security camera, while Function Blocks describe the related capabilities of an digital twin (its status- and configuration properties, events, and operations). Function Blocks can be reused across different Information Models. Information Models are often made up of multiple Function Blocks (interfaces).
+There are two top-level metamodel classes: `Information Model` and `Function Block`. Information Models describe a complete digital twin, such as a physical device. Often, Information Models are associated with a specific device product, such as a "Bosch Dinion IP Starlight 8000MP" security camera, while Function Blocks describe the related capabilities of an digital twin (its status- and configuration properties, events, and operations). Function Blocks can be reused across different Information Models. Information Models are often made up of multiple Function Blocks (interfaces).
 
 <figure class="screenshot">
 	<img src="images/vortolang-meta.png">
@@ -38,14 +37,14 @@ There are two top-level metamodel classes: `Information Model` and `Function Blo
 
 ## Information Model
 
-An `Information Model` describes a complete digital twin, such as a physical device or a space (such as a room) and defines the set of interfaces as Function Blocks, implemented by the digital twin.
+An `Information Model` describes a complete digital twin, such as a physical device and defines the set of interfaces as Function Blocks, implemented by the digital twin.
 
 
 ### Information Model properties
 
 <table>
 	<tr>
-		<th>Property</th>
+		<th>Keyword</th>
 		<th>Required</th>
 		<th>Data type</th>
 		<th>Description</th>
@@ -60,15 +59,6 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 		</td>
 	</tr>
 	<tr>
-		<td>name</td>
-		<td>required</td>
-		<td>string</td>
-		<td>
-			The name must match the regular expression:
-				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
-		</td>
-	</tr>
-	<tr>
 		<td>namespace</td>
 		<td>required</td>
 		<td>string</td>
@@ -87,6 +77,14 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 		</td>
 	</tr>
 	<tr>
+		<td>displayname</td>
+		<td>optional</td>
+		<td>string</td>
+		<td>
+			a name of the information model for human display
+		</td>
+	</tr>
+	<tr>
 		<td>description</td>
 		<td>optional</td>
 		<td>string</td>
@@ -99,7 +97,7 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 		<td>optional</td>
 		<td>string</td>
 		<td> 
-			Custom tag to categorize the model. <br>
+			Custom tag to categorize the model, e.g. sensor, smarthome/kitchen etc. <br>
 			The name must match the regular expression:
 				<code> name('/' name )* </code>
 		</td>
@@ -113,6 +111,15 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 		</td>
 	</tr>
 	<tr>
+		<td>infomodel</td>
+		<td>required</td>
+		<td>string</td>
+		<td>
+			The name must match the regular expression:
+				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
+		</td>
+	</tr>
+	<tr>
 		<td>functionblocks</td>
 		<td>required</td>
 		<td>A set of <code>Model Property</code> of type <code>Function Block</code></td>
@@ -122,6 +129,40 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 	</tr>
 </table>
 
+### BNF (Backus normal form)
+
+	InformationModel:
+        'vortolang' 1.0
+
+        'namespace' qualifiedName
+        'version' version
+        ('displayname' string)?
+        ('description' string)?
+        ('category' ID('/' ID)*)?
+
+        (modelReference)*
+
+        'infomodel' ID '{'
+        'functionblocks' '{'
+            (functionblockProperty)*
+        '}'
+    ;
+
+    functionblockProperty: 
+    	('mandatory' | 'optional')? ('multiple')? ID 'as' [FunctionBlock::ID | qualifiedName] (description)?
+
+    qualifiedName: ID ('.' ID)*;
+
+    version : int('.' int)*('-'ID)?;
+
+    ID:
+        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
+    ;
+
+	description: STRING
+
+	modelReference: 
+		'using' qualifiedName ';' version;
 
 ### Example:
 
@@ -130,6 +171,7 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 	namespace com.mycompany
 	version 1.0.0
 	description "Information model for FabLab.eu's IoT Octopus"
+	category multisensor
 
 	using com.ipso.smartobjects.Accelerometer ; 1.1.0
 	using com.ipso.smartobjects.Barometer ; 1.1.0
@@ -137,8 +179,8 @@ An `Information Model` describes a complete digital twin, such as a physical dev
 	infomodel IoTOctopus {
 
 		functionblocks {
-			mandatory accelerometer as Accelerometer
-			mandatory barometer as Barometer
+			mandatory accelerometer as Accelerometer "some description"
+			optional barometer as Barometer
 		}
 	}
 
@@ -150,7 +192,7 @@ A Function Block describes related capabilities that are implemented by a digita
 
 <table>
 	<tr>
-		<th>Property</th>
+		<th>Keyword</th>
 		<th>Required</th>
 		<th>Data type</th>
 		<th>Description</th>
@@ -165,15 +207,6 @@ A Function Block describes related capabilities that are implemented by a digita
 		</td>
 	</tr>
 	<tr>
-		<td>name</td>
-		<td>required</td>
-		<td>string</td>
-		<td>
-			The name must match the regular expression:
-				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
-		</td>
-	</tr>
-	<tr>
 		<td>namespace</td>
 		<td>required</td>
 		<td>string</td>
@@ -192,6 +225,14 @@ A Function Block describes related capabilities that are implemented by a digita
 		</td>
 	</tr>
 	<tr>
+		<td>displayname</td>
+		<td>optional</td>
+		<td>string</td>
+		<td>
+			a name of the information model for human display
+		</td>
+	</tr>
+	<tr>
 		<td>description</td>
 		<td>optional</td>
 		<td>string</td>
@@ -204,17 +245,26 @@ A Function Block describes related capabilities that are implemented by a digita
 		<td>optional</td>
 		<td>string</td>
 		<td> 
-			Custom tag to categorize the model. <br>
+			Custom tag to categorize the model, e.g. sensor, smarthome/kitchen etc. <br>
 			The name must match the regular expression:
 				<code> name('/' name )* </code>
 		</td>
 	</tr>
 	<tr>
 		<td>using</td>
-		<td>optional</td>
+		<td>required</td>
 		<td>A set of <code>Model Reference</code>s</td>
 		<td>
-			Defines the imported models that are referenced by the Function Block
+			Defines the imported models that are referenced by this Information Model under 'functionblocks'
+		</td>
+	</tr>
+	<tr>
+		<td>functionblock</td>
+		<td>required</td>
+		<td>string</td>
+		<td>
+			The name must match the regular expression:
+				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
 		</td>
 	</tr>
 	<tr>
@@ -259,6 +309,61 @@ A Function Block describes related capabilities that are implemented by a digita
 	</tr>
 </table>
 
+### BNF (Backus normal form)
+
+	FunctionBlock:
+        'vortolang' 1.0
+
+        'namespace' qualifiedName
+        'version' version
+        ('displayname' string)?
+        ('description' string)?
+        ('category' ID('/' ID)*)?
+
+        (modelReference)*
+
+       'functionblock' ID ('extends' [Functionblock::ID | qualifiedName])? '{'
+			('configuration' '{' 
+				(Property)*
+			'}')?
+			
+			('status' '{' 
+				(Property)*
+			'}')?
+
+			('events' '{' 
+				(ID '{'
+					(Property)*
+				'}')*
+			'}')?
+			
+			('operations' '{'
+				(Operation)*
+			'}')?	
+			
+		'}'	
+    ;
+
+    qualifiedName: ID ('.' ID)*;
+    version : int('.' int)*('-'ID)?;
+    ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	modelReference: 'using' qualifiedName ';' version;
+	description: STRING
+
+	Property: Please refer to chapter Model Property for details
+
+	Operation:
+	 ('extension')? ('mandatory' | 'optional')? ('breakable')? ID '(' (OperationType (',' OperationType)*)?')' ('returns' OperationType)? (description)?;
+
+	OperationType: DictonaryOperationType | OperationPrimitiveType | OperationObjectType;
+
+	DictonaryOperationType:
+	('multiple')? ID 'as' DictionaryType ('<' ConstraintRule '>')?  (description)?;
+
+	OperationPrimitiveType: ('multiple')? ID 'as' PrimitiveType ('<' ConstraintRule '>')?  (description)?;
+
+	OperationObjectType: ('multiple')? ID 'as' ObjectType (description)?;
+
 
 ### Example:
 
@@ -280,7 +385,7 @@ A Function Block describes related capabilities that are implemented by a digita
 		}
 		
 		operations {
-			reset() returns boolean
+			reset() returns boolean "resets the accelerometer"
 		}
 	}
 
@@ -288,43 +393,56 @@ A Function Block describes related capabilities that are implemented by a digita
 
 Properties describe both read-only and read-write state of a digital twin. Read-only properties are defined as _status_ properties, whereas read-write properties as _configuration_ properties. For example, a device serial number may be a status property and the temperature set point on a thermostat may be a configuration property.
 
+Function Block property is defined as a [Model Property](#model-property)
+
 ### Status Property Example
-
-	status {
-		mandatory serialNumber as string
+	
+	functionblock Thermostat {
+	...
+		status {
+			mandatory serialNumber as string
+		}
 	}
-
 ### Configuration Property Example
+	
+	functionblock Thermostat {
+	...
 
-	configuration {
-		optional temperature as float <MIN 0, MAX 35> "writable temperature with a range constraint"
-		mandatory enable as boolean "enables the sensor to start sending data"
+		configuration {
+			optional temperature as float <MIN 0, MAX 35> "writable temperature with a range constraint"
+			mandatory enable as boolean "enables the sensor to start sending data"
+		}
 	}
 
 ## Event
 
 Events define data that is emitted by the device or entity. This kind of data would need to be transmitted to an IoT business solution in a reliable way. 
 
+An Event property is defined as a [Model Property](#model-property)
+
 ### Event Example
 
-	events {
-		enterFence {
-			entryPoint as Location3D		
+	functionblock Geolocation {
+	...
+		events {
+			enterFence {
+				entryPoint as Location3D
+				timestamp as dateTime		
+			}
+			leaveFence {
+				exitPoint as Location3D
+				timestamp as dateTime	
+			}
 		}
-		leaveFence {
-			exitPoint as Location3D
-		}
-	}
+	}	
 
 ## Operation
 
 An operation represents a function that can be performed on a Digital Twin. Operations may have request params as well as a return type
 
-`breakable? [name]([param name] as [Data Type] <[constraint]*>?) (returns [Data Type])?`
-
 <table>
 	<tr>
-		<th>Element</th>
+		<th>Keyword</th>
 		<th>Required</th>
 		<th>Description</th>
 	</tr>
@@ -392,14 +510,6 @@ A full set of primitive data types are provided and can be specified directly as
 		<td>A date and time in ISO 8601 format</td>
 	</tr>
 	<tr>
-		<td>date (<i>not yet available)</i></td>
-		<td>A date in ISO 8601 format</td>
-	</tr>
-	<tr>
-		<td>time (<i>not yet available)</i></td>
-		<td>A time in ISO 8601 format</td>
-	</tr>
-	<tr>
 		<td>double</td>
 		<td>An IEEE 8-byte floating point number</td>
 	</tr>
@@ -443,7 +553,7 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 
 <table>
 	<tr>
-		<th>Property</th>
+		<th>Keyword</th>
 		<th>Required</th>
 		<th>Data type</th>
 		<th>Description</th>
@@ -453,17 +563,8 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		<td>required</td>
 		<td>string</td>
 		<td>
-			Identifies which vortolang version used to define the Enum
+			Identifies which vortolang version used to define the Enumeration.
 			Currently '1.0'
-		</td>
-	</tr>
-	<tr>
-		<td>name</td>
-		<td>required</td>
-		<td>string</td>
-		<td>
-			The name must match the regular expression:
-				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
 		</td>
 	</tr>
 	<tr>
@@ -485,6 +586,14 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		</td>
 	</tr>
 	<tr>
+		<td>displayname</td>
+		<td>optional</td>
+		<td>string</td>
+		<td>
+			a name of the enumeration model for human display
+		</td>
+	</tr>
+	<tr>
 		<td>description</td>
 		<td>optional</td>
 		<td>string</td>
@@ -497,7 +606,7 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		<td>optional</td>
 		<td>string</td>
 		<td> 
-			Custom tag to categorize the model. <br>
+			Custom tag to categorize the model, e.g. sensor, smarthome/kitchen etc. <br>
 			The name must match the regular expression:
 				<code> name('/' name )* </code>
 		</td>
@@ -522,6 +631,29 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 	</tr>
 </table>
 
+### BNF (Backus normal form)
+
+	Enumeration:
+        'vortolang' 1.0
+
+        'namespace' qualifiedName
+        'version' version
+        ('displayname' string)?
+        ('description' string)?
+        ('category' ID('/' ID)*)?
+
+       'enum' ID '{'
+			(enumLiteral) (',' enumLiteral)*
+		'}'	
+    ;
+
+    qualifiedName: ID ('.' ID)*;
+    version : int('.' int)*('-'ID)?;
+    ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	description: STRING
+
+	 enumLiteral: ID (description)?
+
 ### Example
 
 	vortolang 1.0
@@ -534,25 +666,11 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		g "gram unit"
 	}	
 
-### Dictionary
-
-A *Dictionary* describes values in a map.
-
-#### Example
-
- 	mandatory lookupTable as dictionary[string, Color] "Lookup table conversion for color"
-
-    mandatory lookupRGBTable as dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
-
-    mandatory temperatureLabelConversion as dictionary[int, string] "map of temperature to description"
-
-    mandatory simpleMap as dictionary "example of a map with no key and value types"
-
 ### Entity
 
 <table>
 	<tr>
-		<th>Property</th>
+		<th>Keyword</th>
 		<th>Required</th>
 		<th>Data type</th>
 		<th>Description</th>
@@ -562,17 +680,8 @@ A *Dictionary* describes values in a map.
 		<td>required</td>
 		<td>string</td>
 		<td>
-			Identifies which vortolang version used to define the entity
+			Identifies which vortolang version used to define the Enumeration.
 			Currently '1.0'
-		</td>
-	</tr>
-	<tr>
-		<td>name</td>
-		<td>required</td>
-		<td>string</td>
-		<td>
-			The name must match the regular expression:
-				<code> ^[A-Z][a-zA-Z0-9]*$ </code>
 		</td>
 	</tr>
 	<tr>
@@ -594,6 +703,14 @@ A *Dictionary* describes values in a map.
 		</td>
 	</tr>
 	<tr>
+		<td>displayname</td>
+		<td>optional</td>
+		<td>string</td>
+		<td>
+			a name of the enumeration model for human display
+		</td>
+	</tr>
+	<tr>
 		<td>description</td>
 		<td>optional</td>
 		<td>string</td>
@@ -606,9 +723,17 @@ A *Dictionary* describes values in a map.
 		<td>optional</td>
 		<td>string</td>
 		<td> 
-			Custom tag to categorize the model. <br>
+			Custom tag to categorize the model, e.g. sensor, smarthome/kitchen etc. <br>
 			The name must match the regular expression:
 				<code> name('/' name )* </code>
+		</td>
+	</tr>
+	<tr>
+		<td>using</td>
+		<td>required</td>
+		<td>A set of <code>Model Reference</code>s</td>
+		<td>
+			Defines the imported models that are referenced by this Entity
 		</td>
 	</tr>
 	<tr>
@@ -629,7 +754,35 @@ A *Dictionary* describes values in a map.
 	</tr>
 </table>
 
+#### BNF (Backus normal form)
+
+	Entity:
+        'vortolang' 1.0
+
+        'namespace' qualifiedName
+        'version' version
+        ('displayname' string)?
+        ('description' string)?
+        ('category' ID('/' ID)*)?
+
+        (modelReference)*
+
+       'entity' ID ('extends' [Entity::ID | qualifiedName])? '{'
+			(property)*			
+		'}'	
+    ;
+
+    qualifiedName: ID ('.' ID)*;
+    version : int('.' int)*('-'ID)?;
+    ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+	modelReference: 'using' qualifiedName ';' version;
+	description: STRING
+
+	Property: Please refer to chapter Model Property for details
+		
+
 #### Example
+
 	vortolang 1.0
 
 	namespace com.mycompany
@@ -641,15 +794,87 @@ A *Dictionary* describes values in a map.
 	    mandatory blue as int <MIN 0, MAX 255> "The blue component of a color"  
 	}
 
+
+### Dictionary
+
+A *dictionary* describes values in a map.
+
+#### Example
+
+ 	mandatory lookupTable as dictionary[string, Color] "Lookup table conversion for color"
+
+    mandatory lookupRGBTable as dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
+
+    mandatory temperatureLabelConversion as dictionary[int, string] "map of temperature to description"
+
+    mandatory simpleMap as dictionary "example of a map with no key and value types"
+
+
 ## Model Property
 
-tbd.
+A model property can be used by events, function block properties or entities. 
 
-## Model Reference
+<table>
+	<tr>
+		<th>Keyword</th>
+		<th>Required</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>extension</td>
+		<td>optional</td>
+		<td> 
+			Indicates that the property is extended from a supertype with additional meta data
+		</td>
+	</tr>
+	<tr>
+		<td>mandatory or optional</td>
+		<td>optional</td>
+		<td> 
+			Whether the property is mandatory or optional. Default is optional.
+		</td>
+	</tr>
+	<tr>
+		<td>multiple</td>
+		<td>optional</td>
+		<td> 
+			Indicates if the property is an array type
+		</td>
+	</tr>
+	<tr>
+		<td>with</td>
+		<td>optional</td>
+		<td> 
+			additional meta - data about the property, such as measurementUnit or if the property is readable or writable
+		</td>
+	</tr>
+</table>
 
-Model References define using statements (aka. imports) of a particular model. They are specified as a full-qualified model ID triple (namespace, name and version). 
+### BNF (Backus normal form)
 
-### Example
-
-	using com.acme.3DLocation ; 1.0.0
+	Property:
+			('extension')? ('mandatory] | 'optional')? ('multiple')? ID 'as' PropertyType
+			('with' '{' PropertyAttribute (',' PropertyAttribute)* '}')?
+			('<' ConstraintRule '>')?
+			(description=STRING)?
+		;
+	
+		PropertyType: ObjectType | PrimitiveType | DictionaryType;
+	
+		ObjectType: [Type::ID | qualifiedName];
+		
+		PrimitiveType: 
+			'string' | 'int' | 'float' | 'boolean' | 'dateTime' | 'double' | 'long' | 'short' |'base64Binary' | 'byte';
+		
+		DictionaryType: 'dictionary' ('['PropertyType ',' PropertyType ']')?
+		
+		PropertyAttribute: BooleanPropertyAttribute | EnumLiteralPropertyAttribute;
+	
+		BooleanPropertyAttribute: ('readable' | 'writable') ':' ('true' | 'false');
+		
+		EnumLiteralPropertyAttribute: 'measurementUnit' ':' [Enum::ID | QualifiedName];
+	
+		Constraint: ('MIN' | 'MAX' | 'STRLEN' | 'REGEX' | 'MIMETYPE' | 'SCALING' | 'DEFAULT' | 'NULLABLE') IntervalType;
+	
+		IntervalType: INT | SIGNEDINT | FLOAT | DATETIME | STRING | BOOLEAN;
 
