@@ -19,6 +19,10 @@ Only after fullfillign those requirements you will be able to see the `Publish` 
 
 Please make sure to understand, that **published models can only be `deprecated` and not deleted or unpublished**.
 
+![Unpublished Model](../images/tutorials/publishing_models/unpublished_model.png)
+
+The dialog showing up once clicking the `Publish` button will again explain you the **implications of making a model public**.
+
 ![Publish Model](../images/tutorials/publishing_models/publish_model.png)
 
 After publishing, the `Visibility` of your model will show **`Public`** and everybody will be able to view and use it.    
