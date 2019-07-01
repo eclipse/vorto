@@ -87,7 +87,7 @@ public class ElasticSearchConfiguration {
   private ITenantService tenantService;
   
   @Bean
-  @Profile(value = {"prod","local-docker"})
+  @Profile(value = {"prod","int","local-docker"})
   public ElasticSearchService elasticSearch() {
     return new ElasticSearchService(client,repositoryFactory,tenantService);
   }
