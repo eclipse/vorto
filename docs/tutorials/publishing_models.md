@@ -13,7 +13,7 @@ In order to have the permission to publish models, you need to fullfil a few req
 You need to
 - be an **owner or collaborator** to an [official namespace](#claiming-an-official-namespace).
 - have the **role of `Publish`** for the given offical namespace. 
-- have `released` the model and all submodels
+- have `released` the model and all submodels (will be released automatically if not already done)
 
 Only after fullfillign those requirements you will be able to see the `Publish` button for the models of the according namespace.
 
