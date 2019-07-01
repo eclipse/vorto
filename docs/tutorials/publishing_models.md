@@ -2,20 +2,28 @@
 
 > **What does publishing mean** ?    
 Publishing a model makes it visible to everybody visiting the Eclipse Vorto Repository. 
-Even if they are not logged in and are not collaborating to the namespace.
-Published models can only be `deprecated` and not deleted. 
+Even if they are not logged in and are not collaborating to the namespace.   
+
+> Please note that **published models can only be `deprecated` and not deleted or unpublished**. 
 
 <br />
 
 ## Making your model public
 In order to have the permission to publish models, you need to fullfil a few requirements.   
-You need to:
-1. be an owner or collaborator to an [official namespace](#claiming-an-official-namespace).
-1. have the role of `Publish` for the given offical namespace. 
+You need to
+- be an **owner or collaborator** to an [official namespace](#claiming-an-official-namespace).
+- have the **role of `Publish`** for the given offical namespace. 
+- have `released` the model and all submodels
 
 Only after fullfillign those requirements you will be able to see the `Publish` button for the models of the according namespace.
 
+Please make sure to understand, that **published models can only be `deprecated` and not deleted or unpublished**.
+
 ![Publish Model](../images/tutorials/publishing_models/publish_model.png)
+
+After publishing, the `Visibility` of your model will show **`Public`** and everybody will be able to view and use it.    
+
+![Published Model](../images/tutorials/publishing_models/published_model.png)
 
 <br />
 
