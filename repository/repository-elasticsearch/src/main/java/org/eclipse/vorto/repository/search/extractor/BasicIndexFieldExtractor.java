@@ -50,7 +50,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.STATE, modelInfo.getState());
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, Boolean.toString(modelInfo.isHasImage()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, Long.toString(modelInfo.getCreationDate().getTime()));
-    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, PRIVATE);
+    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, modelInfo.getVisibility());
     
     return basicFields;
   }
