@@ -17,8 +17,6 @@ import java.util.Map;
 import org.eclipse.vorto.repository.core.ModelInfo;
 
 public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
-
-  private static final String PRIVATE = "private";
   
   public static final String VISIBILITY = "visibility";
 

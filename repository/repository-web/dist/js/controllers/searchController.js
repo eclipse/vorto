@@ -42,7 +42,7 @@ repositoryControllers.controller('SearchController',
         	}
         	
         	if ($scope.onlyPublicModels === true) {
-        		filter += "visibility:public";
+        		filter += "visibility:public ";
         	}
         	
         	if ($scope.queryFilter !== "") {

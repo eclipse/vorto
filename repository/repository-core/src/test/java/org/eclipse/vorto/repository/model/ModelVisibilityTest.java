@@ -161,6 +161,23 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     assertTrue(hasAnonymousPolicy("com.mycompany:Point4D:1.0.0"));
   }
   
+  @Test
+  public void makeSearchPublicModelsByNameWildcard() throws Exception {
+    importModel("creator", "officialprefix_point3d.type");
+    
+    releaseModel(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"), createUserContext("creator"));
+        
+    IUserContext publisher = createUserContext("publisher");
+    
+    IModelService modelService = getModelService();
+    
+    modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
+    
+    assertEquals(1,searchService.search("visibility:public").size());
+    assertEquals(1,searchService.search("visibility:public name:Point*").size());
+   
+  }
+  
   public boolean hasAnonymousPolicy(String modelId) {
     IModelPolicyManager policyMgr = repositoryFactory.getPolicyManager(createUserContext("creator"));
     return policyMgr.getPolicyEntries(ModelId.fromPrettyFormat(modelId))
