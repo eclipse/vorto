@@ -1,5 +1,5 @@
-repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance', 
-	function ($location, $scope, $rootScope, $http, $uibModalInstance) {
+repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window', 'TenantService',
+	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window, TenantService) {
 
 	$scope.deleteAccount = function() {
 	   	$http.delete('./rest/accounts/'+$rootScope.user)
@@ -12,6 +12,17 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 	           }
 	       });
 	};
+	
+	$scope.ownsNamespaces = function() {
+		var promise = TenantService.getNamespacesForRole('ROLE_TENANT_ADMIN');
+		promise.then(
+			function(namespaces) {
+				$scope.ownsNamespaces = namespaces.length > 0;
+			}
+		);
+	};
+	
+	$scope.ownsNamespaces();
 
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss("cancel");

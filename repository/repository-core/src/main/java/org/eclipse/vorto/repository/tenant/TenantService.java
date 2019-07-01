@@ -57,7 +57,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private INamespaceRepository namespaceRepo;
 
   private IUserAccountService userAccountService;
-
+  
   private ApplicationEventPublisher eventPublisher = null;
   
   @Value("${config.restrictTenant}")
@@ -288,7 +288,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   public boolean deleteTenant(Tenant tenant, IUserContext userContext) {
     PreConditions.notNull(tenant, "Tenant should not be null");
-    
+        
     eventPublisher.publishEvent(new AppEvent(this, tenant, userContext, EventType.TENANT_DELETED));
     
     tenantRepo.delete(tenant);

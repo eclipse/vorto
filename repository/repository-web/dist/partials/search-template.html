@@ -24,6 +24,11 @@
           			<span class="checkmark"></span>
         		</label>
 				<hr/>
+				<label ng-show="authenticated && userInfo.isRegistered === 'true'" class="chkbox">Only Public Models
+          			<input type="checkbox" ng-model="onlyPublicModels" ng-change="search()">
+          			<span class="checkmark"></span>
+        		</label>
+        		<hr/>
 				<h5 class="category">States</h5>
 				<select id="dropdownState" ng-model="modelState" ng-change="search()" class="form-control">
 						<option value="all">All States</option>
