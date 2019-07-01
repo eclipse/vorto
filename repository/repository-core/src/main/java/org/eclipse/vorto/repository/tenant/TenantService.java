@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -70,7 +69,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     this.tenantRepo = tenantRepo;
     this.namespaceRepo = namespaceRepo;
     this.userAccountService = accountService;
-    this.repositoryFactory = repositoryFactory;
   }
 
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
