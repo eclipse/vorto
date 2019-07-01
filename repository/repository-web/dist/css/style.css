@@ -1793,7 +1793,7 @@ input[type=file]::-webkit-file-upload-button {
 .model-box.im .icon img{
     transition: all 0.3s linear;
     position: absolute;
-    top: 5px;
+    top: 18px;
     right: 5px;
     z-index: 0;
     width: 80px;
