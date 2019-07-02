@@ -13,7 +13,7 @@ Vorto Models have a lifecycle and undergo various states. This section gives you
 ### `Draft`
 A model in Draft state is a model under construction, here people can try out their ideas and test their behaviour. 
 
-### `Review`
+### `In Review`
 As soon as a developer is happy with the state a model is in, he can request a Review. Then a model supervisor will go through and confirm that all model guidlines are followed. The supervisor can either reject it, or allow it to go on to the Released state.
 To request a review all dependent models have to be released.
 
