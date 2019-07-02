@@ -10,8 +10,6 @@ Vorto Models have a lifecycle and undergo various states. This section gives you
 	<img src="images/model_states.png">
 </figure> 
 
-The following table gives an overview of what actions are possible for models in a specific state:
-
 ### `Draft`
 A model in Draft state is a model under construction, here people can try out their ideas and test their behaviour. 
 
