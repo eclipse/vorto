@@ -125,7 +125,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     
     List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), Context.create(alex,Optional.of("org.eclipse.vorto")));
     assertEquals(1,imported.size());
-    assertEquals("org.eclipse.vorto",imported.get(0).getId().getNamespace());
+    assertEquals("org.eclipse.vorto.vorto.private.alex",imported.get(0).getId().getNamespace());
   }
   
   @Test
@@ -144,6 +144,8 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     assertEquals(1,imported.size());
     assertEquals("org.eclipse.vorto.tutorial",imported.get(0).getId().getNamespace());
   }
+  
+  
   
   @Test
   public void testImportFileWithNonMatchingFileName() {

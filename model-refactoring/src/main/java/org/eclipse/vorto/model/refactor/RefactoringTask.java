@@ -43,8 +43,9 @@ public class RefactoringTask {
     
     workspace.get().forEach(model -> {
       final String oldNamespace = model.getNamespace();
-      if(!ignoreNamespaceList.contains(oldNamespace) && !model.getNamespace().contains(targetNamespace)) {
-        model.setNamespace(targetNamespace);
+      if(!ignoreNamespaceList.contains(oldNamespace) && !model.getNamespace().startsWith(targetNamespace)) {
+        final String newNamespace = targetNamespace+"."+oldNamespace;
+        model.setNamespace(newNamespace);
         ModelId newModelId = ModelIdFactory.newInstance(model);
         ModelId oldModelId = new ModelId(newModelId.getModelType(),newModelId.getName(),oldNamespace,newModelId.getVersion());
         updateReferences(oldModelId,newModelId);
