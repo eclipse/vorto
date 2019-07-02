@@ -47,7 +47,7 @@ import com.google.common.base.Strings;
  *
  */
 @Configuration
-@Profile(value = {"prod","int","docker-local"})
+@Profile(value = {"prod", "int", "local-docker"})
 public class ElasticSearchConfiguration {
   
   @Value("${server.config.skipSslVerification:false}")
@@ -87,7 +87,7 @@ public class ElasticSearchConfiguration {
   private ITenantService tenantService;
   
   @Bean
-  @Profile(value = {"prod","int","local-docker"})
+  @Profile(value = { "prod", "int", "local-docker" })
   public ElasticSearchService elasticSearch() {
     return new ElasticSearchService(client,repositoryFactory,tenantService);
   }
