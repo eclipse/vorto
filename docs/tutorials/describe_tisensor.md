@@ -5,9 +5,9 @@ Read more about the benefits of Vorto in this [blog post](https://blog.bosch-si.
 
 ### Prerequisite
 * [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* You are a collaborator/owner of a namespace
 * Device you want to describe
 * Device Related specifications
-
 
 ### Let's get started
 
