@@ -103,7 +103,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		    «ENDFOR»
 		    result += "}";
 		    «ENDIF»
-		    result += "} } }";
+		    result += "} }";
 
 		    return result;
 		}
