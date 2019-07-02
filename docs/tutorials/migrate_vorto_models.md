@@ -29,12 +29,14 @@ Make sure to select the target namespace from the dropdown in which your model s
 
 **7.** Click **Upload** 
 
-**8.** If all goes well you will receive a success message *model is valid and ready for import*
+**8.** If all goes well you will receive a success message *model is valid and ready for import*   
+In addition to that, you will also see all of the submodels that will be imported and which ones already exist.
 
 ![successful upload](../images/tutorials/migrate_model/successful_upload.png)
 
 **9.** Click **Import** to finish uploading.   
-You're now ready to use the models.
+
+**You're now ready to use the models.**
 
 <br />
 
