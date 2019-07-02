@@ -4,7 +4,7 @@ If you had created an external / 3rd party tool to create Vorto Models, you can 
 
 ## Prerequisite
 
-* Github or BoschID Account
+* [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
 * Existing Vorto Model(s)
 
 ## Steps to Import any type of model
