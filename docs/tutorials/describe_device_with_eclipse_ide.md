@@ -71,16 +71,7 @@ To do that, you need to export your project as a **General Archive File**.
 
 <img src="../images/tutorials/describe_device_eclipseide/export_2.png"/>
 
-Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your BoschID or GitHub account and **Import** the zip-file.
-
-<img src="../images/tutorials/describe_device_eclipseide/import"/>
-
-Click **Browse**, select the zip-file and click **Upload**.
-After the validation click **Import**.
-
-<img src="../images/tutorials/describe_device_eclipseide/import_2"/>
-
-The imported model will now be in *Draft* state and can only be viewed and modified by you.
+Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your BoschID or GitHub account and [**Import** the zip-file](./import_model.md).
 
 
 ## What's Next?
