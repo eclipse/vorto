@@ -5,6 +5,7 @@ This section would lead you through the steps to create a new version of an exis
 ## Prerequisite
 
 * [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* You are a collaborator/owner of a namespace
 * Existing Vorto Model
 
 ## Steps to create a new version of a model
