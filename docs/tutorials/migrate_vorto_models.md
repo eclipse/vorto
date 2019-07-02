@@ -22,7 +22,7 @@ This guide will walk you through the process of migrating your existing Vorto mo
 
 **4.** Log in to new [Vorto Repository](https://vorto.eclipse.org)
 
-**5.** [Create and manage Namespace](./managing_namespaces.md), by default all new namespaces will be prefixed with *vorto.private*. To claim for an official namespace, [reach out to the Vorto Team](./tutorials/managing_namespaces.md#claiming-an-official-namespace).
+**5.** [Create and manage Namespace](./managing_namespaces.md), by default all new namespaces will be prefixed with *vorto.private*. To claim for an official namespace, [reach out to the Vorto Team](./managing_namespaces.md#claiming-an-official-namespace).
 
 **6.** Click **Browse** and select the zip file you downloaded in Step-3.   
 Make sure to select the target namespace from the dropdown in which your model should be imported in.
