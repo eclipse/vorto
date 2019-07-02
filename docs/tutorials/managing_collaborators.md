@@ -37,6 +37,7 @@ Each Role provides collaborators with specific permissions for the according nam
 | Edit Models               | ✘    | ✔      | ✘        | ✘      | ✘       | ✘     |
 | Delete Models             | ✘    | ✔      | ✘        | ✘      | ✘       | ✘     |
 | Submit Models for Review  | ✘    | ✘      | ✔        | ✘      | ✘       | ✘     |
+| Deprecate Models          | ✘    | ✘      | ✔        | ✘      | ✘       | ✘     |
 | Initiate Release process  | ✘    | ✘      | ✘        | ✔      | ✘       | ✘     |
 | Approve Releases          | ✘    | ✘      | ✘        | ✘      | ✔       | ✘     |
 | Add/Remove Namespace      | ✘    | ✘      | ✘        | ✘      | ✘       | ✔     |
