@@ -5,6 +5,7 @@ This section would lead you through the various ways to create a new model, say 
 ## Prerequisite 
 
 * [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* You are a collaborator/owner of a namespace
 
 ## Steps to create a model
 
