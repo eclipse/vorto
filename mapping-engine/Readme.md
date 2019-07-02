@@ -12,6 +12,7 @@ To work through this tutorial, you will need:
 
 - [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) Account to log in to the Vorto Repository
 - A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
+- You are a collaborator/owner of a namespace
 
 
 ## Step 1: Create Mapping Specification
