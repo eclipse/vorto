@@ -145,7 +145,7 @@ Careful readers surely noted that we used the key word *optional* for the temper
 
 
 ### Closing remarks
-Once you are satisfied with your created model, you can request a review by the Vorto Team. After the revision the model might be released and made accessible for other users.
+Once you are satisfied with your created model, you can request a review by the Vorto Team. After the [revision the model might be released](../../repository/docs/model_states.md) and made accessible for other users.
 
 You can [read more about *Model States* here](../../repository/docs/model_states.md).
 
