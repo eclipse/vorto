@@ -47,6 +47,22 @@ public class ModelImporterTest extends AbstractIntegrationTest {
   }
   
   @Test
+  public void testUploadAndImportZipWithSameNameDifferentVersion() throws Exception {
+    IUserContext alex = createUserContext("alex", "playground");
+    
+    UploadModelResult uploadResult = this.importer.upload(
+        FileUpload.create("models.zip",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/models_same_name.zip").getInputStream())),
+        Context.create(alex,Optional.of("org.eclipse.vorto")));
+    
+    assertTrue(uploadResult.isValid());
+    
+    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(),Context.create(alex,Optional.of("org.eclipse.vorto")));
+    assertEquals(2,imported.size());
+  }
+  
+  @Test
   public void testUploadFileWithoutVortolang() throws Exception {
     IUserContext alex = createUserContext("alex", "playground");
     

@@ -88,7 +88,7 @@ public class ModelResource extends ModelInfo {
 
   public byte[] toDSL() throws IOException {
     Resource resource = model.eResource().getResourceSet()
-        .createResource(URI.createURI(model.getName() + this.type.getExtension()));
+        .createResource(URI.createURI(getFullQualifiedFileName()));
     resource.getContents().add(model);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     
