@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.search.extractor.BasicIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor.FieldType;
@@ -185,25 +187,27 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     // (1) Delete all models in the index
     deleteAllModels(VORTO_INDEX);
 
-    BulkRequest bulkRequest = new BulkRequest();
-
+    // (2) Index all models in all the tenants
     tenantService.getTenants().stream().forEach(tenant -> {
       IModelRepository repo = this.repositoryFactory.getRepository(tenant.getTenantId());
       List<ModelInfo> modelsToIndex = repo.search("");
-      modelsToIndex.forEach(model -> {
-        bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
-      });
+      if (!modelsToIndex.isEmpty()) {
+        BulkRequest bulkRequest = new BulkRequest();
+        
+        modelsToIndex.forEach(model -> {
+          bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
+        });
 
-      try {
-        BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-        result.addIndexedTenant(repo.getTenantId(), modelsToIndex.size());
-        logger.info("Received " + bulkResponse.getItems().length + " replies for tenant '"
-            + repo.getTenantId() + "' with " + modelsToIndex.size() + " models");
-      } catch (IOException e) {
-        throw new IndexingException(
-            "Error trying to index all models in '" + repo.getTenantId() + "' tenant.", e);
+        try {
+          BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
+          result.addIndexedTenant(repo.getTenantId(), modelsToIndex.size());
+          logger.info("Received " + bulkResponse.getItems().length + " replies for tenant '"
+              + repo.getTenantId() + "' with " + modelsToIndex.size() + " models");
+        } catch (IOException e) {
+          throw new IndexingException(
+              "Error trying to index all models in '" + repo.getTenantId() + "' tenant.", e);
+        }
       }
-
     });
 
     return result;
@@ -358,8 +362,17 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       return Collections.emptyList();
     } else {
       return tenantService.getTenants().stream()
-          .filter(tenant -> tenant.hasUser(context.getUsername())).map(t -> t.getTenantId())
+          .filter(getUserFilter(context))
+          .map(t -> t.getTenantId())
           .collect(Collectors.toList());
+    }
+  }
+  
+  private Predicate<Tenant> getUserFilter(UserContext userContext) {
+    if (userContext.isSysAdmin()) {
+      return tenant -> true;
+    } else {
+      return tenant -> tenant.hasUser(userContext.getUsername());
     }
   }
 
