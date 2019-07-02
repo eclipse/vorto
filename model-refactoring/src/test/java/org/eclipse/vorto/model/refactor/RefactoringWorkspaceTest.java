@@ -46,11 +46,11 @@ public class RefactoringWorkspaceTest {
         RefactoringTask.from(workspace).toNamespace("org.eclipse.vorto").execute();
 
     assertEquals(3, changeSet.get().size());
-    assertEquals(3, changeSet.getChanges().size());
+    assertEquals(0, changeSet.getChanges().size());
     
     Model fbmodel = changeSet.get().stream().filter(c -> c.getName().equals("Connectivity")).findAny().get();
     assertEquals("org.eclipse.vorto", fbmodel.getNamespace());
-    assertEquals("org.eclipse.vorto.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
+    assertEquals("org.eclipse.vorto.types.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
     assertEquals("org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
   }
 
@@ -66,7 +66,7 @@ public class RefactoringWorkspaceTest {
 
     assertEquals(1, changeSet.get().size());
     assertEquals(1, changeSet.getChanges().size());
-    assertEquals("private.vorto.alex", changeSet.get().get(0).getNamespace());
+    assertEquals("private.vorto.alex.iot", changeSet.get().get(0).getNamespace());
 
   }
 
@@ -89,15 +89,15 @@ public class RefactoringWorkspaceTest {
         .findFirst().get();
     assertEquals(2, dimmer.getReferences().size());
 
-    assertEquals("private.vorto.alex", dimmer.getNamespace());
-    assertEquals("private.vorto.alex.Brightness",
+    assertEquals("private.vorto.alex.iot", dimmer.getNamespace());
+    assertEquals("private.vorto.alex.iot.Brightness",
         dimmer.getReferences().get(0).getImportedNamespace());
     assertEquals("org.eclipse.vorto.Temperature",
         dimmer.getReferences().get(1).getImportedNamespace());
 
     ObjectPropertyType type = (ObjectPropertyType) dimmer.getProperties().get(0).getType();
     assertTrue(type.getType() instanceof Enum);
-    assertEquals("private.vorto.alex", type.getType().getNamespace());
+    assertEquals("private.vorto.alex.iot", type.getType().getNamespace());
   }
 
   @Test
