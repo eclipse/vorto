@@ -31,7 +31,7 @@ Make sure to select the target namespace from the dropdown in which your model s
 
 **8.** If all goes well you will receive a success message *model is valid and ready for import*
 
-![successful upload](...)
+![successful upload](../images/tutorials/migrate_model/successful_upload.png)
 
 **9.** Click **Import** to finish uploading.   
 You're now ready to use the models.
