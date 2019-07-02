@@ -96,8 +96,9 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
   }
   
   /**
+   * Full Qualified file name of the model
    * 
-   * @return
+   * @return full-qualified file name in the form of <namespace>-<name>-<version>.<extension>
    */
   public String getFullQualifiedFileName() {
     return id.getPrettyFormat().replace(":", "-").replace("\\.", "_") + type.getExtension();
