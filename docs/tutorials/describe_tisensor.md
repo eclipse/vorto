@@ -4,7 +4,7 @@ This tutorial explains how to describe a device with Vorto using the example of 
 Read more about the benefits of Vorto in this [blog post](https://blog.bosch-si.com/developer/avoid-tight-coupling-of-devices-in-iot-solutions/).
 
 ### Prerequisite
-* [Github](https://github.com/) account
+* [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
 * Device you want to describe
 * Device Related specifications
 
@@ -146,10 +146,8 @@ Careful readers surely noted that we used the key word *optional* for the temper
 
 ### Closing remarks
 Once you are satisfied with your created model, you can request a review by the Vorto Team. After the revision the model might be released and made accessible for other users.
-For more information on *Model States* click [here](../../repository/docs/model_states.md).
-<figure class="screenshot">
-    <img width="800" src="../images/tutorials/tisensor/tisensor_lifecycle.jpg">
-</figure>
+
+You can [read more about *Model States* here](../../repository/docs/model_states.md).
 
 ## What's next?
 
