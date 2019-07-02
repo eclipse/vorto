@@ -34,8 +34,8 @@ By default, you as the namespace owner will have all permissions and are able to
 <br />
 
 ## Claiming an official Namespace
-If you want make the models you've created publicly available, you need to own the according official namespace.   
+If you want to make the models you've created publicly available, you need to own the according official namespace.   
 In order to claim an official namespace, like e.g. `org.eclipse.vorto`, you need to [reach out to the Vorto Team](mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body=Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20).
 
-When reaching out to the Vorto Dev Team, please make sure to **include the name of the namepsace and UserId of its Owner**.
+When reaching out to the Vorto Dev Team, please make sure to **include the name of the namespace and UserId of its Owner**.
 
