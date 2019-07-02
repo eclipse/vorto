@@ -4,7 +4,7 @@ In this tutorial you are going to learn, how you can use the Eclipse IDE to desc
 
 ## Prerequisites
 
-* [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) Account 
 
 * Install Eclipse IDE 2018-12 for Java and DSL Developers
 	* [Windows](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2018-12/R/eclipse-dsl-2018-12-R-win32-x86_64.zip)
