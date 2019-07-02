@@ -10,6 +10,7 @@ Let's get started.
 
 ### Prerequisite
 * [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* You are a collaborator/owner of a namespace
 
 ## Steps to follow
 
