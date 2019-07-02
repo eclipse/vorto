@@ -129,6 +129,23 @@ public class ModelImporterTest extends AbstractIntegrationTest {
   }
   
   @Test
+  public void testImportModelPreserveOriginalNamespace() throws Exception {
+    IUserContext alex = createUserContext("alex", "playground");
+    
+    UploadModelResult uploadResult = this.importer.upload(
+        FileUpload.create("Color.type",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/org.eclipse.vorto.tutorial.type").getInputStream())),
+        Context.create(alex,Optional.of("org.eclipse.vorto")));
+    
+    assertEquals(true,uploadResult.isValid());
+    
+    List<ModelInfo> imported = this.importer.doImport(uploadResult.getHandleId(), Context.create(alex,Optional.of("org.eclipse.vorto")));
+    assertEquals(1,imported.size());
+    assertEquals("org.eclipse.vorto.tutorial",imported.get(0).getId().getNamespace());
+  }
+  
+  @Test
   public void testImportFileWithNonMatchingFileName() {
     IUserContext alex = createUserContext("alex", "playground");
     importModel("Color2.type", alex);
