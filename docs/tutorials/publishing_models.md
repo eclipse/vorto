@@ -13,7 +13,7 @@ In order to have permission to publish models, you need to fulfill a few require
 You need to
 - be an **owner or collaborator** to an [official namespace](#claiming-an-official-namespace).
 - have the **role of `Publish`** for the given official namespace. 
-- have `released` the model and all submodels (will be released automatically if not already done)
+- have [`released` the model](../../repository/docs/model_states.md) and all submodels (will be released automatically if not already done)
 
 Only after fulfilling those requirements you will be able to see the `Publish` button for the models of the according namespace.
 
@@ -25,7 +25,7 @@ The dialog showing up once clicking the `Publish` button will again explain you 
 
 ![Publish Model](../images/tutorials/publishing_models/publish_model.png)
 
-After publishing, the `Visibility` of your model will show **`Public`** and everybody will be able to view and use it.    
+After publishing, the `Visibility` of your model will show [**`Public`**](../../repository/docs/model_states.md) and everybody will be able to view and use it.    
 
 ![Published Model](../images/tutorials/publishing_models/published_model.png)
 
