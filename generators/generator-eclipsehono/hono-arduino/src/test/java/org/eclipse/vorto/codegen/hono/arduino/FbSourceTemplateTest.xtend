@@ -71,7 +71,7 @@ class FbSourceTemplateTest {
 		    result += "}";
 		
 		
-		    result += "} } }";
+		    result += "} }";
 		
 		    return result;
 		}

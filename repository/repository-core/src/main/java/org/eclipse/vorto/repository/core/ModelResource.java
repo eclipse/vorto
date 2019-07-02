@@ -39,7 +39,7 @@ public class ModelResource extends ModelInfo {
 
   private Model model;
   
-  private static final Map<Object, Object> OPTIONS_DEFAULT = SaveOptions.newBuilder().format().getOptions().toOptionsMap();
+  private static final Map<Object, Object> OPTIONS_DEFAULT = SaveOptions.newBuilder().getOptions().toOptionsMap();
   
   static {
     OPTIONS_DEFAULT.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
