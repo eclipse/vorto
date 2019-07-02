@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.importer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +98,17 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     assertFalse(result.get(0).isValid());
     assertFalse(result.get(1).isValid());
 
+  }
+  
+  @Test
+  public void testUploadAndImportModelsWithSameNameDifferentVersion() throws Exception {
+    String fileName = "sample_models/models_same_name.zip";
+    List<ValidationReport> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),
+        fileName, createUserContext("admin", "playground"));
+    
+    assertEquals(2,result.size());
+    assertTrue(result.get(0).isValid());
+    assertTrue(result.get(1).isValid());
   }
 
   @Test

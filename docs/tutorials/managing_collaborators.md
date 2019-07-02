@@ -1,7 +1,7 @@
 # Managing Collaborators
 
 > **What is a Collaborator** ?    
-A Collaborator is user with access to the namespace. 
+A Collaborator is a user with access to the namespace. 
 A Collaborator who has Administrator access can add other collaborators and also assign roles to them.    
 This way multiple users can collaborate on the same model/namespace pertaining to their respective roles.
 
