@@ -136,7 +136,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     tenant = tenantRepo.save(tenant);
 
     logger.info("Sending update/create event for {}", tenantId);
-    eventPublisher.publishEvent(new AppEvent(this, userContext, eventType));
+    eventPublisher.publishEvent(new AppEvent(this, tenant, userContext, eventType));
 
     return tenant;
   }

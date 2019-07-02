@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -46,10 +45,6 @@ import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.TenantService;
-import org.infinispan.schematic.document.Changes;
-import org.infinispan.schematic.document.EditableDocument;
-import org.infinispan.schematic.document.Editor;
-import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
@@ -120,7 +115,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   public void start() throws Exception {
     LOGGER.info("Starting Vorto Modeshape Repository -start-");
     ENGINE.start();
-    repository = ENGINE.deploy(modifyWorkspaces(repositoryConfiguration));
+    repository = ENGINE.deploy(repositoryConfiguration);
     ENGINE.startRepository(repositoryConfiguration.getName()).get();
     LOGGER.info("Starting Vorto Modeshape Repository -finished-");
   }
@@ -162,21 +157,22 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
     Diagnostician diagnostics = new Diagnostician(repoDiagnostics);
-    diagnostics.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    diagnostics.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
     return diagnostics;
   }
 
   @Override
   public IRepositoryManager getRepositoryManager(String tenant, Authentication user) {
     RepositoryManager repoManager = new RepositoryManager();
-    repoManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    repoManager.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    repoManager.setDefaultSessionSupplier(defaultWorkspaceSessionSupplier(user));
     return repoManager;
   }
   
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
     ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService);
-    policyManager.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    policyManager.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
     return policyManager;
   }
 
@@ -190,7 +186,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this);
 
-    modelRepository.setSessionSupplier(repositorySessionSupplier(tenant, user));
+    modelRepository.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);
     
     return modelRepository;
@@ -206,7 +202,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     return getRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
   }
   
-  private Supplier<Session> repositorySessionSupplier(String tenant, Authentication user) {
+  private Supplier<Session> namedWorkspaceSessionSupplier(String tenant, Authentication user) {
     return () -> {
       try {
         return repository.login(
@@ -222,6 +218,18 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
       }
     };
   }
+  
+  private Supplier<Session> defaultWorkspaceSessionSupplier(Authentication user) {
+    return () -> {
+      try {
+        return repository.login();
+      } catch (LoginException e) {
+        throw new UserLoginException(user.getName(), e);
+      } catch (RepositoryException e) {
+        throw new FatalModelRepositoryException("Error while getting default repository for user [" + user.getName() + "]", e);
+      }
+    };
+  }
 
   private Set<Role> getUserRolesInTenant(String tenantId, String username) {
     Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(
@@ -232,58 +240,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
             tUser -> tUser.getRoles().stream().map(
                 userRole -> userRole.getRole()).collect(Collectors.toSet()))
         .orElse(Collections.emptySet());
-  }
-
-  private RepositoryConfiguration modifyWorkspaces(RepositoryConfiguration repoConfig) {
-    Editor editor = repoConfig.edit();
-    EditableDocument workspaces =
-        editor.getOrCreateDocument(RepositoryConfiguration.FieldName.WORKSPACES);
-
-    Collection<String> tenants = new ArrayList<>();
-    tenants.add("default");
-    
-    try {
-      Collection<String> currentTenants = getTenants();
-      tenants.addAll(currentTenants);
-    } catch (Exception e) {
-      LOGGER.error(
-          "Error while retrieving tenants during modeshape initialization. Using 'default' as workspace.",
-          e);
-    }
-    
-    workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, tenants.toArray());
-    
-    return new RepositoryConfiguration(editor, repoConfig.getName());
-  }
-
-  public void updateWorkspaces() {
-    try {
-      LOGGER.info("Updating the repo workspaces with current tenants! Engine State: "
-          + ENGINE.getState().name());
-      RepositoryConfiguration deployedConfig =
-          ENGINE.getRepositoryConfiguration(repositoryConfiguration.getName());
-
-      Editor editor = deployedConfig.edit();
-      EditableDocument workspaces =
-          editor.getOrCreateDocument(RepositoryConfiguration.FieldName.WORKSPACES);
-      workspaces.setArray(RepositoryConfiguration.FieldName.PREDEFINED, getTenants().toArray());
-
-      Changes changes = editor.getChanges();
-      Problems problems = deployedConfig.validate(changes);
-      if (!problems.hasErrors()) {
-        ENGINE.update(repositoryConfiguration.getName(), changes);
-      } else {
-        LOGGER.error(problems.toString());
-      }
-    } catch (RepositoryException e) {
-      LOGGER.error("Error while updating workspace", e);
-    }
-  }
-
-  private Collection<String> getTenants() {
-    Collection<String> tenantWorkspaces = tenantService.getTenants().stream()
-        .map(tenant -> tenant.getTenantId()).collect(Collectors.toList());
-    return tenantWorkspaces;
   }
 
   @Override

@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.function.Supplier;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -26,6 +27,8 @@ import org.eclipse.vorto.repository.core.IRepositoryManager;
 public class RepositoryManager extends AbstractRepositoryOperation implements IRepositoryManager {
 
   private static Logger logger = Logger.getLogger(RepositoryManager.class);
+  
+  private Supplier<Session> defaultSessionSupplier;
   
   @Override
   public byte[] backup() {
@@ -77,11 +80,14 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
 
   @Override
   public boolean createTenantWorkspace(final String tenantId) {
-    return doInSession(session -> {
-      Workspace workspace = session.getWorkspace();
+    try {
+      Workspace workspace = defaultSessionSupplier.get().getWorkspace();
       workspace.createWorkspace(tenantId);
       return true;
-    });
+    } catch (RepositoryException e) {
+      logger.error("Exception while creating workspace", e);
+      throw new FatalModelRepositoryException("Cannot create workspace for user", e);
+    }
   }
   
   @Override
@@ -93,4 +99,11 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
     });
   }
 
+  public Supplier<Session> getDefaultSessionSupplier() {
+    return defaultSessionSupplier;
+  }
+
+  public void setDefaultSessionSupplier(Supplier<Session> defaultSessionSupplier) {
+    this.defaultSessionSupplier = defaultSessionSupplier;
+  }
 }

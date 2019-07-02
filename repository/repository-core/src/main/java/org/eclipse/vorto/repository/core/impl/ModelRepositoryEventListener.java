@@ -44,19 +44,30 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
   @Override
   public void onApplicationEvent(AppEvent event) {
     if (event.getEventType() == EventType.USER_DELETED) {
-      String userId = (String) event.getSubject();
-      makeModelsAnonymous(userId);
+      makeModelsAnonymous(event);
     } else if (event.getEventType() == EventType.TENANT_ADDED) {
-      repositoryFactory.updateWorkspaces();
+      createWorkspaceForTenant(event);
     } else if (event.getEventType() == EventType.TENANT_DELETED) {
-      IUserContext userContext = event.getUserContext();
-      IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(), 
-          userContext.getAuthentication());
-      repoMgr.removeTenantWorkspace(userContext.getTenant());
+      deleteWorkspaceForTenant(event);
     }
   }
 
-  private void makeModelsAnonymous(String username) {
+  private void deleteWorkspaceForTenant(AppEvent event) {
+    IUserContext userContext = event.getUserContext();
+    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(), 
+        userContext.getAuthentication());
+    repoMgr.removeTenantWorkspace(userContext.getTenant());
+  }
+
+  private void createWorkspaceForTenant(AppEvent event) {
+    IUserContext userContext = event.getUserContext();
+    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(), 
+        userContext.getAuthentication());
+    repoMgr.createTenantWorkspace(userContext.getTenant());
+  }
+
+  private void makeModelsAnonymous(AppEvent event) {
+    String username = (String) event.getSubject();
     List<ModelInfo> result = searchService.search("author:" + username);
 
     result.forEach(model -> {
@@ -81,6 +92,4 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
   public void setSearchService(ISearchService searchService) {
     this.searchService = searchService;
   }
-  
-  
 }
