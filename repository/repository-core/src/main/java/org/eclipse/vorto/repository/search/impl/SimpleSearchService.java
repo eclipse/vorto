@@ -12,9 +12,7 @@
 package org.eclipse.vorto.repository.search.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -40,29 +38,20 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
     this.repositoryFactory = repositoryFactory;
   }
 
-  @Override
-  public List<ModelInfo> search(Optional<Collection<String>> tenantIds, String expression) {
-    List<ModelInfo> result = new ArrayList<>();
-    
-    if (tenantIds.isPresent() && !tenantIds.get().isEmpty()) {     
-      tenantIds.get().stream().forEach(tenantId -> {
-        IModelRepository repository = this.repositoryFactory.getRepository(tenantId);
-        result.addAll(repository.search(expression));
-      });
-    } else {
-      tenantService.getTenants().forEach(tenant -> {
-        IModelRepository repository = this.repositoryFactory.getRepository(tenant.getTenantId());
-        result.addAll(repository.search(expression));
-      });
-    }
-    
-    return result;
-    
-  }
-
+  /**
+   * Searches all tenants existing in the system. Use modeshape ACLs to get result back which matches user rights.
+   */
   @Override
   public List<ModelInfo> search(String expression) {
-    return search(Optional.empty(), expression);
+    List<ModelInfo> result = new ArrayList<>();
+    
+    tenantService.getTenants().forEach(tenant -> {
+      IModelRepository repository = this.repositoryFactory.getRepository(tenant.getTenantId());
+      result.addAll(repository.search(expression));
+    });
+
+    return result;
+    
   }
 
   @Override

@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.search.ISearchService;
@@ -61,7 +60,7 @@ public class ModelSearchController extends AbstractRepositoryController {
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
         
-    List<ModelInfo> result = searchService.search(Optional.empty(),URLDecoder.decode(expression, "utf-8"));
+    List<ModelInfo> result = searchService.search(URLDecoder.decode(expression, "utf-8"));
 
     return result.stream().sorted(new Comparator<ModelInfo>() {
       public int compare(ModelInfo o1, ModelInfo o2) {
