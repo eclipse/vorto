@@ -30,7 +30,7 @@ Each Role gives the collaborator permissions for specific actions for the accord
 ## Roles
 Each Role provides collaborators with specific permissions for the according namespace.
 
-|          | View Models | Create Models | Edit Models | Delete Models | Submit Models for Review | Release Models | Publish Models | Edit Namespace | Add Collaborators | Remove Collaborators | Change Collaborator Roles |
+|          | View Models | Create Models | Edit Models | Delete Models | Initiate Release process | Approve Releases | Publish Models | Add/Remove Namespace | Add Collaborators | Remove Collaborators | Change Collaborator Roles |
 |----------|-------------|---------------|-------------|---------------|--------------------------|----------------|----------------|----------------|-------------------|----------------------|---------------------------|
 | VIEW     | ✔           | ✘             | ✘           | ✘             | ✘                        | ✘              | ✘              | ✘              | ✘                 | ✘                    | ✘                         |
 | CREATE   | ✔           | ✔             | ✔           | ✔             | ✘                        | ✘              | ✘              | ✘              | ✘                 | ✘                    | ✘                         |
