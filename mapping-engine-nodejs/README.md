@@ -39,7 +39,7 @@ Desired Vorto compliant JSON structure:
 ## Prerequisite
 To work through this tutorial, you will need:
 
-- A Github account to log in to Vorto Repository
+- [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) to log in to Vorto Repository
 - A [Vorto Information Model](https://github.com/eclipse/vorto/blob/master/docs/tutorials/describe_tisensor.md), for your IoT device
 
 ### Step 1: Create Mapping Specification
