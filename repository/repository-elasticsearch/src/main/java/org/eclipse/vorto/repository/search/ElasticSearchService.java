@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.search;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.search.extractor.BasicIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor.FieldType;
@@ -63,10 +65,11 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.common.base.Strings;
 
 /**
- * Search Service implementation using a remote Elastic Search Service 
+ * Search Service implementation using a remote Elastic Search Service
  *
  */
 public class ElasticSearchService implements IIndexingService, ISearchService {
@@ -74,7 +77,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   public static final String TEXT = "text";
 
   public static final String KEYWORD = "keyword";
-  
+
   private static final String TENANT_ID = "tenantId";
 
   private static final int MAX_SEARCH_RESULTS = 1000;
@@ -92,7 +95,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   private Pattern searchExprPattern = Pattern.compile("name:(\\w+)\\*");
 
   private Pattern authorExprPattern = Pattern.compile("author:(\\w+)");
-  
+
   private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
 
   private RestHighLevelClient client;
@@ -107,7 +110,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
     this.fieldExtractors.add(new BasicIndexFieldExtractor());
-    
+
     init();
   }
 
@@ -322,11 +325,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   @Override
-  public List<ModelInfo> search(Optional<Collection<String>> tenantIds, String searchExpression) {
-    PreConditions.notNull(tenantIds, "tenantIds must not be null.");
+  public List<ModelInfo> search(String searchExpression) {
 
     SearchParameters searchParameters =
-        makeSearchParams(tenantIds, Strings.nullToEmpty(searchExpression));
+        makeSearchParams(findTenantsOfUser(), Strings.nullToEmpty(searchExpression));
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(makeElasticSearchQuery(searchParameters));
@@ -350,26 +352,39 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
+  private List<String> findTenantsOfUser() {
+    UserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    if (context.isAnonymous()) {
+      return Collections.emptyList();
+    } else {
+      return tenantService.getTenants().stream()
+          .filter(tenant -> tenant.hasUser(context.getUsername())).map(t -> t.getTenantId())
+          .collect(Collectors.toList());
+    }
+  }
+
   private ModelInfo fromSearchHit(SearchHit searchHit) {
     ModelInfo modelInfo = new ModelInfo();
 
     Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
 
-    modelInfo.setId(ModelId.fromPrettyFormat((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_ID)));
-    modelInfo.setType(ModelType.valueOf((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_TYPE)));
+    modelInfo.setId(
+        ModelId.fromPrettyFormat((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_ID)));
+    modelInfo
+        .setType(ModelType.valueOf((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_TYPE)));
     modelInfo.setState((String) sourceAsMap.get(BasicIndexFieldExtractor.STATE));
     modelInfo.setVisibility((String) sourceAsMap.get(BasicIndexFieldExtractor.VISIBILITY));
     modelInfo.setAuthor((String) sourceAsMap.get(BasicIndexFieldExtractor.AUTHOR));
     modelInfo.setDescription((String) sourceAsMap.get(BasicIndexFieldExtractor.DESCRIPTION));
     modelInfo.setDisplayName((String) sourceAsMap.get(BasicIndexFieldExtractor.DISPLAY_NAME));
-    modelInfo.setHasImage(Boolean.getBoolean((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_HASIMAGE)));
+    modelInfo.setHasImage(
+        Boolean.getBoolean((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_HASIMAGE)));
     String createdOn = (String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_CREATIONDATE);
     modelInfo.setCreationDate(new Date(Long.parseLong(createdOn)));
     return modelInfo;
   }
 
-  private SearchParameters makeSearchParams(Optional<Collection<String>> tenantIds,
-      String searchExpression) {
+  private SearchParameters makeSearchParams(Collection<String> tenantIds, String searchExpression) {
     Optional<ModelType> modelType = Optional.empty();
     for (ModelType type : ModelType.values()) {
       if (searchExpression.contains(type.name())) {
@@ -395,7 +410,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (matcher.find()) {
       author = Optional.of(matcher.group(1));
     }
-    
+
     Optional<String> visibility = Optional.empty();
     matcher = visibilityExprPattern.matcher(searchExpression);
     if (matcher.find()) {
@@ -413,30 +428,31 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
 
     if (params.state.isPresent()) {
-      queryBuilder =
-          queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.STATE, params.state.get().getName()));
+      queryBuilder = queryBuilder.must(
+          QueryBuilders.termQuery(BasicIndexFieldExtractor.STATE, params.state.get().getName()));
     }
 
     if (params.type.isPresent()) {
-      queryBuilder =
-          queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.MODEL_TYPE, params.type.get().toString()));
+      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.MODEL_TYPE,
+          params.type.get().toString()));
     }
 
     if (params.author.isPresent()) {
-      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
-    }
-    
-    if (params.visibility.isPresent()) {
-      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, params.visibility.get()));
+      queryBuilder = queryBuilder
+          .must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
     }
 
-    if (params.tenantIds.isPresent()) {
-      if (params.tenantIds.get().isEmpty()) {
-        queryBuilder = queryBuilder.must(isPublic());
-      } else {
-        queryBuilder = queryBuilder.must(or(isPublic(), isOwnedByTenants(params.tenantIds.get())));
-      }
+    if (params.visibility.isPresent()) {
+      queryBuilder = queryBuilder.must(
+          QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, params.visibility.get()));
     }
+
+    if (params.tenantIds.isEmpty()) {
+      queryBuilder = queryBuilder.must(isPublic());
+    } else {
+      queryBuilder = queryBuilder.must(or(isPublic(), isOwnedByTenants(params.tenantIds)));
+    }
+
 
     return queryBuilder;
   }
@@ -450,7 +466,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private QueryBuilder matches(String expression) {
-    return or(QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
+    return or(
+        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
         QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DESCRIPTION, expression),
         QueryBuilders.wildcardQuery(BasicIndexFieldExtractor.MODEL_ID, "*" + expression + "*"));
   }
@@ -464,15 +481,16 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private class SearchParameters {
-    Optional<Collection<String>> tenantIds;
+    Collection<String> tenantIds;
     Optional<String> expression;
     Optional<ModelState> state;
     Optional<ModelType> type;
     Optional<String> author;
     Optional<String> visibility;
 
-    public SearchParameters(Optional<Collection<String>> tenantIds, Optional<String> expression,
-        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author, Optional<String> visibility) {
+    public SearchParameters(Collection<String> tenantIds, Optional<String> expression,
+        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author,
+        Optional<String> visibility) {
       this.tenantIds = tenantIds;
       this.expression = expression;
       this.state = state;
@@ -480,11 +498,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       this.author = author;
       this.visibility = visibility;
     }
-  }
-
-  @Override
-  public List<ModelInfo> search(String expression) {
-    return this.search(Optional.empty(), expression);
   }
 
   public Collection<IIndexFieldExtractor> getFieldExtractors() {
