@@ -19,7 +19,7 @@ In this tutorial, we are going to walk you through the process of creating a Vor
 
 To work through this tutorial, you will need:
 
-- [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) account to log in to the Vorto Repository
+- [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) account to log in to the Vorto Repository
 - A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
 - You are a collaborator/owner of a namespace
 
