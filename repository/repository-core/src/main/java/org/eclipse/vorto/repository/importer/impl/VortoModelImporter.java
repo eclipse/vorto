@@ -92,11 +92,7 @@ public class VortoModelImporter extends AbstractModelImporter {
         ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
         for (Model model : changeSet.get()) {
           ModelResource resource = new ModelResource(model);
-          try {
-            zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
-          } catch (IOException e) {
-            logger.error("Could not serialize model to DSL", e);
-          }
+          zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
         }
         return zipFile.getFileUpload();
       } else {
@@ -139,12 +135,7 @@ public class VortoModelImporter extends AbstractModelImporter {
             ModelType.fromFileName(fileUpload.getFileName())).read();
     ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(targetNamespace).execute();
     ModelResource resource = new ModelResource(changeSet.get().get(0));
-    try {
-      return FileUpload.create(fileUpload.getFileName(), resource.toDSL());
-    } catch (IOException e) {
-      logger.error("Could not serialize model to DSL", e);
-      return fileUpload;
-    }
+    return FileUpload.create(fileUpload.getFileName(), resource.toDSL());
   }
 
   @Override

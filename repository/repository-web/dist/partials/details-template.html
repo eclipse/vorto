@@ -689,14 +689,14 @@
 			   	<label>New Namespace</label>
 			   	<div class="input-group">
 		        	<span class="input-group-addon">{{ defaultNamespace }}.</span>
-					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control" required>
+					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control">
 				</div>
 			  	<div class="invalid-input" ng-show="refactorForm.namespace.$error.pattern">Namespace must not contain any special characters.</div>
 			  </div>
 			  
 			   <div class="form-group">
 			   	<label>New Name</label>
-		        <input type="text" name="name" ng-pattern=/^[A-Z][a-zA-Z0-9]*$/" ng-model="newName" placeholder="New Name" class="form-control" required>
+		        <input type="text" name="name" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" ng-model="newName" placeholder="New Name" class="form-control" required>
 			  	<div class="invalid-input" ng-show="refactorForm.name.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
 			  </div> 
 	</form>

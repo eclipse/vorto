@@ -86,13 +86,17 @@ public class ModelResource extends ModelInfo {
     return references;
   }
 
-  public byte[] toDSL() throws IOException {
+  public byte[] toDSL() {
     Resource resource = model.eResource().getResourceSet()
         .createResource(URI.createURI(getFullQualifiedFileName()));
     resource.getContents().add(model);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     
-    resource.save(baos, OPTIONS_DEFAULT);
+    try {
+      resource.save(baos, OPTIONS_DEFAULT);
+    } catch (IOException e) {
+      // should not occur 
+    }
     return baos.toByteArray();
   }
 
