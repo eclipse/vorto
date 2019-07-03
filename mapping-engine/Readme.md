@@ -1,16 +1,29 @@
 # Getting started with Vorto Mappings
 
-Vorto abstracts device data using Function Blocks, thus helping to reduce tight-coupling of devices in IoT solutions. But how does Vorto help to map the actual device data to these abstract Function Blocks? 
+**Vorto abstracts device data** using Function Blocks, thus helping to reduce tight-coupling of devices in IoT solutions.   
+But how does Vorto help to map the actual device data to these abstract Function Blocks? 
+
+Payloads sent in different formats from the devices can be piped through the *Vorto Payload Mapping Engine* which will use the [Mapping Specification](docs/mapping_syntax.md) and the [provided Converters](docs/built_in_converters.md).
+The advantage of using this approach is that target platforms do not have to care about the different payloads of the devices but only need to handle the normalized Vorto compliant payloads.
+
+This **normalized format** can then be used as a harmonized starting point for more specific, target platform compliant formats.
+In addition to that, custom Converters can be easily plugged into the *Payload Mapping Engine* in order to allow for more complex conversion of proprietary payloads.
 
 In this tutorial, we are going to walk you through the process of creating a Vorto mapping specification for an Information Model and execute it with the Vorto Payload Mapping Engine.
 
 ![mapping schematic drawing](./docs/vorto_mappings_schema.png)
 
+<br />
+
 ## Prerequisite
 
 To work through this tutorial, you will need:
 
+<<<<<<< HEAD
 - [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) Account to log in to the Vorto Repository
+=======
+- [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) account to log in to the Vorto Repository
+>>>>>>> first changes to mapping doc
 - A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
 - You are a collaborator/owner of a namespace
 
@@ -21,9 +34,6 @@ A mapping adds platform specific information to an Information Model. Since the 
 
 To create a mapping go to your newly created model and press the **Create Mapping Spec** Button
 ![create mapping spec button](./docs/create_mapping_spec_button.png)
-
-Now add a Target Platform key for your mapping to signal, which platform this mapping belongs to, like blegatt. Each target platform should offer its own object model which is passed to the mapping engine. This ensures that a mapping is independent of the underlying driver.
-![platform key](./docs/target_platform_key.png)
 
 Now the web editor opens and allows you to add mapping expression for the Function Blocks you added. You can write XPath 2.0 like notation. Behind the scenes the engine uses [JXPath](https://commons.apache.org/proper/commons-jxpath/) to apply XPath expressions on a java object graph. To add functionality that may not be possible using jxpath, you can also add custom JavaScript or java functions (see the custom functions section).
 ![xpath](./docs/xpath.png)
