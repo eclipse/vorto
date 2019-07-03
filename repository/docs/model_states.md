@@ -33,7 +33,7 @@ Once `Released`, a model can be made public.
 
 ### `Public`
 A `Public` model can be viewed by everyone, including non-registered users. In order to change a models visibility state, you need to
-- be an **owner or collaborator** to an [official namespace](#claiming-an-official-namespace).
+- be an **owner or collaborator** to an [official namespace](../../docs/tutorials/publishing_models.md#claiming-an-official-namespace).
 - have the **role of `Publish`** for the given official namespace. 
 - have `released` the model and all submodels (will be released automatically if not already done)
 
