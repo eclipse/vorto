@@ -142,12 +142,13 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ModelRepositoryFactory repositoryFactory;
 
   private ITenantService tenantService;
-  
+
   private IModelPolicyManager policyManager;
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
-      ModelRepositoryFactory repositoryFactory, ITenantService tenantService, IModelPolicyManager policyManager) {
+      ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
+      IModelPolicyManager policyManager) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -344,7 +345,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             .publishEvent(new AppEvent(this, createdModel, userContext, EventType.MODEL_CREATED));
 
         return createdModel;
-      } catch (IOException e) {
+      } catch (Exception e) {
         logger.error("Error checking in model", e);
         throw new FatalModelRepositoryException("Problem saving model " + modelInfo.getId(), e);
       }
@@ -858,7 +859,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       try {
         this.save(newModelId, resource.toDSL(),
             existingId.getName() + existingModel.getType().getExtension(), user);
-      } catch (IOException e) {
+      } catch (Exception e) {
         throw new FatalModelRepositoryException(e.getMessage(), e);
       }
 
@@ -899,60 +900,87 @@ public class ModelRepository extends AbstractRepositoryOperation
       throw new NewNamespacesNotSupersetException();
     }
 
+    ModelInfo oldModel = getById(oldModelId);
+
+    ChangeSet changeSet = refactorModelWithNewId(oldModel, newModelId);
+
+    saveChangeSetIntoRepository(changeSet, user);
+
+    ModelInfo newModel = getById(newModelId);
+
+    newModel = copy(oldModel, newModel, user);
+
+    removeModel(oldModel.getId());
+
+    return newModel;
+
+  }
+
+  /**
+   * copies merely attachments and policies and workflow meta data from the source model to the target model
+   * 
+   * @param sourceModel source model to copy
+   * @param targetModel target model to add data from source model
+   * @param user
+   * @return new model with all new meta data
+   */
+  private ModelInfo copy(ModelInfo sourceModel, ModelInfo targetModel, IUserContext user) {
+    updateState(targetModel.getId(), sourceModel.getState());
+    targetModel.setState(sourceModel.getState());
+
+    // Copy all attachments over to new node
+    this.getAttachments(sourceModel.getId()).forEach(oldAttachment -> {
+      Optional<FileContent> fileContent =
+          this.getAttachmentContent(sourceModel.getId(), oldAttachment.getFilename());
+      this.attachFile(targetModel.getId(), fileContent.get(), user,
+          oldAttachment.getTags().toArray(new Tag[oldAttachment.getTags().size()]));
+    });
+
+    // Copy all policies over to new node
+    this.policyManager.copyPolicyEntries(sourceModel.getId(), targetModel.getId());
+
+    return targetModel;
+  }
+
+  /**
+   * saves the given changeset in a sorted way into the repository in the context of the given user
+   * @param changeSet
+   * @param user
+   */
+  private void saveChangeSetIntoRepository(ChangeSet changeSet, IUserContext user) {
+    DependencyManager dm = new DependencyManager();
+
+    changeSet.getChanges().stream().forEach(model -> {
+      dm.addResource(new ModelResource(model));
+    });
+
+    dm.getSorted().forEach(sortedModel -> {
+      save((ModelResource) sortedModel, user);
+    });
+
+  }
+
+  private ChangeSet refactorModelWithNewId(ModelInfo oldModel, ModelId newModelId) {
+    IModelWorkspace workspace = createWorkspaceFromModelAndReferences(oldModel.getId());
+
+    ChangeSet changeSet = RefactoringTask.from(workspace)
+        .toModelId(ModelUtils.toEMFModelId(oldModel.getId(), oldModel.getType()),
+            ModelUtils.toEMFModelId(newModelId, oldModel.getType()))
+        .execute();
+
+    return changeSet;
+  }
+
+  private IModelWorkspace createWorkspaceFromModelAndReferences(ModelId modelId) {
     ModelWorkspaceReader reader = IModelWorkspace.newReader();
+    ModelResource resource = getEMFResource(modelId);
+    reader.addFile(new ByteArrayInputStream(resource.toDSL()), resource.getType());
 
-    try {
-      ModelInfo oldModel = getById(oldModelId);
-      ModelResource resource = getEMFResource(oldModelId);
-      reader.addFile(new ByteArrayInputStream(resource.toDSL()), resource.getType());
-
-      getModelsReferencing(oldModelId).forEach(reference -> {
-        ModelResource referencingModel = getEMFResource(reference.getId());
-        try {
-          reader.addFile(new ByteArrayInputStream(referencingModel.toDSL()),
-              referencingModel.getType());
-        } catch (IOException e) {
-          throw new FatalModelRepositoryException(e.getMessage(), e);
-        }
-      });
-
-      ChangeSet changeSet = RefactoringTask.from(reader.read())
-          .toModelId(ModelUtils.toEMFModelId(resource.getId(), resource.getType()),
-              ModelUtils.toEMFModelId(newModelId, resource.getType()))
-          .execute();
-
-      DependencyManager dm = new DependencyManager();
-
-
-      changeSet.getChanges().stream().forEach(model -> {
-        dm.addResource(new ModelResource(model));
-      });
-
-      dm.getSorted().forEach(sortedModel -> {
-        save((ModelResource) sortedModel, user);
-      });
-
-      ModelInfo newModelInfo = getById(newModelId);
-      updateState(newModelInfo.getId(), oldModel.getState());
-
-      // Copy all attachments over to new node
-      this.getAttachments(oldModelId).forEach(oldAttachment -> {
-        Optional<FileContent> fileContent = this.getAttachmentContent(oldModelId, oldAttachment.getFilename());
-        this.attachFile(newModelId,
-            fileContent.get(), user,
-            oldAttachment.getTags().toArray(new Tag[oldAttachment.getTags().size()]));
-      });
-      
-      // Copy all policies over to new node
-      this.policyManager.copyPolicyEntries(oldModelId,newModelId);
-
-      // finally remove old model
-      removeModel(resource.getId());
-
-      return getById(newModelInfo.getId());
-
-    } catch (IOException problem) {
-      throw new FatalModelRepositoryException(problem.getMessage(), problem);
-    }
+    getModelsReferencing(modelId).forEach(reference -> {
+      ModelResource referencingModel = getEMFResource(reference.getId());
+      reader.addFile(new ByteArrayInputStream(referencingModel.toDSL()),
+          referencingModel.getType());
+    });
+    return reader.read();
   }
 }
