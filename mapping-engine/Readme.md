@@ -56,9 +56,11 @@ Download and save the Mapping Specification to start integrating it with the eng
 
 ![download json spec](./docs/download_spec_button.png)
 
+<br />
+
 **1.** Add Maven dependency
 
-```
+```xml
 <dependency>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>mapping-engine-all</artifactId>
@@ -66,11 +68,15 @@ Download and save the Mapping Specification to start integrating it with the eng
 </dependency>
 ```
 
+<br />
+
 **2.** Initialize the mapping engine with the downloaded specification
 
 ```Java
 MappingEngine engine = MappingEngine.createFromInputStream(FileUtils.openInputStream(new File("src/main/resources/mappingspec.json")));
 ```
+
+<br />
 
 **3.** Pass the arbitrary device payload to the engine to get it converted to Vorto compliant data
 
@@ -78,6 +84,8 @@ MappingEngine engine = MappingEngine.createFromInputStream(FileUtils.openInputSt
 Object deviceData = ...;
 InfomodelValue mappedData = engine.map(deviceData);
 ```
+
+<br />
 
 **4.** Optionally validate the mapped data to check if it complies to the Vorto model
 
@@ -87,6 +95,8 @@ if (!validationReport.isValid()) {
 	// handle invalid data
 }
 ```
+
+<br />
 
 **5.** Convert mapped data to Digital Twin IoT compliant data
  
@@ -160,25 +170,26 @@ For security reasons, the following restrictions apply when processing these con
 #### Example
 
 In the following example, a custom (Javascript) converter is defined in a Function Block mapping, that converts a click amount as a **String** to an **Integer** value:
+```java
+namespace devices.aws.button.mapping
+version 1.0.0
+displayname "buttonPayloadMapping"
+description "Payload Mapping for the button property of the AWS IoT Button"
+category payloadmapping
 
-		namespace devices.aws.button.mapping
-		version 1.0.0
-		displayname "buttonPayloadMapping"
-		description "Payload Mapping for the button property of the AWS IoT Button"
-		category payloadmapping
-		
-		using com.ipso.smartobjects.Push_button;0.0.1
-		
-		functionblockmapping ButtonPayloadMapping {
-			targetplatform aws_ipso
+using com.ipso.smartobjects.Push_button;0.0.1
 
-			// Definition of Converter functions which can be used from within the function block mapping
-			from Push_button to functions with 
-				{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return -1;}"}
-			
-			// Usage of the converter function in the mapping rule expression
-			from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
-		}
+functionblockmapping ButtonPayloadMapping {
+	targetplatform aws_ipso
+
+	// Definition of Converter functions which can be used from within the function block mapping
+	from Push_button to functions with 
+		{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if 	  		(clickType === 'DOUBLE') return 2; else return -1;}"}
+
+	// Usage of the converter function in the mapping rule expression
+	from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
+}
+```
 
 <br />
 
@@ -191,17 +202,18 @@ Here is an example of using conditions to map to either temperature or illuminan
 In this example, only the Temperature Function Block will be mapped, if the type field of header matches the 'T' value. 
 
 Function Block Temperature Mapping
-
-	...
-	from Temperature to condition with {value:"header.type == 'T'"}
-	//mapping rules for Temperature properties
+```java
+...
+from Temperature to condition with {value:"header.type == 'T'"}
+//mapping rules for Temperature properties
+```
 
 Function Block Illuminance Mapping
-
-	...
-	from Illuminance to condition with {value:"header.type == 'I'"}
-	//mapping rules for Illuminance properties
-
+```java
+...
+from Illuminance to condition with {value:"header.type == 'I'"}
+//mapping rules for Illuminance properties
+```
 
 
 
