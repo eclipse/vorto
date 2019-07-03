@@ -32,6 +32,29 @@ public class RefactoringWorkspaceTest {
   }
 
   @Test
+  public void testChangeNamespaceWithManyReferencesAlreadyBelongingToTargetNamespace() {
+    IModelWorkspace workspace = IModelWorkspace.newReader()
+        .addFile(getClass().getClassLoader().getResourceAsStream("dsls/Unit.type"),
+            ModelType.Datatype)
+        .addFile(getClass().getClassLoader().getResourceAsStream("dsls/ConnectivityStatus.type"),
+            ModelType.Datatype)
+        .addFile(getClass().getClassLoader().getResourceAsStream("dsls/Connectivity.fbmodel"),
+            ModelType.Functionblock)
+        .read();
+
+    ChangeSet changeSet =
+        RefactoringTask.from(workspace).toNamespaceForAllModels("org.eclipse.vorto").execute();
+
+    assertEquals(3, changeSet.get().size());
+    assertEquals(0, changeSet.getChanges().size());
+    
+    Model fbmodel = changeSet.get().stream().filter(c -> c.getName().equals("Connectivity")).findAny().get();
+    assertEquals("org.eclipse.vorto", fbmodel.getNamespace());
+    assertEquals("org.eclipse.vorto.types.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
+    assertEquals("org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
+  }
+  
+  @Test
   public void testChangeNamespaceWithManyReferences() {
     IModelWorkspace workspace = IModelWorkspace.newReader()
         .addFile(getClass().getClassLoader().getResourceAsStream("dsls/Unit.type"),
@@ -43,15 +66,15 @@ public class RefactoringWorkspaceTest {
         .read();
 
     ChangeSet changeSet =
-        RefactoringTask.from(workspace).toNamespace("org.eclipse.vorto").execute();
+        RefactoringTask.from(workspace).toNamespaceForAllModels("vorto.private.alex").execute();
 
     assertEquals(3, changeSet.get().size());
-    assertEquals(0, changeSet.getChanges().size());
+    assertEquals(3, changeSet.getChanges().size());
     
     Model fbmodel = changeSet.get().stream().filter(c -> c.getName().equals("Connectivity")).findAny().get();
-    assertEquals("org.eclipse.vorto", fbmodel.getNamespace());
-    assertEquals("org.eclipse.vorto.types.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
-    assertEquals("org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
+    assertEquals("vorto.private.alex.org.eclipse.vorto", fbmodel.getNamespace());
+    assertEquals("vorto.private.alex.org.eclipse.vorto.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
+    assertEquals("vorto.private.alex.org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
   }
 
   @Test
@@ -62,7 +85,7 @@ public class RefactoringWorkspaceTest {
         .read();
 
     ChangeSet changeSet =
-        RefactoringTask.from(workspace).toNamespace("private.vorto.alex").execute();
+        RefactoringTask.from(workspace).toNamespaceForAllModels("private.vorto.alex").execute();
 
     assertEquals(1, changeSet.get().size());
     assertEquals(1, changeSet.getChanges().size());
@@ -80,7 +103,7 @@ public class RefactoringWorkspaceTest {
         .read();
 
     ChangeSet changeSet =
-        RefactoringTask.from(workspace).toNamespace("private.vorto.alex").execute();
+        RefactoringTask.from(workspace).toNamespaceForAllModels("private.vorto.alex").execute();
 
     assertEquals(2, changeSet.get().size());
     assertEquals(2, changeSet.getChanges().size());
@@ -112,7 +135,7 @@ public class RefactoringWorkspaceTest {
         .read();
 
     ChangeSet changeSet = RefactoringTask.from(workspace)
-        .toNamespace("private.vorto.alex", "org.eclipse.vorto").execute();
+        .toNamespaceForAllModels("private.vorto.alex", "org.eclipse.vorto").execute();
 
     assertEquals(3, changeSet.get().size());
     assertEquals(2, changeSet.getChanges().size());

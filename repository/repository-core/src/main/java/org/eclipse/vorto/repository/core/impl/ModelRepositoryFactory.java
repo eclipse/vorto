@@ -184,7 +184,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this);
+        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService);
 
     modelRepository.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);

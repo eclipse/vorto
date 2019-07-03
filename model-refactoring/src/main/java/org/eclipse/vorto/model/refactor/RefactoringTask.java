@@ -34,7 +34,13 @@ public class RefactoringTask {
     return new RefactoringTask(workspace);
   }
   
-  public RefactoringTask toNamespace(String targetNamespace, String... ignoredNamespaces) {
+  /**
+   * Changes all models to the given targetNamespace
+   * @param targetNamespace
+   * @param ignoredNamespaces
+   * @return
+   */
+  public RefactoringTask toNamespaceForAllModels(String targetNamespace, String... ignoredNamespaces) {
     
     Set<String> ignoreNamespaceList = new HashSet<>();
     if (ignoredNamespaces != null) {
@@ -56,11 +62,26 @@ public class RefactoringTask {
     return this;
   }
   
+  public RefactoringTask toModelId(ModelId oldModelId, ModelId newModelId) {
+    workspace.get().forEach(model -> {
+      ModelId currentModelId = ModelIdFactory.newInstance(model);
+      if (currentModelId.equals(oldModelId)) {
+        model.setName(newModelId.getName());
+        model.setVersion(newModelId.getVersion());
+        model.setNamespace(newModelId.getNamespace());
+        updateReferences(oldModelId, newModelId);
+        changedModels.add(model);
+      }
+    });
+    return this;
+  }
+  
   private void updateReferences(ModelId oldId, ModelId newId ) {
     workspace.get().forEach(model -> {
       model.getReferences().stream().forEach(reference -> {
-        if (reference.getImportedNamespace().equals(oldId.getNamespace()+"."+oldId.getName())) {
+        if (reference.getImportedNamespace().equals(oldId.getNamespace()+"."+oldId.getName()) && reference.getVersion().equals(oldId.getVersion())) {
           reference.setImportedNamespace(newId.getNamespace()+"."+newId.getName());
+          reference.setVersion(newId.getVersion());
           changedModels.add(model);
         }
       });

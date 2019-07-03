@@ -88,7 +88,7 @@ public class VortoModelImporter extends AbstractModelImporter {
               reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
             });
         IModelWorkspace workspace = reader.read();  
-        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(context.getTargetNamespace().get()).execute();
+        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(context.getTargetNamespace().get()).execute();
         ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
         for (Model model : changeSet.get()) {
           ModelResource resource = new ModelResource(model);
@@ -137,7 +137,7 @@ public class VortoModelImporter extends AbstractModelImporter {
     IModelWorkspace workspace =
         IModelWorkspace.newReader().addFile(new ByteArrayInputStream(fileUpload.getContent()),
             ModelType.fromFileName(fileUpload.getFileName())).read();
-    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(targetNamespace).execute();
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(targetNamespace).execute();
     ModelResource resource = new ModelResource(changeSet.get().get(0));
     try {
       return FileUpload.create(fileUpload.getFileName(), resource.toDSL());

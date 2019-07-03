@@ -112,7 +112,7 @@ public class RemoteImporter extends AbstractModelImporter {
     
     List<ModelResource> resources = new ArrayList<>();
     
-    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespace(context.getTargetNamespace().get()).execute();
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(context.getTargetNamespace().get()).execute();
     for (Model model : changeSet.get()) {
       resources.add(new ModelResource(model));
     }

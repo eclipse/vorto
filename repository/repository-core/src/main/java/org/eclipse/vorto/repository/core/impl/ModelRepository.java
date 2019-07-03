@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -49,6 +48,7 @@ import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IModelRefactoring;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -68,13 +68,15 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.core.refactoring.DefaultModelRefactoring;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import com.google.common.collect.Lists;
 
-public class ModelRepository extends AbstractRepositoryOperation implements IModelRepository,
-  ApplicationEventPublisherAware {
+public class ModelRepository extends AbstractRepositoryOperation
+    implements IModelRepository, ApplicationEventPublisherAware {
 
   private static final String VORTO_VISIBILITY = "vorto:visibility";
 
@@ -91,33 +93,33 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   private static final String VORTO_DISPLAYNAME = "vorto:displayname";
 
   private static final String VORTO_NODE_TYPE = "vorto:type";
-  
+
   private static final String VORTO_DESCRIPTION = "vorto:description";
-  
+
   private static final String JCR_LAST_MODIFIED_BY = "jcr:lastModifiedBy";
 
   private static final String JCR_LAST_MODIFIED = "jcr:lastModified";
 
   private static final String JCR_CREATED = "jcr:created";
-  
+
   private static final String JCR_DATA = "jcr:data";
-  
+
   private static final String JCR_CONTENT = "jcr:content";
-  
+
   private static final String MIX_LAST_MODIFIED = "mix:lastModified";
-  
+
   private static final String MIX_REFERENCEABLE = "mix:referenceable";
-  
+
   private static final String NT_FOLDER = "nt:folder";
-  
+
   private static final String NT_FILE = "nt:file";
-  
+
   private static final String NT_RESOURCE = "nt:resource";
-  
+
   private static final String MODE_ACCESS_CONTROLLABLE = "mode:accessControllable";
-  
+
   private static final String ATTACHMENTS_NODE = "attachments";
-  
+
   private static Logger logger = Logger.getLogger(ModelRepository.class);
 
   private IModelRetrievalService modelRetrievalService;
@@ -127,21 +129,24 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   private AttachmentValidator attachmentValidator;
 
   private ModelParserFactory modelParserFactory;
-  
-  private ApplicationEventPublisher eventPublisher = null;
-  
-  private ModelRepositoryFactory repositoryFactory;
 
-  public ModelRepository(ModelSearchUtil modelSearchUtil,
-      AttachmentValidator attachmentValidator, ModelParserFactory modelParserFactory,
-      IModelRetrievalService modelRetrievalService, ModelRepositoryFactory repositoryFactory) {
+  private ApplicationEventPublisher eventPublisher = null;
+
+  private ModelRepositoryFactory repositoryFactory;
+  
+  private ITenantService tenantService;
+
+  public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
+      ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
+      ModelRepositoryFactory repositoryFactory, ITenantService tenantService) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.modelRetrievalService = modelRetrievalService;
     this.repositoryFactory = repositoryFactory;
+    this.tenantService = tenantService;
   }
-  
+
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
@@ -263,21 +268,34 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
 
     ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
 
+    save(modelInfo, userContext);
+
+    return modelInfo;
+  }
+
+  public ModelInfo save(ModelId modelId, byte[] content, String fileName,
+      IUserContext userContext) {
+    return save(modelId, content, fileName, userContext, true);
+  }
+
+  public ModelInfo save(final ModelResource modelInfo, IUserContext userContext) {
+
     return doInSession(jcrSession -> {
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
-      logger.info("Saving " + modelId.toString() + " as " + fileName + " in Workspace/Tenant: "
-          + session.getWorkspace().getName() + "/" + userContext.getTenant());
+      logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
+          + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/"
+          + userContext.getTenant());
 
       try {
-        Node folderNode = createNodeForModelId(session, modelId);
+        Node folderNode = createNodeForModelId(session, modelInfo.getId());
         folderNode.addMixin(MIX_REFERENCEABLE);
         folderNode.addMixin(VORTO_META);
         folderNode.addMixin(MIX_LAST_MODIFIED);
 
         NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
         if (!nodeIt.hasNext()) { // new node
-          Node fileNode = folderNode.addNode(fileName, NT_FILE);
+          Node fileNode = folderNode.addNode(modelInfo.getFileName(), NT_FILE);
           fileNode.addMixin(VORTO_META);
           fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
           fileNode.setProperty(VORTO_VISIBILITY, VISIBILITY_PRIVATE);
@@ -290,7 +308,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
             throw new FatalModelRepositoryException(
-                "Problem indexing new node for search" + modelId, null);
+                "Problem indexing new node for search" + modelInfo.getId(), null);
           }
         } else { // node already exists, so just update it.
           Node fileNode = nodeIt.nextNode();
@@ -303,25 +321,24 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
           boolean success = session.sequence("Vorto Sequencer", input, fileNode);
           if (!success) {
             throw new FatalModelRepositoryException(
-                "Problem indexing new node for search" + modelId, null);
+                "Problem indexing new node for search" + modelInfo.getId(), null);
           }
         }
 
         session.save();
         logger.info("Model was saved successful");
+
+        ModelInfo createdModel = getById(modelInfo.getId());
         
-        eventPublisher.publishEvent(new AppEvent(this, getBasicInfo(modelId), userContext, EventType.MODEL_CREATED));
-        return modelInfo;
+        eventPublisher
+            .publishEvent(new AppEvent(this, createdModel, userContext, EventType.MODEL_CREATED));
+        
+        return createdModel;
       } catch (IOException e) {
         logger.error("Error checking in model", e);
-        throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
+        throw new FatalModelRepositoryException("Problem saving model " + modelInfo.getId(), e);
       }
     });
-  }
-
-  public ModelInfo save(ModelId modelId, byte[] content, String fileName,
-      IUserContext userContext) {
-    return save(modelId, content, fileName, userContext, true);
   }
 
   @Override
@@ -455,26 +472,29 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   }
 
   @Override
-  public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,Optional<String> version) {
+  public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,
+      Optional<String> version) {
     logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
     List<ModelInfo> mappingResources = new ArrayList<>();
     ModelInfo modelResource = getById(modelId);
     if (modelResource != null) {
       for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
-        ModelResource referenceeModelResource = this.repositoryFactory.getRepositoryByModel(referenceeModelId).getEMFResource(referenceeModelId);
+        ModelResource referenceeModelResource = this.repositoryFactory
+            .getRepositoryByModel(referenceeModelId).getEMFResource(referenceeModelId);
         if (referenceeModelResource.getType() == ModelType.Mapping
             && isTargetPlatformMapping(referenceeModelResource, targetPlatform)) {
-          if (version.isPresent() && !referenceeModelResource.getId().getVersion().equals(version.get())) {
+          if (version.isPresent()
+              && !referenceeModelResource.getId().getVersion().equals(version.get())) {
             continue;
-          } 
+          }
           mappingResources.add(referenceeModelResource);
         }
       }
       for (ModelId referencedModelId : modelResource.getReferences()) {
-        
-        mappingResources
-            .addAll(this.repositoryFactory.getRepositoryByModel(referencedModelId).getMappingModelsForTargetPlatform(referencedModelId, targetPlatform,version));
+
+        mappingResources.addAll(this.repositoryFactory.getRepositoryByModel(referencedModelId)
+            .getMappingModelsForTargetPlatform(referencedModelId, targetPlatform, version));
       }
     }
     return mappingResources;
@@ -515,7 +535,8 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
       try {
         ModelInfo modelResource = this.getById(modelId);
         if (modelResource == null) {
-          throw new ModelNotFoundException("Cannot find '" + modelId.getPrettyFormat() + "' in '" + session.getWorkspace().getName() + "'");
+          throw new ModelNotFoundException("Cannot find '" + modelId.getPrettyFormat() + "' in '"
+              + session.getWorkspace().getName() + "'");
         }
 
         if (modelResource.getReferencedBy() != null && !modelResource.getReferencedBy().isEmpty()) {
@@ -527,9 +548,9 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         Item item = session.getItem(modelIdHelper.getFullPath());
         item.remove();
         session.save();
-        
+
         eventPublisher.publishEvent(new AppEvent(this, modelId, null, EventType.MODEL_DELETED));
-        
+
         return null;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -551,7 +572,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
   public ModelId updateState(ModelId modelId, String state) {
     return updateProperty(modelId, node -> node.setProperty(VORTO_STATE, state));
   }
-  
+
   @Override
   public ModelId updateVisibility(ModelId modelId, String visibility) {
     return updateProperty(modelId, node -> node.setProperty(VORTO_VISIBILITY, visibility));
@@ -567,10 +588,10 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
         fileNode.addMixin(MIX_LAST_MODIFIED);
         nodeConsumer.accept(fileNode);
         session.save();
-        
-        eventPublisher.publishEvent(new AppEvent(this, getBasicInfo(modelId), null, 
-            EventType.MODEL_UPDATED));
-        
+
+        eventPublisher
+            .publishEvent(new AppEvent(this, getBasicInfo(modelId), null, EventType.MODEL_UPDATED));
+
         return modelId;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -691,8 +712,9 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
             .createBinary(new ByteArrayInputStream(fileContent.getContent()));
         contentNode.setProperty(JCR_DATA, binary);
         session.save();
-        
-        eventPublisher.publishEvent(new AppEvent(this, getBasicInfo(modelId), userContext, EventType.MODEL_UPDATED));
+
+        eventPublisher.publishEvent(
+            new AppEvent(this, getBasicInfo(modelId), userContext, EventType.MODEL_UPDATED));
         return null;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -715,8 +737,7 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
             Node fileNode = (Node) nodeIt.next();
             Attachment attachment = Attachment.newInstance(modelId, fileNode.getName());
             if (fileNode.hasProperty(VORTO_TAGS)) {
-              final List<Value> tags =
-                  Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
+              final List<Value> tags = Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
               attachment.setTags(
                   tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
             }
@@ -856,5 +877,10 @@ public class ModelRepository extends AbstractRepositoryOperation implements IMod
     return doInSession(session -> {
       return session.getWorkspace().getName();
     });
+  }
+
+  @Override
+  public IModelRefactoring newRefactoring(ModelId modelToRefactor) {
+    return new DefaultModelRefactoring(this, tenantService.getTenant(getTenantId()).get(),modelToRefactor);
   }
 }
