@@ -1,11 +1,13 @@
 package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.core.IModelRefactoring.RefactoringResult;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 public class ModelRefactoringTest extends AbstractIntegrationTest {
 
@@ -15,13 +17,12 @@ public class ModelRefactoringTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");
     final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type.Colour:1.0.0");
     
-    IModelRefactoring refactoring = repositoryFactory.getRepository(createUserContext("admin")).newRefactoring(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
-    RefactoringResult result = refactoring.newId(newId).execute(createUserContext("admin"));
-    assertEquals(newId,result.getModel().getId());
-    assertEquals(1,result.getAffectedModels().size());
-    assertEquals(newId,result.getAffectedModels().get(0).getReferences().get(0));
+    ModelInfo result = repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
+    assertEquals(newId,result.getId());
+    assertNull(repositoryFactory.getRepository(createUserContext("admin")).getById(oldId));
   }
   
   
@@ -30,13 +31,12 @@ public class ModelRefactoringTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");
     final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.Color:1.0.0");
     
-    IModelRefactoring refactoring = repositoryFactory.getRepository(createUserContext("admin")).newRefactoring(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
-    RefactoringResult result = refactoring.newId(newId).execute(createUserContext("admin"));
-    assertEquals(newId,result.getModel().getId());
-    assertEquals(1,result.getAffectedModels().size());
-    assertEquals(newId,result.getAffectedModels().get(0).getReferences().get(0));
+    ModelInfo result = repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
+    assertEquals(newId,result.getId());
+    assertNull(repositoryFactory.getRepository(createUserContext("admin")).getById(oldId));
   }
   
   @Test
@@ -44,13 +44,12 @@ public class ModelRefactoringTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     
-    final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.types.Color:2.0.0");
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");
+    final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type.Color:2.0.0");
     
-    IModelRefactoring refactoring = repositoryFactory.getRepository(createUserContext("admin")).newRefactoring(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
-    RefactoringResult result = refactoring.newId(newId).execute(createUserContext("admin"));
-    assertEquals(newId,result.getModel().getId());
-    assertEquals(1,result.getAffectedModels().size());
-    assertEquals(newId,result.getAffectedModels().get(0).getReferences().get(0));
+    ModelInfo result = repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
+    assertEquals(newId,result.getId());
+    assertNull(repositoryFactory.getRepository(createUserContext("admin")).getById(oldId));
   }
   
   @Test (expected = NewNamespacesNotSupersetException.class)
@@ -58,11 +57,36 @@ public class ModelRefactoringTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");
     final ModelId newId = ModelId.fromPrettyFormat("org.apache.Color:1.0.0");
     
-    IModelRefactoring refactoring = repositoryFactory.getRepository(createUserContext("admin")).newRefactoring(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
-    refactoring.newId(newId).execute(createUserContext("admin"));
+    repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
+    
   }
+  
+  @Test
+  public void testRenameModelWithAttachment() throws Exception {
+    importModel("Color.type");
+    importModel("Colorlight.fbmodel");
+    
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");
+    final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type.Color:2.0.0");
+    
+    repositoryFactory.getRepository(createUserContext("admin")).attachFile(oldId,
+        new FileContent("sample.png",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
+        createUserContext("admin"), Attachment.TAG_IMAGE);
+    
+    assertEquals(1,repositoryFactory.getRepository(createUserContext("admin")).getAttachments(oldId).size());
+    
+    ModelInfo result = repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
+    assertEquals(newId,result.getId());
+    assertEquals(1,repositoryFactory.getRepository(createUserContext("admin")).getAttachments(newId).size());
+    assertNull(repositoryFactory.getRepository(createUserContext("admin")).getById(oldId));
+  }
+  
+  
   
   @Test (expected = ModelAlreadyExistsException.class)
   public void testRenameToIdThatAlreadyExist() {
@@ -70,9 +94,9 @@ public class ModelRefactoringTest extends AbstractIntegrationTest {
     importModel("Color5.type");
     importModel("Colorlight.fbmodel");
     
+    final ModelId oldId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0");    
     final ModelId newId = ModelId.fromPrettyFormat("org.eclipse.vorto.examples.Color:1.0.0");
     
-    IModelRefactoring refactoring = repositoryFactory.getRepository(createUserContext("admin")).newRefactoring(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
-    refactoring.newId(newId).execute(createUserContext("admin"));
+    repositoryFactory.getRepository(createUserContext("admin")).rename(oldId,newId,createUserContext("admin"));
   }
 }

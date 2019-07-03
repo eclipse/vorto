@@ -73,8 +73,8 @@ public class RefactoringWorkspaceTest {
     
     Model fbmodel = changeSet.get().stream().filter(c -> c.getName().equals("Connectivity")).findAny().get();
     assertEquals("vorto.private.alex.org.eclipse.vorto", fbmodel.getNamespace());
-    assertEquals("vorto.private.alex.org.eclipse.vorto.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
-    assertEquals("vorto.private.alex.org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
+    assertEquals("vorto.private.alex.org.eclipse.vorto.types.ConnectivityStatus", fbmodel.getReferences().get(0).getImportedNamespace());
+    assertEquals("org.eclipse.vorto.types.SomeUnit", fbmodel.getReferences().get(1).getImportedNamespace());
   }
 
   @Test

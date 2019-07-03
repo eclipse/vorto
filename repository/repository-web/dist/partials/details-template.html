@@ -42,7 +42,7 @@
 			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS') && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
 				<button class="btn btn-default pull-left"  role="button"
 				    ng-click="makePublic(model)">
-					<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;Publish</button>
+					<span class="fa fa-globe" aria-hidden="true"></span>&nbsp;Publish</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
@@ -51,9 +51,14 @@
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
+			<div ng-show="canCreateModels && !model.released">
+				<a class="btn btn-default pull-left" ng-click="openRefactoringDialog()" role="button">
+					<span class="fa fa-edit" aria-hidden="true"></span>&nbsp;Rename</a>
+					<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
 			
 			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
-				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
+				<a class="btn btn-default pull-right" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
@@ -675,6 +680,43 @@
 	<div class="align-right">
 	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
 	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()">Create</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>
+</script>
+
+<!-- Refactoring Dialog -->
+<script type="text/ng-template" id="refactoringDialog.html">
+<div class="modal-header">
+	<h3 class="modal-title"><center>Rename Model</center></h3>
+</div>
+<div class="modal-body">
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+	
+	<div class="alert alert-info">
+		The change of the namespace and name will automatically update all references as well.
+	</div>
+	<form name="refactorForm" novalidate>
+			  <div class="form-group">
+			   	<label>New Namespace</label>
+			   	<div class="input-group">
+		        	<span class="input-group-addon">{{ defaultNamespace }}.</span>
+					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control" required>
+				</div>
+			  	<div class="invalid-input" ng-show="refactorForm.namespace.$error.pattern">Namespace must not contain any special characters.</div>
+			  </div>
+			  
+			   <div class="form-group">
+			   	<label>New Name</label>
+		        <input type="text" name="name" ng-pattern=/^[A-Z][a-zA-Z0-9]*$/" ng-model="newName" placeholder="New Name" class="form-control" required>
+			  	<div class="invalid-input" ng-show="refactorForm.name.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
+			  </div> 
+	</form>
+</div>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || refactorForm.$invalid" ng-click="rename()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Rename</button>
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || refactorForm.$invalid" ng-click="rename()">Rename</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </div>

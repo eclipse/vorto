@@ -217,7 +217,7 @@ repositoryControllers.controller('DetailsController',
 					promise.then(
 						function(namespaces) {
 							for (entry of namespaces) {
-								if (entry.namespace === $scope.model.id.namespace) {
+								if ($scope.model.id.namespace.startsWith(entry.namespace)) {
 									$scope.canCreateModels = true;
 									return;
 								}
@@ -529,6 +529,70 @@ repositoryControllers.controller('DetailsController',
 					};
 				},
 				templateUrl: "webjars/repository-web/dist/partials/createversion-template.html",
+				size: "lg",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+
+			modalInstance.result.then(
+				function (model) {
+					$location.path("/details/"  + model.id.prettyFormat);
+				});
+		};
+		
+		$scope.openRefactoringDialog = function () {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope,model) {
+					$scope.errorMessage = null;
+					$scope.model = model;
+					$scope.newNamespaceSuffix = "";
+					$scope.newName = $scope.model.id.name;
+					
+					$scope.rename = function () {
+						$scope.isLoading = true;
+						$http.put("./rest/models/refactorings/" + $scope.model.id.prettyFormat + "/" + $scope.defaultNamespace+"."+$scope.newNamespaceSuffix+":"+$scope.newName+":"+$scope.model.id.version, null)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close(result);
+							}).error(function (data, status, header, config) {
+								$scope.isLoading = false;
+								if (status === 409) {
+									$scope.errorMessage = "Model with this name and namespace already exists.";
+								} else {
+									$scope.errorMessage = status.message;
+								}
+							});
+					};
+					
+					$scope.getDefaultNamespace = function () {
+						$http.get("./rest/models/refactorings/" + $scope.model.id.prettyFormat)
+							.success(function (result) {
+								$scope.defaultNamespace = result.namespace;
+								if ($scope.model.id.namespace.length > result.namespace.length) {
+									$scope.newNamespaceSuffix = $scope.model.id.namespace.substring(result.namespace.length+1);
+								}
+							}).error(function (data, status, header, config) {
+								console.log(data);
+								$scope.isLoading = false;
+								if (status === 409) {
+									$scope.errorMessage = "Model with this name and namespace already exists.";
+								} else {
+									$scope.errorMessage = status.message;
+								}
+							});
+					};
+					
+					$scope.getDefaultNamespace();
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "refactoringDialog.html",
 				size: "lg",
 				resolve: {
 					model: function () {

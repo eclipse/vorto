@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Supplier;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.RepositoryException;
@@ -82,8 +83,13 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
   public boolean createTenantWorkspace(final String tenantId) {
     try {
       Workspace workspace = defaultSessionSupplier.get().getWorkspace();
-      workspace.createWorkspace(tenantId);
-      return true;
+      if (!Arrays.asList(workspace.getAccessibleWorkspaceNames()).contains(tenantId)) {
+        workspace.createWorkspace(tenantId);
+        return true;
+      } else {
+        logger.info("Workspace with ID '"+tenantId+"' already exists.");
+        return false;
+      }
     } catch (RepositoryException e) {
       logger.error("Exception while creating workspace", e);
       throw new FatalModelRepositoryException("Cannot create workspace for user", e);

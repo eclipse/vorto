@@ -44,11 +44,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.refactor.ChangeSet;
+import org.eclipse.vorto.model.refactor.RefactoringTask;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRefactoring;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -63,14 +65,19 @@ import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
+import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.core.refactoring.DefaultModelRefactoring;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
+import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import com.google.common.collect.Lists;
@@ -133,18 +140,21 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ApplicationEventPublisher eventPublisher = null;
 
   private ModelRepositoryFactory repositoryFactory;
-  
+
   private ITenantService tenantService;
+  
+  private IModelPolicyManager policyManager;
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
-      ModelRepositoryFactory repositoryFactory, ITenantService tenantService) {
+      ModelRepositoryFactory repositoryFactory, ITenantService tenantService, IModelPolicyManager policyManager) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.modelRetrievalService = modelRetrievalService;
     this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
+    this.policyManager = policyManager;
   }
 
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -329,10 +339,10 @@ public class ModelRepository extends AbstractRepositoryOperation
         logger.info("Model was saved successful");
 
         ModelInfo createdModel = getById(modelInfo.getId());
-        
+
         eventPublisher
             .publishEvent(new AppEvent(this, createdModel, userContext, EventType.MODEL_CREATED));
-        
+
         return createdModel;
       } catch (IOException e) {
         logger.error("Error checking in model", e);
@@ -714,7 +724,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         session.save();
 
         eventPublisher.publishEvent(
-            new AppEvent(this, getBasicInfo(modelId), userContext, EventType.MODEL_UPDATED));
+            new AppEvent(this, getById(modelId), userContext, EventType.MODEL_UPDATED));
         return null;
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
@@ -880,7 +890,69 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public IModelRefactoring newRefactoring(ModelId modelToRefactor) {
-    return new DefaultModelRefactoring(this, tenantService.getTenant(getTenantId()).get(),modelToRefactor);
+  public ModelInfo rename(ModelId oldModelId, ModelId newModelId, IUserContext user) {
+    final Tenant tenant = this.tenantService.getTenant(getTenantId()).get();
+
+    if (getById(newModelId) != null) {
+      throw new ModelAlreadyExistsException();
+    } else if (!newModelId.getNamespace().startsWith(tenant.getDefaultNamespace())) {
+      throw new NewNamespacesNotSupersetException();
+    }
+
+    ModelWorkspaceReader reader = IModelWorkspace.newReader();
+
+    try {
+      ModelInfo oldModel = getById(oldModelId);
+      ModelResource resource = getEMFResource(oldModelId);
+      reader.addFile(new ByteArrayInputStream(resource.toDSL()), resource.getType());
+
+      getModelsReferencing(oldModelId).forEach(reference -> {
+        ModelResource referencingModel = getEMFResource(reference.getId());
+        try {
+          reader.addFile(new ByteArrayInputStream(referencingModel.toDSL()),
+              referencingModel.getType());
+        } catch (IOException e) {
+          throw new FatalModelRepositoryException(e.getMessage(), e);
+        }
+      });
+
+      ChangeSet changeSet = RefactoringTask.from(reader.read())
+          .toModelId(ModelUtils.toEMFModelId(resource.getId(), resource.getType()),
+              ModelUtils.toEMFModelId(newModelId, resource.getType()))
+          .execute();
+
+      DependencyManager dm = new DependencyManager();
+
+
+      changeSet.getChanges().stream().forEach(model -> {
+        dm.addResource(new ModelResource(model));
+      });
+
+      dm.getSorted().forEach(sortedModel -> {
+        save((ModelResource) sortedModel, user);
+      });
+
+      ModelInfo newModelInfo = getById(newModelId);
+      updateState(newModelInfo.getId(), oldModel.getState());
+
+      // Copy all attachments over to new node
+      this.getAttachments(oldModelId).forEach(oldAttachment -> {
+        Optional<FileContent> fileContent = this.getAttachmentContent(oldModelId, oldAttachment.getFilename());
+        this.attachFile(newModelId,
+            fileContent.get(), user,
+            oldAttachment.getTags().toArray(new Tag[oldAttachment.getTags().size()]));
+      });
+      
+      // Copy all policies over to new node
+      this.policyManager.copyPolicyEntries(oldModelId,newModelId);
+
+      // finally remove old model
+      removeModel(resource.getId());
+
+      return getById(newModelInfo.getId());
+
+    } catch (IOException problem) {
+      throw new FatalModelRepositoryException(problem.getMessage(), problem);
+    }
   }
 }

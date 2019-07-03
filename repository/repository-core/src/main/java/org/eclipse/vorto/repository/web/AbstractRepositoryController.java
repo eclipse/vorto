@@ -37,6 +37,7 @@ import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.plugin.generator.GenerationException;
+import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
@@ -88,6 +89,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
       Map<String, Object> error = new HashMap<String, Object>();
 	  error.put("message", ex.getMessage());
 	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
+  }
+  
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
+  @ExceptionHandler(NewNamespacesNotSupersetException.class)
+  public Object wrongInput(final NewNamespacesNotSupersetException ex) {
+      Map<String, Object> error = new HashMap<String, Object>();
+      error.put("message", "Specified namespace does not match owning namespace.");
+      return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
 
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)

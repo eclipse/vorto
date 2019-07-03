@@ -93,11 +93,10 @@ public interface IModelRepository {
   ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user);
   
   /**
-   * Saves the model to the repository. If it does not exist, the model is created
-   * @param modelToSave
-   * return updated model resource
+   * Renames a given old modelId to the specified new modelId
+   * return updated model info
    */
-  ModelInfo save(ModelResource modelToSave, IUserContext user);
+  ModelInfo rename(ModelId oldModelId, ModelId newModelId, IUserContext user);
 
   /**
    * Gets the mapping model for the given modelId and the given target platform
@@ -224,12 +223,5 @@ public interface IModelRepository {
    * @return
    */
   String getTenantId();
-
-  /**
-   * Creates a new refactoring task for the given modelId
-   * @param modelToRefactor
-   * @return
-   */
-  IModelRefactoring newRefactoring(ModelId modelToRefactor);
 
 }
