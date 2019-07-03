@@ -24,6 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import com.google.common.collect.Sets;
 
 public class SpringUserUtils {
 
@@ -43,7 +44,7 @@ public class SpringUserUtils {
 
       UsernamePasswordAuthenticationToken newAuth =
           new UsernamePasswordAuthenticationToken(oldAuth.getPrincipal(), oldAuth.getCredentials(),
-              SpringUserUtils.toAuthorityList(user.getAllRoles()));
+              SpringUserUtils.toAuthorityList(getUserRoles(user)));
       newAuth.setDetails(oldAuth.getDetails());
 
       OAuth2Authentication newAuthentication =
@@ -52,6 +53,13 @@ public class SpringUserUtils {
 
       SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
+  }
+
+  private static Set<Role> getUserRoles(User user) {
+    if (user.getAllRoles().isEmpty()) {
+      return Sets.newHashSet(Role.USER);
+    }
+    return user.getAllRoles();
   }
 
   public static List<GrantedAuthority> toAuthorityList(Set<Role> roles) {
