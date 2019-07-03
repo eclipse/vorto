@@ -541,7 +541,11 @@ repositoryControllers.controller('DetailsController',
 					
 					$scope.rename = function () {
 						$scope.isLoading = true;
-						$http.put("./rest/models/refactorings/" + $scope.model.id.prettyFormat + "/" + $scope.defaultNamespace+"."+$scope.newNamespaceSuffix+":"+$scope.newName+":"+$scope.model.id.version, null)
+						$scope.newNamespace = $scope.defaultNamespace;
+						if ($scope.newNamespaceSuffix !== "") {
+							$scope.newNamespace += "." + $scope.newNamespaceSuffix;
+						}
+						$http.put("./rest/models/refactorings/" + $scope.model.id.prettyFormat + "/" + $scope.newNamespace+":"+$scope.newName+":"+$scope.model.id.version, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
