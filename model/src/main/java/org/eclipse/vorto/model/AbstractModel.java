@@ -15,8 +15,6 @@ package org.eclipse.vorto.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.vorto.model.FunctionblockModel.FunctionblockModelBuilder;
-import org.eclipse.vorto.model.ModelProperty.Builder;
 
 public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 

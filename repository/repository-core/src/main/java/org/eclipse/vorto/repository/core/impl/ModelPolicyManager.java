@@ -219,4 +219,10 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
   private boolean hasPermission(Permission userPermission, Permission permission) {
     return userPermission.includes(permission);
   }
+
+  @Override
+  public void copyPolicyEntries(ModelId sourceModelId, ModelId targetModelId) {
+   Collection<PolicyEntry> entries = getPolicyEntries(sourceModelId);
+   addPolicyEntry(targetModelId,entries.toArray(new PolicyEntry[entries.size()]));
+  }
 }

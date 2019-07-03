@@ -233,7 +233,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
 
   }
-
+  
+  @PutMapping(value = "/refactorings/{oldId:.+}/{newId:.+}", produces = "application/json")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#oldId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public ResponseEntity<ModelInfo> refactorModelId(@PathVariable String oldId, @PathVariable String newId) {
+    final ModelId oldModelId = ModelId.fromPrettyFormat(oldId);
+    final ModelId newModelId = ModelId.fromPrettyFormat(newId);
+    
+    ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId).rename(oldModelId, newModelId, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
+    
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+  
+  
+  @GetMapping(value = "/refactorings/{modelId:.+}", produces = "application/json")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public ResponseEntity<Map<String,String>> newRefactoring(@PathVariable String modelId) {
+    Tenant tenant = this.tenantService.getTenant(this.modelRepositoryFactory.getRepositoryByModel(ModelId.fromPrettyFormat(modelId)).getTenantId()).get();
+    Map<String,String> response = new HashMap<>();
+    response.put("namespace", tenant.getDefaultNamespace());
+    return new ResponseEntity<>(response,HttpStatus.OK);
+  }
+  
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
   @PostMapping(value = "/{modelId:.+}/{modelType}", produces = "application/json")
   public ResponseEntity<ModelInfo> createModel(

@@ -255,7 +255,7 @@ public class TenantManagementController {
     } catch (NamespaceExistException e) {
       return new ResponseEntity<>(false, HttpStatus.CONFLICT);
     }
-  }
+  } 
 
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/namespaces/{namespace}/valid", produces = "application/json")
