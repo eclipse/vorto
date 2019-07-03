@@ -54,10 +54,7 @@ repositoryControllers.controller('DetailsController',
 					$scope.isLoading = false;
 					$scope.message = result.message;
 					if (result.valid) {
-						$scope.success = "Changes saved successfully. Reloading page ...";
-						$timeout(function () {
-							$window.location.reload();
-						}, 1000);
+						$scope.loadDetails();
 					} else {
 						$scope.validationIssues = result.validationIssues; 
 					}
@@ -247,10 +244,12 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getContent = function (modelId) {
+			$scope.loadingModel = true;
 			$http.get("./api/v1/models/" + modelId + "/file")
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
+							$scope.loadingModel = false;
 						}, 1000);
 				}).error(function (data, status, headers, config) {
 					$scope.error = data.message;
@@ -300,15 +299,8 @@ repositoryControllers.controller('DetailsController',
 			return grid;
 		}
 
-
 		$scope.modelId = $routeParams.modelId;
 		
-		
-		$scope.getDetails($scope.modelId);
-		$scope.getContent($scope.modelId);
-		
-		$scope.getPlatformGenerators();
-
 		/*
 		 * Start - Handling Comments
 		 */
@@ -335,9 +327,7 @@ repositoryControllers.controller('DetailsController',
 						$rootScope.error = "Failed Request with response status " + status;
 					}
 				});
-		}
-
-		$scope.getCommentsForModelId($scope.modelId);
+		};
 		
 		$scope.createComment = function () {
 
@@ -368,12 +358,11 @@ repositoryControllers.controller('DetailsController',
 				});
 
 			$scope.newComment.value = "";
-		}
+		};
 
 		/*
 		 * Stop - Handling Comments
 		 */
-
 		$scope.openGeneratorConfig = function (generator) {
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -390,6 +379,7 @@ repositoryControllers.controller('DetailsController',
 				}
 			});
 		};
+		
 		/*
 		 * Start - Workflow
 		 */
@@ -399,8 +389,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.workflowActions = result;
 				});
 		};
-
-		$scope.getWorkflowActions();
 
 		$scope.openWorkflowActionDialog = function (action) {
 			var modalInstance = $uibModal.open({
@@ -459,9 +447,8 @@ repositoryControllers.controller('DetailsController',
 			});
 
 			modalInstance.result.then(
-				function () {
-					$window.location.reload();
-				});
+				function () { $scope.loadDetails(); }
+			);
 		};
 		/*
 		 * Start - Handle Modal
@@ -748,7 +735,7 @@ repositoryControllers.controller('DetailsController',
 					$scope.successfullyDeleted = false;
 					$scope.failedToDelete = false;
 
-					$scope.cancel = function () {
+					$scope.cancel = function () { 
 						$scope.failedToDelete = false;
 						dialog.dismiss();
 					};
@@ -780,38 +767,22 @@ repositoryControllers.controller('DetailsController',
 				size: "lg"
 			});
 		};
-		
-		$scope.getPolicies = function() {
-			$http.get('./rest/models/' + $scope.modelId + '/policies')
+	
+		$scope.getUserPolicy = function() {
+			$http.get('./rest/models/' + $scope.modelId + '/policy')
 				.success(function (result) {
-					$scope.aclEntries = result;
+					console.log("Policy for model = " + JSON.stringify(result));
+					$scope.permission = result.permission;
+					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+						$scope.modelEditor.setReadOnly(true);
+					}
+				}).error(function (data, status, headers, config) {
+					$scope.permission = "READ";
+					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+						$scope.modelEditor.setReadOnly(true);
+					}
 				});
 		};
-	
-			$scope.getUserPolicy = function() {
-				$http.get('./rest/models/' + $scope.modelId + '/policy')
-					.success(function (result) {
-						console.log("Policy for model = " + JSON.stringify(result));
-						$scope.permission = result.permission;
-						if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
-							$scope.modelEditor.setReadOnly(true);
-						}
-	
-						if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_SYS_ADMIN")) { // load policies only if user is model owner
-							$scope.getPolicies();
-						}
-					}).error(function (data, status, headers, config) {
-						// TODO : should be unnecessary
-						$scope.permission = "READ";
-						if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-							$scope.modelEditor.setReadOnly(true);
-						}
-	
-						if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-							$scope.getPolicies();
-						}
-					});
-			};
 		
 		$scope.diagnoseModel = function () {
 			$http.get('./rest/models/' + $scope.modelId + '/diagnostics')
@@ -819,10 +790,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.diagnostics = result;
 				});
 		};
-		
-		if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
-			$scope.diagnoseModel();
-		}
 		
 		$scope.isEditingVisible = function(model) {
 			return $scope.permission !== 'READ' && !model.released;
@@ -838,9 +805,7 @@ repositoryControllers.controller('DetailsController',
 			dialog.setConfirmCallback(function() {
 	            $http.post('./rest/models/' + model.id.prettyFormat + '/makePublic')
 	                .then(function(result) {
-	                	$timeout(function () {
-							$window.location.reload();
-						}, 250);
+	                	$scope.loadDetails();
 	                }, function(reason) {
 	                    // TODO : Show error on window
 	                	console.log(JSON.stringify(reason));
@@ -849,5 +814,18 @@ repositoryControllers.controller('DetailsController',
         	
         	dialog.run();
 		};
+		
+		$scope.loadDetails = function() {
+			$scope.getDetails($scope.modelId);
+			$scope.getContent($scope.modelId);
+			$scope.getPlatformGenerators();
+			$scope.getCommentsForModelId($scope.modelId);
+			$scope.getWorkflowActions();
+			if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
+				$scope.diagnoseModel();
+			}
+		};
+		
+		$scope.loadDetails();
 	}
 ]);

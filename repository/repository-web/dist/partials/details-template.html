@@ -80,13 +80,6 @@
 							<span class="badge">{{comments.length}}</span>
 						</a>
 					</li>
-					<!-- 
-					<li ng-show="!model.released && (permission === 'FULL_ACCESS' || hasAuthority('ROLE_SYS_ADMIN'))">
-						<a href="" role="tab" data-target="#policies" data-toggle="tab">
-							<i class="fa fa-lock"></i> Permissions
-						</a>
-					</li>
-					 -->
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="model">
@@ -143,13 +136,13 @@
 												<dt>Created By:</dt>
 												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>Created On:</dt>
-												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+												<dd class="ng-binding">{{ model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 												<dt>Last Modified By:</dt>
-												<dd class="ng-binding">{{model.lastModifiedBy}}</dd>
+												<dd class="ng-binding">{{ model.lastModifiedBy}}</dd>
 												<dt ng-show="model.state === 'Released'">Released Date:</dt>
 												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Last Modified On:</dt>
 												<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
-												<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+												<dd ng-hide="model.modificationDate == null" class="ng-binding">{{ model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 												<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
 												<dt>References:</dt>
 												<dd>
@@ -271,7 +264,7 @@
 										</div>
 									</div>
 								</div>
-								<div ng-if="!modelIsLoading" class="row">
+								<div class="row">
 									<div class="col-sm-12 modelDetails">
 										<br>
 										<div class="row">
@@ -288,7 +281,7 @@
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span ng-if="!isLoading" class="fa fa-save" aria-hidden="true"></span>
-													<i ng-if="isLoading" class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
+													<i ng-style="{'visibility' : isLoading ? 'visible' : 'hidden'}" class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
 													
 												<a class="btn btn-sm btn-default pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
@@ -316,7 +309,7 @@
 												<span><i class="fa fa-fw fa-exclamation-triangle"></i> {{error.message}}</span>
 											</div>
 											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
-											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
+											<div ng-if="loadingModel" class="alert alert-info" role="alert"><i class="fa fa-refresh fa-spin"></i>&nbsp;Loading model ...</div>
 										</div>
 										<div class="row">
 											<div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
@@ -481,13 +474,8 @@
 			</div>
 		</div>
 	</div>
-	</div>
 </section>
-<div class="jumbotron text-center" ng-show="isLoading">
-	<h3>
-		<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading model details. Please wait...</h3>
-</div>
-
+ -->
 <!-- Workflow Action dialog-->
 <script type="text/ng-template" id="workflowActionDialog.html">
 	<div class="modal-header">
