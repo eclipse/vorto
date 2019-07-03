@@ -9,21 +9,30 @@ This tutorial explains how to describe a device with Vorto in just a few minutes
 Let's get started.
 
 ### Prerequisite
-* [Github](https://github.com/) account
+* [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
+* You are a collaborator/owner of a namespace
 
 ## Steps to follow
 
-1. Log in to [Vorto Repository](https://vorto.eclipse.org) with your Github ID
+1. Log in to [Vorto Repository](https://vorto.eclipse.org) with your BoschID or Github Account
+
 2. Select **Describe device** 
+
 3. Choose **Information Model** and confirm with **Next** 
+
 4. Specify the model ID and confirm with **Next**
 	1. Input the **namespace**, e.g. com.mycompany 
 	2. Input the **name**, e.g. MyWeatherStation
 	3. Input the **version**, e.g. 1.0.0
+	
 5. Choose **Vorto abstraction**, that provide you with a list of abstracted capabilities.
+
 6. Select **Temperature** from the drop-down list, specify the property name **indoorTemperature** and confirm with **Add**
+
 7. Select **Temperature** from the drop-down list, specify the property name **outdoorTemperature** and confirm with **Add**
+
 8. Select **Location** from the drop-down list, specify the property name **location** and confirm with **Add**
+
 9. Verify your selected properties and click **Create**. This creates the model and opens its details page:
 
 Your model should look like this:

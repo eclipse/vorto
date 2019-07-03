@@ -71,7 +71,7 @@ On clicking the 'Open Model', the user will be navigated to the 'Models' page, w
 
 <img src="../images/tutorials/import_model/Model_Import_Open_Model_Click.PNG" />  
 
-The model which is currently in 'Draft' state can either be 'Released' or 'Deleted' or modified further.  
+The model which is currently in ['Draft' state can either be 'Released'](../../repository/docs/model_states.md) or 'Deleted' or modified further.  
 
 <img src="../images/tutorials/import_model/Model_Import_Open_Model_Release.PNG" />  
 

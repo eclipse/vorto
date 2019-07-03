@@ -79,6 +79,7 @@ If you want to see the full process of creating, integrating and visualizing sen
 - [Importing and releasing your models](tutorials/import_model.md)
 - [Creating a new version of your model](../repository/docs/model_versioning.md)
 - [Publishing Models](tutorials/publishing_models.md)
+- [Release States](../repository/docs/model_states.md)
 
 #### Developer Guide
 
