@@ -241,8 +241,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<ModelInfo> refactorModelId(@PathVariable String oldId, @PathVariable String newId) {
     final ModelId oldModelId = ModelId.fromPrettyFormat(oldId);
     final ModelId newModelId = ModelId.fromPrettyFormat(newId);
+     
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(oldId));
     
-    ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId).rename(oldModelId, newModelId, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
+    ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId).rename(oldModelId, newModelId, userContext);
     
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
