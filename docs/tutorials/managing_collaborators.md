@@ -30,7 +30,7 @@ Each Role gives the collaborator permissions for specific actions for the accord
 ## Roles
 Each Role provides collaborators with specific permissions for the according namespace.
 
-|                           | VIEW | CREATE |  PROMOTE | REVIEW | PUBLISH | ADMIN |
+|                           | VIEW | CREATE |  PROMOTE | REVIEW | PUBLISH | MANAGE |
 |---------------------------|------|--------|----------|--------|---------|-------|
 | View Models               | ✔    | ✔      | ✔        | ✔      | ✔       | ✔     |
 | Create Models             | ✘    | ✔      | ✘        | ✘      | ✘       | ✘     |
