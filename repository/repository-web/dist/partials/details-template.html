@@ -274,15 +274,15 @@
 										<br>
 										<div class="row">
 											<div class="col-sm-3">
-												<label ng-show="isEditingVisible(model)" class="ng-binding">Model Editor</label>
-												<label ng-show="!isEditingVisible(model)" class="ng-binding">Model Preview</label>
+												<label ng-show="canCreateModels" class="ng-binding">Model Editor</label>
+												<label ng-show="!canCreateModels" class="ng-binding">Model Preview</label>
 											</div>
 											<div ng-hide="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
 											    class="col-sm-9">
-											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/development/docs/vortolang-1.0.md">
+											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/master/docs/vortolang-1.0.md">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
-												<a ng-show="isEditingVisible(model)"
+												<a ng-show="canCreateModels"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span ng-if="!isLoading" class="fa fa-save" aria-hidden="true"></span>
