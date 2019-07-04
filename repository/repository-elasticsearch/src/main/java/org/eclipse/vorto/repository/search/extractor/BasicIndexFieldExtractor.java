@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.search.extractor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -32,6 +34,8 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
 
   public static final String MODEL_ID = "modelId";
   
+  public static final String MODEL_NAME_SEARCHABLE = "searchableName";
+  
   public static final String MODEL_HASIMAGE = "hasImage";
   
   public static final String MODEL_CREATIONDATE = "createdOn";
@@ -41,6 +45,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     Map<String, String> basicFields = new HashMap<>();
     
     basicFields.put(BasicIndexFieldExtractor.MODEL_ID, modelInfo.getId().getPrettyFormat());
+    basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, breakdown(modelInfo.getId().getPrettyFormat()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, modelInfo.getType().toString());
     basicFields.put(BasicIndexFieldExtractor.AUTHOR, modelInfo.getAuthor());
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, modelInfo.getDisplayName());
@@ -52,12 +57,13 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     
     return basicFields;
   }
-  
+
   @Override
   public Map<String, FieldType> getFields() {
     Map<String, FieldType> basicFields = new HashMap<>();
     
     basicFields.put(BasicIndexFieldExtractor.MODEL_ID, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, FieldType.TEXT);
@@ -66,7 +72,34 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, FieldType.KEY);
+    
     return basicFields;
+  }
+  
+  private String breakdown(String prettyFormat) {
+    Collection<String> breakdown = new ArrayList<>();
+    
+    String[] sigBreakdown = prettyFormat.split(":");
+    if (sigBreakdown.length != 3) {
+      return prettyFormat;
+    }
+    
+    // namespace breakdown
+    String[] namespaceBreakdown = sigBreakdown[0].split("\\.");
+    for (String name : namespaceBreakdown) {
+      breakdown.add(name);
+    }
+    
+    // namespace
+    breakdown.add(sigBreakdown[0]);
+    
+    // name
+    breakdown.add(sigBreakdown[1]);
+    
+    // version
+    breakdown.add(sigBreakdown[2]);
+    
+    return String.join(" ", breakdown);
   }
 
 }

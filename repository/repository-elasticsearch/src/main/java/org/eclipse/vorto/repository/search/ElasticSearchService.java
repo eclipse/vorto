@@ -94,9 +94,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<IIndexFieldExtractor>();
 
-  private Pattern searchExprPattern = Pattern.compile("name:(\\w+)\\*");
+  private Pattern searchExprPattern = Pattern.compile("name:(\\S+)\\*");
 
-  private Pattern authorExprPattern = Pattern.compile("author:(\\w+)");
+  private Pattern authorExprPattern = Pattern.compile("author:(\\S+)");
 
   private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
 
@@ -482,7 +482,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return or(
         QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
         QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DESCRIPTION, expression),
-        QueryBuilders.wildcardQuery(BasicIndexFieldExtractor.MODEL_ID, "*" + expression + "*"));
+        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, expression));
   }
 
   private QueryBuilder isPublic() {
