@@ -58,7 +58,7 @@
 			</div>
 			
 			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
-				<a class="btn btn-default pull-right" ng-click="openPayloadMappingDialog()" role="button">
+				<a class="btn btn-default pull-left" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
@@ -660,8 +660,12 @@
 <div class="modal-body">
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 	<p>
-		Creates a mapping specification that maps the <a target="_blank" ng-href="./#/details/{{model.id.prettyFormat}}">{{model.id.name}}</a> payload to normalized Vorto Function Blocks.
+		Creates a payload mapping specification for the <i>{{model.id.prettyFormat}}</i> that maps its arbitrary payload (binary, json etc.) to normalized Vorto Function Block compliant data. 
+		You can execute this mapping specification with the <a target="_blank" href="https://github.com/eclipse/vorto/tree/master/mapping-engine">Vorto Mapping Engine</a> and store the mapped/normalized device payload in a Digital Twin solution, e.g. Eclipse Ditto.
 	<p>
+	<div class="alert alert-info">
+		Only one payload mapping specification per Information Model is currently supported!
+	</div>
 	<img align="center" src="webjars/repository-web/dist/images/mappingspec.png" width="50%" />
 </div>
 <div class="modal-footer">
