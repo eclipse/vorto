@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.vorto.core.api.model.ModelConversionUtils;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.mapping.EntitySource;
 import org.eclipse.vorto.core.api.model.mapping.EnumSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
@@ -61,16 +63,14 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
       if (!mappingResource.isEmpty()) {
 
         IModelWorkspace workspace = getWorkspaceForModel(mappingResource.get(0).getId());
-
+        
         workspace.get().stream().forEach(model -> {
           if (!(model instanceof MappingModel)) {
-            Optional<Model> mappingModel =
-                workspace.get().stream().filter(p -> p instanceof MappingModel)
-                    .filter(p -> isMappingForModel((MappingModel) p, model)).findFirst();
+            Optional<MappingModel> mappingModel = getMappingModelForModel(workspace.get(),model);
             if (mappingModel.isPresent()) {
               result.getModels().put(
                   new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                  ModelDtoFactory.createResource(model,
+                  ModelDtoFactory.createResource(flattenHierarchy(model),
                       Optional.of((MappingModel) mappingModel.get())));
             }
           }
@@ -80,7 +80,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
         workspace.get().stream().forEach(model -> {
           result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-              ModelDtoFactory.createResource(model, Optional.empty()));
+              ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty()));
         });
       }
     } else {
@@ -88,13 +88,28 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
       workspace.get().stream().forEach(model -> {
         result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelDtoFactory.createResource(model, Optional.empty()));
+            ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty()));
       });
     }
 
     return result;
   }
   
+  private Optional<MappingModel> getMappingModelForModel(List<Model> allModels, Model model) {
+    return  allModels.stream().filter(p -> p instanceof MappingModel)
+        .filter(p -> isMappingForModel((MappingModel) p, model)).map(t -> (MappingModel)t).findFirst();
+  }
+
+
+  private Model flattenHierarchy(Model model) {
+    if (model instanceof FunctionblockModel) {
+      return ModelConversionUtils.convertToFlatHierarchy((FunctionblockModel)model);
+    } else {
+      return model;
+    }
+  }
+
+
   private IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
     List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
     DependencyManager dm = new DependencyManager(new HashSet<>(allModels));

@@ -15,23 +15,15 @@ package org.eclipse.vorto.repository.web.api.v1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.vorto.core.api.model.mapping.EntitySource;
-import org.eclipse.vorto.core.api.model.mapping.EnumSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
-import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -39,7 +31,6 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -106,18 +97,10 @@ public class ModelController extends AbstractRepositoryController {
     if (!getRepo(modelID).exists(modelID)) {
       throw new ModelNotFoundException("Model does not exist", null);
     }
-
-    IModelWorkspace workspace = getWorkspaceForModel(modelID);
-
-    ModelContent result = new ModelContent();
-    result.setRoot(modelID);
-
-    workspace.get().stream().forEach(model -> {
-      result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-          ModelDtoFactory.createResource(model, Optional.empty()));
-    });
-
-    return result;
+    
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(getModelRepository(modelID));
+    
+    return converter.convert(modelID, Optional.empty());
   }
 
   @ApiOperation(
@@ -136,55 +119,9 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    List<ModelInfo> mappingResource =
-        getRepo(modelID).getMappingModelsForTargetPlatform(modelID, targetplatformKey, Optional.empty());
-
-    if (!mappingResource.isEmpty()) {
-      
-      IModelWorkspace workspace =
-          getWorkspaceForModel(mappingResource.get(0).getId());
-
-      ModelContent result = new ModelContent();
-      result.setRoot(modelID);
-
-      workspace.get().stream().forEach(model -> {
-        if (!(model instanceof MappingModel)) {
-          Optional<Model> mappingModel =
-              workspace.get().stream().filter(p -> p instanceof MappingModel)
-                  .filter(p -> isMappingForModel((MappingModel) p, model)).findFirst();
-          if (mappingModel.isPresent()) {
-            result.getModels().put(
-                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                ModelDtoFactory.createResource(model,
-                    Optional.of((MappingModel) mappingModel.get())));
-          }
-        }
-      });
-
-      return result;
-
-    } else {
-      throw new ModelNotFoundException("Content for provided target platform key does not exist",
-          null);
-    }
-  }
-
-  private boolean isMappingForModel(MappingModel p, Model model) {
-    if (p.getRules().isEmpty() || p.getRules().get(0).getSources().isEmpty()) {
-      return false;
-    }
-    Source mappingSource = p.getRules().get(0).getSources().get(0);
-    if (mappingSource instanceof InfomodelSource) {
-      return EcoreUtil.equals(((InfomodelSource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof FunctionBlockSource) {
-      return EcoreUtil.equals(((FunctionBlockSource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof EntitySource) {
-      return EcoreUtil.equals(((EntitySource) mappingSource).getModel(), model);
-    } else if (mappingSource instanceof EnumSource) {
-      return EcoreUtil.equals(((EnumSource) mappingSource).getModel(), model);
-    } else {
-      return false;
-    }
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(getModelRepository(modelID));
+    
+    return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
   @ApiOperation(value = "Downloads the model file")
