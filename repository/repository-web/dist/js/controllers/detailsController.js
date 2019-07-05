@@ -617,7 +617,7 @@ repositoryControllers.controller('DetailsController',
 							}).error(function (data, status, header, config) {
 								$scope.isLoading = false;
 								if (status === 409) {
-									$scope.errorMessage = "Mapping with key '"+$scope.targetPlatform+"' already exists.";
+									$scope.errorMessage = "You've already created a mapping for this Information Model. Currently only one mapping per model is supported.";
 								} else {
 									$scope.errorMessage = status.message;
 								}

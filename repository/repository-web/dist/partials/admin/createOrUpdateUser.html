@@ -1,7 +1,10 @@
 <form class="form-horizontal" name="tenantForm">
 	<div class="modal-header">
 		<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
-		<h4 class="modal-title">{{ mode }} User</h4>
+		<h4 class="modal-title">{{ mode }} User <a class="help-icon" 
+			href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/managing_collaborators.md" target="_blank" 
+			title="Read more about managing Collaborators"><span class="fa fa-question-circle" /></a>
+		</h4>
 	</div>
 	<div class="modal-body">
 		
