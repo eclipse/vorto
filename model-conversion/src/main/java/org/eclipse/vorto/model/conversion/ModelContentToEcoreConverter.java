@@ -265,18 +265,20 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       if (param.getType() instanceof PrimitiveType) {
         PrimitiveParam type = FunctionblockFactory.eINSTANCE.createPrimitiveParam();
         type.setMultiplicity(param.isMultiple());
-        
+        type.setName(param.getName());
         type.setType((org.eclipse.vorto.core.api.model.datatype.PrimitiveType
             .valueOf(((PrimitiveType) param.getType()).name())));
         ecoreParams.add(type);
       } else if (param.getType() instanceof org.eclipse.vorto.model.ModelId) {
         RefParam type  = FunctionblockFactory.eINSTANCE.createRefParam();
         type.setMultiplicity(param.isMultiple());
+        type.setName(param.getName());
         type.setType((Type) convert(
             context.getModels().get((org.eclipse.vorto.model.ModelId) param.getType()), context,Optional.empty()));
         ecoreParams.add(type);
       } else if (param.getType() instanceof DictionaryType) {
         DictonaryParam type = FunctionblockFactory.eINSTANCE.createDictonaryParam();
+        type.setName(param.getName());
         type.setMultiplicity(param.isMultiple());
         type.setType((DictionaryPropertyType)createPropertyType(param.getType(), builder, context));
         ecoreParams.add(type);
