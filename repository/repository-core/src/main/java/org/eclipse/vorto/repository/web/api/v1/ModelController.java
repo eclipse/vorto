@@ -98,7 +98,7 @@ public class ModelController extends AbstractRepositoryController {
       throw new ModelNotFoundException("Model does not exist", null);
     }
     
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(getModelRepository(modelID));
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     
     return converter.convert(modelID, Optional.empty());
   }
@@ -119,7 +119,7 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(getModelRepository(modelID));
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }

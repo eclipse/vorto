@@ -151,7 +151,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
       String serviceKey, Map<String, String> requestParams, String baseUrl) {
 
     ModelIdToModelContentConverter converter =
-        new ModelIdToModelContentConverter(this.modelRepositoryFactory.getRepository(userContext));
+        new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     ModelContent content = converter.convert(modelId, Optional.of(serviceKey));
     
     try {

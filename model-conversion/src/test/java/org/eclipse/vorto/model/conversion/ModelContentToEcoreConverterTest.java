@@ -245,6 +245,7 @@ public class ModelContentToEcoreConverterTest {
 
     assertEquals("some operation", op1.getDescription());
     assertEquals(1, op1.getParams().size());
+    assertEquals("p1",op1.getParams().get(0).getName());
     assertEquals(org.eclipse.vorto.core.api.model.datatype.PrimitiveType.INT,
         ((PrimitiveParam) op1.getParams().get(0)).getType());
 
