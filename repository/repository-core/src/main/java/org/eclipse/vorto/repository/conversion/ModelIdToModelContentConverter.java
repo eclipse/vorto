@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
@@ -32,7 +31,7 @@ import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.conversion.IModelConverter;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -42,16 +41,15 @@ import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId,ModelContent>{
 
-  private IModelRepository repository;
+  private IModelRepositoryFactory repositoryFactory;
   
-  public ModelIdToModelContentConverter(IModelRepository repository) {
-    this.repository = repository;
+  public ModelIdToModelContentConverter(IModelRepositoryFactory repositoryFactory) {
+    this.repositoryFactory = repositoryFactory;
   }
-  
   
   @Override
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
-    if (!repository.exists(modelId)) {
+    if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
       throw new ModelNotFoundException("Model does not exist", null);
     }
     
@@ -59,7 +57,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
     result.setRoot(modelId);
 
     if (platformKey.isPresent()) {
-      List<ModelInfo> mappingResource = repository.getMappingModelsForTargetPlatform(modelId, platformKey.get(),Optional.empty());
+      List<ModelInfo> mappingResource = repositoryFactory.getRepositoryByModel(modelId).getMappingModelsForTargetPlatform(modelId, platformKey.get(),Optional.empty());
       if (!mappingResource.isEmpty()) {
 
         IModelWorkspace workspace = getWorkspaceForModel(mappingResource.get(0).getId());
@@ -117,7 +115,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
     ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
     for (ModelInfo model : allModels) {
-      FileContent modelContent = repository
+      FileContent modelContent = repositoryFactory.getRepositoryByModel(model.getId())
           .getFileContent(model.getId(), Optional.of(model.getFileName())).get();
       workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
     }
@@ -129,7 +127,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
     List<ModelInfo> modelInfos = new ArrayList<>();
 
-    ModelInfo modelResource = repository.getById(modelId);
+    ModelInfo modelResource = repositoryFactory.getRepositoryByModel(modelId).getById(modelId);
     modelInfos.add(modelResource);
 
     for (ModelId reference : modelResource.getReferences()) {
