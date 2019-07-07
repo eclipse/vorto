@@ -8,6 +8,6 @@ Currently supported Digital Twin Service:
 
 ## Getting started
 
-Read the following tutorial, that uses this generator for a device integration scenerio:
+Read the following tutorial, that uses this generator for a device specific REST API
 
-- [Create OpenAPI Specification](../../docs/tutorials/create_openapi.md)
+Todo: add link to open api tutorial here
