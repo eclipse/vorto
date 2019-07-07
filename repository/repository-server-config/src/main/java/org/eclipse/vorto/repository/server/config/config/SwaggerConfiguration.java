@@ -54,6 +54,7 @@ public class SwaggerConfiguration {
 		return or(PathSelectors.regex("/api/v1/models.*"),
 				  PathSelectors.regex("/api/v1/search.*"),
 				  PathSelectors.regex("/api/v1/generators.*"),
+				  PathSelectors.regex("/api/v1/plugins.*"),
 				  PathSelectors.regex("/api/v1/attachments.*"));
 	}
 
