@@ -11,7 +11,8 @@
  */
 package org.eclipse.vorto.repository.web.api.v1.plugins;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.web.api.v1.AbstractGeneratorController;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,42 +36,18 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api/v1/plugins/generators/eclipsehono")
 public class EclipseHonoPluginController extends AbstractGeneratorController {
 
-  @ApiOperation(value = "Generates python code that sends telemetry data to Eclipse Hono MQTT adapter")
+  @ApiOperation(value = "Generates device code that sends telemetry data to Eclipse Hono MQTT adapter")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model or generator not found")})
-  @RequestMapping(value = "/models/{modelId:.+}?language=python", method = RequestMethod.GET)
-  public void generateEclipseHonoPython(
+  @RequestMapping(value = "/models/{modelId:.+}/connectivity", method = RequestMethod.GET)
+  public void generateEclipseHono(
       @ApiParam(value = "the vorto model ID, e.g. com.acme:Thermostat:1.0.0",
-          required = true) final @PathVariable String modelId,
-      final HttpServletRequest request, final HttpServletResponse response) {
-    generateAndWriteToOutputStream(modelId, "eclipsehono", request, response);
+          required = true) final @PathVariable String modelId, @RequestParam(value="language",required=true) Language language, final HttpServletResponse response) {
+    Map<String, String> params = new HashMap<>();
+    params.put("language", language.name());
+    generateAndWriteToOutputStream(modelId, "eclipsehono", params, response);
   }
-  
-  @ApiOperation(value = "Generates java code that sends telemetry data to Eclipse Hono MQTT adapter")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model or generator not found")})
-  @RequestMapping(value = "/models/{modelId:.+}?language=java", method = RequestMethod.GET)
-  public void generateEclipseHonoJava(
-      @ApiParam(value = "the vorto model ID, e.g. com.acme:Thermostat:1.0.0",
-          required = true) final @PathVariable String modelId,
-      final HttpServletRequest request, final HttpServletResponse response) {
-    generateAndWriteToOutputStream(modelId, "eclipsehono", request, response);
-  }
-  
-  @ApiOperation(value = "Generates arduino/c code that sends telemetry data to Eclipse Hono MQTT adapter")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model or generator not found")})
-  @RequestMapping(value = "/models/{modelId:.+}?language=arduino", method = RequestMethod.GET)
-  public void generateEclipseHonoArduino(
-      @ApiParam(value = "the vorto model ID, e.g. com.acme:Thermostat:1.0.0",
-          required = true) final @PathVariable String modelId,
-      final HttpServletRequest request, final HttpServletResponse response) {
-    generateAndWriteToOutputStream(modelId, "eclipsehono", request, response);
-  }
- 
   
   @ApiOperation(
       value = "Returns meta information about the Eclipse Hono Plugin")
@@ -79,4 +57,7 @@ public class EclipseHonoPluginController extends AbstractGeneratorController {
     return this.generatorService.getPluginInfo("eclipsehono", true);
   }
   
+  public enum Language {
+    python, arduino, java
+  }
 }

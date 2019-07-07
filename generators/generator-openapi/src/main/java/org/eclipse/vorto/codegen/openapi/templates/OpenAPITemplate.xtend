@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 
 /**
  * Creates an OpenAPI v3 Specification for an Information Model. Supports configuration, status properties as well as operations
@@ -52,7 +53,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  - name: Features
 		    description: Features of your «infomodel.name» things
 		  - name: Messages
-		    description: Talk with your «infomodel.name»
+		    description: Send messages to / Receive event messages from «infomodel.name»
 		security:
 		  - thingsApiToken: []
 		    bearerAuth: []
@@ -262,9 +263,68 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        $ref: '#/components/requestBodies/«fbProperty.type.name»«configurationProperty.name.toFirstUpper»ConfigurationValue'
 		  «ENDFOR»
 		  «ENDIF»
+		  «FOR event : fbProperty.type.functionblock.events»
+		  '/things/{thingId}/features/«fbProperty.name»/outbox/messages/«event.name»':
+		    post:
+		      summary: Receive «event.name» emitted by the device
+		      description: |-
+		        Send a message with the subject `«event.name»` `FROM` the Thing
+		        identified by the `thingId` path parameter. The request body contains
+		        the device event payload and the `Content-Type` header defines its type.
+		        
+		        In order to send a message, the user needs `WRITE` permission at the
+		        Thing level.
+		        
+		        The HTTP request blocks until a response to the message is available
+		        or until the `timeout` is expired. If many clients respond to
+		        the issued message, the first response will complete the HTTP request.
+		        
+		        In order to handle the message in a fire and forget manner, add
+		        a query-parameter `timeout=0` to the request.
+		      tags:
+		        - Messages
+		      parameters:
+		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/messageTimeoutParam'
+		      responses:
+		        '202':
+		          description: The message was sent (fire and forget).
+		        '400':
+		          description: |-
+		            The request could not be completed. The `thingId` either
+		            * does not contain the mandatory namespace prefix (java package notation + `:` colon)
+		            * does not conform to RFC-2396 (URI)
+		            
+		            Or at least one of the defined path parameters was invalid.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '401':
+		          description: The request could not be completed due to missing authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '403':
+		          description: |-
+		            The request could not be completed. Either
+		            * due to a missing or invalid API Token.
+		            * as the caller does not have `WRITE` permission on the resource message:/outbox/messages/`messageSubject`.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '413':
+		          $ref: '#/components/responses/messageTooLarge'
+		      «IF !event.properties.empty»
+		      requestBody:
+		        $ref: '#/components/requestBodies/«fbProperty.type.name»«event.name.toFirstUpper»EventPayload'
+		      «ENDIF»
+		  «ENDFOR»
 		  «FOR operation : fbProperty.type.functionblock.operations»
 		  '/things/{thingId}/features/«fbProperty.name»/inbox/messages/«operation.name»':
-		    put:
+		    post:
 		      summary: Executes the «operation.name» on the device
 		      description: |-
 		        «IF operation.description !== null»«operation.description»«ELSE»Executes the «operation.name» on the device.«ENDIF»
@@ -359,6 +419,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    «fb.name»«configurationProperty.name.toFirstUpper»ConfigurationValue:
 		      «IF configurationProperty.type instanceof PrimitivePropertyType»
 		      «wrapIfMultiple(getPrimitive((configurationProperty.type as PrimitivePropertyType).type).toString,configurationProperty.multiplicity)»
+		      «IF configurationProperty.constraintRule !== null»
+		      «handleConstraints(configurationProperty.constraintRule)»
+		      «ENDIF»
 		      «ELSEIF configurationProperty.type instanceof ObjectPropertyType»
 		      «wrapIfMultiple("$ref: '#/components/schemas/"+(configurationProperty.type as ObjectPropertyType).type.name+"'",configurationProperty.multiplicity)»
 		      «ENDIF»
@@ -374,6 +437,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          «IF param.description !== null»description: «param.description»«ENDIF»
 		          «IF param instanceof PrimitiveParam»
 		          «wrapIfMultiple(getPrimitive((param as PrimitiveParam).type).toString,param.multiplicity)»
+		          «IF param.constraintRule !== null»
+		          «handleConstraints(param.constraintRule)»
+		          «ENDIF»
 		          «ELSEIF param instanceof RefParam»
 		          «wrapIfMultiple("$ref: '#/components/schemas/"+(param as RefParam).type.name+"'",param.multiplicity)»
 		          «ENDIF»
@@ -393,6 +459,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              «IF statusProperty.description !== null»description: «statusProperty.description»«ENDIF»
 		              «IF statusProperty.type instanceof PrimitivePropertyType»
 		              «wrapIfMultiple(getPrimitive((statusProperty.type as PrimitivePropertyType).type).toString,statusProperty.multiplicity)»
+		              «IF statusProperty.constraintRule !== null»
+		              «handleConstraints(statusProperty.constraintRule)»
+		              «ENDIF»
 		              «ELSEIF statusProperty.type instanceof ObjectPropertyType»
 		              «wrapIfMultiple("$ref: '#/components/schemas/"+(statusProperty.type as ObjectPropertyType).type.name+"'",statusProperty.multiplicity)»
 		            «ENDIF»
@@ -408,6 +477,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              «IF configProperty.description !== null»description: «configProperty.description»«ENDIF»
 		              «IF configProperty.type instanceof PrimitivePropertyType»
 		              «wrapIfMultiple(getPrimitive((configProperty.type as PrimitivePropertyType).type).toString,configProperty.multiplicity)»
+		              «IF configProperty.constraintRule !== null»
+		              «handleConstraints(configProperty.constraintRule)»
+		              «ENDIF»
 		              «ELSEIF configProperty.type instanceof ObjectPropertyType»
 		              «wrapIfMultiple("$ref: '#/components/schemas/"+(configProperty.type as ObjectPropertyType).type.name+"'",configProperty.multiplicity)»
 		            «ENDIF»
@@ -443,6 +515,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          «IF property.description !== null»description: «property.description»«ENDIF»
 		          «IF property.type instanceof PrimitivePropertyType»
 		          «wrapIfMultiple(getPrimitive((property.type as PrimitivePropertyType).type).toString,property.multiplicity)»
+		          «IF property.constraintRule !== null»
+		          «handleConstraints(property.constraintRule)»
+		          «ENDIF»
 		          «ELSEIF property.type instanceof ObjectPropertyType»
 		          «wrapIfMultiple("$ref: '#/components/schemas/"+(property.type as ObjectPropertyType).type.name+"'",property.multiplicity)»
 		          «ENDIF»
@@ -457,6 +532,29 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  
 		  requestBodies:
 		    «FOR fb : Utils.getReferencedFunctionBlocks(infomodel)»
+		    «FOR event : fb.functionblock.events»
+		    «IF !event.properties.empty»
+		    «fb.name»«event.name.toFirstUpper»EventPayload:
+		      content:
+		        application/json:
+		          schema:
+		            type: object
+		            properties:
+		              «FOR eventProperty : event.properties»
+		              «eventProperty.name»:
+		                «IF eventProperty.description !== null»description: «eventProperty.description»«ENDIF»
+		                «IF eventProperty.type instanceof PrimitivePropertyType»
+		                «wrapIfMultiple(getPrimitive((eventProperty.type as PrimitivePropertyType).type).toString,eventProperty.multiplicity)»
+		                «IF eventProperty.constraintRule !== null»
+		                «handleConstraints(eventProperty.constraintRule)»
+		                «ENDIF»
+		                «ELSEIF eventProperty.type instanceof ObjectPropertyType»
+		                «wrapIfMultiple("$ref: '#/components/schemas/"+(eventProperty.type as ObjectPropertyType).type.name+"'",eventProperty.multiplicity)»
+		                «ENDIF»
+		              «ENDFOR»
+		            «Utils.calculateRequired(event.properties)»
+		    «ENDIF»
+		    «ENDFOR»
 		    «IF fb.functionblock.configuration !== null»
 		      «FOR configurationProperty : fb.functionblock.configuration.properties»
 		        «fb.name»«configurationProperty.name.toFirstUpper»ConfigurationValue:
@@ -465,6 +563,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              schema:
 		                «IF configurationProperty.type instanceof PrimitivePropertyType»
 		                «wrapIfMultiple(getPrimitive((configurationProperty.type as PrimitivePropertyType).type).toString,configurationProperty.multiplicity)»
+		                «IF configurationProperty.constraintRule !== null»
+		                «handleConstraints(configurationProperty.constraintRule)»
+		                «ENDIF»
 		                «ELSEIF configurationProperty.type instanceof ObjectPropertyType»
 		                «wrapIfMultiple("$ref: '#/components/schemas/"+(configurationProperty.type as ObjectPropertyType).type.name+"'",configurationProperty.multiplicity)»
 		                «ENDIF»
@@ -483,6 +584,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                «IF param.description !== null»description: «param.description»«ENDIF»
 		                «IF param instanceof PrimitiveParam»
 		                «wrapIfMultiple(getPrimitive((param as PrimitiveParam).type).toString,param.multiplicity)»
+		                «IF param.constraintRule !== null»
+		                «handleConstraints(param.constraintRule)»
+		                «ENDIF»
 		                «ELSEIF param instanceof RefParam»
 		                «wrapIfMultiple("$ref: '#/components/schemas/"+(param as RefParam).type.name+"'",param.multiplicity)»
 		                «ENDIF»
@@ -585,6 +689,14 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		'''
 	}
 		
+	def handleConstraints(ConstraintRule rule) {
+	'''
+	«FOR constraint : rule.constraints»
+	«getConstraint(constraint.type)»«IF constraint.type === ConstraintIntervalType.REGEX»"«constraint.constraintValues»"«ELSE»«constraint.constraintValues»«ENDIF»
+	«ENDFOR»
+	'''
+	}
+		
 	def wrapIfMultiple(String type, boolean isArray) {
 		'''
 		«IF isArray»
@@ -623,7 +735,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		'''
 	}
 	
-	def getJsonConstraint(ConstraintIntervalType type) {
+	def getConstraint(ConstraintIntervalType type) {
 		if(type == ConstraintIntervalType.STRLEN){
 			return '''maxLength: '''
 		} else if(type == ConstraintIntervalType.REGEX) {
