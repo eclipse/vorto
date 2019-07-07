@@ -7,6 +7,7 @@ The following Code Generators are currently supported:
  - [Bosch IoT Suite Generator](./generator-boschiotsuite/Readme.md) (Key: boschiotsuite)
  - [Eclipse Ditto](./generator-eclipseditto/Readme.md) (Key: eclipseditto)
  - [Eclipse Hono](./generator-eclipsehono/Readme.md) (Key: eclipsehono)
+ - [OpenAPI](./generator-openapi/Readme.md) (Key: openapi)
 
 Invoke Generator via Curl:
 
