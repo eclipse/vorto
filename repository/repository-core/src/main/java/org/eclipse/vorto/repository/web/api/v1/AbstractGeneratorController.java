@@ -34,11 +34,15 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
   protected ITenantService tenantService;
   
   protected void generateAndWriteToOutputStream(String modelId, String pluginKey, HttpServletRequest request, HttpServletResponse response) {
+    generateAndWriteToOutputStream(modelId, pluginKey, getRequestParams(request), response);
+  }
+  
+  protected void generateAndWriteToOutputStream(String modelId, String pluginKey, Map<String, String> params, HttpServletResponse response) {
     ModelId modelIdToGen = ModelId.fromPrettyFormat(modelId);
 
     try {
       GeneratedOutput generatedOutput = generatorService.generate(getUserContext(modelIdToGen),
-          modelIdToGen, URLDecoder.decode(pluginKey, "utf-8"), getRequestParams(request));
+          modelIdToGen, URLDecoder.decode(pluginKey, "utf-8"), params);
       writeToResponse(response, generatedOutput);
     } catch (IOException e) {
       throw new RuntimeException("Error copying file.", e);
