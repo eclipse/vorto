@@ -18,6 +18,7 @@ import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
@@ -129,6 +130,12 @@ public class Utils {
       // Analyze the fault properties...
       if (fb.getFault() != null) {
         for (Property property : fb.getFault().getProperties()) {
+          types.addAll(getReferencedTypes(property));
+        }
+      }
+      
+      for (Event event : fb.getEvents()) {
+        for (Property property : event.getProperties()) {
           types.addAll(getReferencedTypes(property));
         }
       }
