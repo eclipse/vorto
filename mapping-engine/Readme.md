@@ -20,7 +20,7 @@ In this tutorial, we are going to walk you through the process of creating a Vor
 To work through this tutorial, you will need:
 
 - [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) account to log in to the Vorto Repository
-- A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
+- A [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0), managed in the Vorto Repository
 - You are a collaborator/owner of a namespace
 
 <br />
@@ -211,6 +211,8 @@ from Illuminance to condition with {value:"header.type == 'I'"}
 //mapping rules for Illuminance properties
 ```
 
+# What's next ?
 
+- [Normalize device telemetry data](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md), that was received from Eclipse Hono supported protocol adapters
 
 
