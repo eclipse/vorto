@@ -37,7 +37,7 @@ You're now all set up with the API documentation..
 
 **5.** We can now use the generators to create clients and even server in different lanugauges.
 
-![generators swagger tools](../images/tutorials/create_openapi/generate_openAPI.png)
+![generators swagger tools](../images/tutorials/create_openapi/openAPI_v2_generators.png)
   
 
 <br />
