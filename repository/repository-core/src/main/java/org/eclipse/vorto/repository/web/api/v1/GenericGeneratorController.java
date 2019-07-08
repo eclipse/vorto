@@ -32,22 +32,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value = "/generate")
 @RestController
 @RequestMapping(value = "/api/v1/generators")
 public class GenericGeneratorController extends AbstractGeneratorController {
@@ -56,12 +52,8 @@ public class GenericGeneratorController extends AbstractGeneratorController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericGeneratorController.class);
 
-  @ApiOperation(
-      value = "Generate code for a specified platform, and extract specified path")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model or generator not found")})
   @RequestMapping(value = "/{serviceKey}/models/{modelId:.+}/!/**", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public void generateAndExtract(
       @ApiParam(value = "The iD of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -134,16 +126,8 @@ public class GenericGeneratorController extends AbstractGeneratorController {
     return apm.extractPathWithinPattern(bestMatchPattern, path);
   }
 
-  @ApiOperation(value = "Generic API for invoking supported code generators",
-      notes = "This method generates artifacts for a specified platform using the 'plugin key' value along with the 'modelId'."
-          + "<br/>" + "<pre>"
-          + "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-          + "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-          + "* serviceKey : The key value of the specific generator.<br/>" + "</pre>")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model or generator not found")})
   @RequestMapping(value = "/{pluginkey}/models/{modelId:.+}", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public void generate(
       @ApiParam(value = "the vorto model ID, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -157,11 +141,8 @@ public class GenericGeneratorController extends AbstractGeneratorController {
   }
   
 
-  @ApiOperation(value = "Returns all currently registered Code Generator",
-      notes = "This method call retrieves all registered code generators currently in the repository."
-          + "<br/>The generators are grouped under 'production', 'infra' and 'demo' tags.")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved generators successfully")})
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public Collection<GeneratorPluginConfiguration> getRegisteredGeneratorServices(
       @ApiParam(value = "Prioritize results with given tag",
           allowableValues = "demo,infra,production", required = false) @RequestParam(
@@ -204,10 +185,9 @@ public class GenericGeneratorController extends AbstractGeneratorController {
     return false;
   }
 
-  @ApiOperation(
-      value = "Generic API that returns meta information about the given plugin")
   @RequestMapping(value = "/{pluginkey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public GeneratorPluginConfiguration getGeneratorInfo(@ApiParam(value = "The plugin key, e.g. openapi",
       required = true) final @PathVariable String pluginkey) {
     return this.generatorService.getPluginInfo(pluginkey, true);
