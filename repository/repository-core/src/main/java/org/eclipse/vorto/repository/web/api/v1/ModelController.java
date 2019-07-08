@@ -33,21 +33,17 @@ import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value = "/models")
 @RestController("modelRepositoryController")
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
@@ -57,13 +53,9 @@ public class ModelController extends AbstractRepositoryController {
 
   private static Logger logger = Logger.getLogger(ModelController.class);
 
-  @ApiOperation(value = "Returns a full model by its model ID")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model info"),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model not found"),
-      @ApiResponse(code = 403, message = "Not Authorized to view model")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -81,13 +73,9 @@ public class ModelController extends AbstractRepositoryController {
     return ModelDtoFactory.createDto(resource);
   }
 
-  @ApiOperation(value = "Returns the complete model content")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"),
-          @ApiResponse(code = 400, message = "Wrong input"),
-          @ApiResponse(code = 404, message = "Model not found")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public ModelContent getModelContent(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -103,14 +91,9 @@ public class ModelController extends AbstractRepositoryController {
     return converter.convert(modelID, Optional.empty());
   }
 
-  @ApiOperation(
-      value = "Returns the complete model content including target platform specific attributes")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"),
-          @ApiResponse(code = 400, message = "Wrong input"),
-          @ApiResponse(code = 404, message = "Model not found")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public ModelContent getModelContentForTargetPlatform(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -124,12 +107,9 @@ public class ModelController extends AbstractRepositoryController {
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
-  @ApiOperation(value = "Downloads the model file")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"),
-      @ApiResponse(code = 400, message = "Wrong input"),
-      @ApiResponse(code = 404, message = "Model not found")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public void downloadModelById(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
