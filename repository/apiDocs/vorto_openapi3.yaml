@@ -19,7 +19,7 @@ info:
 
 servers:
 
-- url: http://vorto.eclipse.org/api/v1
+- url: https://vorto.eclipse.org/api/v1
 
   description: Eclipse Vorto Repository
   
