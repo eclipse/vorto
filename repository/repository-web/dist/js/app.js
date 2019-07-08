@@ -1,5 +1,4 @@
-var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives",
-    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson","ui.select"]);
+var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson","ui.select"]);
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
@@ -19,9 +18,6 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/generators", {
         templateUrl : "webjars/repository-web/dist/partials/generators-template.html",
         controller : "GeneratorController"
-    }).when("/api", {
-        templateUrl : "webjars/repository-web/dist/partials/swagger-template.html",
-        controller : "SwaggerController"
     }).when("/login", {
         templateUrl : "webjars/repository-web/dist/partials/login-template.html",
         controller : "LoginController"

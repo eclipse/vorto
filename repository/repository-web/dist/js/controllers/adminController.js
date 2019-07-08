@@ -1,4 +1,4 @@
-var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
+var repositoryControllers = angular.module('repositoryControllers', []);
 
 repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
     function ($scope, $rootScope, $http, $location,$timeout) {
