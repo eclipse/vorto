@@ -36,9 +36,9 @@ Once you cick the plugin, a pop-up will let you choose which Digital Twin specif
 You're now all set up with the API documentation..
 
 **5.** We can now use the generators to create clients and even server in different lanugauges.
+> **Note**: The downloaded client contains all the features of the SwaggerUI. In our case we therefore need to [authenticate with the Bosch Suite Auth token](https://accounts.bosch-iot-suite.com/oauth2-clients). 
 
-![generators swagger tools](../images/tutorials/create_openapi/openAPI_v2_generators.png)
-  
+![generators swagger tools](../images/tutorials/create_openapi/openAPI_v2_generator.png)
 
 <br />
 
