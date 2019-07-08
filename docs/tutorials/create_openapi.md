@@ -23,7 +23,7 @@ The rendered version of the generated OpenAPI spec for this models looks like th
 
 **2.** Send telemetry data to Bosch IoT Suite using [Java](./connect_javadevice.md), [Python](./mqtt-python.md), or [Arduino](./connect_esp8266.md)
 
-**3.** Create OpenAPI for Bosch IoT Things by choosing the Information Model of your choice and using the OpenAPI generator within the `Experimental Plugins` section of the details page.
+**3.** Create OpenAPI for Bosch IoT Things by choosing the Information Model of your choice and using the OpenAPI generator within the `Official Plugins` section of the details page.
 
 ![generate openAPI spec](../images/tutorials/create_openapi/openAPI_plugin.png)
 
@@ -32,11 +32,13 @@ Once you cick the plugin, a pop-up will let you choose which Digital Twin specif
 
 ![run spec in swagger tools](../images/tutorials/create_openapi/generate_openAPI.png)
 
-**4.** Once downloaded, use the `.yml` file and run it in Swagger tools.   
-You're now all set up to retrieve feature data from Things.
-> **Note**: This requires a [suite auth token](https://accounts.bosch-iot-suite.com/oauth2-clients)
+**4.** Once downloaded, use the `.yml` file and paste it into the [Swagger Editor](https://editor.swagger.io/).   
+You're now all set up with the API documentation..
 
-![get device data through api](../images/tutorials/create_openapi/get_data_ui.png)
+**5.** We can now use the generators to create clients and even server in different lanugauges.
+
+![generators swagger tools](../images/tutorials/create_openapi/generate_openAPI.png)
+  
 
 <br />
 
