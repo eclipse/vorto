@@ -23,6 +23,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 - Payload Mapping Engine (Java and node.js), that lets you convert arbitrary (device) data to normalized Vorto-compliant data structure, fast and reliably.
 - Bosch IoT Suite Generator add-on: Generates a script to provision devices in the Bosch IoT Suite from Vorto models
+- OpenAPI / Swagger Generator, which generates a device-specific REST - API specification for Digital Twin services, such as Bosch IoT Things.
 - JSON - Schema Generator, which creates JSON-Schema files from Vorto models
 
 
