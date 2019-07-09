@@ -35,6 +35,10 @@ In addition to that, you will also see all of the submodels that will be importe
 
 **9.** Click **Import** to finish uploading.   
 
+> **Note**: Pictures have to be downloaded and uploaded seperately. Simply **Right-Click and Save** the image in the old Vorto Repository and **re-upload** it in the new one. 
+
+<br />
+
 **You're now ready to use the models.**
 
 
