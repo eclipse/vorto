@@ -94,6 +94,7 @@ By default there will be a **Telemetry Bosch IoT Hub** connection.
 
 ## What's next?
 - Extend the Dashboard by [creating custom UI widgets](https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/extending.md)
+- [Generate an OpenAPI Spec for your device](create_openapi.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)
