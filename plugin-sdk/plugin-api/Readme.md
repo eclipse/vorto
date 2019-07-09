@@ -30,7 +30,7 @@ Each Generator must make sure to provide two endpoints, that are called by the V
 	</tr>
 </table>
 
-[Download OpenAPI spec](../../../docs/specs/vorto_generator_plugin-2.0.yml)
+[Download OpenAPI spec](../../docs/specs/vorto_generator_plugin-2.0.yml)
 
 ### Example
 
@@ -43,7 +43,7 @@ Checkout our [hello world generator](https://github.com/eclipse/vorto-examples/t
 The Vorto Repository manages Vorto Information Models and provides elegant ways to search these models as well as transform these models into runnable source code via Code Generators. 
 But how can existing (standardized) device descriptions be integreated into the Vorto eco-system, so that they can benefit from the Repository features? It is just as easy as provide an Importer that manages the validation and conversion into Vorto Information Models. 
 
-[Download OpenAPI spec](../../../docs/specs/vorto_importer_plugin-2.0.yml)
+[Download OpenAPI spec](../../docs/specs/vorto_importer_plugin-2.0.yml)
 
 ### 1. File Validation
 
