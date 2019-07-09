@@ -1,9 +1,12 @@
 openapi: 3.0.0
 info:
-  title: Vorto Generator API
-  description: REST Endpoints for providing a Code Generator Plugin for the Eclipse Vorto Repository
-  contact: {}
-  version: '1.0'
+  title: Vorto Generator Plugin API
+  description: REST Endpoints for providing a Vorto Generator Plugin for the Eclipse Vorto Repository. Refer to the <a target="_blank" href="https://raw.githubusercontent.com/eclipse/vorto/master/plugin-sdk/plugin-api/Readme.md">Generator Plugin SDK Documentation</a>
+  contact:
+    name: Eclipse Vorto Team
+    url: https://www.eclipse.org/vorto
+    email: vorto-development@bosch-si.com
+  version: '2.0'
 servers:
 - url: /api/2/plugins/generators
   variables: {}
