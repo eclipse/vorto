@@ -10,19 +10,21 @@ If you had created an external / 3rd party tool to create Vorto Models, you can 
 
 ## Steps to Import any type of model
 
-1. Log in to Vorto Repository with your Github or BoschID account
+**1.** Log in to the [Vorto Repository](https://vorto.eclipse.org)
 
-2. Click **Import** of the menu bar
+**2.** [Create and manage Namespace](../../docs/tutorials/managing_namespaces.md), by default all new namespaces will be prefixed with *vorto.private*. To claim for an official namespace, [reach out to the Vorto Team](../../docs/tutorials/managing_namespaces.md#claiming-an-official-namespace).
 
-3. Choose **Vorto** as type of models to import 
+**3.** Click **Browse** and select the zip file you downloaded in Step-3.   
+Make sure to select the target namespace from the dropdown in which your model should be imported in.
 
-> Vorto allows to import other file types into the Repository, such as LwM2M/IPSO. 
+**4.** Click **Upload** 
 
-4. Click **Browse** and select the Vorto model(s)
+**5.** If all goes well you will receive a success message *model is valid and ready for import*   
+In addition to that, you will also see all of the submodels that will be imported and which ones already exist.
 
-> The file name extensions could be: _.mapping_, _.infomodel_, _.type_, _.fbmodel_
+![successful upload](../docs/images/migrate_model/successful_upload.png)
 
-5. Confirm with **Upload**. This uploads and validates the models before you can check them in.  
+**6.** Click **Import** to finish uploading.   
 
-6. If the validation was successful, you can select **Check in** to finalize the import.
+**You're now ready to use the models.**
 

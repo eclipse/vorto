@@ -187,6 +187,7 @@ This means that if the length of your topic and payload plus 5 bytes overhead is
 
 ## What's next ?
 - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+- [Generate an OpenAPI Spec for your device](create_openapi.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)

@@ -263,6 +263,7 @@ Therefore you have to go in and double check every field of the configuration se
 ## What's next ?
 
  - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+ - [Generate an OpenAPI Spec for your device](create_openapi.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)

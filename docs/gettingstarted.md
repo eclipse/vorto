@@ -28,7 +28,7 @@ The Vorto language is a readable and easily understood domain-specific language 
 The metamodel is used to define the relationship between the different entities like Information Models, Function Blocks, and Datatypes.
 
 - **Code Generators**:
-Based on the DSL and metamodels, the code generators provide a sophisticated but simple way to create source code for a convenient integration of the defined IoT devices with an IoT solution platform.
+Based on the DSL and metamodels, the [code generators](../generators) provide a sophisticated but simple way to create source code for a convenient integration of the defined IoT devices with an IoT solution platform.
 
 - **Vorto Repository**:
 The repository is used to store, manage, and distribute the created Information Models and Function Blocks for re-use.
@@ -76,10 +76,16 @@ If you want to see the full process of creating, integrating and visualizing sen
 
 - [Create and Manage your Namespaces](tutorials/managing_namespaces.md)
 - [Manage Collaborators](tutorials/managing_collaborators.md)
-- [Importing and releasing your models](tutorials/import_model.md)
+- [Importing your models](../repository/docs/import_model.md)
+- [Releasing your models](../repository/docs/model_states.md)
 - [Creating a new version of your model](../repository/docs/model_versioning.md)
 - [Publishing Models](tutorials/publishing_models.md)
 - [Release States](../repository/docs/model_states.md)
+- [Official Generators/Plugins](../generators)
+  - [Bosch IoT Suite Generator](../generators/generator-boschiotsuite/Readme.md)
+  - [Eclipse Ditto](../generators/generator-eclipseditto/Readme.md)
+  - [Eclipse Hono](../generators/generator-eclipsehono/Readme.md)
+  - [OpenAPI](../generators/generator-openapi/Readme.md)
 
 #### Developer Guide
 
