@@ -5,7 +5,7 @@ info:
   title: Eclipse Vorto Repository API
 
   description: |- 
-    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models and generator plugins managed by the Repository.
+    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="">Getting started Guide</a> for further details.
 
   contact:
 
@@ -15,7 +15,7 @@ info:
 
     email: vorto-development@bosch-si.com
 
-  version: '0.11.0'
+  version: '1.0'
 
 servers:
 

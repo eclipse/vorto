@@ -45,7 +45,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		info:
 		  title: Bosch IoT Things HTTP API for «infomodel.name» 
 		  description: JSON-based, REST-like API for <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name» Vorto Model</a>
-		  version: "2"
+		  version: "«infomodel.version»"
 		servers:
 		  - url: https://things.eu-1.bosch-iot-suite.com/api/2
 		    description: "Bosch IoT Things Service"
