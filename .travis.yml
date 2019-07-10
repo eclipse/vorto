@@ -4,31 +4,6 @@ dist: trusty
 jobs:
   include:
     - stage: deploy
-      name: "Publish Vorto-Mapper to NPM"
-      language: node_js
-      node_js:
-        - '10'
-        
-      script:
-        - echo "skipping tests"
-     
-      before_deploy:
-        - echo "Preparing for deploy to NPM" 
-        - cd mapping-engine-nodejs
-        
-      deploy:
-        provider: npm
-        email: Alexander.Edelmann@bosch-si.com
-        api_key:
-          secure: $NPM_API_TOKEN
-        on:
-          tags: true
-          branches:
-            only:
-              - master
-  
-  
-    - stage: deploy
       name: "Deploy Repository"
 
       language: java
@@ -86,3 +61,4 @@ jobs:
             branch: 
               - development
               - master
+              - vorto_prod_new_test                     
