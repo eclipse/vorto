@@ -659,14 +659,21 @@
 <!-- Payload Mapping Dialog -->
 <script type="text/ng-template" id="payloadMappingDialog.html">
 <div class="modal-header">
-	<h3 class="modal-title"><center>Create Payload Mapping Specification</center></h3>
+	<h3 class="modal-title"><center>Payload Mapping Specification</center></h3>
 </div>
 <div class="modal-body">
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-	<p>
-		Creates a payload mapping specification for the <i>{{model.id.prettyFormat}}</i> that maps its arbitrary payload (binary, json etc.) to normalized Vorto Function Block compliant data. 
-		You can execute this mapping specification with the <a target="_blank" href="https://github.com/eclipse/vorto/tree/master/mapping-engine">Vorto Mapping Engine</a> and store the mapped/normalized device payload in a Digital Twin solution, e.g. Eclipse Ditto.
-	<p>
+	<div ng-if="existingSpec === null">
+		<p>
+			Creates a payload mapping specification for the <i>{{model.id.prettyFormat}}</i> that maps its arbitrary payload (binary, json etc.) to normalized Vorto Function Block compliant data. 
+			You can execute this mapping specification with the <a target="_blank" href="https://github.com/eclipse/vorto/tree/master/mapping-engine">Vorto Mapping Engine</a> and store the mapped/normalized device payload in a Digital Twin solution, e.g. Eclipse Ditto.
+		<p>
+	</div>
+	<div ng-if="existingSpec != null">
+		<p>
+			Opens the existing payload mapping specification for the  <i>{{model.id.prettyFormat}}</i> 
+		</p>
+	</div>
 	<div class="alert alert-info">
 		Only one payload mapping specification per Information Model is currently supported!
 	</div>
@@ -674,8 +681,10 @@
 </div>
 <div class="modal-footer">
 	<div class="align-right">
-	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
-	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()">Create</button>
+	    <button ng-if="isLoading && existingSpec == null" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button ng-if="!isLoading && existingSpec == null" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="create()">Create</button>
+	    <button ng-if="isLoading && existingSpec != null" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="openSpec()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Open</button>
+	    <button ng-if="!isLoading && existingSpec != null" class="btn btn-primary" type="button" ng-disabled="isLoading" ng-click="openSpec()">Open</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </div>

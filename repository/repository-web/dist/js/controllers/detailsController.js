@@ -604,8 +604,32 @@ repositoryControllers.controller('DetailsController',
 				controller: function ($scope, model) {
 					$scope.model = model;
 					$scope.errorMessage = null;
-					$scope.targetPlatform = $scope.model.id.name.toLowerCase();
+					$scope.targetPlatform = $scope.model.id.namespace.split('.').join('_')+'_'+$scope.model.id.name.toLowerCase();
+					$scope.existingSpec = null;
 	
+					$scope.getMappingId = function() {
+						$scope.isLoading = true;
+						$http.get('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform + '/info')
+							.success(function (result) {
+								$scope.isLoading = false;
+								for (var i = 0; i < result.length;i++) { 
+									result[i].references.forEach(function (reference) {
+										if (reference.prettyFormat === $scope.model.id.prettyFormat) {
+										    $scope.existingSpec = {"targetPlatform" : $scope.targetPlatform, 
+												"mappingId" : result[i].id.prettyFormat };
+										}
+									});
+								}
+							}).error(function (data, status, header, config) {
+								$scope.isLoading = false;
+								
+							});
+					};
+					
+					$scope.openSpec = function() {
+						modalInstance.close($scope.existingSpec);
+					};
+					
 					$scope.create = function () {
 						$scope.isLoading = true;
 						$http.post('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
@@ -623,6 +647,8 @@ repositoryControllers.controller('DetailsController',
 								}
 							});
 					};
+					
+					$scope.getMappingId();
 
 					$scope.cancel = function () {
 						modalInstance.dismiss();
