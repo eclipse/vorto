@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -110,6 +111,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private TenantVerificationFilter tenantVerificationFilter;
+  
+  @Autowired
+  private Environment env;
 
   private static final String ROLE_GENERATOR_PROVIDER = "GENERATOR_PROVIDER";
 
@@ -127,9 +131,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
         .addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class).csrf()
         .csrfTokenRepository(csrfTokenRepository()).and().csrf().disable().logout()
-        .logoutUrl("/logout").logoutSuccessUrl("/").and().headers().frameOptions().sameOrigin()
-        .httpStrictTransportSecurity().disable();
+        .logoutUrl("/logout").logoutSuccessUrl("/").and().headers().frameOptions().sameOrigin();
+    
+    if (isCloudProfile()) {
+      http.requiresChannel().anyRequest().requiresSecure();
+  }
+    
     http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+  }
+
+  private boolean isCloudProfile() {
+    return env.acceptsProfiles("prod", "int"); 
   }
 
   @Autowired
