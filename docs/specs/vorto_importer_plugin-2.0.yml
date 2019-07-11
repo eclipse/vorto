@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Vorto Importer API
-  description: REST Endpoints for providing a Vorto Importer Plugin for the Eclipse Vorto Repository. Refer to the <a target="_blank" href="https://raw.githubusercontent.com/eclipse/vorto/master/plugin-sdk/plugin-api/Readme.md">Importer Plugin SDK Documentation</a>
+  description: REST Endpoints for providing a Vorto Importer Plugin for the Eclipse Vorto Repository. Refer to the <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/plugin-sdk/plugin-api/Readme.md">Importer Plugin SDK Documentation</a>
   contact:
     name: Eclipse Vorto Team
     url: https://www.eclipse.org/vorto
