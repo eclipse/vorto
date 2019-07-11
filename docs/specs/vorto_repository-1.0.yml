@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Eclipse Vorto Repository API
   description: |- 
-    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="">Getting started Guide</a> for further details.
+    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a target="_blank" href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/docs/gettingstarted.md">Getting started Guide</a> for further details.
   contact:
     name: Eclipse Vorto Team
     url: https://www.eclipse.org/vorto
