@@ -65,7 +65,7 @@ Check out our [importer example](https://github.com/eclipse/vorto-examples/tree/
 
 # Register your plugin
 
-Please send us an email([vorto-dev@eclipse.org](mailto:vorto-development@bosch-si.com)), with the details of your plugin and we will get in touch with you.
+Please send us an email([vorto-development@bosch-si.com](mailto:vorto-development@bosch-si.com)), with the details of your plugin and we will get in touch with you.
 
 
 

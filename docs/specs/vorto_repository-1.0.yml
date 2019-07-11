@@ -206,6 +206,11 @@ paths:
         200:
           description: Code was successfully generated.
           headers: {}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
         400:
           description: The request could not be completed, invalid input.
         404:
