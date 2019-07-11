@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import java.text.SimpleDateFormat;
 import org.eclipse.vorto.model.IPropertyAttribute;
 import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.ModelReferenceDeserializer;
@@ -31,6 +32,7 @@ public class BaseConfiguration {
     module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.registerModule(module);
+    mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
     return mapper;
   }
 }

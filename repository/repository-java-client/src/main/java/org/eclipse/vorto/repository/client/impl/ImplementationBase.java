@@ -14,6 +14,8 @@ package org.eclipse.vorto.repository.client.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +53,8 @@ import com.google.gson.JsonSyntaxException;
 public class ImplementationBase {
   protected HttpClient httpClient;
   protected RequestContext requestContext;
-
+  protected static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); 
+  
   protected Gson gson = new GsonBuilder()
       .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
         public IReferenceType deserialize(JsonElement jsonElement, Type type,
@@ -73,7 +76,11 @@ public class ImplementationBase {
       }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
         public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-          return new Date(json.getAsJsonPrimitive().getAsLong());
+          try {
+            return dateFormat.parse(json.getAsJsonPrimitive().getAsString());
+          } catch (ParseException e) {
+            throw new JsonParseException(e);
+          }
         }
       })
       .registerTypeAdapter(Map.class, new JsonDeserializer<HashMap<ModelId, AbstractModel>>() {
