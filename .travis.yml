@@ -61,4 +61,4 @@ jobs:
             branch: 
               - development
               - master
-              - vorto_prod_new_test                     
+                                   
