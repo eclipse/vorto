@@ -40,7 +40,7 @@ You're now all set up with the API documentation..
 
 ![generators swagger tools](../images/tutorials/create_openapi/openAPI_v2_generator.png)
 
-**6.** The generated client can then be used to conveniently get the data and definitions of the used Function Blocks, e.g. the temperature of the RaspberryPiTutorial model. 
+**6.** The generated client can then be used to conveniently get the data and definitions of the used Function Blocks, e.g. the temperature of the RaspberryPi model. 
 ```python
 # Configure OAuth2 access token for authorization: BoschID
 configuration = swagger_client.Configuration()
@@ -51,7 +51,7 @@ api_instance = swagger_client.FeaturesApi(swagger_client.ApiClient(configuration
 thing_id = 'YOUR_DEVICE_ID'
 
 try:
-    # Retrieve the cpuTemperature of the RaspberryPiTutorial
+    # Retrieve the cpuTemperature of the RaspberryPi
     api_response = api_instance.things_thing_id_features_cpu_temperature_get(thing_id)
     pprint(api_response)
 except ApiException as e:

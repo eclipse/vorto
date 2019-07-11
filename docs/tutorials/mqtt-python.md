@@ -1,7 +1,7 @@
 # Integrating a device with Python into the Bosch IoT Hub using Vorto
 
 This tutorial explains how to integrate a device with the Bosch IoT Suite using MQTT. Your device should already be created as a thing from an Information Model at this point.   
-We will use our [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) again.
+We will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) again.
 
 <img src="../images/tutorials/connect_grovepi/cover.png"/>
 
@@ -40,7 +40,7 @@ You can either use a display, keyboard, and mouse to directly work on the Raspbe
 
 ## Download the generated integration script
 
-**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 <img src="../images/tutorials/create_thing/code_generators.png" />
 
 **2.** We want to integrate a device using Python. Click the `Source Code` button to download the generated python script.
@@ -56,7 +56,7 @@ Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub
 ## Configure the scripts with the information of your created thing
 
 **5.** Before we start reading in the sensor data and sending it to Hub, we need to configure our credentials. This will allow the script to send the sensor data to our digital twin.   
-The main `.py` file (`RaspberryPiTutorialApp.py` in this case) will contain a section that looks like this:   
+The main `.py` file (`RaspberryPiApp.py` in this case) will contain a section that looks like this:   
 ```python
 # DEVICE CONFIG GOES HERE
 tenantId = "ADD TENANT HERE"
@@ -122,9 +122,9 @@ infomodel.cpuTemperature.value = {
     
 
     
-The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) is a [Temperature Function Block](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto:Temperature:1.0.0). 
+The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) is a [Temperature Function Block](https://vorto.eclipse.org/#/details/org.eclipse.vorto:Temperature:1.0.0). 
 ```js
-infomodel RaspberryPiTutorial {
+infomodel RaspberryPi {
 	functionblocks {
 		...
 		cpuTemperature as Temperature
@@ -140,7 +140,7 @@ functionblock Temperature {
     }
 }
 ```
-As we can see, it has a `value` which is a [SensorValue Data Type](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
+As we can see, it has a `value` which is a [SensorValue Data Type](https://vorto.eclipse.org/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
 Since the nesting ends with this DT, we know that the path to our `currentMeasured` and optional values is:   
 ```js
 cpuTemperature -> value -> currentMeasured, minMeasured, ...
@@ -170,7 +170,7 @@ infomodel.cpuTemperature.value = {
 **9.** Before we can run the script, we need to install additional dependencies. The bundle contains a file called `requirements.txt`. This file describes the dependencies that still have to be installed in order to run the script.      
 Install the dependencies using the `pip install -r requirements.txt` command which looks at the current `requirements.txt` file and installs the dependecies listed there.
 
-**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiTutorialApp.py`.
+**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiApp.py`.
 After starting the script using you Terminal, you should be able to observe the sensor data being sent to Hub. This will looks something like this:
 
 ```bash
