@@ -76,7 +76,7 @@ Migrating your payload mappings is a matter of copying and pasting.
 
 4. Save your changes
 
-##What's next?
+## What's next?
 - [Add/Manage Collaborators to your namespace](../../docs/tutorials/managing_collaborators.md)
 - [Release your models](../docs/model_states.md) (learn more about model states)
 - [Publish your models](../../docs/tutorials/publishing_models.md) (make your model public)
