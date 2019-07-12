@@ -23,7 +23,7 @@ The new repository is hosted in AWS Cloud (region Frankfurt). It helps us to red
 
 ###Migrate your model
 
-1. Log in to old [Vorto Repository](https://vorto-old.eclipse.org)
+1. Log in to old [Vorto Repository](https://vorto-legacy.eclipse.org)
 
 2. Select the model you would like to migrate
 	> **Note:** Select the checkbox *Only My Models* to view models created by you
