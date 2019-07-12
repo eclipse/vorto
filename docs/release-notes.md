@@ -1,13 +1,14 @@
 # Release Notes
 
+<br />
+
 ## 0.11 
 
 With the release of **Eclipse Vorto 0.11**, we are introducing **essential improvements** that guarantee you full control over your models and their release process.
 
 **Fine-grained [Role Management](tutorials/managing_collaborators.md)** allows your team to restrict access to certain features like the creation of models, releasing it to the public, and deprecating them.
 
-Models, by default, are created in **private [namespaces](tutorials/managing_collaborators.md)** for which the access can be controlled in detail using the newly introduced roles.
-
+Models, by default, are created in **private [namespaces](tutorials/managing_collaborators.md)** for which the access can be controlled in detail using the newly introduced roles.   
 In addition to the new, state-of-the-art, Eclipse Vorto Repository, we released the **official [1.0 version of the Vortolang](./vortolang-1.0.md)**, the DSL powering the Vorto Ecosystem.
 
 Due to these substantial changes, we think that simply migrating all old existing models is the improper approach. We've therefore provided **straight-forward exporters and importers** that will allow you to effortlessly migrate your **models of choice** from the old system.
@@ -18,8 +19,9 @@ All in all, **this release addresses, tackles, and simplifies** many key pain po
 
 > Follow our comprehensive guide on how to [migrate your models](../repository/migration/migration_0.11.md) to the new system.
 
-### New Features
+<br />
 
+### New Features
 
 Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blob/master/docs/gettingstarted.md) for details.
 
@@ -49,6 +51,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 - Plugin SDK Version 1 is marked as deprecated in this release. However it is still supported to implement and run generator plugins based on Version 1.0. However we are recommending to migrate them to Plugin Version 2, as it is much easier and faster.
 
+<br />
 
 ## 0.10.1
 
@@ -64,6 +67,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 - Repository Search UX
 - Bosch IoT Suite Generator for Web Dashboard and Device Provisioning Scripts
+
+<br />
 
 ## 0.10 
 
@@ -96,6 +101,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 - The Eclipse Vorto IoT Toolset Plugins are no longer supported. Instead you can simply use the Cloud-based Editors in the Vorto Repository.
 - Changes in the Java Repository Client: The client has a new simplified *org.eclipse.vorto.repository.client.IRepositoryClient* in order to read Vorto Models.
 
+<br />
 
 ## 0.10.0 milestone 11
 
@@ -106,12 +112,16 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Simplified Eclipse Vorto Plugins, allowing to create Vorto Models using the Eclipse IDE.  
 * Various Bug-fixes
  
+<br />
+ 
 ## 0.10.0 milestone 10
 
 **Fixes and Enhancements**
 
 * Various Bug-fixes
 * Various Stabilization fixes
+
+<br />
 
 ## 0.10.0 milestone 9
 
@@ -123,6 +133,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Various UI fixes, e.g Pagination in search etc.
 * Various Stabilization fixes
 
+<br />
 
 ## 0.10.0 milestone 8
 
@@ -133,6 +144,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Various Bugfixes 
 * Generator Plugin SDK, which allows to build and deploy Vorto Generator plugins as standalone (micro)services and hook them into the Vorto repository. 
 
+<br />
+
 ## 0.10.0 milestone 7
 
 **Fixes and Enhancements**
@@ -140,6 +153,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Anonymous read-access to Vorto Models
 * Payload Mapping Specification Editor, which allows to simply create & test device payload mapping specifications 
 
+<br />
 
 ## 0.10.0 milestone 6
 
@@ -149,6 +163,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Security Fixes, such as XXE when uploading malicious LwM2M XMLs
 * UX related Improvements  
 
+<br />
+
 ## 0.10.0 milestone 5
 
 **Fixes**
@@ -157,6 +173,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Fixes bug when requesting image attachments from Repository via REST
 * Fixes bug in Payload Mapping Library for retrieving Mapping Specifications from Repository
 * Minor Repository UI/UX Improvements
+
+<br />
 
 ## 0.10.0 milestone 4
 
@@ -174,6 +192,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * Many UI/UX Improvements
 * Many Bugfixes
 
+<br />
 
 ## 0.10.0 milestone 3
 
@@ -190,6 +209,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 - The Vorto Repository REST - API for publishing models is now secured exclusively with OAuth2 token - based authentication. 
 	> It is now only possibly to publish models to the Vorto Repository via the Vorto Repository Web UI !
 
+<br />
+
 ## 0.10.0 milestone 2
 **Fixes and Enhancements**
 
@@ -197,6 +218,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 * More code generators, that generate device code that integrates with Eclipse Hono via MQTT.
 * Many bugfixes
 
+<br />
 
 ## 0.10.0 milestone 1
 We are proud to announce Eclipse Vorto 0.10.0 milestone 1.
@@ -254,7 +276,7 @@ The Web - based Device Dashboard generator creates a Spring Boot Web application
 
 With the Repository Java Client you can find information models and process its content as well as generate code for various IoT platforms. [Click here for more info](https://github.com/eclipse/vorto/tree/development/server/repo/repository-java-client/Readme.md).
 
-
+<br />
 
 ## 0.9.x
 
