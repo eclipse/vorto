@@ -2,7 +2,18 @@
 
 ## 0.11 
 
-The Vorto Team is providing the Eclipse Vorto Repository as a fully managed service with an availability of >99.5%. With this new release and its support of multi-tenancy, each organization will have full - control of their models, user access rights and approval workflows. Therefore, we are kindly asking all our users to migrate their models from the old Vorto Repository to the new Repository, in order to enjoy the new features (see below). For this, please follow our [migration guide](https://github.com/eclipse/vorto/tree/master/repository/migration/migration_0.11.md).
+With the release of Eclipse Vorto 0.11, we are introducing essential improvements that guarantee you full control over your models and their release process.
+
+Fine-grained Role Management allows your team to restrict access to certain features like the creation of models, releasing it to the public, and deprecating them.
+Models, by default, are created in private namespaces for which the access can be controlled in detail using the newly introduced roles.
+
+In addition to the new, state-of-the-art, Eclipse Vorto Repository, we released the official 1.0 version of the Vortolang, the DSL powering the Vorto Ecosystem.
+Due to these substantial changes, we think that simply migrating all old existing models is the improper approach. We've therefore provided straight-forward exporters and importers that will allow you to effortlessly migrate your models of choice from the old system.
+
+Enhancements in all areas are complemented with new and extensive documentation for not only new features and improvements but also convenient plugins that have easily been missed in the past.
+All in all, this release addresses, tackles, and simplifies many  key pain points for people working with and in IoT and delivers some of the most important improvements to Eclipse Vorto ever.
+
+Follow our comprehensive guide on how to [migrate your models](https://github.com/eclipse/vorto/tree/master/repository/migration/migration_0.11.md) to the new system.
 
 ### New Features
 
