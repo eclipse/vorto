@@ -213,6 +213,7 @@ from Illuminance to condition with {value:"header.type == 'I'"}
 
 # What's next ?
 
+- Understand the [Mapping Specification Syntax](./docs/mapping_syntax.md)
 - [Normalize device telemetry data](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md), that was received from Eclipse Hono supported protocol adapters
 
 
