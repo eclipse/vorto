@@ -20,7 +20,7 @@ In this tutorial, we are going to walk you through the process of creating a Vor
 To work through this tutorial, you will need:
 
 - [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) account to log in to the Vorto Repository
-- A [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0), managed in the Vorto Repository
+- A [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0), managed in the Vorto Repository
 - You are a collaborator/owner of a namespace
 
 <br />
