@@ -11,7 +11,7 @@ With the release of **Eclipse Vorto 0.11**, we are introducing **essential impro
 Models, by default, are created in **private [namespaces](tutorials/managing_collaborators.md)** for which the access can be controlled in detail using the newly introduced roles.   
 In addition to the new, state-of-the-art, Eclipse Vorto Repository, we released the **official [1.0 version of the Vortolang](./vortolang-1.0.md)**, the DSL powering the Vorto Ecosystem.
 
-Due to these substantial changes, we think that simply migrating all old existing models is the improper approach. We've therefore provided **straight-forward exporters and importers** that will allow you to effortlessly migrate your **models of choice** from the old system.
+Due to these substantial changes, we've decided that automatically migrating all existing models to the new system is the improper approach and therefore provided **straight-forward exporters and importers** that will allow you to effortlessly migrate your **models of choice** from the old system.
 
 Enhancements in all areas are complemented with **new and extensive [documentation](./gettingstarted.md)** for not only new features and improvements but also convenient plugins that have easily been missed in the past.
 
