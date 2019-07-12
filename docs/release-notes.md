@@ -2,18 +2,21 @@
 
 ## 0.11 
 
-With the release of Eclipse Vorto 0.11, we are introducing essential improvements that guarantee you full control over your models and their release process.
+With the release of **Eclipse Vorto 0.11**, we are introducing **essential improvements** that guarantee you full control over your models and their release process.
 
-Fine-grained Role Management allows your team to restrict access to certain features like the creation of models, releasing it to the public, and deprecating them.
-Models, by default, are created in private namespaces for which the access can be controlled in detail using the newly introduced roles.
+**Fine-grained [Role Management](tutorials/managing_collaborators.md)** allows your team to restrict access to certain features like the creation of models, releasing it to the public, and deprecating them.
 
-In addition to the new, state-of-the-art, Eclipse Vorto Repository, we released the official 1.0 version of the Vortolang, the DSL powering the Vorto Ecosystem.
-Due to these substantial changes, we think that simply migrating all old existing models is the improper approach. We've therefore provided straight-forward exporters and importers that will allow you to effortlessly migrate your models of choice from the old system.
+Models, by default, are created in **private [namespaces](tutorials/managing_collaborators.md)** for which the access can be controlled in detail using the newly introduced roles.
 
-Enhancements in all areas are complemented with new and extensive documentation for not only new features and improvements but also convenient plugins that have easily been missed in the past.
-All in all, this release addresses, tackles, and simplifies many  key pain points for people working with and in IoT and delivers some of the most important improvements to Eclipse Vorto ever.
+In addition to the new, state-of-the-art, Eclipse Vorto Repository, we released the **official [1.0 version of the Vortolang](./vortolang-1.0.md)**, the DSL powering the Vorto Ecosystem.
 
-Follow our comprehensive guide on how to [migrate your models](https://github.com/eclipse/vorto/tree/master/repository/migration/migration_0.11.md) to the new system.
+Due to these substantial changes, we think that simply migrating all old existing models is the improper approach. We've therefore provided **straight-forward exporters and importers** that will allow you to effortlessly migrate your **models of choice** from the old system.
+
+Enhancements in all areas are complemented with **new and extensive [documentation](./gettingstarted.md)** for not only new features and improvements but also convenient plugins that have easily been missed in the past.
+
+All in all, **this release addresses, tackles, and simplifies** many key pain points for people working with and in IoT and delivers some of the most important improvements to Eclipse Vorto ever.
+
+> Follow our comprehensive guide on how to [migrate your models](../repository/migration/migration_0.11.md) to the new system.
 
 ### New Features
 
