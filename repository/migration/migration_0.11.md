@@ -21,7 +21,7 @@ The new repository is hosted in AWS Cloud (region Frankfurt). It helps us to red
 
 ## Steps
 
-###Migrate your model
+### Migrate your model
 
 1. Log in to old [Vorto Repository](https://vorto-legacy.eclipse.org)
 
@@ -30,7 +30,7 @@ The new repository is hosted in AWS Cloud (region Frankfurt). It helps us to red
 
 3. Download your *Model File* using the `ZIP archive` link
 
-	![download model](../docs/images/migrate_model/download_model.png)
+	<img src="../docs/images/migrate_model/download_model.png" alt="download model" height="65%" width="65%"/>
 
 4. Log in to new [Vorto Repository](https://vorto.eclipse.org)
 
@@ -44,7 +44,7 @@ Make sure to select the target namespace from the dropdown in which your model s
 8. If all goes well you will receive a success message *model is valid and ready for import*   
 In addition to that, you will also see all of the submodels that will be imported and which ones already exist.
 
-	![successful upload](../docs/images/migrate_model/successful_upload.png)
+	<img src="../docs/images/migrate_model/successful_upload.png" alt="successful upload" height="75%" width="75%"/>
 
 9. Click **Import** to finish uploading.   
 
@@ -77,6 +77,6 @@ Migrating your payload mappings is a matter of copying and pasting.
 4. Save your changes
 
 ##What's next?
-- [Add/Manage Collaborators to your namespace](https://github.com/eclipse/vorto/blob/development/docs/tutorials/managing_collaborators.md)
-- [Release your models](https://github.com/eclipse/vorto/blob/development/repository/docs/model_states.md) (learn more about model states)
-- [Publish your models](https://github.com/eclipse/vorto/blob/development/docs/tutorials/publishing_models.md) (make your model public)
+- [Add/Manage Collaborators to your namespace](../../docs/tutorials/managing_collaborators.md)
+- [Release your models](../docs/model_states.md) (learn more about model states)
+- [Publish your models](../../docs/tutorials/publishing_models.md) (make your model public)
