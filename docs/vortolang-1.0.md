@@ -878,3 +878,8 @@ A model property can be used by events, function block properties or entities.
 	
 		IntervalType: INT | SIGNEDINT | FLOAT | DATETIME | STRING | BOOLEAN;
 
+
+## Further links
+
+* [Describing a device with Vorto in 5 minutes](tutorials/describe_device-in-5min.md)
+* [Describing a TI SensorTag](tutorials/describe_tisensor.md)
