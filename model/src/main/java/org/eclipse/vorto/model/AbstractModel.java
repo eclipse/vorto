@@ -26,6 +26,7 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
   protected String description;
   protected String category;
   protected String fileName;
+  protected String modelType;
 
   protected List<ModelId> references = new ArrayList<>();
   
@@ -114,7 +115,9 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
     this.category = category;
   }
 
-
+  public String getModelType() {
+    return getClass().getSimpleName();
+  }
 
   public static abstract class Builder<T extends AbstractModel> {
     protected T model;
