@@ -133,7 +133,7 @@ components:
     Infomodel:
       title: Infomodel
       allOf:
-      - $ref: '#/components/schemas/BaseModel'
+      - $ref: '#/components/schemas/Model'
       - type: object
         properties:
           functionblocks:
@@ -205,7 +205,7 @@ components:
     EnumModel:
       title: EnumModel
       allOf:
-      - $ref: '#/components/schemas/BaseModel'
+      - $ref: '#/components/schemas/Model'
       - type: object
         properties:
           literals:
@@ -235,7 +235,7 @@ components:
     EntityModel:
       title: EntityModel
       allOf:
-      - $ref: '#/components/schemas/BaseModel'
+      - $ref: '#/components/schemas/Model'
       - type: object
         properties:
           properties:
@@ -260,6 +260,8 @@ components:
           $ref: '#/components/schemas/ModelId'
         type:
           $ref: '#/components/schemas/ModelType'
+        modelType:
+          type: string
         displayName:
           type: string
         description:
@@ -270,6 +272,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ModelId'
+    Model:
+      title: Model
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+      oneOf:
+        - $ref: '#/components/schemas/EnumModel'
+        - $ref: '#/components/schemas/EntityModel'
+        - $ref: '#/components/schemas/FunctionblockModel'
+        - $ref: '#/components/schemas/Infomodel'
+      discriminator:
+        propertyName: modelType
     ModelContent:
       title: ModelContent
       type: object
@@ -279,11 +293,11 @@ components:
         models:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/BaseModel'
+            $ref: '#/components/schemas/Model'
     FunctionblockModel:
       title: FunctionblockModel
       allOf:
-      - $ref: '#/components/schemas/BaseModel'
+      - $ref: '#/components/schemas/Model'
       - type: object
         properties:
           configurationProperties:

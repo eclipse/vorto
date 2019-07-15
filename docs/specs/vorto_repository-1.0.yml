@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Eclipse Vorto Repository API
   description: |- 
-    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a target="_blank" href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/docs/gettingstarted.md">Getting started Guide</a> for further details.
+    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="">Getting started Guide</a> for further details.
   contact:
     name: Eclipse Vorto Team
     url: https://www.eclipse.org/vorto
@@ -666,7 +666,7 @@ components:
         targetPlatformKey:
           type: string
         type:
-          $ref: '#/components/schemas/Type'
+          $ref: '#/components/schemas/ModelType'
         vortolang:
           type: string
 
@@ -677,39 +677,255 @@ components:
         models:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/AbstractModel'
+            $ref: '#/components/schemas/Model'
         root:
           $ref: '#/components/schemas/ModelId'
-          
-    AbstractModel:
-      title: AbstractModel
+    
+    BaseModel:
+      title: BaseModel
       type: object
       properties:
-        description:
+        targetPlatformKey:
           type: string
-        displayName:
-          type: string
-        fileName:
-          type: string
-        id:
-          $ref: '#/components/schemas/ModelId'
-        mappingReference:
-          $ref: '#/components/schemas/ModelId'
-        references:
-          type: array
-          items:
-            $ref: '#/components/schemas/ModelId'
         stereotypes:
           type: array
           items:
             $ref: '#/components/schemas/Stereotype'
-        targetPlatformKey:
-          type: string
-        type:
-          $ref: '#/components/schemas/Type'
+        mappingReference:
+          $ref: '#/components/schemas/ModelId'
         vortolang:
           type: string
-
+        id:
+          $ref: '#/components/schemas/ModelId'
+        type:
+          $ref: '#/components/schemas/ModelType'
+        modelType:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        fileName:
+          type: string
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelId'
+    
+    Model:
+      title: Model
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+      oneOf:
+        - $ref: '#/components/schemas/EnumModel'
+        - $ref: '#/components/schemas/EntityModel'
+        - $ref: '#/components/schemas/FunctionblockModel'
+        - $ref: '#/components/schemas/Infomodel'
+      discriminator:
+        propertyName: modelType
+    
+    EnumModel:
+      title: EnumModel
+      allOf:
+      - $ref: '#/components/schemas/Model'
+      - type: object
+        properties:
+          literals:
+            type: array
+            items:
+              $ref: '#/components/schemas/EnumLiteral'
+              
+    EnumLiteral:
+      title: EnumLiteral
+      type: object
+      properties:
+        name:
+          type: string
+        parent:
+          $ref: '#/components/schemas/ModelId'
+          
+    EntityModel:
+      title: EntityModel
+      allOf:
+      - $ref: '#/components/schemas/Model'
+      - type: object
+        properties:
+          properties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelProperty'
+              
+    ModelProperty:
+      title: ModelProperty
+      type: object
+      properties:
+        targetPlatformKey:
+          type: string
+        stereotypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stereotype'
+        mappingReference:
+          $ref: '#/components/schemas/ModelId'
+        mandatory:
+          type: boolean
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: object
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
+        attributes:
+          type: array
+          items:
+            type: object
+        primitive:
+          type: boolean
+        multiple:
+          type: boolean
+    
+    Constraint:
+      title: Constraint
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ConstraintType'
+        value:
+          type: string
+    
+    FunctionblockModel:
+      title: FunctionblockModel
+      allOf:
+      - $ref: '#/components/schemas/Model'
+      - type: object
+        properties:
+          configurationProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelProperty'
+          statusProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelProperty'
+          faultProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelProperty'
+          events:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelEvent'
+          operations:
+            type: array
+            items:
+              $ref: '#/components/schemas/Operation'
+              
+    ModelEvent:
+      title: ModelEvent
+      type: object
+      properties:
+        name:
+          type: string
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelProperty'
+            
+    Operation:
+      title: Operation
+      type: object
+      properties:
+        targetPlatformKey:
+          type: string
+        stereotypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stereotype'
+        mappingReference:
+          $ref: '#/components/schemas/ModelId'
+        name:
+          type: string
+        description:
+          type: string
+        result:
+          $ref: '#/components/schemas/ReturnType'
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/Param'
+        breakable:
+          type: boolean
+          
+    ReturnType:
+      title: ReturnType
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ModelId'
+        primitive:
+          type: boolean
+        multiple:
+          type: boolean
+          
+    Param:
+      title: Param
+      type: object
+      properties:
+        targetPlatformKey:
+          type: string
+        stereotypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stereotype'
+        mappingReference:
+          $ref: '#/components/schemas/ModelId'
+        mandatory:
+          type: boolean
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/ModelId'
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
+        primitive:
+          type: boolean
+        multiple:
+          type: boolean
+    
+    Infomodel:
+      title: Infomodel
+      allOf:
+      - $ref: '#/components/schemas/Model'
+      - type: object
+        properties:
+          functionblocks:
+            type: array
+            items:
+              $ref: '#/components/schemas/ModelProperty'
+    
+    ConstraintType:
+      title: ConstraintType
+      enum:
+      - MIN
+      - MAX
+      - STRLEN
+      - REGEX
+      - MIMETYPE
+      - SCALING
+      - DEFAULT
+      - NULLABLE
+      type: string
+      example: MIN
+    
     Stereotype:
       title: Stereotype
       type: object
@@ -819,8 +1035,8 @@ components:
       enum:
         - boschiotthings
         
-    Type:
-      title: Type
+    ModelType:
+      title: ModelType
       enum:
       - Functionblock
       - InformationModel
