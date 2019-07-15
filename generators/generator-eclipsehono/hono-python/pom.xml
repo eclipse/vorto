@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.eclipse.vorto</groupId>
         <artifactId>generator-eclipsehono</artifactId>
-        <version>0.10.1</version>
+        <version>0.11.0</version>
     </parent>
     
 	<artifactId>hono-python</artifactId>	
@@ -18,19 +18,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>generator-api</artifactId>
+			<artifactId>plugin-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>${xtext.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>generator-api</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

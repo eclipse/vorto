@@ -85,6 +85,30 @@ You can simply replace the values passed to the `set...` methods with the data r
 
 > Note that the running application prints out the logs to the IDE console.
 
+<details>
+    <summary>
+        <b>
+            Your get an error message?
+        </b>
+    </summary> 
+
+#### `getaddr` - Double check your connection.
+If you started the script and you get an `getaddr` error, this means that the address resolution could not take place. This can have several reasons.    
+However, it's most likely that you either are not connected to the internet or a **proxy** is blocking the sending of sensor data.
+
+Unfortunately, for now you can't set any proxy. **Please switch to a network without Proxy.**
+
+<br />
+
+#### `Connection to MQTT broker failed: 4` - Double check your configuration 
+If you see the sensor a log message with the error value of `4`, this means that the connection was refused due to some bad user name or password. However, this can relate to any of the fields in the configuration tab.
+
+Therefore you have to go in and double check every field of the configuration section for an additional space or some character that does not belong there.
+
+>  Please note that if you have followed the other tutorials, this error is **definitely** due to a fault in entering the credentials correctly.
+
+</details>
+
 **10**. We can now verify that there is data incoming by either using
 - the [Vorto Dashboard](create_webapp_dashboard.md) that simply displays your data in different UI widgets.
 - or the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) which doesn't require anything to be installed and allows a quick insight into whether your data is updating.
@@ -96,6 +120,7 @@ You can simply replace the values passed to the `set...` methods with the data r
 ## What's next ?
 
 - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+- [Generate an OpenAPI Spec for your device](create_openapi.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)

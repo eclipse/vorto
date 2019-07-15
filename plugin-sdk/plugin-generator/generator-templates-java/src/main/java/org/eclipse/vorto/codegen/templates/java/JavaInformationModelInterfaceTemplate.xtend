@@ -19,6 +19,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaInformationModelInterfaceTemplate implements ITemplate<InformationModel>{
 	
 	var String classPackage

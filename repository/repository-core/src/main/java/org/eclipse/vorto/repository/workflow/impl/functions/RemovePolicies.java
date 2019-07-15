@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import java.util.Collection;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
@@ -23,24 +23,28 @@ import org.slf4j.LoggerFactory;
 
 public class RemovePolicies implements IWorkflowFunction {
 
-	private IModelPolicyManager policyManager;
-	
-	private static final Logger logger = LoggerFactory.getLogger(RemovePolicies.class);
+  private IModelRepositoryFactory repositoryFactory;
 
-	
-	public RemovePolicies(IModelPolicyManager policyManager) {
-		this.policyManager = policyManager;
-	}
-	
-	@Override
-	public void execute(ModelInfo model, IUserContext user) {
-		logger.info("Removing permission from model " + model.getId());
-		Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
-		for (PolicyEntry entry : policies) {
-		  logger.info("removing "+entry);
-		  policyManager.removePolicyEntry(model.getId(), entry);
-		}
-		
-		logger.info(policyManager.getPolicyEntries(model.getId()).toString());
-	}
+  private static final Logger logger = LoggerFactory.getLogger(RemovePolicies.class);
+
+
+  public RemovePolicies(IModelRepositoryFactory repositoryFactory) {
+    this.repositoryFactory = repositoryFactory;
+  }
+
+  @Override
+  public void execute(ModelInfo model, IUserContext user) {
+    logger.info("Removing permission from model " + model.getId());
+    Collection<PolicyEntry> policies =
+        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+            .getPolicyEntries(model.getId());
+    for (PolicyEntry entry : policies) {
+      logger.info("removing " + entry);
+      repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+          .removePolicyEntry(model.getId(), entry);
+    }
+
+    logger.info(repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+        .getPolicyEntries(model.getId()).toString());
+  }
 }

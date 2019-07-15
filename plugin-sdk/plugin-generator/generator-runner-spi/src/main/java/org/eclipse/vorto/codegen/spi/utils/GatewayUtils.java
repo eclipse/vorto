@@ -86,7 +86,7 @@ public class GatewayUtils {
 
     return serviceInfo;
   };
-
+  
   private static Optional<Properties> getProperties(String configFile) {
     try {
       Properties properties = new Properties();
@@ -105,10 +105,11 @@ public class GatewayUtils {
       try {
         ioStream = new FileSystemResource(filename).getInputStream();
       } catch (IOException e2) {
-        LOGGER.error(
-            "Cannot convert '" + filename + "' to either a ClassPathResource or FileSystemResource",
-            e2);
-        return null;
+        try {
+          ioStream = new ClassPathResource(filename.contains("32")?"img/icon32x32.png" : "img/icon144x144.png").getInputStream();
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
       }
     }
 

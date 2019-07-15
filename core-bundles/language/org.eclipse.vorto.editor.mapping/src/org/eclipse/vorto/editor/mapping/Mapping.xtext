@@ -31,12 +31,12 @@ DataTypeMappingModel:
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingModel:
 	{InfoModelMappingModel}
-	('vortolang' lang=VortoLangVersion)?
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-    ('displayname' displayname=STRING)?      
-    ('description' description=STRING)? 
-    ('category' category=CATEGORY)?   
+    ((('displayname' displayname=STRING)?) & 
+    (('description' description=STRING)?) &
+    ('category' category=CATEGORY)?) 
      (references += ModelReference)*		
 	'infomodelmapping' name=ID  '{'
 			'targetplatform' targetPlatform = ID
@@ -67,12 +67,12 @@ InfoModelAttributeSource:
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMappingModel:
 	{FunctionBlockMappingModel}
-	('vortolang' lang=VortoLangVersion)?
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-    ('displayname' displayname=STRING)?      
-    ('description' description=STRING)? 
-    ('category' category=CATEGORY)?    
+    ((('displayname' displayname=STRING)?) & 
+    (('description' description=STRING)?) &
+    ('category' category=CATEGORY)?)    
      (references += ModelReference)*
 	'functionblockmapping' name=ID  '{'
 			'targetplatform' targetPlatform = ID	
@@ -131,12 +131,12 @@ EventSource:
 /*----------------------Start Entity Mapping Definition---------------------------*/
 EntityMappingModel:
 	{EntityMappingModel}
-	('vortolang' lang=VortoLangVersion)?
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-    ('displayname' displayname=STRING)?      
-    ('description' description=STRING)? 
-    ('category' category=CATEGORY)?     
+    ((('displayname' displayname=STRING)?) & 
+    (('description' description=STRING)?) &
+    ('category' category=CATEGORY)?)    
      (references += ModelReference)*
 	'entitymapping' name=ID  '{'
 		'targetplatform' targetPlatform = ID	
@@ -167,12 +167,12 @@ EntityAttributeSource:
 /*----------------------Start Enum Mapping Definition---------------------------*/
 EnumMappingModel:
 	{EnumMappingModel}
-	('vortolang' lang=VortoLangVersion)?
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-    ('displayname' displayname=STRING)?      
-    ('description' description=STRING)? 
-    ('category' category=CATEGORY)?   
+    ((('displayname' displayname=STRING)?) & 
+    (('description' description=STRING)?) &
+    ('category' category=CATEGORY)?)   
      (references += ModelReference)*
 	'enummapping' name=ID  '{'
 		'targetplatform' targetPlatform = ID	

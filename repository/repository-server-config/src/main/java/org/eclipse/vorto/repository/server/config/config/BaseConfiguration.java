@@ -12,64 +12,27 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
-import java.io.IOException;
-
-import org.eclipse.vorto.model.BooleanAttributeProperty;
-import org.eclipse.vorto.model.EnumAttributeProperty;
+import java.text.SimpleDateFormat;
 import org.eclipse.vorto.model.IPropertyAttribute;
 import org.eclipse.vorto.model.IReferenceType;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.ModelReferenceDeserializer;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.PropertyAttributeDeserializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class BaseConfiguration {
 
-	@Bean
-	public Jackson2ObjectMapperBuilder objectMapperBuilder() {
-	    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-	    builder.deserializerByType(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
-
-			@Override
-			public IReferenceType deserialize(JsonParser parser, DeserializationContext context)
-					throws IOException, JsonProcessingException {
-				try {
-					return parser.readValueAs(ModelId.class);
-				} catch(IOException ioEx) {
-					try {
-						return parser.readValueAs(PrimitiveType.class);
-					} catch(IOException ex) {
-						ex.printStackTrace();
-						return null;
-					}
-				}
-			}
-	    	
-	    });
-	    builder.deserializerByType(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
-
-			@Override
-			public IPropertyAttribute deserialize(JsonParser parser, DeserializationContext context)
-					throws IOException, JsonProcessingException {
-				try {
-					return parser.readValueAs(BooleanAttributeProperty.class);
-				} catch(IOException ioEx) {
-					try {
-						return parser.readValueAs(EnumAttributeProperty.class);
-					} catch(IOException ex) {
-						ex.printStackTrace();
-						return null;
-					}
-				}
-			}
-	    	
-	    });
-
-	    return builder;
-	}
+  @Bean
+  public ObjectMapper objectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(IPropertyAttribute.class, new PropertyAttributeDeserializer());
+    module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.registerModule(module);
+    mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+    return mapper;
+  }
 }

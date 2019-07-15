@@ -5,12 +5,19 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.1</version>
+		<version>0.11.0</version>
 	</parent>
 	<artifactId>repository-server-config</artifactId>
 	<packaging>jar</packaging>
 
 	<description>Vorto Model Repository - Server Configurations</description>
+
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -24,6 +31,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
+		
 
 		<!-- Spring Boot dependencies -->
 		<dependency>
@@ -80,7 +89,27 @@
 			<artifactId>commons-compress</artifactId>
 			<version>1.18</version>
 		</dependency>
-
+		
+		<!-- AWS Elastic Search configuration (start) -->
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-core</artifactId>
+		    <version>1.11.574</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.awslabs</groupId>
+		    <artifactId>aws-request-signing-apache-interceptor</artifactId>
+		    <version>deb7941e85</version>
+		</dependency>
+		<!-- AWS Elastic Search configuration (end) -->
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-elasticsearch</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 </project>

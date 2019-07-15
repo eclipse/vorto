@@ -57,6 +57,10 @@ import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class InvocationContext {
 
   private List<MappingRule> mappingRules;

@@ -1,8 +1,8 @@
-repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
-	function ($location, $rootScope, $scope, $http, $uibModal, $timeout ) {
+repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', 'TenantService',
+	function ($location, $rootScope, $scope, $http, $uibModal, $timeout, TenantService ) {
 		
 	$scope.saveSettings = function() {
-		 $http.put("./rest/" + $rootScope.tenant + "/accounts/" + $rootScope.user, $scope.user.email).success(
+		 $http.put("./rest/accounts/" + $rootScope.user, $scope.user.email).success(
                 function(data, status, headers, config) {
                     $scope.success = true;
                     $timeout(function() {
@@ -18,7 +18,7 @@ repositoryControllers.controller('SettingsController', [ '$location', '$rootScop
 	};
 	
 	$scope.getSettings = function() {
-		$http.get("./rest/" + $rootScope.tenant + "/accounts/" + $rootScope.user).success(
+		$http.get("./rest/accounts/" + $rootScope.user).success(
                 function(data, status, headers, config) {
                     $scope.user = data;
                 }).error(function(data, status, headers, config) {

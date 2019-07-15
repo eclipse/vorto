@@ -1,0 +1,9 @@
+vortolang 1.0
+
+namespace com.simple.test
+version 1.0.0
+displayname "Test"
+description "Test"
+
+infomodel Test {
+}

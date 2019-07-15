@@ -24,5 +24,6 @@
 - vorto:author (string)
 - vorto:state (string)
 - vorto:imported (boolean)
+- vorto:visibility (string)
 - vorto:tags (string) multiple
-- vorto:references (reference) multiple < 'vorto:meta'
+- vorto:references (string) multiple

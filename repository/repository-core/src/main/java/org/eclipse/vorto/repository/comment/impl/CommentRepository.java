@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.comment.impl;
 
 import java.util.List;
-import org.eclipse.vorto.repository.comment.Comment;
+import org.eclipse.vorto.repository.domain.Comment;
 import org.springframework.data.repository.CrudRepository;
 
 /**

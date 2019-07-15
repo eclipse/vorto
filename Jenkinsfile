@@ -3,11 +3,15 @@ pipeline {
     stages{
       stage("Build"){
         steps{
+            sh 'printenv'
+            sh 'echo Proxy Host = $PROXY_HOST'
+            sh 'echo Proxy Port = $PROXY_PORT'
+            sh 'echo Proxy User = $PROXY_USER'
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
-              sh 'mvn -P coverage clean install'
+					sh 'mvn -P coverage clean install'
             }
         }
       }
@@ -59,25 +63,6 @@ pipeline {
               }
             }
           }
-          stage("CLMScan Vorto-generators"){
-            steps{
-              githubNotify context: 'Generator - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
-                withMaven(
-                  maven: 'maven-latest',
-                  mavenLocalRepo: '.repository') {
-                    withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-generators'), iqScanPatterns: [[scanPattern: 'generators/generator-runner/target/**/*exec.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
-                        //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
-                    }
-                }
-              githubNotify context: 'Generator - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
-            }
-            post{
-              failure{
-                githubNotify context: 'Generator - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
-              }
-            }
-          }
           stage("AVScan infomodelrepository"){
             when {
               allOf {
@@ -111,39 +96,6 @@ pipeline {
               }
             }
           }
-          stage("AVScan generator-runner"){
-            when {
-              allOf {
-                expression { env.CHANGE_ID != null }
-              }
-            }
-            steps{
-              githubNotify context: 'Generators - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
-                // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
-                dir('avscan_generator') {
-                  //copy files over to the new maven folder to run AntiVirus Scans
-                  git url: "https://github.com/eclipsevorto-jenkins/vorto_compliance_jenkins.git"
-                    sh 'cp ../generators/generator-runner/target/generator-runner-exec.jar ./'
-                }
-              withMaven(
-                  maven: 'maven-latest',
-                  mavenLocalRepo: '.repository') {
-                sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f avscan_generator/pom_bosch.xml'
-                  withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                  withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
-                  }
-                      s3Upload(file:'avscan_generator/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html")
-                  }
-              }
-              githubNotify context: 'Generators - Virus Scan', description: 'Scan Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html"
-            }
-            post{
-              failure{
-                githubNotify context: 'Generators - Virus Scan', description: 'Scan Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html"
-              }
-            }
-          }
         }
       }
       stage('Deploy'){
@@ -155,30 +107,14 @@ pipeline {
                 // build docker containers and load http proxy
                 withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
                   // set +x because the url contains $@ which is otherwise parsed by bash so its escaped but jenkins will only to string matching to censor secrets
-                  sh "set +x; docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$TOKEN ./"
-                    sh "set +x; docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./;"
+                  sh "set +x; docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./;"
                 }
                 // push docker containers
-                sh "docker push eclipsevorto/vorto-generators:${env.BRANCH_NAME}"
                 sh "docker push eclipsevorto/vorto-repo:${env.BRANCH_NAME}"
-                // run ansible
-                //dir('ansible') {
-                //  git(branch: 'master',
-                  //    credentialsId: 'eclipsevorto-jenkins',
-                  //    url: 'https://github.com/bsinno/vorto-ansible.git')
-                  //    ansiblePlaybook(
-                  //        playbook: 'deploy_eclipse.yml'
-                  //        )
-                  //}
               }
             }
         }
       }
-      // post {
-      //   always {
-      //     cleanWs(patterns: [[pattern: '.repository', type: 'EXCLUDE']])
-      //   }
-      // }
     }
 }
 

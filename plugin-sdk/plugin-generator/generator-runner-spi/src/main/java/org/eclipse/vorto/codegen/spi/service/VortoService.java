@@ -13,7 +13,6 @@
 package org.eclipse.vorto.codegen.spi.service;
 
 import java.io.ByteArrayInputStream;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,21 +27,21 @@ import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.spi.config.AbstractGeneratorConfiguration;
-import org.eclipse.vorto.codegen.spi.exception.NotFoundException;
 import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.conversion.ModelContentToEcoreConverter;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -53,7 +52,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -63,7 +61,6 @@ import com.google.common.base.Throwables;
 public class VortoService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(VortoService.class);
-  private static final String TENANT = "default";
 
   @Autowired
   private AbstractGeneratorConfiguration env;
@@ -83,6 +80,22 @@ public class VortoService {
   @Value("${server.config.generatorPassword:#{null}}")
   private String generatorPassword;
 
+  private static final ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+  
+  public IGenerationResult generate(ModelContent model, String pluginkey, Map<String,String> params) {
+    LOGGER.info(String.format("Generating for [%s]", model.getRoot().getPrettyFormat()));
+    
+    Model converted = converter.convert(model, Optional.empty());
+    
+    Generator generator =
+        repo.get(pluginkey).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", pluginkey)));
+    
+    InvocationContext invocationContext = InvocationContext.simpleInvocationContext(params);
+    
+    InformationModel infomodel = Utils.toInformationModel(converted);
+    
+    return generate(generator.getInstance(), infomodel, invocationContext);
+  }
 
   public IGenerationResult generate(String key, String namespace, String name, String version,
       Map<String, String> parameters, Optional<String> headerAuth) {
@@ -114,8 +127,6 @@ public class VortoService {
     } catch (Exception ex) {
       // do logging
     }
-
-
 
     return generate(generator.getInstance(), model, invocationContext);
   }
@@ -162,25 +173,13 @@ public class VortoService {
     IModelWorkspace workspace = IModelWorkspace.newReader()
         .addZip(new ZipInputStream(new ByteArrayInputStream(modelResources.get()))).read();
 
-    return toInformationModel(
-        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get());
+    return Optional.of(Utils.toInformationModel(
+        workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get()));
   }
 
   private String urlForModel(String namespace, String name, String version) {
     return String.format("%s/api/v1/models/%s/file?includeDependencies=true", env.getVortoRepoUrl(),
         new ModelId(name, namespace, version).getPrettyFormat());
-  }
-
-  private Optional<InformationModel> toInformationModel(Model model) {
-    if (model instanceof InformationModel) {
-      return Optional.of((InformationModel) model);
-    } else if (model instanceof FunctionblockModel) {
-      return Optional.of(Utils.wrapFunctionBlock((FunctionblockModel) model));
-    }
-
-    throw new NotFoundException(
-        String.format("[Model %s.%s:%s] is not an Information Model or a Function Block",
-            model.getNamespace(), model.getName(), model.getVersion()));
   }
 
   public List<MappingModel> getMappings(String generatorKey, String namespace, String name,
@@ -201,7 +200,7 @@ public class VortoService {
 
   private String urlForMapping(String targetPlatform, String namespace, String name,
       String version) {
-    return String.format("%s/rest/" + TENANT + "/models/%s/download/mappings/%s",
+    return String.format("%s/rest/models/%s/download/mappings/%s",
         env.getVortoRepoUrl(), new ModelId(name, namespace, version).getPrettyFormat(),
         targetPlatform);
   }
@@ -224,42 +223,6 @@ public class VortoService {
       LOGGER.error("Error downloading the URL [" + url + "]", e);
       return Optional.empty();
     }
-  }
-
-  public void register(Generator generator) {
-    String serviceUrl = getServiceUrl(generator);
-    LOGGER.info(String.format(
-        "Registering Generator[%s] on URL[%s] to [%s/rest/" + TENANT + "/generators/%s]",
-        generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(),
-        generator.getInstance().getServiceKey()));
-
-    restTemplate.put(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}",
-        getEntity(serviceUrl, Optional.of(getGeneratorCredentials())),
-        generator.getInstance().getServiceKey());
-  }
-
-  private String getGeneratorCredentials() {
-    if (!"".equals(this.generatorUsername) && !"".equals(this.generatorPassword)) {
-      return this.generatorUsername + ":" + this.generatorPassword;
-    } else {
-      return null;
-    }
-
-  }
-
-  private HttpEntity<String> getEntity(String serviceUrl, Optional<String> basicCredentials) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    if (basicCredentials.isPresent()) {
-      headers.add("Authorization",
-          "Basic " + Base64.getEncoder().encodeToString(basicCredentials.get().getBytes()));
-    }
-    return new HttpEntity<String>(serviceUrl, headers);
-  }
-
-  private String getServiceUrl(Generator generator) {
-    return String.format("%s/rest/generators/%s/generate", env.getAppServiceUrl(),
-        generator.getInstance().getServiceKey());
   }
 
   @PostConstruct

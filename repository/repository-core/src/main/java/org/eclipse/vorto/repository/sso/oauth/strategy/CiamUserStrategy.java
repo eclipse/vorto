@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,7 +61,7 @@ public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
     }
 
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-        name.orElse(userId), "N/A", SpringUserUtils.toAuthorityList(user.getUserRoles()));
+        name.orElse(userId), "N/A", SpringUserUtils.toAuthorityList(user.getAllRoles()));
 
     Map<String, String> detailsMap = new HashMap<String, String>();
     detailsMap.put(JWT_SUB, userId);

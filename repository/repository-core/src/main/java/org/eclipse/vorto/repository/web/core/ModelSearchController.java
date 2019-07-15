@@ -19,7 +19,9 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 
 /**
+ * Used by the model creation dialog to fetch all released models by a certain namespace.
+ * TODO: Extend API Search Service to support better search criteria, which would make this implemention obsolete!
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Api(value = "/search")
@@ -35,14 +39,18 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = "/rest/search")
 public class ModelSearchController extends AbstractRepositoryController {
 
+  @Autowired
+  private ISearchService searchService;
+  
   @RequestMapping(value = "/releases", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
   public Collection<ModelInfo> getReleasedModels(@RequestParam("type") String type,
       @RequestParam("namespace") String namespace) {
 
-    Collection<ModelInfo> result = modelRepository.search("namespace:"+namespace);
+    Collection<ModelInfo> result = searchService.search("namespace:" + namespace);
 
-    result = result.stream().filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
+    result = result.stream()
+        .filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
         .collect(Collectors.toList());
 
     Collections.sort(new ArrayList<>(result), new Comparator<ModelInfo>() {
@@ -54,5 +62,11 @@ public class ModelSearchController extends AbstractRepositoryController {
     });
 
     return result;
+  }
+  
+  @RequestMapping(value = "/public", method = RequestMethod.GET)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Collection<ModelInfo> getPublicModels(@RequestParam("tenantId") String tenantId) {
+    return getModelRepository(tenantId).search("visibility:public");
   }
 }

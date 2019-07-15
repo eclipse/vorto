@@ -13,9 +13,10 @@
  *  Oliver Meili <omi@ieee.org>
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.python
-import org.eclipse.vorto.codegen.api.InvocationContext
+
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
 class PythonImTemplate implements IFileTemplate<InformationModel> {
 	

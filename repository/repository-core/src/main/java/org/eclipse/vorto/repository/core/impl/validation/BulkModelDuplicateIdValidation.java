@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
@@ -25,9 +25,9 @@ public class BulkModelDuplicateIdValidation extends ModelReferencesValidation {
 
   private List<ModelId> zipModelIds;
 
-  public BulkModelDuplicateIdValidation(IModelRepository modelRepository,
+  public BulkModelDuplicateIdValidation(IModelRepositoryFactory modelRepoFactory,
       Set<ModelInfo> modelResources) {
-    super(modelRepository);
+    super(modelRepoFactory);
     zipModelIds =
         modelResources.stream().map(new java.util.function.Function<ModelInfo, ModelId>() {
           @Override

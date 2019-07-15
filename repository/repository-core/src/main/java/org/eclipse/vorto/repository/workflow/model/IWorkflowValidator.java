@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.model;
 
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 
@@ -24,5 +25,5 @@ public interface IWorkflowValidator {
    * @param currentAction
    * @throws InvalidInputException
    */
-  void validate(ModelInfo model, IAction currentAction) throws InvalidInputException;
+  void validate(ModelInfo model, IAction currentAction, IUserContext user) throws InvalidInputException;
 }

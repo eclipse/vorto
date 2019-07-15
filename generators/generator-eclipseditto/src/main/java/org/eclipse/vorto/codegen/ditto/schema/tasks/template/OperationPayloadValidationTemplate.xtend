@@ -14,11 +14,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template;
 
-import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.ITemplate
 
 class OperationPayloadValidationTemplate implements ITemplate<Operation>{
 	

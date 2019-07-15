@@ -1,5 +1,4 @@
-var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives",
-    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson","ui.select"]);
+var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson","ui.select"]);
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
@@ -19,9 +18,6 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/generators", {
         templateUrl : "webjars/repository-web/dist/partials/generators-template.html",
         controller : "GeneratorController"
-    }).when("/api", {
-        templateUrl : "webjars/repository-web/dist/partials/swagger-template.html",
-        controller : "SwaggerController"
     }).when("/login", {
         templateUrl : "webjars/repository-web/dist/partials/login-template.html",
         controller : "LoginController"
@@ -45,6 +41,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
 } ]).run(function($location, $http, $rootScope) {
 
+    $rootScope.privateNamespacePrefix = "vorto.private.";
+    
 	$rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
 	
 	$rootScope.authenticated = false;
@@ -75,7 +73,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.displayName = user.displayName;
             $rootScope.authenticated = true;
             $rootScope.authority = user.roles;
-            // TODO : set the $rootScope.tenant to the tenant of the user
+                        
         } else {
             $rootScope.userInfo = null;
             $rootScope.user = null;
@@ -106,7 +104,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 if(element === role) {
                     flag = true;
                     break;
-                }else{
+                } else {
                     flag = false;
                 }
             }
@@ -136,6 +134,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
         var getUserSucceeded = function(result) {
             $rootScope.setUser(result.data);
+            $rootScope.$broadcast("USER_CONTEXT_UPDATED", result.data);
             return result.data;
         };
 
@@ -158,7 +157,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             }
             return user;
         };
-
+        
         $http.get("./context")
             .then(getContextSucceeded, getContextFailed)
             .then(getUser)

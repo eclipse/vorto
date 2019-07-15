@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.PropertyType
-import org.eclipse.vorto.core.api.model.model.Model
-import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
+import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.plugin.utils.Utils
 
 abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 	
@@ -30,7 +30,7 @@ abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 		if (type instanceof PrimitivePropertyType) {
 			return toCppPrimitive((type as PrimitivePropertyType).getType);
 		} else if (type instanceof DictionaryPropertyType){
-			return "map<"+type((type as DictionaryPropertyType).keyType)+","+type((type as DictionaryPropertyType).valueType)+">";
+			return "map()"
 		} else {
 			return (type as ObjectPropertyType).getType().namespace.replace(".","_") + "::" + (type as ObjectPropertyType).getType().name
 		}

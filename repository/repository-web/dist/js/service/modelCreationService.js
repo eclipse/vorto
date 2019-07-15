@@ -25,6 +25,10 @@ repository.factory('openCreateModelDialog',
                     $scope.selectedProperty["propertyName"] = "";
                     $scope.selectedProperty["selectedFb"] = null;
                     
+                    $scope.namespaceRoot = "";
+                    $scope.namespaceAppend = "";
+                    $scope.userNamespaces = [];
+                    
                     $scope.selectFunctionBlock = function(fb){
                         $scope.selectedProperty["selectedFb"] = fb;
                     };
@@ -39,9 +43,39 @@ repository.factory('openCreateModelDialog',
                                 $scope.errorMessage  = "No Functionblocks found!";
                                 $scope.isLoading = false;
                             });         
-                     };
+                    };
                      
-                     $scope.loadFunctionblocks('org.eclipse.vorto');
+                    $scope.loadFunctionblocks('org.eclipse.vorto');
+                    
+                    $scope.getNamespaces = function() {
+                        $scope.userNamespaces = [];
+                        $http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
+                            .then(function(result) {
+                                var tenants = result.data;
+                                if (tenants != null) {
+                                    for(var i=0; i < tenants.length; i++) {
+                                        if (tenants[i].namespaces != null) {
+                                            for(var k=0; k < tenants[i].namespaces.length; k++) {
+                                                $scope.userNamespaces.push({
+                                                    tenant: tenants[i].tenantId,
+                                                    namespace: tenants[i].namespaces[k]
+                                                }); 
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($scope.userNamespaces.length > 0) {
+                                    $scope.userNamespaces.sort(function (a, b) {
+                                        return a.namespace.localeCompare(b.namespace);
+                                    });
+                                    $scope.namespaceRoot = $scope.userNamespaces[0].namespace; 
+                                }
+                            }, function(reason) {
+                                // TODO : handling of failures
+                            });
+                    };
+                    
+                    $scope.getNamespaces();
                 
                     $scope.generatePropertyName = function(selectedFb) {
                         $scope.selectedProperty["selectedFb"] = selectedFb;
@@ -67,6 +101,14 @@ repository.factory('openCreateModelDialog',
             
                     };
                     
+                    $scope.createNamespace = function(namespaceRoot, namespaceAppend) {
+                        if (namespaceAppend == null || namespaceAppend === '') {
+                            return namespaceRoot.namespace;
+                        } else {
+                            return namespaceRoot.namespace + "." + namespaceAppend;
+                        }
+                    };
+                    
                     $scope.addProperty = function() {
                         var property = {};
                         property["name"] = $scope.selectedProperty["propertyName"];
@@ -84,24 +126,37 @@ repository.factory('openCreateModelDialog',
                         }
                     };
                     
-                    $scope.next = function(page,modelType, modelNamespace, modelName, modelVersion) {
+                    $scope.next = function(page, modelType, namespaceRoot, namespaceAppend, modelName, modelVersion) {
                         $scope.currentStep = page;
                         $scope.modelType = modelType;
-                        $scope.modelNamespace = modelNamespace;
+                        $scope.namespaceRoot = namespaceRoot;
+                        $scope.namespaceAppend = namespaceAppend;
                         $scope.modelName = modelName;
                         $scope.modelVersion = modelVersion;
                     };
                     
+                    $scope.getTenant = function(namespaceRoot) {
+                        for(var i=0; i < $scope.userNamespaces.length; i++) {
+                            if ($scope.userNamespaces[i].namespace === namespaceRoot.namespace) {
+                                return $scope.userNamespaces[i].tenant; 
+                            }
+                        }
+                        
+                        return null;
+                    }
                     
-                    $scope.create = function(modelType,modelNamespace, modelName, modelVersion) {
+                    $scope.create = function(namespaceRoot, modelType, modelNamespace, modelName, modelVersion) {
                         $scope.isLoading = true;
-                        $http.post('./rest/' + $rootScope.tenant + '/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType,$scope.selected.properties)
-                            .success(function(result){
+                        var tenantId = $scope.getTenant(namespaceRoot);
+						  $http.post('./rest/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType, $scope.selected.properties)
+						.success(function(result){
                                 $scope.isLoading = false;
                                 if (result.status === 409) {
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
                                 } else {
-                                    modalInstance.close(result);
+                                    modalInstance.close({
+                                        model: result
+                                    });
                                 }
                             }).error(function(data, status, header, config) {
                                 $scope.isLoading = false;
@@ -124,8 +179,8 @@ repository.factory('openCreateModelDialog',
                 }
               });
               
-              modalInstance.result.then(function(model) {
-                  $location.path("/details/"+model.id.prettyFormat);
+              modalInstance.result.then(function(result) {
+				  $location.path("/details/" + result.model.id.prettyFormat);
               });
         };
     }

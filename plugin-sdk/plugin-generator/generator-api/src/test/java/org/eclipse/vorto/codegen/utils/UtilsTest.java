@@ -1,25 +1,16 @@
 package org.eclipse.vorto.codegen.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import java.util.ArrayList;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
-import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
-import org.eclipse.vorto.core.api.model.datatype.Property;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockFactoryImpl;
-import org.eclipse.vorto.core.api.model.functionblock.impl.ReturnDictonaryTypeImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
-import org.eclipse.vorto.repository.api.content.BooleanAttributePropertyType;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 public class UtilsTest {
     ArrayList<FunctionblockModel> fbms = new ArrayList<>();

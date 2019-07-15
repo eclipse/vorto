@@ -36,16 +36,16 @@
 	  	<div class="form-group">
 			<label>Email</label>
 			<input type="email" name="email" id="email" class="form-control" placeholder="Enter your Email" ng-model="user.email" value="{{user.email}}" />  
-			<small style="color:grey;font-size:10px">Optional: Used for notifying you when your model changes.</small>
+			<div class="input-description">Optional: Get notifications for workflow approvals and model discussions.</div>
 		</div>  
  	<br/>
   
     <br />
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-danger" type="submit" ng-click="openRemoveAccount()">Delete Account</button>
-        <button class="btn btn-success pull-right" ng-disabled="form.$invalid || vm.dataLoading" type="submit" ng-click="saveSettings()"><i class="fa fa-fw fa-save"></i>Save Settings</button>
-      	<a class="btn btn-primary" ng-href="rest/{{tenant}}/models/mine/download" role="button"><i class="fa fa-fw fa-download"></i>Export Data</a>
+        <button class="btn btn-danger" type="submit" ng-click="openRemoveAccount()"><i class="fa fa-trash-o"></i>Delete Account</button>
+        <button class="btn btn-primary pull-right" ng-disabled="form.$invalid || vm.dataLoading" type="submit" ng-click="saveSettings()"><i class="fa fa-fw fa-save"></i>Save Settings</button>
+      	<a class="btn btn-default" ng-href="rest/models/mine/download" role="button"><i class="fa fa-fw fa-download"></i>Export Data</a>
       </div>
     </div>
   </div>
@@ -62,17 +62,18 @@
       	<div class="col-md-12">
         	Are you sure you want to delete your account?
       	</div>
-			</div>
-			<hr>
-			<div class="row">
-				<div class="col-md-12">
-        		<div class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: <ol> <li>Your user profile will be permanently removed from the database.</li> <li>Your models will be anonymized in the model repository and remain publicly available for other users.</li> <ol> </div>
+	  </div>
+	  <hr>
+	  <div class="row">
+		<div class="col-md-12">
+        	<div ng-hide="ownsNamespaces" class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: <ol> <li>Your user profile will be permanently removed from the database.</li> <li>Your models will be anonymized.</li> <ol> </div>
+      		<div ng-show="ownsNamespaces" class="alert alert-warning" role="alert">You cannot delete your account just yet, because you still own a namespace. Please go to <b>Manage</b> and delete your namespace or transfer the ownership to somebody else.</div>
       	</div>
-    	</div>
+     </div>
 	</div>
 	<div class="modal-footer">
-	  <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
-      <button class="btn btn-danger" type="button" ng-click="deleteAccount()">Delete account</button>
+      <button class="btn btn-danger" ng-disabled="ownsNamespaces" type="button" ng-click="deleteAccount()">Delete account</button>
+      <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
   </div>
 	</script>
 

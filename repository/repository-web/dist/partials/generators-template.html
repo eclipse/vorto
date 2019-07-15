@@ -4,6 +4,10 @@
 			<a href="./#/">Home</a>
 		</li>
 		<li class="active">Plugins</li>
+		
+		<a class="pull-right help-icon" href="https://github.com/eclipse/vorto/tree/master/generators" target="_blank" 
+			title="Read more about Generators"><span class="fa fa-question-circle" />
+		</a>
 	</ol>
 <h2 class="modelHeader ng-binding">Generator Plugins</h2>
 <div class="row">
@@ -38,7 +42,7 @@
  	</div>
 	<div ng-show="generators.length > 0" class="col-sm-3 topUsed text-center">
 		<div class="row">
-			<label>Most Frequently Used: </label>
+			<label>Top Plugins: </label>
 		</div>
 		<div class="row" ng-repeat="generator in mostUsedGenerators">
 			<div class="col-xs-12">
@@ -53,15 +57,15 @@
 			<div class="col-xs-12">
 				<div class="small-box bg-aqua">
 					<div class="inner">
-						<h4>Write Vorto Plugin</h4>
-						Use the Vorto Plugin SDK to build & deploy your own Vorto Code Generator
+						<h4>Vorto Plugin SDK</h4>
+						Write plugins for the Vorto Repository
 					</div>
 					<div class="small-box-footer">
-					<a ng-href="./rest/{{tenant}}/generators/generator_template?servicekey=MyPlatform" style="color:white;padding-right:5px">
-						Template <i class="fa fa-download"></i>
+					<a ng-href="https://github.com/eclipse/vorto/blob/master/plugin-sdk/plugin-importer/Readme.md" target="_blank" style="color:white>
+						Importer <i class="fa fa-book"></i>
 					</a>
-					<a ng-href="https://github.com/eclipse/vorto/blob/development/plugin-sdk/Readme.md" target="_blank" style="color:white">
-						Tutorial <i class="fa fa-book"></i>
+					<a ng-href="https://github.com/eclipse/vorto/blob/master/plugin-sdk/Readme.md" target="_blank" style="color:white">
+						More Info <i class="fa fa-book"></i>
 					</a>
 					</div>
 				</div>

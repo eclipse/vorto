@@ -14,8 +14,10 @@ package org.eclipse.vorto.repository.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.datatype.Type;
@@ -26,6 +28,8 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.xtext.resource.SaveOptions;
+import org.eclipse.xtext.resource.XtextResource;
 
 
 /**
@@ -34,6 +38,12 @@ import org.eclipse.vorto.model.ModelType;
 public class ModelResource extends ModelInfo {
 
   private Model model;
+  
+  private static final Map<Object, Object> OPTIONS_DEFAULT = SaveOptions.newBuilder().getOptions().toOptionsMap();
+  
+  static {
+    OPTIONS_DEFAULT.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
+  }
 
   public ModelResource(Model model) {
     super(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
@@ -76,12 +86,17 @@ public class ModelResource extends ModelInfo {
     return references;
   }
 
-  public byte[] toDSL() throws IOException {
+  public byte[] toDSL() {
     Resource resource = model.eResource().getResourceSet()
-        .createResource(URI.createURI(model.getName() + this.type.getExtension()));
+        .createResource(URI.createURI(getFullQualifiedFileName()));
     resource.getContents().add(model);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    resource.save(baos, null);
+    
+    try {
+      resource.save(baos, OPTIONS_DEFAULT);
+    } catch (IOException e) {
+      // should not occur 
+    }
     return baos.toByteArray();
   }
 

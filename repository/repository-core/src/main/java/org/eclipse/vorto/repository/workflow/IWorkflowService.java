@@ -53,13 +53,13 @@ public interface IWorkflowService {
 	 * @param state
 	 * @return
 	 */
-	List<ModelInfo> getModelsByState(String state);
+	List<ModelInfo> getModelsByState(String state, IUserContext user);
 	
 	/**
 	 * Retrieves the state model of the current state 
 	 * @param model
 	 * @return
 	 */
-	Optional<IState> getStateModel(ModelId model);
+	Optional<IState> getStateModel(ModelId model, IUserContext user);
 	
 }

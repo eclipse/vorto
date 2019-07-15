@@ -29,27 +29,25 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
-@Api(value = "/attachments")
 @RestController
 @RequestMapping(value = "/api/v1/attachments")
 public class AttachmentController extends AbstractRepositoryController {
@@ -59,18 +57,13 @@ public class AttachmentController extends AbstractRepositoryController {
   private static final String CONTENT_DISPOSITION = "content-disposition";
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+  
+  @Autowired
+  private ITenantService tenantService;
 
-  @ApiOperation(value = "Upload a file to be attached to a model",
-		  notes = "This method is used to upload a single file attached to the specific modelId."
-			  		+ "<br/>"
-			  		+ "<pre>"
-			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-			  		+ "* file : The file to be attached to the above model."
-			  		+ "</pre>")
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public AttachResult attach(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -79,12 +72,15 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @RequestParam("file") MultipartFile file) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
 
     try {
       String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
 
-      modelRepository.attachFile(modelID,
-          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(),
+      getModelRepository(tenantId).attachFile(modelID,
+          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(tenantId),
           guessTagsFromFileExtension(fileName));
 
       return AttachResult.success(modelID, fileName);
@@ -105,44 +101,28 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Get the list of file attachments for a model", 
-		  notes = "This method is to get all files attached to the specific modelId."
-			  		+ "<br/>"
-			  		+ "<pre>"
-			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-			  		+ "</pre>")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successfully retrieved list of attachments"),
-          @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  public List<Attachment> getAttachments(@ApiParam(
-      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
-      required = true) @PathVariable String modelId) {
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  public List<Attachment> getAttachments(
+      @ApiParam(
+          value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+          required = true) @PathVariable String modelId) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+    
     try {
-      return modelRepository.getAttachments(modelID);
+      return getModelRepository(tenantId).getAttachments(modelID);
     } catch (FatalModelRepositoryException e) {
       return Collections.emptyList();
     }
   }
 
-  @ApiOperation(value = "Get a specific file attachment for a model", 
-		  notes = "This method is used to get the specified file attached to the specific modelId. It requires two inputs for proper response"
-		  		+ "<br/>"
-		  		+ "<pre>"
-		  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-		  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-		  		+ "* filename : The name of the file you might want to get for this model<br/>"
-		  		+ "</pre>")
-  @ApiResponses(
-      value = {@ApiResponse(code = 200, message = "Successfully retrieved the attachment"),
-          @ApiResponse(code = 404, message = "The resource could not be found")})
-  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}",
-		  produces = "application/json")
+  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
+  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
   public void getAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -153,9 +133,13 @@ public class AttachmentController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+    
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
-      Optional<FileContent> content = modelRepository.getAttachmentContent(modelID, fileName);
+      Optional<FileContent> content =
+          getModelRepository(tenantId).getAttachmentContent(modelID, fileName);
 
       if (content.isPresent()) {
         response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
@@ -172,18 +156,8 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Delete a file attachment for a model", 
-		  notes = "This API call deletes a specific file attached to a specific model"
-		  		+ "<br/><pre>"
-		  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-		  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-		  		+ "* filename : The name of the file you might want to delete for this model<br/>"
-		  		+ "</pre>")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully deleted the attachment"),
-		  @ApiResponse(code = 401, message = "Unauthorized, Only users with 'ADMIN' role or is the 'Owner' of the model can delete an attachment."),
-		  @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:owner')")
   public ResponseEntity<Void> deleteAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -191,12 +165,15 @@ public class AttachmentController extends AbstractRepositoryController {
       @ApiParam(value = "The name of the attached file that you want to delete",
           required = true) @PathVariable String filename) {
 
-    ModelId modelIdObject = ModelId.fromPrettyFormat(modelId);
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+    
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
 
-      if (!modelRepository.deleteAttachment(modelIdObject, fileName)) {
+      if (!getModelRepository(tenantId).deleteAttachment(modelID, fileName)) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
 
@@ -205,8 +182,14 @@ public class AttachmentController extends AbstractRepositoryController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+  
+  private Optional<String> getTenant(ModelId modelId) {
+    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+        .map(tenant -> tenant.getTenantId());
+  }
 
-  private UserContext getUserContext() {
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
+  private UserContext getUserContext(String tenantId) {
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(),
+        tenantId);
   }
 }

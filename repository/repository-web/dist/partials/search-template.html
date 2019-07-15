@@ -1,10 +1,16 @@
 <section class="content">
+		<!--  -->
+		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('ROLE_MODEL_CREATOR')">
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <strong>Get started by <a href="./#/manage">creating</a> your first namespace.</strong>
+		</div>
+		<!--  -->
 		<h2 id="searchHeadline">Models</h2>
-		<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Describe device</a>
+		<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Create model</a>
 		<br/><br/>
 		<div class="row">
 			<div class="col-md-6">
-				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-change="search()">
+				<input class="search-box-query-filter form-control search-input" ng-model="queryFilter" type="search" placeholder="Filter models" autofocus="" ng-model-options="{ debounce: 1000 }" ng-change="search()">
 				<span ng-show="isLoading"><i class='fa fa-refresh fa-spin'></i>&nbsp; Searching ...</span>
 			</div>
 			<div class="col-md-6">
@@ -18,6 +24,11 @@
           			<span class="checkmark"></span>
         		</label>
 				<hr/>
+				<label ng-show="authenticated && userInfo.isRegistered === 'true'" class="chkbox">Only Public Models
+          			<input type="checkbox" ng-model="onlyPublicModels" ng-change="search()">
+          			<span class="checkmark"></span>
+        		</label>
+        		<hr/>
 				<h5 class="category">States</h5>
 				<select id="dropdownState" ng-model="modelState" ng-change="search()" class="form-control">
 						<option value="all">All States</option>
@@ -75,13 +86,19 @@
 							<div ng-if="model.type === 'InformationModel'" class="model-box im">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
 					                <div class="inner">
-					                  <span class="model-name">{{model.id.name}}</span>
+									  <span class="model-name">{{model.id.name}}</span>
+									  <div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  <i class="fa fa-globe" aria-hidden="true"></i>
+                                      </div>
+                                      <div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      <i class="fa fa-lock" aria-hidden="true"></i>
+                                      </div>
 					                  <small class="namespace">{{model.id.namespace}}</small>
 					                  <p class="desc">{{model.description | limitTo : 80}}</p>
 					                  <span class="state state-{{model.state}}">{{model.state}}</span>
 					                </div>
 					                <div class="icon" ng-if="model.hasImage">
-					                  <img ng-src="rest/default/models/{{model.id.prettyFormat}}/images" />
+					                  <img ng-src="rest/models/{{model.id.prettyFormat}}/images" />
 					                </div>
 					                <div class="model-box-footer">
 					                  <small class="type">IM</small>
@@ -92,7 +109,13 @@
               				<div ng-if="model.type === 'Functionblock'" class="model-box fb">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
@@ -106,8 +129,14 @@
               				<div ng-if="model.type === 'Datatype'" class="model-box dt">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
-                  						<small class="namespace">{{model.namespace}}</small>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
+                  						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
                 					</div>
@@ -120,10 +149,17 @@
               				<div ng-if="model.type === 'Mapping'" class="model-box mp">
 						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
-                  						<span class="model-name">{{model.id.name}}</span>
+										<span class="model-name">{{model.id.name}}</span>
+										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
+									  	<i class="fa fa-globe" aria-hidden="true"></i>
+                                      	</div>
+                                      	<div ng-if="model.visibility === 'private'" class="visibilityIcon">
+                                      	<i class="fa fa-lock" aria-hidden="true"></i>
+                                      	</div>  
                   						<small class="namespace">{{model.id.namespace}}</small>
                   						<p class="desc">{{model.description | limitTo : 80}}</p>
                   						<span class="state state-{{model.state}}">{{model.state}}</span>
+                  						
                 					</div>
 					                <div class="model-box-footer">
 					                   <small class="type"><i class="fa fa-exchange" aria-hidden="true"></i></small>

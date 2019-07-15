@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.hono.arduino
 
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
 class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
@@ -103,7 +103,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		    «ENDFOR»
 		    result += "}";
 		    «ENDIF»
-		    result += "} } }";
+		    result += "} }";
 
 		    return result;
 		}

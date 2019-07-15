@@ -14,14 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template;
 
-import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.ditto.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.ITemplate
 
 class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 		
@@ -98,6 +98,11 @@ class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 					}
 				«ENDIF»
 			«ENDIF»
+			«ELSE»
+			"«param.name»": {
+				«IF !param.description.nullOrEmpty»"description": "«param.description»",«ENDIF»
+				"type": "object"
+			}
 		«ENDIF»
 		'''
 	

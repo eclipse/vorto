@@ -17,23 +17,6 @@ services:
       - docker/vorto-variables.env
     networks:
       - backend
-  generators:
-    image: eclipsevorto/vorto-generators
-    volumes:
-      - ./docker/config/generators/:/code/config
-    depends_on:
-      - "repository"
-    build:
-      context: .
-      dockerfile: docker/Generators_Dockerfile
-      args:
-        JAR_FILE:  generators/generator-runner/target/generator-runner-exec.jar
-        http_proxy: $http_proxy
-        https_proxy: $https_proxy
-    env_file:
-      - docker/vorto-variables.env
-    networks:
-      - backend
   db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password

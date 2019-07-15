@@ -12,14 +12,16 @@
  */
 package org.eclipse.vorto.codegen.hono.python
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 
 class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 
@@ -174,10 +176,10 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 				«ELSE»
 					«prefix».«property.name» = 0
 				«ENDIF»
-			«ELSE»
+			«ELSEIF property.type instanceof ObjectPropertyType»
 				«var objectType = property.type as ObjectPropertyType»
-				«IF objectType.type instanceof org.eclipse.vorto.core.api.model.datatype.Enum»
-					«prefix».«property.name» = "«(objectType.type as org.eclipse.vorto.core.api.model.datatype.Enum).enums.get(0).name»"
+				«IF objectType.type instanceof Enum»
+					«prefix».«property.name» = "«(objectType.type as Enum).enums.get(0).name»"
 				«ELSE»
 					«prefix».«property.name» = {
 						«FOR entityProp : (objectType.type as Entity).properties SEPARATOR ","»
@@ -189,6 +191,10 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 						«ENDFOR»
 					}
 				«ENDIF»
+			«ELSE» // property type is a dictionary type
+				«prefix».«property.name» = {
+					// add your dictionary object keys and values here
+				}
 			«ENDIF»
 		'''
 	}

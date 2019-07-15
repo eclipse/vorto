@@ -1,64 +1,64 @@
 sudo: required
 dist: trusty
 
-language: java
+jobs:
+  include:
+    - stage: deploy
+      name: "Deploy Repository"
 
-services:
-  - docker
+      language: java
 
-jdk: oraclejdk8
+      services:
+        - docker
 
-addons:
-  sonarcloud:
-    organization: "vorto"
-    token:
-      secure: $SONAR_TOKEN
-    branches:
-      - development
+      jdk: oraclejdk8
 
-cache:
-  directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
+      addons:
+        sonarcloud:
+          organization: "vorto"
+          token:
+            secure: $SONAR_TOKEN
+          branches:
+            - development
 
-before_install:
-  - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
+      cache:
+        directories:
+          - '$HOME/.m2/repository'
+          - '$HOME/.sonar/cache'
 
-install:
-  - git clone https://github.com/digitalcraftsman/hugo-material-docs.git website/themes/hugo-material-docs
-  - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.deb -O /tmp/hugo.deb && sudo dpkg -i /tmp/hugo.deb
-  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
-  - pip install --user awscli
-script:
-  - remark -i .remark_ignore -f -u validate-links .
-  - remark -i .remark_ignore -u lint-no-dead-urls .
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-    mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-    else mvn --fail-fast -q clean package -P checkstyle;
-    fi
-before_deploy:
-  - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
-  - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
-  - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
-  - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
-  - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
-  - export ARTIFACT_NAME=infomodelrepository
-  - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
-  - export GEN_ARTIFACT_NAME=generator-runner-exec
-  - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${GEN_ARTIFACT_NAME}"
-deploy:
-  - provider: script
-    script: bash build-scripts/repackage-deploy-repo.sh
-    skip_cleanup: true
-    on:
-      branch: 
-        - development
-        - master
-  - provider: script
-    script: bash build-scripts/repackage-deploy-gen.sh
-    skip_cleanup: true
-    on:
-      branch: 
-        - development
-        - master
+      before_install:
+        - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
+
+      install:
+        - git clone https://github.com/digitalcraftsman/hugo-material-docs.git website/themes/hugo-material-docs
+        - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.deb -O /tmp/hugo.deb && sudo dpkg -i /tmp/hugo.deb
+        - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
+        - pip install --user awscli
+
+      script:
+        - remark -i .remark_ignore -f -u validate-links .
+        - remark -i .remark_ignore -u lint-no-dead-urls .
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+          mvn --fail-fast -q clean package -DskipTests -P checkstyle;
+          mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
+          else mvn --fail-fast -q clean package -P checkstyle;
+          fi
+
+      before_deploy:
+        - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
+        - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
+        - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
+        - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
+        - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
+        - export ARTIFACT_NAME=infomodelrepository
+        - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
+
+      deploy:
+        - provider: script
+          script: bash build-scripts/repackage-deploy-repo.sh
+          skip_cleanup: true
+          on:
+            branch: 
+              - development
+              - master
+                                   

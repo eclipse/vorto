@@ -16,9 +16,9 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiParam;
  *
  */
 @RestController
-@RequestMapping(value = "/rest/{tenant}/users")
+@RequestMapping(value = "/rest/{tenantId}/users")
 public class IdentityController {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -58,18 +58,20 @@ public class IdentityController {
 
   @Deprecated
   @RequestMapping(method = RequestMethod.GET, value = "/{username:.+}")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #username == authentication.name")
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
 
     LOGGER.debug("User {} - {} ", username, userRepository.findByUsername(username));
+
     User user = userRepository.findByUsername(username);
+
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
   @Deprecated
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or #user.name == authentication.name")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #user.name == authentication.name")
   public ResponseEntity<Boolean> createUserAccount(Principal user) {
 
     OAuth2Authentication oauth2User = (OAuth2Authentication) user;
@@ -81,6 +83,7 @@ public class IdentityController {
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
     User createdUser = accountService.create(oauth2User.getName());
+
     SpringUserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with
                                                             // the updated user and its roles
 
@@ -89,7 +92,7 @@ public class IdentityController {
 
   @Deprecated
   @RequestMapping(method = RequestMethod.POST, value = "/{username:.+}/updateTask")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #username == authentication.name")
   public ResponseEntity<Boolean> upgradeUserAccount(Principal user,
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
 
@@ -105,31 +108,40 @@ public class IdentityController {
 
   @Deprecated
   @RequestMapping(value = "/{username:.+}", method = RequestMethod.DELETE)
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#username,'user:delete')")
   public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
     accountService.delete(username);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @RequestMapping(value = "/{username:.+}", method = RequestMethod.PUT)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> updateUserAccount(@PathVariable("username") final String userName,
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
       @RequestBody List<Role> roles) {
-    User user = accountService.create(userName, roles.toArray(new Role[roles.size()]));
+
+    User user = accountService.create(userName, tenantId, roles.toArray(new Role[roles.size()]));
+
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.CREATED);
   }
 
+  @Deprecated
   @RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.DELETE)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> removeUserRole(@PathVariable("username") final String userName,
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
       @RequestBody List<Role> roles) {
 
-    User user = accountService.removeUserRole(userName, roles);
+    User user = accountService.removeUserRole(userName, tenantId, roles);
+
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
+  @Deprecated
   @RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> getUserRoles(@PathVariable("username") final String userName) {
     User user = this.userRepository.findByUsername(userName);
 

@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -31,19 +30,17 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testAttachNewFile() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository
-          .attachFile(
-              new ModelId("Color", "org.eclipse.vorto.examples.type",
-                  "1.0.0"),
-              new FileContent("backup1.xml", IOUtils.toByteArray(
-                  new ClassPathResource("sample_models/backup1.xml").getInputStream())),
-              erle);
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+          new FileContent("backup1.xml", IOUtils
+              .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
+          erle);
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.size());
@@ -62,25 +59,23 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testOverwriteAttachmentWithoutTags() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository
-          .attachFile(
-              new ModelId("Color", "org.eclipse.vorto.examples.type",
-                  "1.0.0"),
-              new FileContent("backup1.xml", IOUtils.toByteArray(
-                  new ClassPathResource("sample_models/backup1.xml").getInputStream())),
-              erle);
-
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
-          new FileContent("backup1.xml",
-              IOUtils.toByteArray(
-                  new ClassPathResource("sample_models/backup-withImages.xml").getInputStream())),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+          new FileContent("backup1.xml", IOUtils
+              .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
           erle);
 
-      List<Attachment> attachments = modelRepository
+      repositoryFactory.getRepository(erle)
+          .attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+              new FileContent("backup1.xml", IOUtils.toByteArray(
+                  new ClassPathResource("sample_models/backup-withImages.xml").getInputStream())),
+              erle);
+
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.size());
@@ -99,17 +94,18 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testAttachFileWithTag() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("backup1.xml",
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/backup1.xml").getInputStream())),
           erle, Attachment.TAG_DOCUMENTATION);
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.get(0).getTags().size());
@@ -125,17 +121,18 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testAttachFileWithMultipleTags() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("backup1.xml",
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/backup1.xml").getInputStream())),
           erle, Attachment.TAG_DOCUMENTATION, Attachment.TAG_IMAGE);
 
-      List<Attachment> attachments = modelRepository.getAttachmentsByTag(
+      List<Attachment> attachments = repositoryFactory.getRepository(erle).getAttachmentsByTag(
           new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), Attachment.TAG_IMAGE);
 
       assertEquals(2, attachments.get(0).getTags().size());
@@ -150,17 +147,18 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetAttachmentsWithTagExisting() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("backup1.xml",
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/backup1.xml").getInputStream())),
           erle, Attachment.TAG_DOCUMENTATION);
 
-      List<Attachment> attachments = modelRepository.getAttachmentsByTag(
+      List<Attachment> attachments = repositoryFactory.getRepository(erle).getAttachmentsByTag(
           new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           Attachment.TAG_DOCUMENTATION);
 
@@ -175,17 +173,18 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetAttachmentsWithTagNotExisting() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("backup1.xml",
               IOUtils.toByteArray(
                   new ClassPathResource("sample_models/backup1.xml").getInputStream())),
           erle, Attachment.TAG_DOCUMENTATION);
 
-      List<Attachment> attachments = modelRepository.getAttachmentsByTag(
+      List<Attachment> attachments = repositoryFactory.getRepository(erle).getAttachmentsByTag(
           new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), Attachment.TAG_IMAGE);
 
       assertEquals(0, attachments.size());
@@ -198,18 +197,18 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testAttachMultipleFiles() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     ModelInfo model = importModel("Color.type", erle);
     attachFile(model);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
-          new FileContent("Color.xmi",
-              IOUtils
+      repositoryFactory.getRepository(erle)
+          .attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+              new FileContent("Color.xmi", IOUtils
                   .toByteArray(new ClassPathResource("sample_models/Color.xmi").getInputStream())),
-          erle);
+              erle);
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(2, attachments.size());
@@ -224,17 +223,17 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testExtractAttachedFileContent() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     ModelInfo model = importModel("Color.type", erle);
     attachFile(model);
 
     try {
-      Optional<FileContent> colorXmi = modelRepository.getAttachmentContent(
+      Optional<FileContent> colorXmi = repositoryFactory.getRepository(erle).getAttachmentContent(
           new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "Color.xmi");
 
       assertFalse(colorXmi.isPresent());
 
-      Optional<FileContent> backup1 = modelRepository.getAttachmentContent(
+      Optional<FileContent> backup1 = repositoryFactory.getRepository(erle).getAttachmentContent(
           new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "backup1.xml");
 
       assertTrue(backup1.isPresent());
@@ -252,17 +251,15 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test(expected = ModelNotFoundException.class)
   public void testAttachFileToNonExistingModel() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository
-          .attachFile(
-              new ModelId("NotExistModel", "org.eclipse.vorto.examples.type",
-                  "1.0.0"),
-              new FileContent("backup1.xml", IOUtils.toByteArray(
-                  new ClassPathResource("sample_models/backup1.xml").getInputStream())),
-              erle);
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("NotExistModel", "org.eclipse.vorto.examples.type", "1.0.0"),
+          new FileContent("backup1.xml", IOUtils
+              .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
+          erle);
 
     } catch (IOException | FatalModelRepositoryException e) {
       e.printStackTrace();
@@ -272,115 +269,121 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testDeleteAttachments() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
 
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
         erle);
 
 
-    boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
+    boolean deleteResult =
+        repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup1.xml");
     assertTrue(deleteResult);
   }
 
   @Test
   public void testDeleteImportedAttachmentOtherAttachmentsNotExist() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
 
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
         erle, Attachment.TAG_IMPORTED);
 
 
-    boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
+    boolean deleteResult =
+        repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup1.xml");
     assertFalse(deleteResult);
   }
 
   @Test
   public void testDeleteImportedAttachmentOtherAttachmentsExist() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
 
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
         erle, Attachment.TAG_IMPORTED);
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup-withImages.xml",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/backup-withImages.xml").getInputStream())),
         erle);
 
-    boolean deleteResultTrue = modelRepository.deleteAttachment(modelId, "backup-withImages.xml");
+    boolean deleteResultTrue =
+        repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup-withImages.xml");
     assertTrue(deleteResultTrue);
 
-    boolean deleteResultFalse = modelRepository.deleteAttachment(modelId, "backup1.xml");
+    boolean deleteResultFalse =
+        repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup1.xml");
     assertFalse(deleteResultFalse);
   }
 
   @Test
   public void testDeleteModelWithImportedAttachment() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
-    assertEquals(1, modelRepository.search("*").size());
+    assertEquals(1, repositoryFactory.getRepository(erle).search("*").size());
 
     ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
         erle, Attachment.TAG_IMPORTED);
 
-    this.modelRepository.removeModel(modelId);
-    assertEquals(0, modelRepository.search("*").size());
+    this.repositoryFactory.getRepository(erle).removeModel(modelId);
+    assertEquals(0, repositoryFactory.getRepository(erle).search("*").size());
   }
 
   @Test
   public void testDeleteOfAttachmentTwice() throws Exception {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
 
-    modelRepository.attachFile(modelId,
+    repositoryFactory.getRepository(erle).attachFile(modelId,
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
         erle);
 
 
-    modelRepository.deleteAttachment(modelId, "backup1.xml");
+    repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup1.xml");
 
-    boolean deleteResult1 = modelRepository.deleteAttachment(modelId, "backup1.xml");
+    boolean deleteResult1 =
+        repositoryFactory.getRepository(erle).deleteAttachment(modelId, "backup1.xml");
     assertFalse(deleteResult1);
   }
 
   @Test
   public void testAttachImageWithTag() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("sample.png",
               IOUtils
                   .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
           erle, Attachment.TAG_IMAGE);
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.size());
@@ -399,24 +402,26 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testOverwriteImageWithSameTag() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("sample.png",
               IOUtils
                   .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
           erle, Attachment.TAG_IMAGE);
 
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("sample.png",
               IOUtils
                   .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
           erle, Attachment.TAG_IMAGE);
 
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.size());
@@ -435,24 +440,26 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 
   @Test
   public void testOverwriteImageWithDiffernentTag() {
-    IUserContext erle = UserContext.user("erle");
+    IUserContext erle = createUserContext("erle", "playground");
     importModel("Color.type", erle);
 
     try {
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("sample.png",
               IOUtils
                   .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
           erle, Attachment.TAG_IMAGE);
 
-      modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           new FileContent("sample.png",
               IOUtils
                   .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
           erle, Attachment.TAG_DOCUMENTATION);
 
 
-      List<Attachment> attachments = modelRepository
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
           .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 
       assertEquals(1, attachments.size());
@@ -470,8 +477,8 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
   }
 
   private void attachFile(ModelInfo model) throws Exception {
-    IUserContext erle = UserContext.user("erle");
-    modelRepository.attachFile(model.getId(),
+    IUserContext erle = createUserContext("erle", "playground");
+    repositoryFactory.getRepository(erle).attachFile(model.getId(),
         new FileContent("backup1.xml",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),

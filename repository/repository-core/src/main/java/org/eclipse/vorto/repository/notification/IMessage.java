@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.notification;
 
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

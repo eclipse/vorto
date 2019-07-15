@@ -14,10 +14,8 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
@@ -26,16 +24,20 @@ import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidatio
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
+import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 
 public class ModelValidationHelper {
 
   private List<IModelValidator> validators = new ArrayList<IModelValidator>();
 
-  public ModelValidationHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserAccountService userRepository) {
-    this.validators.add(new DuplicateModelValidation(modelRepository, policyManager, userRepository));
-    this.validators.add(new ModelReferencesValidation(modelRepository));
+  public ModelValidationHelper(IModelRepositoryFactory modelRepoFactory, IUserAccountService userRepository, 
+      ITenantService tenantService) {
+    this.validators.add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
+    this.validators.add(new DuplicateModelValidation(modelRepoFactory, tenantService));
+    this.validators.add(new ModelReferencesValidation(modelRepoFactory));
     this.validators.add(new TypeImportValidation());
   }
 
@@ -49,7 +51,7 @@ public class ModelValidationHelper {
       }
     }
 
-    if (validationExceptions.size() <= 0) {
+    if (validationExceptions.isEmpty()) {
       return ValidationReport.valid(model);
     } else {
       return ValidationReportFactory.create(

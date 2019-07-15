@@ -12,6 +12,10 @@
  */
 package org.eclipse.vorto.codegen.api.mapping;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public interface IMapped<T> {
 
   boolean isMapped();

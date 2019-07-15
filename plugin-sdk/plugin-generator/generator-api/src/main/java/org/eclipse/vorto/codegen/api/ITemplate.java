@@ -13,12 +13,9 @@
 package org.eclipse.vorto.codegen.api;
 
 /**
- * A {@link ICodeGeneratorTask} use generation templates which contain the context specific outcome
- * logic
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- * 
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public interface ITemplate<Element> {
 
   /**

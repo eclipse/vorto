@@ -1,46 +1,62 @@
 # Getting started with Vorto Mappings
 
-Vorto abstracts device data using Function Blocks, thus helping to reduce tight-coupling of devices in IoT solutions. But how does Vorto help to map the actual device data to these abstract Function Blocks? 
+**Vorto abstracts device data** using Function Blocks, thus helping to reduce tight-coupling of devices in IoT solutions.   
+But how does Vorto help to map the actual device data to these abstract Function Blocks? 
+
+Payloads sent in different formats from the devices can be piped through the *Vorto Payload Mapping Engine* which will use the [Mapping Specification](docs/mapping_syntax.md) and the [provided Converters](docs/built_in_converters.md).
+The advantage of using this approach is that target platforms do not have to care about the different payloads of the devices but only need to handle the normalized Vorto compliant payloads.
+
+This **normalized format** can then be used as a harmonized starting point for more specific, target platform compliant formats.
+In addition to that, custom Converters can be easily plugged into the *Payload Mapping Engine* in order to allow for more complex conversion of proprietary payloads.
 
 In this tutorial, we are going to walk you through the process of creating a Vorto mapping specification for an Information Model and execute it with the Vorto Payload Mapping Engine.
+
+![mapping schematic drawing](./docs/vorto_mappings_schema.png)
+
+<br />
 
 ## Prerequisite
 
 To work through this tutorial, you will need:
 
-- A Github account to log in to the Vorto Repository
-- A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
+- [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) account to log in to the Vorto Repository
+- A [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0), managed in the Vorto Repository
+- You are a collaborator/owner of a namespace
 
+<br />
 
 ## Step 1: Create Mapping Specification
 
 A mapping adds platform specific information to an Information Model. Since the representation of data can vary from platform to platform.
 
-To create a mapping go to your newly created model and press the **Create Mapping Spec** Button
+To create a mapping go to your newly created model and press the **`Create Mapping Spec.`** Button
+
 ![create mapping spec button](./docs/create_mapping_spec_button.png)
 
-Now add a Target Platform key for your mapping to signal, which platform this mapping belongs to, like blegatt. Each target platform should offer its own object model which is passed to the mapping engine. This ensures that a mapping is independent of the underlying driver.
-![platform key](./docs/target_platform_key.png)
-
 Now the web editor opens and allows you to add mapping expression for the Function Blocks you added. You can write XPath 2.0 like notation. Behind the scenes the engine uses [JXPath](https://commons.apache.org/proper/commons-jxpath/) to apply XPath expressions on a java object graph. To add functionality that may not be possible using jxpath, you can also add custom JavaScript or java functions (see the custom functions section).
+
 ![xpath](./docs/xpath.png)
+
 Once you have written your xpath expressions, press Save.
 
 ## Step 2: Test the Mapping Specification
 
-n the right handside, define the arbitrary device payload (in JSON format) and click **Map**: 
+On the right handside, define the arbitrary device payload (in JSON format) and click **Map**: 
 
 ![mapping editor test](./docs/mapping_editor_test.png)
 
 
-## Step 2: Download & Execute Mapping Specification
+## Step 3: Download & Execute Mapping Specification
 
 Download and save the Mapping Specification to start integrating it with the engine:
 
 ![download json spec](./docs/download_spec_button.png)
 
-### 1. Add Maven dependency:
-```
+<br />
+
+**1.** Add Maven dependency
+
+```xml
 <dependency>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>mapping-engine-all</artifactId>
@@ -48,32 +64,37 @@ Download and save the Mapping Specification to start integrating it with the eng
 </dependency>
 ```
 
-### 2. Initialize the mapping engine with the downloaded specification:
+<br />
+
+**2.** Initialize the mapping engine with the downloaded specification
 
 ```Java
 MappingEngine engine = MappingEngine.createFromInputStream(FileUtils.openInputStream(new File("src/main/resources/mappingspec.json")));
-
 ```
 
-### 3. Pass the arbitrary device payload to the engine to get it converted to Vorto compliant data:
+<br />
+
+**3.** Pass the arbitrary device payload to the engine to get it converted to Vorto compliant data
 
 ```Java
 Object deviceData = ...;
 InfomodelValue mappedData = engine.map(deviceData);
-
 ```
 
-### 4. Optionally validate the mapped data to check if it complies to the Vorto model:
+<br />
+
+**4.** Optionally validate the mapped data to check if it complies to the Vorto model
 
 ```Java
 ValidationReport validationReport = mappedData.validate();
 if (!validationReport.isValid()) {
 	// handle invalid data
 }
-
 ```
 
-### 5. Convert mapped data to Digital Twin IoT compliant data
+<br />
+
+**5.** Convert mapped data to Digital Twin IoT compliant data
  
 Convert the mapped data to IoT Platform data. The mapping engine provides a useful utility in order to create a JSON object complying to the Eclipse Ditto protocol:
 
@@ -89,11 +110,15 @@ JSONObject dittoPayload = TwinPayloadFactory.toDittoProtocol(mappedData, dittoNa
 sendToDitto(dittoPayload);
 ```
 
-# Advanced Usage
+<br />
+
+## Advanced Usage
 
 The Vorto Mapping Engine has extension points in order to plug-in converter functions that can be used as part of your mapping rules.
 
-## Custom functions
+<br />
+
+### Custom functions
 
 Custom functions adds the power to write your own converter functions that can be used in your mapping rules. Each function belongs to a specific namespace.
 
@@ -124,7 +149,7 @@ private static final IFunction FUNC_STRINGS = new ClassFunction("org_mycompany_s
 IDataMapper.newBuilder().registerConverterFunction(FUNC_STRINGS);
 ```
 
-### Javascript Converter function
+#### Javascript Converter function
 
 The Vorto Mapping engine uses [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html) as a Javascript engine to execute custom JS converter functions. These functions are stored and versioned in the Vorto Repository and are executed by the Mapping Engine. 
 
@@ -141,28 +166,30 @@ For security reasons, the following restrictions apply when processing these con
 #### Example
 
 In the following example, a custom (Javascript) converter is defined in a Function Block mapping, that converts a click amount as a **String** to an **Integer** value:
+```java
+namespace devices.aws.button.mapping
+version 1.0.0
+displayname "buttonPayloadMapping"
+description "Payload Mapping for the button property of the AWS IoT Button"
+category payloadmapping
 
-		namespace devices.aws.button.mapping
-		version 1.0.0
-		displayname "buttonPayloadMapping"
-		description "Payload Mapping for the button property of the AWS IoT Button"
-		category payloadmapping
-		
-		using com.ipso.smartobjects.Push_button;0.0.1
-		
-		functionblockmapping ButtonPayloadMapping {
-			targetplatform aws_ipso
+using com.ipso.smartobjects.Push_button;0.0.1
 
-			// Definition of Converter functions which can be used from within the function block mapping
-			from Push_button to functions with 
-				{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return -1;}"}
-			
-			// Usage of the converter function in the mapping rule expression
-			from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
-		}
+functionblockmapping ButtonPayloadMapping {
+	targetplatform aws_ipso
 
+	// Definition of Converter functions which can be used from within the function block mapping
+	from Push_button to functions with 
+		{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if 	  		(clickType === 'DOUBLE') return 2; else return -1;}"}
 
-## Mapping Conditions
+	// Usage of the converter function in the mapping rule expression
+	from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
+}
+```
+
+<br />
+
+### Mapping Conditions
 
 If you want to specify a condition, when mapping rules for a Function Block should be applied, you can do this easily with mapping conditions.
 
@@ -171,18 +198,22 @@ Here is an example of using conditions to map to either temperature or illuminan
 In this example, only the Temperature Function Block will be mapped, if the type field of header matches the 'T' value. 
 
 Function Block Temperature Mapping
-
-	...
-	from Temperature to condition with {value:"header.type == 'T'"}
-	//mapping rules for Temperature properties
+```java
+...
+from Temperature to condition with {value:"header.type == 'T'"}
+//mapping rules for Temperature properties
+```
 
 Function Block Illuminance Mapping
+```java
+...
+from Illuminance to condition with {value:"header.type == 'I'"}
+//mapping rules for Illuminance properties
+```
 
-	...
-	from Illuminance to condition with {value:"header.type == 'I'"}
-	//mapping rules for Illuminance properties
+# What's next ?
 
-
-
+- Understand the [Mapping Specification Syntax](./docs/mapping_syntax.md)
+- [Normalize device telemetry data](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md), that was received from Eclipse Hono supported protocol adapters
 
 

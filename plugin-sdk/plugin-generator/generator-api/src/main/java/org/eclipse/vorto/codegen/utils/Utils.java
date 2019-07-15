@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -14,37 +13,40 @@ package org.eclipse.vorto.codegen.utils;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
-import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
-import org.eclipse.vorto.core.api.model.datatype.Constraint;
-import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
-import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
-import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
-import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
-import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
-import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Param;
 import org.eclipse.vorto.core.api.model.functionblock.RefParam;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnDictonaryType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class Utils {
+
+  public static InformationModel toInformationModel(Model model) {
+    if (model instanceof InformationModel) {
+      return (InformationModel) model;
+    } else if (model instanceof FunctionblockModel) {
+      return Utils.wrapFunctionBlock((FunctionblockModel) model);
+    } else {
+      throw new UnsupportedOperationException("model must either be a information- or function block model");
+    }
+  }
+
   public static InformationModel wrapFunctionBlock(FunctionblockModel fbModel) {
     InformationModel infomodel = InformationModelFactory.eINSTANCE.createInformationModel();
     infomodel.setCategory(fbModel.getCategory());

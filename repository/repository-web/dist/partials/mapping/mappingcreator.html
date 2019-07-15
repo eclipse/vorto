@@ -4,6 +4,10 @@
       <li><a href="#"></i>Explore</a></li>
       <li><a href="./#/details/{{modelId}}"></i>{{modelId}}</a></li>
       <li class="active">Payload Mapping Specification</li>
+      
+      <a class="pull-right help-icon" href="https://github.com/eclipse/vorto/tree/master/mapping-engine" target="_blank" 
+			title="Read more about Mappings"><span class="fa fa-question-circle" />
+	  </a>
   </ol>
   <div ng-if="validationError" class="row">
 		<div class="alert alert-danger">
@@ -15,17 +19,14 @@
   <div class="col-md-12">
             <div class="box">
              <div class="row">
-		           <div class="col-md-2 text-center">
+		           <div class="col-md-3 text-center">
 		              <dt>State: <span class="state state-{{state}}">{{ state }}</span></dt>
 		           </div>
-		           <div class="col-md-2 text-center">
-				      <dt>Key: <span>{{ targetPlatform }}</span></dt>
-		           </div>
-		           <div class="col-md-2 text-center">
+		           <div class="col-md-3 text-center">
 				      <dt>DSL: <span><a href="./#/details/{{mappingId}}"></i>Mapping</a></span></dt>
 		           </div>
 	               <div class="col-md-6">
-	             	 <a href="./rest/{{tenant}}/mappings/{{modelId}}/{{targetPlatform}}/file" ng-disabled="isLoading || validationError != null" class="btn btn-sm  btn-primary pull-right"><span class="fa fa-download" aria-hidden="true"></span>&nbsp;Download Spec</a>
+	             	 <a href="./rest/mappings/{{modelId}}/{{targetPlatform}}/file" ng-disabled="isLoading || validationError != null" class="btn btn-sm  btn-primary pull-right"><span class="fa fa-download" aria-hidden="true"></span>&nbsp;Download Spec</a>
 					 <button ng-show="authenticated && userInfo.isRegistered === 'true'" type="submit" ng-disabled="isLoading || state !== 'Draft'" class="btn btn-sm btn-primary pull-right" ng-click="save()"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</button> 
 	               </div>
                  </div>

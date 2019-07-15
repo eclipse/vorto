@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template;
 
-import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.ITemplate
 
 class EnumValidationTemplate implements ITemplate<Enum>{
 	

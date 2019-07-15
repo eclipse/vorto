@@ -11,8 +11,9 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.python
+
 import org.eclipse.vorto.core.api.model.model.Model
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
 class PythonInitTemplate extends PythonTemplate <Model> {
 	override getFileName(Model model) {

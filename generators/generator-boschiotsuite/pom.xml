@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.eclipse.vorto</groupId>
         <artifactId>generators</artifactId>
-        <version>0.10.1</version>
+        <version>0.11.0</version>
     </parent>
 	<artifactId>generator-boschiotsuite</artifactId>
 	<packaging>pom</packaging>
@@ -13,7 +13,6 @@
 
 	<modules>
 		<module>boschiotsuite-cloud</module>
-		<module>boschiotsuite-gateway</module>
 	</modules>
 	
 </project>

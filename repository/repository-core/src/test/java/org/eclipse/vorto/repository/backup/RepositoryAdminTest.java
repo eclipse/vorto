@@ -15,36 +15,14 @@ package org.eclipse.vorto.repository.backup;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.utils.DummySecurityCredentials;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 
 public class RepositoryAdminTest extends AbstractIntegrationTest {
-
-  private DefaultModelBackupService repositoryManager = null;
-
-  @Override
-  public void beforeEach() throws Exception {
-    super.beforeEach();
-    repositoryManager = new DefaultModelBackupService() {
-      @Override
-      public Session getSession() {
-        try {
-          return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
-        } catch (RepositoryException e) {
-          throw new FatalModelRepositoryException("Cannot create session", e);
-        }
-      }
-    };
-    repositoryManager.setModelRepository(this.modelRepository);
-  }
 
   @Test
   public void testBackupFilesNoImages() throws Exception {
@@ -52,51 +30,63 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    byte[] backedUpContent = repositoryManager.backup();
+    
+    IUserContext admin = createUserContext("admin");
+    
+    byte[] backedUpContent = getRepoManager(admin).backup();
     assertNotNull(backedUpContent);
   }
 
   @Test
   public void testRestoreBackup1() throws Exception {
-    assertEquals(0, this.modelRepository.search("*").size());
-    this.repositoryManager.restore(
+    IUserContext admin = createUserContext("admin");
+    
+    assertEquals(0, getModelRepository(admin).search("*").size());
+    
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
-    assertEquals(4, this.modelRepository.search("*").size());
+    
+    assertEquals(4, getModelRepository(admin).search("*").size());
   }
 
   @Test
   public void testRestoreBackupExistingData() throws Exception {
-    this.repositoryManager.restore(
+    IUserContext admin = createUserContext("admin");
+    
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
-    assertEquals(4, this.modelRepository.search("*").size());
-    System.out.println(this.modelRepository.search(("*")));
-    this.repositoryManager.restore(
+    assertEquals(4, getModelRepository(admin).search("*").size());
+    
+    System.out.println(getModelRepository(admin).search(("*")));
+    getRepoManager(admin).restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
-    assertEquals(4, this.modelRepository.search("*").size());
-    System.out.println(this.modelRepository.search(("*")));
+    assertEquals(4, getModelRepository(admin).search("*").size());
+    System.out.println(getModelRepository(admin).search(("*")));
     assertEquals("com.mycompany",
-        this.modelRepository.search("HueLightStrips").get(0).getId().getNamespace());
+        getModelRepository(admin).search("HueLightStrips").get(0).getId().getNamespace());
   }
 
   @Test
   public void testRestoreCorruptBackup() {
+    IUserContext admin = createUserContext("admin");
+    
     try {
-      this.repositoryManager.restore(
+      getRepoManager(admin).restore(
           IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
     } catch (Exception e1) {
       fail("Should not have occurred because backup is valid");
     }
-    assertEquals(4, this.modelRepository.search("*").size());
+    assertEquals(4, getModelRepository(admin).search("*").size());
 
     try {
-      this.repositoryManager.restore(IOUtils.toByteArray(
+      getRepoManager(admin).restore(IOUtils.toByteArray(
           new ClassPathResource("sample_models/vortobackup_corrupt.xml").getInputStream()));
       fail("Exception that vorto backup could not be restored expected");
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    assertEquals(4, this.modelRepository.search("*").size());
+    assertEquals(4, getModelRepository(admin).search("*").size());
   }
 
 }

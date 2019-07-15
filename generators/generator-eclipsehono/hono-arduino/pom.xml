@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.eclipse.vorto</groupId>
         <artifactId>generator-eclipsehono</artifactId>
-        <version>0.10.1</version>
+        <version>0.11.0</version>
     </parent>
     
 	<artifactId>hono-arduino</artifactId>
@@ -19,7 +19,7 @@
 		</dependency>		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>generator-api</artifactId>
+			<artifactId>plugin-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

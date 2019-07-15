@@ -15,6 +15,10 @@ package org.eclipse.vorto.codegen.api.mapping;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class DefaultMapped<T> implements IMapped<T> {
 
   private T source;

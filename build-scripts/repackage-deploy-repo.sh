@@ -28,7 +28,7 @@ cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
 
 if [[ "$GIT_BRANCH" == "master" ]]
 then
-  aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod ./BOOT-INF/classes --recursive
+   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod_new ./BOOT-INF/classes --recursive	
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
@@ -46,6 +46,8 @@ rm -rf ./aws-upload/tmp/*
 # list the contents of aws-upload folder
 ls -l ./aws-upload
 
+	  
+
 if [[ "$GIT_BRANCH" == "master" ]]
 then
   # uploading to s3 bucket
@@ -54,11 +56,11 @@ then
 
   # versioning the artifact in EBS
   echo "versioning the artifact at EBS"
-  aws elasticbeanstalk create-application-version --application-name "Vorto-Prod-Environment" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository in prod" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
+  aws elasticbeanstalk create-application-version --application-name "Vorto-Prod-New-Environment" --no-auto-create-application --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo_new" --description "Build ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} for repository in prod_new" --source-bundle S3Bucket="$VORTO_S3_BUCKET",S3Key="${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar"
 
   # updating environment in EBS
   echo "update environment in EBS"
-  aws elasticbeanstalk update-environment --application-name "Vorto-Prod-Environment" --environment-name "vorto-prod" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo"
+  aws elasticbeanstalk update-environment --application-name "Vorto-Prod-New-Environment" --environment-name "vorto-prod-new" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo_new"												 
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
   # uploading to s3 bucket
@@ -75,5 +77,6 @@ then
 else
   echo "the artifact is not deployed to either production or development environment in AWS"
 fi
-echo "finished running repackage-deploy-repo.sh"
+echo "finished running repackage-deploy-repo.sh"																																														 
+
 

@@ -17,6 +17,10 @@ import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 public class ModelHelper {
   private static final String GETTER_PREFIX = "get";
   private static final String SETTER_PREFIX = "set";

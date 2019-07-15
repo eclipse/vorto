@@ -3,9 +3,12 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
-[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
+[Eclipse Vorto](http://www.eclipse.org/vorto) provides a language for describing models and interfaces for IoT Digital Twins. Digital twins are models of entities in the physical world such as a (multi) sensor device, smart power plant, and other entities that participate in IoT solutions. Modeling enables IoT solutions and IoT platforms to provision, use, and configure IoT devices and logical entities from multiple sources in a single solution. Using the vortolang and describing the entities's capabilities, IoT platforms and IoT solutions can leverage the semantics of these IoT entities.
 
 <img src="docs/images/vorto_cover.png"/>
+<p align="center">
+<a href="docs/vortolang-1.0.md"><b>Vortolang 1.0 Specification</b></a>
+</p>
 
 
 ## Getting Started with Vorto
@@ -14,24 +17,11 @@
 
 ## Vorto Examples
 
-Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
+Check out our [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that use Vorto models. 
 
-## Repository Plugin SDK
+## Developer Guide
 
-The Repository Plugin SDK helps you build and deploy various extensions to the Vorto Repository:
-
-<table>
-	<tr>
-		<th>Code Generator Plugin</th>
-		<td>Learn how to write your own generator and deploy and hook it into the Vorto Repository as a (micro) service</td>
-		<td><a href="plugin-sdk/Readme.md">Read more</a></td>
-	</tr>
-	<tr>
-		<th>Importer Plugin</th>
-		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it into the Vorto Repository.</td>
-		<td><a href="repository/repository-importer/Readme.md">Read more</a></td>
-	</tr>
-</table>
+- [Plugin SDK](plugin-sdk/Readme.md) that lets you extend Vorto with different plugin types
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

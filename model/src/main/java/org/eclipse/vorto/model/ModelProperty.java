@@ -14,6 +14,7 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ModelProperty extends AbstractProperty {
 
@@ -26,6 +27,10 @@ public class ModelProperty extends AbstractProperty {
     property.setType(type);
     property.setMandatory(isMandatory);
     return property;
+  }
+  
+  public static Builder Builder(String name, IReferenceType type) {
+    return new Builder(name, type);
   }
 
   public List<IPropertyAttribute> getAttributes() {
@@ -43,5 +48,45 @@ public class ModelProperty extends AbstractProperty {
         + ", constraints=" + constraints + "]";
   }
 
+  public static class Builder {
+    private ModelProperty property;
+    public Builder(String name, IReferenceType type) {
+      this.property = new ModelProperty();
+      this.property.setMandatory(true);
+      this.property.setName(name);
+      this.property.setType(type);
+    }
+    
+    public Builder optional() {
+      this.property.setMandatory(false);
+      return this;
+    }
+    
+    public Builder multiple() {
+      this.property.setMultiple(true);
+      return this;
+    }
+    
+    public Builder withConstraint(ConstraintType type, String value) {
+      this.property.getConstraints().add(new Constraint(type, value));
+      return this;
+    }
+    
+    public Builder withAttributeMeasurementUnit(EnumLiteral literal) {
+      this.property.getAttributes().add(new EnumAttributeProperty(EnumAttributePropertyType.MEASUREMENT_UNIT, literal));
+      return this;
+    }
+    
+    public Builder withStereotype(String stereoTypeName, Map<String,String> attributes,String targetPlatformKey) {
+      property.setTargetPlatformKey(targetPlatformKey);
+      property.addStereotype(Stereotype.create(stereoTypeName, attributes));
+      return this;
+    }
+    
+    public ModelProperty build() {
+      return property;
+    }
+  }
+  
 
 }

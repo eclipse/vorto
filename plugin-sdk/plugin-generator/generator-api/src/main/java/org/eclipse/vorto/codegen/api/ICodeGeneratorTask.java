@@ -14,11 +14,10 @@ package org.eclipse.vorto.codegen.api;
 
 import org.eclipse.vorto.codegen.api.InvocationContext;
 
-/*
- * A specific generation task during the entire Code generation process
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+/**
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public interface ICodeGeneratorTask<InformationModelFragment> {
 
   /**

@@ -26,13 +26,12 @@ public class DependencyManager {
   private Set<ModelInfo> resources = new HashSet<>();
 
   public DependencyManager() {
-
   }
 
   public DependencyManager(Set<ModelInfo> resources) {
     this.resources = resources;
   }
-
+  
   public void addResource(ModelInfo resource) {
     this.resources.add(resource);
   }

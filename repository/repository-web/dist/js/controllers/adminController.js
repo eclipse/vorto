@@ -1,4 +1,4 @@
-var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
+var repositoryControllers = angular.module('repositoryControllers', []);
 
 repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
     function ($scope, $rootScope, $http, $location,$timeout) {
@@ -58,5 +58,24 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
                 });
         };
 
+        $scope.isReindexing = false;
+        $scope.hasIndexingError = false;
+        $scope.hasIndexingResult = false;
+        $scope.indexingError = null;
+        $scope.indexingResultMessage = null;
+        $scope.reindex = function() {
+        	$scope.isReindexing = true;
+        	$http.post('./rest/reindex')
+	        	.then(function(result) {
+	        		$scope.indexingResultMessage = 'Indexed ' + result.data.numberOfTenants + ' tenants with ' + result.data.totalNumberOfIndexedModels + ' models.';
+	        		$scope.hasIndexingResult = true;
+	        		$scope.isReindexing = false;
+	        		$scope.hasIndexingError = false;
+	            }, function(error) {
+	            	$scope.isReindexing = false;
+	            	$scope.hasIndexingError = true;
+	            	$scope.indexingError = "";
+	            });
+        };
     }
 ]);

@@ -28,12 +28,9 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * Generator task that traverses all types used in an information model and generates their platform
- * specific representations
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- *
+ * Please use the Plugin SDK API instead
  */
+@Deprecated
 public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationModel> {
 
   private IFileTemplate<Entity> entityTemplate;

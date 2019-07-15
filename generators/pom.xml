@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.10.1</version>
+		<version>0.11.0</version>
 	</parent>
 
 
@@ -20,7 +20,7 @@
 		<module>generator-boschiotsuite</module>
 		<module>generator-eclipsehono</module>
 		<module>generator-eclipseditto</module>
-		<module>generator-runner</module>
+		<module>generator-openapi</module>
 	</modules>
 
 	<build>

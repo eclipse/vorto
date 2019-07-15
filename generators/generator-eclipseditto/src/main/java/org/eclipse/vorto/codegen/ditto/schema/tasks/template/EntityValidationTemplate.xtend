@@ -14,15 +14,15 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template;
 
-import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
+import java.util.List
+import org.eclipse.vorto.codegen.ditto.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
-import org.eclipse.vorto.codegen.ditto.schema.Utils
-import java.util.List
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.ITemplate
 
 class EntityValidationTemplate implements ITemplate<Entity>{
 	val static EnumValidationTemplate enumValidationTemplate = new EnumValidationTemplate();
@@ -111,6 +111,11 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 					}
 				«ENDIF»
 			«ENDIF»
+			«ELSE»
+			"«property.name»": {
+			«IF !property.description.nullOrEmpty»"description": "«property.description»",«ENDIF»
+			"type": "object"
+			}
 		«ENDIF»
 		'''
 	

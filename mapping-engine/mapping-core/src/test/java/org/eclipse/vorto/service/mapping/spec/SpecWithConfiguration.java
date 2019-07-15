@@ -27,7 +27,7 @@ public class SpecWithConfiguration extends AbstractTestSpec {
   @Override
   protected void createFBSpec() {
     FunctionblockModel buttonModel = new FunctionblockModel(
-        ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
+        ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
 
 
     ModelProperty buttonEnableProperty = new ModelProperty();

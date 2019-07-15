@@ -28,37 +28,34 @@ import org.eclipse.xtext.formatting.impl.FormattingConfig
 *
 * Also see {@link org.eclipse.xtext.xtext.XtextFormattingTokenSerializer} as an example
 */
-public class MappingFormatter extends AbstractDeclarativeFormatter {
+class MappingFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension MappingGrammarAccess f
 
-	override protected void configureFormatting(FormattingConfig c) {
+	override protected void configureFormatting(FormattingConfig c) { 
 
-		//Basic information
-		c.setLinewrap(1).after(f.modelReferenceAccess.group)	
-			
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.namespaceAssignment_3);
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.versionAssignment_5);
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.infoModelMappingModelAccess.categoryAssignment_8_1)		
+		//Basic information	
+		c.setLinewrap(1).after(f.modelReferenceAccess.group)
 		
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.namespaceAssignment_3);
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.versionAssignment_5);
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.categoryAssignment_8_1)	
-				
-		c.setLinewrap(1).after(f.entityMappingModelAccess.namespaceAssignment_3);
-		c.setLinewrap(1).after(f.entityMappingModelAccess.versionAssignment_5);	
-		c.setLinewrap(1).after(f.entityMappingModelAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.entityMappingModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.entityMappingModelAccess.categoryAssignment_8_1)	
-				
-		c.setLinewrap(1).after(f.enumMappingModelAccess.namespaceAssignment_3);
-		c.setLinewrap(1).after(f.enumMappingModelAccess.versionAssignment_5);
-		c.setLinewrap(1).after(f.enumMappingModelAccess.displaynameAssignment_6_1)
-		c.setLinewrap(1).after(f.enumMappingModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.enumMappingModelAccess.categoryAssignment_8_1)	
+		c.setLinewrap(2).before(f.functionBlockMappingModelAccess.findKeywords("namespace").get(0))	
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.namespaceAssignment_4);
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.versionAssignment_6);
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.displaynameAssignment_7_0_1)
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.descriptionAssignment_7_1_1)
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.categoryAssignment_7_2_1)	
+			
+		c.setLinewrap(2).before(f.entityMappingModelAccess.findKeywords("namespace").get(0))	
+		c.setLinewrap(1).after(f.entityMappingModelAccess.namespaceAssignment_4);
+		c.setLinewrap(1).after(f.entityMappingModelAccess.versionAssignment_6);	
+		c.setLinewrap(1).after(f.entityMappingModelAccess.displaynameAssignment_7_0_1)
+		c.setLinewrap(1).after(f.entityMappingModelAccess.descriptionAssignment_7_1_1)
+		c.setLinewrap(1).after(f.entityMappingModelAccess.categoryAssignment_7_2_1)	
+		
+		c.setLinewrap(2).before(f.enumMappingModelAccess.findKeywords("namespace").get(0))	
+		c.setLinewrap(1).after(f.enumMappingModelAccess.namespaceAssignment_4);
+		c.setLinewrap(1).after(f.enumMappingModelAccess.versionAssignment_6);
+		c.setLinewrap(1).after(f.enumMappingModelAccess.displaynameAssignment_7_0_1)
+		c.setLinewrap(1).after(f.enumMappingModelAccess.descriptionAssignment_7_1_1)
+		c.setLinewrap(1).after(f.enumMappingModelAccess.categoryAssignment_7_2_1)	
 				
 		c.setLinewrap(1).after(f.modelReferenceAccess.versionAssignment_3);	
 									
@@ -100,15 +97,15 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}			
-				
+		
 		for (Keyword k : findKeywords("from")) {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}
-		for (Keyword k : findKeywords("to")) {
-			c.setLinewrap(1).before(k)
-			c.setNoLinewrap.after(k)
-		}
+//		for (Keyword k : findKeywords("to")) {
+//			c.setLinewrap(1).before(k)
+//			c.setNoLinewrap.after(k)
+//		}
 		
 				
 				

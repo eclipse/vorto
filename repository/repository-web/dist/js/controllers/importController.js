@@ -7,6 +7,36 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         $scope.fileAdded = false;
         $scope.beingUploaded = false;
         $scope.beingCheckedIn = false;
+        $scope.targetNamespace = null;
+
+		$scope.getNamespaces = function() {
+        	$scope.userNamespaces = [];
+            	$http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
+                	.then(function(result) {
+                    	var tenants = result.data;
+                        if (tenants != null) {
+                        	for(var i=0; i < tenants.length; i++) {
+                            	if (tenants[i].namespaces != null) {
+                                	for(var k=0; k < tenants[i].namespaces.length; k++) {
+                                    	$scope.userNamespaces.push({
+                                        	tenant: tenants[i].tenantId,
+                                            namespace: tenants[i].namespaces[k]
+                                        }); 
+                                    }
+                                }
+                             }
+                         }
+                         if ($scope.userNamespaces.length > 0) {
+                         	$scope.userNamespaces.sort(function (a, b) {
+                            	return a.namespace.localeCompare(b.namespace);
+                            });
+                            }
+                       }, function(reason) {
+                                // TODO : handling of failures
+          			});
+         };
+                    
+         $scope.getNamespaces();
 
         $scope.uploadModel = function () {
             $scope.showResultBox = false;
@@ -20,7 +50,8 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                upload('./rest/' + $rootScope.tenant + '/importers/', fileToUpload);
+                upload('./rest/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
+                
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
             }
@@ -33,7 +64,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.fileAdded = true;
             $scope.showCheckin = false;
             $scope.showResultBox = false;
-            $scope.fileAdded = true;
             $scope.$digest();
         };
 
@@ -101,7 +131,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                     } else if (status == 401) {
                         $scope.error = "Unauthorized Operation";
                     } else if (status == 400) {
-                        $scope.error = "Bad Request. Server Down";
+                        $scope.error = "Bad Request";
                     } else if (status == 500) {
                         $scope.error = "Internal Server Error";
                     } else {
@@ -135,7 +165,9 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         checkinSingle = function (handleId) {
-            $http.put('./rest/' + $rootScope.tenant + '/importers/' + handleId + '?key=' + $scope.selectedImporter.key)
+        	var importUrl = "./rest/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.namespace;
+
+            $http.put(importUrl)
                 .success(function (result) {
                     $scope.showResultBox = true;
                     $scope.beingCheckedIn = false;
@@ -145,6 +177,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                     $scope.fileAdded = true;
                     $scope.isLoading = false;
                     $rootScope.modelsSaved = null;
+                    $scope.importedModels = result;
                 }).error(function (data, status, headers, config) {
                     if (status == 403) {
                         $scope.error = "Operation is Forbidden";
@@ -163,7 +196,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         $scope.getImporters = function () {
-            $http.get('./rest/' + $rootScope.tenant + '/importers')
+            $http.get('./rest/importers')
                 .success(function (result) {
                     $scope.importers = result;
                 });

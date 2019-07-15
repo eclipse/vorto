@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.eclipse.vorto.model.ModelId;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,20 +45,26 @@ public class TestModel {
     this.modelName = modelName;
     this.description = description;
     this.version = version;
+    this.prettyName = new ModelId(modelName, namespace, version).getPrettyFormat();
   }
 
   public void createModel(MockMvc mockMvc,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1) throws Exception {
-    mockMvc.perform(post("/rest/default/models/" + prettyName + "/InformationModel").with(user1)
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		/*
+		 * mockMvc.perform(post("/rest/tenants/playground/models/" + prettyName +
+		 * "/InformationModel").with(user1)
+		 * .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		 */
+    mockMvc.perform(post("/rest/models/" + prettyName + "/InformationModel").with(user1)
+            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
   }
 
 
   public static final class TestModelBuilder {
-    String namespace = TestUtils.createRandomString(10).toLowerCase();
-    String modelName = TestUtils.createRandomString(10).toUpperCase();
-    String description = "InformationModel for " + modelName;
-    String version = "1.0.0";
+    private String namespace = "com.mycompany." + TestUtils.createRandomString(10).toLowerCase();
+    private String modelName = TestUtils.createRandomString(10).toUpperCase();
+    private String description = "InformationModel for " + modelName;
+    private String version = "1.0.0";
 
     private TestModelBuilder() {}
 

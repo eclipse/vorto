@@ -29,6 +29,10 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class GeneratorTest {
   private IVortoCodeGenerator generatorUnderTest;
 

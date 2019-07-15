@@ -4,6 +4,10 @@
 			<a href="./#/">Home</a>
 		</li>
 		<li class="active">Import</li>
+		
+		<a class="pull-right help-icon" href="https://github.com/eclipse/vorto/blob/master/repository/docs/import_model.md" 
+			target="_blank" title="Read more about Importers"><span class="fa fa-question-circle" />
+	    </a>
 	</ol>
 	<div ng-if="error" class="alert alert-danger">{{error}}</div>
 	<form name="fileUploadForm" class="fileUploadForm form-inline">
@@ -22,7 +26,7 @@
 					<small>{{getSelectedImporterInfo(selectedImporter.key).shortDescription}}</small>
 				</div>
 				<div class="button-box col-md-6 text-right">
-					<a ng-show="!isLoading  || (isLoading && beingCheckedIn)" ng-click="uploadModel()" ng-disabled="!fileAdded || (isLoading && !showCheckin)"
+					<a ng-show="!isLoading  || (isLoading && beingCheckedIn)" ng-click="uploadModel()" ng-disabled="!fileAdded || isLoading || targetNamespace == null || targetNamespace === ''"
 					 class="btn btn-primary uploadImportButton" role="button">
 						<span class="glyphicon glyphicon-upload"></span> Upload</a>
 					<a ng-show="isLoading && beingUploaded" ng-disabled="isLoading" class="btn btn-primary uploadImportButton" role="button">
@@ -39,7 +43,7 @@
 	</form>
 	<br/>
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-7">
 			<table class="uploadTable">
 				<tr>
 					<td class="uploadImportButtonSpacing">
@@ -52,9 +56,15 @@
 					<td> {{browsedFile}} </td>
 				</tr>
 			</table>
-			<small>Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',&nbsp;')}}</small>
+			<div class="input-description">Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',&nbsp;')}}</div>
 		</div>
-	</div>
+		<div class="col-md-5">
+			<select class="form-control" id="targetNamespace" ng-model="targetNamespace" ng-options="item.namespace for item in userNamespaces">
+	    		<option value="">Select target namespace</option>
+	    	</select>
+	    	<div class="input-description">All uploaded model(s) will be prefixed with the selected namespace.</div>
+		</div>
+	</div>  			
 	<br/>
 	<br/>
 	<div class="row">
@@ -71,40 +81,112 @@
 					<div ng-show="hasWarning" class="alert alert-warning">
 							<i class="fa fa-fw fa-warning"></i> {{resultMessage}}
 					</p>
-						<small>Note: Imported models will be in
-							<i>Draft</i> state and can only be accessed by you.</small>
+						<small>Note: Imported models will be saved in
+							<i>Draft</i> state.</small>
 					</div>
 					<div ng-show="!hasWarning" class="alert alert-success">
 							<i class="fa fa-fw fa-check "></i> {{resultMessage}}
 					</p>
-						<small>Note: Imported models will be in
-							<i>Draft</i> state and can only be viewed and modified by you.</small>
+						<small>Note: Imported models will be saved in
+							<i>Draft</i> state.</small>
 					</div>
 				</div>
 
 
 				<br />
-				<div class="row">
-					<div>
-						<div class="col-xs-2 text-left">
-							<h3 class="results-border">Model Details</h3>
+				<div ng-show="selectedImporter.key === 'Vorto' || fileImported">
+					<div class="row">
+						<div>
+							<div class="col-xs-2 text-left">
+								<h3 class="results-border">Model Details</h3>
+							</div>
+							<div class="col-xs-8 text-left model-overview">Information models: {{modelStats.infocount}} &nbsp;&nbsp; Functionblocks: {{modelStats.fbcount}} &nbsp;&nbsp; Datatypes:
+								{{modelStats.typecount}} &nbsp;&nbsp; Mapping: {{modelStats.mappingcount}}</div>
 						</div>
-						<div class="col-xs-8 text-left model-overview">Information models: {{modelStats.infocount}} &nbsp;&nbsp; Functionblocks: {{modelStats.fbcount}} &nbsp;&nbsp; Datatypes:
-							{{modelStats.typecount}} &nbsp;&nbsp; Mapping: {{modelStats.mappingcount}}</div>
+					</div>
+					
+				<div ng-show="fileImported" ng-repeat="model in importedModels">
+					<div class="accordion-div">
+						
+						<div ng-click="stateArr[$index].active = !stateArr[$index].active" ng-class="{'modelresult-heading-collapsed': stateArr[$index].active, 'modelresult-heading-expanded': !stateArr[$index].active}">
+							<div class="header">
+								<i ng-class="stateArr[$index].active ? 'fa fa-plus-square' : 'fa fa-minus-square'" aria-hidden="true"></i>
+								{{model.id.name}}
+								<a class="btn btn-primary pull-right" href="./#/details/{{model.id.prettyFormat}}" class="btn btn-primary" role="button">Open Model </a>
+							</div>
+						</div>
+						
+						<div class="slideExpand" ng-hide="stateArr[$index].active">
+							<div class="modelresults-content">
+								<div class="fileUploadDetails">
+									<table id="uploadResults">
+										<tr>
+											<td>
+												<label>Namespace:</label>
+											</td>
+											<td class="tdspacing">{{model.id.namespace}}</td>
+										</tr>
+										<tr>
+											<td>
+												<label>Name:</label>
+											</td>
+											<td class="tdspacing">
+												{{model.id.name}}</td>
+										</tr>
+										<tr>
+											<td>
+												<label>Version:</label>
+											</td>
+											<td class="tdspacing">
+												{{model.id.version}}</td>
+										</tr>
+										<tr>
+											<td>
+												<label>Model Type:</label>
+											</td>
+											<td class="tdspacing">
+												{{model.type}}</td>
+										</tr>
+										<tr>
+											<td>
+												<label>Description:</label>
+											</td>
+											<td class="tdspacing">
+												{{model.description}}</td>
+										</tr>
+										<tr>
+											<td>
+												<label>References: </label>
+											</td>
+											<td>
+												<table>
+													<tr ng-repeat="reference in model.references">
+														<td class="tdspacing">
+															{{reference.namespace}}.{{reference.name}}.{{reference.version}} &nbsp;
+															<i ng-class="isMissing(reference,report.unresolvedReferences) === true ? 'fa fa-close fa-lg invalidReference' : 'fa fa-check fa-lg validReference'"
+															 aria-hidden="true"></i>
+													</tr>
+												</table>
+												</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 
-				<div ng-repeat="report in uploadResult.result.reports">
+				<div ng-hide="fileImported" ng-repeat="report in uploadResult.result.reports">
 					<div class="accordion-div">
 
 						<div ng-click="stateArr[$index].active = !stateArr[$index].active" ng-class="{'modelresult-heading-collapsed': stateArr[$index].active, 'modelresult-heading-expanded': !stateArr[$index].active}">
 							<div class="header">
 								<i ng-class="stateArr[$index].active ? 'fa fa-plus-square' : 'fa fa-minus-square'" aria-hidden="true"></i>
 								{{report.model.id.name}}
-								<i ng-show="!fileImported && report.message.severity == 'INFO'" class="fa fa-check fa-lg valid" aria-hidden="true"></i>
-								<i ng-show="!fileImported && report.message.severity == 'ERROR'" class="fa fa-close fa-lg invalid" aria-hidden="true"></i>
-								<i ng-show="!fileImported && report.message.severity == 'WARNING'" class="fa fa-warning fa-lg warning" aria-hidden="true"></i>
-								<a class="btn btn-primary pull-right" ng-show="fileImported" href="./#/details/{{report.model.id.prettyFormat}}" class="btn btn-primary" role="button">Open Model </a>
+								<i ng-show="report.message.severity == 'INFO'" class="fa fa-check fa-lg valid" aria-hidden="true"></i>
+								<i ng-show="report.message.severity == 'ERROR'" class="fa fa-close fa-lg invalid" aria-hidden="true"></i>
+								<i ng-show="report.message.severity == 'WARNING'" class="fa fa-warning fa-lg warning" aria-hidden="true"></i>
 							</div>
 						</div>
 
@@ -161,7 +243,7 @@
 												</table>
 												</td>
 										</tr>
-										<tr ng-if="!fileImported && report.message.severity === 'ERROR'">
+										<tr ng-if="report.message.severity === 'ERROR'">
 											<td colspan="2">
 												<div class="alert alert-danger" role="alert">
 													<p class="error" ng-if="report.validationIssues != null && report.validationIssues.length > 0" ng-repeat="issue in report.validationIssues">
@@ -173,7 +255,7 @@
 												</div>
 											</td>
 										</tr>
-										<tr ng-if="!fileImported && report.message.severity === 'WARNING'">
+										<tr ng-if="report.message.severity === 'WARNING'">
 											<td colspan="2">
 												<label class="warningModel">
 													Warning - {{report.message.message}}
@@ -185,6 +267,7 @@
 							</div>
 						</div>
 					</div>
+				</div>
 				</div>
 			</div>
 		</div>

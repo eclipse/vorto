@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Vorto Importer API
+  description: REST Endpoints for providing a Vorto Importer Plugin for the Eclipse Vorto Repository. Refer to the <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/plugin-sdk/plugin-api/Readme.md">Importer Plugin SDK Documentation</a>
+  contact:
+    name: Eclipse Vorto Team
+    url: https://www.eclipse.org/vorto
+    email: vorto-development@bosch-si.com
+  version: '2.0'
+servers:
+- url: /api/2/plugins/importers
+  variables: {}
+paths:
+  /{pluginkey}/file_conversion:
+    post:
+      tags:
+      - Importer Plugin
+      summary: File Conversion
+      description: Performs the actual conversion of the source file to Vorto model(s)
+      operationId: FileConversion
+      parameters:
+      - name: pluginkey
+        in: path
+        description: Plugin key identifying the importer
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      deprecated: false
+      servers:
+      - url: /api/2/plugins/importers
+        variables: {}
+  /{pluginkey}/file_validation:
+    post:
+      tags:
+      - Importer Plugin
+      summary: File Validation
+      description: Performs a pre-validation check on the source file
+      operationId: FileValidation
+      parameters:
+      - name: pluginkey
+        in: path
+        description: Plugin Key identifying the importer
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+      deprecated: false
+      servers:
+      - url: /api/2/plugins/importers
+        variables: {}
+components:
+  schemas:
+    ValidationResult:
+      title: ValidationResult
+      required:
+      - valid
+      - message
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: Status whether the validation was successful (true) or unsuccessful (false)
+        message:
+          type: string
+          description: Info Message about the validation
+      description: Validation status of whether the source file is valid or not
+tags: []

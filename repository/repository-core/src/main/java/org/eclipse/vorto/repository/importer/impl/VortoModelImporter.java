@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -16,6 +15,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +24,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.refactor.ChangeSet;
+import org.eclipse.vorto.model.refactor.RefactoringTask;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -33,9 +39,12 @@ import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,6 +53,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
+
+  private static Logger logger = Logger.getLogger(VortoModelImporter.class);
 
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
@@ -64,19 +75,82 @@ public class VortoModelImporter extends AbstractModelImporter {
     return false;
   }
 
+  /**
+   * changes the namespace of the uploaded vorto model(s) , if target namespace is specified
+   */
   @Override
-  protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
+  protected FileUpload preValidation(FileUpload fileUpload, Context context) {
+    if (context.getTargetNamespace().isPresent()) {
+      if (fileUpload.getFileExtension().endsWith(EXTENSION_ZIP)) {
+        ModelWorkspaceReader reader = IModelWorkspace.newReader();
+        getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
+            .forEach(extractedFile -> {
+              reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
+            });
+        IModelWorkspace workspace = reader.read();  
+        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(context.getTargetNamespace().get()).execute();
+        ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
+        for (Model model : changeSet.get()) {
+          ModelResource resource = new ModelResource(model);
+          zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
+        }
+        return zipFile.getFileUpload();
+      } else {
+        return refactor(addVortolangIfMissing(fileUpload), context.getTargetNamespace().get());
+      }
+    } else {
+      return addVortolangIfMissing(fileUpload);
+    }
+  }
+  
+  /**
+   * adds Vortolang 1.0 attribute if the uploaded file does not define it.
+   * @param fileUpload
+   * @return
+   */
+  private FileUpload addVortolangIfMissing(FileUpload fileUpload) {
+    String currentModelContent = null;
+    try {
+      currentModelContent = new String(fileUpload.getContent(),"utf-8");
+    } catch (UnsupportedEncodingException e1) {
+        // ignore as encoding is supported
+    }
+    
+    if (!currentModelContent.contains("vortolang 1.0")) {
+      final String newline = System.getProperty("line.separator");
+      StringBuilder contentBuilder = new StringBuilder();
+      contentBuilder.append("vortolang 1.0");
+      contentBuilder.append(newline);
+      contentBuilder.append(newline);
+      contentBuilder.append(currentModelContent);
+      currentModelContent = contentBuilder.toString();
+    }
+    
+    return FileUpload.create(fileUpload.getFileName(), currentModelContent.getBytes());
+  }
+
+  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) { 
+    IModelWorkspace workspace =
+        IModelWorkspace.newReader().addFile(new ByteArrayInputStream(fileUpload.getContent()),
+            ModelType.fromFileName(fileUpload.getFileName())).read();
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(targetNamespace).execute();
+    ModelResource resource = new ModelResource(changeSet.get().get(0));
+    return FileUpload.create(fileUpload.getFileName(), resource.toDSL());
+  }
+
+  @Override
+  protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepository(), getPolicyManager(), getUserRepository());
+          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
-          user);
+          context.getUser());
     } else {
       ModelValidationHelper validationHelper =
-          new ModelValidationHelper(getModelRepository(), getPolicyManager(), getUserRepository());
+          new ModelValidationHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
-        return Arrays.asList(validationHelper.validate(modelInfo, user));
+        return Arrays.asList(validationHelper.validate(modelInfo, context.getUser()));
       } catch (ValidationException ex) {
         return Arrays.asList(ValidationReport.invalid(null, ex));
       }
@@ -84,7 +158,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   @Override
-  protected List<ModelResource> convert(FileUpload fileUpload, IUserContext user) {
+  protected List<ModelResource> convert(FileUpload fileUpload, Context context) {
     List<ModelResource> result = new ArrayList<ModelResource>();
 
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
@@ -145,5 +219,38 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent,
       IUserContext user) {
     // no need to process the imported file further
+  }
+
+  private static class ZipUploadFile {
+
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private ZipOutputStream zos = new ZipOutputStream(baos);
+
+    private String fileName;
+
+    private ZipUploadFile(String fileName) {
+      this.fileName = fileName;
+    }
+
+    public void addToZip(FileUpload file) {
+      try {
+        ZipEntry zipEntry = new ZipEntry(file.getFileName());
+        zos.putNextEntry(zipEntry);
+        zos.write(file.getContent());
+        zos.closeEntry();
+      } catch (Exception ex) {
+        // entry possible exists already, so skipping TODO: ugly hack!!
+      }
+    }
+
+    public FileUpload getFileUpload() {
+      try {
+        zos.close();
+        baos.close();
+      } catch (Exception ex) {
+      }
+
+      return FileUpload.create(fileName, baos.toByteArray());
+    }
   }
 }

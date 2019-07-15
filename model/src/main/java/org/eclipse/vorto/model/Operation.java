@@ -26,6 +26,18 @@ public class Operation extends DefaultMappedElement {
 
   private List<Param> params = new ArrayList<>();
 
+  public Operation(String name) {
+    this.name = name;
+  }
+  
+  protected Operation() {
+    
+  }
+  
+  public static Builder Builder(String name) {
+    return new Builder(name);
+  }
+
   public String getName() {
     return name;
   }
@@ -72,5 +84,36 @@ public class Operation extends DefaultMappedElement {
         + isBreakable + ", result=" + result + ", params=" + params + "]";
   }
 
+  public static class Builder {
+    private Operation operation;
+    
+    public Builder(String name) {
+      this.operation = new Operation(name);
+    }
+    
+    public Builder withParam(Param param) {
+      this.operation.getParams().add(param);
+      return this;
+    }
+    
+    public Builder isBreakable() {
+      operation.setBreakable(true);
+      return this;
+    }
+    
+    public Builder description(String description) {
+      operation.setDescription(description);
+      return this;
+    }
+    
+    public Builder withResult(ReturnType type) {
+      operation.setResult(type);
+      return this;
+    }
+    
+    public Operation build() {
+      return this.operation;
+    }
+  }
 
 }

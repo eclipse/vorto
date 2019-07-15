@@ -4,7 +4,7 @@ In this tutorial you are going to learn, how you can use the Eclipse IDE to desc
 
 ## Prerequisites
 
-* [GitHub Account](https://github.com/)
+* [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) Account 
 
 * Install Eclipse IDE 2018-12 for Java and DSL Developers
 	* [Windows](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2018-12/R/eclipse-dsl-2018-12-R-win32-x86_64.zip)
@@ -17,12 +17,16 @@ In this tutorial you are going to learn, how you can use the Eclipse IDE to desc
 ### Step 1: Installation of Vorto DSL Eclipse Plugins
 
 1. Open Eclipse IDE
+
 2. Install the Vorto Eclipse Plugins from the zip-file from the [Vorto Eclipse Update Site](https://download.eclipse.org/vorto/downloads/releases/0.10.0/org.eclipse.vorto.update-site-0.10.0.zip)
+
 3. Restart your Eclipse
 
 ### Step 2: Create a Simple Eclipse Project
 1. Right-click -> **New Project**
-    <img src="../images/tutorials/describe_device_eclipseide/new_project.png"/>
+
+<img src="../images/tutorials/describe_device_eclipseide/new_project.png"/>
+    
 2. Choose a project name and click **Finish**.
 
 
@@ -33,6 +37,7 @@ To keep it simple, we will describe the camera with the indispensable *Informati
 **1. Informationmodel**
 To create a new *Informationmodel*, right-click on your created project and select **New File**. 
 It is important the file name suffix represents the type of file you want to create: `SecurityCamera.infomodel`
+
 <img src="../images/tutorials/describe_device_eclipseide/infomodel.png"/>
 
 After clicking **Finish**, you will be asked if you want to convert your project to an Xtext project. Click **Yes** to enable autocomplete.
@@ -47,6 +52,7 @@ The next step is to describe the needed functionalities of the camera.
 
 **2. Functionblock**
 When creating the new file for the *Functionblock*, make sure that you use the correct suffix: `Presence.fbmodel`
+
 <img src="../images/tutorials/describe_device_eclipseide/functionblock_description.png"/>
 
 Now we need to reference from the *Informationmodel* to your newly created *Functionblock*.
@@ -60,16 +66,12 @@ Now you need to define an instance of the function within **functionblocks**. Th
 ### Step 4: Import the Model into the Vorto Repository
 You can now import your *Informationmodel* into the [Vorto Repository](https://vorto.eclipse.org) where you can manage your models and release it to the community.
 To do that, you need to export your project as a **General Archive File**.
+
 <img src="../images/tutorials/describe_device_eclipseide/export.png"/>
+
 <img src="../images/tutorials/describe_device_eclipseide/export_2.png"/>
 
-Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your GitHub account and **Import** the zip-file.
-<img src="../images/tutorials/describe_device_eclipseide/import"/>
-Click **Browse**, select the zip-file and click **Upload**.
-After the validation click **Import**.
-<img src="../images/tutorials/describe_device_eclipseide/import_2"/>
-
-The imported model will now be in *Draft* state and can only be viewed and modified by you.
+Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your BoschID or GitHub account and [**Import** the zip-file](../../repository/docs/import_model.md).
 
 
 ## What's Next?

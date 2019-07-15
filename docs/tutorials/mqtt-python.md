@@ -1,7 +1,7 @@
 # Integrating a device with Python into the Bosch IoT Hub using Vorto
 
 This tutorial explains how to integrate a device with the Bosch IoT Suite using MQTT. Your device should already be created as a thing from an Information Model at this point.   
-We will use our [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) again.
+We will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) again.
 
 <img src="../images/tutorials/connect_grovepi/cover.png"/>
 
@@ -40,7 +40,7 @@ You can either use a display, keyboard, and mouse to directly work on the Raspbe
 
 ## Download the generated integration script
 
-**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 <img src="../images/tutorials/create_thing/code_generators.png" />
 
 **2.** We want to integrate a device using Python. Click the `Source Code` button to download the generated python script.
@@ -56,7 +56,7 @@ Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub
 ## Configure the scripts with the information of your created thing
 
 **5.** Before we start reading in the sensor data and sending it to Hub, we need to configure our credentials. This will allow the script to send the sensor data to our digital twin.   
-The main `.py` file (`RaspberryPiTutorialApp.py` in this case) will contain a section that looks like this:   
+The main `.py` file (`RaspberryPiApp.py` in this case) will contain a section that looks like this:   
 ```python
 # DEVICE CONFIG GOES HERE
 tenantId = "ADD TENANT HERE"
@@ -93,9 +93,9 @@ There is no need to edit any other section of the python file.
 
 Code sections which can be customized for your needs are marked with
 ```python
-### BEGIN READING SENSOR DATA
+### BEGIN SAMPLE CODE
 ...
-### END READING SENSOR DATA
+### END SAMPLE CODE
 ```
 
 In order to read the cpu temperature, we need to add this code block inside the `periodicAction` function between the `BEGIN` and `END` comments.
@@ -122,9 +122,9 @@ infomodel.cpuTemperature.value = {
     
 
     
-The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) is a [Temperature Function Block](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto:Temperature:1.0.0). 
+The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) is a [Temperature Function Block](https://vorto.eclipse.org/#/details/org.eclipse.vorto:Temperature:1.0.0). 
 ```js
-infomodel RaspberryPiTutorial {
+infomodel RaspberryPi {
 	functionblocks {
 		...
 		cpuTemperature as Temperature
@@ -140,7 +140,7 @@ functionblock Temperature {
     }
 }
 ```
-As we can see, it has a `value` which is a [SensorValue Data Type](http://vorto-dev.eu-central-1.elasticbeanstalk.com/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
+As we can see, it has a `value` which is a [SensorValue Data Type](https://vorto.eclipse.org/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
 Since the nesting ends with this DT, we know that the path to our `currentMeasured` and optional values is:   
 ```js
 cpuTemperature -> value -> currentMeasured, minMeasured, ...
@@ -170,15 +170,23 @@ infomodel.cpuTemperature.value = {
 **9.** Before we can run the script, we need to install additional dependencies. The bundle contains a file called `requirements.txt`. This file describes the dependencies that still have to be installed in order to run the script.      
 Install the dependencies using the `pip install -r requirements.txt` command which looks at the current `requirements.txt` file and installs the dependecies listed there.
 
-**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiTutorialApp.py`
+**10.** Once the dependencies are installed, we can start the script by simply typing `python RaspberryPiApp.py`.
+After starting the script using you Terminal, you should be able to observe the sensor data being sent to Hub. This will looks something like this:
 
+```bash
+Publish Payload:  {"topic": "com.bosch.xyz.sandbox/raspbi123/things/twin/commands/modify","headers": {"response-required": false},"path": "/features/location/properties","value" : {"status" : {"latitude": 1.34749, "longitude": 103.841133}, "configuration" : {} } }  to Topic:  telemetry/t0e7d25ea57db4191ab41415a432f5a50_hub/com.bosch.xyz.sandbox:raspbi123
+Publish Payload:  {"topic": "com.bosch.xyz.sandbox/raspbi123/things/twin/commands/modify","headers": {"response-required": false},"path": "/features/battery/properties","value" : {"status" : {"remainingCapacity": {"value": 86}, "value": {"currentMeasured": 86, "minMeasured": 0, "maxMeasured": 100}}, "configuration" : {"remainingCapacityAmpHour": 0} } }  to Topic:  telemetry/t0e7d25ea57db4191ab41415a432f5a50_hub/com.bosch.xyz.sandbox:raspbi123
+```
+
+> If you don't see the Terminal outputting this kind of sensor data packages, unfold the following section.
 <details>
     <summary>
         <b>
             Your script is not sending data?
         </b>
     </summary> 
-    
+
+#### Enable Logging
 If you started the script and you can't see any data being sent your script most likely contains an error in the way the values are assigned to the attributes.
 
 In order to see the error message, you need to add a logger to the script.   
@@ -198,6 +206,50 @@ client = mqtt.Client(hono_clientId)
 logger = logging.getLogger(__name__)
 client.enable_logger(logger)
 ```
+
+<br />
+
+#### Reset the Bridge (Connection of the Asset Communication Package)
+If you see the sensor data being sent as shown in the `Publish Payload:...` example above but you still can't see any changes in the Dashboard or SwaggerUI API when retrieving the current state of the Thing, the connection between Hub and Things might have corrupted at some point.
+
+This is simple to solve. This so called "Bridge" is created by default one subscribing to the Asset Communication.
+1. Head over to your [Subscriptions page](https://accounts.bosch-iot-suite.com/subscriptions/) and click on the **Go to Dashboard** button of your Asset Communication Subscription.
+
+2. On the newly opened tab, click on the **Connection** tab that will display all the connections you've set up.
+By default there will be a **Telemetry Bosch IoT Hub** connection.
+
+> **Note** that if there is a problem, you will see a triangle with an exclamation mark inside that indicates some failed connection.
+
+3. Click on the connection and hit the **Close connection** button. Wait until the connection is closed.
+
+4. Once the connection was closed, re-open it by clicking the **Open connection** button.
+
+5. After the connection has been re-established, **restart your sensor data sending script** and observe.
+
+</details>
+
+<details>
+    <summary>
+        <b>
+            Your get an error message?
+        </b>
+    </summary> 
+
+#### `getaddr` - Double check your connection.
+If you started the script and you get an `getaddr` error, this means that the address resolution could not take place. This can have several reasons.    
+However, it's most likely that you either are not connected to the internet or a **proxy** is blocking the sending of sensor data.
+
+Unfortunately, for now you can't set any proxy. **Please switch to a network without Proxy.**
+
+<br />
+
+#### `Connection to MQTT broker failed: 4` - Double check your configuration 
+If you see the sensor a log message with the error value of `4`, this means that the connection was refused due to some bad user name or password. However, this can relate to any of the fields in the configuration tab.
+
+Therefore you have to go in and double check every field of the configuration section for an additional space or some character that does not belong there.
+
+>  Please note that if you have followed the other tutorials, this error is **definitely** due to a fault in entering the credentials correctly.
+
 </details>
 
 **11**. We can now verify that there is data incoming by either using
@@ -211,6 +263,7 @@ client.enable_logger(logger)
 ## What's next ?
 
  - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
+ - [Generate an OpenAPI Spec for your device](create_openapi.md)
 - Integrate your device with the Bosch IoT Suite using:
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)

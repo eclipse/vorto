@@ -20,13 +20,13 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
@@ -41,8 +41,7 @@ public class MappingTest extends AbstractIntegrationTest {
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())),
-            UserContext.user("admin"));
+                    new ClassPathResource("sample_models/Color.type").getInputStream())), Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(true, uploadResult.isValid());
     assertNotNull(uploadResult.getHandleId());
     ModelInfo resource = uploadResult.getReports().get(0).getModel();
@@ -53,20 +52,21 @@ public class MappingTest extends AbstractIntegrationTest {
     assertEquals(0, resource.getReferences().size());
     assertEquals("Color", resource.getDisplayName());
     assertNull(resource.getDescription());
-    assertEquals(0, modelRepository.search("*").size());
+    assertEquals(0, repositoryFactory.getRepository(createUserContext("admin", "playground")).search("*").size());
   }
 
 
   @Test
   public void testCheckinValidMapping() throws Exception {
+    IUserContext userContext = createUserContext("admin", "playground"); 
+    
     UploadModelResult uploadResult =
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/Color.type").getInputStream())),
-            UserContext.user("admin"));
+                    new ClassPathResource("sample_models/Color.type").getInputStream())),Context.create(userContext,Optional.empty()));
     assertEquals(true, uploadResult.isValid());
-    assertEquals(0, modelRepository.search("*").size());
+    assertEquals(0, repositoryFactory.getRepository(userContext).search("*").size());
 
     User user = new User();
     user.setUsername("alex");
@@ -76,17 +76,17 @@ public class MappingTest extends AbstractIntegrationTest {
 
     when(userRepository.findAll()).thenReturn(users);
 
-    this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    assertEquals(1, modelRepository.search("*").size());
+    this.importer.doImport(uploadResult.getHandleId(),Context.create(createUserContext("alex", "playground"),Optional.empty()));
+    assertEquals(1, repositoryFactory.getRepository(userContext).search("*").size());
 
     uploadResult = this.importer.upload(
         FileUpload.create("sample.mapping",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/sample.mapping").getInputStream())),
-        UserContext.user("admin"));
+        Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
-    this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    assertEquals(1, modelRepository.search("Mapping").size());
+    this.importer.doImport(uploadResult.getHandleId(), Context.create(createUserContext("alex", "playground"),Optional.empty()));
+    assertEquals(1, repositoryFactory.getRepository(userContext).search("Mapping").size());
   }
 
   @Test
@@ -95,9 +95,9 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("sample.mapping");
     Thread.sleep(2000);
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getMappingModelsForTargetPlatform(
-                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios")
+                ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios",Optional.empty())
             .size());
   }
 
@@ -107,16 +107,16 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("sample.mapping");
     Thread.sleep(2000);
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().size());
     assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0",
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().get(0).getPrettyFormat());
 
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getPlatformMappings().size());
   }
@@ -126,9 +126,9 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("sample.mapping");
     Thread.sleep(2000);
-    ModelInfo colorInfo = modelRepository
+    ModelInfo colorInfo = repositoryFactory.getRepository(createUserContext("admin", "playground"))
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     assertEquals(1, colorInfo.getPlatformMappings().size());
-    assertEquals("ios", colorInfo.getPlatformMappings().keySet().iterator().next());
+    assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0", colorInfo.getPlatformMappings().keySet().iterator().next());
   }
 }

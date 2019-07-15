@@ -18,6 +18,10 @@ import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.codegen.api.InvocationContext
 
+/**
+ * Use Plugin SDK API instead!
+ */
+@Deprecated
 class JavaFunctionblockPropertySetterDeclarationTemplate implements ITemplate<FunctionblockProperty>{
 
 	var String setterPrefix;

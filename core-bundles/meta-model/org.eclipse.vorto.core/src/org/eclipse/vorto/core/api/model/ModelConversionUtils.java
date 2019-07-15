@@ -127,7 +127,7 @@ public class ModelConversionUtils {
 
     return infomodel;
   }
-
+  
   private static List<Property> getFlatProperties(FunctionblockModel fbm) {
     List<Property> properties = new ArrayList<Property>();
     TreeIterator<EObject> iter = fbm.eAllContents();

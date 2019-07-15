@@ -23,25 +23,29 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.generation.GenerationException;
+import org.eclipse.vorto.repository.plugin.generator.GenerationException;
+import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -49,14 +53,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public abstract class AbstractRepositoryController extends ResponseEntityExceptionHandler {
-
+  
+  private static Logger logger = Logger.getLogger(AbstractRepositoryController.class);  
+  
   @Autowired
-  protected IModelRepository modelRepository;
+  protected IModelRepositoryFactory modelRepositoryFactory;
 
   protected static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   protected static final String CONTENT_DISPOSITION = "content-disposition";
 
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Something went wrong in the application.") // 404
+  @ExceptionHandler(GenericApplicationException.class)
+  public void genericError(final GenericApplicationException ex) {
+    // do logging
+    logger.error(ex);
+  }
+  
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Model not found.") // 404
   @ExceptionHandler(ModelNotFoundException.class)
   public void notFound(final ModelNotFoundException ex) {
@@ -72,18 +85,25 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
   @ExceptionHandler(IllegalArgumentException.class)
   public Object wrongInput(final IllegalArgumentException ex) {
-	  Map<String, Object> error = new HashMap<String, Object>();
+      //logger.error("IllegalArgumentException occured", ex);
+      Map<String, Object> error = new HashMap<String, Object>();
 	  error.put("message", ex.getMessage());
 	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
+  }
+  
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
+  @ExceptionHandler(NewNamespacesNotSupersetException.class)
+  public Object wrongInput(final NewNamespacesNotSupersetException ex) {
+      Map<String, Object> error = new HashMap<String, Object>();
+      error.put("message", "Specified namespace does not match owning namespace.");
+      return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
 
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(NotAuthorizedException.class)
-  public ResponseEntity<Object> unAuthorized(final NotAuthorizedException ex) {
-	  Map<String, Object> authError = new HashMap<String, Object>();
-	  authError.put("message", ex.getMessage());
-	  authError.put("modelId", ex.getModelId().getPrettyFormat());
-	  return new ResponseEntity<Object>(authError, HttpStatus.UNAUTHORIZED);
+  public void unAuthorized(final NotAuthorizedException ex) {
+    logger.error("NotAuthorizedException occured", ex);
+    // do logging
   }
 
   @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during generation.")
@@ -101,8 +121,8 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     return new ResponseEntity<Object>(validationError, HttpStatus.BAD_REQUEST);
   }
 
-  protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
-    Optional<FileContent> fileContent = modelRepository.getFileContent(modelId, Optional.empty());
+  protected void createSingleModelContent(String tenantId, ModelId modelId, HttpServletResponse response) {
+    Optional<FileContent> fileContent = getModelRepository(tenantId).getFileContent(modelId, Optional.empty());
 
     final byte[] modelContent = fileContent.get().getContent();
     if (modelContent != null && modelContent.length > 0) {
@@ -120,10 +140,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     }
   }
 
-  protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
+  protected void addModelToZip(String tenantId, ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
     try {
-      FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
-      ModelInfo modelResource = modelRepository.getById(modelId);
+      FileContent modelFile = getModelRepository(tenantId).getFileContent(modelId, Optional.empty()).get();
+      ModelInfo modelResource = getModelRepository(tenantId).getById(modelId);
 
       try {
         ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
@@ -135,7 +155,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
       }
 
       for (ModelId reference : modelResource.getReferences()) {
-        addModelToZip(zipOutputStream, reference);
+        addModelToZip(tenantId, zipOutputStream, reference);
       }
     } catch(NotAuthorizedException notAuthorized) {
         return;
@@ -143,14 +163,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     
   }
 
-  protected void sendAsZipFile(final HttpServletResponse response, final String fileName,
+  protected void sendAsZipFile(final HttpServletResponse response, final String tenantId, final String fileName,
       List<ModelInfo> modelInfos) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ZipOutputStream zos = new ZipOutputStream(baos);
 
     try {
       for (ModelInfo modelInfo : modelInfos) {
-        addModelToZip(zos, modelInfo.getId());
+        addModelToZip(tenantId, zos, modelInfo.getId());
       }
 
       zos.close();
@@ -176,7 +196,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 
     ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
     for (ModelInfo model : allModels) {
-      FileContent modelContent = this.modelRepository
+      FileContent modelContent = getModelRepository(model.getId())
           .getFileContent(model.getId(), Optional.of(model.getFileName())).get();
       workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
     }
@@ -188,7 +208,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
     List<ModelInfo> modelInfos = new ArrayList<>();
 
-    ModelInfo modelResource = modelRepository.getById(modelId);
+    ModelInfo modelResource = getModelRepository(modelId).getById(modelId);
     modelInfos.add(modelResource);
 
     for (ModelId reference : modelResource.getReferences()) {
@@ -196,6 +216,31 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     }
 
     return modelInfos;
+  }
+  
+  protected IModelRepository getModelRepository(IUserContext userContext) {
+    return modelRepositoryFactory.getRepository(userContext);
+  }
+  
+  protected IModelRepository getModelRepository(String tenantId, Authentication auth) {
+    return modelRepositoryFactory.getRepository(tenantId, auth);
+  }
+  
+  protected IModelRepository getModelRepository(ModelId modelId) {
+    return modelRepositoryFactory.getRepositoryByModel(modelId);
+  }
+  
+  protected IModelRepository getModelRepository(String tenantId) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return modelRepositoryFactory.getRepository(tenantId, auth);
+  }
+  
+  protected IModelRepositoryFactory getModelRepositoryFactory() {
+    return modelRepositoryFactory;
+  }
+  
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepositoryFactory) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
 }

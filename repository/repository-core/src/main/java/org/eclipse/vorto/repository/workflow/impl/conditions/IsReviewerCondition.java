@@ -13,9 +13,9 @@
 package org.eclipse.vorto.repository.workflow.impl.conditions;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
 public class IsReviewerCondition implements IWorkflowCondition {
@@ -29,6 +29,6 @@ public class IsReviewerCondition implements IWorkflowCondition {
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
     User foundUser = userRepository.getUser(user.getUsername());
-    return foundUser != null ? foundUser.isReviewer() : false;
+    return foundUser != null ? foundUser.isReviewer(user.getTenant()) : false;
   }
 }

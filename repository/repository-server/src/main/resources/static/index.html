@@ -17,7 +17,6 @@
 <link href="webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <link href="webjars/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="webjars/angular-swagger-ui/dist/css/swagger-ui.min.css">
 
 <!-- Default Vorto stylesheet-->
 <link href="webjars/repository-web/dist/css/style.css" rel="stylesheet">
@@ -34,7 +33,6 @@
 <script type="text/javascript" src="webjars/angular-animate/angular-animate.min.js"></script>
 
 <script type="text/javascript" src="webjars/angular-smart-table/dist/smart-table.min.js"></script>
-<script type="text/javascript" src="webjars/angular-swagger-ui/dist/scripts/swagger-ui.min.js"></script>
 
 <script type="text/javascript" src="webjars/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
@@ -60,26 +58,51 @@
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/detailsController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/generatorController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/importController.js"></script>
-<script type="text/javascript" src="webjars/repository-web/dist/js/controllers/swaggerController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/searchController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/settingsController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/updateController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/signUpController.js"></script>
 <script type="text/javascript" src="webjars/repository-web/dist/js/controllers/mapping/mappingbuilder-controller.js"></script>
-
+<script type="text/javascript" src="webjars/repository-web/dist/js/components/tenantManagement.js"></script>
+<script type="text/javascript" src="webjars/repository-web/dist/js/components/tenantUserManagement.js"></script>
 
 <!-- Service -->
 <script src="webjars/repository-web/dist/js/service/modelDetailsService.js"></script>
 <script src="webjars/repository-web/dist/js/service/modelCreationService.js"></script>
+<script src="webjars/repository-web/dist/js/service/commonDialogServices.js"></script>
+<script src="webjars/repository-web/dist/js/service/tenantService.js"></script>
+
 
 <script type="text/javascript" src="webjars/repository-web/dist/js/directives.js"></script>
 
+<!-- Cookie Consent -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#edeff5",
+      "text": "#838391"
+    },
+    "button": {
+      "background": "#4b81e8"
+    }
+  },
+  "type": "opt-out",
+  "content": {
+    "message": "Some Eclipse Foundation pages use cookies to better serve you when you return to the site. You can set your browser to notify you before you receive a cookie or turn off cookies. If you do so, however, some areas of some sites may not function properly.",
+    "link": "https://www.eclipse.org/legal/"
+  }
+})});
+</script>
 </head>
 
 <body>
 <div class="alert alert-warning alert-sandbox" role="alert">
   <button type="button" class="close" data-dismiss="alert">×</button>
-  <span class="glyphicon glyphicon-warning-sign"></span> This service is currently in <b>Beta</b>. How do you like this service? We are looking forward to your <a href="mailto:vorto-dev@eclipse.org">feedback</a>. 
+  <span class="glyphicon glyphicon-warning-sign"></span><b>Important Note:</b> If you have created models with the previous Vorto Repository, you need to migrate them over. Read the <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/repository/migration/migration_0.11.md">Migration Guide</a>. 
 </div>
 <nav class="navbar navbar-inverse navbar-static-top">
 		<div class="container-fluid">
@@ -92,17 +115,17 @@
 						class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="./#/"><img width="80px" src="webjars/repository-web/dist/images/vortoLogo.png" /><span
-					class="navbar-brand-suffix">Vorto Repository</span></a>
+					class="navbar-brand-suffix">Vorto Repository<sup>BETA</sup></span></a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li ng-show="!context.authenticatedSearchMode || hasAuthority('ROLE_USER')"><a href="./#/" st-reset>Explore</a></li>
 					<li ng-show="hasAuthority('ROLE_MODEL_CREATOR')"><a href="./#/import">Import</a></li>
-					<li ng-show="hasAuthority('ROLE_ADMIN')"><a href="./#/manage">Manage</a></li>
+					<li ng-show="authenticated"><a href="./#/manage">Manage</a></li>
 					<li><a href="./#/generators">Plugins</a></li>
-					<li><a href="./#/api">HTTP API</a></li>
-					<li><a href="http://www.eclipse.org/vorto">What is Vorto?</a></li>
-
+					<li><a href="https://www.eclipse.org/vorto/swagger">HTTP API</a></li>
+					<li><a href="http://www.eclipse.org/vorto" target="_blank">What is Vorto?</a></li>
+					<li><a href="https://github.com/eclipse/vorto/blob/master/docs/gettingstarted.md" target="_blank">Getting Started</a></li>
 				</ul>
 				<div id="navbar-right" class="navbar-right">
 					<ul class="nav navbar-nav">
@@ -123,8 +146,8 @@
 
 	<footer class="navbar navbar-fixed-bottom">
 		<div class="row">
-			<div class="col-md-3">
-				<span class="copyright">© 2018 Eclipse Vorto Project (${project.version})</span>
+			<div class="col-md-3  v-center-content">
+				<span class="copyright">© 2019 Eclipse Vorto Project (${project.version})</span>
 			</div>
 			<div class="col-md-9">
 				<ul class="list-inline quicklinks pull-right">
@@ -142,6 +165,9 @@
 					<li><a target="_blank"
 						href="https://www.eclipse.org/legal/privacy.php">Privacy</a></li>
 
+					<li><a target="_blank" href="https://www.eclipse.org">
+							<img src="https://www.eclipse.org/artwork/images/v2/eclipse_foundation_logo.jpg"
+								width="120px" /></a></li>
 				</ul>
 			</div>
 		</div>

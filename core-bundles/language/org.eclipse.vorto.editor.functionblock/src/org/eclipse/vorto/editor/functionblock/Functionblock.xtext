@@ -21,13 +21,14 @@ import "http://www.eclipse.org/vorto/metamodel/Functionblock"
 import "http://www.eclipse.org/vorto/metamodel/Model" as model 
 
 FunctionblockModel:
-	{FunctionblockModel}
-	('vortolang' lang=VortoLangVersion)?
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-    'displayname' displayname=STRING      
-    ('description' description=STRING)? 
-    ('category' category=CATEGORY)?   
+    (
+    (('displayname' displayname=STRING)?) &     
+    (('description' description=STRING)?)  &
+    ('category' category=CATEGORY)?)
+    
      (references += ModelReference)*	
 	'functionblock' name= ID ('extends' superType = [FunctionblockModel | QualifiedName])? '{'
 		functionblock = FunctionBlock
@@ -37,18 +38,18 @@ FunctionblockModel:
 ;
 
 FunctionBlock:
-	{FunctionBlock}	
-	(configuration = Configuration)?	
-	(status = Status)?	
-	(fault = Fault)?
+	{FunctionBlock}
+	(((configuration = Configuration)?) &
+	((status = Status)?)	&
+	((fault = Fault)?) &
 	
-	('events' '{'
+	(('events' '{'
 		(events += Event)*
-	'}')?
+	'}')?) &
 	
 	('operations' '{'
 		(operations += Operation)*
-	'}')?		
+	'}')?)		
 ;
 
 Configuration:

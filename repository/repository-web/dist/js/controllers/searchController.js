@@ -1,12 +1,13 @@
 repositoryControllers.controller('SearchController', 
-    ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog',
-    function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog) {
+    ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog', '$timeout',
+    function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog, $timeout) {
 
     $scope.models = [];
     $scope.filteredModels = [];
-    $scope.modelType = $rootScope.authenticated === true ? 'all' : 'InformationModel';
+    $scope.modelType = 'all';
     $scope.modelState = $rootScope.authenticated === true ? 'all' :'Released';
     $scope.onlyMyModels = "false";
+    $scope.onlyPublicModels = "false";
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
     $scope.isLoading = false;
@@ -18,7 +19,7 @@ repositoryControllers.controller('SearchController',
  
     $scope.searchOnEnter = function(keyEvent) {
         if (keyEvent.keyCode === 13) {
-            $scope.search();
+        	$scope.search();  
         }
     };
 
@@ -26,7 +27,7 @@ repositoryControllers.controller('SearchController',
     	$scope.isLoading = true;
     	var filter = "";
     	       
-        if ($scope.modelState === 'all' && $scope.modelType === 'all' && $scope.onlyMyModels === false) {
+        if ($scope.modelState === 'all' && $scope.modelType === 'all' && $scope.onlyMyModels === false && $scope.onlyPublicModels === false) {
         	filter = $scope.queryFilter;
         } else {
         	if ($scope.modelType !== 'all') {
@@ -40,19 +41,24 @@ repositoryControllers.controller('SearchController',
         		filter += "author:"+$rootScope.user+" ";
         	}
         	
+        	if ($scope.onlyPublicModels === true) {
+        		filter += "visibility:public ";
+        	}
+        	
         	if ($scope.queryFilter !== "") {
         		filter += "name:"+$scope.queryFilter+"*"
         	}
         }
 
         $http.get('./api/v1/search/models?expression=' + filter).success(
-            function(data, status, headers, config) {            	
+            function(data, status, headers, config) {
             	$scope.models = data;
             	$scope.modelsTotal = data.length;
                 $scope.isLoading = false;
                 filterModels();
             }).error(function(data, status, headers, config) {
                 $scope.models = [];
+                $scope.filteredModels = [];
                 $scope.isLoading = false;
             });
     };
@@ -87,7 +93,7 @@ repositoryControllers.controller('SearchController',
     };
 
     function filterModels() {    
-        $scope.filteredModels = $scope.models;    
+        $scope.filteredModels = $scope.models;
         if($scope.onlyYourModels) {
             $scope.filteredModels = $filter('filter')($scope.filteredModels, {author: $rootScope.user });        
         }

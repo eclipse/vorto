@@ -12,37 +12,20 @@
  */
 package org.eclipse.vorto.repository.actuator;
 
-import org.eclipse.vorto.repository.generation.GeneratorInfo;
-import org.eclipse.vorto.repository.generation.impl.Generator;
-import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.web.client.RestTemplate;
 
+/**
+ * TODO: As generators do not implement a /info endpoint anymore, this health check for generators need to be thought through again
+ *
+ */
 public class GeneratorsHealthCheck implements HealthIndicator {
 
-   private final IGeneratorLookupRepository registeredGeneratorsRepository;
-   private final RestTemplate restTemplate;
-
-   public GeneratorsHealthCheck( final IGeneratorLookupRepository registeredGeneratorsRepository,
-         final RestTemplate restTemplate ) {
-      this.registeredGeneratorsRepository = registeredGeneratorsRepository;
-      this.restTemplate = restTemplate;
+   public GeneratorsHealthCheck() {
    }
 
    @Override
    public Health health() {
-      final Iterable<Generator> generators = this.registeredGeneratorsRepository.findAll();
-      for ( final Generator generator : generators ) {
-    	  try {
-    		  restTemplate.getForEntity( generator.getGenerationInfoUrl() + "?includeConfigUI={includeConfigUI}",
-    	                     GeneratorInfo.class, false );
-    	  } catch (Exception exception) {
-    		  return Health.down()
-                      .withDetail( "Generator down.", String.format( "Generator Key: %s", generator.getKey() ) )
-                      .build();
-    	  }
-      }
       return Health.up().build();
    }
 }

@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace iot
+version 0.0.1
+
+using iot.Brightness;0.0.1
+using org.eclipse.vorto.Temperature;1.0.0
+
+entity Dimmer {
+	mandatory brightness as iot.Brightness
+}

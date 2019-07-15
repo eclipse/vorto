@@ -12,184 +12,220 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.UserRole;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.events.AppEvent;
+import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
+import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
+import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
+import org.eclipse.vorto.repository.utils.PreConditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Service
-public class DefaultUserAccountService implements IUserAccountService {
-
-  private static final String USER_ANONYMOUS = "anonymous";
+@Service("userAccountService")
+public class DefaultUserAccountService
+    implements IUserAccountService, ApplicationEventPublisherAware {
 
   @Value("${server.admin:#{null}}")
-  private String admins;
+  private String[] admins;
 
   @Autowired
   private IUserRepository userRepository;
 
   @Autowired
-  private IModelRepository modelRepository;
-
-  @Autowired
   private INotificationService notificationService;
 
+  @Autowired
+  private ITenantRepository tenantRepo;
+
+  @Autowired
+  private ITenantUserRepo tenantUserRepo;
+
+  private ApplicationEventPublisher eventPublisher = null;
+
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.eventPublisher = applicationEventPublisher;
+  }
+
+  public boolean removeUserFromTenant(String tenantId, String userId) {
+    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(userId, "userId");
+
+    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+
+    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+
+    Optional<TenantUser> maybeUser = tenant.getUser(userId);
+    if (maybeUser.isPresent()) {
+      tenant.removeUser(maybeUser.get());
+    }
+
+    tenantRepo.save(tenant);
+
+    return true;
+  }
+
+  public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
+    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(userId, "userId");
+    PreConditions.notNullOrEmpty(roles, "roles should not be empty");
+
+    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+
+    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+
+    Optional<TenantUser> maybeUser = tenant.getUser(userId);
+    if (maybeUser.isPresent()) {
+      TenantUser user = maybeUser.get();
+      
+      Set<UserRole> oldUserRolesToRemove =
+          user.getRoles().stream()
+          	.filter(userRole -> userRole.getRole() != Role.SYS_ADMIN)
+          	.collect(Collectors.toSet());
+      
+      oldUserRolesToRemove.forEach(_userRole -> user.removeRole(_userRole));
+      
+      user.addRoles(roles);
+      tenantUserRepo.save(user);
+      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_MODIFIED));
+    } else {
+      User user = userRepository.findByUsername(userId);
+      TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
+      tenantUserRepo.save(tenantUser);
+      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));
+    }
+    
+    return true;
+  }
+
+  public Collection<Tenant> getTenantsOfUser(String userId) {
+    PreConditions.notNullOrEmpty(userId, "userId");
+
+    User user = getUser(userId);
+    if (user == null) {
+      return Collections.emptyList();
+    }
+
+    return user.getTenantUsers().stream().map(tenantUser -> tenantUser.getTenant())
+        .collect(Collectors.toList());
+  }
+  
+  public boolean hasRole(String tenantId, Authentication authentication, String role) {
+    PreConditions.notNull(authentication, "authentication should not be null");
+    return hasRole(tenantId, authentication.getName(), role);
+  }
+  
+  public boolean hasRole(String tenantId, String username, String role) {
+    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(role, "role");
+    PreConditions.notNullOrEmpty(username, "username");
+    
+    if (!Role.exist(role)) {
+      throw new IllegalArgumentException("role must be in Role enum");
+    }
+    
+    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+    PreConditions.notNull(tenant, "Tenant with tenantId" + tenantId + " doesnt exists");
+    
+    Optional<TenantUser> user = tenant.getUser(username);
+    if (user.isPresent()) {
+      TenantUser tenantUser = user.get();
+      return tenantUser.hasRole(Role.valueOf(role.replace(Role.rolePrefix, "")));
+    }
+    
+    return false;
+  }
+
+  @Transactional
   public User create(String username) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
-    User user = createUser(username);
-    user = userRepository.save(user);
-    return user;
-  }
 
-
-  private User createUser(String username) {
-    User user = new User();
-
-    user.setUsername(username);
-    user.setDateCreated(new Timestamp(System.currentTimeMillis()));
-    user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-    user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
-    user.addRoles(Role.USER, Role.MODEL_CREATOR, Role.MODEL_PROMOTER); // newly registered users may
-                                                                       // fully interact with the
-                                                                       // system
-    if (isConfiguredAsAdmin(username)) {
-      user.addRoles(Role.ADMIN);
-    }
-    return user;
-  }
-
-  private boolean isConfiguredAsAdmin(String username) {
-    return admins != null && Arrays.asList(admins.split(";")).contains(username);
+    return userRepository.save(User.create(username));
   }
 
   @Transactional
-  public User create(String username, Role... userRoles) throws RoleNotSupportedException {
+  public User create(String username, String tenantId, Role... userRoles)
+      throws RoleNotSupportedException {
+    
+    PreConditions.notNullOrEmpty(username, "username");
+    PreConditions.notNullOrEmpty(tenantId, "username");
+    
+    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+
+    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+    
     User existingUser = userRepository.findByUsername(username);
-    if (isUserAlreadyExistAndRoleNotProvided(existingUser, userRoles)) {
-      throw new IllegalArgumentException("User with ID already exists");
-    } else if (existingUser != null) {
-      updateRole(existingUser, userRoles);
-      return userRepository.save(existingUser);
+
+    if (existingUser != null) {
+      addUserToTenant(tenantId, username, userRoles);
+      return existingUser;
     } else {
-      User user = createUser(username);
-      user.addRoles(userRoles);
+      User user = create(username);
+      TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
+      user.addTenantUser(tenantUser);
       return userRepository.save(user);
     }
   }
 
-  private void updateRole(User existingUser, Role[] userRoles) {
-    Set<UserRole> existingRoles = existingUser.getRoles();
-    removeDuplicateRoles(userRoles, existingRoles);
-    existingUser.addRoles(userRoles);
-  }
-
-  private void removeDuplicateRoles(Role[] userRoles, Set<UserRole> existingRoles) {
-    Arrays.asList(userRoles).forEach(role -> {
-      existingRoles.removeIf(e -> e.getRole() == role);
-    });
-  }
-
-  private boolean isUserAlreadyExistAndRoleNotProvided(User existingUser, Role[] userRoles) {
-    return existingUser != null && Objects.isNull(userRoles);
-  }
-
   @Transactional
-  public User removeUserRole(String userName, List<Role> roles) {
+  public User removeUserRole(String userName, String tenantId, List<Role> roles) {
 
     User user = userRepository.findByUsername(userName);
     if (Objects.isNull(user)) {
       throw new UsernameNotFoundException("User Not Found: " + userName);
     }
-    Set<UserRole> userRoles = user.getRoles();
+    Set<UserRole> userRoles = user.getRoles(tenantId);
 
     roles.forEach(role -> {
       userRoles.removeIf(e -> role == e.getRole());
     });
 
-    user.setRoles(userRoles);
+    user.setRoles(tenantId, userRoles);
 
     return userRepository.save(user);
   }
 
   @Override
+  @Transactional
   public void delete(final String userId) {
     User userToDelete = userRepository.findByUsername(userId);
 
     if (userToDelete != null) {
-      makeModelsAnonymous(UserContext.user(userToDelete.getUsername()).getHashedUsername());
-      makeModelsAnonymous(userToDelete.getUsername());
       userRepository.delete(userToDelete);
-    }
-
-    if (userToDelete.hasEmailAddress()) {
-      notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
-    }
-  }
-
-  private void makeModelsAnonymous(String username) {
-    List<ModelInfo> userModels = this.modelRepository.search("author:" + username);
-
-    for (ModelInfo model : userModels) {
-      model.setAuthor(USER_ANONYMOUS);
-      this.modelRepository.updateMeta(model);
+      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
+      if (userToDelete.hasEmailAddress()) {
+        notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
+      }
     }
   }
-
-  public IUserRepository getUserRepository() {
-    return userRepository;
-  }
-
-  public void setUserRepository(IUserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-  public IModelRepository getModelRepository() {
-    return modelRepository;
-  }
-
-  public void setModelRepository(IModelRepository modelRepository) {
-    this.modelRepository = modelRepository;
-  }
-
-
-  public INotificationService getNotificationService() {
-    return notificationService;
-  }
-
-
-  public void setNotificationService(INotificationService notificationService) {
-    this.notificationService = notificationService;
-  }
-
 
   @Override
   public boolean exists(String userId) {
     return userRepository.findByUsername(userId) != null;
-  }
-
-  @Override
-  public String getAnonymousUserId() {
-    return USER_ANONYMOUS;
   }
 
   @Override
@@ -200,5 +236,34 @@ public class DefaultUserAccountService implements IUserAccountService {
   @Override
   public void saveUser(User user) {
     this.userRepository.save(user);
+  }
+  
+  @Override
+  public Collection<User> getSystemAdministrators() {
+    return userRepository.findUsersWithRole(Role.SYS_ADMIN);
+  }
+
+  public IUserRepository getUserRepository() {
+    return userRepository;
+  }
+
+  public void setUserRepository(IUserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  public INotificationService getNotificationService() {
+    return notificationService;
+  }
+  
+  public void setNotificationService(INotificationService notificationService) {
+    this.notificationService = notificationService;
+  }
+
+  public void setTenantUserRepo(ITenantUserRepo tenantUserRepo) {
+    this.tenantUserRepo = tenantUserRepo;
+  }
+
+  public void setTenantRepo(ITenantRepository tenantRepo) {
+    this.tenantRepo = tenantRepo;
   }
 }

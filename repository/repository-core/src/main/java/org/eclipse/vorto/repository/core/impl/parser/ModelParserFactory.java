@@ -21,7 +21,7 @@ import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,17 +37,17 @@ public class ModelParserFactory {
   private boolean isInit = false;
 
   @Autowired
-  private IModelRepository repository;
+  private ErrorMessageProvider errorMessageProvider;
 
   @Autowired
-  private ErrorMessageProvider errorMessageProvider;
+  private IModelRepositoryFactory modelRepoFactory;
 
   @PostConstruct
   public void init() {
     if (!isInit) {
       initDSLPackages();
     }
-   ModelParserFactory.instance = this;
+    ModelParserFactory.instance = this;
   }
 
   public void initDSLPackages() {
@@ -65,13 +65,17 @@ public class ModelParserFactory {
 
   public IModelParser getParser(String fileName) {
     if (fileName.endsWith(ModelType.Datatype.getExtension())) {
-      return new DatatypeModelParser(fileName, repository, errorMessageProvider);
+      return new DatatypeModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Functionblock.getExtension())) {
-      return new FunctionblockModelParser(fileName, repository, errorMessageProvider);
+      return new FunctionblockModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.InformationModel.getExtension())) {
-      return new InformationModelParser(fileName, repository, errorMessageProvider);
+      return new InformationModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Mapping.getExtension())) {
-      return new MappingModelParser(fileName, repository, errorMessageProvider);
+      return new MappingModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else {
       throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");
     }
@@ -85,18 +89,18 @@ public class ModelParserFactory {
     return instance;
   }
 
-  public IModelRepository getRepository() {
-    return repository;
-  }
-
-  public void setRepository(IModelRepository repository) {
-    this.repository = repository;
-  }
-
   public static boolean hasParserFor(String fileName) {
     return fileName.endsWith(ModelType.Datatype.getExtension())
         || fileName.endsWith(ModelType.Functionblock.getExtension())
         || fileName.endsWith(ModelType.InformationModel.getExtension())
         || fileName.endsWith(ModelType.Mapping.getExtension());
+  }
+
+  public void setErrorMessageProvider(ErrorMessageProvider errorMessageProvider) {
+    this.errorMessageProvider = errorMessageProvider;
+  }
+
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepoFactory) {
+    this.modelRepoFactory = modelRepoFactory;
   }
 }

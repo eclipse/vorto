@@ -1,0 +1,231 @@
+{
+  "root": {
+    "name": "Accelerometer",
+    "namespace": "com.ipso.smartobjects",
+    "version": "1.1.0",
+    "prettyFormat": "com.ipso.smartobjects:Accelerometer:1.1.0"
+  },
+  "models": {
+    "com.ipso.smartobjects:Accelerometer:1.1.0": {
+      "targetPlatformKey": "lwm2m",
+      "stereotypes": [
+        {
+          "name": "Object",
+          "attributes": {
+            "Description2": "",
+            "MultipleInstances": "Multiple",
+            "ObjectID": "3313",
+            "ObjectURL": "urn:oma:lwm2m:ext:3313:1.1",
+            "Mandatory": "Optional",
+            "Name": "Accelerometer"
+          }
+        }
+      ],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Accelerometer",
+        "namespace": "com.ipso.smartobjects",
+        "version": "1.1.0",
+        "prettyFormat": "com.ipso.smartobjects:Accelerometer:1.1.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Accelerometer",
+      "description": "Description: This IPSO object can be used to represent a 1-3 axis accelerometer.",
+      "fileName": "Accelerometer.fbmodel",
+      "references": [],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5702",
+                "Units": "Defined by ???Units??? resource.",
+                "Name": "X Value"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "xValue",
+          "description": "The measured value along the X axis.",
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5703",
+                "Units": "Defined by ???Units??? resource.",
+                "Name": "Y Value"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "yValue",
+          "description": "The measured value along the Y axis.",
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5704",
+                "Units": "Defined by ???Units??? resource.",
+                "Name": "Z Value"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "zValue",
+          "description": "The measured value along the Z axis.",
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5701",
+                "Units": "",
+                "Name": "Sensor Units"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "sensorUnits",
+          "description": "Measurement Units Definition e.g. ???Cel??? for Temperature in Celsius.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5603",
+                "Units": "Defined by ???Units??? resource.",
+                "Name": "Min Range Value"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "minRangeValue",
+          "description": "The minimum value that can be measured by the sensor",
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": "lwm2m",
+          "stereotypes": [
+            {
+              "name": "Resource",
+              "attributes": {
+                "ID": "5604",
+                "Units": "Defined by ???Units??? resource.",
+                "Name": "Max Range Value"
+              }
+            }
+          ],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "maxRangeValue",
+          "description": "The maximum value that can be measured by the sensor",
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "READABLE",
+              "value": true
+            },
+            {
+              "type": "WRITABLE",
+              "value": false
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": []
+    }
+  }
+}

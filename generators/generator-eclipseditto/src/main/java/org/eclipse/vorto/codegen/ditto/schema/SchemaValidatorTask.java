@@ -12,10 +12,6 @@
  */
 package org.eclipse.vorto.codegen.ditto.schema;
 
-import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ditto.schema.tasks.ValidationTaskFactory;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
@@ -26,6 +22,10 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.ChainedCodeGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.ICodeGeneratorTask;
+import org.eclipse.vorto.plugin.generator.utils.IGeneratedWriter;
 
 public final class SchemaValidatorTask implements ICodeGeneratorTask<InformationModel> {
 

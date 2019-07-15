@@ -14,10 +14,10 @@
  */
 package org.eclipse.vorto.codegen.hono.java.service.hono
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.hono.java.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
 class HonoMqttClientTemplate implements IFileTemplate<InformationModel> {
 	

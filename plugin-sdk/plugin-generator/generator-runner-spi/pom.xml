@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>plugin-generator</artifactId>
-		<version>0.10.1</version>
+		<version>0.11.0</version>
 	</parent>
 	<artifactId>generator-runner-spi</artifactId>	
 	<name>Vorto Code Generator Plugin Runner SPI</name>
@@ -65,6 +65,12 @@
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>generator-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>model-conversion</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 				

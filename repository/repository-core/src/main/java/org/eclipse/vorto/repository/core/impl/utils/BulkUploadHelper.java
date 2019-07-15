@@ -26,14 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
@@ -43,24 +41,26 @@ import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdVal
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
+import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.util.StringUtils;
 
 public class BulkUploadHelper {
 
-  private IModelRepository repositoryService;
-
   private IUserAccountService userRepository;
   
-  private IModelPolicyManager policyManager;
+  private IModelRepositoryFactory modelRepoFactory;
+  
+  private ITenantService tenantService;
 
-  public BulkUploadHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, 
-		  IUserAccountService userRepository) {
-    this.repositoryService = modelRepository;
-    this.policyManager = policyManager;
+  public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory, 
+		  IUserAccountService userRepository, ITenantService tenantService) {
+    this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
+    this.tenantService = tenantService;
   }
 
   public List<ValidationReport> uploadMultiple(byte[] content, String zipFileName,
@@ -136,9 +136,12 @@ public class BulkUploadHelper {
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {
         parsingResult.invalidModels.add(ValidationReport
-            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), grammarProblem));
-      } catch (UnsupportedOperationException fileNotSupportedException) {
-        // Do nothing. Don't process the file
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                grammarProblem));
+      } catch (Exception e) {
+        parsingResult.invalidModels.add(ValidationReport
+            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
+                "File cannot be processed to a Vorto model."));
       }
     });
 
@@ -164,7 +167,8 @@ public class BulkUploadHelper {
     return fileContents;
   }
 
-  private ModelInfo trytoCreateModelFromCorruptFile(String fileName) {
+  // TODO: try to guess the modelinfo based on the content of the file, instead of the filename
+  private ModelInfo trytoCreateModelFromCorruptFile(String fileName, byte[] fileContent) {
     try {
       final String modelName = fileName.substring(0, fileName.lastIndexOf("."));
       final ModelType type = ModelType.fromFileName(fileName);
@@ -181,11 +185,13 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new DuplicateModelValidation(this.repositoryService, this.policyManager, this.userRepository));
+        .add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
     bulkUploadValidators
-        .add(new BulkModelDuplicateIdValidation(this.repositoryService, modelResources));
+        .add(new DuplicateModelValidation(modelRepoFactory, tenantService));
     bulkUploadValidators
-        .add(new BulkModelReferencesValidation(this.repositoryService, modelResources));
+        .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
+    bulkUploadValidators
+        .add(new BulkModelReferencesValidation(modelRepoFactory, modelResources));
     return bulkUploadValidators;
   }
 

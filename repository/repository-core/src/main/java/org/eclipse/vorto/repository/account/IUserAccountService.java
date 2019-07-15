@@ -12,15 +12,71 @@
  */
 package org.eclipse.vorto.repository.account;
 
+import java.util.Collection;
 import java.util.List;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
+import org.springframework.security.core.Authentication;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public interface IUserAccountService {
-
+  
   /**
-   * creates a new account in the Vorto Repository
+   * 
+   * @return users who are system administrators
+   */
+  Collection<User> getSystemAdministrators();
+  
+  /**
+   * 
+   * @param tenantId the tenant from which to remove the user
+   * @param userId the user to be removed
+   * @return
+   */
+  boolean removeUserFromTenant(String tenantId, String userId);
+  
+  /**
+   * 
+   * @param tenantId the tenant to add this user to
+   * @param userId the user id
+   * @param roles the roles to be given to the user
+   * @return
+   */
+  boolean addUserToTenant(String tenantId, String userId, Role ... roles);
+  
+  /**
+   * Returns if the particular user as the role in the Tenant
+   * 
+   * @param tenantId the tenant to check 
+   * @param userId the user id
+   * @param role the role to check (e.g ROLE_TENANT_ADMIN, ROLE_USER,..)
+   * @return
+   */
+  boolean hasRole(String tenantId, Authentication authentication, String role);
+  
+  /**
+   * Returns if the particular user as the role in the Tenant
+   * 
+   * @param tenantId the tenant to check 
+   * @param username the userId of the user
+   * @param role the role to check (e.g ROLE_TENANT_ADMIN, ROLE_USER,..)
+   * @return
+   */
+  boolean hasRole(String tenantId, String username, String role);
+  
+  /**
+   * Gets all tenant for this user
+   * 
+   * @param userId
+   * @return
+   */
+  Collection<Tenant> getTenantsOfUser(String userId);
+  
+  /**
+   * creates a new account in the Vorto Repository, under the Playground tenant
    * 
    * @param username
    * @return createdUser
@@ -28,14 +84,14 @@ public interface IUserAccountService {
   User create(String username);
 
   /**
-   * create a new user with roles in Vorto Repository
+   * create a new user with roles in Vorto Repository, under the Playground tenant
    * 
    * @param username
    * @param userRoles
    * @return
    */
-  public User create(String username, Role... userRoles);
-
+  public User create(String username, String tenantId, Role... userRoles);
+  
   /**
    * 
    * @param username
@@ -66,17 +122,11 @@ public interface IUserAccountService {
   boolean exists(String userId);
 
   /**
-   * 
-   * @return
-   */
-  String getAnonymousUserId();
-
-  /**
    * Remove role from user
    * 
    * @param userName
    * @param roles
    * @return
    */
-  User removeUserRole(String userName, List<Role> roles);
+  User removeUserRole(String userName, String tenantId, List<Role> roles);
 }

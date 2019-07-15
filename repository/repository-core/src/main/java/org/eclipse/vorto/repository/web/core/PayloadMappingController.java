@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -32,6 +31,7 @@ import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
@@ -42,6 +42,7 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -67,20 +68,20 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/{tenant}/mappings")
+@RequestMapping(value = "/rest/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
 
-  private Supplier<IUserContext> userContextSupplier =
-      () -> UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-  
+  private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
+      .user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
+
   @Autowired
   private ModelController modelController;
 
   @Autowired
-  private IModelRepository repository;
+  private IWorkflowService workflowService;
 
   @Autowired
-  private IWorkflowService workflowService;
+  private ITenantService tenantService;
 
   private static Logger logger = Logger.getLogger(PayloadMappingController.class);
 
@@ -92,15 +93,16 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,
       @PathVariable String targetPlatform) throws Exception {
-    org.eclipse.vorto.repository.core.ModelContent infoModelContent =
+    ModelContent infoModelContent =
         modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
-      org.eclipse.vorto.repository.core.ModelContent infomodelContent =
-          modelController.getModelContent(modelId);
+      ModelContent infomodelContent = modelController.getModelContent(modelId);
       infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
     }
+
     MappingSpecification specification = new MappingSpecification();
 
     specification.setInfoModel(infomodel);
@@ -115,8 +117,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
         fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
             mappingId.getPrettyFormat());
       } else {
-        org.eclipse.vorto.repository.core.ModelContent fbmContent =
-            modelController.getModelContent(fbModelId.getPrettyFormat());
+        ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
         fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
       }
 
@@ -130,13 +131,14 @@ public class PayloadMappingController extends AbstractRepositoryController {
   public Map<String, Object> createMappingSpecification(@PathVariable final String modelId,
       @PathVariable String targetPlatform) throws Exception {
     logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
-    if (!this.repository
-        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
+
+    if (!getModelRepository(ModelId.fromPrettyFormat(modelId))
+        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform,
+            Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()))
         .isEmpty()) {
       throw new ModelAlreadyExistsException();
     } else {
-      org.eclipse.vorto.repository.core.ModelContent modelContent =
-          this.modelController.getModelContent(modelId);
+      ModelContent modelContent = this.modelController.getModelContent(modelId);
       MappingSpecification spec = new MappingSpecification();
       spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
       for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
@@ -152,12 +154,14 @@ public class PayloadMappingController extends AbstractRepositoryController {
   }
 
 
+
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
   @PreAuthorize("hasRole('ROLE_USER')")
   public List<ModelInfo> getMappingModels(@PathVariable final String modelId,
       @PathVariable String targetPlatform) {
-    return this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
-        targetPlatform);
+    return getModelRepository(ModelId.fromPrettyFormat(modelId)).getMappingModelsForTargetPlatform(
+        ModelId.fromPrettyFormat(modelId), targetPlatform,
+        Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()));
   }
 
   @PutMapping(value = "/test")
@@ -181,7 +185,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
       @PathVariable String modelId, @PathVariable String targetPlatform) {
     logger.info("Saving mapping specification " + modelId + " with key " + targetPlatform);
 
-    IUserContext userContext = userContextSupplier.get();
+    IUserContext userContext = userContextFn.apply(getTenant(modelId));
 
     final List<ModelId> publishedModelIds = new ArrayList<>();
 
@@ -199,7 +203,6 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file")
   public void downloadModelById(@PathVariable final String modelId,
       @PathVariable String targetPlatform, final HttpServletResponse response) {
-
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
@@ -227,11 +230,15 @@ public class PayloadMappingController extends AbstractRepositoryController {
     // do logging
   }
 
-  public FunctionblockModel getModelContentByModelAndMappingId(final @PathVariable String modelId,
+  public FunctionblockModel getModelContentByModelAndMappingId(final String _modelId,
       final @PathVariable String mappingId) {
+    
+    final ModelId modelId = ModelId.fromPrettyFormat(_modelId);
+    final ModelId mappingModelId = ModelId.fromPrettyFormat(mappingId);
+    IModelRepository repository = getModelRepository(modelId);
 
-    ModelInfo vortoModelInfo = this.repository.getById(ModelId.fromPrettyFormat(modelId));
-    ModelInfo mappingModelInfo = this.repository.getById(ModelId.fromPrettyFormat(mappingId));
+    ModelInfo vortoModelInfo = repository.getById(modelId);
+    ModelInfo mappingModelInfo = getModelRepository(mappingModelId).getById(mappingModelId);
 
     if (vortoModelInfo == null) {
       throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
@@ -288,8 +295,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   public ModelId serializeAndSave(IMappingSerializer m, IUserContext user) {
     final ModelId createdModelId = m.getModelId();
-    repository.save(createdModelId, m.serialize().getBytes(), createdModelId.getName() + ".mapping",
-        user);
+    getModelRepository(user).save(createdModelId, m.serialize().getBytes(),
+        createdModelId.getName() + ".mapping", user);
     try {
       workflowService.start(createdModelId, user);
     } catch (WorkflowException e) {
@@ -298,19 +305,32 @@ public class PayloadMappingController extends AbstractRepositoryController {
     return createdModelId;
   }
 
-  public void setUserContextSupplier(Supplier<IUserContext> userContextSupplier) {
-    this.userContextSupplier = userContextSupplier;
+
+  public void setUserContextFn(Function<String, IUserContext> userContextFn) {
+    this.userContextFn = userContextFn;
   }
+
 
   public void setModelController(ModelController modelController) {
     this.modelController = modelController;
   }
 
-  public void setRepository(IModelRepository repository) {
-    this.repository = repository;
-  }
-
   public void setWorkflowService(IWorkflowService workflowService) {
     this.workflowService = workflowService;
   }
+
+  public void setTenantService(ITenantService tenantService) {
+    this.tenantService = tenantService;
+  }
+
+  private String getTenant(String modelId) {
+    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+  }
+
+  private Optional<String> getTenant(ModelId modelId) {
+    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+        .map(tenant -> tenant.getTenantId());
+  }
+
 }

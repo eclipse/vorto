@@ -2,7 +2,7 @@ server:
   port: 8080
   contextPath: /infomodelrepository
   use-forward-headers: true
-  admin: aedelmann
+  admin: aedelmann, erlemantos
   config:
     authenticatedSearchMode: false
     generatorUser: generator
@@ -16,8 +16,15 @@ spring:
 repo:
   config:
     maxModelImageSize: 32000
-    maxModelSize: 90000000
-    maxBackupSize: 900000000
+    maxModelSize: 2000000
+    maxBackupSize: 20000000
+    predefinedTenants:
+      -
+        tenantId: standardization
+        defaultNamespace: org.eclipse.vorto
+        namespaces:
+        authenticationProvider: GITHUB
+        authorizationProvider: DB
   attachment.allowed:
     extension: ext, pdf, doc, zip, jpg, png, svg, html, json
     fileSize: 5
@@ -43,7 +50,7 @@ eidp:
       clientId: ${eidp_clientid}
       clientSecret: ${eidp_clientSecret}
       accessTokenUri: https://identity.bosch.com/connect/token
-      userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
+      userAuthorizationUri: https://identity.bosch.com/connect/authorize
       clientAuthenticationScheme: form
       resource: https://vorto.eclipse.org
       scope:
@@ -51,8 +58,9 @@ eidp:
         - email
         - profile
     resource:
-      userInfoUri: https://accounts.bosch.com/adfs/userinfo
-      logoutRedirectUrl:
+      logoutEndpointUrl: https://identity.bosch.com/connect/endsession
+      userInfoUri: https://identity.bosch.com/connect/userinfo
+      logoutRedirectUrl: 
       preferTokenInfo: true
 
 mail:
@@ -64,3 +72,6 @@ mail:
   login:
     username:
     password:
+
+config:
+  restrictTenant: 1

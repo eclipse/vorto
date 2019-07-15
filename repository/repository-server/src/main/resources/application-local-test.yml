@@ -1,0 +1,5 @@
+repo:
+  configFile: vorto-repository-config-h2.json
+
+config:
+  restrictTenant: 2

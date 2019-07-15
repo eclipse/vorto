@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.codegen.hono.python
 
-import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.testutils.GeneratorTestUtils
+import org.eclipse.vorto.core.api.model.BuilderUtils
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
+import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.junit.Assert
 import org.junit.Test
 
@@ -26,12 +26,12 @@ class PythonAppTemplateTest {
 	def void testCreateInformationModelSimple() {
 		var template = new PythonSampleTemplate();
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",PrimitiveType.FLOAT)
 		   .withStatusProperty("unit",PrimitiveType.STRING).build();
 		   
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"temperature");	
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"temperature","some description", true);	
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		Assert.assertEquals(getExpectedTemplate,generated);
@@ -159,16 +159,16 @@ class PythonAppTemplateTest {
 	def void testCreateInformationModelComplex() {
 		var template = new PythonSampleTemplate();
 		
-		var entity = GeneratorTestUtils.newEntity(new ModelId(ModelType.Datatype,"SensorValue","org.eclipse.vorto","1.0.0"))
+		var entity = BuilderUtils.newEntity(new ModelId(ModelType.Datatype,"SensorValue","org.eclipse.vorto","1.0.0"))
 		entity.withProperty("current",PrimitiveType.FLOAT)
 		entity.withProperty("unit",PrimitiveType.STRING)
 		
-		var fbm = GeneratorTestUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
+		var fbm = BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock,"Temperature","org.eclipse.vorto","1.0.0"))
 		   .withStatusProperty("value",entity.build)
 		   .withStatusProperty("otherProp",PrimitiveType.STRING).build();
 		   
-		var im = GeneratorTestUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
-		im.withFunctionBlock(fbm,"temperature");	
+		var im = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,"MyDevice","org.eclipse.vorto","1.0.0"))
+		im.withFunctionBlock(fbm,"temperature",null,false);	
 					
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);

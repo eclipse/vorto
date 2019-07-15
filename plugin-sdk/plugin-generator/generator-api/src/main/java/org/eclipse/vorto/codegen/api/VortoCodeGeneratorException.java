@@ -12,13 +12,16 @@
  */
 package org.eclipse.vorto.codegen.api;
 
+/**
+ * Please use the Plugin SDK API instead
+ */
+@Deprecated
 public class VortoCodeGeneratorException extends Exception {
 
   /**
    * 
    */
   private static final long serialVersionUID = 5850205724505089809L;
-
 
   public VortoCodeGeneratorException() {
     super();

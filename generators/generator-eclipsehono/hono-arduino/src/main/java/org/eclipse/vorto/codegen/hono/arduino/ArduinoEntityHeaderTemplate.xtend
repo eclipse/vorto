@@ -1,7 +1,7 @@
 package org.eclipse.vorto.codegen.hono.arduino
 
 import org.eclipse.vorto.core.api.model.datatype.Entity
-import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.plugin.generator.InvocationContext
 
 class ArduinoEntityHeaderTemplate extends ArduinoTemplate<Entity> {
     override getFileName(Entity dataEntity) {
