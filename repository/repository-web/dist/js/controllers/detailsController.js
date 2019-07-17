@@ -210,19 +210,22 @@ repositoryControllers.controller('DetailsController',
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
-					var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
-					promise.then(
-						function(namespaces) {
-							for (entry of namespaces) {
-								if ($scope.model.id.namespace.startsWith(entry.namespace)) {
-									$scope.canCreateModels = true;
-									return;
-								}
-							}
-						$scope.canCreateModels = false;
-					});
+					$scope.canCreateModels = false;
+					$scope.modelEditor.setReadOnly(true);
 					
 					if ($rootScope.authenticated) {
+						var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
+						promise.then(
+							function(namespaces) {
+								for (entry of namespaces) {
+									if ($scope.model.id.namespace.startsWith(entry.namespace)) {
+										$scope.canCreateModels = true;
+										$scope.modelEditor.setReadOnly(false);
+										return;
+									}
+								}
+						});
+					
 						$scope.getUserPolicy();
 					}
 					
