@@ -1,6 +1,6 @@
 package org.eclipse.vorto.utilities;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -48,8 +48,7 @@ public class ModelSerializerTest {
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
     
-    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_model.fbmodel")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
-    
+    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_model.fbmodel")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));
   }
   
   @Test
@@ -73,7 +72,7 @@ public class ModelSerializerTest {
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
     
-    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_enum.type")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
+    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_enum.type")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));
     
   }
   
@@ -98,8 +97,7 @@ public class ModelSerializerTest {
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
     
-    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_entity.type")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
-    
+    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_entity.type")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));    
   }
   
   @Test
@@ -122,8 +120,7 @@ public class ModelSerializerTest {
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
     
-    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_infomodel.infomodel")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
-    
+    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_infomodel.infomodel")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));    
   }
   
   @Test
@@ -148,7 +145,14 @@ public class ModelSerializerTest {
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
     
-    assertEquals(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/sample.mapping")),new String(baos.toByteArray(),StandardCharsets.UTF_8));
-    
+    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/sample.mapping")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));    
+  }
+  
+  public static boolean equalsIgnoreNewlineStyle(String s1, String s2) {
+    return s1 != null && s2 != null && normalizeLineEnds(s1).equals(normalizeLineEnds(s2));
+  }
+  
+  private static String normalizeLineEnds(String s) {
+      return s.replace("\r\n", "\n").replace('\r', '\n');
   }
 }
