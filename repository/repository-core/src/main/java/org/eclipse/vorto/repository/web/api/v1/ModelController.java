@@ -24,14 +24,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,9 +45,6 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
-  @Autowired
-  private ITenantService tenantService;
-
   private static Logger logger = Logger.getLogger(ModelController.class);
 
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -65,7 +59,7 @@ public class ModelController extends AbstractRepositoryController {
     
     logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
 
-    ModelInfo resource = getRepo(modelID).getById(modelID);
+    ModelInfo resource = getModelRepository(modelID).getById(modelID);
 
     if (resource == null) {
       throw new ModelNotFoundException("Model does not exist", null);
@@ -82,7 +76,7 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    if (!getRepo(modelID).exists(modelID)) {
+    if (!getModelRepository(modelID).exists(modelID)) {
       throw new ModelNotFoundException("Model does not exist", null);
     }
     
@@ -122,13 +116,10 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("The tenant for '" + modelID.getPrettyFormat() + "' could not be found."));
-
     logger.info("Download of Model file : [" + modelID.toString() + "]");
 
     if (includeDependencies) {
-      byte[] zipContent = createZipWithAllDependencies(tenantId, modelID);
+      byte[] zipContent = createZipWithAllDependencies(modelID);
       response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
           + modelID.getName() + "_" + modelID.getVersion() + ".zip");
       response.setContentType(APPLICATION_OCTET_STREAM);
@@ -139,16 +130,16 @@ public class ModelController extends AbstractRepositoryController {
         throw new GenericApplicationException("Error copying file.", e);
       }
     } else {
-      createSingleModelContent(tenantId, modelID, response);
+      createSingleModelContent(modelID, response);
     }
   }
 
-  private byte[] createZipWithAllDependencies(String tenantId, ModelId modelId) {
+  private byte[] createZipWithAllDependencies(ModelId modelId) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ZipOutputStream zos = new ZipOutputStream(baos);
 
     try {
-      addModelToZip(tenantId, zos, modelId);
+      addModelToZip(zos, modelId);
 
       zos.close();
       baos.close();
@@ -158,14 +149,5 @@ public class ModelController extends AbstractRepositoryController {
     } catch (Exception ex) {
       throw new GenericApplicationException("Error while generating zip file.", ex);
     }
-  }
-
-  private IModelRepository getRepo(ModelId modelId) {
-    return modelRepositoryFactory.getRepositoryByModel(modelId);
-  }
-
-  private Optional<String> getTenant(ModelId modelId) {
-    return tenantService.getTenantFromNamespace(modelId.getNamespace())
-        .map(tenant -> tenant.getTenantId());
   }
 }
