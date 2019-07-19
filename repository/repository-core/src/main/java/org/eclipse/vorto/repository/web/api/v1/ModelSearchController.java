@@ -41,7 +41,7 @@ public class ModelSearchController extends AbstractRepositoryController {
   
   @RequestMapping(value = "/models", method = RequestMethod.GET,
 	      produces = "application/json")
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public List<ModelInfo> searchByExpression(
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)

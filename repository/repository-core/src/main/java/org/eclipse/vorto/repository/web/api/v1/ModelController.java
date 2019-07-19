@@ -49,7 +49,7 @@ public class ModelController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -69,7 +69,7 @@ public class ModelController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContent(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -87,7 +87,7 @@ public class ModelController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContentForTargetPlatform(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -103,7 +103,7 @@ public class ModelController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void downloadModelById(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
