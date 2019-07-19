@@ -10,7 +10,7 @@ info:
   version: '1.0'
   
 servers:
-- url: https://vorto.eclipse.org/api/v1
+- url: https://vorto-dev.eclipse.org/api/v1
   description: Eclipse Vorto Repository
   
 tags:
