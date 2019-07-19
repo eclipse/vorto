@@ -1,0 +1,158 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+package org.eclipse.vorto.repository.backup.impl;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.backup.IBackupRestoreService;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.TenantNotFoundException;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.utils.ZipUtils;
+import org.eclipse.vorto.repository.web.GenericApplicationException;
+import org.modeshape.common.collection.ImmutableMapEntry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+
+@Component
+public class BackupRestoreService implements IBackupRestoreService {
+
+  private static Logger logger = Logger.getLogger(BackupRestoreService.class);
+  
+  private IModelRepositoryFactory modelRepositoryFactory;
+  
+  private ITenantService tenantService;
+  
+  private Supplier<Authentication> authSupplier = 
+      () -> SecurityContextHolder.getContext().getAuthentication();
+  
+  public BackupRestoreService(@Autowired IModelRepositoryFactory modelRepositoryFactory,
+      @Autowired ITenantService tenantService) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
+    this.tenantService = tenantService;
+  }
+
+  @Override
+  public Map<String, byte[]> createBackups(Optional<String> optionalTenantId) {
+    if (optionalTenantId.isPresent()) {
+      String tenantId = optionalTenantId.get();
+      Tenant tenant = tenantService.getTenant(tenantId)
+          .orElseThrow(() -> new TenantNotFoundException(tenantId));
+      return createBackups(Lists.newArrayList(tenant));
+    } else {
+      return createBackups(tenantService.getTenants());
+    }
+  }
+  
+  private Map<String, byte[]> createBackups(Collection<Tenant> tenants) {
+  return tenants.stream()
+      .map(tenant -> 
+        new ImmutableMapEntry<String, byte[]>(
+            tenantSignature.apply(tenant), 
+            modelRepositoryFactory.getRepositoryManager(tenant.getTenantId(), authSupplier.get()).backup())
+      ).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+  }
+  
+  @Override
+  public byte[] createZippedInputStream(Map<String, byte[]> backups) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ZipOutputStream zos = new ZipOutputStream(baos);
+
+    try {
+      for(Map.Entry<String, byte[]> entry : backups.entrySet()) {
+        ZipEntry zipEntry = new ZipEntry(entry.getKey() + ".xml");
+        zos.putNextEntry(zipEntry);
+        zos.write(entry.getValue());
+        zos.closeEntry();
+      }
+
+      zos.close();
+      baos.close();
+
+      return baos.toByteArray();
+
+    } catch (Exception ex) {
+      throw new GenericApplicationException("Error while generating zip file.", ex);
+    }
+  }
+  
+  @Override
+  public void restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter) {
+    Preconditions.checkNotNull(backupFile, "backupFile must not be null");
+    try {
+      Map<String, byte[]> backups = getBackups(backupFile);
+      
+      backups.forEach((namespace, backup) -> {
+        logger.info("Restoring backup for '" + namespace + "'");
+        Optional<Tenant> tenant = tenantService.getTenantFromNamespace(namespace);
+        if (tenant.isPresent() && tenantFilter.test(tenant.get())) {
+          String tenantId = tenant.get().getTenantId();
+          IRepositoryManager repoMgr = modelRepositoryFactory.getRepositoryManager(tenantId, authSupplier.get()); 
+          
+          if (!repoMgr.isWorkspaceExist(tenantId)) {
+            repoMgr.createTenantWorkspace(tenantId);
+          }
+          
+          repoMgr.restore(backup);
+        } else {
+          logger.info("Skipping restoration of '" + namespace + "' either because the tenant could not be found, or is filtered.");
+        }
+      });
+    } catch (IOException e) {
+      throw new GenericApplicationException("Problem while reading zip file during restore", e);
+    }
+  }
+  
+  private Map<String, byte[]> getBackups(byte[] file) throws IOException {
+    Map<String, byte[]> backups = new HashMap<>();
+    
+    ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(file));
+    ZipEntry entry = null;
+    
+    while ((entry = zis.getNextEntry()) != null) {
+      if (!entry.isDirectory()
+          && !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
+        String namespace = entry.getName().substring(entry.getName().lastIndexOf("/") + 1).replace(".xml", "");
+        backups.put(namespace, ZipUtils.copyStream(zis, entry));
+      }
+    }
+    
+    return backups;
+  }
+  
+  public Supplier<Authentication> getAuthSupplier() {
+    return authSupplier;
+  }
+
+  public void setAuthSupplier(Supplier<Authentication> authSupplier) {
+    this.authSupplier = authSupplier;
+  }
+}
