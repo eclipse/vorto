@@ -218,6 +218,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return getTenants().stream().filter(tn -> tn.owns(namespace)).findFirst();
   }
 
+  @Transactional
   public Collection<Tenant> getTenants() {
     return Lists.newArrayList(tenantRepo.findAll());
   }
