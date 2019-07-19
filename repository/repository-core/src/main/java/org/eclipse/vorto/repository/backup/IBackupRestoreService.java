@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.backup;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -26,10 +25,11 @@ public interface IBackupRestoreService {
   /**
    * Creates a map with namespace as key and the backup xml (in byte array) as value 
    * 
-   * @param optionalTenantId optional tenantId to make backup of. If empty, backups of all tenants are made.
+   * @param tenantFilter filter for the tenants we wish to include. 
+   * Return a predicate that returns True if you want all tenants.
    * @return a map of namespace to a backup byte array
    */
-   Map<String, byte[]> createBackups(Optional<String> optionalTenantId);
+   Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter);
   
   /**
    * Creates a zipped backup (in byte array) of the given backup 

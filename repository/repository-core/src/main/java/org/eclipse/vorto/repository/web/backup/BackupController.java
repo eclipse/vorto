@@ -18,9 +18,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.backup.IBackupRestoreService;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
@@ -51,30 +53,47 @@ public class BackupController extends AbstractRepositoryController {
 
   private static final SimpleDateFormat SIMPLEDATEFORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
+  private Predicate<Tenant> tenantWithId(String tenantId) {
+    return tenant -> tenant.getTenantId().equals(ControllerUtils.sanitize(tenantId));
+  }
+  
+  private Predicate<Tenant> tenantWhoOwnsNamespace(String namespace) {
+    return tenant -> tenant.owns(namespace);
+  }
+  
   @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/{tenantId}/backup")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public void backupRepository(
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       final HttpServletResponse response) throws Exception {
-    backupRepository(response, Optional.of(ControllerUtils.sanitize(tenantId)));
+    backupRepository(response, tenantWithId(tenantId), 
+        Optional.of(String.format("-%s", ControllerUtils.sanitize(tenantId))));
+  }
+  
+  @RequestMapping(method = RequestMethod.GET, value = "/rest/namespaces/{namespace}/backup")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  public void backupRepositoryOfNamespace(
+      @ApiParam(value = "The namespace to be restored",
+          required = true) final @PathVariable String namespace,
+      final HttpServletResponse response) throws Exception {
+    backupRepository(response, tenantWhoOwnsNamespace(namespace), 
+        Optional.of(String.format("-%s", ControllerUtils.sanitize(namespace))));
   }
   
   @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/backup")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public void backupRepository(final HttpServletResponse response) {
-    backupRepository(response, Optional.empty());
+    backupRepository(response, id -> true, Optional.empty());
   }
   
-  private void backupRepository(final HttpServletResponse response, Optional<String> optionalTenantId) {
-    String tenantSig = optionalTenantId.map(id -> "-" + id).orElse("");
-      
+  private void backupRepository(final HttpServletResponse response, Predicate<Tenant> tenantFilter, Optional<String> ext) {
     response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + 
-        String.format("backup-%s%s.zip", SIMPLEDATEFORMAT.format(new Date()), tenantSig));
+        String.format("backup-%s%s.zip", SIMPLEDATEFORMAT.format(new Date()), ext.orElse("")));
     response.setContentType(APPLICATION_OCTET_STREAM);
 
     try {
-      Map<String, byte[]> backups = backupRestoreService.createBackups(optionalTenantId);
+      Map<String, byte[]> backups = backupRestoreService.createBackups(tenantFilter);
       IOUtils.copy(new ByteArrayInputStream(backupRestoreService.createZippedInputStream(backups)), response.getOutputStream());
       response.flushBuffer();
     } catch (IOException e) {
@@ -105,6 +124,20 @@ public class BackupController extends AbstractRepositoryController {
       throw new UploadTooLargeException("backup", maxBackupSize);
     }
     
-    backupRestoreService.restoreRepository(file.getBytes(), tenant -> tenant.getTenantId().equals(ControllerUtils.sanitize(tenantId)));
+    backupRestoreService.restoreRepository(file.getBytes(), tenantWithId(tenantId));
+  }
+  
+  @RequestMapping(method = RequestMethod.POST, value = "/rest/namespaces/{namespace}/restore")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  public void restoreRepositoryForNamespace(
+      @ApiParam(value = "The namespace to be restored",
+          required = true) final @PathVariable String namespace,
+      @RequestParam("file") MultipartFile file) throws Exception {
+    
+    if (file.getSize() > maxBackupSize) {
+      throw new UploadTooLargeException("backup", maxBackupSize);
+    }
+    
+    backupRestoreService.restoreRepository(file.getBytes(), tenantWhoOwnsNamespace(namespace));
   }
 }

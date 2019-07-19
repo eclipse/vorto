@@ -29,8 +29,8 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.backup.IBackupRestoreService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
@@ -40,7 +40,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 @Component
 public class BackupRestoreService implements IBackupRestoreService {
@@ -51,25 +50,24 @@ public class BackupRestoreService implements IBackupRestoreService {
   
   private ITenantService tenantService;
   
+  private IIndexingService indexingService;
+  
   private Supplier<Authentication> authSupplier = 
       () -> SecurityContextHolder.getContext().getAuthentication();
   
   public BackupRestoreService(@Autowired IModelRepositoryFactory modelRepositoryFactory,
-      @Autowired ITenantService tenantService) {
+      @Autowired ITenantService tenantService, @Autowired IIndexingService indexingService) {
     this.modelRepositoryFactory = modelRepositoryFactory;
     this.tenantService = tenantService;
+    this.indexingService = indexingService;
   }
-
+  
   @Override
-  public Map<String, byte[]> createBackups(Optional<String> optionalTenantId) {
-    if (optionalTenantId.isPresent()) {
-      String tenantId = optionalTenantId.get();
-      Tenant tenant = tenantService.getTenant(tenantId)
-          .orElseThrow(() -> new TenantNotFoundException(tenantId));
-      return createBackups(Lists.newArrayList(tenant));
-    } else {
-      return createBackups(tenantService.getTenants());
-    }
+  public Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter) {
+    return createBackups(tenantService.getTenants()
+        .stream()
+        .filter(tenantFilter)
+        .collect(Collectors.toList()));
   }
   
   private Map<String, byte[]> createBackups(Collection<Tenant> tenants) {
@@ -126,6 +124,9 @@ public class BackupRestoreService implements IBackupRestoreService {
           logger.info("Skipping restoration of '" + namespace + "' either because the tenant could not be found, or is filtered.");
         }
       });
+            
+      indexingService.reindexAllModels();
+      
     } catch (IOException e) {
       throw new GenericApplicationException("Problem while reading zip file during restore", e);
     }
