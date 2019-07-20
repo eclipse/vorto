@@ -1,3 +1,5 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope','$http', 
 	function ($rootScope, $scope, $http) {
 
@@ -91,3 +93,5 @@ repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$
      	$uibModalInstance.dismiss("cancel");
 };
 }]);
+
+});

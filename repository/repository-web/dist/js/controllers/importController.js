@@ -1,3 +1,5 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
 
@@ -215,3 +217,5 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
     }]);
+    
+ });

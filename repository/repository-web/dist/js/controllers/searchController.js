@@ -1,4 +1,6 @@
-repositoryControllers.controller('SearchController', 
+define(["../init/appController"],function(repositoryControllers) {
+  
+  repositoryControllers.controller('SearchController', 
     ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog', '$timeout',
     function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog, $timeout) {
 
@@ -123,3 +125,5 @@ repositoryControllers.controller('SearchController',
 
     $scope.openCreateModelDialog = openCreateModelDialog($scope);
 } ]);
+
+});

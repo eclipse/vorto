@@ -1,8 +1,10 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('DetailsController', 
-    ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
+    ['$q','$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
      '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 
      'TenantService', 'confirmPublish',
-    function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
+    function ($q, $rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
         $timeout, $window, $timeout, openCreateModelDialog, TenantService, confirmPublish) {
 
 		$scope.model = [];
@@ -25,6 +27,21 @@ repositoryControllers.controller('DetailsController',
 		$scope.encodeURIComponent = encodeURIComponent;
 		$scope.newComment = {value: ""}
 		$scope.canGenerate = true;
+		
+		$scope.editorConfig = {
+	      infomodel: {
+	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-infomodel",
+	        serviceUrl: "infomodel/xtext-service"
+	      },
+	      fbmodel: {
+	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-fbmodel",
+	        serviceUrl: "functionblock/xtext-service"
+	      },
+	      type: {
+	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-type",
+	        serviceUrl: "datatype/xtext-service"
+	      }
+    	}
 
 		$scope.modelEditorLoaded = function (_editor) {
 			$scope.modelEditor = _editor;
@@ -39,12 +56,37 @@ repositoryControllers.controller('DetailsController',
 		$scope.modelEditorChanged = function (e) {
 			$scope.newModelCode = $scope.modelEditorSession.getDocument().getValue();
 		};
+		
+		$scope.createEditor = function(model) {
+			var defer = $q.defer();
+			require(["webjars/ace/src/ace"], function() {
+	    		require(["xtext/xtext-ace"], function(xtext) {
+	        		var editor = xtext.createEditor({
+	            		enableFormattingAction: true,
+	            		enableSaveAction: false,
+	            		loadFromServer: false,
+	            		showErrorDialogs: false,
+	            		enableValidationService: true,
+	            		enableOccurrencesService: true,
+	            		enableHighlightingService: true,
+	            		xtextLang: model.language,
+	            		syntaxDefinition: $scope.editorConfig[model.language].syntaxDefinition,
+	            		serviceUrl: $scope.editorConfig[model.language].serviceUrl
+	          		});
+	          		$scope.modelEditor = editor;
+	          		defer.resolve(editor);
+	    		});
+			});
+			return defer.promise;
+		};
+		
+		$scope.createEditor({'language':'type'});
 
 		$scope.saveModel = function () {
 			$scope.isLoading = true;
 			$scope.error = false;
 			var newContent = {
-				contentDsl: $scope.newModelCode,
+				contentDsl: $scope.modelEditor.getSession().getDocument().getValue(),
 				type: $scope.model.type
 
 			};
@@ -211,7 +253,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.getAttachments(result);
 					
 					$scope.canCreateModels = false;
-					$scope.modelEditor.setReadOnly(true);
 					
 					if ($rootScope.authenticated) {
 						var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
@@ -220,7 +261,7 @@ repositoryControllers.controller('DetailsController',
 								for (entry of namespaces) {
 									if ($scope.model.id.namespace.startsWith(entry.namespace)) {
 										$scope.canCreateModels = true;
-										$scope.modelEditor.setReadOnly(false);
+										//$scope.modelEditor.setReadOnly(false);
 										return;
 									}
 								}
@@ -251,7 +292,7 @@ repositoryControllers.controller('DetailsController',
 			$http.get("./api/v1/models/" + modelId + "/file")
 				.success(function (result) {
 					$timeout(function () {
-							$scope.modelEditorSession.getDocument().setValue(result);
+							$scope.modelEditor.getSession().getDocument().setValue(result);
 							$scope.loadingModel = false;
 						}, 1000);
 				}).error(function (data, status, headers, config) {
@@ -926,3 +967,5 @@ repositoryControllers.controller('DetailsController',
 		$scope.loadDetails();
 	}
 ]);
+
+});

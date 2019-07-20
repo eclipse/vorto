@@ -1,4 +1,23 @@
-var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson","ui.select"]);
+define("repository",[
+	"angular",
+	"angular-route",
+	"angular-animate",
+	"angular-bootstrap",
+	"angular-bootstrap-templates",
+	"angular-ui-select",
+  	"jquery",
+  	"smart-table",
+  	"pretty-json",
+  	"webjars/repository-web/dist/js/init/appControllerLoader",
+  	"webjars/repository-web/dist/js/init/appServiceLoader"
+], function (angular) {
+
+	 var repository = angular.module("repository", [ "ngRoute", "apps.controller", "apps.service", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ngPrettyJson","ui.select"]);
+
+	 repository.bootstrap = function() {
+	    angular.bootstrap(document, ["repository"]);
+	  };
+
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
@@ -168,3 +187,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     
     $rootScope.init();
 });
+
+    return repository;
+
+});
+

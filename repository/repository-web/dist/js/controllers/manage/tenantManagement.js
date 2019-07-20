@@ -1,3 +1,5 @@
+define(["../../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller("tenantManagementController", 
     [ "$rootScope", "$scope", "$http", "$uibModal", "dialogConfirm", "dialogPrompt",
     function($rootScope, $scope, $http, $uibModal, dialogConfirm, dialogPrompt) {
@@ -388,4 +390,4 @@ repositoryControllers.controller("createOrUpdateTenantController",
     }
 ]);
  
-
+});

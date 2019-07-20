@@ -1,3 +1,5 @@
+define(["../../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uibModal", "$routeParams", "$scope", "$location","$http", "$sce","$timeout",
     function($rootScope,$uibModal,$routeParams, $scope, $location,$http, $sce,$timeout) {
 
@@ -301,3 +303,5 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.loadMappingSpec();
 
 }]);
+
+});

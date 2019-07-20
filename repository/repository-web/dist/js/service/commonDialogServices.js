@@ -1,3 +1,5 @@
+define(["../init/appService"], function(repository) {
+
 repository.factory("dialogConfirm",
     ["$rootScope", "$uibModal",
     function($rootScope, $uibModal) {
@@ -139,4 +141,6 @@ repository.factory("confirmPublish",
     	}
     }
 ]);
+
+});
 	    

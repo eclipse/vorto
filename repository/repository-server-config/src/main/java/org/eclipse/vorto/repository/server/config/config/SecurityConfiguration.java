@@ -12,8 +12,13 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import java.io.IOException;
 import java.util.Arrays;
 import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
@@ -32,6 +37,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.filter.OrderedHttpPutFormContentFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -117,6 +123,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private static final String ROLE_GENERATOR_PROVIDER = "GENERATOR_PROVIDER";
 
+  @Bean
+  public OrderedHttpPutFormContentFilter httpPutFormContentFilter() {
+      return new OrderedHttpPutFormContentFilter() {
+          @Override
+          protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response,
+                  FilterChain filterChain) throws ServletException, IOException {
+              filterChain.doFilter(request, response);
+          }
+      };
+  }
+  
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 

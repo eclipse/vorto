@@ -1,3 +1,5 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', 'TenantService',
 	function ($location, $rootScope, $scope, $http, $uibModal, $timeout, TenantService ) {
 		
@@ -43,3 +45,5 @@ repositoryControllers.controller('SettingsController', [ '$location', '$rootScop
     };
     
 }]);
+
+});

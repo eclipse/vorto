@@ -1,3 +1,5 @@
+define(["../init/appService"], function(repository) {
+
 repository.factory('ModelDetailsService',['$rootScope', '$http','$q','$location',function($rootScope, $http, $q, $location){
 
     var ATTACHMENT_URL = './api/v1/attachments/';
@@ -31,3 +33,5 @@ repository.factory('ModelDetailsService',['$rootScope', '$http','$q','$location'
           return deferred.promise;
     }
 }]);
+
+});
