@@ -40,22 +40,12 @@ repositoryControllers.controller('DetailsController',
 	      type: {
 	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-type",
 	        serviceUrl: "datatype/xtext-service"
+	      },
+	      mapping: {
+	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-mapping",
+	        serviceUrl: "mapping/xtext-service"
 	      }
     	}
-
-		$scope.modelEditorLoaded = function (_editor) {
-			$scope.modelEditor = _editor;
-			$scope.modelEditorSession = _editor.getSession();
-			_editor.getSession().setMode("ace/mode/vorto");
-			_editor.setTheme("ace/theme/chrome");
-			_editor.getSession().setTabSize(2);
-			_editor.setShowPrintMargin(false);
-			_editor.getSession().setUseWrapMode(true);
-		};
-
-		$scope.modelEditorChanged = function (e) {
-			$scope.newModelCode = $scope.modelEditorSession.getDocument().getValue();
-		};
 		
 		$scope.createEditor = function(model) {
 			var defer = $q.defer();
@@ -79,8 +69,6 @@ repositoryControllers.controller('DetailsController',
 			});
 			return defer.promise;
 		};
-		
-		$scope.createEditor({'language':'type'});
 
 		$scope.saveModel = function () {
 			$scope.isLoading = true;
@@ -254,6 +242,19 @@ repositoryControllers.controller('DetailsController',
 					
 					$scope.canCreateModels = false;
 					
+					var language = {};
+					if (result.type === 'Datatype') {
+						language = {'language' : 'type'};
+					} else if (result.type === 'Functionblock') {
+						language = {'language' : 'fbmodel'};
+					} else if (result.type === 'InformationModel') {
+						language = {'language' : 'infomodel'};
+					} else {
+						language = {'language' : 'mapping'};
+					}
+					
+					$scope.createEditor(language);
+					
 					if ($rootScope.authenticated) {
 						var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
 						promise.then(
@@ -261,7 +262,6 @@ repositoryControllers.controller('DetailsController',
 								for (entry of namespaces) {
 									if ($scope.model.id.namespace.startsWith(entry.namespace)) {
 										$scope.canCreateModels = true;
-										//$scope.modelEditor.setReadOnly(false);
 										return;
 									}
 								}
@@ -909,15 +909,14 @@ repositoryControllers.controller('DetailsController',
 		$scope.getUserPolicy = function() {
 			$http.get('./rest/models/' + $scope.modelId + '/policy')
 				.success(function (result) {
-					console.log("Policy for model = " + JSON.stringify(result));
 					$scope.permission = result.permission;
 					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
-						$scope.modelEditor.setReadOnly(true);
+						//$scope.modelEditor.setReadOnly(true);
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.permission = "READ";
 					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-						$scope.modelEditor.setReadOnly(true);
+						//$scope.modelEditor.setReadOnly(true);
 					}
 				});
 		};

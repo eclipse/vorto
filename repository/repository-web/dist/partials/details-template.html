@@ -322,7 +322,6 @@
 										</div>
 										<div class="row">
 											<div style="height: 500px;" id="xtext-editor"></div>
-											<!--div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div-->
 										</div>
 									</div>
 								</div>
@@ -377,39 +376,6 @@
 								</div>
 								<!-- /.box (chat box) -->
 
-							</section>
-						</div>
-
-					</div>
-					
-					<div class="tab-pane" id="policies">
-						<div class="row ">
-							<!-- Left col -->
-							<section class="col-md-12">
-								<div class="pull-right">
-  									<button type="button" class="btn btn-default btn-lg" ng-click="openCreatePolicyEntryDialog()">
-    									<i class="fa fa-plus"></i></span> Add Entry
-  									</button>
-								</div>
-								<table class="table table-bordered table-condensed" ng-show="aclEntries.length > 0">
-									<tr>
-										<th style="text-align:center">Principal ID</th>
-										<th style="text-align:center">Principal Type</th>
-										<th style="text-align:center">Permission</th>
-										<th style="text-align:center">Actions</th>
-									</tr>
-									<tr ng-repeat="entry in aclEntries">
-										<td ng-show="user === entry.principalId" style="text-align:center"><b>You</b></td>
-										<td ng-show="user !== entry.principalId" style="text-align:center">{{entry.principalId}}</td>
-										<td style="text-align:center">{{entry.principalType}}</td>
-										<td style="text-align:center">{{entry.permission}}</td>
-										<td style="text-align:center">
-											<a ng-click="removePermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-danger" role="button">
-											<span class="glyphicon glyphicon-trash"></span> Remove</a>
-										</td>
-									</tr>
-								</table>
-								<p ng-show="aclEntries.length === 0">No policies defined</p>
 							</section>
 						</div>
 

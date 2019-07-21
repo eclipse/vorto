@@ -48,6 +48,16 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.mapping.ide</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext.xbase.web</artifactId>
 			<version>${xtext.version}</version>

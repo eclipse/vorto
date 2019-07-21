@@ -10,8 +10,10 @@ require.config({
 		"angular-ui-select" : "webjars/angular-ui-select/select.min",
 		"smart-table" : "webjars/angular-smart-table/dist/smart-table.min",
 		"pretty-json" : "webjars/ng-prettyjson/dist/ng-prettyjson.min",
-		"mode-vorto" : "webjars/repository-web/dist/js/ace-modes/mode-vorto",
 		"mode-type" : "webjars/repository-web/dist/js/ace-modes/mode-type",
+		"mode-fbmodel" : "webjars/repository-web/dist/js/ace-modes/mode-fbmodel",
+		"mode-infomodel" : "webjars/repository-web/dist/js/ace-modes/mode-infomodel",
+		"mode-mapping" : "webjars/repository-web/dist/js/ace-modes/mode-mapping",
 		"ace/ext/language_tools" : "webjars/ace/src/ext-language_tools",
 		"webjars/ace/src/ace" : "webjars/ace/1.2.0/src/ace",
 		"xtext/xtext-ace" : "xtext/2.16.0/xtext-ace"
