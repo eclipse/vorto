@@ -22,6 +22,7 @@ jobs:
             - development
 
       cache:
+        npm: false
         directories:
           - '$HOME/.m2/repository'
           - '$HOME/.sonar/cache'
