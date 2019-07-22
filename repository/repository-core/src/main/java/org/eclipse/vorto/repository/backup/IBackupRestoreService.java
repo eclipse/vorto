@@ -13,14 +13,10 @@
 package org.eclipse.vorto.repository.backup;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import org.eclipse.vorto.repository.domain.Tenant;
 
 public interface IBackupRestoreService {
-  
-  static Function<Tenant, String> tenantSignature = (tenant) -> 
-    tenant.getNamespaces().stream().findFirst().get().getName();
   
   /**
    * Creates a map with namespace as key and the backup xml (in byte array) as value 

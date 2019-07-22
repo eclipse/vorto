@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -45,6 +46,9 @@ import com.google.common.base.Preconditions;
 public class BackupRestoreService implements IBackupRestoreService {
 
   private static Logger logger = Logger.getLogger(BackupRestoreService.class);
+  
+  private static Function<Tenant, String> tenantSignature = (tenant) -> 
+    tenant.getNamespaces().stream().findFirst().get().getName();
   
   private IModelRepositoryFactory modelRepositoryFactory;
   
@@ -112,14 +116,18 @@ public class BackupRestoreService implements IBackupRestoreService {
         logger.info("Restoring backup for '" + namespace + "'");
         Optional<Tenant> tenant = tenantService.getTenantFromNamespace(namespace);
         if (tenant.isPresent() && tenantFilter.test(tenant.get())) {
-          String tenantId = tenant.get().getTenantId();
-          IRepositoryManager repoMgr = modelRepositoryFactory.getRepositoryManager(tenantId, authSupplier.get()); 
-          
-          if (!repoMgr.isWorkspaceExist(tenantId)) {
-            repoMgr.createTenantWorkspace(tenantId);
+          try {
+            String tenantId = tenant.get().getTenantId();
+            IRepositoryManager repoMgr = modelRepositoryFactory.getRepositoryManager(tenantId, authSupplier.get()); 
+            
+            if (!repoMgr.isWorkspaceExist(tenantId)) {
+              repoMgr.createTenantWorkspace(tenantId);
+            }
+            
+            repoMgr.restore(backup);
+          } catch (Exception e) {
+            logger.error("Error in restoration of '" + namespace + "'", e);
           }
-          
-          repoMgr.restore(backup);
         } else {
           logger.info("Skipping restoration of '" + namespace + "' either because the tenant could not be found, or is filtered.");
         }
