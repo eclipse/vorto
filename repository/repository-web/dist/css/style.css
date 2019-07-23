@@ -465,7 +465,6 @@ ul.nav {
 }
 
 .placeHolder {
-    background-color: #dadada;
     height: 200px;
     width: 200px;
     display: -webkit-flex;
@@ -482,7 +481,9 @@ ul.nav {
     text-align: center;
     padding: 3px 0;
     background: #dadada;
-
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
 }
 
 .placeHolder:hover .noimg{

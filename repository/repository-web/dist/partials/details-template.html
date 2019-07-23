@@ -108,7 +108,7 @@
 												<div class="placeHolder">
 													<div class="noimg" ng-show="!model.hasImage">No Image Yet
 													</div>
-													<img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
+													<img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" max-width="200" max-height="200" />
 													<div class="upload" ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
 														<a href="" ng-click="chooseImageFile()">
 															<i class="fa fa-upload"></i> Click to change image</a>
