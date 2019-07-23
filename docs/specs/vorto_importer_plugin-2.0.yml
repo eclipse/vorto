@@ -27,6 +27,16 @@ paths:
         explode: false
         schema:
           type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: File to be converted
+                  format: binary
       responses:
         200:
           description: ''
@@ -56,6 +66,16 @@ paths:
         explode: false
         schema:
           type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: File to be validated
+                  format: binary
       responses:
         200:
           description: ''
