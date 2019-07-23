@@ -49,7 +49,8 @@ repositoryControllers.controller("tenantManagementController",
                     tenants: function() {
                     	return $scope.tenants;
                     }
-                }
+                },
+                backdrop: 'static'
             });
             
             modalInstance.result.finally(function(result) {
@@ -77,7 +78,8 @@ repositoryControllers.controller("tenantManagementController",
                     tenants: function() {
                     	return $scope.tenants;
                     }
-                }
+                },
+                backdrop: 'static'
             });
             
             modalInstance.result.finally(function(result) {
@@ -96,7 +98,8 @@ repositoryControllers.controller("tenantManagementController",
                     tenant: function () {
                         return tenant;
                     }
-                }
+                },
+                backdrop: 'static'
             });
             
             modalInstance.result.finally(function(result) {
@@ -142,7 +145,8 @@ repositoryControllers.controller("tenantManagementController",
 					tenant: function () {
                         return tenant;
                     }
-				}
+				},
+				backdrop: 'static'
 			});
 
 			modalInstance.result.finally(function(result) {

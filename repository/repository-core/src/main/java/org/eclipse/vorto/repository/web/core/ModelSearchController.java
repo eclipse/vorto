@@ -47,14 +47,13 @@ public class ModelSearchController extends AbstractRepositoryController {
   public Collection<ModelInfo> getReleasedModels(@RequestParam("type") String type,
       @RequestParam("namespace") String namespace) {
 
-    Collection<ModelInfo> result = searchService.search("namespace:" + namespace);
+    Collection<ModelInfo> result = searchService.search("name:" + namespace);
 
     result = result.stream()
         .filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
         .collect(Collectors.toList());
 
     Collections.sort(new ArrayList<>(result), new Comparator<ModelInfo>() {
-
       @Override
       public int compare(ModelInfo model1, ModelInfo model2) {
         return model1.getId().getName().compareTo(model2.getId().getName());
