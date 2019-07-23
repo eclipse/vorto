@@ -14,8 +14,6 @@ package org.eclipse.vorto.mapping.engine.model.binary;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class BinaryDataTest {
 
     @Test public void testBinaryData() {
