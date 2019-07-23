@@ -23,7 +23,7 @@ public class SingleGenerationResult implements IGeneratedWriter, IGenerationResu
   private String mediatype;
   private byte[] content;
 
-  SingleGenerationResult(String mediatype) {
+  public SingleGenerationResult(String mediatype) {
     this.mediatype = mediatype;
   }
 

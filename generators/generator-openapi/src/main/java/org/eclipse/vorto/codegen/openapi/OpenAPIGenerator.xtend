@@ -20,15 +20,15 @@ import org.eclipse.vorto.plugin.generator.ICodeGenerator
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder
 import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.ChoiceItem
-import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip
 import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate
+import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult
 
 class OpenAPIGenerator implements ICodeGenerator {
 	
 	val static String KEY = "openapi"
 
 	override generate(InformationModel infomodel, InvocationContext context) throws GeneratorException {
-		var output = new GenerationResultZip(infomodel,KEY);		
+		var output = new SingleGenerationResult("application/vnd.oai.openapi;version=3.0")
 		new GeneratorTaskFromFileTemplate(new OpenAPITemplate()).generate(infomodel,context,output);	
 		return output
 	}
