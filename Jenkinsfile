@@ -102,8 +102,8 @@ pipeline {
         steps{
             script {
               //todo add developmetn branch for deployment to aws
-              if ("${env.BRANCH_NAME}" == "master"){
-                input message: "Continue with deployment?"
+              if ("${env.BRANCH_NAME}" == "development"){
+                //input message: "Continue with deployment?"
                 // build docker containers and load http proxy
                 withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
                   // set +x because the url contains $@ which is otherwise parsed by bash so its escaped but jenkins will only to string matching to censor secrets
