@@ -102,7 +102,7 @@ pipeline {
         steps{
             script {
               //todo add developmetn branch for deployment to aws
-              if ("${env.BRANCH_NAME}" == "development"){
+              if ("${env.BRANCH_NAME}" == "bug/automate_push_to_docker"){
                 input message: "Continue with deployment?"
                 // build docker containers and load http proxy
                 withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
