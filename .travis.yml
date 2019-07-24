@@ -29,6 +29,7 @@ jobs:
 
       before_install:
         - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
+        - sudo sysctl net.ipv4.ip_forward=1
 
       install:
         - git clone https://github.com/digitalcraftsman/hugo-material-docs.git website/themes/hugo-material-docs
