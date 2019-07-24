@@ -79,3 +79,8 @@ Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your Bos
 - [Connect the device to Bosch IoT Suite](connect_javadevice.md) by a given Vorto Information Model
 - [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
 - [Other tutorials](../gettingstarted.md)
+
+---
+
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 
