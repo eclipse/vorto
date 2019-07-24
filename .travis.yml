@@ -44,6 +44,11 @@ jobs:
           mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
           else mvn --fail-fast -q clean package -P checkstyle;
           fi
+        - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
+        - if [ -n "$TRAVIS_TAG" ]; then
+          docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:latest .;
+          docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG .;
+          fi
 
       before_deploy:
         - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
@@ -55,6 +60,12 @@ jobs:
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
 
       deploy:
+        - provider: script
+          script: bash docker/docker_push
+          on:
+            branch: 
+              - development
+              - master
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
