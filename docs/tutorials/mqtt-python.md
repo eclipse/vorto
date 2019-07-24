@@ -267,3 +267,8 @@ Therefore you have to go in and double check every field of the configuration se
 - Integrate your device with the Bosch IoT Suite using:
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)
+
+---
+
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 

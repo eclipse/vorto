@@ -63,7 +63,8 @@ Your model should look like this:
 - [Generate an OpenAPI Spec for your device](create_openapi.md)
 - [Describe a TI SensorTag with Vorto](describe_tisensor.md)
 
+---
 
-
-
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 
 

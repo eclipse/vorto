@@ -24,10 +24,10 @@ Check out our [Vorto Example Code](https://www.github.com/eclipse/vorto-examples
 - [Plugin SDK](plugin-sdk/Readme.md) that lets you extend Vorto with different plugin types
 
 ## Contact us
- - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- - You have problems with Vorto ? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
+ - You want to chat with us? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ - You found a bug in Vorto? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
  - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
- - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
+ - You have a problem? Reach out to our developers through [StackOverflow](https://stackoverflow.com/questions/ask) 
 
 ## Follow us
 
