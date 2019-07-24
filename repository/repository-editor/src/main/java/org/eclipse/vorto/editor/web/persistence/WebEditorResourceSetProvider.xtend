@@ -19,16 +19,12 @@ class WebEditorResourceSetProvider implements IWebResourceSetProvider {
 	}
 
 	def ResourceSet getResourceSetFromSession(IServiceContext serviceContext) {
-		if (serviceContext.getSession().get("set") === null) {
-			return getNewResourceSet(serviceContext);
-		} else {
-			return serviceContext.getSession().get("set")
-		}
+		getNewResourceSet(serviceContext);
 	}
 
 	def ResourceSet getNewResourceSet(IServiceContext serviceContext) {
 		var ResourceSet resourceSet = provider.get()
-		setSessionResourceSet(serviceContext, resourceSet);
+		//setSessionResourceSet(serviceContext, resourceSet);
 		return resourceSet
 	}
 }

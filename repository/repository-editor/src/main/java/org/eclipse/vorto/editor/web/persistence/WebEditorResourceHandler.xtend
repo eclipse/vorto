@@ -35,18 +35,20 @@ class WebEditorResourceHandler implements IServerResourceHandler {
 		return repositoryFactory.getRepositoryByModel(modelId).getFileContent(modelId,Optional.empty).get
 	}
 	
+	def getModelInfo(ModelId modelId) {
+		return repositoryFactory.getRepositoryByModel(modelId).getById(modelId)	
+	}
+	
 	def createResource(FileContent modelResource, URI uri, ResourceSet resourceSet){
-		val resourceList = resourceSet.getResources();
-		var createResource = true;
-		for (Resource resource : resourceList) {
+		for (Resource resource : resourceSet.getResources()) {
 			if (resource.getURI().equals(uri)) {
-				createResource = false;
+				return resource;
 			}
 		}
-		if(createResource){
-			val resource = resourceSet.createResource(uri)
-			resource.load(new ByteArrayInputStream(modelResource.content), new HashMap)				
-		}
+		
+		val resource = resourceSet.createResource(uri)
+		resource.load(new ByteArrayInputStream(modelResource.content), new HashMap)	
+		return resource
 	}
 
 	@Transactional
@@ -55,38 +57,23 @@ class WebEditorResourceHandler implements IServerResourceHandler {
 			val resourceSet = resourceSetProvider.get(resourceId, serviceContext)
 			val modelResource = getModelResource(ModelId.fromPrettyFormat(resourceId))
 			val uri = URI.createURI("dummy:/" + modelResource.fileName)
-			createResource(modelResource, uri, resourceSet)
-			val xtextResource = resourceSet.getResource(uri, true) as XtextResource
-			return documentProvider.get(resourceId, serviceContext) => [
+			var resource = createResource(modelResource, uri, resourceSet)
+			
+			var modelInfo = getModelInfo(ModelId.fromPrettyFormat(resourceId))
+			
+			for (ModelId reference : modelInfo.references) {
+				val modelReference = getModelResource(reference)
+				val modelReferenceURI = URI.createURI("dummy:/" + reference.prettyFormat + "-" + modelReference.fileName)
+				createResource(modelReference, modelReferenceURI, resourceSet)
+			}
+
+			val xtextResource = resource as XtextResource
+			return documentProvider.get(null, serviceContext) => [
 				setInput(xtextResource)
 			]
 		} catch (WrappedException exception) {
 			throw exception.cause
 		}
-		
-//		try {
-//			val modelID = ModelId.fromPrettyFormat(resourceId)
-////			val modelInfo = this.repositoryFactory.getRepositoryByModel(modelID).getById(modelID)
-//			
-//			var resourceSet = injector.getInstance(XtextResourceSet)
-//			
-//			val modelResource = getModelResource(modelID)
-//			val uri = URI.createURI("dummy:/" + modelResource.fileName)
-//			createResource(modelResource, uri, resourceSet)
-//			
-////			for (ModelId reference : modelInfo.references) {
-////				val modelReference = getModelResource(modelID)
-////				val modelReferenceURI = URI.createURI("dummy:/" + reference.prettyFormat + "-" + modelReference.fileName)
-////				createResource(modelReference, modelReferenceURI, resourceSet)
-////			}
-//
-//			val xtextResource = resourceSet.getResource(uri, true) as XtextResource
-//			return documentProvider.get(resourceId, serviceContext) => [
-//				setInput(xtextResource)
-//			]
-//		} catch (WrappedException exception) {
-//			throw exception.cause
-//		}
 	}
 
 	override put(IXtextWebDocument document, IServiceContext serviceContext) throws IOException {
