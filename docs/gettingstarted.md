@@ -96,3 +96,8 @@ If you want to see the full process of creating, integrating and visualizing sen
   * [Mapping Engine for Node.js](../mapping-engine-nodejs/README.md)
   * [Eclipse Hono Payload Normalizer](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber)
 
+
+---
+
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow] and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 
