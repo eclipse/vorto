@@ -1794,11 +1794,11 @@ input[type=file]::-webkit-file-upload-button {
 .model-box.im .icon img{
     transition: all 0.3s linear;
     position: absolute;
-    top: 18px;
+    top: 25px;
     right: 5px;
     z-index: 0;
-    width: 80px;
-    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
 }
 
 .model-box .model-box-footer {
