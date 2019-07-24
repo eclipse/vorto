@@ -86,3 +86,8 @@ As an example, we will use our [RaspberryPi Information Model](https://vorto.ecl
   - [Python](./mqtt-python.md)
   - [Arduino](./connect_esp8266.md)
   - [Java](./connect_javadevice.md)
+  
+---
+
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 
