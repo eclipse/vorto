@@ -155,7 +155,9 @@ You can [read more about *Model States* here](../../repository/docs/model_states
 - [Generate Python Code](mqtt-python.md) that connects the device to the Bosch IoT Suite via MQTT.
 - [Generate Java Code](connect_javadevice.md) that connects the device to the Bosch IoT Suite via MQTT.
 
+---
 
-
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 
 
 
