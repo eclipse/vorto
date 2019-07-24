@@ -23,16 +23,16 @@ public class WebEditorConfiguration {
   
   @Bean
   public ServletRegistrationBean functionblockXtextServlet() {
-    return new ServletRegistrationBean(new FunctionblockServlet(), "/functionblock/xtext-service/*");
+    return new ServletRegistrationBean(new FunctionblockServlet(repositoryFactory), "/functionblock/xtext-service/*");
   }
   
   @Bean
   public ServletRegistrationBean infomodelXtextServlet() {
-    return new ServletRegistrationBean(new InfomodelServlet(), "/infomodel/xtext-service/*");
+    return new ServletRegistrationBean(new InfomodelServlet(repositoryFactory), "/infomodel/xtext-service/*");
   }
   
   @Bean
   public ServletRegistrationBean mappingXtextServlet() {
-    return new ServletRegistrationBean(new MappingServlet(), "/mapping/xtext-service/*");
+    return new ServletRegistrationBean(new MappingServlet(repositoryFactory), "/mapping/xtext-service/*");
   }
 }

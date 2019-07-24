@@ -23,6 +23,7 @@
 		<module>repository-java-client</module>
 		<module>repository-server</module>
 		<module>repository-server-config</module>
+		<module>repository-editor</module>
 		<module>repository-web</module>
 	</modules>
 

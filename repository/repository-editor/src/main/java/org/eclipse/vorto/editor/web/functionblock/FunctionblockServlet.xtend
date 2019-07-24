@@ -2,20 +2,25 @@ package org.eclipse.vorto.editor.web.functionblock
 
 import com.google.inject.Injector
 import javax.servlet.annotation.WebServlet
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory
+import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.util.DisposableRegistry
 import org.eclipse.xtext.web.servlet.HttpServiceContext
 import org.eclipse.xtext.web.servlet.XtextServlet
 
 @WebServlet(name = 'Functionblock XtextServices', urlPatterns = '/functionblock/xtext-service/*')
+@FinalFieldsConstructor
 class FunctionblockServlet extends XtextServlet {
 	
 	DisposableRegistry disposableRegistry
 	
 	Injector injector; 
 	
+	val IModelRepositoryFactory repositoryFactory
+	
 	override init() {
 		super.init()
-		injector = new FunctionblockWebSetup().createInjectorAndDoEMFRegistration()
+		injector = new FunctionblockWebSetup(repositoryFactory).createInjectorAndDoEMFRegistration()
 		disposableRegistry = injector.getInstance(DisposableRegistry)
 	}
 	

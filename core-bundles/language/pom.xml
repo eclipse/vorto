@@ -29,7 +29,6 @@
 	<module>org.eclipse.vorto.editor.mapping.ide</module>
 	<module>org.eclipse.vorto.editor.mapping.ui</module>
 	<module>org.eclipse.vorto.editor</module>
-	<module>org.eclipse.vorto.editor.web</module>
 	</modules>
 
 </project>

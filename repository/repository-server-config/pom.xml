@@ -112,7 +112,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor.web</artifactId>
+			<artifactId>repository-editor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>language</artifactId>
+		<artifactId>repository</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.vorto.editor.web</artifactId>
+	<artifactId>repository-editor</artifactId>
 
-	<name>Web Editor Plugin</name>
+	<name>Repository Editor</name>
 
 	<dependencies>
 		<dependency>
@@ -85,18 +85,14 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-
+	
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.xtend</groupId>
-				<artifactId>xtend-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+ 		<plugins>
+ 			<plugin>
+ 				<groupId>org.eclipse.xtend</groupId>
+ 				<artifactId>xtend-maven-plugin</artifactId>
+ 			</plugin>
+ 		</plugins>
+ 	</build>
 
 </project> 
