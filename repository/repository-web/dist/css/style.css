@@ -910,7 +910,9 @@ th.action
 }
 
 .dl-horizontal dd {
+    width: 100%;
     margin-left: 150px;
+    overflow-wrap: break-word;
 }
 }
 
