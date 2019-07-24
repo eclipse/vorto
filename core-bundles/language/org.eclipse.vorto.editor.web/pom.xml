@@ -1,17 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
- 	<modelVersion>4.0.0</modelVersion>
- 	<parent>
- 		<groupId>org.eclipse.vorto</groupId>
- 		<artifactId>language</artifactId>
- 		<version>0.11.0-SNAPSHOT</version>
- 	</parent>
- 
- 	<artifactId>org.eclipse.vorto.editor.web</artifactId>
- 
- 	<name>Web Editor Plugin</name>
- 	
- 	<dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>language</artifactId>
+		<version>0.11.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.eclipse.vorto.editor.web</artifactId>
+
+	<name>Web Editor Plugin</name>
+
+	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.core</artifactId>
@@ -78,15 +79,24 @@
 			<version>9.2.11.v20150529</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
- 
- 	<build>
- 		<plugins>
- 			<plugin>
- 				<groupId>org.eclipse.xtend</groupId>
- 				<artifactId>xtend-maven-plugin</artifactId>
- 			</plugin>
- 		</plugins>
- 	</build>
- 
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project> 

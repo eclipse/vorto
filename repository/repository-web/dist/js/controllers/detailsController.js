@@ -47,16 +47,17 @@ repositoryControllers.controller('DetailsController',
 	      }
     	}
 		
-		$scope.createEditor = function(model) {
+		$scope.createEditor = function(model,modelId) {
 			var defer = $q.defer();
 			require(["webjars/ace/src/ace"], function() {
 	    		require(["xtext/xtext-ace"], function(xtext) {
 	        		var editor = xtext.createEditor({
 	            		enableFormattingAction: true,
 	            		enableSaveAction: false,
-	            		loadFromServer: false,
+	            		resourceId : modelId,
+	            		loadFromServer: true,
 	            		showErrorDialogs: false,
-	            		enableValidationService: true,
+	            		enableValidationService: false,
 	            		enableOccurrencesService: true,
 	            		enableHighlightingService: true,
 	            		xtextLang: model.language,
@@ -253,7 +254,7 @@ repositoryControllers.controller('DetailsController',
 						language = {'language' : 'mapping'};
 					}
 					
-					$scope.createEditor(language);
+					$scope.createEditor(language,$scope.model.id.prettyFormat);
 					
 					if ($rootScope.authenticated) {
 						var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
@@ -288,16 +289,6 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getContent = function (modelId) {
-			$scope.loadingModel = true;
-			$http.get("./api/v1/models/" + modelId + "/file")
-				.success(function (result) {
-					$timeout(function () {
-							$scope.modelEditor.getSession().getDocument().setValue(result);
-							$scope.loadingModel = false;
-						}, 1000);
-				}).error(function (data, status, headers, config) {
-					$scope.error = data.message;
-				});
 		};
 		
 		$scope.getPlatformGenerators = function () {
