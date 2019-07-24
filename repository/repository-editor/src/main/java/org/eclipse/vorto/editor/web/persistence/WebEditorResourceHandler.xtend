@@ -19,6 +19,8 @@ import org.eclipse.xtext.web.server.model.IWebDocumentProvider
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
 import org.eclipse.xtext.web.server.model.IXtextWebDocument
 import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
+import java.util.UUID
+import org.eclipse.xtext.EcoreUtil2
 
 class WebEditorResourceHandler implements IServerResourceHandler {
 	
@@ -56,19 +58,20 @@ class WebEditorResourceHandler implements IServerResourceHandler {
 		try {
 			val resourceSet = resourceSetProvider.get(resourceId, serviceContext)
 			val modelResource = getModelResource(ModelId.fromPrettyFormat(resourceId))
-			val uri = URI.createURI("dummy:/" + modelResource.fileName)
+			val uri = URI.createURI("dummy:/" + UUID.randomUUID.toString+ modelResource.fileName)
 			var resource = createResource(modelResource, uri, resourceSet)
 			
 			var modelInfo = getModelInfo(ModelId.fromPrettyFormat(resourceId))
 			
 			for (ModelId reference : modelInfo.references) {
 				val modelReference = getModelResource(reference)
-				val modelReferenceURI = URI.createURI("dummy:/" + reference.prettyFormat + "-" + modelReference.fileName)
+				val modelReferenceURI = URI.createURI("dummy:/" + UUID.randomUUID.toString + modelReference.fileName)
 				createResource(modelReference, modelReferenceURI, resourceSet)
 			}
 
 			val xtextResource = resource as XtextResource
-			return documentProvider.get(null, serviceContext) => [
+			EcoreUtil2.resolveAll(xtextResource)
+			return documentProvider.get(resourceId, serviceContext) => [
 				setInput(xtextResource)
 			]
 		} catch (WrappedException exception) {
