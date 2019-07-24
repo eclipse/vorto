@@ -1778,6 +1778,8 @@ input[type=file]::-webkit-file-upload-button {
     display: block;
     font-size: 11px;
     margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .model-box .desc {
@@ -1785,6 +1787,8 @@ input[type=file]::-webkit-file-upload-button {
     line-height: 12px;
     color: #999;
     height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .model-box.im .inner {
