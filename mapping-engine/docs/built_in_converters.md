@@ -2,137 +2,162 @@
 
 This gives an overview of what mapping functions that are currently supported. You can use these functions from within mapping xpath rules and mapping conditions. 
 
-## (X)path evaluation function
+> Important Note: If you pass an array directly on root level, you can access its array elements by ```array[index]```
 
-> Note: This xpath function is only available for mapping conditions !
+## Condition Funtions
 
-### API Documentation
+
+### xpath:eval()
 
 Extracts a value by evaluating an xpath expression with a given context object:
-```xpath:eval(String xpathExpression, Object context)```
+```xpath:eval(String xpathExpression, this)```
 
-### Example Usage
+#### Example
 
 Extracts the english greeting from a list of all greetings and checks if the value matches 'hello':
 ```xpath:eval("greetings[@lang = 'english']",this) == "hello"```
 
-## String functions
+### vorto_base64:decodeString()
 
-### API Documentation
+Decodes a base64 String to a byte array
 
-```string:substring(String str, int start)``` - Gets a substring from the specified String avoiding exceptions.
+```vorto_base64:decodeString(String value)```
 
-```string:substring(String str, int start, int end)``` - Gets a substring from the specified String avoiding exceptions.
+### vorto_base64:decodeByteArray()
 
-```string:trim(String str)``` - Removes control characters (char <= 32) from both ends of this String
+Decodes a base64 byte array to a byte array
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html)
+```vorto_base64:decodeByteArray(byte[] value)```
 
-### Example Usage
+### empty(expression)
 
-Example data: ```{"voltage : "2323mV"}```
+Checks if the given expression is null or empty string
+
+#### Example
+
+```empty(person.name)```
+
+### not empty(expression)
+
+Checks if the given expression is not null or not empty
+
+#### Example
+
+```empty(person.name)```
+
+### More functions
+
+For more functions, please visit [Apache JEXL Reference](http://commons.apache.org/proper/commons-jexl/reference/syntax.html)
+
+## Mapping Functions
+
+### vorto_string:substring(String value, int start)
+
+Gets a substring from the specified String avoiding exceptions.
+
+### vorto_string:substring(String value, int start, int end)
+
+Gets a substring from the specified String avoiding exceptions.
+
+#### Example Usage
+
+Data: ```{"voltage : "2323mV"}```
 
 Example Mapping that extracts ```2323```:
 
-```string:substring(voltage,string:length(voltage)-2)```
+```vorto_string:substring(voltage,0, string:length(voltage)-2)```
 
-## Conversion functions
+### vorto_string:trim(String value)
 
-### API Documentation
+Removes control characters (char <= 32) from both ends of this String
+
+### More String functions
+
+For more string functions, visit [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html)
+
+### vorto_conversion1:byteArrayToInt()
 
 Converts an array of byte into an int using the default (little endian, Lsb0) byte and bit ordering:
 
-```conversion:byteArrayToInt(byte[] src, int srcPos, int dstInit, int dstPos, int nBytes)```
+```vorto_conversion1:byteArrayToInt(byte[] src, int srcPos, int dstInit, int dstPos, int nBytes)```
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html)
-
-### Example Usage
+#### Example Usage
 
 Example data: ```{"data : [0, 0, 0, -48, 7, 0]}```
 
 Example Mapping:	
-```conversion:byteArrayToInt(/data, 3, 0, 0, 3)```
+```vorto_conversion:byteArrayToInt(/data, 3, 0, 0, 3)```
 
 
-## Base64 functions
+### More Conversion functions
 
-> Note: This xpath function is only available for mapping conditions !
+For more conversion functions, visit [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html)
 
-### API Documentation
-
-Decodes a base64 String to a byte array
-
-```base64:decodeString(String value)```
-
-Decodes a base64 byte array to a byte array
-
-```base64:decodeByteArray(byte[] value)```
-
-## Number functions
-
-### API Documentation
+### vorto_number:toFloat()
 
 Converts a string value to a float:
 
 ```number:toFloat(String value)```
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html)
+### More number functions
 
-## Date functions
+For more number functions, visit [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html)
 
-### API Documentation
+### vorto_date:format()
 
 Formats the given long value to a date string of form 'yyyy-MM-dd HH:mm:ssZ'
 
-```date:format(long value)```
+```vorto_date:format(long value)```
 
 Formats the given long value to a date string with the given format:
 
-```date:format(long value, String pattern)```
+```vorto_date:format(long value, String pattern)```
 
 
-## Type functions
-
-### API Documentation
+### vorto_type:convertDouble()
 
 Converts the given double value to a string:
 
 ```type:convertDouble(double value)```
 
+### vorto_type:convertInt()
+
 Converts the given integer value to a string
 
 ```type:convertInt(int value)```
 
-## Bool functions
-
-### API Documentation
+### vorto_boolean:toBoolean()
 
 Converts the given string to a boolean:
 
 ```boolean:toBoolean(String str)```
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/BooleanUtils.html)
+### More Boolean functions
 
-## String Binary functions
+For more boolean functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/BooleanUtils.html)
 
-### API Documentation
+### vorto_conversion2:parseHexBinary()
 
 Converts the hex string argument into an array of bytes:
 
-```binaryString:parseHexBinary(String str)```
+```vorto_conversion2:parseHexBinary(String str)```
 
-Other functions, see [Complete API Documentation](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/DatatypeConverter.html)
+### More converter2 functions
 
-## Endian functions
+For more converter2 functions, visit [Complete API Documentation](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/DatatypeConverter.html)
 
-### API Documentation
+### vorto_endian:swapShort()
 
 Converts a "short" value between endian systems
 
-```endian:swapShort(short value)```
+```vorto_endian:swapShort(short value)```
+
+### vorto_endian:swapFloat()
 
 Converts a "float" value between endian systems
 
-```endian:swapFloat(float value)```
+```vorto_endian:swapFloat(float value)```
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-io/javadocs/api-2.4/org/apache/commons/io/EndianUtils.html)
+### More endian functions
+
+For more endian functions, visit [Complete API Documentation](https://commons.apache.org/proper/commons-io/javadocs/api-2.4/org/apache/commons/io/EndianUtils.html)

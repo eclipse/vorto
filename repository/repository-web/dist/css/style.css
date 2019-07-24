@@ -465,7 +465,6 @@ ul.nav {
 }
 
 .placeHolder {
-    background-color: #dadada;
     height: 200px;
     width: 200px;
     display: -webkit-flex;
@@ -482,7 +481,9 @@ ul.nav {
     text-align: center;
     padding: 3px 0;
     background: #dadada;
-
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
 }
 
 .placeHolder:hover .noimg{
@@ -1793,11 +1794,11 @@ input[type=file]::-webkit-file-upload-button {
 .model-box.im .icon img{
     transition: all 0.3s linear;
     position: absolute;
-    top: 18px;
+    top: 25px;
     right: 5px;
     z-index: 0;
-    width: 80px;
-    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
 }
 
 .model-box .model-box-footer {

@@ -15,16 +15,23 @@ package org.eclipse.vorto.service.mapping;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionalProperties;
-import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
+import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.junit.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -57,6 +64,24 @@ public class JsonMappingTest {
     System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput.get("button"),
         "button", "org.eclipse.vorto", "123")));
 
+  }
+  
+  @Test
+  public void testStringArrayWithSimpleCondition() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction()).build();
+
+    List<String> input = Arrays.asList(new String[]{"","2","3"});
+    
+    InfomodelValue mappedOutput = mapper.mapSource(input);
+
+    assertNull(mappedOutput.get("button"));
+    
+    input = Arrays.asList(new String[]{"1","2","3"});
+    mappedOutput = mapper.mapSource(input);
+    System.out.println(mappedOutput.get("button").getStatusProperty("sensor_value"));
+
+    assertTrue(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
   }
 
 
