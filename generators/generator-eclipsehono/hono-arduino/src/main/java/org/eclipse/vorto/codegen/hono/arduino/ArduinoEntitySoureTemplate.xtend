@@ -24,7 +24,7 @@ class ArduinoEntitySoureTemplate extends ArduinoTemplate<Entity>{
         
         «FOR status : dataEntity.properties»
         void «dataEntity.name»::set«status.name»(«type(status.type)» value) {
-            «status.name» = value;          
+            this.«status.name» = value;          
         }
         
         «type(status.type)» «dataEntity.name»::get«status.name»() {

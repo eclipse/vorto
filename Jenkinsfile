@@ -98,23 +98,7 @@ pipeline {
           }
         }
       }
-      stage('Deploy'){
-        steps{
-            script {
-              //todo add developmetn branch for deployment to aws
-              if ("${env.BRANCH_NAME}" == "master"){
-                input message: "Continue with deployment?"
-                // build docker containers and load http proxy
-                withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
-                  // set +x because the url contains $@ which is otherwise parsed by bash so its escaped but jenkins will only to string matching to censor secrets
-                  sh "set +x; docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./;"
-                }
-                // push docker containers
-                sh "docker push eclipsevorto/vorto-repo:${env.BRANCH_NAME}"
-              }
-            }
-        }
-      }
+      
     }
 }
 

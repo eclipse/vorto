@@ -45,6 +45,21 @@ public class Generator {
       throw new GeneratorCreationException("Error in instantiating Generator", e);
     }
   }
+  
+  public static Generator create(String configFile, IVortoCodeGenerator _generator) {
+	  try {
+	      Generator generator = new Generator(GatewayUtils.generatorInfoFromFile(configFile, _generator),
+	    		  _generator, createConfigUI(_generator));
+	      generator.info.setDescription(_generator.getInfo().getDescription());
+	      generator.info.setCreator(_generator.getInfo().getOrganisation());
+	      generator.info.setName(_generator.getInfo().getName());
+	      generator.info.setTags(
+	    		  _generator.getInfo().getTags().toArray(new String[_generator.getInfo().getTags().size()]));
+	      return generator;
+	    } catch (Exception e) {
+	      throw new GeneratorCreationException("Error in instantiating Generator", e);
+	    }
+  }
       
   public static Generator create(String configFile,
       Class<? extends IVortoCodeGenerator> generatorClass) {

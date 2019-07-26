@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiParam;
 public class EclipseHonoPluginController extends AbstractGeneratorController {
 
   @RequestMapping(value = "/models/{modelId:.+}/connectivity", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void generateEclipseHono(
       @ApiParam(value = "the vorto model ID, e.g. com.acme:Thermostat:1.0.0",
           required = true) final @PathVariable String modelId, @RequestParam(value="language",required=true) Language language, final HttpServletResponse response) {
@@ -44,7 +44,7 @@ public class EclipseHonoPluginController extends AbstractGeneratorController {
   
   @RequestMapping(value = "/", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public GeneratorPluginConfiguration getPluginInfo() {
     return this.generatorService.getPluginInfo("eclipsehono", true);
   }

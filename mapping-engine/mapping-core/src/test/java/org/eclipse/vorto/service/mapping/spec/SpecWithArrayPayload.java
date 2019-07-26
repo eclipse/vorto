@@ -31,7 +31,7 @@ public class SpecWithArrayPayload extends AbstractTestSpec {
     digitalInputStateProperty.setType(PrimitiveType.STRING);
 
     digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-    digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("/@clickType[1]"));
+    digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("array[1]/clickType"));
 
     buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty}));
 

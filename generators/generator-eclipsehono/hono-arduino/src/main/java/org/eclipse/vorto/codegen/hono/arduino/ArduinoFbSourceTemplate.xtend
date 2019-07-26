@@ -41,7 +41,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		«IF fb.functionblock.status !== null»
 			«FOR status : fb.functionblock.status.properties»
 			void «fb.name»::set«status.name»(«type(status.type)» value) {
-				«status.name» = value;			
+				this.«status.name» = value;			
 			}
 			
 			«type(status.type)» «fb.name»::get«status.name»() {

@@ -34,7 +34,7 @@ public class BoschIotSuitePluginController extends AbstractGeneratorController {
 
   @RequestMapping(value = "/models/{modelId:.+}/connectivity",
       method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void generateBoschIoTSuiteDeviceConnectivity(
       @ApiParam(value = "the vorto model ID, e.g. com.acme:Thermostat:1.0.0",
           required = true) final @PathVariable String modelId, @RequestParam(value="language",required=true) Language language, final HttpServletResponse response) {
@@ -56,7 +56,7 @@ public class BoschIotSuitePluginController extends AbstractGeneratorController {
 
   @RequestMapping(value = "/", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public GeneratorPluginConfiguration getBoschIoTSuiteInfo() {
     return this.generatorService.getPluginInfo("boschiotsuite", true);
   }

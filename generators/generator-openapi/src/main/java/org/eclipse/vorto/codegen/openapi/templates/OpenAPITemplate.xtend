@@ -14,22 +14,25 @@ package org.eclipse.vorto.codegen.openapi.templates
 
 import org.eclipse.vorto.codegen.openapi.Utils
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+import org.eclipse.vorto.core.api.model.functionblock.Event
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
-import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 
 /**
  * Creates an OpenAPI v3 Specification for an Information Model. Supports configuration, status properties as well as operations
  * 
  */
 class OpenAPITemplate implements IFileTemplate<InformationModel> {
-	
+			
 	override getFileName(InformationModel model) {
 		'''«model.name»-openapi-v3.yml'''
 	}
@@ -449,7 +452,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    «fb.name»Properties:
 		      type: object
 		      description: «fb.name» properties of «infomodel.name»
+		      «IF (fb.functionblock.status !== null && !fb.functionblock.status.properties.isEmpty) || 
+		      	  (fb.functionblock.configuration !== null && !fb.functionblock.configuration.properties.isEmpty)»
 		      properties:
+		      «ENDIF»
 		        «IF fb.functionblock.status !== null && !fb.functionblock.status.properties.isEmpty»
 		        status:
 		          type: object
@@ -530,7 +536,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      enum: [«FOR literal: enumeration.enums SEPARATOR ','»«literal.name»«ENDFOR»]
 		    «ENDFOR»
 		  
-		  requestBodies:
+		  «IF hasRequestBodiesContent(infomodel)»requestBodies:«ENDIF»
 		    «FOR fb : Utils.getReferencedFunctionBlocks(infomodel)»
 		    «FOR event : fb.functionblock.events»
 		    «IF !event.properties.empty»
@@ -689,10 +695,36 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		'''
 	}
 		
+	/*
+	 * Checks if the information has elements that requires request body to be set
+	 */
+	def hasRequestBodiesContent(InformationModel infomodel) {
+		var boolean flag = false;
+		
+		for (FunctionblockModel fb : Utils.getReferencedFunctionBlocks(infomodel)) {
+			for (Event event : fb.functionblock.events) {
+				if (!event.properties.empty) {
+					flag = true;
+				}
+			}
+			
+			if (fb.functionblock.configuration !== null && !fb.functionblock.configuration.properties.empty) {
+				flag = true;
+			}
+			
+			for (Operation operation : fb.functionblock.operations) {
+				if (!operation.params.isEmpty) {
+					flag = true;
+				}
+			}
+		}
+		return flag;
+	}
+	
 	def handleConstraints(ConstraintRule rule) {
 	'''
 	«FOR constraint : rule.constraints»
-	«getConstraint(constraint.type)»«IF constraint.type === ConstraintIntervalType.REGEX»"«constraint.constraintValues»"«ELSE»«constraint.constraintValues»«ENDIF»
+	«getConstraint(constraint.type)»«constraint.constraintValues»
 	«ENDFOR»
 	'''
 	}
