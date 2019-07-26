@@ -58,7 +58,8 @@ repositoryControllers.controller("tenantManagementController",
                 $rootScope.init();
             });
         };
-	$scope.createTenant = function(tenant) {
+		
+		$scope.createTenant = function(tenant) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 title: "Add Namespace",
@@ -85,6 +86,83 @@ repositoryControllers.controller("tenantManagementController",
             modalInstance.result.finally(function(result) {
                 $scope.getTenants();
                 $rootScope.init();
+            });
+        };
+        
+        $scope.restoreTenant = function(tenant) {
+        	var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: "webjars/repository-web/dist/partials/dialog/restoration_prompt_and_confirm.html",
+                size: "lg",
+                controller: function($scope) {
+                	$scope.allowRestore = false;
+                	$scope.errorMessage = null;
+                		
+                	$scope.getNamespace = function() {
+                		if (tenant != null) {
+                			return "'" + tenant.namespaces[0] + "' ";
+                		} else {
+                			return "";
+                		}
+                	};
+                	
+                	$scope.getNamespaceParameter = function() {
+                		if (tenant != null) {
+                			return "namespaces/" + tenant.namespaces[0];
+                		} else {
+                			return "tenants";
+                		}
+                	};
+                	
+                	$scope.fileNameChanged = function(element) {
+                		$scope.$apply(function($scope) {
+                        	if (element != null && element.files != null && element.files.length > 0) {
+                        		$scope.allowRestore = true;
+                        	} else {
+                        		$scope.allowRestore = false;
+                        	}
+                        });  
+                    };
+                	
+                    $scope.restore = function() {
+                    	var element = document.getElementById('backupFile');
+                    	if (element != null && element.files != null && element.files.length > 0) {
+                    		var fd = new FormData();
+                            fd.append('file', element.files[0]);
+                            $http.post('./rest/' + $scope.getNamespaceParameter() + '/restore', fd, {
+                                    transformRequest: angular.identity,
+                                    headers: {
+                                        'Content-Type': undefined
+                                    }
+                                })
+                                .success(function (result) {
+                                	console.log(JSON.stringify(result));
+                                	var updatedTenants = result;
+                                	if (updatedTenants.length < 1) {
+                                		$scope.errorMessage = "No tenants were restored. Maybe you used the wrong backup file?";
+                                	} else {
+                                		$scope.errorMessage = null;
+                                		modalInstance.dismiss();
+                                	}
+                                })
+                                .error(function(result) {
+                                	console.log(JSON.stringify(result));
+                                	// TODO : better error message
+                                	$scope.errorMessage = "Error on server.";
+                                });
+                    	}
+                    };
+                    
+                	$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+                },
+                resolve: {
+                    tenant: function () {
+                        return tenant;
+                    }
+                },
+                backdrop: 'static'
             });
         };
         
@@ -165,15 +243,12 @@ repositoryControllers.directive("tenantManagement", function() {
 repositoryControllers.controller("createOrUpdateTenantController", 
     ["$rootScope", "$scope", "$uibModal", "$uibModalInstance","dialogConfirm", "$http", "tenant", "tenants",
     function($rootScope, $scope, $uibModal, $uibModalInstance, dialogConfirm, $http, tenant, tenants) {
-	
-	
         
         $scope.tenant = tenant;
         $scope.mode = tenant.edit ? "Update" : "Create";
         $scope.originalNamespaces = tenant.namespaces.slice();
         $scope.errorMessage = "";
-        $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
-        
+        $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";        
 		
         $scope.isCreatingOrUpdating = false;
         
@@ -246,13 +321,6 @@ repositoryControllers.controller("createOrUpdateTenantController",
         $scope.readonlyNamespace = function(namespace) {
             return $scope.tenant.edit && $scope.originalNamespaces.includes(namespace);
         };
-        
-        /*$scope.removeNamespace = function(namespace) {
-            $scope.removeFromArray($scope.tenant.namespaces, namespace);
-            if (namespace == $scope.tenant.defaultNamespace) {
-                $scope.tenant.defaultNamespace = "";
-            }
-        };*/
         
         $scope.removeNamespace = function(namespace) {
         	var dialog = dialogConfirm($scope, "Are you sure you want to remove this namespace " + "?", ["Yes, Delete", "Cancel"]);

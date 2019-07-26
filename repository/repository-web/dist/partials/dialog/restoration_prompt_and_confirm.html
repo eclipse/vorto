@@ -1,0 +1,25 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="cancel()">&times;</button>
+	<h4 class="modal-title">Restore {{ getNamespace() }}using backup</h4>
+</div>
+<div class="modal-body" id="modal-body">
+	<div class="row" ng-hide="errorMessage == null || errorMessage.length <= 0">
+		<div class="form-group col-sm-12">
+			<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+		</div>
+	</div>		
+	<div class="row">
+		<form>
+	  		<div class="form-group col-sm-12">
+			  <label for="backupFile">Backup File</label>
+			  <input type="file" accept=".zip" id="backupFile" style="width: 100%;" onchange="angular.element(this).scope().fileNameChanged(this)">
+			  <p class="help-block input-sm">Restore content using backup zip file. With this restore, all previous contents will be lost and replaced with contents from the
+						uploaded backup zip file. Are you sure you want to proceed?</p>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="restore()" ng-disabled="!allowRestore">Yes, Restore</button>
+	<button class="btn btn-default" type="button" ng-click="cancel()" >Cancel</button>
+</div>

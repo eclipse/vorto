@@ -1,10 +1,18 @@
 <div class="row">
-	<div class="col-sm-8">
+	<div class="col-sm-4">
 		<div class="row" ng-show="isRetrievingTenants">
 			<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching namespaces ...
 		</div>
 	</div>
-	<div class="col-sm-4">
+	<div class="col-sm-8">
+		<a class="btn btn-default pull-right" ng-click="restoreTenant(null)" ng-show="hasAuthority('ROLE_SYS_ADMIN')"
+			data-toggle="tooltip" data-placement="bottom" title="Restore content using backup XML. With this restore, all previous content will be lost and replaced with content from the backup XML uploaded.">
+			<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>&nbsp;Restore
+		</a>
+		<a class="btn btn-default pull-right" ng-href="rest/tenants/backup" ng-show="hasAuthority('ROLE_SYS_ADMIN')"
+			data-toggle="tooltip" data-placement="bottom" title="Download the entire repository content (for backup).">
+			<i class="fa fa-fw fa-download" aria-hidden="true"></i>&nbsp;Backup
+		</a>
 		<a uib-popover="Request for an official namespace, e.g. com.mycompany" popover-placement="top" popover-trigger="'mouseover'" href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body={{requestEmailTemplate}}" class="btn btn-default pull-right">
 			<i class="fa fa-envelope"></i>&nbsp;Request Official Namespace
 		</a>
@@ -25,14 +33,14 @@
 		<table class="table table-bordered table-striped table-condensed">
 			<thead>
 				<tr>
-					<th class="col-md-3">Namespace</th>
+					<th class="col-md-7">Namespace</th>
 					<th class="col-md-2">Owners</th>
 					<th class="col-md-3">Actions</th>
 				</tr>
 			</thead>
 			<tbody ng-repeat="tenant in tenants">
 				<tr>
-					<td class="col-md-3">
+					<td class="col-md-7">
 						<div ng-repeat="namespace in tenant.namespaces">
 							{{namespace}}
 						</div>
@@ -46,6 +54,14 @@
 							</a>&nbsp;&nbsp;
 							<a ng-click="manageUsers(tenant)" data-toggle="tooltip" data-placement="bottom" title="Manage Collaborators">
 								<i class="fa fa-user fa-2x"  aria-hidden="true"></i>
+							</a>&nbsp;&nbsp;
+							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{tenant.namespaces[0]}}/backup" 
+								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this tenant for backup.">
+								<i class="fa fa-fw fa-download" aria-hidden="true"></i>
+							</a>&nbsp;&nbsp;
+							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreTenant(tenant)" 
+								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this tenant using backup.">
+								<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
 							</a>&nbsp;&nbsp;
 					</td>
 				</tr>
