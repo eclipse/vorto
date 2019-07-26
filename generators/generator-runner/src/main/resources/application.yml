@@ -1,0 +1,11 @@
+server:
+  host: localhost
+  port: 8081
+  contextPath: /generators
+  serviceUrl: http://localhost:8081/generators
+  config:
+    generatorUser: generator
+    generatorPassword: 123
+
+vorto:
+  serverUrl: https://localhost:8443/infomodelrepository
