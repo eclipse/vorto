@@ -490,6 +490,11 @@ ul.nav {
     color: #dadada;
 }
 
+.placeHolder .details-img {
+    max-height: 200px;
+    max-width: 200px;
+}
+
 .placeHolder .upload a{
     position: absolute;
     padding: 3px;
@@ -1442,7 +1447,7 @@ footer {
 
 .copyright {
 	color: #3a5a82;
-	margin-left: 20px;
+	padding-left: 40px;
 }
 
 footer ul.quicklinks {
