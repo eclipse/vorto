@@ -12,28 +12,19 @@
  */
 package org.eclipse.vorto.repository.backup;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.function.Predicate;
 import org.eclipse.vorto.repository.domain.Tenant;
 
 public interface IBackupRestoreService {
   
   /**
-   * Creates a map with namespace as key and the backup xml (in byte array) as value 
+   * Creates a zipped backup for tenants who passed the tenantFilter 
    * 
-   * @param tenantFilter filter for the tenants we wish to include. 
-   * Return a predicate that returns True if you want all tenants.
-   * @return a map of namespace to a backup byte array
+   * @param tenantFilter a predicate that determines who among the tenants are placed in the backup
+   * @return a byte array for a zip file that contains the backup
    */
-   Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter);
-  
-  /**
-   * Creates a zipped backup (in byte array) of the given backup 
-   * 
-   * @param backups a map of namespace to backup xml (in byte array)
-   * @return a byte array of the resulting zipped file
-   */
-  byte[] createZippedInputStream(Map<String, byte[]> backups);
+  byte[] createBackup(Predicate<Tenant> tenantFilter);
   
   /**
    * Restores the given backup file to its tenants
@@ -41,6 +32,7 @@ public interface IBackupRestoreService {
    * @param backupFile the zipped backup file
    * @param tenantFilter a filter for which tenants to restore. If you want to restore to all tenants, 
    * pass a predicate that returns true
+   * @return collection of tenants restored
    */
-  void restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter);
+  Collection<Tenant> restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter);
 }

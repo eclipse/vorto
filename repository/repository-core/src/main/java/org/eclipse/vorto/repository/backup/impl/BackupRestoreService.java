@@ -41,6 +41,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 @Component
 public class BackupRestoreService implements IBackupRestoreService {
@@ -48,7 +49,7 @@ public class BackupRestoreService implements IBackupRestoreService {
   private static Logger logger = Logger.getLogger(BackupRestoreService.class);
   
   private static Function<Tenant, String> tenantSignature = (tenant) -> 
-    tenant.getNamespaces().stream().findFirst().get().getName();
+    tenant.getNamespaces().iterator().next().getName();
   
   private IModelRepositoryFactory modelRepositoryFactory;
   
@@ -67,7 +68,11 @@ public class BackupRestoreService implements IBackupRestoreService {
   }
   
   @Override
-  public Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter) {
+  public byte[] createBackup(Predicate<Tenant> tenantFilter) {
+    return createZippedInputStream(createBackups(tenantFilter));
+  }
+  
+  private Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter) {
     return createBackups(tenantService.getTenants()
         .stream()
         .filter(tenantFilter)
@@ -83,8 +88,7 @@ public class BackupRestoreService implements IBackupRestoreService {
       ).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
   }
   
-  @Override
-  public byte[] createZippedInputStream(Map<String, byte[]> backups) {
+  private byte[] createZippedInputStream(Map<String, byte[]> backups) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ZipOutputStream zos = new ZipOutputStream(baos);
 
@@ -107,9 +111,10 @@ public class BackupRestoreService implements IBackupRestoreService {
   }
   
   @Override
-  public void restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter) {
+  public Collection<Tenant> restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter) {
     Preconditions.checkNotNull(backupFile, "backupFile must not be null");
     try {
+      Collection<Tenant> tenantsRestored = Lists.newArrayList();
       Map<String, byte[]> backups = getBackups(backupFile);
       
       backups.forEach((namespace, backup) -> {
@@ -122,9 +127,14 @@ public class BackupRestoreService implements IBackupRestoreService {
             
             if (!repoMgr.isWorkspaceExist(tenantId)) {
               repoMgr.createTenantWorkspace(tenantId);
+            } else {
+              repoMgr.removeTenantWorkspace(tenantId);
+              repoMgr.createTenantWorkspace(tenantId);
             }
             
             repoMgr.restore(backup);
+            
+            tenantsRestored.add(tenant.get());
           } catch (Exception e) {
             logger.error("Error in restoration of '" + namespace + "'", e);
           }
@@ -133,7 +143,11 @@ public class BackupRestoreService implements IBackupRestoreService {
         }
       });
             
-      indexingService.reindexAllModels();
+      if (!tenantsRestored.isEmpty()) {
+        indexingService.reindexAllModels();
+      }
+      
+      return tenantsRestored;
       
     } catch (IOException e) {
       throw new GenericApplicationException("Problem while reading zip file during restore", e);
