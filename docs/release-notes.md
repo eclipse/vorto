@@ -2,6 +2,24 @@
 
 <br />
 
+## 0.11.1
+
+**Bugfixes**
+
+- OpenAPI Generator, creating invalid spec for FB with only operations
+- Arduino Generator creating invalid code for properties with name "value"
+- CORS problem when using the Vorto Repository Swagger API documentation
+- Repository UI Layout for browsers with lower resolution 
+- Vorto Function Block Selector during model creation showing all released functionblocks instead of only org.eclipse.vorto.*
+- Fixed security vulnerabilities during file upload
+
+**Minor Improvements**
+
+- Generators generating a single file return file instead of ZIP archive
+- UX improvements in all modal dialogs of repository
+
+<br />
+
 ## 0.11 
 
 With the release of **Eclipse Vorto 0.11**, we are introducing **essential improvements** that guarantee you full control over your models and their release process.
