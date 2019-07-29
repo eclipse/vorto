@@ -11,9 +11,7 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +44,7 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.ITenantUserService;
+import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,7 +146,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
       while ((entry = zis.getNextEntry()) != null) {
         if (!entry.isDirectory()
             && !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
-          fileUploads.add(FileUpload.create(entry.getName(), copyStream(zis, entry)));
+          fileUploads.add(FileUpload.create(entry.getName(), ZipUtils.copyStream(zis, entry)));
         }
       }
     } catch (IOException e) {
@@ -203,27 +202,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
   private boolean isAdmin(IUserContext userContext) {
     User user = getUserRepository().getUser(userContext.getUsername());
     return user != null && (user.isSysAdmin(userContext.getTenant()));
-  }
-
-  private static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try {
-      int size;
-      byte[] buffer = new byte[2048];
-
-      BufferedOutputStream bos = new BufferedOutputStream(out);
-
-      while ((size = in.read(buffer, 0, buffer.length)) != -1) {
-        bos.write(buffer, 0, size);
-      }
-
-      bos.flush();
-      bos.close();
-    } catch (IOException e) {
-      throw new BulkUploadException("IOException while copying stream to ZipEntry", e);
-    }
-
-    return out.toByteArray();
   }
 
   private String createUploadHandle(FileUpload fileUpload) {

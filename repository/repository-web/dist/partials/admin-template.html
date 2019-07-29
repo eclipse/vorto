@@ -30,40 +30,12 @@
 				<h2>Admin Utilities</h2>
 				<br/>
 				<div ng-if="error" class="alert alert-danger">{{error}}</div>
-				<h3>Restore</h3>
-				<p>Restore content using backup XML. With this restore, all previous content will be lost and replaced with content from the
-					backup XML uploaded.</p>
-				<form name="fileUploadForm" class="fileUploadForm form-inline">		
-					<table class="uploadTable">
-						<tr>
-							<td class= "uploadImportButtonSpacing">
-								<label for="file-upload" class="btn-primary btn uploadImportButton" id="browseBtn">
-									<i class="fa fa-folder-open"></i> Browse
-								</label>
-								<input type="file" ng-model="restoreFile" accept=".xml" name="file" id="file-upload" onchange="angular.element(this).scope().fileNameChanged(this)">				
-							</td>
-							<td> {{browsedFile}} </td>
-						</tr>
-					</table>		
-					<br/>
-					<div class="pull-right">
-						<button ng-disabled="!browsedFile" ng-click="restore()" class="btn btn-primary">Restore</button>
-					</div>
-				</form>
-				</br>
-				<hr>
 				<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
 				<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
 				<h3>Reindex</h3>
 				<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
 				<a ng-click="reindex()" class="btn btn-primary" ng-disabled="isReindexing">
 					<i ng-show="isReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Reindex</a>
-				</br>
-				<hr>
-				<h3>Backup</h3>
-				<p>Download the entire repository content (for backup).</p>
-				<a ng-href="rest/{{tenant}}/backups" class="btn btn-primary">
-					<i class="fa fa-fw fa-download"></i>Download Repository Content</a>
 				</br>
 				<hr>
 				<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
