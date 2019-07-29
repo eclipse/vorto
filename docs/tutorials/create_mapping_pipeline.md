@@ -21,14 +21,47 @@ Throughout this tutorial, we will set up a pipeline of mapping device payload th
 
 ## Steps
 
-**1**. Blabla
+**1**. Register your device and create a new Thing from the Information Model.
+**2**. Send data from the device to [IoT Hub](https://www.bosch-iot-suite.com/service/hub/).
+**2**. Receive data from Hub with the Data Normalizer
+**3**. Create a Mapping Specification for your device.
+**4**. Set up AWS AMQ to provide your device data
+**5**. Connect Things to your AMQ Instance
+**6**. Visualize your device data with the [Vorto Dashboard](https://github.com/eclipse/vorto-examples/tree/master/vorto-dashboard)
 
 <br />
 
-## Blabla
+## Register your device and create a new Thing from the Information Model.
+Test
+
+Combines registring a new device with Hub, creating a policy, and creating a new, empty, Thing with credentials.
+
+
+
+<br />
+
+## Send data from the device to [IoT Hub](https://www.bosch-iot-suite.com/service/hub/)
 Test
 
 <br />
+
+## Receive data from Hub with the Data Normalizer
+
+<br />
+
+## Create a Mapping Specification for your device.
+
+<br />
+
+## Set up AWS AMQ to provide your device data
+
+<br />
+
+## Connect Things to your AMQ Instance
+
+<br />
+
+## Visualize your device data with the [Vorto Dashboard](https://github.com/eclipse/vorto-examples/tree/master/vorto-dashboard)
 
 ---
 
