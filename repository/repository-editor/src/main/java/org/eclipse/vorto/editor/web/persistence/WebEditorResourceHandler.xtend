@@ -72,7 +72,8 @@ class WebEditorResourceHandler implements IServerResourceHandler {
 			val xtextResource = resource as XtextResource
 			EcoreUtil2.resolveAll(xtextResource)
 			return documentProvider.get(resourceId, serviceContext) => [
-				setInput(xtextResource)
+				var s = setInput(xtextResource)
+				System.out.println(s);
 			]
 		} catch (WrappedException exception) {
 			throw exception.cause

@@ -55,9 +55,9 @@ repositoryControllers.controller('DetailsController',
 	            		enableFormattingAction: true,
 	            		enableSaveAction: false,
 	            		resourceId : modelId,
-	            		loadFromServer: true,
+	            		loadFromServer: false,
 	            		showErrorDialogs: false,
-	            		enableValidationService: true,
+	            		enableValidationService: false,
 	            		enableOccurrencesService: true,
 	            		enableHighlightingService: true,
 	            		xtextLang: model.language,
@@ -289,6 +289,16 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getContent = function (modelId) {
+			$scope.loadingModel = true;
+			$http.get("./api/v1/models/" + modelId + "/file")
+				.success(function (result) {
+					$timeout(function () {
+							$scope.modelEditor.getSession().getDocument().setValue(result)
+							$scope.loadingModel = false;
+						}, 1000);
+				}).error(function (data, status, headers, config) {
+					$scope.error = data.message;
+				});
 		};
 		
 		$scope.getPlatformGenerators = function () {
