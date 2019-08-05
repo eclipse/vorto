@@ -1,6 +1,10 @@
 #!/bin/bash
 export IMAGE_TAG=$TRAVIS_TAG;
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+if [ -n "$IMAGE_TAG" ]; then
 docker push eclipsevorto/vorto-repo:latest;
 docker push eclipsevorto/vorto-repo:$IMAGE_TAG
+else
+docker push eclipsevorto/vorto-repo:nightly
+fi
 

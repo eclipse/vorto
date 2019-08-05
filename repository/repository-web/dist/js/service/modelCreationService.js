@@ -178,7 +178,8 @@ repository.factory('openCreateModelDialog',
                     model: function() {
                         return $scope.model;
                     }
-                }
+                },
+                backdrop: 'static'
               });
               
               modalInstance.result.then(function(result) {

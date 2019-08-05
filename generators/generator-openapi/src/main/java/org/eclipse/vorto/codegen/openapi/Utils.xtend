@@ -24,6 +24,8 @@ import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.model.ModelId
 
 class Utils {
 
@@ -42,12 +44,16 @@ class Utils {
 		for (FunctionblockProperty property : infomodel.properties) {
 			for (Entity entity : org.eclipse.vorto.plugin.utils.Utils.getReferencedEntities(
 				property.type.functionblock)) {
-				if (entities.filter[EcoreUtil.equals(it, entity)].empty) {
+				if (entities.filter[createModelId(it).equals(createModelId(entity))].empty) {
 					entities.add(entity);
 				}
 			}
 		}
 		return entities;
+	}
+
+	static def ModelId createModelId(Model model) {
+		return new ModelId(model.name, model.namespace, model.version)
 	}
 
 	static def EList<Enum> getReferencedEnums(InformationModel infomodel) {

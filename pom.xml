@@ -6,7 +6,7 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.12.0-SNAPSHOT</version>
 
 	<name>Vorto Parent</name>
 
@@ -284,6 +284,12 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -378,7 +384,7 @@
 							<dependency>
 								<groupId>com.puppycrawl.tools</groupId>
 								<artifactId>checkstyle</artifactId>
-								<version>8.5</version>
+								<version>8.18</version>
 							</dependency>
 						</dependencies>
 						<executions>

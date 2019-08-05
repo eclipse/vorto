@@ -53,7 +53,7 @@ public class GenericGeneratorController extends AbstractGeneratorController {
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericGeneratorController.class);
 
   @RequestMapping(value = "/{serviceKey}/models/{modelId:.+}/!/**", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void generateAndExtract(
       @ApiParam(value = "The iD of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -127,7 +127,7 @@ public class GenericGeneratorController extends AbstractGeneratorController {
   }
 
   @RequestMapping(value = "/{pluginkey}/models/{modelId:.+}", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void generate(
       @ApiParam(value = "the vorto model ID, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -142,7 +142,7 @@ public class GenericGeneratorController extends AbstractGeneratorController {
   
 
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public Collection<GeneratorPluginConfiguration> getRegisteredGeneratorServices(
       @ApiParam(value = "Prioritize results with given tag",
           allowableValues = "demo,infra,production", required = false) @RequestParam(
@@ -187,7 +187,7 @@ public class GenericGeneratorController extends AbstractGeneratorController {
 
   @RequestMapping(value = "/{pluginkey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public GeneratorPluginConfiguration getGeneratorInfo(@ApiParam(value = "The plugin key, e.g. openapi",
       required = true) final @PathVariable String pluginkey) {
     return this.generatorService.getPluginInfo(pluginkey, true);

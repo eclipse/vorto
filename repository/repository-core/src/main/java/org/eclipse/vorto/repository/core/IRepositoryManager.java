@@ -34,6 +34,14 @@ public interface IRepositoryManager {
   boolean createTenantWorkspace(final String tenantId);
   
   /**
+   * Returns whether the workspace for this tenant exist or not 
+   * 
+   * @param tenantId
+   * @return
+   */
+  boolean isWorkspaceExist(final String tenantId);
+  
+  /**
    * Removes a workspace with the given tenantId
    * 
    * @return true if removal is successful

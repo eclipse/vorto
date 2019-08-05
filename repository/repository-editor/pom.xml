@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.11.0-SNAPSHOT</version>
+		<version>0.12.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>repository-editor</artifactId>
@@ -16,47 +16,38 @@
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.core</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.datatype.ide</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.functionblock.ide</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.infomodel.ide</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.mapping.ide</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
@@ -71,12 +62,10 @@
 		<dependency>
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
-			<version>${xtext.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.2.11.v20150529</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

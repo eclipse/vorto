@@ -83,7 +83,7 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
   public boolean createTenantWorkspace(final String tenantId) {
     try {
       Workspace workspace = defaultSessionSupplier.get().getWorkspace();
-      if (!Arrays.asList(workspace.getAccessibleWorkspaceNames()).contains(tenantId)) {
+      if (!isWorkspaceExist(workspace, tenantId)) {
         workspace.createWorkspace(tenantId);
         return true;
       } else {
@@ -94,6 +94,21 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
       logger.error("Exception while creating workspace", e);
       throw new FatalModelRepositoryException("Cannot create workspace for user", e);
     }
+  }
+  
+  @Override
+  public boolean isWorkspaceExist(final String tenantId) {
+    try {
+      Workspace workspace = defaultSessionSupplier.get().getWorkspace();
+      return isWorkspaceExist(workspace, tenantId);
+    } catch (RepositoryException e) {
+      logger.error("Exception while accessing workspace", e);
+      throw new FatalModelRepositoryException("Cannot access workspace for user", e);
+    }
+  }
+  
+  private boolean isWorkspaceExist(final Workspace workspace, final String tenantId) throws RepositoryException {
+    return Arrays.asList(workspace.getAccessibleWorkspaceNames()).contains(tenantId);
   }
   
   @Override

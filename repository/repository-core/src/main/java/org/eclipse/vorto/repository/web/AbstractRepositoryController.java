@@ -121,8 +121,8 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     return new ResponseEntity<Object>(validationError, HttpStatus.BAD_REQUEST);
   }
 
-  protected void createSingleModelContent(String tenantId, ModelId modelId, HttpServletResponse response) {
-    Optional<FileContent> fileContent = getModelRepository(tenantId).getFileContent(modelId, Optional.empty());
+  protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
+    Optional<FileContent> fileContent = getModelRepository(modelId).getFileContent(modelId, Optional.empty());
 
     final byte[] modelContent = fileContent.get().getContent();
     if (modelContent != null && modelContent.length > 0) {
@@ -140,10 +140,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     }
   }
 
-  protected void addModelToZip(String tenantId, ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
+  protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
     try {
-      FileContent modelFile = getModelRepository(tenantId).getFileContent(modelId, Optional.empty()).get();
-      ModelInfo modelResource = getModelRepository(tenantId).getById(modelId);
+      FileContent modelFile = getModelRepository(modelId).getFileContent(modelId, Optional.empty()).get();
+      ModelInfo modelResource = getModelRepository(modelId).getById(modelId);
 
       try {
         ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
@@ -155,7 +155,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
       }
 
       for (ModelId reference : modelResource.getReferences()) {
-        addModelToZip(tenantId, zipOutputStream, reference);
+        addModelToZip(zipOutputStream, reference);
       }
     } catch(NotAuthorizedException notAuthorized) {
         return;
@@ -163,14 +163,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     
   }
 
-  protected void sendAsZipFile(final HttpServletResponse response, final String tenantId, final String fileName,
+  protected void sendAsZipFile(final HttpServletResponse response, final String fileName,
       List<ModelInfo> modelInfos) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ZipOutputStream zos = new ZipOutputStream(baos);
 
     try {
       for (ModelInfo modelInfo : modelInfos) {
-        addModelToZip(tenantId, zos, modelInfo.getId());
+        addModelToZip(zos, modelInfo.getId());
       }
 
       zos.close();

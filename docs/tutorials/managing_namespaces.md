@@ -39,3 +39,7 @@ In order to claim an official namespace, like e.g. `org.eclipse.vorto`, you need
 
 When reaching out to the Vorto Dev Team, please make sure to **include the name of the namespace and UserId of its Owner**.
 
+---
+
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+Please make sure to use `eclipse-vorto` as one of the tags. 

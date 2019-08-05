@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.11.0-SNAPSHOT</version>
+		<version>0.12.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>repository</artifactId>
@@ -87,7 +87,7 @@
 			<dependency>
 				<groupId>org.apache.tomcat.embed</groupId>
 				<artifactId>tomcat-embed-core</artifactId>
-				<version>8.5.34</version>
+				<version>8.5.40</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
@@ -106,7 +106,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>org.eclipse.vorto.editor.datatype.ide</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>org.eclipse.vorto.editor.functionblock.ide</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -116,7 +126,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>org.eclipse.vorto.editor.infomodel.ide</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>org.eclipse.vorto.editor.mapping.ide</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

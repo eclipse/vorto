@@ -15,7 +15,9 @@ package org.eclipse.vorto.repository.init;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -57,6 +59,9 @@ public class RepositoryInitializer {
   @Autowired
   private PredefinedTenants predefinedTenants;
 
+  @Autowired
+  private ModelRepositoryFactory repositoryFactory;
+  
   @EventListener(ApplicationReadyEvent.class)
   public void initRepo() {
     Stream.of(admins).forEach(this::createAdminUser);
@@ -67,6 +72,8 @@ public class RepositoryInitializer {
 
     Stream.concat(Stream.of(ciamTechnicalUsers), Stream.of(keycloakTechnicalUsers))
         .forEach(this::createUser);
+    
+    tenantService.getTenants().forEach(this::createWorkspaceIfNotExisting);
   }
 
   private void createAdminUser(String username) {
@@ -94,6 +101,12 @@ public class RepositoryInitializer {
           Optional.of(tenant.getAuthorizationProvider()),
           createAdminContext(admins[0], tenant.getTenantId()));
     }
+  }
+  
+  private void createWorkspaceIfNotExisting(Tenant tenant) {
+    logger.info("Creating workspace for '" + tenant.getTenantId() + "' if NOT existing.");
+    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(null, null);
+    repoMgr.createTenantWorkspace(tenant.getTenantId());
   }
   
   private IUserContext createAdminContext(String userId, String tenantId) {

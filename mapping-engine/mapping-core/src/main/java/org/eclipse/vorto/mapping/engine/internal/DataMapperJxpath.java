@@ -12,9 +12,11 @@
  */
 package org.eclipse.vorto.mapping.engine.internal;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -149,6 +151,7 @@ public class DataMapperJxpath implements IDataMapper {
   	          jexlEngine.createExpression(normalizeCondition(conditionStereotype.get().getAttributes().get("value")));
   	      JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
   	      jc.set("this", context.getContextBean());
+  	      jc.set("obj", context.getContextBean());
   	      return (boolean) e.evaluate(jc);
     } else {
     	return true;
@@ -207,7 +210,13 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
 
   @Override
   public InfomodelValue mapSource(Object input) {
-    return this.map(input, MappingContext.empty());
+	Object _input = input;
+	if (input instanceof Object[] || input instanceof Collection<?>) {
+		Map<String,Object> wrapped = new HashMap<>();
+		wrapped.put("array", input);
+	    _input = wrapped;
+	}
+    return this.map(_input, MappingContext.empty());
   }
 
   @Override

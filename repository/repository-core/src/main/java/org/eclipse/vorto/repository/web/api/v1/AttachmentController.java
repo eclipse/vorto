@@ -103,7 +103,7 @@ public class AttachmentController extends AbstractRepositoryController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public List<Attachment> getAttachments(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -122,7 +122,7 @@ public class AttachmentController extends AbstractRepositoryController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
-  @CrossOrigin(origins = "https://www.eclipse.org/vorto")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public void getAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",

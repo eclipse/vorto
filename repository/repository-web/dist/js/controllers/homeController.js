@@ -34,7 +34,11 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 /*global repositoryControllers*/
 repositoryControllers.controller("LoginController", [ "$location", "$scope", "$rootScope", 
 	function ($location, $scope, $rootScope) {
-
+	
+	if ($rootScope.authenticated === true) {
+        $location.path("/");
+    };
+	
 }]);
 
 });
