@@ -1,3 +1,5 @@
+define(["../init/appService"], function(repository) {
+
 repository.factory('TenantService',['$rootScope', '$http','$q',function($rootScope, $http, $q){
 
     var factory = {
@@ -38,3 +40,5 @@ repository.factory('TenantService',['$rootScope', '$http','$q',function($rootSco
              return deferred.promise;
       };
 }]);
+
+});

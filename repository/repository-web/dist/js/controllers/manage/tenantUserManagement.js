@@ -1,3 +1,4 @@
+define(["../../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller("tenantUserManagementController", 
     [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "tenant", "dialogConfirm", 
@@ -188,4 +189,4 @@ repositoryControllers.controller("createOrUpdateUserController",
         };
     }
 ]);
-
+});

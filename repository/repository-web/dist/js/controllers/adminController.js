@@ -1,4 +1,4 @@
-var repositoryControllers = angular.module('repositoryControllers', []);
+define(["../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
     function ($scope, $rootScope, $http, $location,$timeout) {
@@ -79,3 +79,5 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
         };
     }
 ]);
+
+});

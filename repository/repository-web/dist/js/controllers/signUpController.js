@@ -1,3 +1,5 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', 
 	function ($location, $rootScope, $scope, $http, $routeParams) {
 
@@ -20,3 +22,5 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
         });
 }
 }]);
+
+});

@@ -26,4 +26,5 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class InformationModelScopeProvider extends AbstractDeclarativeScopeProvider {
 
+	
 }

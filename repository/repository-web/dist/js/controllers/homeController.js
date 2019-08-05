@@ -1,3 +1,5 @@
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window', 'TenantService',
 	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window, TenantService) {
 
@@ -38,3 +40,5 @@ repositoryControllers.controller("LoginController", [ "$location", "$scope", "$r
     };
 	
 }]);
+
+});

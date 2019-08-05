@@ -18,11 +18,13 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
 import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
 
@@ -59,10 +62,10 @@ public class Tenant {
   @Enumerated(EnumType.STRING)
   private AuthorizationProvider authorizationProvider;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
+  @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
   private Set<Namespace> namespaces = new HashSet<Namespace>();
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
+  @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
   private Set<TenantUser> users = new HashSet<TenantUser>();
 
   @ManyToOne

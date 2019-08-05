@@ -1,4 +1,5 @@
-/*global repositoryControllers*/
+define(["../init/appController"],function(repositoryControllers) {
+
 repositoryControllers.controller("UpdateController", [ "$location", "$rootScope", "$scope", "$http", "$routeParams", 
 	function ($location, $rootScope, $scope, $http, $routeParams) {
         $scope.acceptTerms = false;
@@ -28,3 +29,5 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
         };
     }
 ]);
+
+});

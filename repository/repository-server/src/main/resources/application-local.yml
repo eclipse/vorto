@@ -19,6 +19,6 @@ server:
     
 eidp:
   oauth2:
-    enabled: true
+    enabled: false
     resource:
-      logoutRedirectUrl: https://localhost:8443/infomodelrepository/logout
+      logoutRedirectUrl: http://localhost:8443/infomodelrepository/logout

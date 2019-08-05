@@ -34,7 +34,6 @@ import org.eclipse.xtext.scoping.IScopeProvider
 class InformationModelRuntimeModule extends AbstractInformationModelRuntimeModule {
 	override void configure(Binder binder) {
 		super.configure(binder)
-//		binder.bind(IOutputConfigurationProvider).to(InformationModelOutputConfigurationProvider).in(Singleton)
 	}
 
 	override Class<? extends IScopeProvider> bindIScopeProvider() {

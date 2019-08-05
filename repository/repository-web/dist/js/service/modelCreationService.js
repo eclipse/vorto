@@ -1,3 +1,5 @@
+define(["../init/appService"], function(repository) {
+
 repository.factory('openCreateModelDialog',
     ['$rootScope', '$http', '$location', '$uibModal',
     function($rootScope, $http, $location, $uibModal) {
@@ -186,3 +188,5 @@ repository.factory('openCreateModelDialog',
         };
     }
 }]);
+
+});
