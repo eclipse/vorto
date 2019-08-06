@@ -47,24 +47,38 @@ repositoryControllers.controller('DetailsController',
 	      }
     	}
 		
-		$scope.createEditor = function(model,modelId) {
+		$scope.createEditor = function(model) {
+			var language = ""
+			if (model.type === 'Datatype') {
+				language = "type";
+			} else if (model.type === 'Functionblock') {
+				language = "fbmodel";
+			} else if (model.type === 'InformationModel') {
+				language = "infomodel";
+			} else {
+				language = "mapping";
+			}
+		
 			var defer = $q.defer();
 			require(["webjars/ace/src/ace"], function() {
 	    		require(["xtext/xtext-ace"], function(xtext) {
 	        		var editor = xtext.createEditor({
 	            		enableFormattingAction: true,
 	            		enableSaveAction: false,
-	            		resourceId : modelId,
+	            		resourceId : model.id.prettyFormat,
 	            		loadFromServer: false,
 	            		showErrorDialogs: false,
 	            		enableValidationService: false,
 	            		enableOccurrencesService: true,
 	            		enableHighlightingService: true,
-	            		xtextLang: model.language,
-	            		syntaxDefinition: $scope.editorConfig[model.language].syntaxDefinition,
-	            		serviceUrl: $scope.editorConfig[model.language].serviceUrl
+	            		xtextLang: language,
+	            		syntaxDefinition: $scope.editorConfig[language].syntaxDefinition,
+	            		serviceUrl: $scope.editorConfig[language].serviceUrl
 	          		});
 	          		$scope.modelEditor = editor;
+	          		if (model.released) {
+	          			editor.setReadOnly(true);
+	          		}
 	          		defer.resolve(editor);
 	    		});
 			});
@@ -229,6 +243,7 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getDetails = function (modelId) {
+			var defer = $q.defer();
 			$scope.modelIsLoading = true;
 			$http.get("./api/v1/models/" + modelId)
 				.success(function (result) {
@@ -242,19 +257,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.getAttachments(result);
 					
 					$scope.canCreateModels = false;
-					
-					var language = {};
-					if (result.type === 'Datatype') {
-						language = {'language' : 'type'};
-					} else if (result.type === 'Functionblock') {
-						language = {'language' : 'fbmodel'};
-					} else if (result.type === 'InformationModel') {
-						language = {'language' : 'infomodel'};
-					} else {
-						language = {'language' : 'mapping'};
-					}
-					
-					$scope.createEditor(language,$scope.model.id.prettyFormat);
 					
 					if ($rootScope.authenticated) {
 						var promise = TenantService.getNamespacesForRole('ROLE_MODEL_CREATOR');
@@ -275,6 +277,8 @@ repositoryControllers.controller('DetailsController',
 					$scope.showUsages = false;
 					
 					$scope.modelIsLoading = false;
+					
+					defer.resolve(result);
 
 				}).error(function (error, status) {					
 					if(status == 401) {
@@ -284,18 +288,19 @@ repositoryControllers.controller('DetailsController',
 					} else {
 						$scope.errorLoading = error.message;
 					}
+					defer.reject(error.message);
 					$scope.modelIsLoading = false;	
 				});
+				
+				return defer.promise;
 		};
 
 		$scope.getContent = function (modelId) {
 			$scope.loadingModel = true;
 			$http.get("./api/v1/models/" + modelId + "/file")
 				.success(function (result) {
-					$timeout(function () {
-							$scope.modelEditor.getSession().getDocument().setValue(result)
-							$scope.loadingModel = false;
-						}, 1000);
+					$scope.modelEditor.getSession().getDocument().setValue(result);
+					$scope.loadingModel = false;
 				}).error(function (data, status, headers, config) {
 					$scope.error = data.message;
 				});
@@ -954,14 +959,22 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.loadDetails = function() {
-			$scope.getDetails($scope.modelId);
-			$scope.getContent($scope.modelId);
+			$scope.getDetails($scope.modelId).then(function(model) {
+				var editor = $scope.modelEditor;
+				if (editor == null) {
+					$scope.createEditor(model).then(function(editor) {
+						$scope.getContent($scope.modelId,editor);
+					});
+				} else {
+					$scope.getContent($scope.modelId,editor);
+				}
+				$scope.getCommentsForModelId($scope.modelId);
+				$scope.getWorkflowActions();
+				if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
+					$scope.diagnoseModel();
+				}
+			});
 			$scope.getPlatformGenerators();
-			$scope.getCommentsForModelId($scope.modelId);
-			$scope.getWorkflowActions();
-			if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
-				$scope.diagnoseModel();
-			}
 		};
 		
 		$scope.loadDetails();
