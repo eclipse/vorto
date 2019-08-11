@@ -23,7 +23,6 @@ import org.eclipse.vorto.model.refactor.RefactoringTask;
 import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
-import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -84,8 +83,7 @@ public class RemoteImporter extends AbstractModelImporter {
     if (result.isValid()) {
       ModelInfo modelInfo = new ModelInfo(new ModelId(fileUpload.getName(), context.getTargetNamespace().get(), "1.0.0"), org.eclipse.vorto.model.ModelType.Functionblock);
       
-      ModelValidationHelper validationHelper = new ModelValidationHelper(this.modelRepoFactory, this.userRepository, this.tenantService); 
-      ValidationReport report = validationHelper.validate(modelInfo, context.getUser());
+      ValidationReport report = modelValidationHelper.validateModelCreation(modelInfo, context.getUser());
       return Arrays.asList(report);
     } else {
       return Arrays.asList(ValidationReport.invalid(result.getMessage()));

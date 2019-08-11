@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import com.google.inject.Injector;
 
 /**
@@ -21,9 +21,9 @@ import com.google.inject.Injector;
  */
 public class FunctionblockModelParser extends AbstractModelParser {
 
-  public FunctionblockModelParser(String fileName, IModelRetrievalService modelRetrievalService,
+  public FunctionblockModelParser(String fileName, IModelRepositoryFactory modelRepoFactory,
       ErrorMessageProvider errorMessageProvider) {
-    super(fileName, modelRetrievalService, errorMessageProvider);
+    super(fileName, modelRepoFactory, errorMessageProvider);
   }
 
   @Override

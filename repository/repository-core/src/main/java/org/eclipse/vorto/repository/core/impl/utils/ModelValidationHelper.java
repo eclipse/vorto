@@ -28,22 +28,59 @@ import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespac
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ModelValidationHelper {
+  
+  private IModelValidator hasAccessToNamespaceValidator = null;
+  private IModelValidator duplicateModelValidator = null;
+  private IModelValidator modelReferencesValidator = null;
+  private IModelValidator typeImportValidator = null;
+  
+  private List<IModelValidator> MODEL_UPDATE_VALIDATORS = new ArrayList<IModelValidator>(3);
+  private List<IModelValidator> MODEL_CREATION_VALIDATORS = new ArrayList<IModelValidator>(4);
 
-  private List<IModelValidator> validators = new ArrayList<IModelValidator>();
+  public ModelValidationHelper(@Autowired IModelRepositoryFactory modelRepoFactory, @Autowired IUserAccountService userRepository, 
+      @Autowired ITenantService tenantService) {
+    this.hasAccessToNamespaceValidator = new UserHasAccessToNamespaceValidation(userRepository, tenantService);
+    this.duplicateModelValidator = new DuplicateModelValidation(modelRepoFactory);
+    this.modelReferencesValidator = new ModelReferencesValidation(modelRepoFactory);
+    this.typeImportValidator = new TypeImportValidation();
+    
+    MODEL_UPDATE_VALIDATORS.add(hasAccessToNamespaceValidator);
+    MODEL_UPDATE_VALIDATORS.add(modelReferencesValidator);
+    MODEL_UPDATE_VALIDATORS.add(typeImportValidator);
+    
+    MODEL_CREATION_VALIDATORS.add(hasAccessToNamespaceValidator);
+    MODEL_CREATION_VALIDATORS.add(duplicateModelValidator);
+    MODEL_CREATION_VALIDATORS.add(modelReferencesValidator);
+    MODEL_CREATION_VALIDATORS.add(typeImportValidator);
 
-  public ModelValidationHelper(IModelRepositoryFactory modelRepoFactory, IUserAccountService userRepository, 
-      ITenantService tenantService) {
-    this.validators.add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
-    this.validators.add(new DuplicateModelValidation(modelRepoFactory, tenantService));
-    this.validators.add(new ModelReferencesValidation(modelRepoFactory));
-    this.validators.add(new TypeImportValidation());
   }
 
-  public ValidationReport validate(ModelInfo model, IUserContext userContext) {
+  public ValidationReport validateModelCreation(ModelInfo model, IUserContext userContext) {
     List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
-    for (IModelValidator validator : validators) {
+    for (IModelValidator validator : this.MODEL_CREATION_VALIDATORS) {
+      try {
+        validator.validate(model, InvocationContext.create(userContext));
+      } catch (ValidationException validationException) {
+        validationExceptions.add(validationException);
+      }
+    }
+
+    if (validationExceptions.isEmpty()) {
+      return ValidationReport.valid(model);
+    } else {
+      return ValidationReportFactory.create(
+          validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
+    }
+  }
+  
+  public ValidationReport validateModelUpdate(ModelInfo model, IUserContext userContext) {
+    List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
+    for (IModelValidator validator : this.MODEL_UPDATE_VALIDATORS) {
       try {
         validator.validate(model, InvocationContext.create(userContext));
       } catch (ValidationException validationException) {
