@@ -8,6 +8,8 @@ require.config({
 		"angular-bootstrap" : "webjars/angular-ui-bootstrap/ui-bootstrap.min",
 		"angular-bootstrap-templates" : "webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min",
 		"angular-ui-select" : "webjars/angular-ui-select/select.min",
+		"angular-ace-noconflict" : "webjars/ace/src-min-noconflict/ace",
+		"angular-ace": "webjars/angular-ui-ace/ui-ace.min",
 		"smart-table" : "webjars/angular-smart-table/dist/smart-table.min",
 		"pretty-json" : "webjars/ng-prettyjson/dist/ng-prettyjson.min",
 		"mode-type" : "webjars/repository-web/dist/js/ace-modes/mode-type",
@@ -46,6 +48,12 @@ require.config({
 		},
 		'angular-ui-select' : {
 			deps: ["angular"]
+		},
+		'angular-ace-noconflict' : {
+			deps: ["angular"]
+		},
+		'angular-ace' : {
+			deps: ["angular","angular-ace-noconflict"]
 		}
 	}
 });

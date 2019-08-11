@@ -76,24 +76,10 @@
 	<br />
 	<div class="row">
 		<div class="col-md-9">
-			<div class="comment-tabs">
-				<ul class="comment-tabs nav nav-tabs" role="tablist">
-					<li class="active">
-						<a href="" role="tab" data-target="#model" data-toggle="tab">
-							<i class="fa fa-info-circle"></i> Model
-						</a>
-					</li>
-					<li ng-hide="model.state === 'Released' || model.state ==='Deprecated'">
-						<a href="" role="tab" data-target="#discussion" data-toggle="tab">
-							<i class="fa fa-comment"></i> Review Discussions
-							<span class="badge">{{comments.length}}</span>
-						</a>
-					</li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="model">
-						<div class="row">
-							<br />
+			<uib-tabset justified="false">
+    			<uib-tab index="0">
+    				<uib-tab-heading><i class="fa fa-info-circle"></i> Model Info</uib-tab-heading>
+    				<div class="row">
 							<div class="col-sm-12 modelDetails">
 								<div>
 									<div ng-if="modelIsLoading" class="detailsLoading jumbotron">
@@ -329,10 +315,12 @@
 								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="tab-pane" id="discussion">
-						<div class="row ">
+    			</uib-tab>
+    			<uib-tab index="1">
+    				<uib-tab-heading>
+    					<i class="fa fa-comment"></i> Comments</span>
+					</uib-tab-heading>
+					<div class="row ">
 							<!-- Left col -->
 							<section class="col-md-12 connectedSortable">
 								<!-- Chat box -->
@@ -380,11 +368,9 @@
 
 							</section>
 						</div>
-
-					</div>
-
-				</div>
-			</div>
+					
+    			</uib-tab>
+    		</uib-tabset>
 		</div>
 		<div class="col-md-3 col-xs-6">
 			<div class="text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">

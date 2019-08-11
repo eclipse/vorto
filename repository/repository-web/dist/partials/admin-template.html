@@ -9,39 +9,24 @@
 			target="_blank" title="Read more about Managing Namespaces"><span class="fa fa-question-circle " />
 	    </a>
 	</ol>
-	<div class="comment-tabs">
 	
-		<ul class="comment-tabs nav nav-tabs" role="tablist">
-			<li ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-class="{ 'active': hasAuthority('ROLE_SYS_ADMIN') }">
-				<a href="" role="tab" data-target="#utilities" data-toggle="tab">
-					<i class="fa fa-info-circle"></i> Admin Utilities
-				</a>
-			</li>
-			<li ng-show="authenticated" ng-class="{ 'active': !hasAuthority('ROLE_SYS_ADMIN') }">
-				<a href="" role="tab" data-target="#tenantManagement" data-toggle="tab">
-					<span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;My Namespaces 
-				</a>
-			</li>
-		</ul>
-		
-		<div class="tab-content">
-			<div ng-class="{ 'tab-pane': true, 'active': hasAuthority('ROLE_SYS_ADMIN') }" id="utilities">
+	<uib-tabset active="My Namespaces" justified="false">
+    	<uib-tab ng-show="hasAuthority('ROLE_SYS_ADMIN')" index="0">
+    		<uib-tab-heading><i class="fa fa-info-circle"></i> Admin Utilities</uib-tab-heading>
 			
-				<h2>Admin Utilities</h2>
-				<br/>
-				<div ng-if="error" class="alert alert-danger">{{error}}</div>
-				<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
-				<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
-				<h3>Reindex</h3>
-				<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
-				<a ng-click="reindex()" class="btn btn-primary" ng-disabled="isReindexing">
-					<i ng-show="isReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Reindex</a>
-				</br>
-				<hr>
-				<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
-				<h3>Diagnose</h3>
-				<p>Diagnose the entire repository for error.</p>
-				<a ng-click="diagnose()" class="btn btn-primary"><i ng-if="isRunningDiagnostics" class='fa fa-refresh fa-spin'></i>&nbsp;Diagnose</a>
+			<div ng-if="error" class="alert alert-danger">{{error}}</div>
+			<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
+			<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
+			<h3>Reindex</h3>
+			<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
+			<a ng-click="reindex()" class="btn btn-primary" ng-disabled="isReindexing">
+				<i ng-show="isReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Reindex</a>
+			</br>
+			<hr>
+			<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
+			<h3>Diagnose</h3>
+			<p>Diagnose the entire repository for error.</p>
+			<a ng-click="diagnose()" class="btn btn-primary"><i ng-if="isRunningDiagnostics" class='fa fa-refresh fa-spin'></i>&nbsp;Diagnose</a>
 			    <table ng-if="diagnostics != null && diagnostics.length > 0" class="table table-striped table-sm">
 			        <thead>
 			            <tr>
@@ -60,13 +45,11 @@
 			            </tr>
 			        </tbody>
 			    </table>
-			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>
-			    	
-			</div>
-			
-			<div ng-class="{ 'tab-pane': true, 'active': !hasAuthority('ROLE_SYS_ADMIN') }" id="tenantManagement" ng-controller="tenantManagementController">
-				<div tenant-management></div>
-			</div>
-		</div>
-	</div>
+			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>		    	
+    	</uib-tab>
+    	<uib-tab index="1">
+    		<uib-tab-heading><span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;Namespaces</uib-tab-heading>
+    		<div tenant-management ng-controller="tenantManagementController"></div>
+    	</uib-tab>
+  	</uib-tabset>
 </section>

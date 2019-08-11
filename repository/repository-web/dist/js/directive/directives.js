@@ -1,6 +1,6 @@
-var repositoryDirectives = angular.module('repositoryDirectives', []);
+define(["../init/appDirective"], function(repository) {
 
-repositoryDirectives.directive('pwCheck', [function () {
+repository.directive('pwCheck', [function () {
     return {
       require: 'ngModel',
       link: function (scope, elem, attrs, ctrl) {
@@ -15,7 +15,7 @@ repositoryDirectives.directive('pwCheck', [function () {
     }
 }]);
 
-repositoryDirectives.directive('emailCheck', [function () {
+repository.directive('emailCheck', [function () {
     return {
       require: 'ngModel',
       link: function (scope, elem, attrs, ctrl) {
@@ -31,7 +31,7 @@ repositoryDirectives.directive('emailCheck', [function () {
     }
 }]);
 
-repositoryDirectives.directive( 'dynTemplate', function ( $compile ) {
+repository.directive( 'dynTemplate', function ( $compile ) {
   return {
     scope: true,
     link: function ( scope, element, attrs ) {
@@ -48,7 +48,7 @@ repositoryDirectives.directive( 'dynTemplate', function ( $compile ) {
   };
 });
 
-repositoryDirectives.directive('totalSummary', function () {
+repository.directive('totalSummary', function () {
 
   return {
   restrict: 'E',
@@ -173,3 +173,4 @@ repository.directive('stReset', ['$route', function($route){
 	}   
 }]);
 
+});
