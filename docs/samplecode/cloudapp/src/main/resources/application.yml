@@ -1,0 +1,10 @@
+tenantId:
+amqp:
+  url: amqps://messaging.bosch-iot-hub.com?jms.username=${amqp.username}&jms.password=${amqp.password}&amqp.saslMechanisms=PLAIN&transport.verifyHost=false&transport.trustAll=true
+  username: messaging@${tenantId}
+  password: 
+  queue: telemetry/${tenantId}
+
+session:
+  cache:
+    size: 1
