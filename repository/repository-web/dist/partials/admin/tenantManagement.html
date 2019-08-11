@@ -57,11 +57,11 @@
 							</a>&nbsp;&nbsp;
 							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{tenant.namespaces[0]}}/backup" 
 								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this tenant for backup.">
-								<i class="fa fa-fw fa-download" aria-hidden="true"></i>
+								<i class="fa fa-download fa-2x" aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
 							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreTenant(tenant)" 
 								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this tenant using backup.">
-								<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+								<span class="fa fa-wrench fa-2x" aria-hidden="true"></span>
 							</a>&nbsp;&nbsp;
 					</td>
 				</tr>

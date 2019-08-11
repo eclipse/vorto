@@ -51,18 +51,12 @@
 				<div class="jumbotron text-center" ng-show="isLoading">
 					<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading Mapping Specification...</h3>
 				</div>
-			<div ng-hide="isLoading" class="nav-tabs-custom">
-				<ul class="nav nav-tabs">
-					<li ng-repeat="property in infomodel.functionblocks" style="bottom: 2px;"  ng-class="{active : $index === 0}"><a href="" data-target="#{{property.name}}_tab" data-toggle="tab">{{property.name}} Mapping</a></li>  
-				</ul>
-				<div class="tab-content">
-					<!-- /.tab-pane -->
-					<div ng-repeat="property in infomodel.functionblocks" class="tab-pane" ng-class="{active : $index === 0}" id="{{property.name}}_tab" >
-						<div ng-include src="'webjars/repository-web/dist/partials/mapping/includes/fbmapping-template.html'"></div>
-					</div>
-				</div>
-			<!-- /.tab-content -->
-			</div>
+			<uib-tabset ng-hide="isLoading" justified="false">
+				<uib-tab index="{{$index}}" ng-repeat="property in infomodel.functionblocks" heading="{{property.name}} Mapping">
+					<div ng-include src="'webjars/repository-web/dist/partials/mapping/includes/fbmapping-template.html'"></div>
+				</uib-tab>
+			</uib-tabset>
+
 		</div>
 	<!-- /.nav-tabs -->
 		<div class="col-md-4">

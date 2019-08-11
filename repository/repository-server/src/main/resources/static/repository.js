@@ -5,14 +5,16 @@ define("repository",[
 	"angular-bootstrap",
 	"angular-bootstrap-templates",
 	"angular-ui-select",
+	"angular-ace",
   	"jquery",
   	"smart-table",
   	"pretty-json",
   	"webjars/repository-web/dist/js/init/appControllerLoader",
-  	"webjars/repository-web/dist/js/init/appServiceLoader"
+  	"webjars/repository-web/dist/js/init/appServiceLoader",
+  	"webjars/repository-web/dist/js/init/appDirectiveLoader"
 ], function (angular) {
 
-	 var repository = angular.module("repository", [ "ngRoute", "apps.controller", "apps.service", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ngPrettyJson","ui.select"]);
+	 var repository = angular.module("repository", [ "ngRoute", "apps.controller", "apps.service","apps.directive", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ngPrettyJson","ui.ace","ui.select"]);
 
 	 repository.bootstrap = function() {
 	    angular.bootstrap(document, ["repository"]);
