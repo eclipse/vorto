@@ -65,16 +65,16 @@ public class ModelParserFactory {
 
   public IModelParser getParser(String fileName) {
     if (fileName.endsWith(ModelType.Datatype.getExtension())) {
-      return new DatatypeModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+      return new DatatypeModelParser(fileName, modelRepoFactory,
           errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Functionblock.getExtension())) {
-      return new FunctionblockModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+      return new FunctionblockModelParser(fileName, modelRepoFactory,
           errorMessageProvider);
     } else if (fileName.endsWith(ModelType.InformationModel.getExtension())) {
-      return new InformationModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+      return new InformationModelParser(fileName, modelRepoFactory,
           errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Mapping.getExtension())) {
-      return new MappingModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+      return new MappingModelParser(fileName, modelRepoFactory,
           errorMessageProvider);
     } else {
       throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");

@@ -32,7 +32,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
@@ -52,14 +52,15 @@ public abstract class AbstractModelParser implements IModelParser {
 
   private String fileName;
   private boolean enableValidation = true;
-  private IModelRetrievalService modelRetrievalService;
+  
+  private IModelRepositoryFactory modelRepoFactory;
   private Collection<FileContent> dependencies = Collections.emptyList();
   private ErrorMessageProvider errorMessageProvider;
 
-  public AbstractModelParser(String fileName, IModelRetrievalService modelRetrievalService,
+  public AbstractModelParser(String fileName, IModelRepositoryFactory modelRepoFactory,
       ErrorMessageProvider errorMessageProvider) {
     this.fileName = fileName;
-    this.modelRetrievalService = Objects.requireNonNull(modelRetrievalService);
+    this.modelRepoFactory = Objects.requireNonNull(modelRepoFactory);
     this.errorMessageProvider = errorMessageProvider;
   }
 
@@ -159,8 +160,7 @@ public abstract class AbstractModelParser implements IModelParser {
     Collection<ModelId> allReferences = getReferences(model);
     allReferences.removeAll(alreadyImportedDependencies);
     allReferences.forEach(refModelId -> {
-      modelRetrievalService.getContent(refModelId).ifPresent(entry -> {
-        FileContent refFile = entry.getValue();
+      modelRepoFactory.getRepositoryByModel(refModelId).getFileContent(refModelId,Optional.empty()).ifPresent(refFile -> {
         createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
       });
     });

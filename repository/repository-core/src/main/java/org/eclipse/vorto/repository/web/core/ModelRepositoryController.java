@@ -113,6 +113,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   
   @Autowired
   private IModelService modelService;
+  
+  @Autowired
+  private ModelValidationHelper modelValidationHelper;
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -218,9 +221,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
             HttpStatus.BAD_REQUEST);
       }
 
-      ModelValidationHelper validationHelper = new ModelValidationHelper(
-          getModelRepositoryFactory(), this.accountService, tenantService);
-      ValidationReport validationReport = validationHelper.validate(modelInfo, userContext);
+      ValidationReport validationReport = modelValidationHelper.validateModelUpdate(modelInfo, userContext);
       if (validationReport.isValid()) {
         modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
             modelInfo.getId().getName() + modelInfo.getType().getExtension(), userContext);

@@ -64,7 +64,7 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
   }
 
   private boolean isNotInRepository(ModelId modelId, IUserContext userContext) {
-    return !getModelRepoFactory().getModelRetrievalService(userContext).getModel(modelId).isPresent();
+    return !getModelRepoFactory().getRepositoryByModel(modelId).exists(modelId);
   }
 
   private void validateInZipFiles(ModelInfo modelResource, InvocationContext context) {

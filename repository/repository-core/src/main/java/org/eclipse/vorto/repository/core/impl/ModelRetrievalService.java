@@ -16,17 +16,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.ModelResource;
-import com.google.common.collect.Maps;
 
 public class ModelRetrievalService implements IModelRetrievalService {
 
@@ -37,38 +32,6 @@ public class ModelRetrievalService implements IModelRetrievalService {
       Function<String, IModelRepository> modelRepoSource) {
     this.tenantsSupplier = tenantsSupplier;
     this.modelRepoSource = modelRepoSource;
-  }
-
-  @Override
-  public Optional<Entry<String, ModelInfo>> getModel(ModelId modelId) {
-    for (String tenant : tenantsSupplier.get()) {
-      IModelRepository modelRepo = modelRepoSource.apply(tenant);
-      ModelInfo modelInfo = modelRepo.getById(modelId);
-      if (modelInfo != null) {
-        return Optional.of(Maps.immutableEntry(tenant, modelInfo));
-      }
-    }
-    
-    return Optional.empty();
-  }
-  
-  @Override
-  public Optional<ModelResource> getEMFResource(String tenantId, ModelId modelId) {
-    IModelRepository modelRepo = modelRepoSource.apply(tenantId);
-    return Optional.ofNullable(modelRepo.getEMFResource(modelId));
-  }
-
-  @Override
-  public Optional<Entry<String, FileContent>> getContent(ModelId modelId) {
-    for (String tenant : tenantsSupplier.get()) {
-      IModelRepository modelRepo = modelRepoSource.apply(tenant);
-      Optional<FileContent> fileContent = modelRepo.getFileContent(modelId, Optional.empty());
-      if (fileContent.isPresent()) {
-        return Optional.of(Maps.immutableEntry(tenant, fileContent.get()));
-      }
-    }
-    
-    return Optional.empty();
   }
 
   @Override

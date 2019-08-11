@@ -187,7 +187,7 @@ public class BulkUploadHelper {
     bulkUploadValidators
         .add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
     bulkUploadValidators
-        .add(new DuplicateModelValidation(modelRepoFactory, tenantService));
+        .add(new DuplicateModelValidation(modelRepoFactory));
     bulkUploadValidators
         .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators
