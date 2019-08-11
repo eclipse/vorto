@@ -30,12 +30,13 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
-import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -107,6 +108,8 @@ public abstract class AbstractIntegrationTest {
   protected IIndexingService indexingService = Mockito.mock(IIndexingService.class);
 
   protected TenantUserService tenantUserService = null;
+  
+  protected ModelValidationHelper modelValidationHelper = null;
   
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
@@ -186,6 +189,8 @@ public abstract class AbstractIntegrationTest {
     
     searchService = new SimpleSearchService(tenantService, repositoryFactory);
     supervisor.setSearchService(searchService);
+    
+    this.modelValidationHelper = new ModelValidationHelper(repositoryFactory, this.accountService, tenantService);
 
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -194,6 +199,7 @@ public abstract class AbstractIntegrationTest {
     this.importer.setModelRepoFactory(repositoryFactory);
     this.importer.setTenantUserService(tenantUserService);
     this.importer.setTenantService(tenantService);
+    this.importer.setModelValidationHelper(modelValidationHelper);
 
     this.workflow =
         new DefaultWorkflowService(repositoryFactory, accountService, notificationService);

@@ -419,10 +419,9 @@ public class ModelRepository extends AbstractRepositoryOperation
           if (modelInfo.getType() == ModelType.Mapping) {
 
             try {
-              Optional<ModelResource> emfResource =
-                  modelRetrievalService.getEMFResource(entry.getKey(), modelInfo.getId());
-              if (emfResource.isPresent()) {
-                resource.addPlatformMapping(emfResource.get().getTargetPlatform(),
+              ModelResource emfResource = this.repositoryFactory.getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId());
+              if (emfResource != null) {
+                resource.addPlatformMapping(emfResource.getTargetPlatform(),
                     modelInfo.getId());
               }
             } catch (ValidationException e) {

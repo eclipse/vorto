@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
@@ -36,7 +35,6 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
-import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.Context;
@@ -53,8 +51,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
-
-  private static Logger logger = Logger.getLogger(VortoModelImporter.class);
+  
 
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
@@ -68,7 +65,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 
   @Override
   public String getShortDescription() {
-    return "Imports Vorto Informtion Models, defined with the Vorto DSL.";
+    return "Imports Vorto Information Models, defined with the Vortolang.";
   }
 
   protected boolean handleZipUploads() {
@@ -146,11 +143,9 @@ public class VortoModelImporter extends AbstractModelImporter {
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           context.getUser());
     } else {
-      ModelValidationHelper validationHelper =
-          new ModelValidationHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
-        return Arrays.asList(validationHelper.validate(modelInfo, context.getUser()));
+        return Arrays.asList(modelValidationHelper.validateModelCreation(modelInfo, context.getUser()));
       } catch (ValidationException ex) {
         return Arrays.asList(ValidationReport.invalid(null, ex));
       }

@@ -42,6 +42,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -77,6 +78,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   @Autowired
   protected ModelParserFactory modelParserFactory;
+  
+  @Autowired
+  protected ModelValidationHelper modelValidationHelper;
 
   private Set<String> supportedFileExtensions = new HashSet<>();
 
@@ -412,4 +416,14 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public ITenantService getTenantService() {
     return tenantService;
   }
+
+  public ModelValidationHelper getModelValidationHelper() {
+    return modelValidationHelper;
+  }
+
+  public void setModelValidationHelper(ModelValidationHelper modelValidationHelper) {
+    this.modelValidationHelper = modelValidationHelper;
+  }
+  
+  
 }

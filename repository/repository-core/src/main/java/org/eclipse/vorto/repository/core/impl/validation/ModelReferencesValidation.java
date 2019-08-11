@@ -14,11 +14,8 @@ package org.eclipse.vorto.repository.core.impl.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
@@ -37,9 +34,8 @@ public class ModelReferencesValidation implements IModelValidator {
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
     List<ModelId> missingReferences = new ArrayList<ModelId>();
-    IModelRetrievalService retrievalService = modelRepoFactory.getModelRetrievalService(context.getUserContext());
     if (!modelResource.getReferences().isEmpty()) {
-      checkReferencesRecursive(retrievalService, modelResource, missingReferences);
+      checkReferencesRecursive(modelResource, missingReferences);
     }
 
     if (!missingReferences.isEmpty()) {
@@ -47,23 +43,20 @@ public class ModelReferencesValidation implements IModelValidator {
     }
   }
 
-  private void checkReferencesRecursive(IModelRetrievalService retrievalService, ModelInfo modelResource, List<ModelId> accumulator) {
+  private void checkReferencesRecursive(ModelInfo modelResource, List<ModelId> accumulator) {
     for (ModelId modelId : modelResource.getReferences()) {
-      Optional<Map.Entry<String, ModelInfo>> _reference = retrievalService.getModel(modelId);
+      ModelInfo _referenceModelInfo =  modelRepoFactory.getRepositoryByModel(modelId).getById(modelId);
       
-      if (_reference.isPresent()) {
-        ModelInfo reference = _reference.get().getValue();
-        if (reference == null) {
-          accumulator.add(modelId);
-        } else if (modelResource.getId().equals(reference.getId())) {
+      if (_referenceModelInfo != null) {
+        if (modelResource.getId().equals(_referenceModelInfo.getId())) {
           throw new ValidationException(
-              "Cyclic dependency detected for reference '" + reference.getId() + "'", modelResource);
+              "Cyclic dependency detected for reference '" + _referenceModelInfo.getId() + "'", modelResource);
         } else {
-          if (modelResource.getType().canHandleReference(reference)) {
-            checkReferencesRecursive(retrievalService, reference, accumulator);
+          if (modelResource.getType().canHandleReference(_referenceModelInfo)) {
+            checkReferencesRecursive(_referenceModelInfo, accumulator);
           } else {
             throw new ValidationException(
-                "Reference '" + reference.getId() + "' is not valid for this model type.",
+                "Reference '" + _referenceModelInfo.getId() + "' is not valid for this model type.",
                 modelResource);
           }
         }
