@@ -32,14 +32,15 @@ Here is a list of things that you need to work through this tutorial:
 
 In this step, we create a tiny IoT solution that receives the sensor data and simply prints the data out to the console. But how do we get the data from Eclipse Hono ? It's easy. Hono provides an AMQP endpoint that makes it possible for applications to receive telemetry data. Hono does not make any assumption how the payload looks like and merely forwards the data "as is" to the AMQP endpoint. Our application receives the data and does something useful with it. Well, in this case just prints it out to the console. 
 
-To save us some time at this point, we have already created the application for you. [Download](../example/cloudapp) and import the import it into your IDE
+To save us some time at this point, we have already created the application for you. [Download](../samplecode/cloudapp) and import the import it into your IDE
 
-Open the ```src/main/resources/application.yml``` and configure the tenantId, messaging auth-id and password. 
+Open the ```src/main/resources/application.yml``` and configure the tenantId, username and password. 
 > Where to find these values ? Login to [Bosch IoT Suite Portal](https://www.bosch-iot-suite.com/subscriptions) with your Bosch ID and click on `Credentials`.
 
-Run the app with ```mvn springboot:run```. You should not see any data coming in just yet. But we can change that quickly by sending some geolocation data to the MQTT endpoint.
+Run the app with ```mvn spring-boot:run```. You should not see any data coming in just yet. But we can change that quickly by sending some geolocation data to the MQTT endpoint.
 
 ## Step 2: Sending geolocation data to MQTT
+<a name="sendingGeolocation"></a>
 
 First let's register a device in the device registry under a specific device-id. Only then we can send data for that device-id to the Bosch IoT Hub. 
 
@@ -83,7 +84,7 @@ Repeat the step for the second device.
 
 2. Use `mosquitto_pub` client to send some geolocation data: 
 ```bash
-mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/4711 -m '{"longitude": 103.3223, "latitude": 3.2322}' --cafile iothub.crt
+mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/4711 -m '{"longitude": "103.3223", "latitude": "3.2322"}' --cafile iothub.crt
 ```
 
 3. Verify the incoming data in our IoT application from step 1. You should see the data being printed out to the console. 
@@ -243,7 +244,7 @@ session:
 
 Comment out or remove the other `amqp` configurations for now. We need them only at a later point. 
 
-Run the Spring Boot App with `mvn clean install springBoot:run`. The console should display no errors, meaning it has successfully connected to the Bosch IoT Hub (Eclipse Hono-based) via AMQP and is now ready to receive any messages from there.
+Run the Spring Boot App with `mvn clean install spring-boot:run`. The console should display no errors, meaning it has successfully connected to the Bosch IoT Hub (Eclipse Hono-based) via AMQP and is now ready to receive any messages from there.
 
 Wait! Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
@@ -276,7 +277,7 @@ Repeat this step for the second device ID (4712) , with the following content:
 	}
 ```	 
 
-F**inally!** We are all set to start sending the same data as in [step 2](#Step-2:-Sending-geolocation-data-to-MQTT) using `mosquitto_pub`. When doing so, please observe the logs of the Normalization Middleware Spring Boot application. You should see the normalized payload, with the exact same structure for both sensor types. 
+F**inally!** We are all set to start sending the same data as in [step 2](#sendingGeolocation) using `mosquitto_pub`. When doing so, please observe the logs of the Normalization Middleware Spring Boot application. You should see the normalized payload, with the exact same structure for both sensor types. 
 
 ### 5. Setting up AMQP Endpoint for normalized Vorto payload
 
@@ -297,7 +298,7 @@ amqp:
     native: telemetry/vorto
 ```
 
-Start the spring boot application again with `mvn springBoot:run`. 
+Start the spring boot application again with `mvn spring-boot:run`. 
 
 ### 6. Make cloud application changes
 
