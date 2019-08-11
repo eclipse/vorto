@@ -40,7 +40,6 @@ Open the ```src/main/resources/application.yml``` and configure the tenantId, us
 Run the app with ```mvn spring-boot:run```. You should not see any data coming in just yet. But we can change that quickly by sending some geolocation data to the MQTT endpoint.
 
 ## Step 2: Sending geolocation data to MQTT
-<a name="sendingGeolocation"></a>
 
 First let's register a device in the device registry under a specific device-id. Only then we can send data for that device-id to the Bosch IoT Hub. 
 
@@ -277,7 +276,7 @@ Repeat this step for the second device ID (4712) , with the following content:
 	}
 ```	 
 
-F**inally!** We are all set to start sending the same data as in [step 2](#sendingGeolocation) using `mosquitto_pub`. When doing so, please observe the logs of the Normalization Middleware Spring Boot application. You should see the normalized payload, with the exact same structure for both sensor types. 
+F**inally!** We are all set to start sending the same data as in **step 2** using `mosquitto_pub`. When doing so, please observe the logs of the Normalization Middleware Spring Boot application. You should see the normalized payload, with the exact same structure for both sensor types. 
 
 ### 5. Setting up AMQP Endpoint for normalized Vorto payload
 
