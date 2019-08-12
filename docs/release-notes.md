@@ -2,6 +2,14 @@
 
 <br />
 
+## 0.11.2
+
+**Bugfixes**
+
+- Repository session error when saving or importing models [#1876](https://github.com/eclipse/vorto/issues/1876)
+
+<br />
+
 ## 0.11.1
 
 **Bugfixes**
