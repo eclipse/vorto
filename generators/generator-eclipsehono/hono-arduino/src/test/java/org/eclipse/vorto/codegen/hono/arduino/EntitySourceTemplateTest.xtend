@@ -44,15 +44,15 @@ class EntitySourceTemplateTest {
 		
 		Temperature::Temperature(){}
 		
-		void Temperature::setvalue(String value) {
-		    this.value = value;          
+		void Temperature::setvalue(String _value) {
+		    value = _value;
 		}
 		
 		String Temperature::getvalue() {
 		    return value;
 		}
-		void Temperature::setunit(String value) {
-		    this.unit = value;          
+		void Temperature::setunit(String _unit) {
+		    unit = _unit;
 		}
 		
 		String Temperature::getunit() {
