@@ -17,13 +17,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.springframework.core.io.ClassPathResource;
+import static org.mockito.Mockito.when;
 
 public class ModelParserTest extends AbstractIntegrationTest {
 
@@ -107,6 +112,20 @@ public class ModelParserTest extends AbstractIntegrationTest {
       fail("Able to get ModelInfo even if model has validation issues.");
     } catch (ValidationException e) {
       assertTrue(e.getMessage().contains("Constraint cannot apply on this property's datatype"));
+    } catch (IOException e) {
+      fail("Not able to load test file");
+    }
+  }
+  
+  @Test
+  public void testModelWithInvalidReference() {
+    try {
+    	Optional<Tenant> tenant = Optional.empty();
+    	when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(tenant);
+    	IModelParser parser = modelParserFactory.getParser("InfoModelWithoutNamespace.infomodel");
+    	parser.parse(new ClassPathResource("sample_models/InfoModelWithoutNamespace.infomodel").getInputStream());
+    } catch (ValidationException e) {
+      assertTrue(e.getMessage().contains("Invalid reference error."));
     } catch (IOException e) {
       fail("Not able to load test file");
     }
