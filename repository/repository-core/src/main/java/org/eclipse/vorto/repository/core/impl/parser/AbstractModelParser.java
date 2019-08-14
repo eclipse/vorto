@@ -159,11 +159,16 @@ public abstract class AbstractModelParser implements IModelParser {
       Collection<ModelId> alreadyImportedDependencies, Model model) {
     Collection<ModelId> allReferences = getReferences(model);
     allReferences.removeAll(alreadyImportedDependencies);
-    allReferences.forEach(refModelId -> {
-      modelRepoFactory.getRepositoryByModel(refModelId).getFileContent(refModelId,Optional.empty()).ifPresent(refFile -> {
-        createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
-      });
-    });
+    	allReferences.forEach(refModelId -> {
+    		if(modelRepoFactory.getRepositoryByModel(refModelId)!=null) {
+    			modelRepoFactory.getRepositoryByModel(refModelId).getFileContent(refModelId,Optional.empty()).ifPresent(refFile -> {
+        	        createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
+        	      });
+    		}
+    		else {
+    			throw new ValidationException("Invalid reference error.", null);
+    		}
+    	    });
   }
 
   private Collection<ModelId> importExternallySpecifiedDependencies(

@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace vorto.private.mayil
+version 1.0.0
+displayname "TestReferenceInformationModel2"
+description "Information Model for TestReferenceInformationModel2"
+using com.ipso.Humidity; 1.0.0
+	
+infomodel TestReferenceInformationModel2 {
+
+	functionblocks {
+	humidity as Humidity
+	}
+}
