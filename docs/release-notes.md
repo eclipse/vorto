@@ -2,6 +2,14 @@
 
 <br />
 
+## 0.11.3
+
+**Bugfixes**
+
+- Arduino/C Generator generates invalid code for getters and setters in pojos [#1882](https://github.com/eclipse/vorto/issues/1882)
+
+<br />
+
 ## 0.11.2
 
 **Bugfixes**
