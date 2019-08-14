@@ -44,15 +44,15 @@ class FbSourceTemplateTest {
 		
 		Temperature::Temperature(){}
 		
-		void Temperature::setvalue(float value) {
-			this.value = value;			
+		void Temperature::setvalue(float _value) {
+			value = _value;
 		}
 		
 		float Temperature::getvalue() {
 			return value;
 		}
-		void Temperature::setunit(String value) {
-			this.unit = value;			
+		void Temperature::setunit(String _unit) {
+			unit = _unit;
 		}
 		
 		String Temperature::getunit() {
@@ -102,8 +102,8 @@ class FbSourceTemplateTest {
 		
 		Temperature::Temperature(){}
 		
-		void Temperature::setvalue(org_eclipse_vorto::SensorValue value) {
-			this.value = value;			
+		void Temperature::setvalue(org_eclipse_vorto::SensorValue _value) {
+			value = _value;
 		}
 		
 		org_eclipse_vorto::SensorValue Temperature::getvalue() {
