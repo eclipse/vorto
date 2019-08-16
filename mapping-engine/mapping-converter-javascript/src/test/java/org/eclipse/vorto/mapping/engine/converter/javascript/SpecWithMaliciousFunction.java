@@ -17,6 +17,7 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvaluator;
 import org.eclipse.vorto.mapping.engine.functions.ScriptClassFunction;
+import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
@@ -27,8 +28,10 @@ import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 public abstract class SpecWithMaliciousFunction extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
-    addFunctionblockProperty("button", createButtonFb());
+  protected void createModel() {
+    FunctionblockModel buttonModel = createButtonFb();
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel.getId()).build());
+    addReference(Reference.of(infomodel.getId(),buttonModel,"button"));
   }
 
   private FunctionblockModel createButtonFb() {

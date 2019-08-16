@@ -66,7 +66,8 @@ public class FunctionblockValue implements IValidatable {
     if (pv.isPresent()) {
       pv.get().setValue(value);
     } else {
-      this.status.add(new PropertyValue(mp.get(), value));
+      
+      this.status.add(PropertyValueFactory.create(mp.get(),value));
     }
 
     return this;
@@ -83,7 +84,7 @@ public class FunctionblockValue implements IValidatable {
     if (pv.isPresent()) {
       pv.get().setValue(value);
     } else {
-      this.configuration.add(new PropertyValue(mp.get(), value));
+      this.configuration.add(PropertyValueFactory.create(mp.get(), value));
     }
 
     return this;
@@ -174,13 +175,13 @@ public class FunctionblockValue implements IValidatable {
 
     Map<String, Object> statusProperties = new HashMap<String, Object>();
     for (PropertyValue statusProperty : status) {
-      statusProperties.put(statusProperty.getMeta().getName(), statusProperty.getValue());
+      statusProperties.put(statusProperty.getMeta().getName(), statusProperty.serialize());
     }
     result.put("status", statusProperties);
 
     Map<String, Object> configuration = new HashMap<String, Object>();
     for (PropertyValue configProperty : this.configuration) {
-      configuration.put(configProperty.getMeta().getName(), configProperty.getValue());
+      configuration.put(configProperty.getMeta().getName(), configProperty.serialize());
     }
     if (!configuration.isEmpty()) {
       result.put("configuration", configuration);

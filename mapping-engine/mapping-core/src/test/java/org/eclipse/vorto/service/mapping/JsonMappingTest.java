@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -16,22 +15,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
+import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionalProperties;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
+import org.eclipse.vorto.service.mapping.spec.SpecWithNestedEntity;
+import org.eclipse.vorto.service.mapping.spec.SpecWithNestedEnum;
 import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -65,19 +64,19 @@ public class JsonMappingTest {
         "button", "org.eclipse.vorto", "123")));
 
   }
-  
+
   @Test
   public void testStringArrayWithSimpleCondition() throws Exception {
     IDataMapper mapper =
         IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction()).build();
 
-    List<String> input = Arrays.asList(new String[]{"","2","3"});
-    
+    List<String> input = Arrays.asList(new String[] {"", "2", "3"});
+
     InfomodelValue mappedOutput = mapper.mapSource(input);
 
     assertNull(mappedOutput.get("button"));
-    
-    input = Arrays.asList(new String[]{"1","2","3"});
+
+    input = Arrays.asList(new String[] {"1", "2", "3"});
     mappedOutput = mapper.mapSource(input);
     System.out.println(mappedOutput.get("button").getStatusProperty("sensor_value"));
 
@@ -156,6 +155,36 @@ public class JsonMappingTest {
 
     System.out.println(mappedOutput);
 
+  }
+
+  @Test
+  public void testMappingWithEntity() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntity()).build();
+
+    final String sampleDeviceData =
+        "{\"temperature\" : 20.3 }";
+
+    InfomodelValue mappedOutput =
+        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+    
+    EntityPropertyValue temperatureValue = (EntityPropertyValue)mappedOutput.get("outdoorTemperature").getStatusProperty("value").get();
+    assertEquals(20.3,temperatureValue.getValue().getPropertyValue("value").get().getValue());
+  }
+  
+  @Test
+  public void testMappingWithEnum() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithNestedEnum()).build();
+
+    final String sampleDeviceData =
+        "{\"temperature\" : 20.3 }";
+
+    InfomodelValue mappedOutput =
+        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+    
+    assertEquals(20.3,mappedOutput.get("outdoorTemperature").getStatusProperty("value").get().getValue());
+    assertEquals("Celcius",mappedOutput.get("outdoorTemperature").getStatusProperty("unit").get().getValue());
   }
 
 }

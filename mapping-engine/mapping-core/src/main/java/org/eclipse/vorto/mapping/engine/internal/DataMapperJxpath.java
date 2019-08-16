@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -30,10 +29,16 @@ import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.internal.functions.CustomFunctionsLibrary;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IModel;
 import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
+import org.eclipse.vorto.model.runtime.EntityValue;
+import org.eclipse.vorto.model.runtime.EnumValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.model.runtime.PropertyValue;
@@ -101,7 +106,7 @@ public class DataMapperJxpath implements IDataMapper {
     for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
 
       try {
-        Object mapped = this.mapProperty(statusProperty, context);
+        Object mapped = this.mapProperty(fbModel.getId(),statusProperty, context);
         if (mapped != null) {
           fbData.withStatusProperty(statusProperty.getName(), mapped);
         }
@@ -123,7 +128,7 @@ public class DataMapperJxpath implements IDataMapper {
     for (ModelProperty configProperty : fbModel.getConfigurationProperties()) {
 
       try {
-        Object mapped = this.mapProperty(configProperty, context);
+        Object mapped = this.mapProperty(fbModel.getId(),configProperty, context);
         if (mapped != null) {
           fbData.withConfigurationProperty(configProperty.getName(), mapped);
         }
@@ -166,7 +171,7 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
     }
   }
 
-  private Object mapProperty(ModelProperty property, JXPathContext input) {
+  private Object mapProperty(ModelId parentId, ModelProperty property, JXPathContext input) { 
     Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE_SOURCE);
     if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
       String expression =
@@ -175,6 +180,52 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
 
       if (matchesPropertyCondition(sourceStereotype.get(), input)) {
         return input.getValue(expression);
+      }
+    } else if (property.getType() instanceof ModelId) {
+      Optional<IModel> referencedModel = this.specification.getReferencedModel(parentId, property.getName());
+      if (referencedModel.isPresent() && referencedModel.get() instanceof EntityModel) {
+        EntityModel entityModel = (EntityModel)referencedModel.get();
+        EntityValue value = new EntityValue(entityModel);
+        
+        for (ModelProperty entityProperty : entityModel.getProperties()) {
+
+          try {
+            Object mapped = this.mapProperty(entityModel.getId(),entityProperty, input);            
+            if (mapped != null) {
+              value.withProperty(entityProperty.getName(), mapped);
+            }
+          } catch (JXPathNotFoundException ex) {
+            if (entityProperty.isMandatory()) {
+              return null;
+            }
+          } catch (JXPathInvalidAccessException ex) {
+            if (ex.getCause() instanceof JXPathNotFoundException) {
+              if (entityProperty.isMandatory()) {
+                return null;
+              }
+            }
+            throw new MappingException("A problem occured during mapping", ex);
+          }
+
+        }
+        
+        return value;
+      } else if (referencedModel.isPresent() && referencedModel.get() instanceof EnumModel) {
+        EnumModel enumModel = (EnumModel)referencedModel.get();
+        EnumValue value = new EnumValue(enumModel);
+        if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
+          String expression =
+              replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),
+                  sourceStereotype.get().getAttributes());
+
+          if (matchesPropertyCondition(sourceStereotype.get(), input)) {
+            Object mappedEnumValue = input.getValue(expression);
+            if (mappedEnumValue instanceof String) {
+              value.setValue((String)mappedEnumValue);
+            }
+            return value;
+          }
+        }
       }
     }
 

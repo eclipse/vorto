@@ -13,6 +13,7 @@
 package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.Arrays;
+import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
@@ -22,7 +23,7 @@ import org.eclipse.vorto.model.Stereotype;
 public class SpecWithConditionalProperties extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel buttonModel = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
     ModelProperty digitalInputStateProperty = new ModelProperty();
@@ -46,7 +47,9 @@ public class SpecWithConditionalProperties extends AbstractTestSpec {
     buttonModel.setStatusProperties(
         Arrays.asList(new ModelProperty[] {digitalInputStateProperty, digitalInputStateProperty2}));
 
-    addFunctionblockProperty("button", buttonModel);
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel.getId()).build());
+    addReference(Reference.of(infomodel.getId(),buttonModel,"button"));
+
   }
 
 }
