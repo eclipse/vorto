@@ -1,0 +1,36 @@
+vortolang 1.0
+
+namespace iot
+version 0.0.1
+displayname "SuperSuperFb"
+description ""
+
+using iot.ColorLight;0.0.1
+using iot.Coffee_Enum;0.0.1
+
+functionblock SuperSuperFb {
+	
+	configuration {
+		mandatory superSuperConfigProp as boolean
+	}
+	
+	status {
+		mandatory superSuperStatusProp as boolean
+		optional light as ColorLight
+		optional coffee as Coffee_Enum
+	}
+	
+	operations {
+		switch()
+	}
+	events {
+		PowerStateChanged {
+		mandatory level as string
+		}
+	fault {
+		test as boolean
+	}
+			
+}
+	
+}

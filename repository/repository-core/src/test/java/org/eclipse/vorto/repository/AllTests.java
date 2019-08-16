@@ -17,6 +17,8 @@ import org.eclipse.vorto.repository.backup.RepositoryAdminTest;
 import org.eclipse.vorto.repository.controller.PayloadMappingControllerTest;
 import org.eclipse.vorto.repository.indexing.IndexingTest;
 import org.eclipse.vorto.repository.model.ModelVisibilityTest;
+import org.eclipse.vorto.repository.pluginApi.DataTypeGeneratorTaskTest;
+import org.eclipse.vorto.repository.pluginApi.GenerationResultBuilderTest;
 import org.eclipse.vorto.repository.tenant.TenantServiceTest;
 import org.eclipse.vorto.repository.workflow.WorkflowTest;
 import org.junit.runner.RunWith;
@@ -33,7 +35,10 @@ import org.junit.runners.Suite.SuiteClasses;
               ModelVisibilityTest.class,
               org.eclipse.vorto.repository.oauth.AllTests.class,
               TenantServiceTest.class,
-              WorkflowTest.class})
+              WorkflowTest.class,
+              GenerationResultBuilderTest.class,
+              DataTypeGeneratorTaskTest.class
+             })
 public class AllTests {
 
 }
