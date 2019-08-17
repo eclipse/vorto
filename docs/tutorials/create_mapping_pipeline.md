@@ -83,7 +83,7 @@ Repeat the step for the second device.
 
 2. Use `mosquitto_pub` client to send some geolocation data: 
 ```bash
-mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/4711 -m '{"longitude": "103.3223", "latitude": "3.2322"}' --cafile iothub.crt
+mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/{tenant-id}/4711 -m '{"longitude": "103.3223", "latitude": "3.2322"}' --cafile iothub.crt
 ```
 
 3. Verify the incoming data in our IoT application from step 1. You should see the data being printed out to the console. 
@@ -91,7 +91,7 @@ mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {pas
 4. Send some data for our second device `4712`. This time change the payload message representation to CSV style. Example:
 
 ```bash
-mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/4712 -m '{"103.3223","3.2322"}' --cafile iothub.crt
+mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/{tenant-id}/4712 -m '{"103.3223","3.2322"}' --cafile iothub.crt
 ```
 
 You should also see the data of our second device in the console of our application. 
