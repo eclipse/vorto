@@ -15,13 +15,16 @@
 package org.eclipse.vorto.mapping.engine.serializer
 
 import java.util.HashMap
+import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.stream.Collectors
 import org.apache.commons.text.StringEscapeUtils
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification
+import org.eclipse.vorto.model.EntityModel
 import org.eclipse.vorto.model.FunctionblockModel
 import org.eclipse.vorto.model.ModelId
+import org.eclipse.vorto.model.ModelProperty
 import org.eclipse.vorto.model.Stereotype
 
 /**
@@ -49,6 +52,20 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		category payloadmapping
 		
 		using «fbm.id.namespace».«fbm.id.name»;«fbm.id.version»
+		«var imports = new HashSet »
+		«FOR statusProperty : fbm.statusProperties»
+		«IF isEntityProperty(statusProperty)»
+		«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+fbm.id.name.toLowerCase+".entities"+"."+statusProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
+		«ENDIF»
+		«ENDFOR»
+		«FOR configProperty : fbm.configurationProperties»
+		«IF isEntityProperty(configProperty)»
+		«var config = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+fbm.id.name.toLowerCase+".entities"+"."+configProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
+		«ENDIF»
+		«ENDFOR»
+		«FOR using : imports»
+		«using»
+		«ENDFOR»
 		
 		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
 			targetplatform «targetPlatform»
@@ -64,14 +81,22 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 				«ENDIF»
 			«ENDFOR»
 			«FOR statusProperty : fbm.statusProperties»
+				«IF isEntityProperty(statusProperty)»
+				from «fbm.id.name».status.«statusProperty.name» to reference «statusProperty.name.toFirstUpper+"PayloadMapping"»
+				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
 				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
-				«ENDFOR»		
+				«ENDFOR»
+				«ENDIF»		
 			«ENDFOR»
 			«FOR configProperty : fbm.configurationProperties»
+				«IF isEntityProperty(configProperty)»
+				from «fbm.id.name».configuration.«configProperty.name» to reference «configProperty.name.toFirstUpper+"PayloadMapping"»
+				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(configProperty.stereotypes)»
 				from «fbm.id.name».configuration.«configProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
-				«ENDFOR»		
+				«ENDFOR»
+				«ENDIF»		
 			«ENDFOR»
 			«FOR operation : fbm.operations»
 				«FOR stereotype : filterEmptyStereotypes(operation.stereotypes)»
@@ -80,6 +105,10 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«ENDFOR»
 		}
 		'''
+	}
+		
+	def boolean isEntityProperty(ModelProperty property) {
+		return property.type instanceof ModelId && specification.getReferencedModel(fbm.id,property.name).isPresent &&  specification.getReferencedModel(fbm.id,property.name).get instanceof EntityModel
 	}
 	
 	private def String createFunctions(Stereotype functionsStereotype) {

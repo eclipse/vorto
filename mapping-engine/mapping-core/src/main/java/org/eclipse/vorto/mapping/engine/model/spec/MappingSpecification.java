@@ -57,6 +57,17 @@ public class MappingSpecification implements IMappingSpecification {
     return (FunctionblockModel) getReferencedModel(this.infoModel.getId(), name).get();
   }
 
+  public List<Reference> getReferences() {
+    return references;
+  }
+
+  public void setReferences(List<Reference> references) {
+    this.references = references;
+  }
+
+  /**
+   * Gets the referenced model for the given parent and property name
+   */
   public Optional<IModel> getReferencedModel(ModelId parent, String propertyName) {
     Optional<Reference> reference = this.references.stream().filter(r -> r.getParent().equals(parent) && r.getPropertyName().equals(propertyName)).findFirst();
     if (reference.isPresent()) {

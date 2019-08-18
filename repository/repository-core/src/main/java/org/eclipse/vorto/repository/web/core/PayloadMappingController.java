@@ -27,6 +27,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -120,8 +121,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
         ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
         fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
       }
-
-      specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
+      
+      specification.getReferences().add(Reference.of(infomodel.getId(), initEmptyProperties(fbm), fbProperty.getName()));
     }
     return specification;
   }

@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IModel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 
 public class MappingSpecificationSerializer {
@@ -37,11 +41,29 @@ public class MappingSpecificationSerializer {
   public Iterator<IMappingSerializer> iterator() {
     List<IMappingSerializer> serializers = new ArrayList<IMappingSerializer>();
     for (ModelProperty fbProperty : specification.getInfoModel().getFunctionblocks()) {
+      FunctionblockModel fbm = specification.getFunctionBlock(fbProperty.getName());
+      addSerializerRecursive(fbm, fbm.getStatusProperties(),serializers);
+      addSerializerRecursive(fbm, fbm.getConfigurationProperties(),serializers);
       serializers.add(
           new FunctionblockMappingSerializer(specification, targetPlatform, fbProperty.getName()));
     }
     serializers.add(new InformationModelMappingSerializer(specification, targetPlatform));
     return serializers.iterator();
   }
+
+  private void addSerializerRecursive(IModel container, List<ModelProperty> properties,
+      List<IMappingSerializer> serializers) {
+    for (ModelProperty property : properties) {
+      if (isEntityProperty(container.getId(), property)) {
+        EntityModel entityModel = (EntityModel)specification.getReferencedModel(container.getId(), property.getName()).get();
+        addSerializerRecursive(entityModel, entityModel.getProperties(), serializers);
+        serializers.add(new EntityMappingSerializer(specification, targetPlatform, property.getName(), entityModel, container));
+      }
+    }
+  }
+  
+  private boolean isEntityProperty(ModelId parentId, ModelProperty property) {
+    return property.getType() instanceof ModelId && specification.getReferencedModel(parentId,property.getName()).isPresent() &&  specification.getReferencedModel(parentId,property.getName()).get() instanceof EntityModel;
+}
 
 }
