@@ -87,5 +87,31 @@ public class EclipseHonoJavaGeneratorTest {
 		generationResult = eclipseHonoJavaGenerator.generate(model, context);
 		assertTrue(generationResult.getFileName().endsWith("zip"));
 	}
+	
+	/*
+	 * Test case for checking infomodel with empty namespace
+	 */
+	@Test
+	public void checkEmptyNamespaceInfomodel() throws Exception {
+		List<MappingModel> mappingModels = new ArrayList<>();
+		Map<String, String> configProperties = new HashMap<>();
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/EmptyNamespace.infomodel"),
+						ModelType.InformationModel)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),
+						ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/ColorLight.type"), ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Light.type"), ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Brightness.type"), ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Coffee_Enum.type"), ModelType.Datatype)
+				.read();
+		InformationModel model = (InformationModel) workspace.get().stream().filter(p -> p instanceof InformationModel)
+				.findAny().get();
+		InvocationContext context = new InvocationContext(mappingModels, configProperties);
 
+		EclipseHonoJavaGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();
+		IGenerationResult generationResult = null;
+		generationResult = eclipseHonoJavaGenerator.generate(model, context);
+		assertTrue(generationResult.getFileName().endsWith("zip"));
+	}
 }
