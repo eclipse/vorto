@@ -22,8 +22,10 @@ import java.util.Map;
 
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.eclipse.xtext.xbase.scoping.batch.SimpleIdentifiableElementDescription;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,6 +34,7 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.plugin.generator.*;
 import org.eclipse.vorto.plugin.generator.utils.DatatypeGeneratorTask;
 import org.eclipse.vorto.plugin.generator.utils.Generated;
@@ -39,16 +42,9 @@ import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate;
 import org.eclipse.vorto.plugin.generator.utils.IGeneratedWriter;
+import org.eclipse.vorto.repository.core.impl.parser.ParsingException;
 
-public class EclipseHonoJavaGeneratorTest {
-
-	@Mock
-	protected IFileTemplate<Entity> entityTemplate = Mockito.mock(IFileTemplate.class);
-
-	@Mock
-	protected IFileTemplate<org.eclipse.vorto.core.api.model.datatype.Enum> enumTemplate = Mockito
-			.mock(IFileTemplate.class);
-
+public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest{
 	@Before
 	public void beforeEach() throws Exception {
 	}
@@ -64,54 +60,23 @@ public class EclipseHonoJavaGeneratorTest {
 	}
 
 	/** Test case for checking whether the returned file is a Zip file */
+
 	@Test
 	public void checkResultZipFileHonoJava() throws Exception {
-		List<MappingModel> mappingModels = new ArrayList<>();
-		Map<String, String> configProperties = new HashMap<>();
-		IModelWorkspace workspace = IModelWorkspace.newReader()
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperInfomodel.infomodel"),
-						ModelType.InformationModel)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),
-						ModelType.Functionblock)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/ColorLight.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Light.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Brightness.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Coffee_Enum.type"), ModelType.Datatype)
-				.read();
-		InformationModel model = (InformationModel) workspace.get().stream().filter(p -> p instanceof InformationModel)
-				.findAny().get();
-		InvocationContext context = new InvocationContext(mappingModels, configProperties);
-
-		EclipseHonoJavaGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();
-		IGenerationResult generationResult = null;
-		generationResult = eclipseHonoJavaGenerator.generate(model, context);
-		assertTrue(generationResult.getFileName().endsWith("zip"));
+		InformationModel model = modelProvider("SuperInfomodel.infomodel","SuperSuperFb.fbmodel");
+		ICodeGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();
+		checkResultZipFile(eclipseHonoJavaGenerator,model);
 	}
-	
+
 	/*
 	 * Test case for checking infomodel with empty namespace
 	 */
-	@Test
-	public void checkEmptyNamespaceInfomodel() throws Exception {
-		List<MappingModel> mappingModels = new ArrayList<>();
-		Map<String, String> configProperties = new HashMap<>();
-		IModelWorkspace workspace = IModelWorkspace.newReader()
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/EmptyNamespace.infomodel"),
-						ModelType.InformationModel)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),
-						ModelType.Functionblock)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/ColorLight.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Light.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Brightness.type"), ModelType.Datatype)
-				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Coffee_Enum.type"), ModelType.Datatype)
-				.read();
-		InformationModel model = (InformationModel) workspace.get().stream().filter(p -> p instanceof InformationModel)
-				.findAny().get();
-		InvocationContext context = new InvocationContext(mappingModels, configProperties);
-
+	@Ignore
+	@Test(expected = ParsingException.class)
+	public void checkEmptyNamespaceInfomodelHono() throws Exception {
+		InformationModel model = modelProvider("EmptyNamespace.infomodel","SuperSuperFb.fbmodel");
 		EclipseHonoJavaGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();
-		IGenerationResult generationResult = null;
-		generationResult = eclipseHonoJavaGenerator.generate(model, context);
-		assertTrue(generationResult.getFileName().endsWith("zip"));
+		checkEmptyNamespaceInfomodel(eclipseHonoJavaGenerator,model);
 	}
+
 }
