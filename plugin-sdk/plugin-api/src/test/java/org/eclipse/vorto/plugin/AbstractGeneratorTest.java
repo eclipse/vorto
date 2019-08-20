@@ -2,6 +2,8 @@ package org.eclipse.vorto.plugin;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
@@ -11,7 +13,6 @@ import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class AbstractGeneratorTest {
 
@@ -34,13 +35,15 @@ public class AbstractGeneratorTest {
 		return model;
 	}
 
-	public void checkResultZipFile(ICodeGenerator iCodeGenerator, InformationModel model) throws GeneratorException {
-		IGenerationResult generationResult = iCodeGenerator.generate(model, InvocationContext.simpleInvocationContext());
-		assertTrue(generationResult.getFileName().endsWith("zip"));
+	public void checkResultZipFile(ICodeGenerator iCodeGenerator, InformationModel model)
+			throws GeneratorException, IOException {
+		assertTrue(generateResult(iCodeGenerator, model).getFileName().endsWith("zip"));
 	}
 
-	public void checkEmptyNamespaceInfomodel(ICodeGenerator iCodeGenerator, InformationModel model) throws GeneratorException {
-		iCodeGenerator.generate(model, InvocationContext.simpleInvocationContext());
-		}
+	public IGenerationResult generateResult(ICodeGenerator iCodeGenerator, InformationModel model)
+			throws GeneratorException, IOException {
+		IGenerationResult generationResult = iCodeGenerator.generate(model,
+				InvocationContext.simpleInvocationContext());
+		return generationResult;
 	}
-
+}

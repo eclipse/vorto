@@ -12,46 +12,14 @@
  */
 package org.eclipse.vorto.codegen.ditto.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
-import org.eclipse.vorto.core.api.model.ModelConversionUtils;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.plugin.AbstractGeneratorTest;
-import org.eclipse.vorto.plugin.generator.*;
-import org.eclipse.vorto.plugin.generator.utils.DatatypeGeneratorTask;
-import org.eclipse.vorto.plugin.generator.utils.Generated;
-import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
-import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
-import org.eclipse.vorto.plugin.generator.utils.IFileTemplate;
-import org.eclipse.vorto.plugin.generator.utils.IGeneratedWriter;
 
 public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
-
-	@Before
-	public void beforeEach() throws Exception {
-	}
-
-	@Before
-	public void setUp() {
-
-	}
 
 	@BeforeClass
 	public static void initParser() {
