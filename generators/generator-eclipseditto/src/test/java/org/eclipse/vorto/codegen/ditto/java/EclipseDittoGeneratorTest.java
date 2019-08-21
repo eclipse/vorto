@@ -29,7 +29,7 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
 	/** Test case for checking whether the returned file is a Zip file */
 	@Test
 	public void checkResultZipFileDitto() throws Exception {
-		InformationModel model = modelProvider("SuperInfomodel.infomodel","SuperSuperFb.fbmodel");
+		InformationModel model = modelProvider("SuperInfomodel.infomodel","SuperSuperFb.fbmodel","");
 		EclipseDittoGenerator eclipseDittoGenerator = new EclipseDittoGenerator();
 		checkResultZipFile(eclipseDittoGenerator,model);
 	}
