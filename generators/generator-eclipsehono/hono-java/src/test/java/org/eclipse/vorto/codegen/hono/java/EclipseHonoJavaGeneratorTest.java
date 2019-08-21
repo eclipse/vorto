@@ -92,6 +92,32 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 						dataTypeFile + ModelType.Datatype.getExtension()));
 		assertEquals(true, checkFileExists(generationResult, dataTypeFile));
 	}
+	
+	/*
+	 * Test case for checking whether Hono Data Service file exists in
+	 * generated source code
+	 */
+	@Test
+	public void checkHonoDataServiceFileExists() throws Exception {
+		IGenerationResult generationResult = generateResult(eclipseHonoJavaGenerator,
+				modelProvider(infoModelWithType + ModelType.InformationModel.getExtension(),
+						functionBlockWithDataType + ModelType.Functionblock.getExtension(),
+						dataTypeFile + ModelType.Datatype.getExtension()));
+		assertEquals(true, checkFileExists(generationResult, "HonoDataService"));
+	}
+	
+	/*
+	 * Test case for checking whether HonoMqttClient file exists in
+	 * generated source code
+	 */
+	@Test
+	public void checkHonoMQttClientFileExists() throws Exception {
+		IGenerationResult generationResult = generateResult(eclipseHonoJavaGenerator,
+				modelProvider(infoModelWithType + ModelType.InformationModel.getExtension(),
+						functionBlockWithDataType + ModelType.Functionblock.getExtension(),
+						dataTypeFile + ModelType.Datatype.getExtension()));
+		assertEquals(true, checkFileExists(generationResult, "HonoMqttClient"));
+	}
 
 	public boolean checkFileExists(IGenerationResult generationResult, String fileName) throws IOException {
 		List<ZipEntry> zipEntryList = extractZipEntries(generationResult);
