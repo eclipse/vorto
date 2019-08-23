@@ -13,7 +13,6 @@
 package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.Arrays;
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
@@ -54,11 +53,9 @@ public class SpecWithConditionedRules extends AbstractTestSpec {
     operationState
         .setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty1}));
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("doorState",doorState.getId()).build());
-    addReference(Reference.of(infomodel.getId(),doorState,"doorState"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("doorState",doorState).build());
     
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("operationState",operationState.getId()).build());
-    addReference(Reference.of(infomodel.getId(),operationState,"operationState"));    
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("operationState",operationState).build());
   }
 
 }

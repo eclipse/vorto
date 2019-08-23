@@ -35,8 +35,8 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	String propertyName
 	FunctionblockModel fbm;
 	
-	new (IMappingSpecification spec, String targetPlaform, String propertyName) {
-		super(spec,targetPlaform);
+	new (IMappingSpecification spec, ModelId modelId, String targetPlaform, String propertyName) {
+		super(spec,modelId,targetPlaform);
 		this.propertyName = propertyName;
 		this.fbm = spec.getFunctionBlock(propertyName);
 	}
@@ -45,29 +45,25 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase».fbs
-		version «specification.infoModel.id.version»
+		namespace «modelId.namespace»
+		version «modelId.version»
 		displayname "«propertyName.toFirstUpper» Payload Mapping"
 		description "Maps the «propertyName.toFirstUpper» payload of the «specification.infoModel.id.prettyFormat»"
 		category payloadmapping
 		
 		using «fbm.id.namespace».«fbm.id.name»;«fbm.id.version»
+		
 		«var imports = new HashSet »
-		«FOR statusProperty : fbm.statusProperties»
-		«IF isEntityProperty(statusProperty)»
-		«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+fbm.id.name.toLowerCase+".entities"+"."+statusProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
-		«ENDIF»
-		«ENDFOR»
-		«FOR configProperty : fbm.configurationProperties»
-		«IF isEntityProperty(configProperty)»
-		«var config = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+fbm.id.name.toLowerCase+".entities"+"."+configProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
+		«FOR property : fbm.properties»
+		«IF isEntityProperty(property)»
+		«var status = imports.add(MappingIdUtils.getIdForProperty(modelId,property))»
 		«ENDIF»
 		«ENDFOR»
 		«FOR using : imports»
-		«using»
+		using «using.namespace».«using.name»;«using.version»
 		«ENDFOR»
 		
-		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
+		functionblockmapping «modelId.name» {
 			targetplatform «targetPlatform»
 			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
@@ -108,7 +104,7 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	}
 		
 	def boolean isEntityProperty(ModelProperty property) {
-		return property.type instanceof ModelId && specification.getReferencedModel(fbm.id,property.name).isPresent &&  specification.getReferencedModel(fbm.id,property.name).get instanceof EntityModel
+		return property.type instanceof EntityModel
 	}
 	
 	private def String createFunctions(Stereotype functionsStereotype) {
@@ -164,9 +160,5 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			
 		}
 		return content.toString;
-	}
-	
-	override getModelId() {
-		return new ModelId(propertyName.toFirstUpper+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+".fbs",specification.infoModel.id.version);
 	}
 }

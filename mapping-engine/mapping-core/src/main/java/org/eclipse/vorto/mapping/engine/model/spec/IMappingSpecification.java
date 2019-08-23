@@ -12,13 +12,10 @@
  */
 package org.eclipse.vorto.mapping.engine.model.spec;
 
-import java.util.Optional;
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.model.FunctionblockModel;
-import org.eclipse.vorto.model.IModel;
 import org.eclipse.vorto.model.Infomodel;
-import org.eclipse.vorto.model.ModelId;
 
 /**
  * Mapping Specification that combines the Information Model properties merged with the target
@@ -42,15 +39,6 @@ public interface IMappingSpecification {
    */
   FunctionblockModel getFunctionBlock(String propertyName);
   
-  /**
-   * Resolves the referenced model by the given property name
-   * 
-   * @param parent model ID of parent model which defines the given property name
-   * @param propertyName
-   * @return
-   */
-  Optional<IModel> getReferencedModel(ModelId parent, String propertyName);
-
   /**
    * Gets all custom script functions, used in the mapping specification
    * 

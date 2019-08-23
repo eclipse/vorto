@@ -15,7 +15,7 @@ package org.eclipse.vorto.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityModel extends AbstractModel {
+public class EntityModel extends AbstractModel implements IReferenceType {
 
   private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 

@@ -73,7 +73,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $scope.mappedOutput = null;
         $scope.errorMessage = null;
         var testRequest = {
-                specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
+                specification : {"infoModel":$scope.infomodel},
                 sourceJson : $scope.sourceContent
         };
         $http.put("./rest/mappings/test",testRequest).success(
@@ -92,48 +92,48 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $scope.newFunctionCode = e[1].getSession().getDocument().getValue();
     };
     
-	$scope.applyCondition = function(propertyName) {
-	   var stereotypes = $scope.properties[propertyName].stereotypes;
-	   if (stereotypes.length === 0 || $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "condition"}).length === 0) {
+	$scope.applyCondition = function(property) {
+	   var stereotypes = property.type.stereotypes;
+	   if (stereotypes.length === 0 || property.type.stereotypes.filter(function(stereotype) {return stereotype.name === "condition"}).length === 0) {
             var attributes = {};
-            attributes['value'] = $scope.conditions[propertyName];
-            $scope.properties[propertyName].stereotypes.push({name : "condition", attributes : attributes});
+            attributes['value'] = $scope.conditions[property.name];
+            property.type.stereotypes.push({name : "condition", attributes : attributes});
         } else {
-            var conditionStereotype = $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "condition"});
-            conditionStereotype[0].attributes['value'] = $scope.conditions[propertyName];
+            var conditionStereotype = property.type.stereotypes.filter(function(stereotype) {return stereotype.name === "condition"});
+            conditionStereotype[0].attributes['value'] = $scope.conditions[property.name];
         }
 	};
 
-    $scope.addFunction = function(propertyName,editorClear) {
+    $scope.addFunction = function(property,editorClear) {
         $scope.editMode = false;
         if ($scope.newFunctionCode === "" || !$scope.newFunctionCode.includes("function")) {
             return;
         }
 
-        var stereotypes = $scope.properties[propertyName].stereotypes;
+        var stereotypes = property.type.stereotypes;
 
         var functionName = $scope.newFunctionCode.substring($scope.newFunctionCode.indexOf("function ")+"function ".length,$scope.newFunctionCode.indexOf("("))
-        if (stereotypes.length === 0 || $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "functions"}).length === 0) {
+        if (stereotypes.length === 0 || property.type.stereotypes.filter(function(stereotype) {return stereotype.name === "functions"}).length === 0) {
             var attributes = {};
             attributes[functionName] = $scope.newFunctionCode;
-            $scope.properties[propertyName].stereotypes.push({name : "functions", attributes : attributes});
+            property.type.stereotypes.push({name : "functions", attributes : attributes});
             var f = {
-                    property: propertyName,
+                    property: property.name,
                     name : functionName,
                     body : $scope.newFunctionCode
             };
             $scope.customFunctions.push(f);
         } else {
-            var functionsStereotype = $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "functions"});
+            var functionsStereotype = property.type.stereotypes.filter(function(stereotype) {return stereotype.name === "functions"});
             functionsStereotype[0].attributes[functionName] = $scope.newFunctionCode;
             var f = {
-                    property: propertyName,
+                    property: property.name,
                     name : functionName,
                     body : $scope.newFunctionCode
             };
             var indexOfEditFunction = -1;
             for (var i = 0; i < $scope.customFunctions.length;i++) {
-                if ($scope.customFunctions[i].property === propertyName && $scope.customFunctions[i].name === functionName) {
+                if ($scope.customFunctions[i].property === property.name && $scope.customFunctions[i].name === functionName) {
                     indexOfEditFunction = i;
                     break;
                 }
@@ -146,7 +146,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         }
         if (editorClear) {
             $scope.editors.forEach(function(e) {
-                if (e.property === propertyName) {
+                if (e.property === property.name) {
                     e.editor.getSession().getDocument().setValue("");
                     return;
                 }
@@ -157,11 +157,22 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.getCustomFunctionsCount = function(property) {
         var count = 0;
         for (var i = 0; i < $scope.customFunctions.length;i++) {
-            if ($scope.customFunctions[i].property === property) {
+            if ($scope.customFunctions[i].property === property.name) {
                 ++count;
             }
         }
         return count;
+    };
+    
+    $scope.getCustomFunctionsForProperty = function(property) {
+    	var functions = [];
+   
+        for (var i = 0; i < $scope.customFunctions.length;i++) {
+            if ($scope.customFunctions[i].property === property.name) {
+                functions.push($scope.customFunctions[i]);
+            }
+        }
+        return functions;
     };
 
     $scope.editFunction = function(func) {
@@ -184,7 +195,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
         if (indexOfFunctionToRemove > -1) {
             $scope.customFunctions.splice(indexOfFunctionToRemove,1);
-            delete $scope.properties[property.name].stereotypes[0].attributes[func.name];
+            delete property.type.stereotypes[0].attributes[func.name];
         }
     };
 
@@ -193,7 +204,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform).success(
                 function(data, status, headers, config) {
                     $scope.infomodel = data.infoModel;
-                    $scope.properties = data.properties;
                     $scope.loadCustomFunctions();
                     $scope.loadFbConditions();
                     $scope.isLoading = false;
@@ -204,56 +214,59 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     };
     
     $scope.loadFbConditions = function() {
-        for (var propertyName in $scope.properties) {
-            if ($scope.properties.hasOwnProperty(propertyName)) {
-                var stereotypes = $scope.properties[propertyName].stereotypes;
-                if (stereotypes != null) {
-                    $scope.loadFbConditionFromStereotype(propertyName, stereotypes);
-                }
-            }
-        }
-        
+        $scope.infomodel.functionblocks.forEach(function(property) {
+           var stereotypes = property.type.stereotypes;
+           if (stereotypes != null) {
+           	$scope.loadFbConditionFromStereotype(property, stereotypes);
+           }
+        }); 
     };
     
-    $scope.loadFbConditionFromStereotype = function(propertyName, stereotypes) {
-    	$scope.conditions[propertyName] = "";
+    $scope.isDatatype = function(property) {
+    	return property.type.hasOwnProperty("modelType") && property.type.modelType === 'EntityModel';
+    };
+    
+    $scope.isEnumModel = function(property) {
+    	return property.type.hasOwnProperty("modelType") && property.type.modelType === 'EnumModel';
+    };
+    
+    $scope.loadFbConditionFromStereotype = function(property, stereotypes) {
+    	$scope.conditions[property.name] = "";
         for (var i = 0; i < stereotypes.length;i++) {     	
             if (stereotypes[i].name === "condition") {
-              $scope.conditions[propertyName] = stereotypes[i].attributes['value'];
+              $scope.conditions[property.name] = stereotypes[i].attributes['value'];
             }  
         }
     };
 
     $scope.loadCustomFunctions = function() {
-        for (var propertyName in $scope.properties) {
-            if ($scope.properties.hasOwnProperty(propertyName)) {
-                var stereotypes = $scope.properties[propertyName].stereotypes;
-                if (stereotypes != null) {
-                    $scope.loadCustomFunctionsFromStereotype(propertyName, stereotypes);
-                }
-            }
-        }
+    	$scope.infomodel.functionblocks.forEach(function(property) {
+    		var stereotypes = property.type.stereotypes;
+            if (stereotypes != null) {
+           		$scope.loadCustomFunctionsFromStereotype(property, stereotypes);
+           	}
+    	});
     };
 
-    $scope.loadCustomFunctionsFromStereotype = function(propertyName, stereotypes) {
+    $scope.loadCustomFunctionsFromStereotype = function(property, stereotypes) {
         for (var i = 0; i < stereotypes.length;i++) {
             if (stereotypes[i].name === "functions") {
-                $scope.loadCustomFunctionsFromStereotypeAttributes(propertyName, stereotypes, stereotypes[i].attributes);
+                $scope.loadCustomFunctionsFromStereotypeAttributes(property, stereotypes, stereotypes[i].attributes);
             }
         }
     };
 
-    $scope.loadCustomFunctionsFromStereotypeAttributes = function(propertyName, stereotypes, stereotypeAttributes) {
+    $scope.loadCustomFunctionsFromStereotypeAttributes = function(property, stereotypes, stereotypeAttributes) {
         for (var attributeKey in stereotypeAttributes) {
             if (stereotypeAttributes.hasOwnProperty(attributeKey) && attributeKey !== "_namespace") {
                 $scope.newFunctionCode = stereotypeAttributes[attributeKey];
-                $scope.addFunction(propertyName,false);
+                $scope.addFunction(property,false);
             }   
         }
     };
     
     $scope.save = function() {
-        var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
+        var specification = {"infoModel":$scope.infomodel};
         $http.put("./rest/mappings/" + $scope.modelId + "/" + $scope.targetPlatform,specification).success(
                 function(data, status, headers, config) {
                     $scope.success = true;
@@ -268,21 +281,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                     },2000);
 
                 });
-    };
-
-    $scope.loadSimpleExample = function(property) {
-        var simpleTestData = { "t001" : 30};	    
-
-        $scope.properties[property].statusProperties.some(function(e) {
-            if (e.mandatory) {
-                e.stereotypes[0].attributes["xpath"] = "/t001";
-                return true; 
-            }
-        });	    	
-
-        $timeout(function() {
-            $scope.sourceEditorSession.getDocument().setValue(JSON.stringify(simpleTestData,null,4));
-        },2000);	   	
     };
 
     $scope.getMappingState = function() {

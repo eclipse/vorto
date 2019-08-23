@@ -24,13 +24,17 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IModel;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
@@ -44,6 +48,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -71,6 +76,14 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/rest/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
+
+  private static final String EMPTY_STRING = "";
+
+  private static final String STEREOTYPE_CONDITION = "condition";
+
+  private static final String STEREOTYPE_FUNCTIONS = "functions";
+
+  private static final String STEREOTYPE_SOURCE = "source";
 
   private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
       .user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
@@ -100,31 +113,98 @@ public class PayloadMappingController extends AbstractRepositoryController {
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
-      ModelContent infomodelContent = modelController.getModelContent(modelId);
-      infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
+      throw new ModelNotFoundException("Cannot find mapping specification for model "+modelId);
     }
 
     MappingSpecification specification = new MappingSpecification();
-
     specification.setInfoModel(infomodel);
-
-    for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
-      ModelId fbModelId = (ModelId) fbProperty.getType();
-
-      ModelId mappingId = fbProperty.getMappingReference();
-
-      FunctionblockModel fbm = null;
-      if (mappingId != null) {
-        fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
-            mappingId.getPrettyFormat());
-      } else {
-        ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
-        fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
-      }
-      
-      specification.getReferences().add(Reference.of(infomodel.getId(), initEmptyProperties(fbm), fbProperty.getName()));
-    }
+    addReferencesRecursive(infomodel);  
+    
     return specification;
+  }
+
+  /**
+   * Adds reference types of the given properties to the mapping Specification (needed for lookup)
+   * @param model to traverse properties
+   */
+  private void addReferencesRecursive(IModel model) {
+    
+    if (model instanceof Infomodel) {
+      Infomodel infomodel = (Infomodel)model;
+      for (ModelProperty property : infomodel.getFunctionblocks()) {
+        ModelId referenceModelId = (ModelId)property.getType();
+        ModelId mappingId = property.getMappingReference();
+        IModel referenceModel = null;
+        if (mappingId != null) {
+          referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
+        } else {
+          ModelContent modelContent = modelController.getModelContent(referenceModelId.getPrettyFormat());
+          referenceModel = modelContent.getModels().get(modelContent.getRoot());
+        }
+        property.setType((FunctionblockModel)referenceModel);
+        addReferencesRecursive(referenceModel);
+      }
+    } else if (model instanceof EntityModel) {
+      EntityModel entityModel = (EntityModel)model;
+      for (ModelProperty property : entityModel.getProperties()) {
+        initStereotypeIfMissing(property);
+        if (property.getType() instanceof ModelId) {
+          ModelId referenceModelId = (ModelId)property.getType();
+          ModelId mappingId = property.getMappingReference();
+          IModel referenceModel = null;
+          if (mappingId != null) {
+            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
+          } else {
+            ModelContent modelContent = modelController.getModelContent(referenceModelId.getPrettyFormat());
+            referenceModel = modelContent.getModels().get(modelContent.getRoot());
+          }
+          if (referenceModel instanceof EntityModel) {
+            property.setType((EntityModel)referenceModel);
+            addReferencesRecursive(referenceModel);
+          } else {
+            property.setType((EnumModel)referenceModel);
+          }     
+        }      
+      }
+    }  else if (model instanceof FunctionblockModel) {
+      FunctionblockModel fbModel = (FunctionblockModel)model;
+      for (ModelProperty property : fbModel.getProperties()) {
+        initStereotypeIfMissing(property);
+        if (property.getType() instanceof ModelId) {
+          ModelId referenceModelId = (ModelId)property.getType();
+          ModelId mappingId = property.getMappingReference();
+          IModel referenceModel = null;
+          if (mappingId != null) {
+            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
+          } else {
+            ModelContent modelContent = modelController.getModelContent(referenceModelId.getPrettyFormat());
+            referenceModel = modelContent.getModels().get(modelContent.getRoot());
+          }
+          
+          if (referenceModel instanceof EntityModel) {
+            property.setType((EntityModel)referenceModel);
+            addReferencesRecursive(referenceModel);
+          } else {
+            property.setType((EnumModel)referenceModel);
+          }
+        }
+      }
+    }  
+  }
+
+  private void initStereotypeIfMissing(ModelProperty property) {
+    if (!property.getStereotype(STEREOTYPE_SOURCE).isPresent()) {
+      property.addStereotype(Stereotype.createWithXpath(EMPTY_STRING));
+      unescapeMappingAttributesForStereotype(property, STEREOTYPE_FUNCTIONS);
+      unescapeMappingAttributesForStereotype(property, STEREOTYPE_CONDITION);
+      unescapeMappingAttributesForStereotype(property, STEREOTYPE_SOURCE);
+    }
+  }
+  
+  private void unescapeMappingAttributesForStereotype(ModelProperty property, String stereotype) {
+    if (property.getStereotype(stereotype).isPresent()) {
+      property.getStereotype(stereotype).get().setAttributes(unescapeExpression(property.getStereotype(stereotype).get().getAttributes()));
+    }
   }
 
   @PostMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
@@ -140,16 +220,17 @@ public class PayloadMappingController extends AbstractRepositoryController {
       throw new ModelAlreadyExistsException();
     } else {
       ModelContent modelContent = this.modelController.getModelContent(modelId);
-      MappingSpecification spec = new MappingSpecification();
-      spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
-      for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
-        spec.getProperties().put(property.getName(),
-            (FunctionblockModel) modelContent.getModels().get(property.getType()));
-      }
-      final ModelId createdId = this.saveMappingSpecification(spec, modelId, targetPlatform);
+      
+      Infomodel infomodel = (Infomodel) modelContent.getModels().get(modelContent.getRoot());
+      
+      MappingSpecification specification = new MappingSpecification();
+      specification.setInfoModel(infomodel);
+      addReferencesRecursive(infomodel); 
+      
+      final ModelId createdId = this.saveMappingSpecification(specification, modelId, targetPlatform);
       Map<String, Object> response = new HashMap<String, Object>();
       response.put("mappingId", createdId.getPrettyFormat());
-      response.put("spec", spec);
+      response.put("spec", specification);
       return response;
     }
   }
@@ -190,7 +271,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
     final List<ModelId> publishedModelIds = new ArrayList<>();
 
-    MappingSpecificationSerializer.create(mappingSpecification, targetPlatform).iterator()
+      MappingSpecificationSerializer.create(mappingSpecification, targetPlatform).iterator()
         .forEachRemaining(m -> publishedModelIds.add(serializeAndSave(m, userContext)));
 
     return publishedModelIds.get(publishedModelIds.size() - 1);
@@ -231,7 +312,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
     // do logging
   }
 
-  public FunctionblockModel getModelContentByModelAndMappingId(final String _modelId,
+  public IModel getModelContentByModelAndMappingId(final String _modelId,
       final @PathVariable String mappingId) {
     
     final ModelId modelId = ModelId.fromPrettyFormat(_modelId);
@@ -250,39 +331,17 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
     IModelWorkspace mappingWorkspace = getWorkspaceForModel(mappingModelInfo.getId());
 
-    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
-        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace.get()
-            .stream()
-            .filter(
-                model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)
-            .findFirst().get();
-
-    return ModelDtoFactory.createResource(fbm, Optional.of((MappingModel) mappingWorkspace.get()
-        .stream().filter(model -> model instanceof MappingModel).findFirst().get()));
+    Optional<Model> model = mappingWorkspace.get().stream().filter(_model -> ModelUtils.fromEMFModelId(ModelIdFactory.newInstance(_model)).equals(vortoModelInfo.getId())).findFirst();
+    if (model.isPresent()) {
+      return ModelDtoFactory.createResource(model.get(), Optional.of((MappingModel) mappingWorkspace.get()
+          .stream().filter(_model -> _model instanceof MappingModel && mappingMatchesModelId((MappingModel)_model, vortoModelInfo)).findFirst().get()));
+    } else {
+      return null;
+    }
   }
 
-  private FunctionblockModel initEmptyProperties(FunctionblockModel fbm) {
-
-    // adding empty stereotype for all status properties, if necessary
-    fbm.getStatusProperties().stream().filter(p -> !p.getStereotype("source").isPresent())
-        .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
-
-    // adding empty stereotype for all configuration properties, if necessary
-    fbm.getConfigurationProperties().stream().filter(p -> !p.getStereotype("source").isPresent())
-        .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
-
-    unescapeMappingAttributesForStereotype(fbm, "functions");
-    unescapeMappingAttributesForStereotype(fbm, "condition");
-    unescapeMappingAttributesForStereotype(fbm, "source");
-
-    return fbm;
-  }
-
-
-  private void unescapeMappingAttributesForStereotype(FunctionblockModel fbm, String stereotype) {
-    fbm.getStatusProperties().stream().filter(p -> p.getStereotype(stereotype).isPresent())
-        .forEach(p -> p.getStereotype(stereotype).get()
-            .setAttributes(unescapeExpression(p.getStereotype(stereotype).get().getAttributes())));
+  private boolean mappingMatchesModelId(MappingModel mappingModel, ModelInfo modelToMatchAgainst) {  
+    return mappingModel.getReferences().stream().filter(reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion()).equals(modelToMatchAgainst.getId())).count() > 0;    
   }
 
   private Map<String, String> unescapeExpression(Map<String, String> attributes) {
@@ -296,7 +355,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   public ModelId serializeAndSave(IMappingSerializer m, IUserContext user) {
     final ModelId createdModelId = m.getModelId();
-    getModelRepository(user).save(createdModelId, m.serialize().getBytes(),
+    getModelRepository(createdModelId).save(createdModelId, m.serialize().getBytes(),
         createdModelId.getName() + ".mapping", user);
     try {
       workflowService.start(createdModelId, user);

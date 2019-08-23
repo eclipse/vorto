@@ -1,6 +1,5 @@
 package org.eclipse.vorto.service.mapping.spec;
 
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
@@ -31,10 +30,7 @@ public class SpecWithNestedEnum extends AbstractTestSpec  {
        )
       .build();
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("outdoorTemperature",temperatureModel.getId()).build());
-    
-    addReference(Reference.of(infomodel.getId(),temperatureModel,"outdoorTemperature"));
-    addReference(Reference.of(temperatureModel.getId(),unitEnum,"unit"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("outdoorTemperature",temperatureModel).build());
   }
 
 }

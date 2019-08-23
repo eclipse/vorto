@@ -1,6 +1,5 @@
 package org.eclipse.vorto.service.mapping.spec;
 
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
@@ -20,14 +19,11 @@ public class SpecWithNestedEntity extends AbstractTestSpec  {
     
     FunctionblockModel temperatureModel = FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Temperature:1.0.0"))
       .statusProperty(
-          ModelProperty.Builder("value", sensorValueEntity.getId())
+          ModelProperty.Builder("value", sensorValueEntity)
           .build()
     ).build();
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("outdoorTemperature",temperatureModel.getId()).build());
-    
-    addReference(Reference.of(infomodel.getId(),temperatureModel,"outdoorTemperature"));
-    addReference(Reference.of(temperatureModel.getId(),sensorValueEntity,"value"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("outdoorTemperature",temperatureModel).build());
   }
 
 }

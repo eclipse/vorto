@@ -19,23 +19,19 @@ class EntityMappingSerializer extends AbstractSerializer {
 	String propertyName
 	EntityModel entity;
 	
-	new(IMappingSpecification spec, String targetPlatform, String propertyName, EntityModel entity,  IModel parent) {
-		super(spec, targetPlatform)
+	new(IMappingSpecification spec, ModelId modelId, String targetPlatform, String propertyName, EntityModel entity,  IModel parent) {
+		super(spec, modelId, targetPlatform)
 		this.parent = parent
 		this.propertyName = propertyName
 		this.entity = entity
-	}
-	
-	override getModelId() {
-		return new ModelId(propertyName.toFirstUpper+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+parent.id.name.toLowerCase+".entities",specification.infoModel.id.version);
 	}
 	
 	override String serialize() {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase».«parent.id.name.toLowerCase».entities
-		version «specification.infoModel.id.version»
+		namespace «modelId.namespace»
+		version «modelId.version»
 		displayname "«propertyName.toFirstUpper» Entity Payload Mapping"
 		description "Maps the «propertyName.toFirstUpper» payload of the «specification.infoModel.id.prettyFormat»"
 		category payloadmapping
@@ -44,14 +40,14 @@ class EntityMappingSerializer extends AbstractSerializer {
 		«var imports = new HashSet »
 		«FOR property : entity.properties»
 		«IF isEntityProperty(property)»
-		«var x = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+"."+parent.id.name.toLowerCase+".entities"+"."+property.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
+		«var x = imports.add(MappingIdUtils.getIdForProperty(parent.id,property))»
 		«ENDIF»
 		«ENDFOR»
 		«FOR using : imports»
-		«using»
+		using «using.namespace».«using.name»;«using.version»
 		«ENDFOR»
 		
-		entitymapping «propertyName.toFirstUpper»PayloadMapping {
+		entitymapping «modelId.name» {
 			targetplatform «targetPlatform»
 			«FOR property : entity.properties»
 				«IF isEntityProperty(property)»
@@ -102,7 +98,7 @@ class EntityMappingSerializer extends AbstractSerializer {
 	}
 	
 	def boolean isEntityProperty(ModelProperty property) {
-		return property.type instanceof ModelId && specification.getReferencedModel(entity.id,property.name).isPresent &&  specification.getReferencedModel(entity.id,property.name).get instanceof EntityModel
+		return property.type instanceof EntityModel
 	}
 	
 }

@@ -13,14 +13,22 @@
 package org.eclipse.vorto.mapping.engine.serializer;
 
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.ModelId;
 
 public abstract class AbstractSerializer implements IMappingSerializer {
 
   protected IMappingSpecification specification;
   protected String targetPlatform;
+  protected ModelId modelId;
 
-  public AbstractSerializer(IMappingSpecification spec, String targetPlatform) {
+  public AbstractSerializer(IMappingSpecification spec, ModelId modelId, String targetPlatform) {
     this.specification = spec;
     this.targetPlatform = targetPlatform;
+    this.modelId = modelId;
+  }
+  
+  @Override
+  public ModelId getModelId() {
+    return modelId;
   }
 }

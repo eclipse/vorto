@@ -15,11 +15,9 @@ package org.eclipse.vorto.service.mapping.spec;
 import java.util.Arrays;
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
-import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.Stereotype;
 
@@ -43,8 +41,7 @@ public class SpecWithConfiguration extends AbstractTestSpec {
     buttonModel
         .setConfigurationProperties(Arrays.asList(new ModelProperty[] {buttonEnableProperty}));
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel.getId()).build());
-    addReference(Reference.of(infomodel.getId(),buttonModel,"button"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
 
   }
 

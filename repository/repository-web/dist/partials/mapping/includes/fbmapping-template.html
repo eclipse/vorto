@@ -6,9 +6,9 @@
 					<div class="col-sm-12">
 						<label class="control-label">Condition</label>
 						<p>
-							Set a condition when the Function Block should be mapped.
+							Set a condition when the Function Block Mapping should be applied.
 						</p>
-						​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" ng-change="applyCondition(property.name)" class="form-control" name="{{property.name}}Condition" id="{{property.name}}Condition" ng-model="conditions[property.name]"></textarea>
+						​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" ng-change="applyCondition(property)" class="form-control" name="{{property.name}}Condition" id="{{property.name}}Condition" ng-model="conditions[property.name]"></textarea>
 						<small style="color:grey;font-size:10px">Enter Mapping Condition. Example: obj.x &gt; 100. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
 					</div>
 				</div>
@@ -16,12 +16,12 @@
 		</div>
 	</form>
 	<br>
-	<div uib-accordion-group template-url="group-template.html" heading="Custom Converters ({{getCustomFunctionsCount(property.name)}})" class="panel-default" heading="none">
-		<div ng-show="customFunctions.length > 0 && getCustomFunctionsCount(property.name) > 0">
+	<div uib-accordion-group template-url="group-template.html" heading="Custom Converters ({{getCustomFunctionsCount(property)}})" class="panel-default" heading="none">
+		<div ng-show="customFunctions.length > 0 && getCustomFunctionsCount(property) > 0">
 		Your converters: 
 		     <ul ng-if="customFunctions.length > 0">
 		     	 </br>
-		      	 <li ng-repeat="f in customFunctions | filter:{ property:property.name }">
+		      	 <li ng-repeat="f in getCustomFunctionsForProperty(property)">
 		      	 	<a href="" ng-click="editFunction(f)">{{property.name.toLowerCase()}}:{{f.name}}</a> <a href="" class="delete-button" ng-show="state === 'Draft'" ng-click="deleteFunction(f,property)"><i class="fa fa-close"></i></a>
 		      	 </li>
 	      	 </ul>
@@ -36,63 +36,69 @@
 				<div data-property="{{property.name}}" ui-ace="{ onLoad : functionEditorLoaded, onChange: functionEditorChanged }" style="height: 200px;"></div>
 			</div>
 		</div>
-	     <button ng-show="state === 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Save Function</button>
+	     <button ng-show="state === 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property,true)">Save Function</button>
 	     </br>
 	</div>
 	<br>
-	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Status Properties" ng-show="properties[property.name].statusProperties.length > 0" is-open="true">
-     		<form>
-					  <div class="form-group">
-						<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
-						
-							<div ng-repeat="statusProperty in properties[property.name].statusProperties">
-								<div class="row">
-									<label ng-hide="statusProperty.mandatory" for="{{statusProperty.name}}" class="col-sm-3 control-label">{{statusProperty.name}} <small style="color:grey;font-size:10px">{{statusProperty.type}}</small></label>
-									<label ng-show="statusProperty.mandatory" for="{{statusProperty.name}}" class="col-sm-3 control-label">{{statusProperty.name}}* 	<small style="color:grey;font-size:10px">{{statusProperty.type}}</small></label>	
-								</div>
-								<div class="row">
-									<!--div class="col-sm-4">
-										​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" class="form-control" name="{{statusProperty.name}}Condition" id="{{statusProperty.name}}Condition" ng-model="statusProperty.stereotypes[0].attributes['condition']"></textarea>
-										<small style="color:grey;font-size:10px">Enter Mapping Condition. Example: obj.x &gt; 100. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
-									</div-->
-									<div class="col-sm-12">
-										​<textarea ng-required="statusProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{statusProperty.name}}" id="{{statusProperty.name}}" ng-model="statusProperty.stereotypes[0].attributes['xpath']"></textarea>
-									    <span class="error" ng-show="{{property.name}}MappingForm.$error.required && statusProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br> </span>   
-										<small style="color:grey;font-size:10px">Enter Mapping Expression. Example: obj/x. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
-									</div>
-								</div>
-								</br>	
-							</div>					
-						</ng-form>
-					  </div>
-			</form>
+	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Status Properties" ng-show="property.type.statusProperties.length > 0" is-open="true">
+			<p>Enter the mapping expressions in xpath notation. You can use converter functions. <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/mapping-engine/docs/built_in_converters.md">More Info</a></p>
+     		<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
+							<div ng-repeat="statusProperty in property.type.statusProperties">
+								<div ng-show="!isDatatype(statusProperty)" class="form-group row">
+    								<label ng-show="!isEnumModel(statusProperty)" for="{{statusProperty.name}}" class="col-sm-2 col-form-label">{{statusProperty.name}} <small style="color:grey;font-size:10px">{{statusProperty.type}}</small></label>
+    								<label ng-show="isEnumModel(statusProperty)" for="{{statusProperty.name}}" class="col-sm-2 col-form-label">{{statusProperty.name}} <small style="color:grey;font-size:10px">ENUM</small></label>
+    								
+    								<div class="col-sm-10">
+    								    <textarea ng-required="statusProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{statusProperty.name}}" id="{{statusProperty.name}}" ng-model="statusProperty.stereotypes[0].attributes['xpath']"></textarea>    									
+    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && statusProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
+    								</div>
+  								</div>
+  								<div ng-show="isDatatype(statusProperty)" class="form-group row">
+    								<label for="{{statusProperty.name}}" class="col-sm-2 col-form-label">{{statusProperty.name}} <small style="color:grey;font-size:10px">ENTITY</small></label>
+    								<div class="col-sm-10">
+    									<div ng-repeat="entityProperty in statusProperty.type.properties">
+											<div ng-show="!isDatatype(entityProperty)" class="form-group row">
+    											<label ng-show="!isEnumModel(entityProperty)" for="{{entityProperty.name}}" class="col-sm-2 col-form-label">{{entityProperty.name}} <small style="color:grey;font-size:10px">{{entityProperty.type}}</small></label>
+			    								<label ng-show="isEnumModel(entityProperty)" for="{{entityProperty.name}}" class="col-sm-2 col-form-label">{{entityProperty.name}} <small style="color:grey;font-size:10px">ENUM</small></label>
+			    								<div class="col-sm-10">
+			    								    <textarea ng-required="entityProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{entityProperty.name}}" id="{{entityProperty.name}}" ng-model="entityProperty.stereotypes[0].attributes['xpath']"></textarea>
+			    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
+			    								</div>
+  											</div>
+										</div>
+    								</div>
+  								</div>
+							</div>			
+			</ng-form>
 	</div>
 	<br>
-	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Configuration Properties" ng-show="properties[property.name].configurationProperties.length > 0" is-open="true">
-     		<form>
-					  <div class="form-group">
-						<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
-						
-							<div ng-repeat="configurationProperty in properties[property.name].configurationProperties">
-								<div class="row">
-									<label ng-hide="configurationProperty.mandatory" for="{{configurationProperty.name}}" class="col-sm-3 control-label">{{configurationProperty.name}} <small style="color:grey;font-size:10px">{{configurationProperty.type}}</small></label>
-									<label ng-show="configurationProperty.mandatory" for="{{configurationProperty.name}}" class="col-sm-3 control-label">{{configurationProperty.name}}* 	<small style="color:grey;font-size:10px">{{configurationProperty.type}}</small></label>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" class="form-control" name="{{statusProperty.name}}Condition" id="{{configurationProperty.name}}Condition" ng-model="configurationProperty.stereotypes[0].attributes['condition']"></textarea>
-										<small style="color:grey;font-size:10px">Enter Mapping Condition. Example: obj.x &gt; 100. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
-									</div>
-									<div class="col-sm-8">
-										​<textarea ng-required="configurationProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{configurationProperty.name}}" id="{{configurationProperty.name}}" ng-model="configurationProperty.stereotypes[0].attributes['xpath']"></textarea>
-									    <span class="error" ng-show="{{property.name}}MappingForm.$error.required && configurationProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    
-										<small style="color:grey;font-size:10px">Enter Mapping Expression. Example: obj/x. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
-									</div>
-								</div>
-							</div>					
-						</ng-form>
-					  </div>
-			</form>
+	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Configuration Properties" ng-show="property.type.configurationProperties.length > 0" is-open="true">
+			<p>Enter the mapping expressions in xpath notation. You can use converter functions. <a target="_blank" href="https://github.com/eclipse/vorto/blob/master/mapping-engine/docs/built_in_converters.md">More Info</a></p>
+     		<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
+							<div ng-repeat="_property in property.type.configurationProperties">
+								<div ng-show="!isDatatype(_property)" class="form-group row">
+    								<label for="{{_property.name}}" class="col-sm-2 col-form-label">{{_property.name}} <small style="color:grey;font-size:10px">{{_property.type}}</small></label>
+    								<div class="col-sm-10">
+    								    <textarea ng-required="_property.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{_property.name}}" id="{{_property.name}}" ng-model="_property.stereotypes[0].attributes['xpath']"></textarea>
+    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && _property.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
+    								</div>
+  								</div>
+  								<div ng-show="isDatatype(_property)" class="form-group row">
+    								<label for="{{_property.name}}" class="col-sm-2 col-form-label">{{_property.name}} <small style="color:grey;font-size:10px">ENTITY</small></label>
+    								<div class="col-sm-10">
+    									<div ng-repeat="entityProperty in _property.type.properties">
+											<div ng-show="!isDatatype(entityProperty)" class="form-group row">
+    											<label for="{{entityProperty.name}}" class="col-sm-2 col-form-label">{{entityProperty.name}} <small style="color:grey;font-size:10px">{{entityProperty.type}}</small></label>
+			    								<div class="col-sm-10">
+			    								    <textarea ng-required="entityProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{entityProperty.name}}" id="{{entityProperty.name}}" ng-model="entityProperty.stereotypes[0].attributes['xpath']"></textarea>
+			    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
+			    								</div>
+  											</div>
+										</div>
+    								</div>
+  								</div>
+							</div>			
+			</ng-form>
 	</div>
  </uib-accordion>
  

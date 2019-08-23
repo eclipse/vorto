@@ -13,7 +13,6 @@
 package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.Arrays;
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
@@ -36,8 +35,7 @@ public class SpecWithSameFunctionblock extends AbstractTestSpec {
 
     buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty}));
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("btn1",buttonModel.getId()).build());
-    addReference(Reference.of(infomodel.getId(),buttonModel,"btn1"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("btn1",buttonModel).build());
     
 
     FunctionblockModel buttonModel2 = new FunctionblockModel(
@@ -53,8 +51,7 @@ public class SpecWithSameFunctionblock extends AbstractTestSpec {
     buttonModel2
         .setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty2}));
 
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("btn2",buttonModel2.getId()).build());
-    addReference(Reference.of(infomodel.getId(),buttonModel2,"btn2"));
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("btn2",buttonModel2).build());
 
 
   }

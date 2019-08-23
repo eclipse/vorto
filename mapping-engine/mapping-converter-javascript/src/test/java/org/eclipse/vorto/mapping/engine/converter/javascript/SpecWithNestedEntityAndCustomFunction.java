@@ -16,7 +16,6 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvaluator;
 import org.eclipse.vorto.mapping.engine.functions.ScriptClassFunction;
-import org.eclipse.vorto.mapping.engine.model.spec.Reference;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
@@ -35,12 +34,10 @@ public class SpecWithNestedEntityAndCustomFunction extends AbstractTestSpec {
              .build()).build();
     
     FunctionblockModel fbm = FunctionblockModel.Builder(ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"))
-      .statusProperty(ModelProperty.Builder("count", countEntity.getId()).build()).build();
+      .statusProperty(ModelProperty.Builder("count", countEntity).build()).build();
     
-    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",fbm.getId()).build());
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",fbm).build());
     
-    addReference(Reference.of(infomodel.getId(),fbm,"button"));
-    addReference(Reference.of(fbm.getId(), countEntity, "count"));
     
   }
 
