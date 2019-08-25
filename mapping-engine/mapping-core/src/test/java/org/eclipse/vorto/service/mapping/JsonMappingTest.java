@@ -30,6 +30,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithNestedEntity;
 import org.eclipse.vorto.service.mapping.spec.SpecWithNestedEnum;
 import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
+import org.eclipse.vorto.service.mapping.spec.SpecWithTwoFunctionblocksWithNestedEntity;
 import org.junit.Test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -170,6 +171,23 @@ public class JsonMappingTest {
     
     EntityPropertyValue temperatureValue = (EntityPropertyValue)mappedOutput.get("outdoorTemperature").getStatusProperty("value").get();
     assertEquals(20.3,temperatureValue.getValue().getPropertyValue("value").get().getValue());
+  }
+  
+  @Test
+  public void testMappingWithEntityUnmapped() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithTwoFunctionblocksWithNestedEntity()).build();
+
+    final String sampleDeviceData =
+        "{\"temperature\" : 20.3 }";
+
+    InfomodelValue mappedOutput =
+        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+    
+    EntityPropertyValue temperatureValue = (EntityPropertyValue)mappedOutput.get("outdoorTemperature").getStatusProperty("value").get();    
+    assertEquals(20.3,temperatureValue.getValue().getPropertyValue("value").get().getValue());
+    
+    assertNull(mappedOutput.get("humidity"));
   }
   
   @Test

@@ -50,7 +50,7 @@
     								
     								<div class="col-sm-10">
     								    <textarea ng-required="statusProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{statusProperty.name}}" id="{{statusProperty.name}}" ng-model="statusProperty.stereotypes[0].attributes['xpath']"></textarea>    									
-    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && statusProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
+    									<span class="error" ng-show="{{property.name}}MappingForm.{{statusProperty.name}}.$error.required && statusProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
     								</div>
   								</div>
   								<div ng-show="isDatatype(statusProperty)" class="form-group row">
@@ -62,7 +62,7 @@
 			    								<label ng-show="isEnumModel(entityProperty)" for="{{entityProperty.name}}" class="col-sm-2 col-form-label">{{entityProperty.name}} <small style="color:grey;font-size:10px">ENUM</small></label>
 			    								<div class="col-sm-10">
 			    								    <textarea ng-required="entityProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{entityProperty.name}}" id="{{entityProperty.name}}" ng-model="entityProperty.stereotypes[0].attributes['xpath']"></textarea>
-			    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
+			    									<span class="error" ng-show="{{property.name}}MappingForm.{{statusProperty.name}}.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
 			    								</div>
   											</div>
 										</div>
@@ -80,7 +80,7 @@
     								<label for="{{_property.name}}" class="col-sm-2 col-form-label">{{_property.name}} <small style="color:grey;font-size:10px">{{_property.type}}</small></label>
     								<div class="col-sm-10">
     								    <textarea ng-required="_property.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{_property.name}}" id="{{_property.name}}" ng-model="_property.stereotypes[0].attributes['xpath']"></textarea>
-    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && _property.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
+    									<span class="error" ng-show="{{property.name}}MappingForm.{{statusProperty.name}}.$error.required && _property.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
     								</div>
   								</div>
   								<div ng-show="isDatatype(_property)" class="form-group row">
@@ -91,7 +91,7 @@
     											<label for="{{entityProperty.name}}" class="col-sm-2 col-form-label">{{entityProperty.name}} <small style="color:grey;font-size:10px">{{entityProperty.type}}</small></label>
 			    								<div class="col-sm-10">
 			    								    <textarea ng-required="entityProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{entityProperty.name}}" id="{{entityProperty.name}}" ng-model="entityProperty.stereotypes[0].attributes['xpath']"></textarea>
-			    									<span class="error" ng-show="{{property.name}}MappingForm.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
+			    									<span class="error" ng-show="{{property.name}}MappingForm.{{statusProperty.name}}.$error.required && entityProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    		
 			    								</div>
   											</div>
 										</div>

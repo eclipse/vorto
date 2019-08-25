@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -95,9 +94,9 @@ public class DataMapperJxpath implements IDataMapper {
   private FunctionblockValue mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
 
     FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
-    
-    if (!matchesCondition(fbModel,context)) {
-    	return null;
+
+    if (!matchesCondition(fbModel, context)) {
+      return null;
     }
 
     FunctionblockValue fbData = new FunctionblockValue(fbModel);
@@ -105,7 +104,7 @@ public class DataMapperJxpath implements IDataMapper {
     for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
 
       try {
-        Object mapped = this.mapProperty(fbModel,statusProperty, context);
+        Object mapped = this.mapProperty(fbModel, statusProperty, context);
         if (mapped != null) {
           fbData.withStatusProperty(statusProperty.getName(), mapped);
         }
@@ -127,7 +126,7 @@ public class DataMapperJxpath implements IDataMapper {
     for (ModelProperty configProperty : fbModel.getConfigurationProperties()) {
 
       try {
-        Object mapped = this.mapProperty(fbModel,configProperty, context);
+        Object mapped = this.mapProperty(fbModel, configProperty, context);
         if (mapped != null) {
           fbData.withConfigurationProperty(configProperty.getName(), mapped);
         }
@@ -149,28 +148,35 @@ public class DataMapperJxpath implements IDataMapper {
   }
 
   private boolean matchesCondition(FunctionblockModel fbModel, JXPathContext context) {
-	Optional<Stereotype> conditionStereotype = fbModel.getStereotype("condition");
+    Optional<Stereotype> conditionStereotype = fbModel.getStereotype("condition");
     if (conditionStereotype.isPresent() && conditionStereotype.get().hasAttribute("value")) {
-    	Expression e =
-  	          jexlEngine.createExpression(normalizeCondition(conditionStereotype.get().getAttributes().get("value")));
-  	      JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
-  	      jc.set("this", context.getContextBean());
-  	      jc.set("obj", context.getContextBean());
-  	      return (boolean) e.evaluate(jc);
+      Expression e = jexlEngine.createExpression(
+          normalizeCondition(conditionStereotype.get().getAttributes().get("value")));
+      JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
+      jc.set("this", context.getContextBean());
+      jc.set("obj", context.getContextBean());
+      return (boolean) e.evaluate(jc);
     } else {
-    	return true;
+      return true;
     }
   }
 
-private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
+  private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
     if (!fbData.getConfiguration().isEmpty() || !fbData.getStatus().isEmpty()) {
       return fbData;
     } else {
       return null;
     }
   }
+  
+  private Object onlyReturnIfPopulated(EntityValue value) {
+    if (!value.getProperties().isEmpty()) {
+      return value;
+    }
+    return null;
+  }
 
-  private Object mapProperty(IModel parent, ModelProperty property, JXPathContext input) { 
+  private Object mapProperty(IModel parent, ModelProperty property, JXPathContext input) {
     Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE_SOURCE);
     if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
       String expression =
@@ -181,15 +187,15 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
         return input.getValue(expression);
       }
     } else if (property.getType() instanceof IModel) {
-      IModel referencedModel = (IModel)property.getType();
+      IModel referencedModel = (IModel) property.getType();
       if (referencedModel instanceof EntityModel) {
-        EntityModel entityModel = (EntityModel)referencedModel;
+        EntityModel entityModel = (EntityModel) referencedModel;
         EntityValue value = new EntityValue(entityModel);
-        
+
         for (ModelProperty entityProperty : entityModel.getProperties()) {
 
           try {
-            Object mapped = this.mapProperty(entityModel,entityProperty, input);            
+            Object mapped = this.mapProperty(entityModel, entityProperty, input);
             if (mapped != null) {
               value.withProperty(entityProperty.getName(), mapped);
             }
@@ -207,10 +213,10 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
           }
 
         }
-        
-        return value;
+
+        return onlyReturnIfPopulated(value);
       } else if (referencedModel instanceof EnumModel) {
-        EnumModel enumModel = (EnumModel)referencedModel;
+        EnumModel enumModel = (EnumModel) referencedModel;
         EnumValue value = new EnumValue(enumModel);
         if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
           String expression =
@@ -220,7 +226,7 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
           if (matchesPropertyCondition(sourceStereotype.get(), input)) {
             Object mappedEnumValue = input.getValue(expression);
             if (mappedEnumValue instanceof String) {
-              value.setValue((String)mappedEnumValue);
+              value.setValue((String) mappedEnumValue);
             }
             return value;
           }
@@ -234,8 +240,8 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
 
   private boolean matchesPropertyCondition(Stereotype stereotype, JXPathContext context) {
     if (stereotype.hasAttribute(ATTRIBUTE_CONDITION)) {
-      Expression e =
-          jexlEngine.createExpression(normalizeCondition(stereotype.getAttributes().get(ATTRIBUTE_CONDITION)));
+      Expression e = jexlEngine.createExpression(
+          normalizeCondition(stereotype.getAttributes().get(ATTRIBUTE_CONDITION)));
       JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
       jc.set("this", context.getContextBean());
       return (boolean) e.evaluate(jc);
@@ -260,12 +266,12 @@ private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
 
   @Override
   public InfomodelValue mapSource(Object input) {
-	Object _input = input;
-	if (input instanceof Object[] || input instanceof Collection<?>) {
-		Map<String,Object> wrapped = new HashMap<>();
-		wrapped.put("array", input);
-	    _input = wrapped;
-	}
+    Object _input = input;
+    if (input instanceof Object[] || input instanceof Collection<?>) {
+      Map<String, Object> wrapped = new HashMap<>();
+      wrapped.put("array", input);
+      _input = wrapped;
+    }
     return this.map(_input, MappingContext.empty());
   }
 

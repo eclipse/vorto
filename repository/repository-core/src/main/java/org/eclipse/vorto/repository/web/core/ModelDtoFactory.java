@@ -39,6 +39,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.EntitySource;
 import org.eclipse.vorto.core.api.model.mapping.EnumSource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
@@ -426,7 +427,8 @@ public class ModelDtoFactory {
   private static List<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
     return rules.stream()
         .filter(r -> (r.getSources().get(0) instanceof FunctionBlockPropertySource
-            || r.getSources().get(0) instanceof InfoModelPropertySource)
+            || r.getSources().get(0) instanceof InfoModelPropertySource
+            || r.getSources().get(0) instanceof EntityPropertySource)
             && matchesProperty(r.getSources().get(0), propertyName))
         .collect(Collectors.toList());
   }
@@ -458,6 +460,9 @@ public class ModelDtoFactory {
       return true;
     } else if (source instanceof InfoModelPropertySource
         && ((InfoModelPropertySource) source).getProperty().getName().equals(propertyName)) {
+      return true;
+    } else if (source instanceof EntityPropertySource
+        && ((EntityPropertySource) source).getProperty().getName().equals(propertyName)) {
       return true;
     }
     return false;
