@@ -15,8 +15,9 @@ package org.eclipse.vorto.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class FunctionblockModel extends AbstractModel {
+public class FunctionblockModel extends AbstractModel implements IReferenceType {
 
   private List<ModelProperty> configurationProperties = new ArrayList<>();
   private List<ModelProperty> statusProperties = new ArrayList<>();
@@ -63,6 +64,14 @@ public class FunctionblockModel extends AbstractModel {
 
   public void setStatusProperties(List<ModelProperty> statusProperties) {
     this.statusProperties = statusProperties;
+  }
+  
+  @JsonIgnore
+  public List<ModelProperty> getProperties(){
+    List<ModelProperty> properties = new ArrayList<>();
+    properties.addAll(getStatusProperties());
+    properties.addAll(getConfigurationProperties());
+    return properties;
   }
 
   @Deprecated

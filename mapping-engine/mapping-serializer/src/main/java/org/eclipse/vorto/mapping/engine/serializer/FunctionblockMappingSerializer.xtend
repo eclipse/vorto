@@ -15,13 +15,16 @@
 package org.eclipse.vorto.mapping.engine.serializer
 
 import java.util.HashMap
+import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.stream.Collectors
 import org.apache.commons.text.StringEscapeUtils
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification
+import org.eclipse.vorto.model.EntityModel
 import org.eclipse.vorto.model.FunctionblockModel
 import org.eclipse.vorto.model.ModelId
+import org.eclipse.vorto.model.ModelProperty
 import org.eclipse.vorto.model.Stereotype
 
 /**
@@ -32,8 +35,8 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	String propertyName
 	FunctionblockModel fbm;
 	
-	new (IMappingSpecification spec, String targetPlaform, String propertyName) {
-		super(spec,targetPlaform);
+	new (IMappingSpecification spec, ModelId modelId, String targetPlaform, String propertyName) {
+		super(spec,modelId,targetPlaform);
 		this.propertyName = propertyName;
 		this.fbm = spec.getFunctionBlock(propertyName);
 	}
@@ -42,15 +45,25 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase».fbs
-		version «specification.infoModel.id.version»
+		namespace «modelId.namespace»
+		version «modelId.version»
 		displayname "«propertyName.toFirstUpper» Payload Mapping"
 		description "Maps the «propertyName.toFirstUpper» payload of the «specification.infoModel.id.prettyFormat»"
 		category payloadmapping
 		
 		using «fbm.id.namespace».«fbm.id.name»;«fbm.id.version»
 		
-		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
+		«var imports = new HashSet »
+		«FOR property : fbm.properties»
+		«IF isEntityProperty(property)»
+		«var status = imports.add(MappingIdUtils.getIdForProperty(modelId,property))»
+		«ENDIF»
+		«ENDFOR»
+		«FOR using : imports»
+		using «using.namespace».«using.name»;«using.version»
+		«ENDFOR»
+		
+		functionblockmapping «modelId.name» {
 			targetplatform «targetPlatform»
 			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
@@ -64,14 +77,22 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 				«ENDIF»
 			«ENDFOR»
 			«FOR statusProperty : fbm.statusProperties»
+				«IF isEntityProperty(statusProperty)»
+				from «fbm.id.name».status.«statusProperty.name» to reference «statusProperty.name.toFirstUpper+"PayloadMapping"»
+				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
 				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
-				«ENDFOR»		
+				«ENDFOR»
+				«ENDIF»		
 			«ENDFOR»
 			«FOR configProperty : fbm.configurationProperties»
+				«IF isEntityProperty(configProperty)»
+				from «fbm.id.name».configuration.«configProperty.name» to reference «configProperty.name.toFirstUpper+"PayloadMapping"»
+				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(configProperty.stereotypes)»
 				from «fbm.id.name».configuration.«configProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
-				«ENDFOR»		
+				«ENDFOR»
+				«ENDIF»		
 			«ENDFOR»
 			«FOR operation : fbm.operations»
 				«FOR stereotype : filterEmptyStereotypes(operation.stereotypes)»
@@ -80,6 +101,10 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«ENDFOR»
 		}
 		'''
+	}
+		
+	def boolean isEntityProperty(ModelProperty property) {
+		return property.type instanceof EntityModel
 	}
 	
 	private def String createFunctions(Stereotype functionsStereotype) {
@@ -135,9 +160,5 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			
 		}
 		return content.toString;
-	}
-	
-	override getModelId() {
-		return new ModelId(propertyName.toFirstUpper+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+".fbs",specification.infoModel.id.version);
 	}
 }

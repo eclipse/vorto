@@ -19,6 +19,7 @@ import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.converter.string.StringFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
+import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
@@ -27,8 +28,25 @@ import com.google.gson.GsonBuilder;
 
 public class JsonMappingTest {
 
-  private static Gson gson = new GsonBuilder().create();
+  private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+  @Test
+  public void testMapNestedEntityWithCustomFunction() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntityAndCustomFunction())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+
+    String json = "{\"clickType\" : \"DOUBLE\"}";
+
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+
+    assertEquals(2,
+        ((EntityPropertyValue)buttonFunctionblockData.getStatusProperty("count").get()).getValue().getPropertyValue("value").get().getValue());
+
+    System.out.println(gson.toJson(mappedOutput.serialize()));
+  }
+  
   @Test
   public void testConfigMapping() throws Exception {
 
@@ -70,7 +88,7 @@ public class JsonMappingTest {
         voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
     assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
 
-    System.out.println(gson.toJson(mappedOutput.getProperties()));
+    System.out.println(gson.toJson(mappedOutput.serialize()));
 
   }
 
@@ -211,6 +229,6 @@ public class JsonMappingTest {
 
     assertNull(voltageFunctionblockData);
 
-    System.out.println(mappedOutput);
+    System.out.println(gson.toJson(mappedOutput.serialize()));
   }
 }

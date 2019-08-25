@@ -17,13 +17,14 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Operation;
 import org.eclipse.vorto.model.Stereotype;
 
 public class SpecWithOperationRule extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel buttonModel = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
     Operation operation = new Operation("press");
@@ -35,7 +36,7 @@ public class SpecWithOperationRule extends AbstractTestSpec {
     buttonModel.setOperations(Arrays.asList(new Operation[] {operation}));
 
 
-    addFunctionblockProperty("button", buttonModel);
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
   }
 
   @Override

@@ -38,7 +38,7 @@ public interface IMappingSpecification {
    * @return
    */
   FunctionblockModel getFunctionBlock(String propertyName);
-
+  
   /**
    * Gets all custom script functions, used in the mapping specification
    * 

@@ -24,7 +24,7 @@ import org.eclipse.vorto.model.Stereotype;
 public class SpecWithConfiguration2 extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel buttonModel = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
 
@@ -41,7 +41,7 @@ public class SpecWithConfiguration2 extends AbstractTestSpec {
     buttonModel
         .setConfigurationProperties(Arrays.asList(new ModelProperty[] {buttonEnableProperty}));
 
-    addFunctionblockProperty("button", buttonModel);
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
   }
 
   @Override

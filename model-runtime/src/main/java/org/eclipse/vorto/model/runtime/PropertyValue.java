@@ -44,6 +44,14 @@ public class PropertyValue {
     return "PropertyValue [meta=" + meta + ", value=" + value + "]";
   }
 
-
+  public Object serialize() {
+    if (value instanceof EntityValue) {
+      return ((EntityValue)value).serialize();
+    } else if (value instanceof EnumValue) {
+      return ((EnumValue)value).serialize();
+    } else {
+      return value;
+    }
+  }
 
 }

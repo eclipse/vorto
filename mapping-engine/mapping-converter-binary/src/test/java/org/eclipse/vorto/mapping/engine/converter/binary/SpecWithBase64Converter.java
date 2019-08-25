@@ -25,8 +25,10 @@ import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 public class SpecWithBase64Converter extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
-    addFunctionblockProperty("button", createButtonFb());
+  protected void createModel() {
+    
+    FunctionblockModel buttonModel = createButtonFb();
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
   }
 
   private FunctionblockModel createButtonFb() {

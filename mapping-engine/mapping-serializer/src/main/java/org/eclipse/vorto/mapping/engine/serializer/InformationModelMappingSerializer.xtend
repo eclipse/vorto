@@ -28,16 +28,16 @@ import org.eclipse.vorto.model.Stereotype
  */
 class InformationModelMappingSerializer extends AbstractSerializer {
 	
-	new (IMappingSpecification spec, String targetPlatform) {
-		super(spec,targetPlatform)
+	new (IMappingSpecification spec, ModelId modelId, String targetPlatform) {
+		super(spec,modelId, targetPlatform)
 	}
 	
 	override String serialize() {
 		'''
 		vortolang 1.0
 		
-		namespace «specification.infoModel.id.namespace».mapping.«specification.infoModel.id.name.toLowerCase»
-		version «specification.infoModel.id.version»
+		namespace «modelId.namespace»
+		version «modelId.version»
 		displayname "«specification.infoModel.id.name» Payload Mapping"
 		description "Payload Mapping for «specification.infoModel.id.name»"
 		category payloadmapping
@@ -45,13 +45,13 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		using «specification.infoModel.id.namespace».«specification.infoModel.id.name»;«specification.infoModel.id.version»
 		«var imports = new HashSet »
 		«FOR fbProperty : specification.infoModel.functionblocks»
-			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase+".fbs"+"."+fbProperty.name.toFirstUpper+"PayloadMapping;"+specification.infoModel.id.version)»
+			«var status = imports.add(MappingIdUtils.getIdForProperty(modelId,fbProperty))»
 		«ENDFOR»
-		«FOR using : imports»
-		«using»
+		«FOR importId : imports»
+		using «importId.namespace».«importId.name»;«importId.version»
 		«ENDFOR»
 		
-		infomodelmapping «specification.infoModel.id.name»PayloadMapping {
+		infomodelmapping «modelId.name» {
 			targetplatform «targetPlatform»
 			«FOR stereotype : filterEmptyStereotypes(specification.infoModel.stereotypes)»
 			from «specification.infoModel.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
@@ -82,9 +82,4 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 	def escapeQuotes(String value) {
 		return StringEscapeUtils.escapeJava(value)
 	}
-	
-	override getModelId() {
-		return new ModelId(specification.infoModel.id.name+"PayloadMapping",specification.infoModel.id.namespace+".mapping."+specification.infoModel.id.name.toLowerCase,specification.infoModel.id.version);
-	}
-	
 }

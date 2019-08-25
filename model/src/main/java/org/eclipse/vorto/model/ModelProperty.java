@@ -83,6 +83,17 @@ public class ModelProperty extends AbstractProperty {
       return this;
     }
     
+    public Builder withXPathStereotype(String xpathValue, String targetPlatformKey) {
+      property.setTargetPlatformKey(targetPlatformKey);
+      property.addStereotype(Stereotype.createWithXpath(xpathValue));
+      return this;
+    }
+    
+    public Builder withMappingReference(ModelId referenceId) {
+      property.setMappingReference(referenceId);
+      return this;
+    }
+    
     public ModelProperty build() {
       return property;
     }

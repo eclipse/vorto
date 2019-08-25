@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
 import com.google.gson.GsonBuilder;
@@ -40,13 +41,11 @@ public class MappingSpecJsonReaderTest {
 
     IDataMapper mapper = IDataMapper.newBuilder().withSpecification(spec).build();
 
-    String json = "{\"state\" : false, \"count\": 50}";
+    String json = "{\"t\" : 50}";
 
     InfomodelValue mappedOutput =
         mapper.mapSource(new GsonBuilder().create().fromJson(json, Object.class));
-    assertEquals(false,
-        mappedOutput.get("button").getStatusProperty("digitalInputState").get().getValue());
-    assertEquals(50.0,
-        mappedOutput.get("button").getStatusProperty("digitalInputStateCount").get().getValue());
+    assertEquals(50.0,((EntityPropertyValue)
+        mappedOutput.get("outdoorTemperature").getStatusProperty("value").get()).getValue().getPropertyValue("value").get().getValue());
   }
 }
