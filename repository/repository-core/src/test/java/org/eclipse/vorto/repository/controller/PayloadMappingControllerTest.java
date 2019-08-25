@@ -144,39 +144,6 @@ public class PayloadMappingControllerTest {
   }
 
   @Test
-  public void testMappingEngineJsonIntegerProblem() {
-    try {
-      TestMappingRequest mappingRequest = gsonWithDeserializer().fromJson(
-          new InputStreamReader(new ClassPathResource("mappingRequest.json").getInputStream()),
-          TestMappingRequest.class);
-      TestMappingResponse response = new PayloadMappingController().testMapping(mappingRequest);
-      response.getReport().getItems().forEach(item -> {
-        assertFalse(item.getMessage().matches("Field intfb/status/\\S+ must be of type 'Integer'"));
-      });
-    } catch (JsonSyntaxException | JsonIOException | IOException e) {
-      fail("Can't load test file.");
-    } catch (Exception e) {
-      fail("Got exception." + e.getMessage());
-    }
-  }
-  
-  @Test
-  public void testSaveMappingSpecification() throws Exception {
-    
-    ObjectMapper mapper = new ObjectMapper();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(IPropertyAttribute.class, new PropertyAttributeDeserializer());
-    module.addDeserializer(IReferenceType.class, new ModelReferenceDeserializer());
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.registerModule(module);
-    
-    MappingSpecification spec = mapper.readValue(new ClassPathResource("mappingRequest2.json").getInputStream(), MappingSpecification.class);  
-    assertNotNull(spec);
-    assertNotNull(spec.getFunctionBlock("connectivity"));
-    System.out.println(spec);
-  }
-  
-  @Test
   public void testDeserializeModelContentContainingMapping() throws Exception {
     ModelContent content = ObjectMapperFactory.getInstance().readValue(new ClassPathResource("modelcontent_lwm2m.json").getInputStream(), ModelContent.class);  
     assertNotNull(content);
