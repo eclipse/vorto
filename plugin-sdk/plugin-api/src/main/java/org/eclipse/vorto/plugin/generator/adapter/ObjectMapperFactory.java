@@ -200,7 +200,16 @@ public class ObjectMapperFactory {
       ObjectCodec oc = parser.getCodec();
       JsonNode node = oc.readTree(parser);
       if (node.has("type")) {
-        return oc.treeToValue(node, DictionaryType.class);
+        
+        JsonNode type = node.get("type");
+        
+        if (type.asText().equals("dictionary")) {
+          return oc.treeToValue(node, DictionaryType.class);
+        } else if (ModelType.valueOf(type.asText()).equals(ModelType.Functionblock)) {
+          return oc.treeToValue(node, FunctionblockModel.class);
+        } else {
+          return node.has("literals")? oc.treeToValue(node, EnumModel.class) : oc.treeToValue(node, EntityModel.class) ;
+        }
       } else if (node.has("namespace")) {
         return oc.treeToValue(node, ModelId.class);
       } else {

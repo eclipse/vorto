@@ -22,7 +22,7 @@ import org.eclipse.vorto.model.Stereotype;
 public class SpecWithConditionedRules extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel doorState = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
     doorState.addStereotype(Stereotype.createCondition("data.key == 'DoorState'"));
@@ -53,8 +53,9 @@ public class SpecWithConditionedRules extends AbstractTestSpec {
     operationState
         .setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty1}));
 
-    addFunctionblockProperty("doorState", doorState);
-    addFunctionblockProperty("operationState", operationState);
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("doorState",doorState).build());
+    
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("operationState",operationState).build());
   }
 
 }

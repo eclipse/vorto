@@ -20,7 +20,6 @@ import org.eclipse.vorto.mapping.engine.functions.ScriptClassFunction;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
-import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
@@ -28,7 +27,7 @@ import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 public class SpecWithByteArrayConverter extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel buttonModel = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
     ModelProperty digitalInputStateProperty = new ModelProperty();
@@ -43,7 +42,7 @@ public class SpecWithByteArrayConverter extends AbstractTestSpec {
 
     buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty}));
 
-    addFunctionblockProperty("button", buttonModel);
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
   }
 
   @Override

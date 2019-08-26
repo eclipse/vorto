@@ -16,10 +16,15 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.DictionaryType;
+import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.EnumModel;
+import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.IPropertyAttribute;
 import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,8 +43,15 @@ public class MappingSpecBuilder {
             JsonDeserializationContext context) throws JsonParseException {
           if (jsonElement.isJsonPrimitive()) {
             return PrimitiveType.valueOf(jsonElement.getAsString());
+          } else if (jsonElement.getAsJsonObject().has("type") && jsonElement.getAsJsonObject().get("type").getAsString().equals(ModelType.Functionblock.name())) {
+            return context.deserialize(jsonElement, FunctionblockModel.class);
+          } else if (jsonElement.getAsJsonObject().has("type") && jsonElement.getAsJsonObject().get("type").getAsString().equals(ModelType.Datatype.name())) {
+            return jsonElement.getAsJsonObject().has("literals")? context.deserialize(jsonElement, EnumModel.class): context.deserialize(jsonElement, EntityModel.class);
+          } else if (jsonElement.getAsJsonObject().has("type") && jsonElement.getAsJsonObject().get("type").getAsString().equals("dictionary")) {
+            return context.deserialize(jsonElement, DictionaryType.class);
+          } else {
+            return context.deserialize(jsonElement, ModelId.class);
           }
-          return context.deserialize(jsonElement, ModelId.class);
         }
       }).registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
         public IPropertyAttribute deserialize(JsonElement jsonElement, Type type,

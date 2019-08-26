@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IModel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 
 public class MappingSpecificationSerializer {
@@ -35,13 +39,33 @@ public class MappingSpecificationSerializer {
   }
 
   public Iterator<IMappingSerializer> iterator() {
+    ModelId rootMappingId = MappingIdUtils.getIdForInfoModel(specification.getInfoModel());
     List<IMappingSerializer> serializers = new ArrayList<IMappingSerializer>();
     for (ModelProperty fbProperty : specification.getInfoModel().getFunctionblocks()) {
+      FunctionblockModel fbm = specification.getFunctionBlock(fbProperty.getName());
+      ModelId mappingId = MappingIdUtils.getIdForProperty(rootMappingId, fbProperty);
+      addSerializerRecursive(mappingId,fbm, fbm.getProperties(),serializers);
       serializers.add(
-          new FunctionblockMappingSerializer(specification, targetPlatform, fbProperty.getName()));
+          new FunctionblockMappingSerializer(specification, mappingId, targetPlatform, fbProperty.getName()));
     }
-    serializers.add(new InformationModelMappingSerializer(specification, targetPlatform));
+    serializers.add(new InformationModelMappingSerializer(specification,rootMappingId, targetPlatform));
     return serializers.iterator();
+  }
+
+  private void addSerializerRecursive(ModelId parentId, IModel container, List<ModelProperty> properties,
+      List<IMappingSerializer> serializers) {
+    for (ModelProperty property : properties) {
+      if (isEntityProperty(property)) {
+        EntityModel entityModel = (EntityModel)property.getType();
+        ModelId mappingId = MappingIdUtils.getIdForProperty(parentId, property);
+        addSerializerRecursive(mappingId,entityModel, entityModel.getProperties(), serializers);
+        serializers.add(new EntityMappingSerializer(specification,mappingId,targetPlatform, property.getName(), entityModel, container));
+      }
+    }
+  }
+  
+  private boolean isEntityProperty(ModelProperty property) {
+    return property.getType() instanceof EntityModel;
   }
 
 }

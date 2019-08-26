@@ -22,7 +22,7 @@ import org.eclipse.vorto.model.Stereotype;
 public class SpecWithArrayPayload extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
+  protected void createModel() {
     FunctionblockModel buttonModel = new FunctionblockModel(
         ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"));
     ModelProperty digitalInputStateProperty = new ModelProperty();
@@ -35,7 +35,9 @@ public class SpecWithArrayPayload extends AbstractTestSpec {
 
     buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty}));
 
-    addFunctionblockProperty("button", buttonModel);
+    
+    
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
   }
 
 }

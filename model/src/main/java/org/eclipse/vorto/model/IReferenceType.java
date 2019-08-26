@@ -12,14 +12,5 @@
  */
 package org.eclipse.vorto.model;
 
-//@JsonTypeInfo(
-//    use = JsonTypeInfo.Id.NAME,
-//    include = JsonTypeInfo.As.PROPERTY,
-//    property = "type")
-//@JsonSubTypes({
-//    @JsonSubTypes.Type(value = ModelId.class, name = "model"),
-//    @JsonSubTypes.Type(value = PrimitiveType.class, name = "primitive"),
-//    @JsonSubTypes.Type(value = DictionaryType.class, name = "dictionary")
-//})
 public interface IReferenceType {
 }

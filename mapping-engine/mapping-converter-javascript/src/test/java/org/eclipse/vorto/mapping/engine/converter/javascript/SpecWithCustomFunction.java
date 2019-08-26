@@ -27,9 +27,13 @@ import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 public class SpecWithCustomFunction extends AbstractTestSpec {
 
   @Override
-  protected void createFBSpec() {
-    addFunctionblockProperty("button", createButtonFb());
-    addFunctionblockProperty("voltage", createVoltageFb());
+  protected void createModel() {
+    FunctionblockModel buttonModel = createButtonFb();
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("button",buttonModel).build());
+    
+    FunctionblockModel voltageModel = createVoltageFb();
+    
+    infomodel.getFunctionblocks().add(ModelProperty.Builder("voltage",voltageModel).build());
   }
 
   private FunctionblockModel createButtonFb() {

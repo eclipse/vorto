@@ -14,7 +14,7 @@ package org.eclipse.vorto.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumModel extends AbstractModel {
+public class EnumModel extends AbstractModel implements IReferenceType {
 
   private List<EnumLiteral> literals = new ArrayList<EnumLiteral>();
 
