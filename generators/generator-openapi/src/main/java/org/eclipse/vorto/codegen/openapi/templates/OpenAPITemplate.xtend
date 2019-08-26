@@ -510,7 +510,8 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        «FOR fbProperty : infomodel.properties»
 		        «fbProperty.name»:
 		          «IF fbProperty.description !== null»description: «fbProperty.description»«ENDIF»
-		          $ref: '#/components/schemas/«fbProperty.type.name»Feature'
+		          allOf:
+		            - $ref: '#/components/schemas/«fbProperty.type.name»Feature'
 		        «ENDFOR»
 		    «FOR entity : Utils.getReferencedEntities(infomodel)»
 		    «entity.name»:
