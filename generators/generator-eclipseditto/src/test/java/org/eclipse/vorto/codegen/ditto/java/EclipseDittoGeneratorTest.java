@@ -34,4 +34,5 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
 		checkResultZipFile(eclipseDittoGenerator,model);
 	}
 
+	
 }
