@@ -177,7 +177,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
           getTenant(modelId));
 
-      getModelRepository(getTenant(modelId), SecurityContextHolder.getContext().getAuthentication())
+      getModelRepository(ModelId.fromPrettyFormat(modelId))
           .attachFile(ModelId.fromPrettyFormat(modelId),
               new FileContent(file.getOriginalFilename(), file.getBytes()), user,
               Attachment.TAG_IMAGE);
@@ -201,7 +201,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-      IModelRepository modelRepository = getModelRepository(getTenant(modelId), authentication);
+      IModelRepository modelRepository = getModelRepository(ModelId.fromPrettyFormat(modelId));
 
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
       if (modelRepository.getById(modelID) == null) {
@@ -275,7 +275,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     IUserContext userContext = UserContext.user(authentication, getTenant(modelId));
 
-    IModelRepository modelRepo = getModelRepository(userContext);
+    IModelRepository modelRepo = getModelRepository(modelID);
 
     if (modelRepo.exists(modelID)) {
       throw new ModelAlreadyExistsException();
@@ -310,7 +310,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     IUserContext userContext = UserContext.user(authentication, getTenant(modelId));
 
-    ModelResource resource = getModelRepository(getTenant(modelId), authentication)
+    ModelResource resource = getModelRepository(modelID)
         .createVersion(modelID, modelVersion, userContext);
     this.workflowService.start(resource.getId(), userContext);
     return new ResponseEntity<>(resource, HttpStatus.CREATED);
@@ -325,9 +325,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     try {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-      getModelRepository(getTenant(modelId), authentication)
+      getModelRepository(ModelId.fromPrettyFormat(modelId))
           .removeModel(ModelId.fromPrettyFormat(modelId));
       return new ResponseEntity<>(false, HttpStatus.OK);
     } catch (FatalModelRepositoryException | NullPointerException e) {
@@ -360,20 +359,21 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         getModelsAndDependencies(userModels));
   }
 
+  private IModelRepository getModelRepository(String tenantId) {
+    return this.modelRepositoryFactory.getRepository(tenantId);
+  }
+
   private Map<ModelInfo, FileContent> getModelsAndDependencies(Collection<ModelId> modelIds) {
     Map<ModelInfo, FileContent> modelsMap = new HashMap<>();
 
     if (modelIds != null && !modelIds.isEmpty()) {
       for (ModelId modelId : modelIds) {
-        Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
-        if (tenant.isPresent()) {
-          IModelRepository modelRepo = getModelRepository(tenant.get().getTenantId());
-          ModelInfo modelInfo = modelRepo.getById(modelId);
-          Optional<FileContent> modelContent = modelRepo.getFileContent(modelId, Optional.empty());
-          if (modelContent.isPresent()) {
-            modelsMap.put(modelInfo, modelContent.get());
-            modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
-          }
+        IModelRepository modelRepo = getModelRepository(modelId);
+        ModelInfo modelInfo = modelRepo.getById(modelId);
+        Optional<FileContent> modelContent = modelRepo.getFileContent(modelId, Optional.empty());
+        if (modelContent.isPresent()) {
+          modelsMap.put(modelInfo, modelContent.get());
+          modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
         }
       }
     }
@@ -426,12 +426,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
-
     try {
 
-      IModelRepository modelRepository = getModelRepository(tenantId);
+      IModelRepository modelRepository = getModelRepository(modelID);
 
       if (modelRepository.getById(modelID) == null) {
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);

@@ -12,36 +12,25 @@
  */
 package org.eclipse.vorto.repository.controller;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
-import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
-import org.eclipse.vorto.model.IPropertyAttribute;
-import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
-import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.ModelReferenceDeserializer;
-import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory.PropertyAttributeDeserializer;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.web.core.PayloadMappingController;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -50,18 +39,6 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 
 public class PayloadMappingControllerTest {
 	
@@ -151,25 +128,5 @@ public class PayloadMappingControllerTest {
     System.out.println(content);
 
     
-  }
-
-  private Gson gsonWithDeserializer() {
-    return new GsonBuilder()
-        .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
-          @Override
-          public IReferenceType deserialize(JsonElement json, Type arg1,
-              JsonDeserializationContext arg2) throws JsonParseException {
-            if (json.isJsonObject()) {
-              final JsonObject jsonObject = json.getAsJsonObject();
-              return new ModelId(jsonObject.get("name").getAsString(),
-                  jsonObject.get("namespace").getAsString(),
-                  jsonObject.get("version").getAsString());
-            } else if (json.isJsonPrimitive()) {
-              return PrimitiveType.valueOf(json.getAsString());
-            }
-
-            return null;
-          }
-        }).create();
   }
 }

@@ -24,8 +24,6 @@ import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguratio
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPluginService;
 import org.eclipse.vorto.repository.plugin.importer.RemoteImporter;
 import org.eclipse.vorto.repository.server.config.config.plugins.Plugin.PluginType;
-import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -43,12 +41,6 @@ public class PluginConfiguration {
   
   @Autowired
   private IUserAccountService userAccountService;
-  
-  @Autowired
-  private ITenantService tenantService;
-  
-  @Autowired
-  private ITenantUserService tenantUserService;
   
   @Value("${plugins:#{null}}")
   private String pluginsJson;
@@ -98,8 +90,6 @@ public class PluginConfiguration {
     RemoteImporter importer = new RemoteImporter(info,endpointUrl);
     importer.setModelParserFactory(this.modelParserFactory);
     importer.setModelRepoFactory(this.modelRepositoryFactory);
-    importer.setTenantUserService(tenantUserService);
-    importer.setTenantService(tenantService);
     importer.setUploadStorage(fileStorage);
     importer.setUserRepository(userAccountService);
     importer.setRestTemplate(restTemplate);

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,15 +35,11 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
@@ -65,15 +60,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   @Autowired
   protected IModelRepositoryFactory modelRepoFactory;
-
-  @Autowired
-  private ITenantUserService tenantUserService;
-
+  
   @Autowired
   protected IUserAccountService userRepository;
-
-  @Autowired
-  protected ITenantService tenantService;
 
   @Autowired
   protected ModelParserFactory modelParserFactory;
@@ -170,24 +159,20 @@ public abstract class AbstractModelImporter implements IModelImporter {
     reports.forEach(report -> {
       if (report.getModel() != null) {
         try {
-          Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(
-              context.getUser().getUsername(), report.getModel().getId().getNamespace());
-          if (tenant.isPresent()) {
-            IModelRepository modelRepository = modelRepoFactory
-                .getRepository(tenant.get().getTenantId(), context.getUser().getAuthentication());
-            ModelInfo m = modelRepository.getById(report.getModel().getId());
-            if (m != null) {
-              if (m.isReleased()) {
-                report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
-                report.setValid(false);
+          IModelRepository modelRepository = modelRepoFactory
+              .getRepositoryByModel(report.getModel().getId());
+          ModelInfo m = modelRepository.getById(report.getModel().getId());
+          if (m != null) {
+            if (m.isReleased()) {
+              report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
+              report.setValid(false);
+            } else {
+              if (isAdmin(context.getUser()) || m.getAuthor().equals(context.getUser().getUsername())) {
+                report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
+                report.setValid(true);
               } else {
-                if (isAdmin(context.getUser()) || m.getAuthor().equals(context.getUser().getUsername())) {
-                  report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
-                  report.setValid(true);
-                } else {
-                  report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
-                  report.setValid(false);
-                }
+                report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
+                report.setValid(false);
               }
             }
           }
@@ -257,19 +242,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
     dm.getSorted().stream().forEach(resource -> {
       try {
-        Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(user.getUsername(),
-            resource.getId().getNamespace());
-        if (tenant.isPresent()) {
-          IModelRepository modelRepository =
-              modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
+        IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(resource.getId());
           ModelInfo importedModel = modelRepository.save(resource.getId(),
-              ((ModelResource) resource).toDSL(), createFileName(resource), UserContext.user(user.getAuthentication(), tenant.get().getTenantId()));
+              ((ModelResource) resource).toDSL(), createFileName(resource), user);
           savedModels.add(importedModel);
           postProcessImportedModel(importedModel,
               new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
-        } else {
-          throw new ModelImporterException("User not authorized in tenant ");
-        }
+        
       } catch (Exception e) {
         logger.error("Problem importing model", e);
         throw new ModelImporterException("Problem importing model", e);
@@ -317,15 +296,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent,
       IUserContext user) {
-    Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(user.getUsername(),
-        importedModel.getId().getNamespace());
-    if (tenant.isPresent()) {
-      IModelRepository modelRepository =
-          modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
-      modelRepository.attachFile(importedModel.getId(), originalFileContent, user,
-          Attachment.TAG_IMPORTED);
-      importedModel.setImported(true);
-    }
+    IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(importedModel.getId());
+    modelRepository.attachFile(importedModel.getId(), originalFileContent, user,
+        Attachment.TAG_IMPORTED);
+    importedModel.setImported(true);
   }
 
   /**
@@ -363,14 +337,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.modelRepoFactory = modelRepoFactory;
   }
 
-  public void setTenantUserService(ITenantUserService tenantUserService) {
-    this.tenantUserService = tenantUserService;
-  }
-
-  public void setTenantService(ITenantService tenantService) {
-    this.tenantService = tenantService;
-  }
-
   public ITemporaryStorage getUploadStorage() {
     return uploadStorage;
   }
@@ -386,15 +352,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public IModelRepositoryFactory getModelRepoFactory() {
     return modelRepoFactory;
   }
-
-  public ITenantUserService getTenantUserService() {
-    return tenantUserService;
-  }
-
-  public ITenantService getTenantService() {
-    return tenantService;
-  }
-
+  
   public ModelValidationHelper getModelValidationHelper() {
     return modelValidationHelper;
   }

@@ -40,9 +40,11 @@ import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -53,6 +55,9 @@ import org.springframework.stereotype.Component;
 public class VortoModelImporter extends AbstractModelImporter {
   
 
+  @Autowired
+  private ITenantService tenantService;
+  
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
 
@@ -248,4 +253,14 @@ public class VortoModelImporter extends AbstractModelImporter {
       return FileUpload.create(fileName, baos.toByteArray());
     }
   }
+
+  public ITenantService getTenantService() {
+    return tenantService;
+  }
+
+  public void setTenantService(ITenantService tenantService) {
+    this.tenantService = tenantService;
+  }
+  
+  
 }

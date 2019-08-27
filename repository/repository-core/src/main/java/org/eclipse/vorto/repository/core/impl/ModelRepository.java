@@ -296,7 +296,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
       logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
           + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/"
-          + userContext.getTenant());
+          + getTenantId());
 
       try {
         Node folderNode = createNodeForModelId(session, modelInfo.getId());

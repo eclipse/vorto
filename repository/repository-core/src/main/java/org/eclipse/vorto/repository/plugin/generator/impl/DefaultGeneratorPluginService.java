@@ -173,7 +173,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private GeneratedOutput doGenerateWithApiVersion1(IUserContext userContext, ModelId modelId,
       String serviceKey, Map<String, String> requestParams, String baseUrl) {
-    ModelInfo modelResource = modelRepositoryFactory.getRepository(userContext).getById(modelId);
+    ModelInfo modelResource = modelRepositoryFactory.getRepositoryByModel(modelId).getById(modelId);
 
     if (modelResource == null) {
       throw new ModelNotFoundException("Model with the given ID does not exist", null);
