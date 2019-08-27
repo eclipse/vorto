@@ -13,46 +13,26 @@
 package org.eclipse.vorto.codegen.hono.java;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.vorto.core.api.model.BuilderUtils;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
-import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.functionblock.util.FunctionblockAdapterFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
-import org.eclipse.vorto.plugin.utils.Utils;
 import org.eclipse.vorto.repository.core.impl.parser.ParsingException;
-import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 
 	ICodeGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();
-
-	@BeforeClass
-	public static void initParser() {
-		ModelWorkspaceReader.init();
-	}
 
 	/*
 	 * -----Below test cases are specific to API related files-------
@@ -68,7 +48,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock");
+		File generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock",".java");
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/StatusPropertiesFunctionBlock.java").getFile());
 		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
@@ -85,7 +65,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock");
+		File generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock",".java");
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/ConfigPropertiesFunctionBlock.java").getFile());
 		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
@@ -102,7 +82,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "UnitEnum");
+		File generatedfile = zipFileReader(generationResult, "UnitEnum",".java");
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/ValidEnum.java").getFile());
 		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
@@ -121,7 +101,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "UnitEntity");
+		File generatedfile = zipFileReader(generationResult, "UnitEntity",".java");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/ValidEntity.java").getFile());
@@ -141,7 +121,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock");
+		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
 		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testEvent"));
 		generatedfile.delete();
 	}
@@ -157,7 +137,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock");
+		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
 		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testOperation"));
 		generatedfile.delete();
 	}
@@ -182,9 +162,9 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		File defaultFileHonoMqttClient = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/HonoMqttClient.java").getFile());
 
-		File generatedFileHonoDataService = zipFileReader(generationResult, "HonoDataService");
+		File generatedFileHonoDataService = zipFileReader(generationResult, "HonoDataService",".java");
 
-		File generatedFileHonoMqttClient = zipFileReader(generationResult, "HonoMqttClient");
+		File generatedFileHonoMqttClient = zipFileReader(generationResult, "HonoMqttClient",".java");
 
 		assertEquals(true, FileUtils.contentEquals(generatedFileHonoDataService, defaultFileHonoDataService));
 		assertEquals(true, FileUtils.contentEquals(generatedFileHonoMqttClient, defaultFileHonoMqttClient));
@@ -208,7 +188,7 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "MySensorApp");
+		File generatedfile = zipFileReader(generationResult, "MySensorApp",".java");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/MainApp.java").getFile());
