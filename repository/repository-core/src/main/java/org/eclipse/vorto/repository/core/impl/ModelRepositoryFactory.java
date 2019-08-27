@@ -36,6 +36,7 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -181,7 +182,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     return getPolicyManager(userContext.getTenant(), userContext.getAuthentication());
   }
 
-  @Override
   public IModelRepository getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService,getPolicyManager(tenant, user));
@@ -253,6 +253,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Override
   public IModelRepository getRepositoryByModel(ModelId modelId) {
-    return getRepositoryByNamespace(modelId.getNamespace());
+    
+    IModelRepository repository =  getRepositoryByNamespace(modelId.getNamespace());
+    if (repository == null) {
+      throw new ModelNotFoundException("Namespace " + modelId.getNamespace() + " does not exist in the system.");
+    } else {
+      return repository;
+    }
   }
 }

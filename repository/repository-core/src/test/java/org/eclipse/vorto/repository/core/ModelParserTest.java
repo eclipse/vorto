@@ -117,18 +117,12 @@ public class ModelParserTest extends AbstractIntegrationTest {
     }
   }
   
-  @Test
-  public void testModelWithInvalidReference() {
-    try {
-    	Optional<Tenant> tenant = Optional.empty();
-    	when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(tenant);
-    	IModelParser parser = modelParserFactory.getParser("InfoModelWithoutNamespace.infomodel");
-    	parser.parse(new ClassPathResource("sample_models/InfoModelWithoutNamespace.infomodel").getInputStream());
-    } catch (ValidationException e) {
-      assertTrue(e.getMessage().contains("Invalid reference error."));
-    } catch (IOException e) {
-      fail("Not able to load test file");
-    }
+  @Test (expected=ValidationException.class)
+  public void testModelWithInvalidReference() throws IOException {
+    Optional<Tenant> tenant = Optional.empty();
+    when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(tenant);
+    IModelParser parser = modelParserFactory.getParser("InfoModelWithoutNamespace.infomodel");
+    parser.parse(new ClassPathResource("sample_models/InfoModelWithoutNamespace.infomodel").getInputStream());
   }
 
 }

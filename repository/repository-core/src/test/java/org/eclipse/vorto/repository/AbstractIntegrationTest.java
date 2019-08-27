@@ -197,8 +197,6 @@ public abstract class AbstractIntegrationTest {
     this.importer.setUserRepository(this.accountService);
     this.importer.setModelParserFactory(modelParserFactory);
     this.importer.setModelRepoFactory(repositoryFactory);
-    this.importer.setTenantUserService(tenantUserService);
-    this.importer.setTenantService(tenantService);
     this.importer.setModelValidationHelper(modelValidationHelper);
 
     this.workflow =

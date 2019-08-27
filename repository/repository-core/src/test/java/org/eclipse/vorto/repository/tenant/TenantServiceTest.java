@@ -16,12 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.assertj.core.util.Lists;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -31,11 +28,10 @@ import org.eclipse.vorto.repository.domain.AuthorizationProvider;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -43,7 +39,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import wiremock.com.google.common.collect.Sets;
-import org.junit.Before;
 
 public class TenantServiceTest {
 
@@ -51,7 +46,7 @@ public class TenantServiceTest {
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
   protected TenantService tenantServiceObj = Mockito.mock(TenantService.class);
-  private Tenant playgroundTenant = playgroundTenant();
+//  private Tenant playgroundTenant = playgroundTenant();
   
   
   
@@ -353,35 +348,35 @@ public class TenantServiceTest {
     return new TenantService(tenantRepo, nsRepo, accountService);
   }
   
-  private Tenant playgroundTenant() {
-	    UserRole roleUser = new UserRole(Role.USER);
-	    UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
-	    UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
-	    UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
-	    UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
-	    UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
-
-	    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
-	        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
-
-	    playground.addUser(createTenantUser("alex",
-	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
-	    playground.addUser(createTenantUser("erle",
-	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
-	    playground.addUser(createTenantUser("admin",
-	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
-	    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
-	    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
-	    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
-
-	    return playground;
-	  }
+//  private Tenant playgroundTenant() {
+//	    UserRole roleUser = new UserRole(Role.USER);
+//	    UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
+//	    UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
+//	    UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
+//	    UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
+//	    UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
+//
+//	    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
+//	        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
+//
+//	    playground.addUser(createTenantUser("alex",
+//	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
+//	    playground.addUser(createTenantUser("erle",
+//	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
+//	    playground.addUser(createTenantUser("admin",
+//	        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
+//	    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
+//	    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
+//	    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
+//
+//	    return playground;
+//	  }
   
-  private TenantUser createTenantUser(String name, Set<UserRole> roles) {
-	    User _user = User.create(name);
-	    TenantUser user = new TenantUser();
-	    user.setRoles(roles);
-	    _user.addTenantUser(user);
-	    return user;
-	  }
+//  private TenantUser createTenantUser(String name, Set<UserRole> roles) {
+//	    User _user = User.create(name);
+//	    TenantUser user = new TenantUser();
+//	    user.setRoles(roles);
+//	    _user.addTenantUser(user);
+//	    return user;
+//	  }
 }

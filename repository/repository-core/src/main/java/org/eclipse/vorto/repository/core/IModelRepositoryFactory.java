@@ -38,12 +38,6 @@ public interface IModelRepositoryFactory {
   IModelRetrievalService getModelRetrievalService(IUserContext userContext);
   
   IModelRetrievalService getModelRetrievalService();
-
-//  IModelSearchService getModelSearchService(Authentication user);
-//  
-//  IModelSearchService getModelSearchService(IUserContext userContext);
-//  
-//  IModelSearchService getModelSearchService();
   
   IRepositoryManager getRepositoryManager(String tenant, Authentication user);
 }

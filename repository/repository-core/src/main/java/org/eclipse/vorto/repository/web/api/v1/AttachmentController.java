@@ -79,7 +79,7 @@ public class AttachmentController extends AbstractRepositoryController {
     try {
       String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
 
-      getModelRepository(tenantId).attachFile(modelID,
+      getModelRepository(modelID).attachFile(modelID,
           new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(tenantId),
           guessTagsFromFileExtension(fileName));
 
@@ -110,12 +110,9 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @PathVariable String modelId) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
     
     try {
-      return getModelRepository(tenantId).getAttachments(modelID);
+      return getModelRepository(modelID).getAttachments(modelID);
     } catch (FatalModelRepositoryException e) {
       return Collections.emptyList();
     }
@@ -132,14 +129,11 @@ public class AttachmentController extends AbstractRepositoryController {
       final HttpServletResponse response) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
     
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
       Optional<FileContent> content =
-          getModelRepository(tenantId).getAttachmentContent(modelID, fileName);
+          getModelRepository(modelID).getAttachmentContent(modelID, fileName);
 
       if (content.isPresent()) {
         response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
@@ -166,14 +160,11 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @PathVariable String filename) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
     
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
 
-      if (!getModelRepository(tenantId).deleteAttachment(modelID, fileName)) {
+      if (!getModelRepository(modelID).deleteAttachment(modelID, fileName)) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
 

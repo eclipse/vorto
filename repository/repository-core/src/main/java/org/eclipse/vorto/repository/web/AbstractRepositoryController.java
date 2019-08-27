@@ -217,22 +217,9 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 
     return modelInfos;
   }
-  
-  protected IModelRepository getModelRepository(IUserContext userContext) {
-    return modelRepositoryFactory.getRepository(userContext);
-  }
-  
-  protected IModelRepository getModelRepository(String tenantId, Authentication auth) {
-    return modelRepositoryFactory.getRepository(tenantId, auth);
-  }
-  
+   
   protected IModelRepository getModelRepository(ModelId modelId) {
     return modelRepositoryFactory.getRepositoryByModel(modelId);
-  }
-  
-  protected IModelRepository getModelRepository(String tenantId) {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return modelRepositoryFactory.getRepository(tenantId, auth);
   }
   
   protected IModelRepositoryFactory getModelRepositoryFactory() {
