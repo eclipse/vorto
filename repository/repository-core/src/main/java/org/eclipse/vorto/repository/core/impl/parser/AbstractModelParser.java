@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -34,6 +33,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
@@ -52,7 +52,7 @@ public abstract class AbstractModelParser implements IModelParser {
 
   private String fileName;
   private boolean enableValidation = true;
-  
+
   private IModelRepositoryFactory modelRepoFactory;
   private Collection<FileContent> dependencies = Collections.emptyList();
   private ErrorMessageProvider errorMessageProvider;
@@ -159,16 +159,16 @@ public abstract class AbstractModelParser implements IModelParser {
       Collection<ModelId> alreadyImportedDependencies, Model model) {
     Collection<ModelId> allReferences = getReferences(model);
     allReferences.removeAll(alreadyImportedDependencies);
-    	allReferences.forEach(refModelId -> {
-    		if(modelRepoFactory.getRepositoryByModel(refModelId)!=null) {
-    			modelRepoFactory.getRepositoryByModel(refModelId).getFileContent(refModelId,Optional.empty()).ifPresent(refFile -> {
-        	        createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
-        	      });
-    		}
-    		else {
-    			throw new ValidationException("Invalid reference error.", null);
-    		}
-    	    });
+    allReferences.forEach(refModelId -> {
+      try {
+        modelRepoFactory.getRepositoryByModel(refModelId)
+            .getFileContent(refModelId, Optional.empty()).ifPresent(refFile -> {
+              createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
+            });
+      } catch (ModelNotFoundException notFoundException) {
+        throw new ValidationException("Could not find reference "+refModelId.getPrettyFormat(), null);
+      }
+    });
   }
 
   private Collection<ModelId> importExternallySpecifiedDependencies(
@@ -178,9 +178,8 @@ public abstract class AbstractModelParser implements IModelParser {
           createResource(fileContent.getFileName(), fileContent.getContent(), resourceSet);
       return maybeDependency.flatMap(dependency -> {
         Model dependencyModel = (Model) dependency.getContents().get(0);
-        if (dependencyModel.getName() != null && 
-            dependencyModel.getNamespace() != null && 
-            dependencyModel.getVersion() != null) {
+        if (dependencyModel.getName() != null && dependencyModel.getNamespace() != null
+            && dependencyModel.getVersion() != null) {
           return Optional.of(new ModelId(dependencyModel.getName(), dependencyModel.getNamespace(),
               dependencyModel.getVersion()));
         }
