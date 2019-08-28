@@ -20,7 +20,9 @@ import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
@@ -89,7 +91,7 @@ public class ImportController {
       IModelImporter importer = importerService.getImporterByKey(key).get();
       
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Context.create(getUserContext(),Optional.of(targetNamespace)));
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Context.create(getUserContext(targetNamespace),Optional.of(targetNamespace)));
 
       if (!result.isValid()) {
         return validResponse(new UploadModelResponse(
@@ -124,7 +126,7 @@ public class ImportController {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
       
-      List<ModelInfo> importedModels = importer.doImport(handleId, Context.create(getUserContext(),Optional.of(targetNamespace)));
+      List<ModelInfo> importedModels = importer.doImport(handleId, Context.create(getUserContext(targetNamespace),Optional.of(targetNamespace)));
       for (ModelInfo modelInfo : importedModels) {
         workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
       }
@@ -154,8 +156,13 @@ public class ImportController {
     return new ResponseEntity<UploadModelResponse>(successModelResponse, HttpStatus.OK);
   }
 
-  private UserContext getUserContext() {
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+  private UserContext getUserContext(String namespace) {
+    Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
+    if (tenant.isPresent()) {
+      return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),tenant.get().getDefaultNamespace());
+    } else {
+      throw new TenantNotFoundException(namespace);
+    }
   }
   
   private IUserContext getUserContext(ModelId id) {
