@@ -204,6 +204,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform).success(
                 function(data, status, headers, config) {
                     $scope.infomodel = data.infoModel;
+                    $scope.state = "Draft";
                     $scope.loadCustomFunctions();
                     $scope.loadFbConditions();
                     $scope.isLoading = false;
@@ -283,21 +284,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                 });
     };
 
-    $scope.getMappingState = function() {
-        $http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform+"/info").success(
-                function(data, status, headers, config) {
-                    if (data.length > 0) {
-                        $http.get("./rest/workflows/"+data[0].id.prettyFormat).success(
-                                function(result, status, headers, config) {
-                                    $scope.state = result.name;
-                                });
-                    } else {
-                        $scope.state = "Draft";
-                    }
-                });
-    };
-
-    $scope.getMappingState();
     $scope.loadMappingSpec();
 
 }]);

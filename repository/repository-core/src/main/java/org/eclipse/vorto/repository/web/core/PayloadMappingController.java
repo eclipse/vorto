@@ -235,17 +235,6 @@ public class PayloadMappingController extends AbstractRepositoryController {
     }
   }
 
-
-
-  @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public List<ModelInfo> getMappingModels(@PathVariable final String modelId,
-      @PathVariable String targetPlatform) {
-    return getModelRepository(ModelId.fromPrettyFormat(modelId)).getMappingModelsForTargetPlatform(
-        ModelId.fromPrettyFormat(modelId), targetPlatform,
-        Optional.of(ModelId.fromPrettyFormat(modelId).getVersion()));
-  }
-
   @PutMapping(value = "/test")
   @PreAuthorize("hasRole('ROLE_USER')")
   public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest)
