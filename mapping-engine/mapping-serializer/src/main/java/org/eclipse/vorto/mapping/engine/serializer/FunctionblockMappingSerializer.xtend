@@ -78,19 +78,19 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«ENDFOR»
 			«FOR statusProperty : fbm.statusProperties»
 				«IF isEntityProperty(statusProperty)»
-				from «fbm.id.name».status.«statusProperty.name» to reference «statusProperty.name.toFirstUpper+"PayloadMapping"»
+				from «fbm.id.name».status.«checkIfKeyword(statusProperty.name)» to reference «statusProperty.name.toFirstUpper+"PayloadMapping"»
 				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
-				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				from «fbm.id.name».status.«checkIfKeyword(statusProperty.name)» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 				«ENDFOR»
 				«ENDIF»		
 			«ENDFOR»
 			«FOR configProperty : fbm.configurationProperties»
 				«IF isEntityProperty(configProperty)»
-				from «fbm.id.name».configuration.«configProperty.name» to reference «configProperty.name.toFirstUpper+"PayloadMapping"»
+				from «fbm.id.name».configuration.«checkIfKeyword(configProperty.name)» to reference «configProperty.name.toFirstUpper+"PayloadMapping"»
 				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(configProperty.stereotypes)»
-				from «fbm.id.name».configuration.«configProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				from «fbm.id.name».configuration.«checkIfKeyword(configProperty.name)» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 				«ENDFOR»
 				«ENDIF»		
 			«ENDFOR»

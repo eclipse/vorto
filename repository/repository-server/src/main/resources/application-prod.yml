@@ -16,7 +16,7 @@ spring:
     validationInterval: 60
     validationQuery: SELECT 1
   jpa:
-    show-sql: true
+    show-sql: false
     generate-ddl: true
   hibernate:
     ddl-auto: validate
