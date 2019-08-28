@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.mapping.engine.serializer;
 
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.model.ModelId;
 
@@ -20,6 +22,20 @@ public abstract class AbstractSerializer implements IMappingSerializer {
   protected IMappingSpecification specification;
   protected String targetPlatform;
   protected ModelId modelId;
+  
+  private static final List<String> KEYWORDS = Arrays.asList("status",
+                                                             "configuration",
+                                                             "category",
+                                                             "description",
+                                                             "dictionary",
+                                                             "displayname",
+                                                             "events",
+                                                             "extension",
+                                                             "fault",
+                                                             "mandatory",
+                                                             "namespace",
+                                                             "operations",
+                                                             "version");
 
   public AbstractSerializer(IMappingSpecification spec, ModelId modelId, String targetPlatform) {
     this.specification = spec;
@@ -30,5 +46,13 @@ public abstract class AbstractSerializer implements IMappingSerializer {
   @Override
   public ModelId getModelId() {
     return modelId;
+  }
+  
+  protected String checkIfKeyword(String value) {
+    if (KEYWORDS.contains(value)) {
+      return "^"+value;
+    } else {
+      return value;
+    }
   }
 }

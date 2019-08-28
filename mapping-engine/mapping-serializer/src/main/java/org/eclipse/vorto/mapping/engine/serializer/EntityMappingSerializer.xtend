@@ -51,10 +51,10 @@ class EntityMappingSerializer extends AbstractSerializer {
 			targetplatform «targetPlatform»
 			«FOR property : entity.properties»
 				«IF isEntityProperty(property)»
-				from «entity.id.name».«property.name» to reference «property.name.toFirstUpper+"PayloadMapping"»
+				from «entity.id.name».«checkIfKeyword(property.name)» to reference «property.name.toFirstUpper+"PayloadMapping"»
 				«ELSE»
 				«FOR stereotype : filterEmptyStereotypes(property.stereotypes)»
-				from «entity.id.name».«property.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				from «entity.id.name».«checkIfKeyword(property.name)» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 				«ENDFOR»
 				«ENDIF»		
 			«ENDFOR»
