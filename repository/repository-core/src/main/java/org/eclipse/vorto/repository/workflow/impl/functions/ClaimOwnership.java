@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -36,7 +37,7 @@ public class ClaimOwnership implements IWorkflowFunction {
 	}
 	
 	@Override
-	public void execute(ModelInfo model, IUserContext user) {
+	public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
 		logger.info("Claiming model " + model.getId() + " of user '"+user.getUsername()+"' and role 'admin'");
 		
 		Collection<PolicyEntry> policies = repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())

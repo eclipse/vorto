@@ -12,16 +12,23 @@
  */
 package org.eclipse.vorto.repository.model;
 
+import java.util.List;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IUserContext;
 
-public interface IModelService {
+public interface IBulkOperationsService {
   
   /**
    * Sets the visibility of the given model to Public. It also sets all the references of the modelId to Public 
    * 
+   * @pre The give model and all its (transitive) references are in state 'Released"
+   * 
+   * @post The given model and all its (transitive) references have visibility "Public"
+   * 
    * @param modelId the model to make public
+   * 
+   * @return a list of resolved modelIds that have been made public
    */
-  void makeModelPublic(IUserContext userContext, ModelId modelId);
+  List<ModelId> makeModelPublic(ModelId modelId);
+  
   
 }

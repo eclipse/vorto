@@ -4,31 +4,34 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.model.impl.ModelService;
-import org.eclipse.vorto.repository.model.impl.ModelVisibilityService;
+import org.eclipse.vorto.repository.model.impl.DefaultBulkOperationsService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
+import org.springframework.security.core.Authentication;
 
-public class ModelVisibilityTest extends AbstractIntegrationTest {
+public class BulkOperationServiceTest extends AbstractIntegrationTest {
 
-  private IModelService getModelService() {
-    return new ModelService(new ModelVisibilityService(repositoryFactory, tenantService));
+  private IBulkOperationsService getModelService(final String username) {
+    return new DefaultBulkOperationsService(repositoryFactory, tenantService) {
+      @Override
+      protected Authentication getAuthenticationToken() {
+        return createAuthenticationToken(username);
+      }
+    };
   }
   
   private void importAndMakePublic(String filename, String modelId) {
     importModel("creator", filename);
+        
+    IBulkOperationsService modelService = getModelService("publisher");
     
-    IUserContext publisher = createUserContext("publisher");
-    
-    IModelService modelService = getModelService();
-    
-    modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat(modelId));
+    modelService.makeModelPublic(ModelId.fromPrettyFormat(modelId));
   }
   
   @Test(expected = ModelNamespaceNotOfficialException.class)
@@ -56,12 +59,10 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     } catch (WorkflowException e) {
       fail("Cannot release newly imported model?");
     }
+       
+    IBulkOperationsService modelService = getModelService("reviewer");
     
-    IUserContext reviewer = createUserContext("reviewer");
-    
-    IModelService modelService = getModelService();
-    
-    modelService.makeModelPublic(reviewer, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
+    modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
     fail("Making a model public if done by non-publisher should have thrown an error!");
   }
@@ -77,12 +78,12 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     }
 
     checkCorrectness("com.mycompany:Point3d:1.0.0", "private", "Released");
+        
+    IBulkOperationsService modelService = getModelService("publisher");
     
-    IUserContext publisher = createUserContext("publisher");
+    List<ModelId> result = modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
-    IModelService modelService = getModelService();
-    
-    modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
+    assertEquals(1,result.size());
     
     ModelInfo modelInfo = getModelRepository(createUserContext("creator"))
         .getById(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
@@ -114,13 +115,11 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     checkCorrectness("vorto.private.playground:Point2d:1.0.0", "private", "Released");
     checkCorrectness("com.mycompany:Point3D:1.0.0", "private", "Released");
-    
-    IUserContext publisher = createUserContext("publisher");
-    
-    IModelService modelService = getModelService();
+        
+    IBulkOperationsService modelService = getModelService("publisher");
     
     try {
-      modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3D:1.0.0"));
+      modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3D:1.0.0"));
       fail("Making a model public with a dependency that has a private prefix should throw an error!");
     } catch(ModelNamespaceNotOfficialException e) {
       assertTrue(e.getMessage().contains("vorto.private.playground:Point2d:1.0.0"));
@@ -147,12 +146,12 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     
     checkCorrectness("com.mycompany:Point3d:1.0.0", "private", "Released");
     checkCorrectness("com.mycompany:Point4D:1.0.0", "private", "Released");
+        
+    IBulkOperationsService modelService = getModelService("publisher");
     
-    IUserContext publisher = createUserContext("publisher");
+    List<ModelId> result = modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point4D:1.0.0"));
     
-    IModelService modelService = getModelService();
-    
-    modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point4D:1.0.0"));
+    assertEquals(2,result.size());
     
     checkCorrectness("com.mycompany:Point3d:1.0.0", "public", "Released");
     checkCorrectness("com.mycompany:Point4D:1.0.0", "public", "Released");
@@ -166,12 +165,10 @@ public class ModelVisibilityTest extends AbstractIntegrationTest {
     importModel("creator", "officialprefix_point3d.type");
     
     releaseModel(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"), createUserContext("creator"));
-        
-    IUserContext publisher = createUserContext("publisher");
+            
+    IBulkOperationsService modelService = getModelService("publisher");
     
-    IModelService modelService = getModelService();
-    
-    modelService.makeModelPublic(publisher, ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
+    modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
     assertEquals(1,searchService.search("visibility:public").size());
     assertEquals(1,searchService.search("visibility:public name:Point*").size());

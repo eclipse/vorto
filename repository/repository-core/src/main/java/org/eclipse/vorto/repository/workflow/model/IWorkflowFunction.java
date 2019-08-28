@@ -12,10 +12,11 @@
  */
 package org.eclipse.vorto.repository.workflow.model;
 
+import java.util.Map;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 
 public interface IWorkflowFunction {
 
-  void execute(ModelInfo model, IUserContext user);
+  void execute(ModelInfo model, IUserContext user, Map<String,Object> context);
 }

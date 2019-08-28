@@ -274,15 +274,19 @@ public abstract class AbstractIntegrationTest {
   protected IUserContext createUserContext(String username) {
     return createUserContext(username, "playground");
   }
-
-  protected IUserContext createUserContext(String username, String tenantId) {
+  
+  protected Authentication createAuthenticationToken(String username) {
     Set<String> userRoles = getTenantUser(username, playgroundTenant).getRoles().stream()
         .map(uRole -> Role.rolePrefix + uRole.getRole().name()).collect(Collectors.toSet());
 
     Authentication auth = new TestingAuthenticationToken(username, username,
         userRoles.toArray(new String[userRoles.size()]));
+    
+    return auth;
+  }
 
-    return UserContext.user(auth, tenantId);
+  protected IUserContext createUserContext(String username, String tenantId) {
+    return UserContext.user(createAuthenticationToken(username), tenantId);
   }
 
   protected Tenant playgroundTenant() {

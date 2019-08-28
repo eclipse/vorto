@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -35,7 +36,7 @@ public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
   }
 
   @Override
-  public void execute(ModelInfo model, IUserContext user) {
+  public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     IModelPolicyManager policyManager =
         repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
 

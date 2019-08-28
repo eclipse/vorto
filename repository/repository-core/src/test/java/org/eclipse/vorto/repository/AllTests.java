@@ -16,7 +16,7 @@ import org.eclipse.vorto.repository.account.UserAccountServiceTest;
 import org.eclipse.vorto.repository.backup.RepositoryAdminTest;
 import org.eclipse.vorto.repository.controller.PayloadMappingControllerTest;
 import org.eclipse.vorto.repository.indexing.IndexingTest;
-import org.eclipse.vorto.repository.model.ModelVisibilityTest;
+import org.eclipse.vorto.repository.model.BulkOperationServiceTest;
 import org.eclipse.vorto.repository.tenant.TenantServiceTest;
 import org.eclipse.vorto.repository.workflow.WorkflowTest;
 import org.junit.runner.RunWith;
@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
               org.eclipse.vorto.repository.core.AllTests.class,
               org.eclipse.vorto.repository.importer.AllTests.class,
               IndexingTest.class,
-              ModelVisibilityTest.class,
+              BulkOperationServiceTest.class,
               org.eclipse.vorto.repository.oauth.AllTests.class,
               TenantServiceTest.class,
               WorkflowTest.class})

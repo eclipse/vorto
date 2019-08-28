@@ -12,7 +12,10 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
@@ -48,7 +51,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	public DefaultWorkflowService(@Autowired IModelRepositoryFactory modelRepositoryFactory, @Autowired IUserAccountService userRepository, @Autowired INotificationService notificationService) {
 		this.modelRepositoryFactory = modelRepositoryFactory;
-		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService);
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService,this);
 	}
 
 	@Override
@@ -61,7 +64,8 @@ public class DefaultWorkflowService implements IWorkflowService {
 			modelInfo.setState(newState.getName());
 			
 			ModelInfo updatedInfo = getModelRepository(user).updateMeta(modelInfo);
-			action.get().getFunctions().stream().forEach(a -> executeFunction(a,modelInfo,user));
+			Map<String,Object> ctx = new HashMap<String, Object>();
+			action.get().getFunctions().stream().forEach(a -> executeFunction(a,modelInfo,user,ctx));
 			
 			return updatedInfo;
 		} else {
@@ -69,9 +73,9 @@ public class DefaultWorkflowService implements IWorkflowService {
 		}
 	}
 	
-	private void executeFunction(IWorkflowFunction function, ModelInfo modelInfo, IUserContext user) {
+	private void executeFunction(IWorkflowFunction function, ModelInfo modelInfo, IUserContext user, Map<String,Object> context) {
 		try {
-			function.execute(modelInfo, user);
+			function.execute(modelInfo, user, context);
 		} catch(Throwable t) {
 			LOGGER.error("Problem executing workflow function "+function.getClass(), t);
 		}
@@ -108,7 +112,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 	@Override
 	public ModelId start(ModelId modelId, IUserContext user) {
 		IAction initial = SIMPLE_WORKFLOW.getInitialAction();
-		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user));
+		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user, Collections.emptyMap()));
 
 		IState nextState = initial.getTo();
 		return getModelRepository(user).updateState(modelId, nextState.getName());
