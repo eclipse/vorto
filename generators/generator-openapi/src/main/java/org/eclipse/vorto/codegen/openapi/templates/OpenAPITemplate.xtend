@@ -60,9 +60,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  - name: Messages
 		    description: Send messages to / Receive event messages from «infomodel.name»
 		security:
-		  - thingsApiToken: []
-		    bearerAuth: []
-		    BoschID: []
+		  - bearerAuth: []
 		paths:
 		  ###
 		  ### «infomodel.name» Features
@@ -639,27 +637,6 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      bearerFormat: JWT
 		      description: |-
 		        A JSON Web Token issued by a supported OAuth 2.0 Identity Provider.
-		    thingsApiToken:
-		      type: apiKey
-		      description: |-
-		        The API Token which associates the HTTP request with a specific IoT
-		        Things service solution.
-		      name: x-cr-api-token
-		      in: header
-		    BoschID:
-		      type: oauth2
-		      description: |-
-		        Use either "OAuth2.0" with your Bosch-ID or the "Basic authentication"
-		        below with a Demo user. Select the following checkbox in order to grant
-		        Bosch IoT Things to access your Bosch-ID.
-		      x-tokenName: id_token
-		      flows:
-		        authorizationCode:
-		          authorizationUrl: >-
-		            https://things.s-apps.de1.bosch-iot-cloud.com/oauth2/bosch-id/authorize
-		          tokenUrl: 'https://things.s-apps.de1.bosch-iot-cloud.com/oauth2/bosch-id/token'
-		          scopes:
-		            openid: Access your Bosch-ID
 		'''
 	}
 		
