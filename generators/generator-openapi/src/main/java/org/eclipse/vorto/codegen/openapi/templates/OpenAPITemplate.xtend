@@ -160,51 +160,6 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                $ref: '#/components/schemas/AdvancedError'
 		        '412':
 		          $ref: '#/components/responses/preconditionFailed'
-		          
-		  '/things/{thingId}/features/«fbProperty.name»/definition':
-		    get:
-		      summary: Lists the Vorto Function Block ID, that the «fbProperty.name» feature complies to
-		      description: >-
-		        Returns the complete Definition of the «fbProperty.name» identified by the `thingId` path parameter.
-		      tags:
-		      - Features
-		      parameters:
-		      - $ref: '#/components/parameters/thingIdPathParam'
-		      responses:
-		        '200':
-		          description: The Definition was successfully retrieved.
-		          content:
-		            application/json:
-		              schema:
-		                $ref: '#/components/schemas/FeatureDefinition'
-		        '304':
-		          $ref: '#/components/responses/notModified'
-		        '400':
-		          description: |-
-		            The request could not be completed. The `thingId` either
-		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
-		              * does not conform to RFC-2396 (URI)
-		            Or at least one of the defined query parameters was invalid.
-		          content:
-		            application/json:
-		              schema:
-		                $ref: '#/components/schemas/AdvancedError'
-		        '401':
-		          description: The request could not be completed due to missing authentication.
-		          content:
-		            application/json:
-		              schema:
-		                $ref: '#/components/schemas/AdvancedError'
-		        '404':
-		          description: >-
-		            The request could not be completed. The specified Feature has no Definition or the Thing with the
-		            specified `thingId` or the Feature with `featureId` was not found.
-		          content:
-		            application/json:
-		              schema:
-		                $ref: '#/components/schemas/AdvancedError'
-		        '412':
-		          $ref: '#/components/responses/preconditionFailed'
 		  «IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.empty»
 		  «FOR configurationProperty : fbProperty.type.functionblock.configuration.properties»
 		  '/things/{thingId}/features/«fbProperty.name»/properties/configuration/«configurationProperty.name»':
