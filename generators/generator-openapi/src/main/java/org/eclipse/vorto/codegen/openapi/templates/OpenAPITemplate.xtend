@@ -311,12 +311,12 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          «IF operation.returnType !== null»
 		          content:
 		            application/json:
-		          	  schema:
-		          	    «IF operation.returnType instanceof ReturnPrimitiveType»
-		          	    «wrapIfMultiple((operation.returnType as ReturnPrimitiveType).returnType.toString,(operation.returnType as ReturnPrimitiveType).multiplicity)»
-		          	    «ELSEIF operation.returnType instanceof ReturnObjectType»
-		          	    «wrapIfMultiple("$ref: '#/components/schemas/"+(operation.returnType as ReturnObjectType).returnType.name+"'",(operation.returnType as ReturnPrimitiveType).multiplicity)»
-		          	    «ENDIF»
+		              schema:
+		                «IF operation.returnType instanceof ReturnPrimitiveType»
+		                «wrapIfMultiple(getPrimitive((operation.returnType as ReturnPrimitiveType).returnType).toString,(operation.returnType as ReturnPrimitiveType).multiplicity)»
+		                «ELSEIF operation.returnType instanceof ReturnObjectType»
+		                «wrapIfMultiple("$ref: '#/components/schemas/"+(operation.returnType as ReturnObjectType).returnType.name+"'",(operation.returnType as ReturnObjectType).multiplicity)»
+		                «ENDIF»
 		          «ENDIF»
 		        '400':
 		          description: |-
