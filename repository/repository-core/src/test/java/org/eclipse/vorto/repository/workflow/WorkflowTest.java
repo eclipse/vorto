@@ -224,16 +224,13 @@ public class WorkflowTest extends AbstractIntegrationTest {
     ModelInfo fbModel = importModel("Colorlight.fbmodel");
     workflow.start(fbModel.getId(), createUserContext("alex", "playground"));
 
-    try {
-      when(userRepository
-          .findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-              .thenReturn(User.create(getCallerId(), new Tenant("playground"), Role.USER));
-      workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), "playground"),
-          SimpleWorkflowModel.ACTION_RELEASE.getName());
-      fail();
-    } catch (InvalidInputException ex) {
-      System.out.println(ex.getMessage());
-    }
+    when(userRepository
+        .findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
+            .thenReturn(User.create(getCallerId(), new Tenant("playground"), Role.USER));
+    workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), "playground"),
+        SimpleWorkflowModel.ACTION_RELEASE.getName());
+    assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(typeModel.getId()).getById(typeModel.getId()).getState());
+    assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(fbModel.getId()).getById(fbModel.getId()).getState());
   }
 
 

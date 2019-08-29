@@ -56,7 +56,7 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
-import org.eclipse.vorto.repository.model.IModelService;
+import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -112,7 +112,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   private IWorkflowService workflowService;
   
   @Autowired
-  private IModelService modelService;
+  private IBulkOperationsService modelService;
   
   @Autowired
   private ModelValidationHelper modelValidationHelper;
@@ -578,7 +578,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     
     try {
       logger.info("Making the model '" + ControllerUtils.sanitize(modelId) + "' public.");
-      modelService.makeModelPublic(user, ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
+      modelService.makeModelPublic(ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
     } catch(ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
       return new ResponseEntity<>(Status.fail(e.getMessage()), HttpStatus.FORBIDDEN);
     }

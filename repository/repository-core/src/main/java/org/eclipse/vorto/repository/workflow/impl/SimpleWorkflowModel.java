@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.repository.workflow.impl.conditions.HasRoleCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
@@ -26,6 +27,7 @@ import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsLoggedIn;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
+import org.eclipse.vorto.repository.workflow.impl.functions.BulkReleaseFunction;
 import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantCollaboratorAccessPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
@@ -69,12 +71,13 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 	private static final List<IState> ALL_STATES = Arrays.asList(STATE_DRAFT,STATE_IN_REVIEW,STATE_RELEASED, STATE_DEPRECATED);
 	
-	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepositoryFactory repositoryFactory, INotificationService notificationService) {
+	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepositoryFactory repositoryFactory, INotificationService notificationService, IWorkflowService workflowService) {
 		
 		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
 		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, Role.MODEL_PROMOTER);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
+		final IWorkflowFunction bulkRelease = new BulkReleaseFunction(workflowService, repositoryFactory);
 		
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantCollaboratorAccessPolicy(repositoryFactory);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
@@ -92,8 +95,8 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
 		ACTION_RELEASE.setConditions(new OrCondition(isPromoterCondition, isAdminCondition));
-		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		ACTION_RELEASE.setFunctions(pendingWorkItemNotification, grantReviewerModelAccess, removeModelPromoterPolicy);
+//		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
+		ACTION_RELEASE.setFunctions(bulkRelease,pendingWorkItemNotification, grantReviewerModelAccess, removeModelPromoterPolicy);
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));

@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -35,7 +36,7 @@ public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
   }
 
   @Override
-  public void execute(ModelInfo model, IUserContext user) {
+  public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     logger.info("Restricting permission of model " + model.getId() + " to collaborators within the tenant");
     repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication()).addPolicyEntry(
         model.getId(),

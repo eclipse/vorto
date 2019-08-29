@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import java.util.Map;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -36,7 +37,7 @@ public class PendingApprovalNotification implements IWorkflowFunction {
   }
 
   @Override
-  public void execute(ModelInfo model, IUserContext user) {
+  public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     LOGGER.debug("Executing workflow function: " + this.getClass());
     User account = accountService.getUser(user.getUsername());
     if (account != null) {
