@@ -23,6 +23,8 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
+import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
@@ -351,6 +353,16 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          description: |-
 		            The message was sent but not necessarily received by the Feature
 		            (fire and forget).
+		          «IF operation.returnType !== null»
+		          content:
+		            application/json:
+		          	  schema:
+		          	    «IF operation.returnType instanceof ReturnPrimitiveType»
+		          	    «wrapIfMultiple((operation.returnType as ReturnPrimitiveType).returnType.toString,(operation.returnType as ReturnPrimitiveType).multiplicity)»
+		          	    «ELSEIF operation.returnType instanceof ReturnObjectType»
+		          	    «wrapIfMultiple("$ref: '#/components/schemas/"+(operation.returnType as ReturnObjectType).returnType.name+"'",(operation.returnType as ReturnPrimitiveType).multiplicity)»
+		          	    «ENDIF»
+		          «ENDIF»
 		        '400':
 		          description: |-
 		            The request could not be completed. The `thingId` either
