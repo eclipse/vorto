@@ -52,7 +52,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                upload('./rest/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
+                upload('./api/v1/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
                 
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
@@ -89,14 +89,14 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                     $scope.fileAdded = true;
                     $scope.hasWarning = false;
 
-                    for (report of $scope.uploadResult.result.reports) {
+                    for (report of $scope.uploadResult.reports) {
                         if(report.message.severity == "WARNING"){
                             $scope.hasWarning = true;
                         }
                       } 
 
-                    if ($scope.uploadResult.result.reports.length > 0 && $scope.uploadResult.result.valid) {
-                        angular.forEach($scope.uploadResult.result.reports, function (resultObject, idx) {
+                    if ($scope.uploadResult.reports.length > 0 && $scope.uploadResult.valid) {
+                        angular.forEach($scope.uploadResult.reports, function (resultObject, idx) {
                             var item = (idx == 0) ? { active: false } : { active: true };
                             var modelType = resultObject.model.type;
                             switch (modelType) {
@@ -163,11 +163,11 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.beingCheckedIn = true;
             $scope.loadMessage = "Importing models... Please wait!";
             $rootScope.error = "";
-            checkinSingle($scope.uploadResult.result.handleId);
+            checkinSingle($scope.uploadResult.handleId);
         };
 
         checkinSingle = function (handleId) {
-        	var importUrl = "./rest/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.namespace;
+        	var importUrl = "./api/v1/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.namespace;
 
             $http.put(importUrl)
                 .success(function (result) {
@@ -198,7 +198,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         $scope.getImporters = function () {
-            $http.get('./rest/importers')
+            $http.get('./api/v1/importers')
                 .success(function (result) {
                     $scope.importers = result;
                 });

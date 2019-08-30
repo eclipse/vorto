@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.web.importer;
+package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,9 +30,8 @@ import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
+import org.eclipse.vorto.repository.web.api.v1.dto.ImporterInfo;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
-import org.eclipse.vorto.repository.web.importer.dto.ImporterInfo;
-import org.eclipse.vorto.repository.web.importer.dto.UploadModelResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/importers")
+@RequestMapping(value = "/api/v1/importers")
 public class ImportController {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -78,7 +77,7 @@ public class ImportController {
 
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
-  public ResponseEntity<UploadModelResponse> uploadModel(
+  public ResponseEntity<UploadModelResult> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
       @RequestParam("key") String key,  @RequestParam(required=true,value="targetNamespace") String targetNamespace) {
@@ -92,26 +91,20 @@ public class ImportController {
       
       UploadModelResult result = importer.upload(
           FileUpload.create(file.getOriginalFilename(), file.getBytes()), Context.create(getUserContext(targetNamespace),Optional.of(targetNamespace)));
+      
 
       if (!result.isValid()) {
-        return validResponse(new UploadModelResponse(
-            String.format(UPLOAD_FAIL, file.getOriginalFilename()), result));
+        result.setMessage(String.format(UPLOAD_FAIL, file.getOriginalFilename()));
       } else {
         if (result.hasWarnings()) {
-          return validResponse(new UploadModelResponse(
-              String.format(UPLOAD_WARNING, file.getOriginalFilename()), result));
+          result.setMessage(String.format(UPLOAD_WARNING, file.getOriginalFilename()));
         } else {
-          return validResponse(new UploadModelResponse(
-              String.format(UPLOAD_VALID, file.getOriginalFilename()), result));
+          result.setMessage(String.format(UPLOAD_VALID, file.getOriginalFilename()));
         }
       }
-
+       return new ResponseEntity<UploadModelResult>(result,HttpStatus.OK);
     } catch (IOException e) {
-      UploadModelResponse errorResponse =
-          new UploadModelResponse("Error during upload. Try again. " + e.getMessage(),
-              new UploadModelResult(null, Collections.emptyList()));
-      return new ResponseEntity<UploadModelResponse>(errorResponse,
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<UploadModelResult>(new UploadModelResult(null, e.getMessage(), Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -149,11 +142,6 @@ public class ImportController {
     });
 
     return importers;
-  }
-
-  private ResponseEntity<UploadModelResponse> validResponse(
-      UploadModelResponse successModelResponse) {
-    return new ResponseEntity<UploadModelResponse>(successModelResponse, HttpStatus.OK);
   }
 
   private UserContext getUserContext(String namespace) {

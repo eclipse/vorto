@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.web.importer.dto;
+package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
