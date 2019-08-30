@@ -309,7 +309,7 @@ When you start the application and send data for the two sensors via MQTT , you 
 
 ## What's next?
 
-- [Extend the solution with a digital twin service](https://github.com/eclipse/vorto/blob/development/docs/tutorials/extend_mapping_pipeline_with_digital_twin.md)
+- [Extend the solution with a digital twin service](./extend_mapping_pipeline_with_digital_twin.md)
 
 <br />
 ---
