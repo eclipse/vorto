@@ -20,6 +20,10 @@
 		<module>updatesite</module>
 	</modules>
 
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<pluginManagement>

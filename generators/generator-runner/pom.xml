@@ -13,6 +13,10 @@
 	<name>Vorto Generator Runner</name>
 	<description>Runs all the Vorto generators as an individual (micro) service</description>
 
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

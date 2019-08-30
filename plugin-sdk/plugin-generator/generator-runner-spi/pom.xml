@@ -10,6 +10,10 @@
 	<artifactId>generator-runner-spi</artifactId>	
 	<name>Vorto Code Generator Plugin Runner SPI</name>
 
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

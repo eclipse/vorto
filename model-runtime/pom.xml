@@ -13,6 +13,10 @@
 	<name>Eclipse Vorto Model Runtime</name>
 	<packaging>jar</packaging>
 	
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>

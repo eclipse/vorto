@@ -16,6 +16,10 @@
 	<modules>
 		<module>device-adapter-api</module>
 	</modules>
+	
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 
 </project>
 
