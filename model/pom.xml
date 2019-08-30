@@ -12,6 +12,10 @@
 	<name>Eclipse Vorto Meta Model</name>
 	<packaging>jar</packaging>
 
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
