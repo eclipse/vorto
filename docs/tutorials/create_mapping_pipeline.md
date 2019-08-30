@@ -307,9 +307,12 @@ Please open the `application.yml` and change the url, topic and credentials.
 
 When you start the application and send data for the two sensors via MQTT , you will now see the normalized geo location data in the console of the application.
 
----
+## What's next?
+
+- [Extend the solution with a digital twin service](https://github.com/eclipse/vorto/blob/development/docs/tutorials/extend_mapping_pipeline_with_digital_twin.md)
 
 <br />
+---
 
 In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
 Please make sure to use `eclipse-vorto` as one of the tags. 
