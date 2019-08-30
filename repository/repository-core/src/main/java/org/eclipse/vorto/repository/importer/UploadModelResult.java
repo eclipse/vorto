@@ -22,18 +22,25 @@ public class UploadModelResult {
   private String handleId = null;
   private boolean isValid = false;
   private boolean hasWarnings = false;
+  private String message = null;
 
   private List<ValidationReport> reports = new ArrayList<ValidationReport>();
 
-  public UploadModelResult(String handleId, List<ValidationReport> reports) {
+  public UploadModelResult(String handleId, String message, List<ValidationReport> reports) {
     super();
     this.handleId = handleId;
     this.reports.addAll(reports);
+    this.message = message;
     this.isValid = reports.stream().filter(report -> !report.isValid()).count() == 0;
     this.hasWarnings = reports.stream()
         .filter(report -> report.getMessage().getSeverity() == MessageSeverity.WARNING).count() > 0;
 
   }
+  
+  public UploadModelResult(String handleId, List<ValidationReport> reports) {
+    this(handleId,null,reports);
+  }
+  
 
   protected UploadModelResult() {
 
@@ -53,6 +60,14 @@ public class UploadModelResult {
 
   public void setValid(boolean isValid) {
     this.isValid = isValid;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
   }
 
   public List<ValidationReport> getReports() {

@@ -73,11 +73,11 @@
 					<i class='glyphicon glyphicon-warning-sign'></i>  This model already exist and will be overwritten upon import
 			</div>
 			<div ng-show="showResultBox">
-				<div ng-show="!uploadResult.result.valid" class="alert alert-danger">
+				<div ng-show="!uploadResult.valid" class="alert alert-danger">
 						<i class="fa fa-fw fa-close"></i> {{resultMessage}}
 					</p>
 				</div>
-				<div ng-show="uploadResult.result.valid">
+				<div ng-show="uploadResult.valid">
 					<div ng-show="hasWarning" class="alert alert-warning">
 							<i class="fa fa-fw fa-warning"></i> {{resultMessage}}
 					</p>
@@ -177,7 +177,7 @@
 					</div>
 				</div>
 
-				<div ng-hide="fileImported" ng-repeat="report in uploadResult.result.reports">
+				<div ng-hide="fileImported" ng-repeat="report in uploadResult.reports">
 					<div class="accordion-div">
 
 						<div ng-click="stateArr[$index].active = !stateArr[$index].active" ng-class="{'modelresult-heading-collapsed': stateArr[$index].active, 'modelresult-heading-expanded': !stateArr[$index].active}">

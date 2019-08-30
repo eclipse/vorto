@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Eclipse Vorto Repository API
   description: |- 
-    The Eclipse Vorto Repository API is a pure read-only API and allows you to interact with models managed by the Repository. To create and modify models, please use the <a href="https://vorto.eclipse.org">Vorto Repository</a> Web Interface. Refer to the <a target="_blank" href="">Getting started Guide</a> for further details.
+    The Eclipse Vorto Repository API allows you to interact with models managed by the Repository.
   contact:
     name: Eclipse Vorto Team
     url: https://www.eclipse.org/vorto
@@ -22,14 +22,94 @@ tags:
     description: Invoke official generator plugins
   - name: Attachments
     description: Explore attachments of models, such as images etc.
+  - name: Importers
+    description: Import models to be managed in the Repository
     
 security:
-  - BoschID: []
-  - GithubID: []
-  - GithubBearerAuth: []
+  - BearerAuth: []
     
 paths:
-
+  '/importers':
+    get:
+      tags: 
+      - Importers
+      summary: A list of all supported importers
+      description: "A list of all supported importer plugins."
+      responses:
+        200:
+          description: 'Successful response with supported importer data'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImporterInfo'
+    post:
+      tags: 
+      - Importers
+      summary: Upload and validates Vorto Models or other supported device description files.
+      description: "Upload and validates Vorto Models or other supported device description files. If validation was successful, a upload handle is returned, that is needed to perform the actual check-in. You need to have 'CREATOR' permission to import models."
+      parameters: 
+      - name: targetNamespace
+        in: query
+        description: Target namespace of the models to be imported
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: query
+        description: Key of the importer plugin
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: single model file or ZIP containing the models
+                  format: binary
+      responses:
+        200:
+          description: 'Successful response of UploadResult'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResult'
+    put:
+      tags: 
+      - Importers
+      summary: Performs the actual check in of the model(s) to the Repository
+      description: "Performs the actual import of the model(s) to the Repository. Once imported, they are saved and managed in DRAFT state. You need to have 'CREATOR' permission to import model."
+      parameters: 
+      - name: targetNamespace
+        in: query
+        description: Target namespace of the models to be imported
+        required: true
+        style: form
+        schema:
+          type: string
+      - name: handleId
+        in: path
+        description: Upload Handle ID that refers to a previous upload
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelInfo'
   '/search/models':
     get:
       tags:
@@ -617,6 +697,78 @@ paths:
       
 components:
   schemas:
+    ImporterInfo:
+      title: ImporterInfo
+      type: object
+      properties:
+        key:
+          description: Importer Key
+          type: string
+        shortDescription:
+          description: Short description of the Importer
+          type: string
+        extensionTypes:
+          description: Supported file extensions by the importer
+          items:
+            type: string
+    UploadResult:
+      title: UploadResult
+      type: object
+      properties:
+        handleId:
+          description: Upload Handle ID. If uploaded models are invalid, this field is null
+          nullable: true
+          type: string
+        message:
+          description: Short description of the outcome of the upload.
+          type: string
+        isValid:
+          description: Identifies if uploaded models are valid or not
+          type: boolean
+        hasWarnings:
+          type: boolean
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationReport'
+    ValidationReport:
+      title: ValidationReport
+      type: object
+      properties:
+        model:
+          $ref: '#/components/schemas/ModelInfo'
+        valid:
+          type: boolean
+        message:
+          $ref: '#/components/schemas/StatusMessage'
+        unresolvedReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelId'
+        validationIssues:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationIssue'
+    ValidationIssue:
+      title: ValidationIssue
+      type: object
+      properties:
+        lineNumber:
+          type: integer
+        msg:
+          type: string
+    StatusMessage:
+      title: StatusMessage
+      type: object
+      properties:
+        message:
+          type: string
+        severity:
+          enum:
+            - ERROR
+            - WARNING
+            - INFO
+          type: string 
     ModelInfo:
       title: ModelInfo
       type: object
@@ -1046,33 +1198,9 @@ components:
       example: Functionblock
 
   securitySchemes:
-    BoschID:
-      type: oauth2
-      description: |-
-        Use either "OAuth2.0" with your Bosch-ID or the "Basic authentication"
-        below with a Demo user. Select the following checkbox in order to grant
-        Bosch IoT Things to access your Bosch-ID.
-      flows:
-        authorizationCode:
-          authorizationUrl: 'https://identity.bosch.com/connect/authorize'
-          tokenUrl: 'https://identity.bosch.com/connect/token'
-          scopes:
-            openid: Access your Bosch-ID
-    GithubID:
-      type: oauth2
-      description: |-
-        Use either "OAuth2.0" with your Github-ID.
-        Select the following checkbox in order to grant
-        Eclipse Vorto Repository to access your Github ID.
-      flows:
-        authorizationCode:
-          authorizationUrl: 'https://github.com/login/oauth/authorize'
-          tokenUrl: 'https://github.com/login/oauth/access_token'
-          scopes:
-            openid: user:email
-    GithubBearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: Github token
+      bearerFormat: OAuth Bearer token
       description: |-
-        A token issued by Github
+        A token issued by Github or Bosch ID
