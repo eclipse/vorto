@@ -1,10 +1,10 @@
 # Decouple IoT solutions from connected device data 
 
-Often times, devices are connected to the cloud using various protocols and sending their data in many different representations. What you want to prevent in your IoT solution is to understand all of these different representations, as it tightly couples your solution with the devices you connect to. What you really want to do is to specify a well - defined interface between the physical and the digital device "world". You might say "Hey, I just use a Digital Twin service to shield me off from all the device connectivity plumbing and wiring". Well, that is just the half truth, because even Digital Twin services do not necessarily abstract device data. So you still might end up in many different ways how things in a Digital Twin service are stored, still coupling your app with the devices connected to the twin service. 
-That is exactly where Eclipse Vorto comes in, providing a way to make your things look completely the same, regardless of the actual vendor - specific device. Vorto specifies the interfaces of Digital Twins as so called _Information Models_. You can read more about the Vorto language in the [Vorto 1.0 Specification](../vortolang-1.0.md). 
-But that is just one puzzle piece, because in most cases devices do not send their payload in the way, that has been defined in the Information Model. For this use case, Vorto has a very powerful instrument, namely payload mappings. Payload mappings specify how device properties are mapped to Vorto properties. Once defined, they are re-usable whenever the device is connected to an IoT solutions. 
+In a technical environment without a global standard, IoT device manufacturers, integrators, and platform providers are facing difficulties keeping up with the massive amounts of different payload formats, APIs, and proprietary protocols. 
 
-In this tutorial, we are going to work ourselves throught the process of connecting various geolocation sensors to the cloud and consume their data in a tiny cloud application. As mentioned earlier, we are going to design an architecture, that makes our application being able to consume data from any geolocation sensor vendor.
+The open source project Eclipse Vorto addresses this problem by providing cloud-based editors to abstract vendor-specific device payloads as re-usable Vorto Function Blocks. These are then aggregated to describe a whole device in the form of a Vorto Information Model. Information Models and Function Blocks are written in [vortolang](../vortolang-1.0.md), a simple grammar to define interfaces between a physical device and its digital twin counterpart. IoT solutions communicate with physical devices only via these abstract Function Blocks and their co-related data schema. In this way, IoT solutions become de-coupled from the plethora of different device data formats, APIs, and encodings. But how to convert the device data to these abstract Function Block interfaces? Simple: with so-called Vorto Mapping Specifications, which contain all the necessary instructions in order to harmonize device-specific payloads.
+
+In this tutorial, we are going to work ourselves throught the process of connecting various geolocation sensors to the cloud and consume their data in a simple cloud application. As mentioned earlier, we are going to design an architecture, that makes our application being able to consume data from any geolocation sensor vendor, with the help of Vorto Mapping Specifications.
 
 <img src="../images/tutorials/decouple_tutorial/overview.png" />
 
@@ -14,6 +14,7 @@ In this tutorial, we are going to work ourselves throught the process of connect
 1. Create an small cloud application that receives geolocation data and prints it out in the console
 2. Test the app by sending data via MQTT in different payload representations
 3. Applying Vorto, to normalize the geolocation data. This would reduce the complexitity in our app and only deal with a single geolocation representation, regardless of connected sensors.
+4. Optionally: [Forward the device data](./extend_mapping_pipeline_with_digital_twin.md) to a Digital Twin Service
 
 ## Pre-requisites
 
