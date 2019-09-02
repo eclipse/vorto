@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
+import org.eclipse.vorto.model.runtime.PropertyValue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -58,7 +59,7 @@ public class TwinPayloadFactory {
   private static Object createFeature(FunctionblockValue fbData) {
     Map<String, Object> feature = new HashMap<String, Object>();
     feature.put("definition", Arrays.asList(fbData.getMeta().getId().getPrettyFormat()));
-    feature.put("properties", fbData.serialize());
+    feature.put("properties", createFunctionBlockProperties(fbData));
     return feature;
   }
 
@@ -86,8 +87,33 @@ public class TwinPayloadFactory {
     dittoPayload.put("headers", createHeader());
     dittoPayload.put("path", "/features/" + featureId + "/properties");
 
-    Map<String, Object> feature = functionblockData.serialize();
-    dittoPayload.put("value", feature);
+    dittoPayload.put("value", createFunctionBlockProperties(functionblockData));
     return gson.toJsonTree(dittoPayload).getAsJsonObject();
+  }
+  
+  private static Map<String,Object> createFunctionBlockProperties(FunctionblockValue fbData) {
+    Map<String, Object> result = new HashMap<String, Object>();
+
+    Map<String, Object> status = new HashMap<String, Object>();
+
+    for (PropertyValue statusProperty : fbData.getStatus()) {
+      status.put(statusProperty.getMeta().getName(), statusProperty.serialize());
+    }
+    
+    if (!status.isEmpty()) {
+      result.put("status", status);
+    }
+
+    Map<String, Object> config = new HashMap<String, Object>();
+
+    for (PropertyValue configProperty : fbData.getConfiguration()) {
+      config.put(configProperty.getMeta().getName(), configProperty.serialize());
+    }
+    
+    if (!config.isEmpty()) {
+      result.put("configuration", config);
+    }
+    
+    return result;
   }
 }

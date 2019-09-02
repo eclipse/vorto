@@ -173,18 +173,12 @@ public class FunctionblockValue implements IValidatable {
   public Map<String, Object> serialize() {
     Map<String, Object> result = new HashMap<String, Object>();
 
-    Map<String, Object> statusProperties = new HashMap<String, Object>();
     for (PropertyValue statusProperty : status) {
-      statusProperties.put(statusProperty.getMeta().getName(), statusProperty.serialize());
+      result.put(statusProperty.getMeta().getName(), statusProperty.serialize());
     }
-    result.put("status", statusProperties);
 
-    Map<String, Object> configuration = new HashMap<String, Object>();
     for (PropertyValue configProperty : this.configuration) {
-      configuration.put(configProperty.getMeta().getName(), configProperty.serialize());
-    }
-    if (!configuration.isEmpty()) {
-      result.put("configuration", configuration);
+      result.put(configProperty.getMeta().getName(), configProperty.serialize());
     }
 
     return result;
