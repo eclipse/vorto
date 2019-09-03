@@ -23,7 +23,7 @@
 		<module>mapping-converter-types</module>
 		<module>mapping-converter-date</module>
 		<module>mapping-converter-binary</module>
-		<module>mapping-target</module>
+		<module>mapping-targetplatform</module>
 		<module>mapping-serializer</module>
 		<module>mapping-engine-all</module>
 	</modules>

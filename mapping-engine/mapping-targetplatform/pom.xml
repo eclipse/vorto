@@ -7,9 +7,9 @@
 		<version>0.12.0-SNAPSHOT</version>
 	</parent>
 	<packaging>pom</packaging>
-	<artifactId>mapping-target</artifactId>
+	<artifactId>mapping-targetplatform</artifactId>
 
 	<modules>
-		<module>mapping-target-ditto</module>
+		<module>mapping-targetplatform-ditto</module>
 	</modules>
 </project>
