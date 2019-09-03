@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.mapping.engine.twin;
+package org.eclipse.vorto.mapping.targetplatform.ditto;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,15 +23,54 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 /**
- * Convenient helper that serializes the given Vorto model data to twin payloads
- * Please use bundle 'org.eclipse.vorto:mapping-targetplatform-ditto' instead
+ * Convenient helper that serializes the given Vorto model data to Eclipse Ditto protocol
  *
- */
-@Deprecated
+ */ 
 public class TwinPayloadFactory {
 
-  private static Gson gson = new GsonBuilder().create();
+  private static final String DEVICE_ID_SEPARATOR = ":";
+  
+  private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+  
+  /**
+   * Creates Ditto protocol payload for modifying all features from the given Information Model Data
+   * 
+   * @param infomodel to set as value
+   * @param deviceId the device ID formatted in Eclipse Ditto Thing ID convention, e.g. org.acme:4711
+   * @return ditto protocol containing vorto data, that can be sent to Ditto to update all features
+   *         in one request
+   */
+  public static JsonObject toDittoProtocol(InfomodelValue infomodelData, String deviceId) {
+    if (!deviceId.contains(DEVICE_ID_SEPARATOR) || deviceId.split(DEVICE_ID_SEPARATOR).length > 2) {
+      throw new IllegalArgumentException("Device ID must comply to pattern <namespace>:<suffix>");
+    }
+    
+    String[] fragments = deviceId.split(DEVICE_ID_SEPARATOR);
+    
+    return toDittoProtocol(infomodelData, fragments[0],fragments[1]);
+  }
+  
+  /**
+   * Creates Ditto protocol payload for modifying the feature properties with the Vorto function
+   * block data
+   * 
+   * @param functionblockData to set as value
+   * @param featureId id of the feature to update. Ordinarily this is the function block property name of the Information Model
+   * @param deviceId the device ID formatted in Eclipse Ditto Thing ID convention, e.g. org.acme:4711
+   * @return ditto protocol containing vorto data, that can be sent to Ditto to update the feature
+   */
+  public static JsonObject toDittoProtocol(FunctionblockValue fbData, String featureId, String deviceId) {
+    
+    if (!deviceId.contains(DEVICE_ID_SEPARATOR) || deviceId.split(DEVICE_ID_SEPARATOR).length > 2) {
+      throw new IllegalArgumentException("Device ID must comply to pattern <namespace>:<suffix>");
+    }
+    
+    String[] fragments = deviceId.split(DEVICE_ID_SEPARATOR);
+    
+    return toDittoProtocol(fbData, featureId, fragments[0],fragments[1]);
+  }
+  
   /**
    * Creates Ditto protocol payload for modifying all features from the given Information Model Data
    * 
