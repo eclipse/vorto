@@ -16,16 +16,34 @@ import org.eclipse.vorto.model.runtime.ValidationReport;
 
 public class TestMappingResponse {
 
-  private String mappedOutput;
+  private String canonical;
+  private String ditto;
+  private String awsiot;
 
   private ValidationReport report;
 
-  public String getMappedOutput() {
-    return mappedOutput;
+  public String getCanonical() {
+    return canonical;
   }
 
-  public void setMappedOutput(String mappedOutput) {
-    this.mappedOutput = mappedOutput;
+  public void setCanonical(String canonical) {
+    this.canonical = canonical;
+  }
+
+  public String getDitto() {
+    return ditto;
+  }
+
+  public void setDitto(String ditto) {
+    this.ditto = ditto;
+  }
+
+  public String getAwsiot() {
+    return awsiot;
+  }
+
+  public void setAwsiot(String awsiot) {
+    this.awsiot = awsiot;
   }
 
   public ValidationReport getReport() {

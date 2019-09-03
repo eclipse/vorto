@@ -41,7 +41,7 @@
     		<h4><i class="fa fa-warning"></i> Invalid according to Vorto Model </h4>
         	{{testResponse.report.items[0].message}}!<br/><br/>
     	</div>
-	    <div class="alert alert-success" ng-show="testResponse.report.valid && mappedOutput != null">
+	    <div class="alert alert-success" ng-show="testResponse.report.valid && canonical != null">
 	      <p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Nice work! Your mapping is valid according to the Vorto model!</p>
 	    </div>
 	    <p>
@@ -65,11 +65,23 @@
 				<div id="testEditor" ui-ace="{ onLoad : sourceEditorLoaded, onChange: aceChanged }" style="height: 200px;"></div>
 			</div>
 			<div class="row">
-				<button type="submit" class="btn btn-primary" ng-hide="testInProgress" ng-click="executeTest()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Map</button>
+				<button type="submit" class="btn btn-primary" ng-hide="testInProgress" ng-click="executeTest()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Test Mapping</button>
 			</div>
 			<div class="row">
-		  		<pretty-json ng-show="mappedOutput != null" json="mappedOutput" style="height: 200px;"></pretty-json>
-		  		<pretty-json ng-show="mappedOutput == null" json="{}" style="height: 200px;"></pretty-json>	
+				<uib-tabset ng-hide="canonical == null" justified="false">
+					<uib-tab heading="Canonical">
+						Eclipse Vorto canonical format
+		  				<pretty-json json="canonical" style="height: 200px;"></pretty-json>
+					</uib-tab>
+					<uib-tab heading="AWS IoT">
+						Update command for AWS IoT Shadow Service
+		  				<pretty-json json="awsiot" style="height: 200px;"></pretty-json>
+					</uib-tab>
+					<uib-tab heading="Eclipse Ditto">
+						Update command for Eclipse Ditto Service
+		  				<pretty-json json="ditto" style="height: 200px;"></pretty-json>
+					</uib-tab>
+				</uib-tabset>
 			</div>
 		</div>
 	</div>

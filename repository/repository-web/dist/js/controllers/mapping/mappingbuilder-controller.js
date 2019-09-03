@@ -70,7 +70,11 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
     $scope.executeTest = function() {
         $scope.testInProgress = true;
-        $scope.mappedOutput = null;
+        
+        $scope.canonical = null;
+        $scope.ditto = null;
+        $scope.awsiot = null;
+        
         $scope.errorMessage = null;
         var testRequest = {
                 specification : {"infoModel":$scope.infomodel},
@@ -79,7 +83,11 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $http.put("./rest/mappings/test",testRequest).success(
                 function(data, status, headers, config) {
                     $scope.testInProgress = false;
-                    $scope.mappedOutput = JSON.parse(data.mappedOutput);
+                    
+                    $scope.canonical = JSON.parse(data.canonical);
+                    $scope.ditto = JSON.parse(data.ditto);
+                    $scope.awsiot = JSON.parse(data.awsiot);
+                    
                     $scope.testResponse = data;
                 }).error(function(data, status, headers, config) {
                     $scope.testInProgress = false;
