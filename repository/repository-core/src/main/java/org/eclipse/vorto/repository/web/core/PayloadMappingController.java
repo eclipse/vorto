@@ -31,6 +31,7 @@ import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
+import org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -70,6 +71,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -245,7 +247,9 @@ public class PayloadMappingController extends AbstractRepositoryController {
         engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
 
     TestMappingResponse response = new TestMappingResponse();
-    response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
+    response.setCanonical(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
+    response.setDitto(new Gson().toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
+    response.setAwsiot(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory.toShadowUpdateRequest(mappedOutput)));
     response.setReport(mappedOutput.validate());
     return response;
   }
