@@ -54,6 +54,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/manage", {
         templateUrl : "webjars/repository-web/dist/partials/admin-template.html",
         controller : "AdminController"
+    }).when("/privacy", {
+        templateUrl : "webjars/repository-web/dist/partials/privacypolicy-template.html"
     }).otherwise({
         redirectTo : "/"
     });
@@ -138,9 +140,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.context = result.data;
             $rootScope.tenant = $rootScope.context.tenant;
             if (!$rootScope.context.authenticatedSearchMode) {
-                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
+                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators", "/payloadmapping", "/privacy"];
             } else {
-                $rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
+                $rootScope.unrestrictedUrls = ["/login", "/api", "/generators", "/privacy"];
             }
             return result;
         };
