@@ -24,8 +24,10 @@ import com.google.gson.JsonObject;
 
 /**
  * Convenient helper that serializes the given Vorto model data to twin payloads
+ * Please use bundle 'org.eclipse.vorto:mapping-target-ditto' instead
  *
  */
+@Deprecated
 public class TwinPayloadFactory {
 
   private static Gson gson = new GsonBuilder().create();
