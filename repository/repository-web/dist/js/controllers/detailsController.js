@@ -657,20 +657,22 @@ repositoryControllers.controller('DetailsController',
 					$scope.targetPlatform = $scope.model.id.namespace.split('.').join('_')+'_'+$scope.model.id.name.toLowerCase();
 					$scope.existingSpec = null;
 	
-					$scope.getMappingId = function() {
+					$scope.exists = function() {
 						$scope.isLoading = true;
-						$http.get('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform + '/info')
+						$http.get('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform + '/exists')
 							.success(function (result) {
+								
 								$scope.isLoading = false;
-								for (var i = 0; i < result.length;i++) { 
-									result[i].references.forEach(function (reference) {
-										if (reference.prettyFormat === $scope.model.id.prettyFormat) {
-										    $scope.existingSpec = {"targetPlatform" : $scope.targetPlatform, 
-												"mappingId" : result[i].id.prettyFormat };
-										}
-									});
-								}
+								$scope.exists = result.exists;	
+								$scope.existingSpec = {"targetPlatform" : $scope.targetPlatform};
+								
+
 							}).error(function (data, status, header, config) {
+								if (status === 400) {
+									$scope.validationError = data;
+								} else {
+									$scope.errorMessage = data.message;
+								}
 								$scope.isLoading = false;
 								
 							});
@@ -698,7 +700,7 @@ repositoryControllers.controller('DetailsController',
 							});
 					};
 					
-					$scope.getMappingId();
+					$scope.exists();
 
 					$scope.cancel = function () {
 						modalInstance.dismiss();
@@ -715,7 +717,7 @@ repositoryControllers.controller('DetailsController',
 
 			modalInstance.result.then(
 				function (data) {
-					$location.path("/payloadmapping/" + $scope.model.id.prettyFormat + "/" + data.targetPlatform + "/" + data.mappingId);
+					$location.path("/payloadmapping/" + $scope.model.id.prettyFormat + "/" + data.targetPlatform);
 				});
 		};
 

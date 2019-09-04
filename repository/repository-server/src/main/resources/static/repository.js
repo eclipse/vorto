@@ -30,7 +30,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/import", {
         templateUrl : "webjars/repository-web/dist/partials/import-template.html",
         controller : "ImportController"
-    }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
+    }).when("/payloadmapping/:modelId/:targetPlatform", {
         templateUrl : "webjars/repository-web/dist/partials/mapping/mappingcreator.html",
         controller : "MappingBuilderController"
     }).when("/details/:modelId", {

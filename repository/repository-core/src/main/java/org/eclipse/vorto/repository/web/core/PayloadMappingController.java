@@ -68,6 +68,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -123,6 +124,16 @@ public class PayloadMappingController extends AbstractRepositoryController {
     addReferencesRecursive(infomodel);  
     
     return specification;
+  }
+  
+  @RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}/exists", method = RequestMethod.GET)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Map<String,Object> exists(@PathVariable final String modelId,
+      @PathVariable String targetPlatform) throws Exception {
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    Map<String,Object> result = new HashMap<>();
+    result.put("exists", !this.modelRepositoryFactory.getRepositoryByModel(modelID).getMappingModelsForTargetPlatform(modelID, targetPlatform,Optional.of(modelID.getVersion())).isEmpty());
+    return result;
   }
 
   /**
