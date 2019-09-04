@@ -12,6 +12,7 @@
 package org.eclipse.vorto.repository.web.core;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
-import org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory;
+import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -52,6 +53,7 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
+import org.eclipse.vorto.repository.web.core.dto.mapping.TestContentType;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -254,8 +256,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
       throws Exception {
     MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 
-    InfomodelValue mappedOutput =
-        engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
+    Object content = null;
+    if (testRequest.getContentType().equals(TestContentType.binary)) {
+      content = new BigInteger(testRequest.getContent(), 2).toByteArray();
+    } else {
+      content = new ObjectMapper().readValue(testRequest.getContent(), Object.class);
+    }
+    InfomodelValue mappedOutput = engine.mapSource(content);
 
     TestMappingResponse response = new TestMappingResponse();
     response.setCanonical(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));

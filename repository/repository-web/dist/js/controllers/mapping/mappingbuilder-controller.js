@@ -34,9 +34,19 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.editMode = false;
     
     $scope.conditions = [];
+    
+    $scope.contentType = "json";
 
     $scope.htmlPopover = $sce.trustAsHtml(
     "<p>Use your custom converters in your mapping rules, e.g. custom:myfunc()</p>");
+    
+    $scope.setAceLang = function() {
+    	if ($scope.contentType === 'json') {
+    		$scope.sourceEditorSession.setMode("ace/mode/json");
+    	} else {
+    		$scope.sourceEditorSession.setMode(null);
+    	}
+    };
 
     $scope.functionEditorLoaded = function(_editor) {
         _editor.getSession().setMode("ace/mode/javascript");
@@ -78,8 +88,10 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $scope.errorMessage = null;
         var testRequest = {
                 specification : {"infoModel":$scope.infomodel},
-                sourceJson : $scope.sourceContent
+                content : $scope.sourceContent,
+                contentType : $scope.contentType             
         };
+        
         $http.put("./rest/mappings/test",testRequest).success(
                 function(data, status, headers, config) {
                     $scope.testInProgress = false;

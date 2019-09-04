@@ -22,6 +22,7 @@ import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.converter.binary.BinaryFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.string.StringFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
+import org.eclipse.vorto.mapping.engine.model.binary.BinaryData;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattCharacteristic;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattDevice;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattService;
@@ -118,6 +119,23 @@ public class BinaryMappingTest {
     InfomodelValue mapped = mapper.mapSource(gson.fromJson(json, Object.class));
     assertEquals(20.00, mapped.get("button").getStatusProperty("sensor_value").get().getValue());
     System.out.println(mapped);
+  }
+  
+  @Test
+  public void testMappingBinaryContaining2DataPoints() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecBinaryConverter())
+        .registerConverterFunction(BinaryFunctionFactory.createFunctions())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+    
+    byte[] dest = new byte[4]; //2 byte temperature (Byte 1-2), 2 byte humidity (Byte 3-4)
+    byte[] value = Conversion.intToByteArray(2000, 0, dest, 0, 2);
+    value = Conversion.intToByteArray(8819, 0, dest, 2, 2);
+ 
+    
+    BinaryData data = new BinaryData(value);
+    InfomodelValue mapped = mapper.mapSource(data);
+    assertEquals(20.00, mapped.get("temperature").getStatusProperty("value").get().getValue());
+    assertEquals(88.19, mapped.get("humidity").getStatusProperty("value").get().getValue());
   }
 
 }

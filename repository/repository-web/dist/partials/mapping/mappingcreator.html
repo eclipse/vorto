@@ -61,14 +61,19 @@
 	<!-- /.nav-tabs -->
 		<div class="col-md-4">
 			<div class="row">
-				Specify device test data (as JSON format) and hit 'Map':
+				Key in example device data and specify content type:
+				<select ng-model="selectedType" ng-change="setAceLang()">
+					<option value="json">JSON</option>
+  					<option value="binary">Binary</option>
+				</select>
 				<div id="testEditor" ui-ace="{ onLoad : sourceEditorLoaded, onChange: aceChanged }" style="height: 200px;"></div>
 			</div>
 			<div class="row">
-				<button type="submit" class="btn btn-primary" ng-hide="testInProgress" ng-click="executeTest()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Test Mapping</button>
+				<button type="submit" class="btn btn-primary" ng-disabled="testInProgress" ng-click="executeTest()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Test Mapping</button>
 			</div>
 			<div class="row">
-				<uib-tabset ng-hide="canonical == null" justified="false">
+				Mapped Output
+				<uib-tabset justified="false">
 					<uib-tab heading="Canonical">
 						Eclipse Vorto canonical format
 		  				<pretty-json json="canonical" style="height: 200px;"></pretty-json>
