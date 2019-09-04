@@ -12,6 +12,10 @@
 	<packaging>jar</packaging>
 
 	<name>Vorto Plugin SDK API</name>
+	
+	<properties>
+		<sonar.coverage.exclusions>src/main/xtend-gen/org/eclipse/vorto/plugin/generator/utils/javatemplates/*</sonar.coverage.exclusions>
+    </properties>
  <build>
     <plugins>
       <plugin>
