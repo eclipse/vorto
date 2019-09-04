@@ -9,7 +9,11 @@
 
 	<artifactId>generator-templates-java</artifactId>
 	<name>Vorto Code Generator Templates for Java</name>
-
+	
+	<properties>
+		<sonar.coverage.exclusions>src/main/xtend-gen/org/eclipse/vorto/codegen/templates/java/*</sonar.coverage.exclusions>
+    </properties>
+    	
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
