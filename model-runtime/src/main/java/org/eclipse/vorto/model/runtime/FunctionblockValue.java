@@ -105,13 +105,13 @@ public class FunctionblockValue implements IValidatable {
     ValidationReport report = new ValidationReport();
 
     for (ModelProperty statusProperty : meta.getStatusProperties()) {
-      checkProperty(getStatus(), statusProperty, meta.getId().getName().toLowerCase() + "/status",
+      checkProperty(getStatus(), statusProperty, meta.getId().getName().toLowerCase() + "",
           report);
     }
 
     for (ModelProperty configProperty : meta.getConfigurationProperties()) {
       checkProperty(getConfiguration(), configProperty,
-          meta.getId().getName().toLowerCase() + "/configuration", report);
+          meta.getId().getName().toLowerCase() + "", report);
     }
     return report;
   }
