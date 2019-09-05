@@ -12,7 +12,6 @@
 package org.eclipse.vorto.repository.web.core;
 
 import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +27,13 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
+import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
-import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -107,6 +108,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String CONTENT_DISPOSITION = "content-disposition";
+  
+  private static final IPayloadDeserializer CSV_DESERIALIZER = new CSVDeserializer();
+  private static final IPayloadDeserializer JSON_DESERIALIZER = new JSONDeserializer();
+
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -257,16 +262,16 @@ public class PayloadMappingController extends AbstractRepositoryController {
     MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 
     Object content = null;
-    if (testRequest.getContentType().equals(TestContentType.binary)) {
-      content = new BigInteger(testRequest.getContent(), 2).toByteArray();
+    if (testRequest.getContentType().equals(TestContentType.csv)) {
+      content = CSV_DESERIALIZER.deserialize(testRequest.getContent());
     } else {
-      content = new ObjectMapper().readValue(testRequest.getContent(), Object.class);
+      content = JSON_DESERIALIZER.deserialize(testRequest.getContent());
     }
     InfomodelValue mappedOutput = engine.mapSource(content);
 
     TestMappingResponse response = new TestMappingResponse();
     response.setCanonical(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
-    response.setDitto(new Gson().toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
+    response.setDitto(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
     response.setAwsiot(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory.toShadowUpdateRequest(mappedOutput)));
     response.setReport(mappedOutput.validate());
     return response;

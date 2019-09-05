@@ -15,11 +15,12 @@ package org.eclipse.vorto.service.mapping;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
+import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
-import com.google.gson.GsonBuilder;
 
 public class MappingSpecJsonReaderTest {
 
@@ -43,8 +44,9 @@ public class MappingSpecJsonReaderTest {
 
     String json = "{\"t\" : 50}";
 
+    IPayloadDeserializer deserializer = new JSONDeserializer();
     InfomodelValue mappedOutput =
-        mapper.mapSource(new GsonBuilder().create().fromJson(json, Object.class));
+        mapper.mapSource(deserializer.deserialize(json));
     assertEquals(50.0,((EntityPropertyValue)
         mappedOutput.get("outdoorTemperature").getStatusProperty("value").get()).getValue().getPropertyValue("value").get().getValue());
   }

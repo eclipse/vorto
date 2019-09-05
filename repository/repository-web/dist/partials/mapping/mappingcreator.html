@@ -1,7 +1,7 @@
 <!-- Main content -->
 <section class="content" id="mapping">
    <ol class="breadcrumb">
-      <li><a href="#"></i>Explore</a></li>
+      <li><a href="./#/"></i>Explore</a></li>
       <li><a href="./#/details/{{modelId}}"></i>{{modelId}}</a></li>
       <li class="active">Payload Mapping Specification</li>
       
@@ -62,9 +62,9 @@
 		<div class="col-md-4">
 			<div class="row">
 				Key in example device data and specify content type:
-				<select ng-model="selectedType" ng-change="setAceLang()">
+				<select ng-model="contentType" ng-change="setAceLang()" class="form-control">
 					<option value="json">JSON</option>
-  					<option value="binary">Binary</option>
+  					<option value="csv">CSV</option>
 				</select>
 				<div id="testEditor" ui-ace="{ onLoad : sourceEditorLoaded, onChange: aceChanged }" style="height: 200px;"></div>
 			</div>
