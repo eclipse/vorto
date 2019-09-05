@@ -42,13 +42,13 @@ public class TwinPayloadFactory {
    *         in one request
    */
   public static JsonObject toDittoProtocol(InfomodelValue infomodelData, String deviceId) {
-    if (!deviceId.contains(DEVICE_ID_SEPARATOR) || deviceId.split(DEVICE_ID_SEPARATOR).length > 2) {
+    if (!deviceId.contains(DEVICE_ID_SEPARATOR)) {
       throw new IllegalArgumentException("Device ID must comply to pattern <namespace>:<suffix>");
     }
     
-    String[] fragments = deviceId.split(DEVICE_ID_SEPARATOR);
+    int separatorIndex = deviceId.indexOf(DEVICE_ID_SEPARATOR);
     
-    return toDittoProtocol(infomodelData, fragments[0],fragments[1]);
+    return toDittoProtocol(infomodelData, deviceId.substring(0, separatorIndex), deviceId.substring(separatorIndex + 1));
   }
   
   /**
@@ -62,13 +62,13 @@ public class TwinPayloadFactory {
    */
   public static JsonObject toDittoProtocol(FunctionblockValue fbData, String featureId, String deviceId) {
     
-    if (!deviceId.contains(DEVICE_ID_SEPARATOR) || deviceId.split(DEVICE_ID_SEPARATOR).length > 2) {
+    if (!deviceId.contains(DEVICE_ID_SEPARATOR)) {
       throw new IllegalArgumentException("Device ID must comply to pattern <namespace>:<suffix>");
     }
     
-    String[] fragments = deviceId.split(DEVICE_ID_SEPARATOR);
+    int separatorIndex = deviceId.indexOf(DEVICE_ID_SEPARATOR);
     
-    return toDittoProtocol(fbData, featureId, fragments[0],fragments[1]);
+    return toDittoProtocol(fbData, featureId, deviceId.substring(0, separatorIndex), deviceId.substring(separatorIndex + 1));
   }
   
   /**
