@@ -15,10 +15,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import java.util.Arrays;
-import java.util.List;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
+import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
 import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
@@ -32,13 +32,9 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTwoFunctionblocksWithNestedEntity;
 import org.junit.Test;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-public class JsonMappingTest {
-
-  private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+public class DataMapperTest {
+  
   @Test
   public void testMapWithSimpleCondition() throws Exception {
     IDataMapper mapper =
@@ -46,23 +42,20 @@ public class JsonMappingTest {
 
     String json = "{\"count\" : 2 }";
 
-    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+    
+    InfomodelValue mappedOutput = mapper.mapSource(deserializer.deserialize(json));
     assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
     assertEquals(2.0,
         mappedOutput.get("button").getStatusProperty("sensor_value2").get().getValue());
 
     json = "{\"count\" : 0 }";
 
-    mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    mappedOutput = mapper.mapSource(deserializer.deserialize(json));
     assertEquals(0.0,
         mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
     assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
 
-    System.out.println(
-        gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "org.eclipse.vorto", "123")));
-
-    System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput.get("button"),
-        "button", "org.eclipse.vorto", "123")));
 
   }
 
@@ -71,14 +64,13 @@ public class JsonMappingTest {
     IDataMapper mapper =
         IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction()).build();
 
-    List<String> input = Arrays.asList(new String[] {"", "2", "3"});
-
-    InfomodelValue mappedOutput = mapper.mapSource(input);
+    IPayloadDeserializer deserializer = new CSVDeserializer();
+    
+    InfomodelValue mappedOutput = mapper.mapSource(deserializer.deserialize(",2,3"));
 
     assertNull(mappedOutput.get("button"));
-
-    input = Arrays.asList(new String[] {"1", "2", "3"});
-    mappedOutput = mapper.mapSource(input);
+    
+    mappedOutput = mapper.mapSource(deserializer.deserialize("1,2,3"));
     System.out.println(mappedOutput.get("button").getStatusProperty("sensor_value"));
 
     assertTrue(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
@@ -93,7 +85,10 @@ public class JsonMappingTest {
 
     String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
-    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
+    
+    InfomodelValue mappedOutput = mapper.mapSource(deserializer.deserialize(json));
     assertEquals(100.0,
         mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
 
@@ -107,7 +102,9 @@ public class JsonMappingTest {
 
     String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 
-    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
+    InfomodelValue mappedOutput = mapper.mapSource(deserializer.deserialize(json));
 
     FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
@@ -126,8 +123,11 @@ public class JsonMappingTest {
     final String sampleHomeConnectRESTResponse =
         "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
 
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
+    
     InfomodelValue mappedOutput =
-        mapper.mapSource(gson.fromJson(sampleHomeConnectRESTResponse, Object.class));
+        mapper.mapSource(deserializer.deserialize(sampleHomeConnectRESTResponse));
     System.out.println(mappedOutput);
     assertNull(mappedOutput.get("operationState"));
     FunctionblockValue doorStateFunctionblockData = mappedOutput.get("doorState");
@@ -144,7 +144,9 @@ public class JsonMappingTest {
 
     String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
 
-    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
+    InfomodelValue mappedOutput = mapper.mapSource(deserializer.deserialize(json));
 
     FunctionblockValue buttonFunctionblockData = mappedOutput.get("btn1");
 
@@ -166,8 +168,10 @@ public class JsonMappingTest {
     final String sampleDeviceData =
         "{\"temperature\" : 20.3 }";
 
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
     InfomodelValue mappedOutput =
-        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+        mapper.mapSource(deserializer.deserialize(sampleDeviceData));
     
     EntityPropertyValue temperatureValue = (EntityPropertyValue)mappedOutput.get("outdoorTemperature").getStatusProperty("value").get();
     assertEquals(20.3,temperatureValue.getValue().getPropertyValue("value").get().getValue());
@@ -181,8 +185,10 @@ public class JsonMappingTest {
     final String sampleDeviceData =
         "{\"temperature\" : 20.3 }";
 
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
     InfomodelValue mappedOutput =
-        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+        mapper.mapSource(deserializer.deserialize(sampleDeviceData));
     
     EntityPropertyValue temperatureValue = (EntityPropertyValue)mappedOutput.get("outdoorTemperature").getStatusProperty("value").get();    
     assertEquals(20.3,temperatureValue.getValue().getPropertyValue("value").get().getValue());
@@ -198,11 +204,12 @@ public class JsonMappingTest {
     final String sampleDeviceData =
         "{\"temperature\" : 20.3 }";
 
+    IPayloadDeserializer deserializer = new JSONDeserializer();
+
     InfomodelValue mappedOutput =
-        mapper.mapSource(gson.fromJson(sampleDeviceData, Object.class));
+        mapper.mapSource(deserializer.deserialize(sampleDeviceData));
     
     assertEquals(20.3,mappedOutput.get("outdoorTemperature").getStatusProperty("value").get().getValue());
     assertEquals("Celcius",mappedOutput.get("outdoorTemperature").getStatusProperty("unit").get().getValue());
   }
-
 }

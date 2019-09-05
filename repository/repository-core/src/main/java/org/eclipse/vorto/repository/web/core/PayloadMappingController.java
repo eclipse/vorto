@@ -27,11 +27,13 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
+import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
+import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
-import org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.FunctionblockModel;
@@ -52,6 +54,7 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
+import org.eclipse.vorto.repository.web.core.dto.mapping.TestContentType;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -105,6 +108,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String CONTENT_DISPOSITION = "content-disposition";
+  
+  private static final IPayloadDeserializer CSV_DESERIALIZER = new CSVDeserializer();
+  private static final IPayloadDeserializer JSON_DESERIALIZER = new JSONDeserializer();
+
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -254,12 +261,17 @@ public class PayloadMappingController extends AbstractRepositoryController {
       throws Exception {
     MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 
-    InfomodelValue mappedOutput =
-        engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
+    Object content = null;
+    if (testRequest.getContentType().equals(TestContentType.csv)) {
+      content = CSV_DESERIALIZER.deserialize(testRequest.getContent());
+    } else {
+      content = JSON_DESERIALIZER.deserialize(testRequest.getContent());
+    }
+    InfomodelValue mappedOutput = engine.mapSource(content);
 
     TestMappingResponse response = new TestMappingResponse();
     response.setCanonical(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
-    response.setDitto(new Gson().toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
+    response.setDitto(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
     response.setAwsiot(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory.toShadowUpdateRequest(mappedOutput)));
     response.setReport(mappedOutput.validate());
     return response;

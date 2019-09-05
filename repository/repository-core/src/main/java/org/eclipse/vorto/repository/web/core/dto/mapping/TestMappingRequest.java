@@ -16,16 +16,10 @@ import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 
 public class TestMappingRequest {
 
-  private String sourceJson;
+  private String content;
+  private TestContentType contentType;
+  
   private MappingSpecification specification;
-
-  public String getSourceJson() {
-    return sourceJson;
-  }
-
-  public void setSourceJson(String sourceJson) {
-    this.sourceJson = sourceJson;
-  }
 
   public MappingSpecification getSpecification() {
     return specification;
@@ -34,5 +28,23 @@ public class TestMappingRequest {
   public void setSpecification(MappingSpecification specification) {
     this.specification = specification;
   }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public TestContentType getContentType() {
+    return contentType;
+  }
+
+  public void setContentType(TestContentType contentType) {
+    this.contentType = contentType;
+  }
+  
+  
 
 }
