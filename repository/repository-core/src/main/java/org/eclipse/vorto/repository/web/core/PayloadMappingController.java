@@ -112,6 +112,21 @@ public class PayloadMappingController extends AbstractRepositoryController {
   private static final IPayloadDeserializer CSV_DESERIALIZER = new CSVDeserializer();
   private static final IPayloadDeserializer JSON_DESERIALIZER = new JSONDeserializer();
 
+  @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/mappingId")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public Map<String,Object> getMappingIdForModelId(@PathVariable final String modelId,
+      @PathVariable String targetPlatform) throws Exception {
+    
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    Map<String,Object> result = new HashMap<>();
+    Optional<ModelInfo> mappingModel = this.modelRepositoryFactory.getRepositoryByModel(modelID)
+      .getMappingModelsForTargetPlatform(modelID, targetPlatform,Optional.of(modelID.getVersion())).stream()
+      .filter(modelInfo -> modelInfo.getType().equals(org.eclipse.vorto.model.ModelType.Mapping) && modelInfo.getReferences().contains(modelID)).findAny();
+    
+    result.put("mappingId", mappingModel.get().getId().getPrettyFormat());
+    
+    return result;
+  }
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")

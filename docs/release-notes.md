@@ -2,6 +2,31 @@
 
 <br />
 
+## 0.12
+
+This version primarily focuses on stability, performance as well as UX. 
+
+### New Features
+
+**Vorto Repository Features**
+
+* Content - Assist / Auto-completion in Web Editors when writing vortolang models
+* Backup & Restore of all models per namespace
+* REST API Endpoint to allow the import of Vorto Models (or 3rd party models) in the Repository
+
+
+**Device Integration Features**
+
+* Support for nested entities inside Function Blocks in the Payload Mapping Engine (Java only). Please take note of the compatibility section.
+* Supported Payload Mapping Target Platform format: AWS IoT Shadow and Eclipse Ditto Protocol
+* Support of operation return types in OpenAPI Generator
+
+**Compatibility**
+
+With this release, the Vorto Payload Mapping Engine now supports the mapping to nested entities, declared in Function Blocks. This change required us to completely modify the Mapping Specification JSON runtime model, which is required  by the Mapping Engine at configuration time. The old mapping specification runtime-model is no longer supported. Therefore, make sure to download the new Mapping Specification from the Vorto Repository and deploy it in your system, if you upgrade to this new version! This change **does not break** any previous design time mapping models!
+
+<br />
+
 ## 0.11.3
 
 **Bugfixes**
