@@ -2,6 +2,20 @@
 
 ## Publications
 
+### "Harmonizing specific device payloads using Eclipse Vorto"
+
+* Author: 
+	- [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
+	- [Tim Grossmann](https://github.com/timgrossmann)
+* [Click to read](https://blog.bosch-si.com/developer/harmonizing-specific-device-payloads-using-eclipse-vorto/)
+
+### "Eclipse Vorto: The next step in IoT device integration"
+
+* Author: 
+	- [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
+	- [Tim Grossmann](https://github.com/timgrossmann)
+* [Click to read](https://blog.bosch-si.com/developer/eclipse-vorto-the-next-step-in-iot-device-integration/)
+
 ### "Avoid tight-coupling of devices in IoT solutions"
 
 * Author: [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
