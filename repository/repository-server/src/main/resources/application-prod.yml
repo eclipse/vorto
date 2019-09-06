@@ -2,11 +2,11 @@ server:
   contextPath: /
 
 repo:
-  configFile: vorto-repository-config-mysql.json
+  configFile: vorto-repository-config-db.json
 
 spring:
   datasource:
-    url: jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true
+    url: ${db_url}
     username: ${db_username}
     password: ${db_password}
     driver-class-name: org.mariadb.jdbc.Driver
