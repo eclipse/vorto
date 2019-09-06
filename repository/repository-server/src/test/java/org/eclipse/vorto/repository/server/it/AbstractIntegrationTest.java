@@ -68,7 +68,7 @@ import com.google.gson.GsonBuilder;
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // https://github.com/spring-projects/spring-boot/issues/12280
-@TestPropertySource(properties = {"repo.configFile = vorto-repository-config-h2.json"})
+@TestPropertySource(properties = {"repo.configFile = vorto-repository-config-db.json"})
 public abstract class AbstractIntegrationTest {
 
   protected MockMvc repositoryServer;
@@ -105,6 +105,10 @@ public abstract class AbstractIntegrationTest {
     System.setProperty("eidp_clientid", "foo");
     System.setProperty("eidp_clientSecret", "foo");
     System.setProperty("line.separator", "\n");
+    System.setProperty("db_driver","org.h2.Driver");
+    System.setProperty("db_url","jdbc:h2:mem:target/test/binary-store-db;DB_CLOSE_DELAY=-1");
+    System.setProperty("db_username","sa");
+    System.setProperty("db_password","sa");
   }
 
   @Before
