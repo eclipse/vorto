@@ -18,7 +18,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 		}
 	};
 
-
     $scope.isLoading = false;
 
     $scope.errorMessage = null;
@@ -305,6 +304,18 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     };
 
     $scope.loadMappingSpec();
+    
+    
+    $scope.getMappingId = function() {
+    	$http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform+"/mappingId").success(
+                function(data, status, headers, config) {
+                    $scope.mappingId = data.mappingId;
+                }).error(function(data, status, headers, config) {
+                    console.log("Problem fetching mapping ID for information model");
+                });		
+    };
+    
+    $scope.getMappingId();
 
 }]);
 
