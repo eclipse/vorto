@@ -79,7 +79,7 @@ jobs:
           on:
             branch: 
               - development
-       - provider: elasticbeanstalk
+        - provider: elasticbeanstalk
           access_key_id: "$VORTO_AWS_ACCESS_KEY"        
           secret_access_key: "$VORTO_AWS_SECRET_KEY"
           region: "$VORTO_S3_REGION"
