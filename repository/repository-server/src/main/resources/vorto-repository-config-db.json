@@ -17,12 +17,12 @@
         ]
     },
     "storage" : {
-      "cacheConfiguration" : "infinispan-configuration-mysql.xml",
+      "cacheConfiguration" : "infinispan-configuration-db.xml",
       "cacheName" : "contentRepository",
       "binaryStorage" : {
           "type"  : "database",
-          "driverClass" : "org.mariadb.jdbc.Driver",
-          "url" : "jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true",
+          "driverClass" : "${db_driver}",
+          "url" : "${db_url}",
           "username" : "${db_username}",
           "password" : "${db_password}"
       }
@@ -37,3 +37,4 @@
         }
     }
 }
+

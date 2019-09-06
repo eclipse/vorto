@@ -20,8 +20,8 @@
 										 purge="false"
 										 shared="true">
 					<jdbc:connection-pool
-            connection-url="jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true"
-							driver="org.mariadb.jdbc.Driver"
+            connection-url="${db_url}"
+							driver="${db_driver}"
               username="${db_username}"
               password="${db_password}"/>
 					<jdbc:string-keyed-table
@@ -38,4 +38,3 @@
 		</local-cache>
 	</cache-container>
 </infinispan>
-

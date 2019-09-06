@@ -68,11 +68,26 @@ jobs:
             branch: 
               - development
               - master
-        - provider: script
-          script: bash build-scripts/repackage-deploy-repo.sh
+        - provider: elasticbeanstalk
+          access_key_id: "$VORTO_AWS_ACCESS_KEY"        
+          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          region: "$VORTO_S3_REGION"
+          app: "Vorto-Dev-Environment"
+          env: "vorto-dev"
+          bucket_name: "$VORTO_S3_BUCKET"
           skip_cleanup: true
           on:
             branch: 
               - development
+       - provider: elasticbeanstalk
+          access_key_id: "$VORTO_AWS_ACCESS_KEY"        
+          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          region: "$VORTO_S3_REGION"
+          app: "Vorto-Prod-New-Environment"
+          env: "vorto-prod-new"
+          bucket_name: "$VORTO_S3_BUCKET"
+          skip_cleanup: true
+          on:
+            branch: 
               - master
                                    

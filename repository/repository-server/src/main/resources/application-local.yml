@@ -1,5 +1,5 @@
 repo:
-  configFile: vorto-repository-config-file.json
+  configFile: vorto-repository-config-db.json
   
 server:
   port: 8080
