@@ -14,20 +14,14 @@ package org.eclipse.vorto.repository.web.tenant;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
-import org.eclipse.vorto.repository.notification.message.OfficialNamespaceRequest;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
@@ -65,16 +59,8 @@ public class TenantManagementController {
 
   private TenantService tenantService;
 
-  private INotificationService notificationServices;
-
-  private IUserAccountService userAccountService;
-
-  public TenantManagementController(@Autowired TenantService tenantService,
-      @Autowired INotificationService notificationServices,
-      @Autowired IUserAccountService userAccountService) {
+  public TenantManagementController(@Autowired TenantService tenantService) {
     this.tenantService = tenantService;
-    this.notificationServices = notificationServices;
-    this.userAccountService = userAccountService;
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -263,36 +249,6 @@ public class TenantManagementController {
       required = true) final @PathVariable String namespace) {
     return new ResponseEntity<>(!tenantService.conflictsWithExistingNamespace(namespace),
         HttpStatus.OK);
-  }
-
-  @PreAuthorize("isAuthenticated()")
-  @PostMapping(value = "/tenants/{tenantId}/namespaces/{namespace}/requestOfficial")
-  public ResponseEntity<Boolean> sendOfficialNamespaceRequest(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      @ApiParam(value = "The namespace to request",
-          required = true) final @PathVariable String namespace) {
-
-    Authentication user = SecurityContextHolder.getContext().getAuthentication();
-
-    boolean hasSentEmail = false;
-
-    for (User admin : userAccountService.getSystemAdministrators()) {
-      if (admin.hasEmailAddress()) {
-        OfficialNamespaceRequest officialNamespaceRequest = new OfficialNamespaceRequest(admin,
-            ControllerUtils.sanitize(tenantId), ControllerUtils.sanitize(namespace), user.getName(), new Date());
-        try {
-          notificationServices.sendNotification(officialNamespaceRequest);
-          hasSentEmail = true;
-        } catch (NotificationProblem e) {
-          logger.error(String.format(
-              "Not able to send OfficialNamespaceRequest email [Recipient: %s, Request: %s].",
-              admin.getEmailAddress(), officialNamespaceRequest), e);
-        }
-      }
-    }
-
-    return new ResponseEntity<>(Boolean.valueOf(hasSentEmail), HttpStatus.OK);
   }
 
   public static class Result {

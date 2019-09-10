@@ -90,6 +90,9 @@ public class AccountController {
 
     try {
       LOGGER.info("Adding user [" + userId + "] to tenant [" + tenantId + "] with Role [" + Arrays.toString(user.getRoles().toArray()) + "]");
+      if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
       return new ResponseEntity<>(accountService.addUserToTenant(tenantId, userId, toRoles(user)),
           HttpStatus.OK);
     } catch (IllegalArgumentException e) {

@@ -125,7 +125,7 @@ repositoryControllers.controller("createOrUpdateUserController",
                         .then(function(result) {
                             $uibModalInstance.close($scope.user); 
                         }, function(reason) {
-                            // TODO : do proper error handling
+                            $scope.errorMessage = "You cannot change your own permissions.";
                         });
                 } else {
                     $scope.errorMessage = result.errorMessage;
