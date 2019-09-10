@@ -10,9 +10,13 @@
 	    </a>
 	</ol>
 	
-	<uib-tabset active="My Namespaces" justified="false">
-    	<uib-tab ng-show="hasAuthority('ROLE_SYS_ADMIN')" index="0">
-    		<uib-tab-heading><i class="fa fa-info-circle"></i> Admin Utilities</uib-tab-heading>
+	<uib-tabset justified="false">
+		<uib-tab index="0">
+    		<uib-tab-heading><span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;Namespaces</uib-tab-heading>
+    		<div tenant-management ng-controller="tenantManagementController"></div>
+    	</uib-tab>
+    	<uib-tab ng-show="hasAuthority('ROLE_SYS_ADMIN')" index="1">
+    		<uib-tab-heading><i class="fa fa-info-circle"></i> Global Repository Functions</uib-tab-heading>
 			
 			<div ng-if="error" class="alert alert-danger">{{error}}</div>
 			<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
@@ -46,10 +50,6 @@
 			        </tbody>
 			    </table>
 			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>		    	
-    	</uib-tab>
-    	<uib-tab index="1">
-    		<uib-tab-heading><span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;Namespaces</uib-tab-heading>
-    		<div tenant-management ng-controller="tenantManagementController"></div>
     	</uib-tab>
   	</uib-tabset>
 </section>

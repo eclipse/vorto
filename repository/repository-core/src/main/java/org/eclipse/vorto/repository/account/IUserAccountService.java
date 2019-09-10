@@ -39,11 +39,11 @@ public interface IUserAccountService {
   boolean removeUserFromTenant(String tenantId, String userId);
   
   /**
-   * 
+   * Adds the specific userId with the given roles to the given tenant.
    * @param tenantId the tenant to add this user to
    * @param userId the user id
    * @param roles the roles to be given to the user
-   * @return
+   * @return status if the user was added successfully
    */
   boolean addUserToTenant(String tenantId, String userId, Role ... roles);
   
