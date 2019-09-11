@@ -94,6 +94,12 @@ paths:
         style: form
         schema:
           type: string
+      - name: key
+        in: query
+        description: Key of the importer plugin
+        required: true
+        schema:
+          type: string
       - name: handleId
         in: path
         description: Upload Handle ID that refers to a previous upload
