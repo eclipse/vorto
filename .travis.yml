@@ -54,8 +54,8 @@ jobs:
 
       before_deploy:
         - export AWS_DEFAULT_REGION=$VORTO_S3_REGION
-        - export AWS_ACCESS_KEY_ID="$VORTO_AWS_ACCESS_KEY"
-        - export AWS_SECRET_ACCESS_KEY="$VORTO_AWS_SECRET_KEY"
+        - export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+        - export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
         - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
         - export ARTIFACT_NAME=infomodelrepository
