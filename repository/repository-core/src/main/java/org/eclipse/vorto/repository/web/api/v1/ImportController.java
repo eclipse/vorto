@@ -30,6 +30,7 @@ import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
+import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.ImporterInfo;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -55,7 +56,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = "/api/v1/importers")
-public class ImportController {
+public class ImportController extends AbstractRepositoryController {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
@@ -127,7 +128,7 @@ public class ImportController {
       return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.error("Error Importing model. " + handleId, e);
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      throw new IllegalArgumentException("Could not import with handle ID "+handleId, e);
     }
   }
 

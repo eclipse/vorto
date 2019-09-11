@@ -204,7 +204,7 @@ repositoryControllers.controller("tenantManagementController",
 					};
 					
 					$scope.getPublicModelsForTenant = function() {
-						$http.get("./rest/search/public?tenantId="+tenant.tenantId).success(
+						$http.get("./rest/search/public?namespace="+tenant.defaultNamespace).success(
                             function(data, status, headers, config) {
                             	console.log(data);
                                 $scope.hasPublicModels = data.length > 0;
