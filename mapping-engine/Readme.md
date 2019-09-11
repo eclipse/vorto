@@ -20,7 +20,7 @@ In this tutorial, we are going to walk you through the process of creating a Vor
 To work through this tutorial, you will need:
 
 - [BoschID](https://accounts.bosch-iot-suite.com/) or [GitHub](https://github.com/) account to log in to the Vorto Repository
-- A [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0), managed in the Vorto Repository
+- You have described a device as a [Vorto Information Model](../docs/tutorials/describe_device-in-5min.md) and it is managed in the Vorto Repository
 - You are a collaborator/owner of a namespace
 
 <br />
@@ -41,9 +41,26 @@ Once you have written your xpath expressions, press Save.
 
 ## Step 2: Test the Mapping Specification
 
-On the right handside, define the arbitrary device payload (in JSON format) and click **Map**: 
+On the right handside, select "JSON' as content type and paste the device raw data in the JSON editor. Test your mapping rule by clicking **Test Mapping**: 
 
 ![mapping editor test](./docs/mapping_editor_test.png)
+
+The test result will give you the mapped data for different IoT platforms. 
+
+The Vorto (canonical) format looks like:
+
+![Vorto canonical format](./docs/output_canonical.png)
+
+
+The AWS IoT Shadow update command format looks like:
+
+![Vorto canonical format](./docs/output_aws.png)
+
+
+The Eclipse Ditto update command format looks like:
+
+![Vorto canonical format](./docs/output_ditto.png)
+
 
 
 ## Step 3: Download & Execute Mapping Specification
@@ -96,21 +113,39 @@ if (!validationReport.isValid()) {
 
 **5.** Convert mapped data to Digital Twin IoT compliant data
  
-Convert the mapped data to IoT Platform data. The mapping engine provides a useful utility in order to create a JSON object complying to the Eclipse Ditto protocol:
+Convert the normalized Vorto compliant data to a target IoT platform format.
+
+Currently supported target IoT Platform formats
+
+* AWS IoT Shadow Service
+* Eclipse Ditto Service
+
+The following example shows how to convert the normalized data to **AWS IoT Shadow Update Command**:
 
 ```Java
 import com.google.gson.JsonObject;
-import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
+import org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory;
 ...
 
-final String dittoNamespace = "org.mycompany";
-final String dittoNamespaceSuffix = "123";
-JSONObject dittoPayload = TwinPayloadFactory.toDittoProtocol(mappedData, dittoNamespace, dittoNamespaceSuffix);
+JSONObject updateRequestAWSIoT = TwinPayloadFactory.toShadowUpdateRequest(mappedData);
 
-sendToDitto(dittoPayload);
+sendToAWSIoTShadow(updateRequestAWSIoT,"com.acme:4711");
 ```
 
 <br />
+
+The following example shows how to convert the normalized data to **Eclipse Ditto Update Command**:
+
+```Java
+import com.google.gson.JsonObject;
+import org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory;
+...
+
+JSONObject updateRequestDitto = TwinPayloadFactory.toDittoProtocol(mappedData,"com.acme:4711");
+
+sendToEclipseDitto(updateRequestDitto);
+```
+
 
 ## Advanced Usage
 
@@ -166,6 +201,7 @@ For security reasons, the following restrictions apply when processing these con
 #### Example
 
 In the following example, a custom (Javascript) converter is defined in a Function Block mapping, that converts a click amount as a **String** to an **Integer** value:
+
 ```java
 namespace devices.aws.button.mapping
 version 1.0.0
@@ -180,7 +216,7 @@ functionblockmapping ButtonPayloadMapping {
 
 	// Definition of Converter functions which can be used from within the function block mapping
 	from Push_button to functions with 
-		{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if 	  		(clickType === 'DOUBLE') return 2; else return -1;}"}
+		{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else    if (clickType === 'DOUBLE') return 2; else return -1;}"}
 
 	// Usage of the converter function in the mapping rule expression
 	from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
@@ -213,7 +249,7 @@ from Illuminance to condition with {value:"header.type == 'I'"}
 
 # What's next ?
 
+- [Vorto Mapping Engine in action](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md). Tutorial that uses Vorto Mappings to convert Geolocation sensor data.
 - Understand the [Mapping Specification Syntax](./docs/mapping_syntax.md)
-- [Normalize device telemetry data](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md), that was received from Eclipse Hono supported protocol adapters
 
 
