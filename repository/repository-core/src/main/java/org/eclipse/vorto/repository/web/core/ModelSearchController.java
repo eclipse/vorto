@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -65,7 +66,11 @@ public class ModelSearchController extends AbstractRepositoryController {
   
   @RequestMapping(value = "/public", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
-  public Collection<ModelInfo> getPublicModels() {
-    return searchService.search("visibility:public");
+  public Collection<ModelInfo> getPublicModels(@RequestParam("namespace") String namespace) {
+    List<ModelInfo> models = searchService.search("visibility:public");
+    if (namespace != null) {
+      models = models.stream().filter(model -> model.getId().getNamespace().startsWith(namespace)).collect(Collectors.toList());
+    }
+    return models;
   }
 }
