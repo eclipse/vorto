@@ -30,6 +30,7 @@ Check out our [Vorto Example Code](https://www.github.com/eclipse/vorto-examples
  - You have a problem? Reach out to our developers through [StackOverflow](https://stackoverflow.com/questions/ask) 
 
 ## Follow us
+follow us [@EclipseVorto](https://twitter.com/EclipseVorto)
 
 | Channel | Releases           | Features                 | Tutorials                |
 |:--------|:------------------:|:-------------------------|--------------------------|
