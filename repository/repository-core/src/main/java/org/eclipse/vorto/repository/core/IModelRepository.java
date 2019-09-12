@@ -82,6 +82,17 @@ public interface IModelRepository {
   ModelResource getEMFResource(ModelId modelId);
 
   /**
+   * 
+   * @param modelId
+   * @param content
+   * @param fileName
+   * @param user
+   * @param validate
+   * @return
+   */
+  ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user,boolean validate);
+  
+  /**
    * Saves the model to the repo. If it does not exist, the model is created.
    * 
    * @param modelId the id of the model

@@ -14,9 +14,12 @@
  *******************************************************************************/
 package org.eclipse.vorto.editor.mapping.scoping
 
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource
@@ -57,12 +60,38 @@ class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def IScope scope_ConfigurationSource_property(ConfigurationSource exp, EReference ref) {
 		var model = exp.model as FunctionblockModel;
-		return Scopes::scopeFor(model.functionblock.configuration.properties);
+		return Scopes::scopeFor(getConfigurationProperties(model));
 	}
 
 	def IScope scope_StatusSource_property(StatusSource exp, EReference ref) {
-		var model = exp.model as FunctionblockModel;
-		return Scopes::scopeFor(model.functionblock.status.properties);
+		var model = exp.model as FunctionblockModel
+		return Scopes::scopeFor(getStatusProperties(model));
+	}
+	
+	private def List<Property> getStatusProperties(FunctionblockModel model) {
+		var properties  = new ArrayList<Property>();
+		if (model.functionblock.status !== null) {
+			properties.addAll(model.functionblock.status.properties);
+		}
+		
+		if (model.superType !== null) {
+			properties.addAll(getStatusProperties(model.superType));
+		}
+		
+		return properties;
+	}
+	
+	private def List<Property> getConfigurationProperties(FunctionblockModel model) {
+		var properties  = new ArrayList();
+		if (model.functionblock.configuration !== null) {
+			properties.addAll(model.functionblock.configuration.properties);
+		}
+		
+		if (model.superType !== null) {
+			properties.addAll(getConfigurationProperties(model.superType));
+		}
+		
+		return properties;
 	}
 
 	def IScope scope_FaultSource_property(FaultSource exp, EReference ref) {

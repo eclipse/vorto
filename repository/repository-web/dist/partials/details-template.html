@@ -62,7 +62,7 @@
 			</div>
 			
 			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
-				<a class="btn btn-default pull-left" ng-click="openPayloadMappingDialog()" role="button">
+				<a class="btn btn-default pull-left" href="./#/payloadmapping/{{model.id.prettyFormat}}" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
@@ -223,7 +223,7 @@
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
 																			</span>	
 																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
-																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}/{{mapping.targetPlatform}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>												
+																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>												
 																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
 																	</li>
 																</ul>

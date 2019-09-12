@@ -12,7 +12,13 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import com.google.inject.Injector;
 
@@ -29,5 +35,22 @@ public class MappingModelParser extends AbstractModelParser {
   @Override
   protected Injector getInjector() {
     return new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
+  }
+  
+  /**
+   * Adds inherited types of references
+   * Why? Because mapping models can also define mapping rules of Function Blocks / or Entities for inherited properties
+   */
+  @Override
+  protected Collection<ModelId> getReferences(Model model) { 
+    List<ModelId> result = new ArrayList<>();
+    model.getReferences().stream().map(
+        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
+        .collect(Collectors.toList()).stream().forEach(modelId -> {
+          result.add(modelId);
+          result.addAll(this.modelRepoFactory.getRepositoryByModel(modelId).getById(modelId).getReferences());
+        });
+    
+    return result;
   }
 }

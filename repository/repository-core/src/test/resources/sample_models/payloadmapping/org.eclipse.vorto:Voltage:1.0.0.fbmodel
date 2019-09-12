@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "Voltage"
+description "Functionblock for Voltage"
+
+functionblock Voltage {
+	
+
+	status {
+	    mandatory value as float
+	}
+
+}

@@ -27,6 +27,7 @@ import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.conversion.IModelConverter;
@@ -66,10 +67,11 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
           if (!(model instanceof MappingModel)) {
             Optional<MappingModel> mappingModel = getMappingModelForModel(workspace.get(),model);
             if (mappingModel.isPresent()) {
+              AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model),
+                  Optional.of((MappingModel) mappingModel.get()));
+              createdModel.setTargetPlatformKey(platformKey.get());
               result.getModels().put(
-                  new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                  ModelDtoFactory.createResource(flattenHierarchy(model),
-                      Optional.of((MappingModel) mappingModel.get())));
+                  new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
             }
           }
         });
@@ -77,16 +79,17 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
         IModelWorkspace workspace = getWorkspaceForModel(modelId);
 
         workspace.get().stream().forEach(model -> {
-          result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-              ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty()));
+          AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty());
+          createdModel.setTargetPlatformKey(platformKey.get());
+          result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
         });
       }
     } else {
       IModelWorkspace workspace = getWorkspaceForModel(modelId);
 
       workspace.get().stream().forEach(model -> {
-        result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-            ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty()));
+        AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty());
+        result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
       });
     }
 

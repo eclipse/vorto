@@ -5,10 +5,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
     $scope.modelId = $routeParams.modelId;
 
-    $scope.mappingId = $routeParams.mappingId;
-
-    $scope.targetPlatform = $routeParams.targetPlatform;
-
     $scope.testInProgress = false;
     $scope.mappedOutput = null;
 
@@ -91,7 +87,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                 contentType : $scope.contentType             
         };
         
-        $http.put("./rest/mappings/test",testRequest).success(
+        $http.put("./rest/mappings/specifications/test",testRequest).success(
                 function(data, status, headers, config) {
                     $scope.testInProgress = false;
                     
@@ -220,7 +216,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
     $scope.loadMappingSpec = function() {
         $scope.isLoading = true;
-        $http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform).success(
+        $http.get("./rest/mappings/specifications/"+$scope.modelId).success(
                 function(data, status, headers, config) {
                     $scope.infomodel = data.infoModel;
                     $scope.state = "Draft";
@@ -287,10 +283,14 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     
     $scope.save = function() {
         var specification = {"infoModel":$scope.infomodel};
-        $http.put("./rest/mappings/" + $scope.modelId + "/" + $scope.targetPlatform,specification).success(
+        $http.put("./rest/mappings/specifications/" + $scope.modelId,specification).success(
                 function(data, status, headers, config) {
                     $scope.success = true;
-
+					
+					if ($scope.mappingId == null) {
+						$scope.getMappingId();
+					}
+					
                     $timeout(function() {
                         $scope.success = false;
                     },2000);
@@ -307,11 +307,11 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     
     
     $scope.getMappingId = function() {
-    	$http.get("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform+"/mappingId").success(
+    	$http.get("./rest/mappings/specifications/"+$scope.modelId+"/mappingId").success(
                 function(data, status, headers, config) {
                     $scope.mappingId = data.mappingId;
                 }).error(function(data, status, headers, config) {
-                    console.log("Problem fetching mapping ID for information model");
+                    $scope.mappingId = null;
                 });		
     };
     
