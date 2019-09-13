@@ -80,7 +80,7 @@
     								<label for="{{_property.name}}" class="col-sm-2 col-form-label">{{_property.name}} <small style="color:grey;font-size:10px">{{_property.type}}</small></label>
     								<div class="col-sm-10">
     								    <textarea ng-required="_property.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{_property.name}}" id="{{_property.name}}" ng-model="_property.stereotypes[0].attributes['xpath']"></textarea>
-    									<span class="error" ng-show="{{property.name}}MappingForm.{{statusProperty.name}}.$error.required && _property.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
+    									<span class="error" ng-show="{{property.name}}MappingForm.{{_property.name}}.$error.required && _property.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    	
     								</div>
   								</div>
   								<div ng-show="isDatatype(_property)" class="form-group row">
