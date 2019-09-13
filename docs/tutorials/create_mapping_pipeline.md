@@ -96,7 +96,7 @@ Notice, that the {password} and {auth-id} values are the ones that you set as de
 
 You should now see the data being printed out to the console in something like:
 ```bash
-INFO com.acme.solution.AMQPListnerer - Received AMQP message: {logitude: 103.3223, latitude: 3.2322}
+INFO com.acme.solution.AMQPListener - Received AMQP message: {logitude: 103.3223, latitude: 3.2322}
 ```
 
 4. Send some data for our second device `4712`. This time change the payload message representation to CSV style. Example:
@@ -108,7 +108,7 @@ mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {pas
 You should now also see the data of our second device in the console of our application. 
 
 ```bash
-INFO com.acme.solution.AMQPListnerer - Received AMQP message: {103.3223, 3.2322}
+INFO com.acme.solution.AMQPListener - Received AMQP message: {103.3223, 3.2322}
 ```
 
 
@@ -239,7 +239,7 @@ In the next step, we are going to use these Vorto models and mappings in order t
 
 As seen in the picture, we will now setup the Eclipse Vorto Payload Normalization Middleware, which is a micro service written in Java, that consumes data from Eclipse Hono via AMQP and converts the data to semantic data structures, defined as Vorto Function Blocks. For this, the middleware utilizes the Mapping Specification that we created in the previous step. 
 
-#picture !Todo
+#image Todo!!!
 
 For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-hono-subscriber/Readme.md). 
 
@@ -300,14 +300,19 @@ Repeat this step for the second device ID (4712) , with the following content:
 
 **Finally!** We are all set to start sending the same data as in **step 2** using `mosquitto_pub`. In order to test this, you should now turn off the geolocation app, as we want to see the output log in the Middleware Spring Boot appication this time.
 You should be able to see the normalized payload with the exact same structure for both sensor types. 
+
+
 <img src="../images/tutorials/decouple_tutorial/normalized.png" />
 
 
 
 ### 5. Setting up AMQP Endpoint for normalized Vorto payload
 
-At this point, we have not yet connected our IoT Geolocation app with the Vorto normalization middleware in order to receive geolocation data. That is exactly what we are going to prepare now. We will set up an AMQP Broker to which the Vorto normalization middleware will publish converted payload data to. The Vorto normalization middleware has built-in support for publishing device messages to a configured AMQP Broker. 
-To save us some time, we will create an instance of the [Amazon MQ](https://aws.amazon.com/amazon-mq/) on AWS. In order to do so, please follow these .
+At this point, we have not yet connected our IoT Geolocation app with the Vorto normalization middleware in order to receive geolocation data. That is exactly what we are going to prepare now. 
+
+As seen in the picture below, we will set up an AMQP Broker to which the Vorto normalization middleware will publish converted payload data. The Vorto normalization middleware has built-in support for publishing device messages to a configured AMQP Broker. To save us some time, we will create an instance of the [Amazon MQ](https://aws.amazon.com/amazon-mq/) on AWS. In order to do so, please follow these.
+
+#Image: Todo!!!
 
 1. [Set up and Configure](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html) an Amazon MQ instance on AWS
 2. In the ActiveMQ Web Console, create a topic called `telemetry/vorto`
@@ -339,7 +344,7 @@ amqp:
   queue: telemetry/vorto
 ```
 
-When you start the application and send data for the two sensors via MQTT , you will now see the normalized geo location data in the console of the application.
+When you start the application and send data for the two sensors via MQTT, you will now see the normalized geo location data in the console of the application.
 
 ## What's next?
 
