@@ -20,13 +20,13 @@ public class Stereotype {
 
   private String name;
 
-  private static final String SOURCE = "source";
-  private static final String TARGET = "target";
-  private static final String FUNCTIONS = "functions";
-  private static final String XPATH_ATT = "xpath";
+  public static final String SOURCE = "source";
+  public static final String TARGET = "target";
+  public static final String FUNCTIONS = "functions";
+  public static final String XPATH_ATT = "xpath";
   private static final String KEY_ATT = "key";
   private static final String VALUE_ATT = "value";
-  private static final String CONDITION_ATT = "condition";
+  public static final String CONDITION_ATT = "condition";
 
   private Map<String, String> attributes = new HashMap<String, String>();
 

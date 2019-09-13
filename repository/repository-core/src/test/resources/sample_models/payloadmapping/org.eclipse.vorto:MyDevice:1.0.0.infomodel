@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "MyDevice"
+description "Information Model for MyDevice"
+
+using org.eclipse.vorto.Battery;1.0.0
+
+infomodel MyDevice {
+
+	functionblocks {
+	    battery as Battery
+	    otherBattery as Battery
+	}
+}

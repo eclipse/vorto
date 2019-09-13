@@ -31,11 +31,20 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
 public class ModelConversionUtils {
+  
+  public static Model convertToFlatHierarchy(Model model) {
+    if (model instanceof FunctionblockModel && ((FunctionblockModel)model).getSuperType() != null) {
+      return convertToFlatHierarchy((FunctionblockModel)model);
+    } else {
+      return model;
+    }
+  }
 
   public static FunctionblockModel convertToFlatHierarchy(FunctionblockModel fbm) {
     FunctionBlock fb = fbm.getFunctionblock();

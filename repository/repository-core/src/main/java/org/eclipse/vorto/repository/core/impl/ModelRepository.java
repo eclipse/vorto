@@ -532,7 +532,9 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
         Node fileItem = (Node) fileNode.getPrimaryItem();
         InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
-        return (ModelResource) modelParserFactory.getParser(fileNode.getName()).parse(is);
+        IModelParser parser = modelParserFactory.getParser(fileNode.getName());
+        parser.setValidate(false);
+        return (ModelResource) parser.parse(is);
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
       }

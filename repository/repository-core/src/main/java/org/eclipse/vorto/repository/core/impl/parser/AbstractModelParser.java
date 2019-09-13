@@ -53,7 +53,7 @@ public abstract class AbstractModelParser implements IModelParser {
   private String fileName;
   private boolean enableValidation = true;
 
-  private IModelRepositoryFactory modelRepoFactory;
+  protected IModelRepositoryFactory modelRepoFactory;
   private Collection<FileContent> dependencies = Collections.emptyList();
   private ErrorMessageProvider errorMessageProvider;
 
@@ -193,7 +193,7 @@ public abstract class AbstractModelParser implements IModelParser {
     this.dependencies = Objects.requireNonNull(fileReferences);
   }
 
-  private Collection<ModelId> getReferences(Model model) {
+  protected Collection<ModelId> getReferences(Model model) {
     return model.getReferences().stream().map(
         modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
         .collect(Collectors.toList());
