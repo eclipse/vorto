@@ -92,8 +92,10 @@ mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {pas
 ```
 Notice, that the {password} and {auth-id} values are the ones that you set as device credentials previously.
 
-3. Verify the incoming data in our IoT application from step 1. You should now see the data being printed out to the console. 
-<img src="../images/tutorials/decouple_tutorial/resultOutput1.png" />
+3. Verify the incoming data in our IoT application from step 1. 
+
+You should now see the data being printed out to the console in something like:
+`INFO com.acme.solution.AMQPListnerer - Received AMQP message: {logitude: 103.3223, latitude: 3.2322}`
 
 4. Send some data for our second device `4712`. This time change the payload message representation to CSV style. Example:
 
@@ -102,7 +104,8 @@ mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {pas
 ```
 
 You should now also see the data of our second device in the console of our application. 
-<img src="../images/tutorials/decouple_tutorial/resultOutput2.png" />
+`INFO com.acme.solution.AMQPListnerer - Received AMQP message: {103.3223, 3.2322}`
+
 
 You can already see from here, that our application would now need to be made more intelligent of handling these two different ways of payload representations. Moreover it tightly couples the application to connected sensors and the way how these sensors  
 
