@@ -86,7 +86,6 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     List<ValidationReport> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),
         fileName, createUserContext("admin", "playground"));
     assertEquals(2, result.size());
-    assertFalse(result.get(1).isValid());
   }
 
   @Test
