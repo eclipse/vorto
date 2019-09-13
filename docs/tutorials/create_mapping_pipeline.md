@@ -11,10 +11,12 @@ In this tutorial, we are going to work ourselves throught the process of connect
 
 ## Steps to take
 
-1. Create an small cloud application that receives geolocation data and prints it out in the console
+1. Create a small cloud application that receives geolocation data and prints it out in the console
 2. Test the app by sending data via MQTT in different payload representations
-3. Applying Vorto, to normalize the geolocation data. This would reduce the complexitity in our app and only deal with a single geolocation representation, regardless of connected sensors.
+3. Applying Vorto, to normalize the geolocation data. This would reduce the complexitity in our app and only deal with a single geolocation representation, regardless of the connected sensors.
 4. Optionally: [Forward the device data](./extend_mapping_pipeline_with_digital_twin.md) to a Digital Twin Service
+
+
 
 ## Pre-requisites
 
@@ -33,10 +35,10 @@ Here is a list of things that you need to work through this tutorial:
 
 In this step, we create a tiny IoT solution that receives the sensor data and simply prints the data out to the console. But how do we get the data from Eclipse Hono ? It's easy. Hono provides an AMQP endpoint that makes it possible for applications to receive telemetry data. Hono does not make any assumption how the payload looks like and merely forwards the data "as is" to the AMQP endpoint. Our application receives the data and does something useful with it. Well, in this case just prints it out to the console. 
 
-To save us some time at this point, we have already created the application for you. [Download](../samplecode/cloudapp) and import the import it into your IDE
+To save us some time at this point, we have already created the application for you. [Download](../samplecode/cloudapp) and then import it into your IDE
 
 Open the ```src/main/resources/application.yml``` and configure the tenantId, username and password. 
-> Where to find these values ? Login to [Bosch IoT Suite Portal](https://www.bosch-iot-suite.com/subscriptions) with your Bosch ID and click on `Credentials`.
+> Where to find these values ? Login to [Bosch IoT Suite Portal](https://accounts.bosch-iot-suite.com/subscriptions/) with your Bosch ID and click on `Credentials`.
 
 Run the app with ```mvn spring-boot:run```. You should not see any data coming in just yet. But we can change that quickly by sending some geolocation data to the MQTT endpoint.
 
@@ -48,7 +50,9 @@ First let's register a device in the device registry under a specific device-id.
 
 We can easily register our sample devices via the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry)
 
-1. Register 2 devices `4711` and `4712`. The following example show the device registration for device with ID `4711`:
+In order to use the API, you need to login via username and password. Therefore click on `Authorize`, and use the [Bosch IoT Suite Portal](https://accounts.bosch-iot-suite.com/subscriptions/) again, to  to find the `username` and `username` values at the bottom of the `Credentials` page. 
+
+1. Register 2 devices `4711` and `4712`. The following example shows the device registration for device with ID `4711`:
 
 
 ```js
@@ -60,7 +64,7 @@ We can easily register our sample devices via the [Device Registry Swagger UI](h
 
 Repeat the step for the second device.
 
-2. Add device credentials for these 2 devices. The following example show the credentials registration for device with ID `4711`:
+2. Add device credentials for these 2 devices. The following example shows the credentials registration for a device with the ID `4711`:
 
 ```js
 	{
@@ -76,18 +80,20 @@ Repeat the step for the second device.
 	}
 ```
 
-Repeat the step for the second device.
+Repeat this step for the second device.
 
 ### Publish data via MQTT 
 
 1. Download the Hub Server certificate ```curl -o iothub.crt https://docs.bosch-iot-hub.com/cert/iothub.crt```
 
-2. Use `mosquitto_pub` client to send some geolocation data: 
+2. Use the `mosquitto_pub` client to send some geolocation data: 
 ```bash
 mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/{tenant-id}/4711 -m '{"longitude": "103.3223", "latitude": "3.2322"}' --cafile iothub.crt
 ```
+Notice, that the {password} and {auth-id} values are the ones that you set as device credentials previously.
 
-3. Verify the incoming data in our IoT application from step 1. You should see the data being printed out to the console. 
+3. Verify the incoming data in our IoT application from step 1. You should now see the data being printed out to the console. 
+<img src="../images/tutorials/decouple_tutorial/resultOutput1.png" />
 
 4. Send some data for our second device `4712`. This time change the payload message representation to CSV style. Example:
 
@@ -95,7 +101,8 @@ mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {pas
 mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u {auth-id}@{tenant-id} -P {password} -t telemetry/{tenant-id}/4712 -m '"103.3223","3.2322"' --cafile iothub.crt
 ```
 
-You should also see the data of our second device in the console of our application. 
+You should now also see the data of our second device in the console of our application. 
+<img src="../images/tutorials/decouple_tutorial/resultOutput2.png" />
 
 You can already see from here, that our application would now need to be made more intelligent of handling these two different ways of payload representations. Moreover it tightly couples the application to connected sensors and the way how these sensors  
 
@@ -105,7 +112,7 @@ At this point, we introduce device data abstraction which can be easily handled 
 
 In this step, we are going to use [Eclipse Vorto](https://www.eclipse.org/vorto) in order to de-couple our application from the connected sensors. This has the following benefits:
 
-- **Reduced** **complexity** **and** therfore **development** **efforts** in our IoT application. Our app can fully focus on the processing a single data format, rather than many formats of different devices types.
+- **Reduced** **complexity** **and** therfore **development** **efforts** in our IoT application. Our app can fully focus on processing one single data format, rather than many formats of different devices types.
 - It becomes very **easy to extend** our application and support many other different device types providing the same functionality. 
 
 ### 1. Specifying the Geolocation interface with Vorto
@@ -138,7 +145,9 @@ functionblock Geolocation {
 In this step, we will create an Information Model that implement the Geolocation Function Block. The Information Model represents the vendor - specific sensor. 
 
 1. Click `Explore` in the menu and then click `Create Model` 
-2. Choose `Information Model` and work yourself through the wizard by giving it the name `SensorOne` and version `1.0.0`. Click Next and confirm with `Create`.  This will take you directly to the newly created Information Model
+2. This time choose `Information Model` and work yourself through the wizard by giving it the name `SensorOne` and version `1.0.0`.
+3. In the popup to select from a list of existing abstract Function Block Properties, select Custom as we want to define our own in the next step, select Custom.
+ Click Next and confirm with `Create`.  This will take you directly to the newly created Information Model
 
 Add the following function block properties hit `Save`:
 
@@ -170,7 +179,7 @@ Here is how its' done:
 1. Click **Explore** and open the details of the SensorOne Information Model
 2. Click **Create Mapping** which opens a dialog with some background information about mappings. Confirm with **Create**. This will open the Payload Mapping Editor 
 3. You will see two tabs, each for every Function Block property. Select **deviceInformation** tab
-4. Our sensor does not really transmit any device information meta data. That's why we hard code these values here. Under **manufacturer** add `"ACME Company"`. 
+4. Our sensor does not really transmit any device information meta data. That's why we hard code these values here. Under **manufacturer** add `"ACME Company"`. Make sure to add quote marks at the beginning and end of the provided manufacterer string.
 5. Open **location** mapping tab. Let's map the longitude and latitude to the Function Block. 
 6. For **longitude** add `number:toFloat(/longitude)` and for **latitude** add `number:toFloat(/latitude)`
 7. Save your changes
@@ -204,13 +213,15 @@ You should be able to see the following mapped output:
 ```
 
 
-**Fantastic!** You just created a mapping for one sensor that sends its payload as JSON. 
+**Fantastic!** You have just created a mapping for one sensor that sends its payload as JSON. 
 
 
 Create a mapping spec for your *SensorTwo* Information Model:
 
 This time for **manufacturer**, set the value `"Company XYZ"`
-The second sensor sends its geolocation payload as CSV. Therefore, add the following mapping for the **longitude** `number:toFloat(array[1]` and for **latitude** `number:toFloat(array[2]`. **Save** and **download** the mapping spec as well.
+The second sensor sends its geolocation payload as CSV. Therefore, add the following mapping for the **longitude** `number:toFloat(array[1])` and for **latitude** `number:toFloat(array[2])`. 
+
+**Save** and **download** the mapping spec as well.
 
 This completes the Vorto Modelling. In summary, we described two sensor types as Vorto Information Models, implementing the same Geolocation Function Block. In the end, we created payload mappings for these sensor types, in order to map their specific payload to the same semantic Function Block definition. 
 
@@ -218,7 +229,9 @@ In the next step, we are going to use these Vorto models and mappings in order t
 
 ### 4. Setting up Eclipse Vorto Payload Normalization Middleware
 
-The Eclipse Vorto Payload Normalization Middleware is a micro service, written in Java, that consumes data from Eclipse Hono via AMQP and converts the data to semantic data structures, defined as Vorto Function Blocks. For this, the middleware utilizes the Mapping Specification, that we created in the previous step. 
+As seen in the picture, we will now setup the Eclipse Vorto Payload Normalization Middleware, which is a micro service written in Java, that consumes data from Eclipse Hono via AMQP and converts the data to semantic data structures, defined as Vorto Function Blocks. For this, the middleware utilizes the Mapping Specification that we created in the previous step. 
+
+#picture !Todo
 
 For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-hono-subscriber/Readme.md). 
 
@@ -277,7 +290,11 @@ Repeat this step for the second device ID (4712) , with the following content:
 	}
 ```	 
 
-F**inally!** We are all set to start sending the same data as in **step 2** using `mosquitto_pub`. When doing so, please observe the logs of the Normalization Middleware Spring Boot application. You should see the normalized payload, with the exact same structure for both sensor types. 
+**Finally!** We are all set to start sending the same data as in **step 2** using `mosquitto_pub`. In order to test this, you should now turn off the geolocation app, as we want to see the output log in the Middleware Spring Boot appication this time.
+You should be able to see the normalized payload with the exact same structure for both sensor types. 
+<img src="../images/tutorials/decouple_tutorial/normalized.png" />
+
+
 
 ### 5. Setting up AMQP Endpoint for normalized Vorto payload
 
@@ -285,7 +302,7 @@ At this point, we have not yet connected our IoT Geolocation app with the Vorto 
 To save us some time, we will create an instance of the [Amazon MQ](https://aws.amazon.com/amazon-mq/) on AWS. In order to do so, please follow these .
 
 1. [Set up and Configure](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html) an Amazon MQ instance on AWS
-2. Create a topic called `telemetry/vorto`
+2. In the ActiveMQ Web Console, create a topic called `telemetry/vorto`
 3. Create two technical users. One technical user that is used by the Vorto normalization middleware to publish payload. The other technical user will be used by the Geolocation cloud application to consume the payload. 
 4. Stop the running Vorto Normalization middleware, if not already done so. Open the `src/main/resources/application.yml` and make the following changes to your configuration:
 
@@ -293,7 +310,7 @@ To save us some time, we will create an instance of the [Amazon MQ](https://aws.
 amqp:
   username: TECHNICAL_USER_AMAZON_MQ_TO_PUBLISH
   password: TECHNICAL_USER_AMAZON_MQ_PASSWORD
-  url: ssl://endpoint_of_setup_amazon_mq_instance
+  url: ssl://ENDPOINT_OF_SETUP_AMAZON_MQ_INSTANCE
   topic:
     native: telemetry/vorto
 ```
@@ -302,9 +319,17 @@ Start the spring boot application again with `mvn spring-boot:run`.
 
 ### 6. Make cloud application changes
 
-In this step, we are going to make a small configuration change to our existing cloud application, which we will make now to point to our new Amazon MQ Broker AMQP endpoint, in order to receive normalized geo location sensor data. 
+In this step, we are going to make a small configuration change to our existing Geolocation cloud application from the beginning, which we will now configure to point to our new Amazon MQ Broker AMQP endpoint, in order to receive normalized geo location sensor data. 
 
-Please open the `application.yml` and change the url, topic and credentials.
+Please open the `application.yml` and replace the url, topic and credentials as seen below:
+
+```
+amqp:
+  url: amqps://ENDPOINT_OF_SETUP_AMAZON_MQ_INSTANCE?jms.username=${amqp.username}&jms.password=${amqp.password}&amqp.saslMechanisms=PLAIN&transport.verifyHost=false&transport.trustAll=true
+  username: TECHNICAL_USER_AMAZON_MQ_TO_PUBLISH
+  password: TECHNICAL_USER_AMAZON_MQ_PASSWORD
+  queue: telemetry/vorto
+```
 
 When you start the application and send data for the two sensors via MQTT , you will now see the normalized geo location data in the console of the application.
 
