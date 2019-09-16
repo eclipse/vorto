@@ -239,7 +239,7 @@ In the next step, we are going to use these Vorto models and mappings in order t
 
 As seen in the picture, we will now setup the Eclipse Vorto Payload Normalization Middleware, which is a micro service written in Java, that consumes data from Eclipse Hono via AMQP and converts the data to semantic data structures, defined as Vorto Function Blocks. For this, the middleware utilizes the Mapping Specification that we created in the previous step. 
 
-#image Todo!!!
+<img src="../images/tutorials/decouple_tutorial/stepOneOverview.png" />
 
 For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-hono-subscriber/Readme.md). 
 
@@ -312,7 +312,7 @@ At this point, we have not yet connected our IoT Geolocation app with the Vorto 
 
 As seen in the picture below, we will set up an AMQP Broker to which the Vorto normalization middleware will publish converted payload data. The Vorto normalization middleware has built-in support for publishing device messages to a configured AMQP Broker. To save us some time, we will create an instance of the [Amazon MQ](https://aws.amazon.com/amazon-mq/) on AWS. In order to do so, please follow these.
 
-#Image: Todo!!!
+<img src="../images/tutorials/decouple_tutorial/stepTwoOverview.png" />
 
 1. [Set up and Configure](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html) an Amazon MQ instance on AWS
 2. In the ActiveMQ Web Console, create a topic called `telemetry/vorto`
