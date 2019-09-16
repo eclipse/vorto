@@ -1,5 +1,8 @@
 <section class="content">
 
+</section>
+
+<script type="text/ng-template" id="signup.html">
 <div class="signup-box panel panel-default">
 	<div class="page-header">
     	<h2>Terms and Conditions</h2>
@@ -12,12 +15,17 @@
 				    	<input type="checkbox" ng-model="acceptTerms"> I confirm, that I have read and agree to the <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">terms and conditions</a> for the Eclipse Foundation Web Site and Related Services
 					</label>
 				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="acceptPrivacyPolicy"> I confirm, that I have read and agree to the <a id="privacypolicy" href ng-click="showPrivacyPolicy()">privacy policy</a> for the Vorto Repository.
+					</label>
+				</div>
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-4">
-				<button class="btn btn-primary btn-block" type="submit" ng-disabled="!acceptTerms" ng-click="acceptTermsAndConditions()">
+				<button class="btn btn-primary btn-block" type="submit" ng-disabled="!acceptTerms || !acceptPrivacyPolicy" ng-click="acceptTermsAndConditions()">
 					<i ng-show="isAcceptingTermsAndCondition" class="fa fa-spinner" aria-hidden="true"></i>
 					Agree and Proceed
 				</button>
@@ -25,5 +33,4 @@
 		</div>
   	</div>
 </div>
-
-</section>
+</script>
