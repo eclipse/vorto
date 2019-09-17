@@ -215,8 +215,8 @@ public class DefaultUserAccountService
     User userToDelete = userRepository.findByUsername(userId);
 
     if (userToDelete != null) {
-      userRepository.delete(userToDelete);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
+      userRepository.delete(userToDelete);
       if (userToDelete.hasEmailAddress()) {
         notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
       }
