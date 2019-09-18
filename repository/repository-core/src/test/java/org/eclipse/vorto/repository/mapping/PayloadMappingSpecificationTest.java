@@ -27,9 +27,9 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
   
   @Test
   public void testCreateSpecification() {
-    importModel("payloadmapping/org.eclipse.vorto:Voltage:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:Battery:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:MyDevice:1.0.0.infomodel");
+    importModel("payloadmapping/org.eclipse.vorto_Voltage_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_Battery_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_MyDevice_1.0.0.infomodel");
     
     IMappingSpecification specification = mappingService.getOrCreateSpecification(ModelId.fromPrettyFormat("org.eclipse.vorto:MyDevice:1.0.0"));
     
@@ -39,9 +39,9 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
   
   @Test
   public void testRunMappingTest() {
-    importModel("payloadmapping/org.eclipse.vorto:Voltage:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:Battery:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:MyDevice:1.0.0.infomodel");
+    importModel("payloadmapping/org.eclipse.vorto_Voltage_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_Battery_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_MyDevice_1.0.0.infomodel");
     
     IMappingSpecification specification = mappingService.getOrCreateSpecification(ModelId.fromPrettyFormat("org.eclipse.vorto:MyDevice:1.0.0"));
     
@@ -57,9 +57,9 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
   
   @Test
   public void testSaveMappingSpecificationWithoutChanges() {
-    importModel("payloadmapping/org.eclipse.vorto:Voltage:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:Battery:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:MyDevice:1.0.0.infomodel");
+    importModel("payloadmapping/org.eclipse.vorto_Voltage_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_Battery_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_MyDevice_1.0.0.infomodel");
     
     final ModelId modelId = ModelId.fromPrettyFormat("org.eclipse.vorto:MyDevice:1.0.0");
     
@@ -70,9 +70,9 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
   
   @Test
   public void testSaveMappingSpecificationWithChanges() {
-    importModel("payloadmapping/org.eclipse.vorto:Voltage:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:Battery:1.0.0.fbmodel");
-    importModel("payloadmapping/org.eclipse.vorto:MyDevice:1.0.0.infomodel");
+    importModel("payloadmapping/org.eclipse.vorto_Voltage_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_Battery_1.0.0.fbmodel");
+    importModel("payloadmapping/org.eclipse.vorto_MyDevice_1.0.0.infomodel");
     
     final ModelId modelId = ModelId.fromPrettyFormat("org.eclipse.vorto:MyDevice:1.0.0");
     
