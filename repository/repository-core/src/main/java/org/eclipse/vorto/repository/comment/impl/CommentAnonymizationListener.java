@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommentListener implements ApplicationListener<AppEvent> {
+public class CommentAnonymizationListener implements ApplicationListener<AppEvent> {
 
   private static final String ANONYMOUS = "anonymous";
   
