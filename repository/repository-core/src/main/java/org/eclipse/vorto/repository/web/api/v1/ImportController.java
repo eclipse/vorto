@@ -148,7 +148,7 @@ public class ImportController extends AbstractRepositoryController {
   private UserContext getUserContext(String namespace) {
     Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
     if (tenant.isPresent()) {
-      return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),tenant.get().getDefaultNamespace());
+      return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),tenant.get().getTenantId());
     } else {
       throw new TenantNotFoundException(namespace);
     }
