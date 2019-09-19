@@ -1908,3 +1908,9 @@ input[type=file]::-webkit-file-upload-button {
     display: flex;
     align-items: center;
 }
+
+/* Wrap text in dialog box 
+*/
+.alert-danger-break-word {
+	overflow-wrap: break-word;
+}
