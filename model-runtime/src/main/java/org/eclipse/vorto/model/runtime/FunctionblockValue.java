@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -66,8 +65,8 @@ public class FunctionblockValue implements IValidatable {
     if (pv.isPresent()) {
       pv.get().setValue(value);
     } else {
-      
-      this.status.add(PropertyValueFactory.create(mp.get(),value));
+
+      this.status.add(PropertyValueFactory.create(mp.get(), value));
     }
 
     return this;
@@ -105,13 +104,12 @@ public class FunctionblockValue implements IValidatable {
     ValidationReport report = new ValidationReport();
 
     for (ModelProperty statusProperty : meta.getStatusProperties()) {
-      checkProperty(getStatus(), statusProperty, meta.getId().getName().toLowerCase() + "",
-          report);
+      checkProperty(getStatus(), statusProperty, meta.getId().getName().toLowerCase() + "", report);
     }
 
     for (ModelProperty configProperty : meta.getConfigurationProperties()) {
-      checkProperty(getConfiguration(), configProperty,
-          meta.getId().getName().toLowerCase() + "", report);
+      checkProperty(getConfiguration(), configProperty, meta.getId().getName().toLowerCase() + "",
+          report);
     }
     return report;
   }
@@ -145,7 +143,21 @@ public class FunctionblockValue implements IValidatable {
     } else if (type == PrimitiveType.FLOAT && !isFloat(propertyValue)) {
       report.addItem(property,
           "Field " + path + "/" + property.getName() + " must be of type 'Float'");
-    } else if (type == PrimitiveType.INT && !isInteger(propertyValue)) {
+    }
+    /*
+     * The below check for integer being a double is added due to a bug in JXpath which uses XPath
+     * 1.0, when any number (Integer/Double) is passed in XPath version 1.0, it is always passed as
+     * a Double (https://stackoverflow.com/questions/4721488/xpath-query-value-comparison- problem).
+     * (https://commons.apache.org/proper/commons-jxpath/). To bypass the above, whenever a number
+     * is given in Integer type, it will be checked for double, also it will be checked if its a
+     * whole number (whether it is a whole number like 1.0/2.0), if not then validation fails for
+     * values such as 1.1, 2.3 etc.
+     * 
+     */
+    else if (type == PrimitiveType.INT && !(propertyValue instanceof Double)) {
+      report.addItem(property,
+          "Field " + path + "/" + property.getName() + " must be of type 'Integer'");
+    } else if (type == PrimitiveType.INT && !(isDoubleInteger(propertyValue))) {
       report.addItem(property,
           "Field " + path + "/" + property.getName() + " must be of type 'Integer'");
     } else if (type == PrimitiveType.LONG && !isLong(propertyValue)) {
@@ -161,6 +173,19 @@ public class FunctionblockValue implements IValidatable {
     return value instanceof Integer;
   }
 
+  private static boolean isDoubleInteger(Object value) {
+    if (value instanceof Double) {
+      double i = (Double) value;
+      if (i % 1 == 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   private static boolean isFloat(Object value) {
     return value instanceof Float || value instanceof Double;
   }
@@ -168,7 +193,6 @@ public class FunctionblockValue implements IValidatable {
   private static boolean isLong(Object value) {
     return value instanceof Integer || value instanceof Long;
   }
-
 
   public Map<String, Object> serialize() {
     Map<String, Object> result = new HashMap<String, Object>();
