@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -31,11 +30,36 @@ import org.springframework.core.io.ClassPathResource;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelRepositoryTest extends AbstractIntegrationTest {
+  /*
+   * Search model info with null value
+   */
+  @Test
+  public void testSearchWithNull() {
+    importModel("Color.type");
+    assertEquals(1,
+        repositoryFactory.getRepository(createUserContext("admin")).search(null).size());
+  }
 
+  /*
+   * Search model info with empty value
+   */
   @Test
   public void testQueryWithEmptyExpression() {
-    assertEquals(0, repositoryFactory.getRepository(createUserContext("admin")).search("").size());
+    importModel("Color.type");
+    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin")).search("").size());
   }
+
+  /*
+   * Search model info with special character
+   */
+  @Test
+  public void testQueryWithSpecialCharacter() {
+    importModel("Color.type");
+    assertEquals(0,
+        repositoryFactory.getRepository(createUserContext("admin")).search("!!!").size());
+  }
+
+
 
   @Test
   public void testGetModelById() throws Exception {
@@ -51,8 +75,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   public void testGetDSLEncoding() throws Exception {
     importModel("Color_encoding.type");
 
-    ModelFileContent fileContent = repositoryFactory.getRepository(createUserContext("admin"))
-        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Farbe", "1.0.0"), false);
+    ModelFileContent fileContent =
+        repositoryFactory.getRepository(createUserContext("admin")).getModelContent(
+            ModelId.fromReference("org.eclipse.vorto.examples.type.Farbe", "1.0.0"), false);
 
     String actualContent = new String(fileContent.getContent(), "UTF-8");
     String expectedContent = IOUtils
@@ -69,8 +94,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   public void testGetDSLContentForModelId() throws Exception {
     importModel("Color.type");
 
-    ModelFileContent fileContent = repositoryFactory.getRepository(createUserContext("admin"))
-        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), false);
+    ModelFileContent fileContent =
+        repositoryFactory.getRepository(createUserContext("admin")).getModelContent(
+            ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), false);
 
     String actualContent = new String(fileContent.getContent(), "UTF-8");
     String expectedContent =
@@ -186,21 +212,21 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
 
     assertEquals(1, modelRepository.search("name:Color").size());
   }
-  
+
   @Test
   public void testSearchModelByNameWildcard() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-    
+
     assertEquals(2, modelRepository.search("name:Color*").size());
   }
 
@@ -211,15 +237,15 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-    
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-    
+
     assertEquals(1, modelRepository.search("namespace:org.eclipse.vorto.examples.fb").size());
     assertEquals(1, modelRepository.search("namespace:com.mycompany.fb").size());
     assertEquals(2, modelRepository.search("namespace:com.mycompany   version:1.0.0").size());
 
   }
-  
+
   @Test
   public void testSearchModelByType() {
     importModel("Color.type");
@@ -227,9 +253,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-    
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-    
+
     assertEquals(2, modelRepository.search("Functionblock").size());
   }
 
@@ -240,13 +266,13 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-      
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-    
+
     assertEquals(0, modelRepository.search("name:Switcher InformationModel").size());
     assertEquals(1, modelRepository.search("name:Switcher Functionblock").size());
   }
-  
+
   @Test
   public void testSearchModelWithFilters5() {
     importModel("Color.type");
@@ -254,9 +280,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
-    
+
     IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-    
+
     assertEquals(1, modelRepository.search("Functionblock name:Color*").size());
   }
 

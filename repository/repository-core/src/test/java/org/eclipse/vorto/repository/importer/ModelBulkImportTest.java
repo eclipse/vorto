@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -25,8 +24,10 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 
 public class ModelBulkImportTest extends AbstractIntegrationTest {
 
@@ -35,23 +36,46 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    bulkUploadHelper = new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService);
+    bulkUploadHelper =
+        new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService);
   }
 
   @Test
   public void testUploadValidModels() throws IOException {
     String fileName = "sample_models/valid-models.zip";
-    List<ValidationReport> uploadResults = bulkUploadHelper
-        .uploadMultiple(loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
+    List<ValidationReport> uploadResults = bulkUploadHelper.uploadMultiple(
+        loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
     assertEquals(3, uploadResults.size());
     verifyAllModelsAreValid(uploadResults);
+  }
+
+  /*
+   * Invalid zip file extension
+   */
+  @Test(expected = FatalModelRepositoryException.class)
+  public void testInvalidZipFileExtension() throws IOException {
+    String fileName = "sample_models/Color2.type";
+    List<ValidationReport> uploadResults = bulkUploadHelper.uploadMultiple(
+        loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
+  }
+
+  /*
+   * The assert null check in parseZipFile(byte[] content) in BuildUploadHelper.java, is returning
+   * unhandled exception when null is passed as byte[]. https://github.com/eclipse/vorto/issues/1967
+   */
+  @Ignore
+  @Test
+  public void testNullFileContent() throws IOException {
+    String fileName = "sample_models/valid-models.zip";
+    List<ValidationReport> uploadResults =
+        bulkUploadHelper.uploadMultiple(null, fileName, createUserContext("admin", "playground"));
   }
 
   @Test
   public void testUploadValidModelWithAlienFile() throws IOException {
     String fileName = "sample_models/valid-models-with-alien-file.zip";
-    List<ValidationReport> uploadResults = bulkUploadHelper
-        .uploadMultiple(loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
+    List<ValidationReport> uploadResults = bulkUploadHelper.uploadMultiple(
+        loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
     assertEquals(3, uploadResults.size());
     verifyAllModelsAreValid(uploadResults);
   }
@@ -59,8 +83,8 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Test
   public void testUploadOneMissingModels() throws IOException {
     String fileName = "sample_models/missing-models.zip";
-    List<ValidationReport> uploadResults = bulkUploadHelper
-        .uploadMultiple(loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
+    List<ValidationReport> uploadResults = bulkUploadHelper.uploadMultiple(
+        loadContentForFile(fileName), fileName, createUserContext("admin", "playground"));
     assertEquals(2, uploadResults.size());
     ValidationReport report = uploadResults.stream()
         .filter(r -> r.getModel().getId().getName().equals("ColorLightIM")).findFirst().get();
@@ -98,14 +122,14 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     assertFalse(result.get(1).isValid());
 
   }
-  
+
   @Test
   public void testUploadAndImportModelsWithSameNameDifferentVersion() throws Exception {
     String fileName = "sample_models/models_same_name.zip";
     List<ValidationReport> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),
         fileName, createUserContext("admin", "playground"));
-    
-    assertEquals(2,result.size());
+
+    assertEquals(2, result.size());
     assertTrue(result.get(0).isValid());
     assertTrue(result.get(1).isValid());
   }
@@ -116,19 +140,18 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     VortoModelImporter vortoImporter = new VortoModelImporter();
     vortoImporter.setModelRepoFactory(repositoryFactory);
     vortoImporter.setModelParserFactory(modelParserFactory);
-    
+
     // TODO : Fix!
-    //vortoImporter.setTenantUserService(tenantUserService);
-    
+    // vortoImporter.setTenantUserService(tenantUserService);
+
     vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
     vortoImporter.setUserRepository(accountService);
 
-    UploadModelResult uploadResult =
-        vortoImporter.upload(
-            FileUpload.create("sample_models/lwm2m/lwm2m.zip",
-                IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/lwm2m/lwm2m.zip").getInputStream())),
-            Context.create(alex, Optional.empty()));
+    UploadModelResult uploadResult = vortoImporter.upload(
+        FileUpload.create("sample_models/lwm2m/lwm2m.zip",
+            IOUtils.toByteArray(
+                new ClassPathResource("sample_models/lwm2m/lwm2m.zip").getInputStream())),
+        Context.create(alex, Optional.empty()));
 
     assertEquals(false, uploadResult.isValid());
     assertEquals(1, uploadResult.getReport().size());
