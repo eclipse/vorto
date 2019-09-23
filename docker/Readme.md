@@ -1,9 +1,10 @@
+
 # Vorto Docker Images
 
 ## Quickstart
 Eager to try out the vorto model repository? This section gives a good introduction on howto set up your repository in a couple of minutes.
 It assumes you already have `docker-compose` installed and created an GitHub OAuth App. If you do not, head over to the [docker installation](https://docs.docker.com/compose/install/).
-Also a valid oauth token is required, follow the the [GitHub OAuth App section]() to optain one.
+Also a valid oauth token is required, follow the GitHub OAuth App section lower down on this page to obtain one.
 Everything read? Great lets get you started:
 To get the docker-compose file clone the github repository by running:
 `git clone https://github.com/eclipse/vorto.git vorto`
