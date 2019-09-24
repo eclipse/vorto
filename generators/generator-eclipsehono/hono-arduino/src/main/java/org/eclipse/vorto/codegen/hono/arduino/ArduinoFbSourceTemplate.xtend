@@ -75,7 +75,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		        «IF isNumericType(status.type)»
 		            result += "\"«status.name»\" : " + String«convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
 		         «ELSEIF isEntity(fb.functionblock, status.type)»
-		            result += «status.name».serialize();
+		            result += "\"«status.name»\" : «status.name».serialize();
 		         «ELSE»
 		            result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
 		        «ENDIF»                                    

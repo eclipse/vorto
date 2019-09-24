@@ -22,7 +22,7 @@ org_eclipse_vorto::UnitEnum UnitEntity::getunitEnum() {
 }
 
 String UnitEntity::serialize() {
-    String result = "\"UnitEntity\": {";
+String result = "{";
         result += "\"value\": " + String(value) + ",";
         result += "\"unitEnum\": " + String(unitEnum);
         result += "}";
