@@ -60,11 +60,9 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   }
 
   /*
-   * The assert null check in parseZipFile(byte[] content) in BuildUploadHelper.java, is returning
-   * unhandled exception when null is passed as byte[]. https://github.com/eclipse/vorto/issues/1967
+   * Passing null byte[]
    */
-  @Ignore
-  @Test
+  @Test(expected = FatalModelRepositoryException.class)
   public void testNullFileContent() throws IOException {
     String fileName = "sample_models/valid-models.zip";
     List<ValidationReport> uploadResults =

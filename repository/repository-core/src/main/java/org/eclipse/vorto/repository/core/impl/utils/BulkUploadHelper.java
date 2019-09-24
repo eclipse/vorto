@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -51,13 +50,13 @@ import org.springframework.util.StringUtils;
 public class BulkUploadHelper {
 
   private IUserAccountService userRepository;
-  
+
   private IModelRepositoryFactory modelRepoFactory;
-  
+
   private ITenantService tenantService;
 
-  public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory, 
-		  IUserAccountService userRepository, ITenantService tenantService) {
+  public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory,
+      IUserAccountService userRepository, ITenantService tenantService) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
     this.tenantService = tenantService;
@@ -118,7 +117,10 @@ public class BulkUploadHelper {
   }
 
   private ZipParseResult parseZipFile(byte[] content) {
-    assert (content != null);
+    if (content == null) {
+      throw new FatalModelRepositoryException("Contents of zip file are invalid", null);
+    }
+
 
     ZipParseResult parsingResult = new ZipParseResult();
 
@@ -135,13 +137,13 @@ public class BulkUploadHelper {
         parsingResult.validModels
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {
-        parsingResult.invalidModels.add(ValidationReport
-            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
-                grammarProblem));
+        parsingResult.invalidModels.add(ValidationReport.invalid(
+            trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()),
+            grammarProblem));
       } catch (Exception e) {
-        parsingResult.invalidModels.add(ValidationReport
-            .invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()), 
-                "File cannot be processed to a Vorto model."));
+        parsingResult.invalidModels.add(ValidationReport.invalid(
+            trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()),
+            "File cannot be processed to a Vorto model."));
       }
     });
 
@@ -184,14 +186,10 @@ public class BulkUploadHelper {
 
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
-    bulkUploadValidators
-        .add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
-    bulkUploadValidators
-        .add(new DuplicateModelValidation(modelRepoFactory));
-    bulkUploadValidators
-        .add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
-    bulkUploadValidators
-        .add(new BulkModelReferencesValidation(modelRepoFactory, modelResources));
+    bulkUploadValidators.add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
+    bulkUploadValidators.add(new DuplicateModelValidation(modelRepoFactory));
+    bulkUploadValidators.add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
+    bulkUploadValidators.add(new BulkModelReferencesValidation(modelRepoFactory, modelResources));
     return bulkUploadValidators;
   }
 
