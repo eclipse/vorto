@@ -15,11 +15,22 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 	       });
 	};
 	
+	$scope.soleNamespaceAdmin = true;
+	
 	$scope.ownsNamespaces = function() {
 		var promise = TenantService.getNamespacesForRole('ROLE_TENANT_ADMIN');
 		promise.then(
 			function(namespaces) {
-				$scope.ownsNamespaces = namespaces.length > 0;
+				if (namespaces != null && namespaces.length > 0) {
+					for(var i=0; i < namespaces.length; i++) {
+						if (namespaces[i].admins != null && namespaces[i].admins.length < 2) {
+							$scope.soleNamespaceAdmin = true;
+							return;
+						}
+					}
+				}
+				
+				$scope.soleNamespaceAdmin = false;
 			}
 		);
 	};

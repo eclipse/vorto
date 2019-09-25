@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -286,7 +287,11 @@ public class AccountController {
   @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.DELETE)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#username,'user:delete')")
   public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
-    accountService.delete(username);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    try {
+      accountService.delete(username);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    } catch(AccountDeletionNotAllowed e) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
   }
 }
