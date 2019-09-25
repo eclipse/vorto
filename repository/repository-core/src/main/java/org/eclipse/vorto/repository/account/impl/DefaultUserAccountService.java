@@ -215,12 +215,29 @@ public class DefaultUserAccountService
     User userToDelete = userRepository.findByUsername(userId);
 
     if (userToDelete != null) {
+      
+      if (deleteWillOrphanTenants(userToDelete)) {
+        throw AccountDeletionNotAllowed.reason("Deleting this user will orphan some tenants.");
+      }
+      
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
       userRepository.delete(userToDelete);
       if (userToDelete.hasEmailAddress()) {
         notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
       }
     }
+  }
+
+  private boolean deleteWillOrphanTenants(User userToDelete) {
+    for(Tenant tenant : tenantRepo.findAll()) {
+      if (tenant != null &&
+          tenant.hasTenantAdmin(userToDelete.getUsername()) &&
+          tenant.getTenantAdmins().size() <= 1) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   @Override

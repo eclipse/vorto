@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -60,10 +59,6 @@ public class User {
 
   @OneToMany(orphanRemoval = true, mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
-
-  @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true,
-      mappedBy = "owner")
-  private Set<Tenant> ownedTenants = new HashSet<Tenant>();
 
   private String emailAddress;
 
@@ -183,13 +178,6 @@ public class User {
 
   @PreRemove
   private void removeTenantUserAndOwnedTenants() {
-    Iterator<Tenant> itOwnedTenants = ownedTenants.iterator();
-    while(itOwnedTenants.hasNext()) {
-      Tenant tenant = itOwnedTenants.next();
-      itOwnedTenants.remove();
-      tenant.setOwner(null);
-    }
-    
     Iterator<TenantUser> itTenantUsers = tenantUsers.iterator();
     while(itTenantUsers.hasNext()) {
       TenantUser tenantUser = itTenantUsers.next();
@@ -267,22 +255,6 @@ public class User {
   public void removeTenantUser(TenantUser tenantUser) {
     this.tenantUsers.remove(tenantUser);
     tenantUser.setUser(null);
-  }
-
-  public Set<Tenant> getOwnedTenants() {
-    return ownedTenants;
-  }
-
-  public void setOwnedTenants(Set<Tenant> ownedTenants) {
-    this.ownedTenants = ownedTenants;
-  }
-
-  public void addOwnedTenant(Tenant tenant) {
-    this.ownedTenants.add(tenant);
-  }
-
-  public void removeOwnedTenant(Tenant tenant) {
-    this.ownedTenants.remove(tenant);
   }
 
   @Override

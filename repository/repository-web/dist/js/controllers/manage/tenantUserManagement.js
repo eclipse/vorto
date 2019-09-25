@@ -163,11 +163,12 @@ repositoryControllers.controller("createOrUpdateUserController",
         };
         
         $scope.validate = function(user, callback) {
-            if (user.username === '') {
+            if (user.username === undefined || user.username.trim() === '') {
                 callback({
                         valid : false,
                         errorMessage : "UserId must not be null."
                     });
+                return;
             }
             
             $http.get("./rest/accounts/" + user.username)

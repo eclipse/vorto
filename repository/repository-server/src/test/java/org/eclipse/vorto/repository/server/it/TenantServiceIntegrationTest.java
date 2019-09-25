@@ -277,13 +277,10 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testCreateTenantWithBadRequest() throws Exception {
-    repositoryServer.perform(put("/rest/tenants/myTenant").content(createTenantRequest)
-        .contentType("application/json").with(userCreator)).andExpect(status().isOk());
-
     for (int i = 0; i < badTenantRequests.size(); i++) {
       String badTenantRequest = badTenantRequests.get(i);
       repositoryServer.perform(put("/rest/tenants/tenantWithBadRequest" + i)
-          .content(badTenantRequest).contentType("application/json").with(userCreator))
+          .content(badTenantRequest).contentType("application/json").with(userCreator2))
           .andDo(result -> {
             System.out.println(
                 "Request: " + badTenantRequest + " Reply:" + result.getResponse().getStatus());
@@ -301,7 +298,7 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     for (int i = 0; i < conflictingTenantRequests.size(); i++) {
       String conflictingTenantRequest = conflictingTenantRequests.get(i);
       repositoryServer.perform(put("/rest/tenants/tenantWithConflict" + i)
-          .content(conflictingTenantRequest).contentType("application/json").with(userCreator))
+          .content(conflictingTenantRequest).contentType("application/json").with(userCreator2))
           .andDo(result -> {
             System.out.println("Request: " + conflictingTenantRequest + " Reply:"
                 + result.getResponse().getStatus());
@@ -311,7 +308,7 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
     for (int i = 0; i < nonConflictingTenantRequests.size(); i++) {
       String nonConflictingTenantRequest = nonConflictingTenantRequests.get(i);
       repositoryServer.perform(put("/rest/tenants/tenantWithNoConflict" + i)
-          .content(nonConflictingTenantRequest).contentType("application/json").with(userCreator))
+          .content(nonConflictingTenantRequest).contentType("application/json").with(userCreator3))
           .andDo(result -> {
             System.out.println("Request: " + nonConflictingTenantRequest + " Reply:"
                 + result.getResponse().getStatus());

@@ -14,14 +14,15 @@ repository.factory('TenantService',['$rootScope', '$http','$q',function($rootSco
     	var userNamespaces = [];
         $http.get("./rest/tenants?role="+role)
         	.then(function(result) {
-            	var tenants = result.data;
-                if (tenants != null) {
+        		var tenants = result.data;
+        		if (tenants != null) {
                 	for(var i=0; i < tenants.length; i++) {
                     	if (tenants[i].namespaces != null) {
                         	for(var k=0; k < tenants[i].namespaces.length; k++) {
                             	userNamespaces.push({
                                 	tenant: tenants[i].tenantId,
-                                    namespace: tenants[i].namespaces[k]
+                                    namespace: tenants[i].namespaces[k],
+                                    admins: tenants[i].admins
                                 }); 
                              }
                          }

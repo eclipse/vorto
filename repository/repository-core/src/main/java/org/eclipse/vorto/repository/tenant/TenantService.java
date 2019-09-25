@@ -117,9 +117,9 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
+      tenantAdmins.add(owner.getUsername());
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
       tenant.setUsers(newTenantAdmins);
-      tenant.setOwner(owner);
     } else {
       if (!userContext.isSysAdmin() && !tenant.hasTenantAdmin(userContext.getUsername())) {
         throw new UpdateNotAllowedException(userContext.getUsername(), tenant.getTenantId());
@@ -151,7 +151,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private int getTenantCountOfUser(User owner) {
     Collection<Tenant> tenants = getTenants();
     return (int) tenants.stream()
-        .filter(tenant -> tenant.getOwner().getUsername().equalsIgnoreCase(owner.getUsername()))
+        .filter(tenant -> tenant.hasTenantAdmin(owner.getUsername()))
         .count();
   }
 

@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
@@ -142,6 +143,7 @@ public abstract class AbstractIntegrationTest {
     when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
+    when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
 
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);

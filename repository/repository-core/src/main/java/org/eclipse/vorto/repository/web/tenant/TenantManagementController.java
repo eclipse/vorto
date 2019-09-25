@@ -122,15 +122,11 @@ public class TenantManagementController {
     IUserContext userContext =
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantID);
 
-    if (!(userContext.isSysAdmin() || owner(tenant, userContext.getAuthentication()))) {
+    if (!(userContext.isSysAdmin() || isOwner(userContext.getUsername()).test(tenant))) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
 
     return new ResponseEntity<>(tenantService.deleteTenant(tenant, userContext), HttpStatus.OK);
-  }
-
-  private boolean owner(Tenant tenant, Principal user) {
-    return tenant.getOwner().getUsername().equals(user.getName());
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -160,8 +156,7 @@ public class TenantManagementController {
   }
 
   private Predicate<Tenant> isOwner(String username) {
-    return tenant -> tenant.getOwner().getUsername().equals(username)
-        || tenant.hasTenantAdmin(username);
+    return tenant -> tenant.hasTenantAdmin(username);
   }
 
   private Predicate<Tenant> hasMemberWithRole(String username, Role role) {
