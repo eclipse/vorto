@@ -33,7 +33,7 @@ class ArduinoEntitySoureTemplate extends ArduinoTemplate<Entity>{
         «ENDFOR»
         
         String «dataEntity.name»::serialize() {
-            String result = "\"«dataEntity.displayname»\": {";
+        String result = "{";
             	«var int counter = 0»
                 «FOR status : dataEntity.properties SEPARATOR " + \",\";"»
                     result += "\"«status.name»\": " + String(«status.name»)«IF counter++ == dataEntity.properties.length-1»;«ENDIF»

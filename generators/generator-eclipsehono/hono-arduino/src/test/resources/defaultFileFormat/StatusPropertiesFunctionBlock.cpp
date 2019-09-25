@@ -28,7 +28,7 @@ String StatusPropertiesFunctionBlock::serialize(String ditto_topic, String hono_
     result += "\"path\":\"/features/" + fbName + "/properties\",\"value\": {";
     //Status Properties
     result += "\"status\": {";
-    result += statusValue.serialize();
+    result += "\"statusValue\" : " + statusValue.serialize();
     result += "\"statusBoolean\" : " + String(statusBoolean == 1 ? "true" : "false") + "";
     result += "}";
 
