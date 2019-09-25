@@ -10,18 +10,18 @@ Let's get started.
 
 ### Prerequisite
 * [BoschID](https://accounts.bosch-iot-suite.com/) Account or [GitHub](https://github.com/) 
-* You are a collaborator/owner of a namespace
+* You are a collaborator/owner of an existing namespace
 
 ## Steps to follow
 
 1. Log in to [Vorto Repository](https://vorto.eclipse.org) with your BoschID or Github Account
 
-2. Select **Describe device** 
+2. Select **Create model** 
 
 3. Choose **Information Model** and confirm with **Next** 
 
 4. Specify the model ID and confirm with **Next**
-	1. Input the **namespace**, e.g. com.mycompany 
+	1. Select the **namespace** from the dropdown
 	2. Input the **name**, e.g. MyWeatherStation
 	3. Input the **version**, e.g. 1.0.0
 	
@@ -38,6 +38,8 @@ Let's get started.
 Your model should look like this:
 
 	
+	vortolang 1.0
+	
 	namespace org.mycompany
 	version 1.0.0
 	displayname "MyWeatherStation"
@@ -48,7 +50,7 @@ Your model should look like this:
 	infomodel MyWeatherStation {
 	    functionblocks {
 	        mandatory indoorTemperature as Temperature
-			mandatory outdoorTemperature as Temperature
+		mandatory outdoorTemperature as Temperature
 	        mandatory location as Location
 	    }
 	}
@@ -61,10 +63,10 @@ Your model should look like this:
 - [Generate Python Code](mqtt-python.md) that integrates the device with the Bosch IoT Suite.
 - [Visualize device data](create_webapp_dashboard.md) in a Node.js web application.
 - [Generate an OpenAPI Spec for your device](create_openapi.md)
-- [Describe a TI SensorTag with Vorto](describe_tisensor.md)
+- [Describe a more complex device with Vorto](describe_tisensor.md)
 
 ---
 
 In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
-Please make sure to use `eclipse-vorto` as one of the tags. 
+Please make sure to use `eclipseiot` as one of the tags. 
 
