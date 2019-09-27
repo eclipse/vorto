@@ -180,6 +180,13 @@ public abstract class AbstractIntegrationTest {
       public IModelRepository getRepository(String tenantId) {
         return super.getRepository(createUserContext("admin", tenantId));
       }
+
+      @Override
+      public IModelRepository getRepository(String tenant, Authentication user) {
+        if (user == null)
+          return getRepository(tenant);
+        return super.getRepository(tenant, user);
+      }
     };
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();

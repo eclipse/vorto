@@ -32,6 +32,8 @@ public interface IModelRepositoryFactory {
   IModelRepository getRepositoryByNamespace(String namespace);
   
   IModelRepository getRepositoryByModel(ModelId modelId);
+  
+  IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext);
 
   IModelRetrievalService getModelRetrievalService(Authentication user);
   

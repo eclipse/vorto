@@ -244,17 +244,28 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Override
   public IModelRepository getRepositoryByNamespace(String namespace) {
+    return getRepositoryByNamespace(namespace, SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  private IModelRepository getRepositoryByNamespace(String namespace, Authentication auth) {
     Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
     if (tenant.isPresent()) {
-      return this.getRepository(tenant.get().getTenantId());
+      return this.getRepository(tenant.get().getTenantId(), auth);
     }
     return null;
   }
 
   @Override
   public IModelRepository getRepositoryByModel(ModelId modelId) {
-    
-    IModelRepository repository =  getRepositoryByNamespace(modelId.getNamespace());
+    return getRepositoryByModel(modelId, SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  public IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext) {
+    return getRepositoryByModel(modelId, userContext.getAuthentication());
+  }
+  
+  private IModelRepository getRepositoryByModel(ModelId modelId, Authentication auth) {
+    IModelRepository repository =  getRepositoryByNamespace(modelId.getNamespace(), auth);
     if (repository == null) {
       throw new ModelNotFoundException("Namespace " + modelId.getNamespace() + " does not exist in the system.");
     } else {

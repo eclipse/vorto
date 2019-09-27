@@ -16,11 +16,14 @@ import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingResult;
 import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Simple search which merely delegates the search to the model repository
@@ -38,20 +41,29 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
     this.repositoryFactory = repositoryFactory;
   }
 
+  @Override
+  public List<ModelInfo> search(String expression, IUserContext userContext) {
+    return search(expression, userContext.getAuthentication());
+  }
+  
   /**
    * Searches all tenants existing in the system. Use modeshape ACLs to get result back which matches user rights.
    */
   @Override
   public List<ModelInfo> search(String expression) {
+    return search(expression, SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  private List<ModelInfo> search(String expression, Authentication authentication) {
     List<ModelInfo> result = new ArrayList<>();
     
     tenantService.getTenants().forEach(tenant -> {
-      IModelRepository repository = this.repositoryFactory.getRepository(tenant.getTenantId());
+      IModelRepository repository = this.repositoryFactory.getRepository(tenant.getTenantId(), 
+          authentication);
       result.addAll(repository.search(expression));
     });
 
     return result;
-    
   }
 
   @Override
