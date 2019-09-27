@@ -17,7 +17,14 @@
 
 ## Vorto Examples
 
-Check out our [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that use Vorto models. 
+Vorto comes with tons of examples, that demonstrate you the use of Vorto in IoT Solution Development. 
+
+One of these examples, is the Vorto Dashboard, that visualizes sensor data in Vorto Function Block compliant UI widgets:
+[Click here for demo](http://vorto-dashboard.eu-central-1.elasticbeanstalk.com/)
+
+<img src="https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/assets/deviceDashboard.png" width="49%"/> <img src="https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/assets/locatePage.png" width="49%"/>
+
+Check out more cool [Vorto Examples](https://www.github.com/eclipse/vorto-examples).
 
 ## Developer Guide
 
