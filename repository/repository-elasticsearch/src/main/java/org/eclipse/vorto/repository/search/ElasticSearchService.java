@@ -31,6 +31,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -328,11 +329,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, tenantId));
   }
 
-  @Override
   public List<ModelInfo> search(String searchExpression) {
+    return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
+  }
+  
+  public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
 
     SearchParameters searchParameters =
-        makeSearchParams(findTenantsOfUser(), Strings.nullToEmpty(searchExpression));
+        makeSearchParams(findTenantsOfUser(userContext), Strings.nullToEmpty(searchExpression));
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(makeElasticSearchQuery(searchParameters));
@@ -356,19 +360,18 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private List<String> findTenantsOfUser() {
-    UserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
-    if (context.isAnonymous()) {
+  private List<String> findTenantsOfUser(IUserContext userContext) {
+    if (userContext.isAnonymous()) {
       return Collections.emptyList();
     } else {
       return tenantService.getTenants().stream()
-          .filter(getUserFilter(context))
+          .filter(getUserFilter(userContext))
           .map(t -> t.getTenantId())
           .collect(Collectors.toList());
     }
   }
   
-  private Predicate<Tenant> getUserFilter(UserContext userContext) {
+  private Predicate<Tenant> getUserFilter(IUserContext userContext) {
     if (userContext.isSysAdmin()) {
       return tenant -> true;
     } else {
