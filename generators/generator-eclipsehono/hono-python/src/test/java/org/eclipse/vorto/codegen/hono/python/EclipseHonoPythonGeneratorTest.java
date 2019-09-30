@@ -13,15 +13,15 @@
 package org.eclipse.vorto.codegen.hono.python;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.junit.Test;
 
 public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
@@ -43,11 +43,11 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock",".py");
+		Generated generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock",".py");
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/StatusPropertiesFunctionBlock.py").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+	    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
+
 	}
 
 	/*
@@ -60,11 +60,11 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock",".py");
+		Generated generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock",".py");
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/ConfigPropertiesFunctionBlock.py").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+	    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
+
 	}
 
 
@@ -79,9 +79,8 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "MySensorApp",".py");
-		assertEquals(true, FileUtils.readFileToString(generatedfile).contains("unitEnum"));
-		generatedfile.delete();
+		Generated generatedfile = zipFileReader(generationResult, "MySensorApp",".py");
+		assertEquals(true, new String(generatedfile.getContent(),"utf-8").contains("unitEnum"));
 	}
 
 	/*
@@ -95,9 +94,8 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".py");
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testEvent"));
-		generatedfile.delete();
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".py");
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testEvent"));
 	}
 
 	/*
@@ -111,9 +109,8 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".py");
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testOperation"));
-		generatedfile.delete();
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".py");
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testOperation"));
 	}
 
 	/*
@@ -131,12 +128,11 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedFileHonoMqttClient = zipFileReader(generationResult, "DittoSerializer",".py");
+		Generated generatedFileHonoMqttClient = zipFileReader(generationResult, "DittoSerializer",".py");
 		File defaultFileHonoMqttClient = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/DittoSerializer.py").getFile());
 		
-		assertEquals(true, FileUtils.contentEquals(generatedFileHonoMqttClient, defaultFileHonoMqttClient));
-		generatedFileHonoMqttClient.delete();
+	    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFileHonoMqttClient)), new String(generatedFileHonoMqttClient.getContent(),"utf-8"));
 	
 	}
 
@@ -153,12 +149,12 @@ public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 	public void testClientAppGeneratedModels() throws GeneratorException, IOException {
 		IGenerationResult generationResult = pythonGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
-		File generatedfile = zipFileReader(generationResult, "MySensorApp",".py");
+		Generated generatedfile = zipFileReader(generationResult, "MySensorApp",".py");
 		
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/MainApp.py").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+	    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
+
 	}
 
 

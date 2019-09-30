@@ -13,16 +13,16 @@
 package org.eclipse.vorto.codegen.hono.arduino;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.junit.Test;
 
 public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
@@ -43,13 +43,12 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock.cpp", ".cpp");
 
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/StatusPropertiesFunctionBlock.cpp").getFile());
 
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 
 	}
 
@@ -63,13 +62,12 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock.cpp", ".cpp");
 
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/ConfigPropertiesFunctionBlock.cpp").getFile());
 
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 
 	}
 
@@ -84,13 +82,12 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "UnitEntity.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "UnitEntity.cpp", ".cpp");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/UnitEntity.cpp").getFile());
 
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 
 	}
 
@@ -105,10 +102,9 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock.cpp", ".cpp");
 
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testEvent"));
-		generatedfile.delete();
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testEvent"));
 
 	}
 
@@ -123,10 +119,9 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock.cpp", ".cpp");
 
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testOperation"));
-		generatedfile.delete();
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testOperation"));
 
 	}
 
@@ -144,14 +139,12 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedFile = zipFileReader(generationResult, "MySensorApp.ino", ".ino");
+		Generated generatedFile = zipFileReader(generationResult, "MySensorApp.ino", ".ino");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/MySensorApp.ino").getFile());
 
-		assertEquals(true, FileUtils.contentEquals(generatedFile, defaultFile));
-
-		generatedFile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedFile.getContent(),"utf-8"));
 
 	}
 
@@ -169,13 +162,12 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "MySensor.cpp", ".cpp");
+		Generated generatedfile = zipFileReader(generationResult, "MySensor.cpp", ".cpp");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/MySensor.cpp").getFile());
 
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),new String(generatedfile.getContent(),"utf-8"));
 
 	}
 

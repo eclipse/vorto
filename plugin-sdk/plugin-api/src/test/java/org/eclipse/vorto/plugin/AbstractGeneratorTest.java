@@ -1,16 +1,13 @@
 package org.eclipse.vorto.plugin;
 
 import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.eclipse.vorto.core.api.model.BuilderUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
@@ -23,6 +20,7 @@ import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.Generated;
 
 public class AbstractGeneratorTest {
 
@@ -82,16 +80,16 @@ public class AbstractGeneratorTest {
 		return entries;
 	}
 
-	public File zipFileReader(IGenerationResult generationResult, String inputTypeName,String fileExtension) throws IOException {
+	public Generated zipFileReader(IGenerationResult generationResult, String inputTypeName,String fileExtension) throws IOException {
 
 		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(generationResult.getContent()));
 		ZipEntry entry = null;
-		File file = null;
+		Generated generated = null;
 		while ((entry = zipStream.getNextEntry()) != null) {
 			String entryName = entry.getName();
 			if (entryName.contains(inputTypeName)) {
-				file = File.createTempFile(inputTypeName, fileExtension);
-				FileOutputStream out = new FileOutputStream(file);
+				
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 				byte[] byteBuff = new byte[4096];
 				int bytesRead = 0;
@@ -100,12 +98,13 @@ public class AbstractGeneratorTest {
 				}
 
 				out.close();
+				generated = new Generated(inputTypeName+fileExtension, null, out.toByteArray());
 				zipStream.closeEntry();
 			}
 
 		}
 		zipStream.close();
-		return file;
+		return generated;
 
 	}
 

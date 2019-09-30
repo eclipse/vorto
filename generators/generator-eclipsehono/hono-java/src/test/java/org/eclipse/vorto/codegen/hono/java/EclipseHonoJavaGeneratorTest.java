@@ -13,11 +13,10 @@
 package org.eclipse.vorto.codegen.hono.java;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.BuilderUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.ModelId;
@@ -26,6 +25,7 @@ import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.eclipse.vorto.repository.core.impl.parser.ParsingException;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,11 +48,11 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock",".java");
+		Generated generatedfile = zipFileReader(generationResult, "StatusPropertiesFunctionBlock",".java");
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/StatusPropertiesFunctionBlock.java").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 	}
 
 	/*
@@ -65,11 +65,10 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock",".java");
+		Generated generatedfile = zipFileReader(generationResult, "ConfigPropertiesFunctionBlock",".java");
 		File defaultFile = new File(getClass().getClassLoader()
 				.getResource("defaultFileFormat/ConfigPropertiesFunctionBlock.java").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 	}
 
 	/*
@@ -82,11 +81,10 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "UnitEnum",".java");
+		Generated generatedfile = zipFileReader(generationResult, "UnitEnum",".java");
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/ValidEnum.java").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 
 	}
 
@@ -101,12 +99,11 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "UnitEntity",".java");
+		Generated generatedfile = zipFileReader(generationResult, "UnitEntity",".java");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/ValidEntity.java").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
 
 	}
 
@@ -121,9 +118,8 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testEvent"));
-		generatedfile.delete();
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testEvent"));
 	}
 
 	/*
@@ -137,9 +133,8 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
-		assertEquals(false, FileUtils.readFileToString(generatedfile).contains("testOperation"));
-		generatedfile.delete();
+		Generated generatedfile = zipFileReader(generationResult, "eventsAndOperationsFunctionBlock",".java");
+		assertEquals(false, new String(generatedfile.getContent(),"utf-8").contains("testOperation"));
 	}
 
 	/*
@@ -162,15 +157,12 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		File defaultFileHonoMqttClient = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/HonoMqttClient.java").getFile());
 
-		File generatedFileHonoDataService = zipFileReader(generationResult, "HonoDataService",".java");
+		Generated generatedFileHonoDataService = zipFileReader(generationResult, "HonoDataService",".java");
 
-		File generatedFileHonoMqttClient = zipFileReader(generationResult, "HonoMqttClient",".java");
+		Generated generatedFileHonoMqttClient = zipFileReader(generationResult, "HonoMqttClient",".java");
 
-		assertEquals(true, FileUtils.contentEquals(generatedFileHonoDataService, defaultFileHonoDataService));
-		assertEquals(true, FileUtils.contentEquals(generatedFileHonoMqttClient, defaultFileHonoMqttClient));
-
-		generatedFileHonoDataService.delete();
-		generatedFileHonoMqttClient.delete();
+		assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFileHonoDataService)), new String(generatedFileHonoDataService.getContent(),"utf-8"));
+	    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFileHonoMqttClient)), new String(generatedFileHonoMqttClient.getContent(),"utf-8"));
 
 	}
 
@@ -188,12 +180,12 @@ public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 		IGenerationResult generationResult = eclipseHonoJavaGenerator.generate(modelProvider(),
 				InvocationContext.simpleInvocationContext());
 
-		File generatedfile = zipFileReader(generationResult, "MySensorApp",".java");
+		Generated generatedfile = zipFileReader(generationResult, "MySensorApp",".java");
 
 		File defaultFile = new File(
 				getClass().getClassLoader().getResource("defaultFileFormat/MainApp.java").getFile());
-		assertEquals(true, FileUtils.contentEquals(generatedfile, defaultFile));
-		generatedfile.delete();
+	      assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)), new String(generatedfile.getContent(),"utf-8"));
+
 	}
 
 	/*
