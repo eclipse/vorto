@@ -666,7 +666,7 @@
 			   	<label>New Namespace</label>
 			   	<div class="input-group">
 		        	<span class="input-group-addon">{{ defaultNamespace }}.</span>
-					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control">
+					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^[a-zA-Z0-9]+|[a-zA-Z0-9]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control">
 				</div>
 			  	<div class="invalid-input" ng-show="refactorForm.namespace.$error.pattern">Namespace must not contain any special characters.</div>
 			  </div>

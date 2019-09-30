@@ -15,7 +15,7 @@
 	    		<div class="col-sm-6">
 	    			<div class="input-group">
 						<span class="input-group-addon"><strong>.</strong></span>
-						<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^(?!namespace)(?:^[a-zA-Z]+|[a-zA-Z]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" placeholder="sub-domain">
+						<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^(?!namespace)(?:^[a-zA-Z0-9]+|[a-zA-Z0-9]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" placeholder="sub-domain">
 						<div class="invalid-input" ng-show="createModelForm.modelNamespace.$error.pattern">Sub-domain cannot contain any special characters and must be lowercase.</div>
 					</div>
 	    		</div>

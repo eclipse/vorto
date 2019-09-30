@@ -18,7 +18,7 @@
 				<label>Specify namespace</label>
 				<div class="input-group">
 					<span  ng-if="!tenant.sysAdmin" class="input-group-addon">{{ tenant.prefixText }}</span>
-					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^[a-zA-Z]+|[a-zA-Z]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" ng-model="tenant.createNameSpaceId" placeholder="Namespace" class="form-control" required>
+					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^[a-zA-Z0-9]+|[a-zA-Z0-9]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" ng-model="tenant.createNameSpaceId" placeholder="Namespace" class="form-control" required>
 				</div>
 				<div class="invalid-input" ng-show="tenantForm.namespace.$error.pattern">Namespace must not have any special characters</div>	
 			 </div>   
