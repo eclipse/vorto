@@ -98,6 +98,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   private Pattern searchExprPattern = Pattern.compile("name:(\\S+)\\*");
 
   private Pattern authorExprPattern = Pattern.compile("author:(\\S+)");
+  
+  private Pattern userReferencePattern = Pattern.compile("userReference:(\\S+)");
 
   private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
 
@@ -426,6 +428,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (matcher.find()) {
       author = Optional.of(matcher.group(1));
     }
+    
+    Optional<String> userReference = Optional.empty();
+    matcher = userReferencePattern.matcher(searchExpression);
+    if (matcher.find()) {
+      userReference = Optional.of(matcher.group(1));
+    }
 
     Optional<String> visibility = Optional.empty();
     matcher = visibilityExprPattern.matcher(searchExpression);
@@ -433,7 +441,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       visibility = Optional.of(matcher.group(1));
     }
 
-    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, author, visibility);
+    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, 
+        author, userReference, visibility);
   }
 
   private QueryBuilder makeElasticSearchQuery(SearchParameters params) {
@@ -456,6 +465,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (params.author.isPresent()) {
       queryBuilder = queryBuilder
           .must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
+    }
+    
+    if (params.userReference.isPresent()) {
+      queryBuilder = queryBuilder
+          .must(or(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.userReference.get()),
+              QueryBuilders.termQuery(BasicIndexFieldExtractor.MODIFIED_BY, params.userReference.get())));
     }
 
     if (params.visibility.isPresent()) {
@@ -502,16 +517,18 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     Optional<ModelState> state;
     Optional<ModelType> type;
     Optional<String> author;
+    Optional<String> userReference;
     Optional<String> visibility;
 
     public SearchParameters(Collection<String> tenantIds, Optional<String> expression,
         Optional<ModelState> state, Optional<ModelType> type, Optional<String> author,
-        Optional<String> visibility) {
+        Optional<String> userReference, Optional<String> visibility) {
       this.tenantIds = tenantIds;
       this.expression = expression;
       this.state = state;
       this.type = type;
       this.author = author;
+      this.userReference = userReference;
       this.visibility = visibility;
     }
   }

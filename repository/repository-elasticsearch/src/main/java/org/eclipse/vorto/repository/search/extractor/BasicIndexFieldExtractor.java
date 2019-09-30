@@ -29,6 +29,8 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
   public static final String DISPLAY_NAME = "displayName";
 
   public static final String AUTHOR = "author";
+  
+  public static final String MODIFIED_BY = "lastModifiedBy";
 
   public static final String MODEL_TYPE = "modelType";
 
@@ -48,6 +50,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, breakdown(modelInfo.getId().getPrettyFormat()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, modelInfo.getType().toString());
     basicFields.put(BasicIndexFieldExtractor.AUTHOR, modelInfo.getAuthor());
+    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, modelInfo.getLastModifiedBy());
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, modelInfo.getDisplayName());
     basicFields.put(BasicIndexFieldExtractor.DESCRIPTION, modelInfo.getDescription());
     basicFields.put(BasicIndexFieldExtractor.STATE, modelInfo.getState());
@@ -66,6 +69,7 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.DESCRIPTION, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.KEY);

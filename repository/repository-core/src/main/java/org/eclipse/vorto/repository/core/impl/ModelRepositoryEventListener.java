@@ -23,7 +23,6 @@ import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -80,10 +79,13 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
     
     IUserContext technicalUserContext = UserContext.user(createAdminTechnicalUser());
     
-    List<ModelInfo> result = searchService.search("author:" + username, technicalUserContext);
+    List<ModelInfo> result = searchService.search("userReference:" + username, technicalUserContext);
     result.forEach(model -> {
       IModelRepository repository = repositoryFactory.getRepositoryByModel(model.getId(), technicalUserContext);
-      model.setAuthor(User.USER_ANONYMOUS);
+      if (model.getAuthor() != null &&
+          model.getAuthor().equals(username)) {
+        model.setAuthor(User.USER_ANONYMOUS);
+      }
       repository.updateMeta(model);
     });
   }

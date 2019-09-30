@@ -58,14 +58,17 @@ public class ModelSearchUtil {
   public static final String SEARCH_FILTER_KEY_VERSION = "version:";
 
   public static final String SEARCH_FILTER_KEY_AUTHOR = "author:";
+  
+  public static final String SEARCH_FILTER_KEY_USER_REF = "userReference:";
 
   public static final String SEARCH_FILTER_KEY_STATE = "state:";
   
   public static final String SEARCH_FILTER_KEY_VISIBILITY = "visibility:";
 
-  public static final String[] SEARCH_FILTER_KEY_LIST =
-      {SEARCH_FILTER_KEY_NAME, SEARCH_FILTER_KEY_NAMESPACE, SEARCH_FILTER_KEY_VERSION,
-          SEARCH_FILTER_KEY_AUTHOR, SEARCH_FILTER_KEY_STATE,SEARCH_FILTER_KEY_VISIBILITY};
+  public static final String[] SEARCH_FILTER_KEY_LIST = {
+      SEARCH_FILTER_KEY_NAME, SEARCH_FILTER_KEY_NAMESPACE, SEARCH_FILTER_KEY_VERSION,
+      SEARCH_FILTER_KEY_AUTHOR, SEARCH_FILTER_KEY_STATE,SEARCH_FILTER_KEY_VISIBILITY,
+      SEARCH_FILTER_KEY_USER_REF };
 
   public final String VORTO_DISPLAYNAME = "vorto:name";
 
@@ -214,33 +217,29 @@ public class ModelSearchUtil {
       if (entry.getValue().isEmpty()) {
         continue;
       } else {
+        String column = entry.getKey();
         if (map.containsKey(entry.getKey())) {
-        	if (entry.getValue().get(0).endsWith("*")) {
-              stringBuilder.append("CONTAINS([").append(map.get(entry.getKey())).append("],");
-        	} else {
-            	stringBuilder.append("[").append(map.get(entry.getKey())).append("]");
-        	}
-        } else {
-        	if (entry.getValue().get(0).endsWith("*")) {
-                stringBuilder.append("CONTAINS([").append(entry.getKey()).append("],");
-        	} else {
-        		stringBuilder.append("[").append(entry.getKey()).append("]");
-        	}
+        	column = map.get(entry.getKey());
         }
-        if (entry.getValue().size() == 1) {
-        	if (entry.getValue().get(0).endsWith("*")) {
-               stringBuilder.append(getSearchCriteriaParametersAsString(entry.getValue())).append(")");
-        	} else {
-                stringBuilder.append(" = ").append(getSearchCriteriaParametersAsString(entry.getValue()));
-        	}
+        
+        String value = getSearchCriteriaParametersAsString(entry.getValue());
+        if (SEARCH_FILTER_KEY_USER_REF.equals(column)) {
+          stringBuilder.append("([vorto:author] = " + value + " OR [jcr:lastModifiedBy] = " + value + ")");
         } else {
-          stringBuilder.append(" IN ")
-              .append(getSearchCriteriaParametersAsString(entry.getValue()));
+          if (entry.getValue().get(0).endsWith("*")) {
+            stringBuilder.append(String.format("CONTAINS([%s] , %s)", column, value));
+          } else {
+            if (entry.getValue().size() == 1) {
+              stringBuilder.append(String.format("[%s] = %s", column, value));
+            } else {
+              stringBuilder.append(String.format("[%s] IN %s", column, value));
+            }
+          }
         }
+        
         if (iterator.hasNext()) {
         	stringBuilder.append(" ").append(AND).append(" ");
         }
-        
       }
     }
     return stringBuilder.toString();
