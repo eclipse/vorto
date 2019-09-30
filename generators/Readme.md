@@ -14,6 +14,10 @@ Invoke Generator via Curl:
 	curl -GET http://vorto.eclipse.org/api/v1/generators/[Key]/models/[Model ID]
 
 
-##
+## Test the Generators locally
+
+You can easily spin up the Vorto Generator plugins as a local micro service in order to test them. [Read here](generator-runner/Readme.md)
+
+## More examples of Generator Plugis
 
 For more Vorto Generator examples, visit [Vorto-Examples](https://github.com/eclipse/vorto-examples)
