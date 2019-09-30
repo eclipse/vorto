@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -220,7 +221,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   @Transactional
   public Collection<Tenant> getTenants() {
-    return Lists.newArrayList(tenantRepo.findAll());
+    return Lists.newArrayList(tenantRepo.findAll(new Sort(Sort.Direction.ASC, "defaultNamespace")));
   }
 
   public boolean updateTenantNamespaces(String tenantId, Set<String> namespaces, IUserContext userContext) {

@@ -269,8 +269,6 @@ repositoryControllers.controller('DetailsController',
 									}
 								}
 						});
-					
-						$scope.getUserPolicy();
 					}
 					
 					$scope.showReferences = false;
@@ -841,20 +839,6 @@ repositoryControllers.controller('DetailsController',
 			});
 		};
 	
-		$scope.getUserPolicy = function() {
-			$http.get('./rest/models/' + $scope.modelId + '/policy')
-				.success(function (result) {
-					$scope.permission = result.permission;
-					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
-						//$scope.modelEditor.setReadOnly(true);
-					}
-				}).error(function (data, status, headers, config) {
-					$scope.permission = "READ";
-					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-						//$scope.modelEditor.setReadOnly(true);
-					}
-				});
-		};
 		
 		$scope.diagnoseModel = function () {
 			$http.get('./rest/models/' + $scope.modelId + '/diagnostics')

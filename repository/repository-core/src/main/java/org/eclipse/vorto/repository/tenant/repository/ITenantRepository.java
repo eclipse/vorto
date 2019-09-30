@@ -13,9 +13,9 @@
 package org.eclipse.vorto.repository.tenant.repository;
 
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ITenantRepository extends CrudRepository<Tenant, Long>  {
+public interface ITenantRepository extends PagingAndSortingRepository<Tenant, Long>  {
   
   Tenant findByTenantId(String tenantId);
   

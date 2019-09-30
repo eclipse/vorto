@@ -26,6 +26,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -86,8 +87,13 @@ public class DefaultCommentService implements ICommentService {
       recipients.add(c.getAuthor());
     }
 
-    recipients.stream().forEach(recipient -> notificationService.sendNotification(
-        new CommentReplyMessage(accountService.getUser(recipient), model, comment.getContent())));
+    recipients.stream().filter(recipient -> !User.USER_ANONYMOUS.equalsIgnoreCase(recipient)).forEach(recipient -> { 
+      User user = accountService.getUser(recipient);
+      if (user != null) {
+        notificationService.sendNotification(
+            new CommentReplyMessage(user, model, comment.getContent()));
+      } 
+    });
   }
 
   public List<Comment> getCommentsforModelId(ModelId modelId) {
