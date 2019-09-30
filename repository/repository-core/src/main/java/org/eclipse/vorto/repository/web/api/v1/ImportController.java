@@ -42,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -78,6 +79,7 @@ public class ImportController extends AbstractRepositoryController {
 
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<UploadModelResult> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
@@ -111,6 +113,7 @@ public class ImportController extends AbstractRepositoryController {
 
   @RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
   @PreAuthorize("hasRole('MODEL_CREATOR')")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<List<ModelInfo>> doImport(
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
@@ -135,6 +138,7 @@ public class ImportController extends AbstractRepositoryController {
   @ApiOperation(value = "Returns a list of supported importers")
   @PreAuthorize("hasRole('MODEL_CREATOR')")
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+  @CrossOrigin(origins = "https://www.eclipse.org")
   public List<ImporterInfo> getImporters() {
     List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
     this.importerService.getImporters().stream().forEach(importer -> {
