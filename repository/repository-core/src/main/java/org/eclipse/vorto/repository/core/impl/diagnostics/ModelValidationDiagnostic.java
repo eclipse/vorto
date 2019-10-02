@@ -70,7 +70,7 @@ public class ModelValidationDiagnostic implements NodeDiagnostic {
             e.getMessage()));
       } catch (NotAuthorizedException e) {
           diagnostics.add(new Diagnostic(e.getModelId(),"Not authorized to view model '"+e.getModelId().getPrettyFormat()+"'"));
-      }catch (Exception e) {
+      } catch (Exception e) {
         logger.error("Caught error in diagnosing '" + node + "'", e);
         diagnostics.add(new Diagnostic(NodeDiagnosticUtils.getModelId(node.getPath()).orElse(null),
             NodeDiagnosticUtils.compileErrorMessage(e)));

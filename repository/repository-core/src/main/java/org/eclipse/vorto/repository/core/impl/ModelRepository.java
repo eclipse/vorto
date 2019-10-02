@@ -878,6 +878,8 @@ public class ModelRepository extends AbstractRepositoryOperation
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         return session.itemExists(modelIdHelper.getFullPath());
+      } catch (NullPointerException e) {
+        return false;
       } catch (AccessDeniedException e) {
         return true;
       }
