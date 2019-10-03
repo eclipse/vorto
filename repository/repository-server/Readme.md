@@ -8,61 +8,27 @@ If you would like to find out more about available code generators, to set them 
 - Open https://github.com/settings/developers
 - Under Settings->Developer Settings->OAuth Apps click `Register a new application`
 - Fill in the `Application name` with what ever you want, we are using `Vorto Local`
-- Fill in the `Homepage URL` with `http://localhost:8080/infomodelrepository/`
-- Fill in the `Authorization callback URL` with `http://localhost:8080/infomodelrepository/github/login`
-Copy the shown `Client ID` and `Client Secret` to your config.json
-
-## Importing
-
-To import models into the repository you have to login with an administrator account. After that you can upload and xml under the Import section.
+- Fill in the `Homepage URL` with `https://localhost:8443/infomodelrepository/`
+- Fill in the `Authorization callback URL` with `https://localhost:8443/infomodelrepository`
+- Copy the shown `Client ID` and `Client Secret` for use in the next section
 
 ## Build & Run
 
-#### In memory hsql database (Default):
+#### In-memory H2 database (Default):
 
-By default, the Vorto repository is configured to run with in memory hsql database when you run the below command.  
+By default, the Vorto repository is configured to run with in-memory hsql database. Open your command line client and navigate to /vorto/repository/repository-server. To start the Vorto Repository locally run the below command.
 
-	mvn clean install spring-boot:run -Dspring.profiles.active=local
+    mvn spring-boot:run -Dspring.profiles.active=local-https -Dgithub_clientid=<YOUR_CLIENT_ID> -Dgithub_clientSecret=<YOUR_CLIENT_SECRET> -Deidp_clientid=ciamids_12345 -Deidp_clientSecret=12345
 
+If you are behind a corporate proxy add additional proxy parameters 
 
-The **local profile** is a profile for local **testing only**. It sets up the following accounts for you:
-
-Test user Account:
-
-	username: testuser
-	password: testuser
- 
-
-Open your browser and open the URL:
-
-	 http://localhost:8080/infomodelrepository 
- 
-#### Mysql database: 
-Alternatively, Vorto repository can be configured to run with other databases as well. 
-For example to run Vorto repository with Mysql database, follow the below steps. 
-
-Edit [pom.xml](../pom.xml), and add mysql connector maven dependency,
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.37</version>
-		</dependency>
-
-In command prompt, invoke 
-
-	mvn clean install spring-boot:run -Dspring.profiles.active=mysql
-  
-
-> Note: Provide mysql username and password in your application-mysql.yml against database username and password fields.
-
-Open your browser and open the URL:
-
-	 http://localhost:8080/infomodelrepository 
+    -Dhttps.proxyHost=<PROXY_HOST_NAME> -Dhttps.proxyPort=<PROXY_PORT> -Dhttps.proxyUser=<PROXY_USER> -Dhttps.proxyPassword=<PROXY_PASSWORD>
 
 
+Once you see the message `Started VortoRepository in xx.xxx seconds`. Open your browser and navigate to:
 
-----------
+	 https://localhost:8443/infomodelrepository 
+
 ----------
 Back to [Vorto Server Overview](../../Readme.md)
 
