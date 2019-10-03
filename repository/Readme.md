@@ -13,3 +13,4 @@ The Vorto Repository lets you
 ## Further links
 
 * [Tutorial](../docs/tutorials/describe_tisensor.md) about how to describe device with the Vorto DSL
+* [Readme](./repository-server/Readme.md) to run Eclipse Vorto Repository on your local machine
