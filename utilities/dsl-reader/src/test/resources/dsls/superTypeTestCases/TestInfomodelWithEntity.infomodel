@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace vorto.private.mayilkannankumarbosch
+version 1.0.0
+displayname "TestInfomodelWithEntity"
+description "Information Model for TestInfomodelWithEntity"
+using vorto.private.mayilkannankumarbosch.TestFunctionBlockWithEntity;1.0.0
+using vorto.private.mayilkannankumarbosch.SecondFunctionBlock;1.0.0	
+infomodel TestInfomodelWithEntity {
+
+	functionblocks {
+	testFunctionBlockWithEntity as TestFunctionBlockWithEntity
+	secondFunctionBlock as SecondFunctionBlock
+	}
+}

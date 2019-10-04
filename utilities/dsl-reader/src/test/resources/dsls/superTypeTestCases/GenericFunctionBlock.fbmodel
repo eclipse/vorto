@@ -1,0 +1,19 @@
+vortolang 1.0
+namespace vorto.private.mayilkannankumarbosch
+version 1.0.0
+displayname "GenericFunctionBlock"
+description "Functionblock for GenericFunctionBlock"
+
+functionblock GenericFunctionBlock {
+	
+	configuration {
+	genericConfig as boolean
+	}
+	
+	status {
+	genericStatus as boolean
+	}
+	
+	events {}
+	operations {}
+}

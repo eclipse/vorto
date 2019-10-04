@@ -1,0 +1,21 @@
+vortolang 1.0
+namespace vorto.private.mayilkannankumarbosch
+version 1.0.0
+displayname "SecondFunctionBlock"
+description "Functionblock for SecondFunctionBlock"
+using vorto.private.mayilkannankumarbosch.GenericFunctionBlock;1.0.0
+functionblock SecondFunctionBlock extends GenericFunctionBlock{
+	
+	configuration {
+	subTypeConfig1 as boolean
+	subTypeConfig2 as boolean
+	}
+	
+	status {
+	subTypeStatus1 as boolean
+	subTypeStatus2 as boolean
+	}
+	
+	events {}
+	operations {}
+}

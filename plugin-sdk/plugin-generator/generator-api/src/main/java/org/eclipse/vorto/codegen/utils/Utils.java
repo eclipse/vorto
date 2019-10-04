@@ -114,7 +114,11 @@ public class Utils {
     }
     return types;
   }
-
+  /**
+   * Returns a list of all datatypes (entities or enums) that are used in the Function Block.
+   * @param fb
+   * @return
+   */
   public static EList<Type> getReferencedTypes(FunctionBlock fb) {
     BasicEList<Type> types = new BasicEList<Type>();
     if (fb != null) {
