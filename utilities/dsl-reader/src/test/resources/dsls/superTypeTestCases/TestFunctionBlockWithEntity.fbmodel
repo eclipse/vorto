@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace vorto.private.mayilkannankumarbosch
+version 1.0.0
+displayname "TestFunctionBlockWithEntity"
+description "Functionblock for TestFunctionBlockWithEntity"
+using vorto.private.mayilkannankumarbosch.GenericFunctionBlock;1.0.0
+functionblock TestFunctionBlockWithEntity extends GenericFunctionBlock{
+	configuration {
+	subTypeConfig1 as boolean
+	subTypeConfig2 as boolean
+	}
+
+	status {
+	subTypeStatus1 as boolean
+	subTypeStatus2 as boolean
+	}
+
+}

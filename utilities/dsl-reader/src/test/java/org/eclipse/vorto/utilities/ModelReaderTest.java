@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -15,12 +14,14 @@ package org.eclipse.vorto.utilities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -199,11 +200,41 @@ public class ModelReaderTest {
 
     ObjectPropertyType type = (ObjectPropertyType) colorLightProperty.getType();
     Entity colorLight = (Entity) type.getType();
-    assertEquals(2, colorLight.getProperties().size());
+    assertEquals(3, colorLight.getProperties().size());
     assertEquals(1, colorLight.getReferences().size());
 
     assertEquals(1, infomodel.getProperties().get(0).getType().getReferences().size());
     assertEquals("iot.ColorLight",
         infomodel.getProperties().get(0).getType().getReferences().get(0).getImportedNamespace());
+  }
+
+  /*
+   * Test to check whether properties are flattened recursively when functionblocks are extended
+   */
+  @Test
+  public void testFlatInheritanceWithFbSuperType() {
+    IModelWorkspace workspace = IModelWorkspace.newReader()
+        .addFile(
+            getClass().getClassLoader()
+                .getResourceAsStream("dsls/superTypeTestCases/TestInfomodelWithEntity.infomodel"),
+            ModelType.InformationModel)
+        .addFile(
+            getClass().getClassLoader()
+                .getResourceAsStream("dsls/superTypeTestCases/TestFunctionBlockWithEntity.fbmodel"),
+            ModelType.Functionblock)
+        .addFile(getClass().getClassLoader().getResourceAsStream(
+            "dsls/superTypeTestCases/SecondFunctionBlock.fbmodel"), ModelType.Functionblock)
+        .addFile(getClass().getClassLoader().getResourceAsStream(
+            "dsls/superTypeTestCases/GenericFunctionBlock.fbmodel"), ModelType.Functionblock)
+        .read();
+
+    InformationModel infomodel =
+        ModelConversionUtils.convertToFlatHierarchy((InformationModel) workspace.get().get(0));
+
+    FunctionblockModel infoModelFbType = infomodel.getProperties().get(0).getType();
+    FunctionBlock functionBlock = infoModelFbType.getFunctionblock();
+    List<Property> statusProperties = functionBlock.getStatus().getProperties();
+    int statusPropertySize = statusProperties.size();
+    assertEquals(3, statusPropertySize);
   }
 }

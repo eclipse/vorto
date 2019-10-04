@@ -66,10 +66,10 @@ public class UtilsTest {
     }
 
     @Test public void getReferencedTypesForFb() {
-        assertEquals(1, Utils.getReferencedTypes(fbms.get(0).getFunctionblock()).size());
-        assertEquals(0, Utils.getReferencedTypes(fbms.get(1).getFunctionblock()).size());
-        assertEquals(0, Utils.getReferencedTypes(fbms.get(2).getFunctionblock()).size());
-        assertEquals(0, Utils.getReferencedTypes(fbms.get(3).getFunctionblock()).size());
+        assertEquals(1, Utils.getReferencedTypes(fbms.stream().filter(fb -> fb.getName().equals("SomeFb")).findAny().get().getFunctionblock()).size());
+        assertEquals(1, Utils.getReferencedTypes(fbms.stream().filter(fb -> fb.getName().equals("SuperFb")).findAny().get().getFunctionblock()).size());
+        assertEquals(0, Utils.getReferencedTypes(fbms.stream().filter(fb -> fb.getName().equals("Push_button")).findAny().get().getFunctionblock()).size());
+        assertEquals(1, Utils.getReferencedTypes(fbms.stream().filter(fb -> fb.getName().equals("SuperSuperFb")).findAny().get().getFunctionblock()).size());
 
     }
 }
