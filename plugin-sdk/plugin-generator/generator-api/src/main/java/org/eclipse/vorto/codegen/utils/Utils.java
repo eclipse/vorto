@@ -43,7 +43,8 @@ public class Utils {
     } else if (model instanceof FunctionblockModel) {
       return Utils.wrapFunctionBlock((FunctionblockModel) model);
     } else {
-      throw new UnsupportedOperationException("model must either be a information- or function block model");
+      throw new UnsupportedOperationException(
+          "model must either be a information- or function block model");
     }
   }
 
@@ -114,8 +115,10 @@ public class Utils {
     }
     return types;
   }
+
   /**
    * Returns a list of all datatypes (entities or enums) that are used in the Function Block.
+   * 
    * @param fb
    * @return
    */
