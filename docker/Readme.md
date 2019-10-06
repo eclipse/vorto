@@ -52,6 +52,27 @@ And upload `docker/MyFirstModel_1.0.0.zip`
 
 Thats it you now should have a working instance of the Vorto Repository.
 
+## Configure 3rd party generators
+
+Generators using APIv2 are registered via a base64 encoded string, containing a JSON object, stored in the environment variable `PLUGINS`. The stored array of plugins looks like the following.
+
+```json
+[
+    {
+        "key": "mygenerator",
+        "pluginType": "generator",
+        "apiVersion": "2",
+        "endpoint": "http://3rd-party-generator:8080"
+    }
+]
+```
+
+The generator might be provided via AWS, Docker or anything else you can imagine.
+
+Some plugins that are also used on [vorto.eclipse.org](https://vorto.eclipse.org) can be found under `/repository/repository-server/target/classes/application-local-https.yml`.
+
+## Configuration environment variables
+
 | Variable name          | default/required             | used in repository       | used in generator runner | description                                                                                                                                                                                                                          |
 |------------------------|------------------------------|--------------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `ADMIN_USER`           | :heavy_check_mark:           | :heavy_check_mark:       | :heavy_multiplication_x: | The username of the admin user                                                                                                                                                                                                       |
@@ -61,6 +82,7 @@ Thats it you now should have a working instance of the Vorto Repository.
 | `EIDP_CLIENT_SECRET`   | :heavy_check_mark:           | :heavy_check_mark:       | :heavy_multiplication_x: | eidp Oauth client secret. Only required when using `eidp` as auth provider.                                                                                                                                                          |
 | `VORTO_URL`            | :heavy_check_mark:           | :heavy_multiplication_x: | :heavy_check_mark:       | Url the repository is listing under, for the generators to register to.                                                                                                                                                              |
 | `SERVICE_URL`          | :heavy_check_mark:           | :heavy_multiplication_x: | :heavy_check_mark:       | The url the generators are running under to provide a callback method for the repository                                                                                                                                             |
+| `PLUGINS`              | :heavy_multiplication_x:     | :heavy_check_mark:       | :heavy_multiplication_x: | A base64 encoded string of a JSON array containing all registered plugins since APIv2                                                                                                                                                |
 | `GENERATOR_PASSWORD`   | :heavy_check_mark:           | :heavy_check_mark:       | :heavy_check_mark:       | The password a generator uses to authenticate against the repository.                                                                                                                                                                |
 | `GENERATOR_USER`       | `vorto_generators`           | :heavy_check_mark:       | :heavy_check_mark:       | The user a generator uses to authenticate against the repository.                                                                                                                                                                    |
 | `VORTO_PORT`           | `8080`                       | :heavy_check_mark:       | :heavy_check_mark:       | The port used for the application running in the docker container.                                                                                                                                                                   |

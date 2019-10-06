@@ -87,6 +87,10 @@ If you want to see the full process of creating, integrating and visualizing sen
   - [Eclipse Hono](../generators/generator-eclipsehono/Readme.md)
   - [OpenAPI](../generators/generator-openapi/Readme.md)
 
+#### Operators Guide
+
+- [Getting started with running the Repository with docker](../docker/Readme.md)
+
 #### Developer Guide
 
 - [Developing Vorto Plugins](../plugin-sdk/Readme.md)
