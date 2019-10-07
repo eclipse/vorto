@@ -65,7 +65,6 @@ import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
-import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
@@ -147,8 +146,6 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private IModelPolicyManager policyManager;
   
-  private ErrorMessageProvider errorMessageProvider;
-
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
       ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
@@ -160,7 +157,6 @@ public class ModelRepository extends AbstractRepositoryOperation
     this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
     this.policyManager = policyManager;
-    this.errorMessageProvider = errorMessageProvider;
   }
 
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -444,7 +440,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
 
-  private ModelInfo getBasicInfo(ModelId modelId) {
+  public ModelInfo getBasicInfo(ModelId modelId) {
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -452,7 +448,26 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
         Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
-        return createMinimalModelInfo(modelFileNode);
+        ModelInfo modelInfo = createMinimalModelInfo(modelFileNode);
+        
+        if (folderNode.hasProperty(VORTO_REFERENCES)) {
+          Value[] referenceValues = null;
+          try {
+            referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
+          } catch (Exception ex) {
+            referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
+          }
+
+          if (referenceValues != null) {
+            ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
+            for (Value referValue : referenceValues) {
+              referenceHelper.addModelReference(referValue.getString());
+            }
+            modelInfo.setReferences(referenceHelper.getReferences());
+          }
+        }
+        
+        return modelInfo;
       } catch (PathNotFoundException e) {
         return null;
       } catch (AccessDeniedException e) {

@@ -35,16 +35,24 @@ public interface IModelRepository {
   List<ModelInfo> search(String queryExpression);
 
   /**
-   * Gets a model resource for the given model id
-   * 
+   * Gets a very detailed model for the given model id, which includes resolving target platform mappings
+   * If only basic meta - data is required, consider using {@link IModelRepository#getBasicInfo(ModelId)}
    * @param modelId
    * @return
    * @throws NotAuthorizedException if current user is not allowed to access the given model
    */
   ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
+  
+  /**
+   * Gets the basic info with only meta - data for the given model ID
+   * @param modelId
+   * @return
+   * @throws NotAuthorizedException
+   */
+  ModelInfo getBasicInfo(ModelId modelId) throws NotAuthorizedException;
 
   /**
-   * Get all models in this repository who are referencing modelId
+   * Get all models in this repository which are referencing the given modelId
    * 
    * @param modelId the modelId that is being referenced
    * @return list of models referencing modelId
