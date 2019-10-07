@@ -37,9 +37,6 @@ public class ModelParserFactory {
   private boolean isInit = false;
 
   @Autowired
-  private ErrorMessageProvider errorMessageProvider;
-
-  @Autowired
   private IModelRepositoryFactory modelRepoFactory;
 
   @PostConstruct
@@ -65,17 +62,13 @@ public class ModelParserFactory {
 
   public IModelParser getParser(String fileName) {
     if (fileName.endsWith(ModelType.Datatype.getExtension())) {
-      return new DatatypeModelParser(fileName, modelRepoFactory,
-          errorMessageProvider);
+      return new DatatypeModelParser(fileName,modelRepoFactory);
     } else if (fileName.endsWith(ModelType.Functionblock.getExtension())) {
-      return new FunctionblockModelParser(fileName, modelRepoFactory,
-          errorMessageProvider);
+      return new FunctionblockModelParser(fileName,modelRepoFactory);
     } else if (fileName.endsWith(ModelType.InformationModel.getExtension())) {
-      return new InformationModelParser(fileName, modelRepoFactory,
-          errorMessageProvider);
+      return new InformationModelParser(fileName,modelRepoFactory);
     } else if (fileName.endsWith(ModelType.Mapping.getExtension())) {
-      return new MappingModelParser(fileName, modelRepoFactory,
-          errorMessageProvider);
+      return new MappingModelParser(fileName, modelRepoFactory);
     } else {
       throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");
     }
@@ -94,10 +87,6 @@ public class ModelParserFactory {
         || fileName.endsWith(ModelType.Functionblock.getExtension())
         || fileName.endsWith(ModelType.InformationModel.getExtension())
         || fileName.endsWith(ModelType.Mapping.getExtension());
-  }
-
-  public void setErrorMessageProvider(ErrorMessageProvider errorMessageProvider) {
-    this.errorMessageProvider = errorMessageProvider;
   }
 
   public void setModelRepositoryFactory(IModelRepositoryFactory modelRepoFactory) {

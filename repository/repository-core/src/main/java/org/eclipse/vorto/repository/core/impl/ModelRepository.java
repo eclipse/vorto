@@ -63,7 +63,9 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
+import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
@@ -144,11 +146,13 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ITenantService tenantService;
 
   private IModelPolicyManager policyManager;
+  
+  private ErrorMessageProvider errorMessageProvider;
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
       ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
-      IModelPolicyManager policyManager) {
+      IModelPolicyManager policyManager, ErrorMessageProvider errorMessageProvider) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -156,6 +160,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
     this.policyManager = policyManager;
+    this.errorMessageProvider = errorMessageProvider;
   }
 
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -238,7 +243,6 @@ public class ModelRepository extends AbstractRepositoryOperation
         final String fileContent = IOUtils.toString(is);
 
         IModelParser parser = modelParserFactory.getParser(fileNode.getName());
-        parser.setValidate(validate);
 
         ModelResource resource = (ModelResource) parser.parse(IOUtils.toInputStream(fileContent));
         return new ModelFileContent(resource.getModel(), fileNode.getName(),
@@ -275,8 +279,10 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     IModelParser parser =
         modelParserFactory.getParser("model" + ModelType.fromFileName(fileName).getExtension());
-    parser.setValidate(validate);
-
+    if (validate) {
+      parser.enableValidation();
+    }
+   
     ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
 
     save(modelInfo, userContext);
@@ -533,7 +539,6 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node fileItem = (Node) fileNode.getPrimaryItem();
         InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
         IModelParser parser = modelParserFactory.getParser(fileNode.getName());
-        parser.setValidate(false);
         return (ModelResource) parser.parse(is);
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);

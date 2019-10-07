@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
@@ -112,6 +111,8 @@ public abstract class AbstractIntegrationTest {
   
   protected ModelValidationHelper modelValidationHelper = null;
   
+  protected ErrorMessageProvider errorMessageProvider = new ErrorMessageProvider();
+  
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
   private Tenant playgroundTenant = playgroundTenant();
@@ -162,7 +163,6 @@ public abstract class AbstractIntegrationTest {
     accountService.setTenantRepo(tenantRepo);
     
     modelParserFactory = new ModelParserFactory();
-    modelParserFactory.setErrorMessageProvider(new ErrorMessageProvider());
     modelParserFactory.init();
 
     RepositoryConfiguration config =

@@ -34,7 +34,9 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
+import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
+import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
@@ -56,7 +58,7 @@ public class BulkUploadHelper {
   private ITenantService tenantService;
 
   public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory,
-      IUserAccountService userRepository, ITenantService tenantService) {
+      IUserAccountService userRepository, ITenantService tenantService, ErrorMessageProvider errorMessageProvider) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
     this.tenantService = tenantService;
@@ -128,12 +130,15 @@ public class BulkUploadHelper {
     parsingResult.validModels = new HashSet<>();
 
     Collection<FileContent> fileContents = getFileContentsFromZip(content);
+    
+    LocalModelWorkspace workspace = new LocalModelWorkspace(modelRepoFactory,fileContents);
+    
+    
     fileContents.forEach(fileContent -> {
-      Collection<FileContent> possibleDependencies = fileContents.stream()
-          .filter(file -> !file.equals(fileContent)).collect(Collectors.toList());
       try {
         IModelParser parser = ModelParserFactory.instance().getParser(fileContent.getFileName());
-        parser.setReferences(possibleDependencies);
+        parser.setWorkspace(workspace);
+        parser.enableValidation();
         parsingResult.validModels
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {

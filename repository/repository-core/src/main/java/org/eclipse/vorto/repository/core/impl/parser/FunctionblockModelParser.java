@@ -21,9 +21,8 @@ import com.google.inject.Injector;
  */
 public class FunctionblockModelParser extends AbstractModelParser {
 
-  public FunctionblockModelParser(String fileName, IModelRepositoryFactory modelRepoFactory,
-      ErrorMessageProvider errorMessageProvider) {
-    super(fileName, modelRepoFactory, errorMessageProvider);
+  public FunctionblockModelParser(String fileName,IModelRepositoryFactory repositoryFactory) {
+    super(fileName,repositoryFactory);
   }
 
   @Override

@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 
 public class ModelBulkImportTest extends AbstractIntegrationTest {
 
@@ -37,7 +36,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   public void beforeEach() throws Exception {
     super.beforeEach();
     bulkUploadHelper =
-        new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService);
+        new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService,errorMessageProvider);
   }
 
   @Test

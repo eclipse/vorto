@@ -56,7 +56,6 @@ public class ModelSequencerOld extends Sequencer {
     ModelInfo modelResource = null;
     try {
       IModelParser parser = ModelParserFactory.instance().getParser(outputNode.getPath());
-      parser.setValidate(false);
       
        modelResource = parser.parse(binaryValue.getStream());
        outputNode.setProperty("vorto:description",
