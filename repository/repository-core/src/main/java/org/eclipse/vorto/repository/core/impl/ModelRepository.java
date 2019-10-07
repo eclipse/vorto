@@ -311,7 +311,7 @@ public class ModelRepository extends AbstractRepositoryOperation
           fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
           fileNode.setProperty(VORTO_VISIBILITY, VISIBILITY_PRIVATE);
           fileNode.addMixin(MODE_ACCESS_CONTROLLABLE);
-          folderNode.addMixin(MIX_LAST_MODIFIED);
+          fileNode.addMixin(MIX_LAST_MODIFIED);
           Node contentNode = fileNode.addNode(JCR_CONTENT, NT_RESOURCE);
           Binary binary =
               session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
@@ -585,7 +585,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     return updateProperty(modelId, node -> node.setProperty(VORTO_STATE, state));
   }
 
-  @Override
+  @Override 
   public ModelId updateVisibility(ModelId modelId, String visibility) {
     return updateProperty(modelId, node -> node.setProperty(VORTO_VISIBILITY, visibility));
   }
@@ -597,8 +597,10 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node fileNode =
             folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
                 : null;
-        fileNode.addMixin(MIX_LAST_MODIFIED);
+        
         nodeConsumer.accept(fileNode);
+        fileNode.addMixin(MIX_LAST_MODIFIED);
+        
         session.save();
 
         eventPublisher
