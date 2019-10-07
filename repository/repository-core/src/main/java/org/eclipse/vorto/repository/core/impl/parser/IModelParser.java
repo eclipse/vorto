@@ -13,8 +13,6 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import java.io.InputStream;
-import java.util.Collection;
-import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 
 
@@ -30,17 +28,16 @@ public interface IModelParser {
    * @return
    */
   ModelInfo parse(InputStream is);
+  
+  /**
+   * sets the workspace for the current parser to operate on
+   * @param workspace
+   * @return
+   */
+  IModelParser setWorkspace(LocalModelWorkspace workspace);
 
   /**
-   * Sets the files that needs to be referenced by the file being parsed (i.e its dependencies)
-   * 
-   * @param fileReferences
-   */
-  void setReferences(Collection<FileContent> fileReferences);
-
-  /**
-   * instructs the parser to perform validation or not during parsing. Default is 'enabled' = true
-   * @param validate
-   */
-  void setValidate(boolean enable);
+   * validates the model during parsing
+   */  
+  IModelParser enableValidation();
 }

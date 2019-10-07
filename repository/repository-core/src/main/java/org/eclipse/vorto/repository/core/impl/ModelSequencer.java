@@ -54,7 +54,6 @@ public class ModelSequencer extends Sequencer {
     Binary binaryValue = inputProperty.getBinary();
     CheckArg.isNotNull(binaryValue, "binary");
     IModelParser parser = ModelParserFactory.instance().getParser(fileNode.getPath());
-    parser.setValidate(false);
     ModelInfo modelResource = parser.parse(binaryValue.getStream());
 
     fileNode.setProperty("vorto:description",

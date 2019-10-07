@@ -63,6 +63,7 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -144,11 +145,11 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ITenantService tenantService;
 
   private IModelPolicyManager policyManager;
-
+  
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
       ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
-      IModelPolicyManager policyManager) {
+      IModelPolicyManager policyManager, ErrorMessageProvider errorMessageProvider) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -238,7 +239,6 @@ public class ModelRepository extends AbstractRepositoryOperation
         final String fileContent = IOUtils.toString(is);
 
         IModelParser parser = modelParserFactory.getParser(fileNode.getName());
-        parser.setValidate(validate);
 
         ModelResource resource = (ModelResource) parser.parse(IOUtils.toInputStream(fileContent));
         return new ModelFileContent(resource.getModel(), fileNode.getName(),
@@ -275,8 +275,10 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     IModelParser parser =
         modelParserFactory.getParser("model" + ModelType.fromFileName(fileName).getExtension());
-    parser.setValidate(validate);
-
+    if (validate) {
+      parser.enableValidation();
+    }
+   
     ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
 
     save(modelInfo, userContext);
@@ -438,7 +440,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
 
-  private ModelInfo getBasicInfo(ModelId modelId) {
+  public ModelInfo getBasicInfo(ModelId modelId) {
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -446,7 +448,26 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
         Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
-        return createMinimalModelInfo(modelFileNode);
+        ModelInfo modelInfo = createMinimalModelInfo(modelFileNode);
+        
+        if (folderNode.hasProperty(VORTO_REFERENCES)) {
+          Value[] referenceValues = null;
+          try {
+            referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
+          } catch (Exception ex) {
+            referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
+          }
+
+          if (referenceValues != null) {
+            ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
+            for (Value referValue : referenceValues) {
+              referenceHelper.addModelReference(referValue.getString());
+            }
+            modelInfo.setReferences(referenceHelper.getReferences());
+          }
+        }
+        
+        return modelInfo;
       } catch (PathNotFoundException e) {
         return null;
       } catch (AccessDeniedException e) {
@@ -533,7 +554,6 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node fileItem = (Node) fileNode.getPrimaryItem();
         InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
         IModelParser parser = modelParserFactory.getParser(fileNode.getName());
-        parser.setValidate(false);
         return (ModelResource) parser.parse(is);
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);

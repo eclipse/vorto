@@ -35,7 +35,9 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
+import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
+import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -69,6 +71,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
   
   @Autowired
   protected ModelValidationHelper modelValidationHelper;
+  
+  @Autowired
+  protected ErrorMessageProvider errorMessageProvider;
 
   private Set<String> supportedFileExtensions = new HashSet<>();
 
@@ -274,10 +279,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
   protected ModelResource parseDSL(String fileName, byte[] content,
       Collection<FileContent> fileReferences) {
     IModelParser modelParser = modelParserFactory.getParser(fileName);
-    if (!fileReferences.isEmpty()) {
-      modelParser.setReferences(fileReferences.stream()
-          .filter(file -> !file.getFileName().equals(fileName)).collect(Collectors.toList()));
-    }
+    modelParser.setWorkspace(new LocalModelWorkspace(modelRepoFactory, fileReferences));
+    modelParser.enableValidation();
     return (ModelResource) modelParser.parse(new ByteArrayInputStream(content));
   }
 

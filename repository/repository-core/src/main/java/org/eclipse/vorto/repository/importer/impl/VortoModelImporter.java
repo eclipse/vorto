@@ -54,7 +54,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
   
-
+  
   @Autowired
   private ITenantService tenantService;
   
@@ -144,7 +144,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService());
+          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService(),errorMessageProvider);
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           context.getUser());
     } else {

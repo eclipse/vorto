@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,14 +29,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.CancelIndicator;
 import org.eclipse.xtext.validation.CheckMode;
@@ -51,26 +47,20 @@ import com.google.inject.Injector;
 public abstract class AbstractModelParser implements IModelParser {
 
   private String fileName;
-  private boolean enableValidation = true;
-
-  protected IModelRepositoryFactory modelRepoFactory;
-  private Collection<FileContent> dependencies = Collections.emptyList();
+  private LocalModelWorkspace workspace;
   private ErrorMessageProvider errorMessageProvider;
+  private boolean isValidationEnabled = false;
 
-  public AbstractModelParser(String fileName, IModelRepositoryFactory modelRepoFactory,
-      ErrorMessageProvider errorMessageProvider) {
+  public AbstractModelParser(String fileName, IModelRepositoryFactory repositoryFactory) {
     this.fileName = fileName;
-    this.modelRepoFactory = Objects.requireNonNull(modelRepoFactory);
-    this.errorMessageProvider = errorMessageProvider;
+    this.workspace = new LocalModelWorkspace(repositoryFactory);
   }
 
   @Override
   public ModelInfo parse(InputStream is) {
     Injector injector = getInjector();
 
-    XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-    resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-    resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
+    XtextResourceSet resourceSet = workspace.getResourceSet();
 
     Resource resource = createResource(fileName, getContent(is), resourceSet)
         .orElseThrow(() -> new ValidationException(
@@ -84,16 +74,9 @@ public abstract class AbstractModelParser implements IModelParser {
     }
 
     Model model = (Model) resource.getContents().get(0);
+    workspace.loadFromRepository(getReferences(model)); // always load direct references to make the model complete
 
-    if (enableValidation) {
-      Collection<ModelId> importedDependencies =
-          importExternallySpecifiedDependencies(dependencies, resourceSet);
-
-      /*
-       * Import the rest of the dependencies (those that were not loaded above) from the repository
-       */
-      importDependenciesFromRepository(resourceSet, importedDependencies, model);
-
+    if (this.isValidationEnabled) {
       /* Execute validators */
       IResourceValidator validator = injector.getInstance(IResourceValidator.class);
       List<Issue> issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
@@ -117,6 +100,22 @@ public abstract class AbstractModelParser implements IModelParser {
 
 
     return new ModelResource((Model) resource.getContents().get(0));
+  }
+
+  protected Collection<ModelId> getReferences(Model model) {
+    return model.getReferences().stream().map(
+        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
+        .collect(Collectors.toList());
+  }
+
+  public IModelParser setWorkspace(LocalModelWorkspace workspace) {
+    this.workspace = workspace;
+    return this;
+  }
+  
+  public IModelParser enableValidation() {
+    this.isValidationEnabled = true;
+    return this;
   }
 
   private Set<ValidationIssue> convertIssues(List<Issue> issues) {
@@ -153,50 +152,6 @@ public abstract class AbstractModelParser implements IModelParser {
       return Optional.empty();
     String dirtyName = words[words.length - 1];
     return Optional.ofNullable(dirtyName.replaceAll("'", "").replaceAll("\\.", ""));
-  }
-
-  private void importDependenciesFromRepository(XtextResourceSet resourceSet,
-      Collection<ModelId> alreadyImportedDependencies, Model model) {
-    Collection<ModelId> allReferences = getReferences(model);
-    allReferences.removeAll(alreadyImportedDependencies);
-    allReferences.forEach(refModelId -> {
-      try {
-        modelRepoFactory.getRepositoryByModel(refModelId)
-            .getFileContent(refModelId, Optional.empty()).ifPresent(refFile -> {
-              createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
-            });
-      } catch (ModelNotFoundException notFoundException) {
-        throw new ValidationException("Could not find reference "+refModelId.getPrettyFormat(), null);
-      }
-    });
-  }
-
-  private Collection<ModelId> importExternallySpecifiedDependencies(
-      Collection<FileContent> dependencies, XtextResourceSet resourceSet) {
-    return dependencies.stream().map(fileContent -> {
-      Optional<Resource> maybeDependency =
-          createResource(fileContent.getFileName(), fileContent.getContent(), resourceSet);
-      return maybeDependency.flatMap(dependency -> {
-        Model dependencyModel = (Model) dependency.getContents().get(0);
-        if (dependencyModel.getName() != null && dependencyModel.getNamespace() != null
-            && dependencyModel.getVersion() != null) {
-          return Optional.of(new ModelId(dependencyModel.getName(), dependencyModel.getNamespace(),
-              dependencyModel.getVersion()));
-        }
-        return Optional.empty();
-      }).orElse(null);
-    }).collect(Collectors.toList());
-  }
-
-  @Override
-  public void setReferences(Collection<FileContent> fileReferences) {
-    this.dependencies = Objects.requireNonNull(fileReferences);
-  }
-
-  protected Collection<ModelId> getReferences(Model model) {
-    return model.getReferences().stream().map(
-        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
-        .collect(Collectors.toList());
   }
 
   private Optional<ModelInfo> getModelInfo(Model model) {
@@ -274,7 +229,4 @@ public abstract class AbstractModelParser implements IModelParser {
 
   protected abstract Injector getInjector();
 
-  public void setValidate(boolean enable) {
-    this.enableValidation = enable;
-  }
 }

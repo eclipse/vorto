@@ -39,6 +39,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
+import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
@@ -79,6 +80,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Autowired
   private RepositoryConfiguration repositoryConfiguration;
+  
+  @Autowired
+  private ErrorMessageProvider errorMessageProvider;
 
   @Autowired
   private TenantService tenantService;
@@ -184,7 +188,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   public IModelRepository getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService,getPolicyManager(tenant, user));
+        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService,getPolicyManager(tenant, user),errorMessageProvider);
 
     modelRepository.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);

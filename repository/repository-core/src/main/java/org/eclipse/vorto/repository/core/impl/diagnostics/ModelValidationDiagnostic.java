@@ -64,7 +64,9 @@ public class ModelValidationDiagnostic implements NodeDiagnostic {
 
       try {
         logger.debug("Validating \n" + IOUtils.toString(contentProperty.getBinary().getStream()));
-        modelParserFactory.getParser(node.getName()).parse(contentProperty.getBinary().getStream());
+        modelParserFactory.getParser(node.getName())
+        .enableValidation()
+        .parse(contentProperty.getBinary().getStream());
       } catch (ValidationException e) {
         diagnostics.add(new Diagnostic(NodeDiagnosticUtils.getModelId(node.getPath()).orElse(null),
             e.getMessage()));
