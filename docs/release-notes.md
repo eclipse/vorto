@@ -2,6 +2,17 @@
 
 <br />
 
+## 0.12.1
+
+**Bugfixes**
+
+- Import very slow for zip archives containing 50+ models [#1997](https://github.com/eclipse/vorto/issues/1997)
+- Creator and ModifiedBy user ID not anonymized correctly, when user account is deleted [#1976](https://github.com/eclipse/vorto/issues/1976)
+- Inheritance not resolved completely during Code Generation [#1954](https://github.com/eclipse/vorto/issues/1954)
+
+
+<br />
+
 ## 0.12
 
 This version primarily focuses on stability, performance as well as UX. 
