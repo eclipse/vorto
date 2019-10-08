@@ -90,6 +90,15 @@ public interface IModelRepository {
   ModelResource getEMFResource(ModelId modelId);
 
   /**
+   * Saves a model resource in the repository
+   * @param resource
+   * @param user
+   * @return
+   */
+  ModelInfo save(ModelResource resource, IUserContext user);
+  
+  
+  /**
    * 
    * @param modelId
    * @param content
