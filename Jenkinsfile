@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent any  
+    // Options covers all other job properties or wrapper functions that apply to entire Pipeline.
+  	options {
+	    buildDiscarder(logRotator(numToKeepStr:'5'))
+	}
     stages{
       stage("Build"){
         steps{
@@ -85,7 +89,7 @@ pipeline {
                   withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
                     sh "sed -i -e \"s,$TOKEN,,g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
                   }
-                      s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
+                      // s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
                   }
               }
               githubNotify context: 'Repository - Virus Scan', description: 'Scan Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html"
