@@ -163,8 +163,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       Collection<FileContent> fileContents = getFileContents(fileUpload);
-      result.addAll(fileContents.stream().map(fileContent -> parseDSL(fileContent.getFileName(),
-          fileContent.getContent(), fileContents)).collect(Collectors.toList()));
+      result.addAll(fileContents.stream().map(fileContent -> (ModelResource)getModelParserFactory().getParser(fileContent.getFileName()).parse(new ByteArrayInputStream(fileContent.getContent()))).collect(Collectors.toList()));
     } else {
       final ModelResource modelInfo =
           (ModelResource) getModelParserFactory().getParser(fileUpload.getFileExtension())
