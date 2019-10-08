@@ -145,7 +145,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ITenantService tenantService;
 
   private IModelPolicyManager policyManager;
-  
+
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
       ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
@@ -278,7 +278,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     if (validate) {
       parser.enableValidation();
     }
-   
+
     ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
 
     save(modelInfo, userContext);
@@ -297,8 +297,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
       logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
-          + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/"
-          + getTenantId());
+          + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/" + getTenantId());
 
       try {
         Node folderNode = createNodeForModelId(session, modelInfo.getId());
@@ -410,21 +409,33 @@ public class ModelRepository extends AbstractRepositoryOperation
       }
     }
 
-    // only add platform mapping info for non-mapping models
-    if (resource.getType() != ModelType.Mapping) {
+    Map<String, List<ModelInfo>> referencingModels =
+        modelRetrievalService.getModelsReferencing(resource.getId());
+
+    for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
+      for (ModelInfo modelInfo : entry.getValue()) {
+        resource.getReferencedBy().add(modelInfo.getId());
+      }
+    }
+    return resource;
+  }
+
+  @Override
+  public ModelInfo getByIdWithPlatformMappings(ModelId modelId) throws NotAuthorizedException {
+    ModelInfo model = this.getById(modelId);
+
+    if (model != null && model.getType() != ModelType.Mapping) {
       Map<String, List<ModelInfo>> referencingModels =
-          modelRetrievalService.getModelsReferencing(resource.getId());
+          modelRetrievalService.getModelsReferencing(model.getId());
 
       for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
         for (ModelInfo modelInfo : entry.getValue()) {
-          resource.getReferencedBy().add(modelInfo.getId());
           if (modelInfo.getType() == ModelType.Mapping) {
-
             try {
-              ModelResource emfResource = this.repositoryFactory.getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId());
+              ModelResource emfResource = this.repositoryFactory
+                  .getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId());
               if (emfResource != null) {
-                resource.addPlatformMapping(emfResource.getTargetPlatform(),
-                    modelInfo.getId());
+                model.addPlatformMapping(emfResource.getTargetPlatform(), modelInfo.getId());
               }
             } catch (ValidationException e) {
               logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
@@ -435,8 +446,10 @@ public class ModelRepository extends AbstractRepositoryOperation
           }
         }
       }
+
     }
-    return resource;
+
+    return model;
   }
 
 
@@ -449,7 +462,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
         Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
         ModelInfo modelInfo = createMinimalModelInfo(modelFileNode);
-        
+
         if (folderNode.hasProperty(VORTO_REFERENCES)) {
           Value[] referenceValues = null;
           try {
@@ -466,7 +479,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             modelInfo.setReferences(referenceHelper.getReferences());
           }
         }
-        
+
         return modelInfo;
       } catch (PathNotFoundException e) {
         return null;
@@ -605,7 +618,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     return updateProperty(modelId, node -> node.setProperty(VORTO_STATE, state));
   }
 
-  @Override 
+  @Override
   public ModelId updateVisibility(ModelId modelId, String visibility) {
     return updateProperty(modelId, node -> node.setProperty(VORTO_VISIBILITY, visibility));
   }
@@ -617,10 +630,10 @@ public class ModelRepository extends AbstractRepositoryOperation
         Node fileNode =
             folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
                 : null;
-        
+
         nodeConsumer.accept(fileNode);
         fileNode.addMixin(MIX_LAST_MODIFIED);
-        
+
         session.save();
 
         eventPublisher
@@ -942,7 +955,8 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   /**
-   * copies merely attachments and policies and workflow meta data from the source model to the target model
+   * copies merely attachments and policies and workflow meta data from the source model to the
+   * target model
    * 
    * @param sourceModel source model to copy
    * @param targetModel target model to add data from source model
@@ -969,6 +983,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   /**
    * saves the given changeset in a sorted way into the repository in the context of the given user
+   * 
    * @param changeSet
    * @param user
    */

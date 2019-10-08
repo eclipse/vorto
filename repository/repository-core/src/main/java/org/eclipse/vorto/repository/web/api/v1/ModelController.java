@@ -59,7 +59,7 @@ public class ModelController extends AbstractRepositoryController {
     
     logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
 
-    ModelInfo resource = getModelRepository(modelID).getById(modelID);
+    ModelInfo resource = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
 
     if (resource == null) {
       throw new ModelNotFoundException("Model does not exist", null);
