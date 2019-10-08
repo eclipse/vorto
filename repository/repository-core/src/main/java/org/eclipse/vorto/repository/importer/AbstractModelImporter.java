@@ -248,7 +248,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
       try {
         IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(resource.getId());
           ModelInfo importedModel = modelRepository.save(resource.getId(),
-              ((ModelResource) resource).toDSL(), createFileName(resource), user);
+              ((ModelResource) resource).toDSL(), createFileName(resource), user,false);
           savedModels.add(importedModel);
           postProcessImportedModel(importedModel,
               new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
