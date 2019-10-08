@@ -108,16 +108,16 @@ public class MappingTest extends AbstractIntegrationTest {
     Thread.sleep(2000);
     assertEquals(1,
         repositoryFactory.getRepository(createUserContext("admin", "playground"))
-            .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
+            .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().size());
     assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0",
         repositoryFactory.getRepository(createUserContext("admin", "playground"))
-            .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
+            .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().get(0).getPrettyFormat());
 
     assertEquals(1,
         repositoryFactory.getRepository(createUserContext("admin", "playground"))
-            .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
+            .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getPlatformMappings().size());
   }
 
@@ -127,7 +127,7 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("sample.mapping");
     Thread.sleep(2000);
     ModelInfo colorInfo = repositoryFactory.getRepository(createUserContext("admin", "playground"))
-        .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+        .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     assertEquals(1, colorInfo.getPlatformMappings().size());
     assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0", colorInfo.getPlatformMappings().keySet().iterator().next());
   }

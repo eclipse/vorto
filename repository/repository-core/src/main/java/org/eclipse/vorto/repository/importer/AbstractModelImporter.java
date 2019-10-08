@@ -54,7 +54,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
 
-  private static Logger logger = Logger.getLogger(AbstractModelImporter.class);
+  protected static Logger logger = Logger.getLogger(AbstractModelImporter.class);
 
   @Autowired
   private ITemporaryStorage uploadStorage;
@@ -94,9 +94,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
     }
     List<ValidationReport> reports = new ArrayList<ValidationReport>();
     if (handleZipUploads() && isZipFile(fileUpload)) {
-
       getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
           .forEach(extractedFile -> {
+            logger.info("Validating uploaded file "+extractedFile.getFileName());
             extractedFile = preValidation(extractedFile,context);
             List<ValidationReport> validationResult = validate(extractedFile, context);
             postValidate(validationResult, context);
@@ -104,12 +104,15 @@ public abstract class AbstractModelImporter implements IModelImporter {
           });
 
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
+      logger.info("Validating uploaded file "+fileUpload.getFileName());
       fileUpload = preValidation(fileUpload,context);
       List<ValidationReport> validationResult = validate(fileUpload, context);
       postValidate(validationResult,context);
       reports.addAll(validationResult);
-
     }
+    
+    logger.info("Upload completed");
+
 
     if (reports.size() == 0) {
       return new UploadModelResult(null, Arrays.asList(
@@ -247,8 +250,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     dm.getSorted().stream().forEach(resource -> {
       try {
         IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(resource.getId());
-          ModelInfo importedModel = modelRepository.save(resource.getId(),
-              ((ModelResource) resource).toDSL(), createFileName(resource), user);
+          ModelInfo importedModel = modelRepository.save((ModelResource)resource, user);
           savedModels.add(importedModel);
           postProcessImportedModel(importedModel,
               new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);

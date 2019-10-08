@@ -51,7 +51,7 @@ public class MappingModelParser extends AbstractModelParser {
         modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
         .collect(Collectors.toList()).stream().forEach(modelId -> {
           result.add(modelId);
-          result.addAll(this.modelRepoFactory.getRepositoryByModel(modelId).getBasicInfo(modelId).getReferences());
+          result.addAll(this.modelRepoFactory.getRepositoryByModel(modelId).getById(modelId).getReferences());
         });
     
     return result;

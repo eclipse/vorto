@@ -44,12 +44,12 @@ public interface IModelRepository {
   ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
   
   /**
-   * Gets the basic info with only meta - data for the given model ID
+   * Convenience method that loads an entire model and resolves all mappings that are used by this model
    * @param modelId
    * @return
    * @throws NotAuthorizedException
    */
-  ModelInfo getBasicInfo(ModelId modelId) throws NotAuthorizedException;
+  ModelInfo getByIdWithPlatformMappings(ModelId modelId) throws NotAuthorizedException;
 
   /**
    * Get all models in this repository which are referencing the given modelId
@@ -89,6 +89,15 @@ public interface IModelRepository {
    */
   ModelResource getEMFResource(ModelId modelId);
 
+  /**
+   * Saves a model resource in the repository
+   * @param resource
+   * @param user
+   * @return
+   */
+  ModelInfo save(ModelResource resource, IUserContext user);
+  
+  
   /**
    * 
    * @param modelId
