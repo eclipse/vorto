@@ -51,5 +51,16 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
     
     assertTrue(true);
   }
+  
+  /*
+   * Download file including dependencies
+   */
+  @Test
+  public void testModelFileDownloadContentWithDependencies() throws Exception {
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file"+"?includeDependencies=true").with(userCreator))
+        .andExpect(status().isOk());
+    
+    assertTrue(true);
+  }
 
 }
