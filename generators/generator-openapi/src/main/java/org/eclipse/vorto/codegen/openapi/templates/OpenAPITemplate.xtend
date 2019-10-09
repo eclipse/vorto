@@ -56,7 +56,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    description: "Bosch IoT Things Service"
 		tags:
 		  - name: Things
-		    description: List every Thing - «Utils.getReferencedFunctionBlocks(infomodel)»
+		    description: List every Thing
 		  - name: Features
 		    description: Features of your «infomodel.name» things
 		  - name: Messages
