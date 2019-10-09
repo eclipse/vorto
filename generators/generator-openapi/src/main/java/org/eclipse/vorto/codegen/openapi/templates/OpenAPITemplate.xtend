@@ -55,6 +55,8 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  - url: https://things.eu-1.bosch-iot-suite.com/api/2
 		    description: "Bosch IoT Things Service"
 		tags:
+		  - name: Things
+		    description: List every Thing - «Utils.getReferencedFunctionBlocks(infomodel)»
 		  - name: Features
 		    description: Features of your «infomodel.name» things
 		  - name: Messages
@@ -62,6 +64,113 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		security:
 		  - bearerAuth: []
 		paths:
+		  ###
+		  ### Things
+		  ###
+		  '/things':
+		    get:
+		      summary: List all available Things
+		      description: >-
+		          Returns all Things passed in by the required parameter `ids`. Optionally
+		          you can use field selectors (see parameter `fields`) to only get the
+		          specified fields.
+		      tags:
+		      - Things
+		      responses:
+		          '200':
+		            description: >-
+		              The successfully completed request contains as its result the first
+		              200 for the user available Things, sorted by their `thingId`.
+		            content:
+		              application/json:
+		                schema:
+		                  type: array
+		                  items:
+		                  $ref: '#/components/schemas/Thing'
+		          '400':
+		            description: >-
+		              The request could not be completed. At least one of the defined
+		              query parameters was invalid.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '401':
+		            description: The request could not be completed due to missing authentication.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '403':
+		            description: >-
+		              The request could not be completed due to a missing or invalid API
+		              Token.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '414':
+		            description: >-
+		              The request could not be completed due to an URI length exceeding 8k
+		              characters.
+		  '/things/{thingId}':
+		    get:
+		      summary: Retrieve a specific Thing
+		      description: >-
+		          Returns the Thing identified by the `thingId` path parameter. The
+		          response includes details about the Thing. Note that the Thing's Policy
+		          is not included in the response per default. Optionally you can use
+		          field selectors (see parameter `fields`) to only get the specified
+		          fields. E.g., you can get the Thing's Policy by using a field selector.
+		      tags:
+		      - Things
+		      parameters:
+		      - $ref: '#/components/parameters/thingIdPathParam'
+		      responses:
+		          '200':
+		            description: The request successfully returned the specific Thing.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/Thing'
+		          '304':
+		            $ref: '#/components/responses/notModified'
+		          '400':
+		            description: >-
+		              The request could not be completed. The `thingId` either
+
+		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
+		              * does not conform to RFC-2396 (URI)
+
+		              Or one of the defined query parameters was invalid.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '401':
+		            description: The request could not be completed due to missing authentication.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '403':
+		            description: >-
+		              The request could not be completed due to a missing or invalid API
+		              Token.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '404':
+		            description: >-
+		              The request could not be completed. The Thing with the given ID was
+		              not found.
+		            content:
+		              application/json:
+		                schema:
+		                  $ref: '#/components/schemas/AdvancedError'
+		          '412':
+		            $ref: '#/components/responses/preconditionFailed'
 		  ###
 		  ### «infomodel.name» Features
 		  ###
@@ -133,7 +242,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        '304':
 		          $ref: '#/components/responses/notModified'
 		        '400':
-		          description: |-
+		          description: >-
 		            The request could not be completed. The `thingId` either
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
@@ -373,6 +482,30 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - status
 		      - error
 		      - message
+		    Thing:
+		      type: object
+		      required:
+		      - thingId
+		      - policyId
+		      - attributes
+		      - features
+		      properties:
+		        thingId:
+		          type: string
+		          description: Unique identifier representing the thing
+		        policyId:
+		          type: string
+		          description: The policy ID used for controlling access to this thing, managed by resource `/policies/{policyId}`
+		        attributes:
+		          $ref: '#/components/schemas/Attributes'
+		        features:
+		          $ref: '#/components/schemas/Features'
+		    Attributes:
+		      type: object
+		      description: An arbitrary JSON object describing the attributes of a Thing.
+		    Features:
+		      type: object
+		      description: List of Features where the key represents the featureId of each Feature. The featureId key must be unique in the list.
 		    FeatureDefinition:
 		      type: array
 		      minItems: 1
