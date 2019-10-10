@@ -499,13 +499,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        attributes:
 		          $ref: '#/components/schemas/Attributes'
 		        features:
-		          $ref: '#/components/schemas/Features'
+		          $ref: '#/components/schemas/«infomodel.name»Features'
 		    Attributes:
 		      type: object
 		      description: An arbitrary JSON object describing the attributes of a Thing.
-		    Features:
-		      type: object
-		      description: List of Features where the key represents the featureId of each Feature. The featureId key must be unique in the list.
 		    FeatureDefinition:
 		      type: array
 		      minItems: 1
