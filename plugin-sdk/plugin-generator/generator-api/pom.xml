@@ -11,7 +11,9 @@
 	<packaging>jar</packaging>
 
 	<name>Vorto Code Generator API</name>
-
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
