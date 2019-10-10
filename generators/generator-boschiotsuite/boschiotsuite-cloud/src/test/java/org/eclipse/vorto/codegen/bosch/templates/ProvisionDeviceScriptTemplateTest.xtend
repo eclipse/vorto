@@ -25,7 +25,7 @@ class ProvisionDeviceScriptTemplateTest {
 
 	@Test
 	def void testCreateScriptWithSingleFb() {
-		var template = new ProvisionDeviceScriptTemplate();
+		var template = new ProvisionDeviceScriptTemplate(new ProvisioningAPIRequestTemplate);
 
 		var fbm = BuilderUtils.newFunctionblock(
 			new ModelId(ModelType.Functionblock, "Temperature", "org.eclipse.vorto", "1.0.0")).
@@ -96,7 +96,7 @@ class ProvisionDeviceScriptTemplateTest {
 
 	@Test
 	def void testCreateScriptWithMultipleFbs() {
-		var template = new ProvisionDeviceScriptTemplate();
+		var template = new ProvisionDeviceScriptTemplate(new ProvisioningAPIRequestTemplate);
 
 		var fbm = BuilderUtils.newFunctionblock(
 			new ModelId(ModelType.Functionblock, "Temperature", "org.eclipse.vorto", "1.0.0")).
@@ -172,7 +172,7 @@ class ProvisionDeviceScriptTemplateTest {
 
 	@Test
 	def void testCreateScriptWithFbContainingNestedDatatypes() {
-		var template = new ProvisionDeviceScriptTemplate();
+		var template = new ProvisionDeviceScriptTemplate(new ProvisioningAPIRequestTemplate);
 
 		var _enum = BuilderUtils.newEnum(new ModelId(ModelType.Datatype, "Units", "org.eclipse.vorto.types", "1.0.0"))
 		_enum.withLiterals("F", "C")
@@ -251,7 +251,7 @@ class ProvisionDeviceScriptTemplateTest {
 
 	@Test
 	def void testCreateScriptWithFbContainingEnum() {
-		var template = new ProvisionDeviceScriptTemplate();
+		var template = new ProvisionDeviceScriptTemplate(new ProvisioningAPIRequestTemplate);
 
 		var _enum = BuilderUtils.newEnum(new ModelId(ModelType.Datatype, "Units", "org.eclipse.vorto.types", "1.0.0"))
 		_enum.withLiterals("F", "C")

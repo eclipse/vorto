@@ -14,6 +14,7 @@ package org.eclipse.vorto.codegen.bosch;
 
 import org.eclipse.vorto.codegen.bosch.templates.BoschGeneratorConfigUI;
 import org.eclipse.vorto.codegen.bosch.templates.ProvisionDeviceScriptTemplate;
+import org.eclipse.vorto.codegen.bosch.templates.ProvisioningAPIRequestTemplate;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
@@ -24,16 +25,21 @@ import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
 import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
 
 public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
   private static final String KEY_PROVISION = "provision";
+  
+  private static final String KEY_BODY_TEMPLATE = "requestBodyOnly";
 
   private static final String KEY_LANGUAGE = "language";
 
   private static final String KEY = "boschiotsuite";
   
   private static final BoschGeneratorConfigUI CONFIG_TEMPLATE = new BoschGeneratorConfigUI();
+  
+  private static final ProvisioningAPIRequestTemplate REQUEST_TEMPLATE = new ProvisioningAPIRequestTemplate();
 
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
 
@@ -42,19 +48,23 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
     String platform = invocationContext.getConfigurationProperties().getOrDefault(KEY_LANGUAGE, "");
+    
     if (platform.equalsIgnoreCase("arduino")) {
       result.append(generateArduino(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("python")) {
       result.append(generatePython(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("java")) {
       result.append(generateJava(infomodel, invocationContext));
-    } 
-    
-    String provisionScript = invocationContext.getConfigurationProperties().getOrDefault(KEY_PROVISION, "false");
-    if ("true".equalsIgnoreCase(provisionScript)) {
-        new GeneratorTaskFromFileTemplate<>(new ProvisionDeviceScriptTemplate()).generate(infomodel, invocationContext, output);
+    } else if (invocationContext.getConfigurationProperties().getOrDefault(KEY_PROVISION, "false").equals("true")) {
+      SingleGenerationResult singleOutput = new SingleGenerationResult("application/json");
+      if (invocationContext.getConfigurationProperties().getOrDefault(KEY_BODY_TEMPLATE, "false").equals("true")) {
+        new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, singleOutput);
+      } else {
+        new GeneratorTaskFromFileTemplate<>(new ProvisionDeviceScriptTemplate(REQUEST_TEMPLATE)).generate(infomodel, invocationContext, singleOutput);
+      }
+      return singleOutput;
     }
-
+    
     return output;
   }
 
