@@ -11,7 +11,7 @@
 	<name>Vorto Code Generator Templates for Java</name>
 	
 	<properties>
-		<sonar.coverage.exclusions>src/main/xtend-gen/org/eclipse/vorto/codegen/templates/java/*</sonar.coverage.exclusions>
+		<sonar.skip>true</sonar.skip>
     </properties>
     	
 	<dependencies>

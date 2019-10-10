@@ -12,7 +12,7 @@
 	<name>Vorto Code Generator Template Plugin</name>
 
 	<properties>
-		<sonar.coverage.exclusions>src/main/xtend-gen/org/eclipse/vorto/codegen/template/**/*</sonar.coverage.exclusions>
+		<sonar.skip>true</sonar.skip>
     </properties>
     
 	<dependencies>
