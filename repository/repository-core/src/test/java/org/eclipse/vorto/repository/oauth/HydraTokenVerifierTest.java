@@ -98,6 +98,13 @@ public class HydraTokenVerifierTest {
     HydraTokenVerificationProvider verifier = new HydraTokenVerificationProvider(publicKey(), userAccountService);
     
     assertTrue(verifier.verify(httpRequest, JwtToken.instance(jwtToken).get()));
+    
+    HttpServletRequest httpRequest2 = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(httpRequest2.getRequestURI()).thenReturn("/infomodelrepository/api/v1/models/vorto.private.someoneelse:Datatype1:1.0.0");
+    Mockito.when(httpRequest2.getContextPath()).thenReturn("/infomodelrepository");
+    Mockito.when(httpRequest2.getMethod()).thenReturn("GET");
+    
+    assertFalse(verifier.verify(httpRequest2, JwtToken.instance(jwtToken).get()));
   }
   
 }
