@@ -25,7 +25,7 @@ public class FilterUtils {
     String authToken = request.getHeader(AUTHORIZATION);
     if (!Strings.nullToEmpty(authToken).trim().isEmpty()) {
       String[] tokenComposite = authToken.split(" ");
-      if (BEARER.equals(tokenComposite[0]) && !Strings.nullToEmpty(tokenComposite[1]).isEmpty()) {
+      if (BEARER.equalsIgnoreCase(tokenComposite[0]) && !Strings.nullToEmpty(tokenComposite[1]).isEmpty()) {
         return Optional.of(tokenComposite[1]);
       }
     }

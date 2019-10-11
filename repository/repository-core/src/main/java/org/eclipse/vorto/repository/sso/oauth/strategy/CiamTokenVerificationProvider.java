@@ -12,10 +12,12 @@
  */
 package org.eclipse.vorto.repository.sso.oauth.strategy;
 
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -24,16 +26,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.web.client.RestTemplate;
 
-public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
+public class CiamTokenVerificationProvider extends AbstractTokenVerificationProvider {
 
   protected static final String JWT_CLIENT_ID = "client_id";
   private String ciamClientId;
 
-  public CiamUserStrategy(RestTemplate restTemplate, String publicKeyUri,
+  public CiamTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
       IUserAccountService userAccountService, String clientId) {
-    super(restTemplate, publicKeyUri, userAccountService);
+    super(publicKeySupplier, userAccountService);
     this.ciamClientId = Objects.requireNonNull(clientId);
   }
 

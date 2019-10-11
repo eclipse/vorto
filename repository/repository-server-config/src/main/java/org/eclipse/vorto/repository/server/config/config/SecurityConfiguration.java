@@ -20,18 +20,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
-import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpPrincipalExtractor;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
-import org.eclipse.vorto.repository.sso.oauth.SimpleUserInfoServices;
+import org.eclipse.vorto.repository.sso.oauth.TokenVerifier;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
 import org.eclipse.vorto.repository.web.tenant.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.ui.AngularCsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -83,19 +81,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private OAuth2ClientContext oauth2ClientContext;
 
   @Autowired
-  @Qualifier("githubUserInfoTokenService")
-  private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
-
-  @Autowired
-  @Qualifier("simpleUserInfoServices")
-  private SimpleUserInfoServices simpleUserInfoService;
-
-  @Autowired
   private EidpResourceDetails eidp;
-
 
   @Value("${github.oauth2.resource.userInfoUri}")
   private String githubUserInfoEndpointUrl;
+  
+  @Value("${github.oauth2.client.clientId}")
+  private String githubClientId;
 
   @Value("${eidp.oauth2.resource.userInfoUri}")
   private String eidpUserInfoEndpointUrl;
@@ -167,7 +159,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .roles(ROLE_GENERATOR_PROVIDER);
   }
 
-
   @Bean
   public Filter anonymousFilter() {
     return new MyAnonymousAuthFilter();
@@ -193,11 +184,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter bearerTokenFilter() {
-    if (githubEnabled) {
-      return new AuthorizationTokenFilter(interceptedUserInfoTokenServices);
-    } else {
-      return new AuthorizationTokenFilter(simpleUserInfoService);
-    }
+    UserInfoTokenServices githubUserInfoService =
+        new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    TokenVerifier tokenVerifier = new TokenVerifier(githubUserInfoService);
+    return new AuthorizationTokenFilter(tokenVerifier);
   }
 
   private Filter ssoFilter() {
@@ -207,13 +197,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter githubFilter() {
-    return newSsoFilter("/github/login", interceptedUserInfoTokenServices, accessTokenProvider,
+    UserInfoTokenServices githubUserInfoService =
+        new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    return newSsoFilter("/github/login", githubUserInfoService, accessTokenProvider,
         new OAuth2RestTemplate(github, oauth2ClientContext), authoritiesExtractor("login"));
   }
 
   private Filter eidpFilter() {
-    SimpleUserInfoServices userInfoService =
-        new SimpleUserInfoServices(eidpUserInfoEndpointUrl, eidp);
+    UserInfoTokenServices userInfoService =
+        new UserInfoTokenServices(eidpUserInfoEndpointUrl, eidp.getClientId());
     userInfoService.setPrincipalExtractor(new EidpPrincipalExtractor());
     return newSsoFilter("/eidp/login", userInfoService, accessTokenProvider,
         new EidpOAuth2RestTemplate(eidp, oauth2ClientContext), authoritiesExtractor("sub"));

@@ -12,11 +12,13 @@
  */
 package org.eclipse.vorto.repository.sso.oauth.strategy;
 
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -26,9 +28,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.web.client.RestTemplate;
 
-public class KeycloakUserStrategy extends AbstractVerifyAndIdStrategy {
+public class KeycloakTokenVerificationProvider extends AbstractTokenVerificationProvider {
 
   private static final String RESOURCE_ACCESS = "resource_access";
   private static final String CLIENT_ID = "clientId";
@@ -37,9 +38,9 @@ public class KeycloakUserStrategy extends AbstractVerifyAndIdStrategy {
 
   private String ciamClientId;
 
-  public KeycloakUserStrategy(RestTemplate restTemplate, String publicKeyUri,
+  public KeycloakTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
       IUserAccountService userAccountService, String clientId, String resourceClientId) {
-    super(restTemplate, publicKeyUri, userAccountService);
+    super(publicKeySupplier, userAccountService);
     this.ciamClientId = Objects.requireNonNull(clientId);
     this.resourceClientId = Objects.requireNonNull(resourceClientId);
   }

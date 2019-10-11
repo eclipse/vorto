@@ -17,13 +17,14 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.sso.oauth.JwtVerifyAndIdStrategy;
+import org.eclipse.vorto.repository.sso.oauth.TokenVerificationProvider;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-import org.springframework.web.client.RestTemplate;
 
-public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrategy {
+public abstract class AbstractTokenVerificationProvider implements TokenVerificationProvider {
 
   protected static final String JWT_EMAIL = "email";
   private static final String JWT_EXPIRY = "exp";
@@ -31,24 +32,22 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
   protected static final String JWT_SUB = "sub";
   private static final String KEY_ID = "kid";
 
-  private PublicKeyHelper publicKeyHelper;
+  private Supplier<Map<String, PublicKey>> publicKeySupplier;
   private Map<String, PublicKey> publicKeys = null;
-  private String publicKeyUri = null;
   protected IUserAccountService userAccountService;
 
-  public AbstractVerifyAndIdStrategy(RestTemplate restTemplate, String publicKeyUri,
+  public AbstractTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
       IUserAccountService userAccountService) {
-    this.publicKeyHelper = PublicKeyHelper.instance(restTemplate);
-    this.publicKeyUri = Objects.requireNonNull(publicKeyUri);
     this.userAccountService = Objects.requireNonNull(userAccountService);
+    this.publicKeySupplier = Objects.requireNonNull(publicKeySupplier);
   }
 
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
   @Override
-  public boolean verify(JwtToken jwtToken) {
+  public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
     if (publicKeys == null || publicKeys.isEmpty()) {
-      publicKeys = publicKeyHelper.getPublicKey(publicKeyUri);
+      publicKeys = publicKeySupplier.get();
     }
 
     String keyId = (String) jwtToken.getHeaderMap().get(KEY_ID);
@@ -68,9 +67,9 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
       if (payloadMap.containsKey(JWT_EXPIRY)) {
         Optional<Instant> expirationDate =
             Optional.ofNullable(Double.valueOf((double) payloadMap.get(JWT_EXPIRY)).longValue())
-                .map(Instant::ofEpochSecond);
+                .map(Instant::ofEpochSecond); 
         if (expirationDate.isPresent() && expirationDate.get().isBefore(Instant.now())) {
-          return false;
+          //return false;
         }
       }
 
