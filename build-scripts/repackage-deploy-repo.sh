@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# this script is to repackage repository jar with neccessory jars
+# this script is to repackage repository jar with necessary jars
 #
 pwd
 export GIT_BRANCH=$TRAVIS_BRANCH

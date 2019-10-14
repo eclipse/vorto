@@ -64,17 +64,13 @@ jobs:
       deploy:
         - provider: script
           script: bash docker/docker_push
+          skip_cleanup: true
           on:
-            tags: true
-            branch: 
-              - development
-              - master
-            
+            all_branches: true
+                  
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
-            branch: 
-              - development
-              - master
-                                   
+            all_branches: true
+            
