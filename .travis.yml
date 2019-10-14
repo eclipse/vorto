@@ -76,5 +76,7 @@ jobs:
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
-            all_branches: true
+            branch: 
+              - development
+              - master
             
