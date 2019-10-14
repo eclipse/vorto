@@ -64,9 +64,13 @@ jobs:
       deploy:
         - provider: script
           script: bash docker/docker_push
-          skip_cleanup: true
           on:
-            all_branches: true
+            tags: true
+        
+        - provider: script
+          script: bash docker/docker_push
+          on:
+            branch: development
                   
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
