@@ -2,7 +2,6 @@
 export IMAGE_TAG=$TRAVIS_TAG;
 echo "TRAVIS_TAG is $TRAVIS_TAG"
 echo "$DOCKER_PASSWORD" | docker login -username "$DOCKER_USERNAME" --password-stdin
-echo "logged in docker"
 if [[ -n "$IMAGE_TAG" ]]; then
 echo "IMAGE_TAG is $IMAGE_TAG"
 docker push eclipsevorto/vorto-repo:latest
