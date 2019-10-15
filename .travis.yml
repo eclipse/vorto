@@ -70,7 +70,7 @@ jobs:
         - provider: script
           script: bash docker/docker_push
           on:
-            branch: development
+            branch: dockerfix
                   
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
