@@ -71,7 +71,7 @@ jobs:
           script: bash docker/docker_push
           on:
             branch: development
-                  
+            
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
@@ -79,4 +79,3 @@ jobs:
             branch: 
               - development
               - master
-            
