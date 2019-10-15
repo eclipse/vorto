@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
@@ -41,6 +42,7 @@ import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelEvent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.Operation;
 import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.PrimitiveType;
@@ -166,7 +168,56 @@ public class ModelContentToEcoreConverterTest {
     assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
     assertEquals(1, model.getFunctionblock().getConfiguration().getProperties().size());
   }
-  
+
+  /*
+   * Check whether the multiple keyword is deserialized when present
+   */
+  @Test
+  public void testConvertFunctionblockStatusPropertiesWithMultiple() {
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", PrimitiveType.FLOAT).multiple().build())
+            .build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel model =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
+            .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
+
+    List<Property> propertyList = model.getFunctionblock().getStatus().getProperties();
+    boolean isMultiple = false;
+    for (Property prop : propertyList) {
+      isMultiple = prop.isMultiplicity();
+    }
+    assertEquals(true, isMultiple);
+  }
+
+  /*
+   * Check whether the multiple keyword is not deserialized when absent
+   */
+  @Test
+  public void testConvertFunctionblockStatusPropertiesWithoutMultiple() {
+    FunctionblockModel fbModel =
+        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+            .statusProperty(ModelProperty.Builder("value", PrimitiveType.FLOAT).build()).build();
+
+    ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel model =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
+            .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
+
+    List<Property> propertyList = model.getFunctionblock().getStatus().getProperties();
+    boolean isMultiple = false;
+    for (Property prop : propertyList) {
+      isMultiple = prop.isMultiplicity();
+    }
+    assertEquals(false, isMultiple);
+  }
+
+
+
   @Test
   public void testConvertFunctionblockWithDictionaryTypeWithoutParameters() {
     FunctionblockModel fbModel =
@@ -180,15 +231,17 @@ public class ModelContentToEcoreConverterTest {
         (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
             .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
     assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
-    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0).getType() instanceof DictionaryPropertyType);
+    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0)
+        .getType() instanceof DictionaryPropertyType);
   }
-  
+
   @Test
   public void testConvertFunctionblockWithDictionaryTypeWithPrimitiveParameters() {
-    FunctionblockModel fbModel =
-        FunctionblockModel.Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
-            .statusProperty(ModelProperty.Builder("value", new DictionaryType(PrimitiveType.STRING, PrimitiveType.INT)).build())
-            .build();
+    FunctionblockModel fbModel = FunctionblockModel
+        .Builder(ModelId.fromPrettyFormat("org.eclipse.vorto:Sensor:1.0.0"))
+        .statusProperty(ModelProperty
+            .Builder("value", new DictionaryType(PrimitiveType.STRING, PrimitiveType.INT)).build())
+        .build();
 
     ModelContentToEcoreConverter converter = new ModelContentToEcoreConverter();
 
@@ -196,9 +249,12 @@ public class ModelContentToEcoreConverterTest {
         (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) converter
             .convert(ModelContent.Builder(fbModel).build(), Optional.empty());
     assertEquals(1, model.getFunctionblock().getStatus().getProperties().size());
-    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0).getType() instanceof DictionaryPropertyType);
-    assertNotNull(((DictionaryPropertyType)model.getFunctionblock().getStatus().getProperties().get(0).getType()).getKeyType() instanceof PrimitivePropertyType);
-    assertNotNull(((DictionaryPropertyType)model.getFunctionblock().getStatus().getProperties().get(0).getType()).getValueType() instanceof PrimitivePropertyType);
+    assertTrue(model.getFunctionblock().getStatus().getProperties().get(0)
+        .getType() instanceof DictionaryPropertyType);
+    assertNotNull(((DictionaryPropertyType) model.getFunctionblock().getStatus().getProperties()
+        .get(0).getType()).getKeyType() instanceof PrimitivePropertyType);
+    assertNotNull(((DictionaryPropertyType) model.getFunctionblock().getStatus().getProperties()
+        .get(0).getType()).getValueType() instanceof PrimitivePropertyType);
 
   }
 
@@ -220,7 +276,7 @@ public class ModelContentToEcoreConverterTest {
     assertEquals(1, model.getRules().size());
     assertEquals("OBJECT", ((StereoTypeTarget) model.getRules().get(0).getTarget()).getName());
     assertTrue(model.getRules().get(0).getSources().get(0) instanceof StatusSource);
-    assertNotNull(((StatusSource)model.getRules().get(0).getSources().get(0)).getModel());
+    assertNotNull(((StatusSource) model.getRules().get(0).getSources().get(0)).getModel());
   }
 
   @Test
@@ -245,7 +301,7 @@ public class ModelContentToEcoreConverterTest {
 
     assertEquals("some operation", op1.getDescription());
     assertEquals(1, op1.getParams().size());
-    assertEquals("p1",op1.getParams().get(0).getName());
+    assertEquals("p1", op1.getParams().get(0).getName());
     assertEquals(org.eclipse.vorto.core.api.model.datatype.PrimitiveType.INT,
         ((PrimitiveParam) op1.getParams().get(0)).getType());
 

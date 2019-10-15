@@ -83,11 +83,11 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     InformationModelPackageImpl.init();
     MappingPackageImpl.init();
   }
-  
+
   @Override
   public Model convert(ModelContent source, Optional<String> platformKey) {
     IModel model = source.getModels().get(source.getRoot());
-    return convert(model, source,platformKey);
+    return convert(model, source, platformKey);
   }
 
   private Model convert(IModel model, ModelContent context, Optional<String> platformKey) {
@@ -96,7 +96,9 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     } else if (model instanceof EnumModel) {
       return convertEnum((EnumModel) model);
     } else if (model instanceof FunctionblockModel) {
-      return platformKey.isPresent() ? convertFunctionblockMapping((FunctionblockModel) model, context,platformKey.get()) : convertFunctionblock((FunctionblockModel) model, context);
+      return platformKey.isPresent()
+          ? convertFunctionblockMapping((FunctionblockModel) model, context, platformKey.get())
+          : convertFunctionblock((FunctionblockModel) model, context);
     } else if (model instanceof Infomodel) {
       return convertInformationModel((Infomodel) model, context);
     } else {
@@ -106,13 +108,18 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
 
   private Model convertFunctionblockMapping(FunctionblockModel model, ModelContent context,
       String platformKey) {
-    MappingBuilder builder = BuilderUtils.newMapping(new ModelId(ModelType.InformationModel, model.getId().getName()+"Mapping",model.getId().getNamespace()+".mapping."+platformKey,model.getId().getVersion()),platformKey);
+    MappingBuilder builder = BuilderUtils.newMapping(
+        new ModelId(ModelType.InformationModel, model.getId().getName() + "Mapping",
+            model.getId().getNamespace() + ".mapping." + platformKey, model.getId().getVersion()),
+        platformKey);
     builder.withVortolang("1.0");
-    builder.withDescription("Mapping that contains "+platformKey+" specific meta data");
-    builder.withReference(ModelIdFactory.newInstance(ModelType.Functionblock, model.getId().getNamespace(), model.getId().getVersion(), model.getId().getVersion()));
-    
-    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel eFbm = convertFunctionblock(model, context);
-    
+    builder.withDescription("Mapping that contains " + platformKey + " specific meta data");
+    builder.withReference(ModelIdFactory.newInstance(ModelType.Functionblock,
+        model.getId().getNamespace(), model.getId().getVersion(), model.getId().getVersion()));
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel eFbm =
+        convertFunctionblock(model, context);
+
     for (Stereotype stereotype : model.getStereotypes()) {
       MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
       ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
@@ -121,75 +128,90 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       ruleBuilder.withSource(source);
       builder.addRule(ruleBuilder.build());
     }
-    
+
     for (ModelProperty statusProperty : model.getStatusProperties()) {
       for (Stereotype stereotype : statusProperty.getStereotypes()) {
         MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
         ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
-        StatusSource  source = MappingFactory.eINSTANCE.createStatusSource();
+        StatusSource source = MappingFactory.eINSTANCE.createStatusSource();
         source.setModel(eFbm);
-        source.setProperty(eFbm.getFunctionblock().getStatus().getProperties().stream().filter(property -> property.getName().equals(statusProperty.getName())).findAny().get());
+        source.setProperty(eFbm.getFunctionblock().getStatus().getProperties().stream()
+            .filter(property -> property.getName().equals(statusProperty.getName())).findAny()
+            .get());
         ruleBuilder.withSource(source);
         builder.addRule(ruleBuilder.build());
       }
     }
-    
+
     for (ModelProperty configProperty : model.getConfigurationProperties()) {
       for (Stereotype stereotype : configProperty.getStereotypes()) {
         MappingRuleBuilder ruleBuilder = new MappingRuleBuilder();
         ruleBuilder.withStereotypeTarget(stereotype.getName(), stereotype.getAttributes());
-        ConfigurationSource  source = MappingFactory.eINSTANCE.createConfigurationSource();
+        ConfigurationSource source = MappingFactory.eINSTANCE.createConfigurationSource();
         source.setModel(eFbm);
-        source.setProperty(eFbm.getFunctionblock().getConfiguration().getProperties().stream().filter(property -> property.getName().equals(configProperty.getName())).findAny().get());
+        source.setProperty(eFbm.getFunctionblock().getConfiguration().getProperties().stream()
+            .filter(property -> property.getName().equals(configProperty.getName())).findAny()
+            .get());
         ruleBuilder.withSource(source);
         builder.addRule(ruleBuilder.build());
       }
     }
-    
+
     return builder.build();
   }
-  
+
   private InformationModel convertInformationModel(Infomodel model, ModelContent context) {
-    InformationModelBuilder builder = BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel, model.getId().getName(),
-        model.getId().getNamespace(), model.getId().getVersion()));
-    
+    InformationModelBuilder builder =
+        BuilderUtils.newInformationModel(new ModelId(ModelType.InformationModel,
+            model.getId().getName(), model.getId().getNamespace(), model.getId().getVersion()));
+
     builder.withCategory(model.getCategory());
     builder.withDescription(model.getDescription());
     builder.withDisplayName(model.getDisplayName());
     builder.withVortolang(model.getVortolang());
-    
+
     for (ModelProperty property : model.getFunctionblocks()) {
-      FunctionblockModel fbModel = (FunctionblockModel)context.getModels().get((org.eclipse.vorto.model.ModelId)property.getType());
-      org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertedFb = (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)convertFunctionblock(fbModel,context);
+      FunctionblockModel fbModel = (FunctionblockModel) context.getModels()
+          .get((org.eclipse.vorto.model.ModelId) property.getType());
+      org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertedFb =
+          (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) convertFunctionblock(
+              fbModel, context);
       builder.withReference(ModelIdFactory.newInstance(convertedFb));
-      builder.withFunctionBlock(convertedFb, property.getName(),property.getDescription(), property.isMandatory());
+      builder.withFunctionBlock(convertedFb, property.getName(), property.getDescription(),
+          property.isMandatory());
     }
-    
+
     return builder.build();
   }
-  
-  private Property createProperty(ModelProperty sourceProperty, ModelBuilder<?> builder, ModelContent context) {
+
+  private Property createProperty(ModelProperty sourceProperty, ModelBuilder<?> builder,
+      ModelContent context) {
     Property property = DatatypeFactory.eINSTANCE.createProperty();
     property.setName(sourceProperty.getName());
-    property.setType(createPropertyType(sourceProperty.getType(), builder, context));   
+    property.setType(createPropertyType(sourceProperty.getType(), builder, context));
     property.setDescription(sourceProperty.getDescription());
-    Presence presence = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createPresence();
+    Presence presence =
+        org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createPresence();
     presence.setMandatory(sourceProperty.isMandatory());
     property.setPresence(presence);
-    
-    org.eclipse.vorto.core.api.model.datatype.ConstraintRule rule = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraintRule();
+    property.setMultiplicity(sourceProperty.isMultiple());
+
+    org.eclipse.vorto.core.api.model.datatype.ConstraintRule rule =
+        org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraintRule();
     for (Constraint constraint : sourceProperty.getConstraints()) {
-      org.eclipse.vorto.core.api.model.datatype.Constraint eConstraint = org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraint();
+      org.eclipse.vorto.core.api.model.datatype.Constraint eConstraint =
+          org.eclipse.vorto.core.api.model.datatype.DatatypeFactory.eINSTANCE.createConstraint();
       eConstraint.setConstraintValues(constraint.getValue());
       eConstraint.setType(ConstraintIntervalType.valueOf(constraint.getType().name()));
       rule.getConstraints().add(eConstraint);
     }
     property.setConstraintRule(rule);
-    
+
     return property;
   }
-  
-  private PropertyType createPropertyType(IReferenceType referenceType,ModelBuilder<?> builder, ModelContent context) {
+
+  private PropertyType createPropertyType(IReferenceType referenceType, ModelBuilder<?> builder,
+      ModelContent context) {
     if (referenceType instanceof PrimitiveType) {
       PrimitivePropertyType primitive = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
       primitive.setType(org.eclipse.vorto.core.api.model.datatype.PrimitiveType
@@ -197,15 +219,15 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
       return primitive;
     } else if (referenceType instanceof org.eclipse.vorto.model.ModelId) {
       IModel referencedModel =
-          context.getModels().get((org.eclipse.vorto.model.ModelId)referenceType);
-      Type convertedReference = (Type)convert(referencedModel, context,Optional.empty());
+          context.getModels().get((org.eclipse.vorto.model.ModelId) referenceType);
+      Type convertedReference = (Type) convert(referencedModel, context, Optional.empty());
       builder.withReference(ModelIdFactory.newInstance(convertedReference));
       ObjectPropertyType objType = DatatypeFactory.eINSTANCE.createObjectPropertyType();
       objType.setType(convertedReference);
-      return objType;      
+      return objType;
     } else if (referenceType instanceof DictionaryType) {
-      DictionaryType dictionaryType = (DictionaryType)referenceType;
-      
+      DictionaryType dictionaryType = (DictionaryType) referenceType;
+
       DictionaryPropertyType dictionary = DatatypeFactory.eINSTANCE.createDictionaryPropertyType();
       if (dictionaryType.getKey() != null) {
         dictionary.setKeyType(createPropertyType(dictionaryType.getKey(), builder, context));
@@ -219,7 +241,8 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     }
   }
 
-  private org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertFunctionblock(FunctionblockModel model, ModelContent context) {
+  private org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertFunctionblock(
+      FunctionblockModel model, ModelContent context) {
     FunctionblockBuilder builder =
         BuilderUtils.newFunctionblock(new ModelId(ModelType.Functionblock, model.getId().getName(),
             model.getId().getNamespace(), model.getId().getVersion()));
@@ -240,26 +263,28 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
 
     for (Operation operation : model.getOperations()) {
       builder.withOperation(operation.getName(),
-          createReturnTypeOrNull(operation.getResult(), builder, context),operation.getDescription(),
-          operation.isBreakable(), createParams(operation.getParams(), builder, context));
+          createReturnTypeOrNull(operation.getResult(), builder, context),
+          operation.getDescription(), operation.isBreakable(),
+          createParams(operation.getParams(), builder, context));
     }
-    
+
     for (ModelEvent event : model.getEvents()) {
-     EventBuilder eventBuilder = BuilderUtils.newEvent(event.getName());
-      
-     for (ModelProperty sourceProperty : event.getProperties()) {
-       Property property = createProperty(sourceProperty, builder, context);
-       eventBuilder.withProperty(property);
-     }
-     
-     builder.withEvent(eventBuilder.build());
+      EventBuilder eventBuilder = BuilderUtils.newEvent(event.getName());
+
+      for (ModelProperty sourceProperty : event.getProperties()) {
+        Property property = createProperty(sourceProperty, builder, context);
+        eventBuilder.withProperty(property);
+      }
+
+      builder.withEvent(eventBuilder.build());
     }
 
     return builder.build();
   }
-  
 
-  private Param[] createParams(List<org.eclipse.vorto.model.Param> params, ModelBuilder<?> builder, ModelContent context) {
+
+  private Param[] createParams(List<org.eclipse.vorto.model.Param> params, ModelBuilder<?> builder,
+      ModelContent context) {
     List<Param> ecoreParams = new ArrayList<>();
     for (org.eclipse.vorto.model.Param param : params) {
       if (param.getType() instanceof PrimitiveType) {
@@ -270,28 +295,30 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
             .valueOf(((PrimitiveType) param.getType()).name())));
         ecoreParams.add(type);
       } else if (param.getType() instanceof org.eclipse.vorto.model.ModelId) {
-        RefParam type  = FunctionblockFactory.eINSTANCE.createRefParam();
+        RefParam type = FunctionblockFactory.eINSTANCE.createRefParam();
         type.setMultiplicity(param.isMultiple());
         type.setName(param.getName());
         type.setType((Type) convert(
-            context.getModels().get((org.eclipse.vorto.model.ModelId) param.getType()), context,Optional.empty()));
+            context.getModels().get((org.eclipse.vorto.model.ModelId) param.getType()), context,
+            Optional.empty()));
         ecoreParams.add(type);
       } else if (param.getType() instanceof DictionaryType) {
         DictonaryParam type = FunctionblockFactory.eINSTANCE.createDictonaryParam();
         type.setName(param.getName());
         type.setMultiplicity(param.isMultiple());
-        type.setType((DictionaryPropertyType)createPropertyType(param.getType(), builder, context));
+        type.setType(
+            (DictionaryPropertyType) createPropertyType(param.getType(), builder, context));
         ecoreParams.add(type);
       } else {
         return null;
       }
     }
-    
+
     return ecoreParams.toArray(new Param[ecoreParams.size()]);
   }
 
-  private ReturnType createReturnTypeOrNull(org.eclipse.vorto.model.ReturnType result, FunctionblockBuilder builder, 
-      ModelContent context) {
+  private ReturnType createReturnTypeOrNull(org.eclipse.vorto.model.ReturnType result,
+      FunctionblockBuilder builder, ModelContent context) {
     if (result == null) {
       return null;
     } else {
@@ -305,14 +332,16 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
         ReturnObjectType type = FunctionblockFactory.eINSTANCE.createReturnObjectType();
         type.setMultiplicity(result.isMultiple());
         Type convertedType = ((Type) convert(
-            context.getModels().get((org.eclipse.vorto.model.ModelId) result.getType()), context,Optional.empty()));
+            context.getModels().get((org.eclipse.vorto.model.ModelId) result.getType()), context,
+            Optional.empty()));
         builder.withReference(ModelIdFactory.newInstance(convertedType));
         type.setReturnType(convertedType);
         return type;
       } else if (result.getType() instanceof DictionaryType) {
         ReturnDictonaryType type = FunctionblockFactory.eINSTANCE.createReturnDictonaryType();
         type.setMultiplicity(result.isMultiple());
-        type.setReturnType((DictionaryPropertyType)createPropertyType(result.getType(), builder, context));
+        type.setReturnType(
+            (DictionaryPropertyType) createPropertyType(result.getType(), builder, context));
         return type;
       } else {
         return null;
@@ -346,7 +375,7 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     builder.withReferences(entity.getReferences().stream()
         .map(r -> new ModelId(ModelType.Datatype, r.getName(), r.getNamespace(), r.getVersion()))
         .collect(Collectors.toList()));
-    
+
     for (ModelProperty sourceProperty : entity.getProperties()) {
       Property property = createProperty(sourceProperty, builder, context);
       builder.withProperty(property);
