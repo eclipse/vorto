@@ -64,12 +64,12 @@
                 <dependency>
                         <groupId>org.apache.tomcat.embed</groupId>
                         <artifactId>tomcat-embed-websocket</artifactId>
-                        <version>8.5.32</version>
+                        <version>${tomcat-embed.version}</version>
                 </dependency>
                 <dependency>
                         <groupId>org.apache.tomcat.embed</groupId>
                         <artifactId>tomcat-embed-core</artifactId>
-                        <version>8.5.34</version>
+                        <version>${tomcat-embed.version}</version>
                 </dependency>
 
 		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
