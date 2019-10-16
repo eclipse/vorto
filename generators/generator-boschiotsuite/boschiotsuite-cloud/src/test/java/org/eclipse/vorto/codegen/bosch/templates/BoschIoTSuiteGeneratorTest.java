@@ -73,26 +73,7 @@ public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
     InvocationContext context = new InvocationContext(mappingModels, configProperties);
     SingleGenerationResult singleGenerationResult =
         (SingleGenerationResult) boschIOTSuiteGenerator.generate(modelProvider(), context);
-    File defaultFile = new File(getClass().getClassLoader()
-        .getResource("defaultFileFormat/Provisioning_MySensor.json").toURI());
-    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
-        new String(singleGenerationResult.getContent(), "utf-8"));
-  }
+    assertEquals("Provisioning_MySensor.postman.json", singleGenerationResult.getFileName());
 
-  /*
-   * Check if provisioning file with request only is returned when config property is passed as
-   * requestBodyOnly to BoschIOTSuiteGenerator
-   */
-  @Test
-  public void generateProvisionRequestBodyOnly() throws Exception {
-    configProperties.put("provision", "true");
-    configProperties.put("requestBodyOnly", "true");
-    InvocationContext context = new InvocationContext(mappingModels, configProperties);
-    SingleGenerationResult singleGenerationResult =
-        (SingleGenerationResult) boschIOTSuiteGenerator.generate(modelProvider(), context);
-    File defaultFile = new File(getClass().getClassLoader()
-        .getResource("defaultFileFormat/provisioningRequest.json").toURI());
-    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
-        new String(singleGenerationResult.getContent(), "utf-8"));
   }
 }
