@@ -12,6 +12,7 @@ import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,7 @@ public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
   Map<String, String> configProperties = new HashMap<>();
 
   /*
-   * Check if cpp file is generated when language is passed as arduino to
-   * BoschIOTSuiteGenerator
+   * Check if cpp file is generated when language is passed as arduino to BoschIOTSuiteGenerator
    */
   @Test
   public void generateArduino() throws Exception {
@@ -38,8 +38,7 @@ public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
   }
 
   /*
-   * Check if python file is generated when language is passed as python to
-   * BoschIOTSuiteGenerator
+   * Check if python file is generated when language is passed as python to BoschIOTSuiteGenerator
    */
   @Test
   public void generatePython() throws Exception {
@@ -52,8 +51,7 @@ public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
   }
 
   /*
-   * Check if java file is generated when language is passed as java to
-   * BoschIOTSuiteGenerator
+   * Check if java file is generated when language is passed as java to BoschIOTSuiteGenerator
    */
   @Test
   public void generateJava() throws Exception {
@@ -66,14 +64,35 @@ public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
   }
 
   /*
-   * Check if SingleGenerationResult is returned when config property is passed as provision to
+   * Check if provisioning script file is returned when config property is passed as provision to
    * BoschIOTSuiteGenerator
    */
   @Test
   public void generateProvisionTrue() throws Exception {
     configProperties.put("provision", "true");
     InvocationContext context = new InvocationContext(mappingModels, configProperties);
-    assertEquals(true, boschIOTSuiteGenerator.generate(modelProvider(),
-        context) instanceof SingleGenerationResult);
+    SingleGenerationResult singleGenerationResult =
+        (SingleGenerationResult) boschIOTSuiteGenerator.generate(modelProvider(), context);
+    File defaultFile = new File(getClass().getClassLoader()
+        .getResource("defaultFileFormat/Provisioning_MySensor.json").toURI());
+    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
+        new String(singleGenerationResult.getContent(), "utf-8"));
+  }
+
+  /*
+   * Check if provisioning file with request only is returned when config property is passed as
+   * requestBodyOnly to BoschIOTSuiteGenerator
+   */
+  @Test
+  public void generateProvisionRequestBodyOnly() throws Exception {
+    configProperties.put("provision", "true");
+    configProperties.put("requestBodyOnly", "true");
+    InvocationContext context = new InvocationContext(mappingModels, configProperties);
+    SingleGenerationResult singleGenerationResult =
+        (SingleGenerationResult) boschIOTSuiteGenerator.generate(modelProvider(), context);
+    File defaultFile = new File(getClass().getClassLoader()
+        .getResource("defaultFileFormat/provisioningRequest.json").toURI());
+    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
+        new String(singleGenerationResult.getContent(), "utf-8"));
   }
 }

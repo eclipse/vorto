@@ -1,0 +1,49 @@
+{
+	"variables": [],
+	"info": {
+		"name": "MySensor Provisioning",
+		"_postman_id": "8147ad0e-c8f1-e51f-a036-73a13a4c567f",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Provision Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable(\"service-instance-id\", \"1234\");",
+							"postman.setEnvironmentVariable(\"device-password\", \"secret\");",
+							"postman.setEnvironmentVariable(\"device-id\", \"com.mycompany:4711\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://deviceprovisioning.eu-1.bosch-iot-suite.com/api/1/{{service-instance-id}}/devices",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer ADD_BEARER_TOKEN_HERE",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{device-id}}\",\r\n  \"hub\": {\r\n    \"device\": {\r\n      \"enabled\": true\r\n    },\r\n    \"credentials\": {\r\n      \"type\": \"hashed-password\",\r\n      \"secrets\": [\r\n        {\r\n          \"password\": \"{{device-password}}\"\r\n        }\r\n      ]\r\n    }\r\n  },\r\n  \"things\": {\r\n    \"thing\": {\r\n      \"attributes\": {\r\n    \t\"thingName\": \"MySensor\",\r\n    \t\"definition\": \"org.eclipse.vorto:MySensor:1.0.0\"\r\n    \t },\r\n  \t\"features\": {\r\n  \t\"statusPropertiesFunctionBlock\" : {\r\n  \t\"definition\": [\r\n  \t\t\"org.eclipse.vorto:StatusPropertiesFunctionBlock:1.0.0\"\r\n  \t],\r\n  \t\"properties\": {\r\n  \t\t\"status\": {\r\n  \t\t\t\"statusValue\" : {\r\n  \t\t\t\t\"value\" : 0.0,\r\n  \t\t\t\t\"unitEnum\" : \"KG\"\r\n  \t\t\t},\r\n  \t\t\t\"statusBoolean\" : false\r\n  \t\t}\r\n  \t}\r\n  \t},\r\n  \t\"configPropertiesFunctionBlock\" : {\r\n  \t\"definition\": [\r\n  \t\t\"org.eclipse.vorto:ConfigPropertiesFunctionBlock:1.0.0\"\r\n  \t],\r\n  \t\"properties\": {\r\n  \t\t\"configuration\": {\r\n  \t\t\t\"configValue\" : {\r\n  \t\t\t\t\"value\" : 0.0,\r\n  \t\t\t\t\"unitEnum\" : \"KG\"\r\n  \t\t\t},\r\n  \t\t\t\"configBoolean\" : false\r\n  \t\t}\r\n  \t}\r\n  \t},\r\n  \t\"eventsAndOperationsFunctionBlock\" : {\r\n  \t\"definition\": [\r\n  \t\t\"org.eclipse.vorto:eventsAndOperationsFunctionBlock:1.0.0\"\r\n  \t],\r\n  \t\"properties\": {\r\n  \t}\r\n  \t}\r\n  }\r\n}\r\n}\r\n}\r\n"
+				},
+				"description": "Provisions the MySensor in the Bosch IoT Suite"
+			},
+			"response": []
+		}
+	]
+}

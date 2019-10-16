@@ -1,0 +1,61 @@
+{
+  "id": "{{device-id}}",
+  "hub": {
+    "device": {
+      "enabled": true
+    },
+    "credentials": {
+      "type": "hashed-password",
+      "secrets": [
+        {
+          "password": "{{device-password}}"
+        }
+      ]
+    }
+  },
+  "things": {
+    "thing": {
+      "attributes": {
+    	"thingName": "MySensor",
+    	"definition": "org.eclipse.vorto:MySensor:1.0.0"
+    	 },
+  	"features": {
+  	"statusPropertiesFunctionBlock" : {
+  	"definition": [
+  		"org.eclipse.vorto:StatusPropertiesFunctionBlock:1.0.0"
+  	],
+  	"properties": {
+  		"status": {
+  			"statusValue" : {
+  				"value" : 0.0,
+  				"unitEnum" : "KG"
+  			},
+  			"statusBoolean" : false
+  		}
+  	}
+  	},
+  	"configPropertiesFunctionBlock" : {
+  	"definition": [
+  		"org.eclipse.vorto:ConfigPropertiesFunctionBlock:1.0.0"
+  	],
+  	"properties": {
+  		"configuration": {
+  			"configValue" : {
+  				"value" : 0.0,
+  				"unitEnum" : "KG"
+  			},
+  			"configBoolean" : false
+  		}
+  	}
+  	},
+  	"eventsAndOperationsFunctionBlock" : {
+  	"definition": [
+  		"org.eclipse.vorto:eventsAndOperationsFunctionBlock:1.0.0"
+  	],
+  	"properties": {
+  	}
+  	}
+  }
+}
+}
+}
