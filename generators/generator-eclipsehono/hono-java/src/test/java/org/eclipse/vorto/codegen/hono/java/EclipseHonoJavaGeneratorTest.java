@@ -30,6 +30,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ParsingException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EclipseHonoJavaGeneratorTest extends AbstractGeneratorTest {
 
   ICodeGenerator eclipseHonoJavaGenerator = new EclipseHonoJavaGenerator();

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import javax.annotation.Generated;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
@@ -22,9 +23,10 @@ import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
-import org.eclipse.vorto.plugin.generator.utils.Generated;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
 
   ICodeGenerator eclipseArduinoGenerator = new ArduinoCodeGenerator();

@@ -22,8 +22,10 @@ import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.plugin.generator.utils.Generated;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EclipseHonoPythonGeneratorTest extends AbstractGeneratorTest {
 
   PythonGenerator pythonGenerator = new PythonGenerator();
