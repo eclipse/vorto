@@ -2,6 +2,18 @@
 
 <br />
 
+## 0.12.2
+
+**Bugfixes**
+
+- Fixes security vulnerability in an embedded tomcat core [#2026](https://github.com/eclipse/vorto/issues/2026)
+- Fixes bug, that keyword 'multiple' was ignored for generators [#2004](https://github.com/eclipse/vorto/issues/2004)
+- Fixes bug, that OpenAPI was missing a few Bosch IoT Things resources [#1964](https://github.com/eclipse/vorto/issues/1964)
+- Fixes bug that ProvisioningScript Generator returned a zip archive instead of single script file [#2010](https://github.com/eclipse/vorto/issues/2010)
+
+
+<br />
+
 ## 0.12.1
 
 **Bugfixes**
