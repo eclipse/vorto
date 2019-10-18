@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace vorto.private.mayil2
+version 1.0.0
+displayname "MultipleTypeFb"
+description "Functionblock for MultipleTypeFb"
+
+functionblock MultipleTypeFb {
+ status {
+    multiple values as double "comment"
+  }
+}
