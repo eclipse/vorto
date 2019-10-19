@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Properties validation of definition <vorto.private.mayil2:MultipleTypeFb:1.0.0> for <status> properties",
+	"type": "object",
+	"properties": {
+		"values": {
+			"description": "comment",
+			"type": "array",
+			"items": {
+				"type": "number"
+			}
+		}
+	},
+	"required": []
+}
