@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.init;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -141,16 +139,6 @@ public class RepositoryInitializer {
       @Override
       public boolean isSysAdmin() {
         return true;
-      }
-
-      @Override
-      public boolean hasRestrictedTenants() {
-        return false;
-      }
-
-      @Override
-      public Collection<String> getTenantRestrictions() {
-        return Collections.emptyList();
       }
     };
   }

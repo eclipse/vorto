@@ -12,13 +12,9 @@
  */
 package org.eclipse.vorto.repository.sso.oauth;
 
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -27,7 +23,6 @@ import org.eclipse.vorto.repository.sso.oauth.strategy.HydraTokenVerificationPro
 import org.eclipse.vorto.repository.sso.oauth.strategy.KeycloakTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.LegacyTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.PublicKeyHelper;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,9 +73,6 @@ public class TokenVerifier {
   private IUserAccountService userAccountService;
   
   @Autowired
-  private ITenantService tenantService;
-  
-  @Autowired
   @Qualifier("githubUserInfoTokenServices")
   private UserInfoTokenServices githubTokenService;
   
@@ -115,13 +107,13 @@ public class TokenVerifier {
     if (hydraJwtIssuer != null) {
       tokenVerificationProviders.put(hydraJwtIssuer, 
           new HydraTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), 
-              userAccountService, tenantService));
+              userAccountService));
     }
     
     if (legacyJwtIssuer != null) {
       tokenVerificationProviders.put(legacyJwtIssuer, 
           new LegacyTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), legacyPublicKeyUri), 
-              userAccountService, tenantService));
+              userAccountService));
     }
   }
   

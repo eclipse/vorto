@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import java.util.Collection;
 import org.springframework.security.core.Authentication;
 
 public interface IUserContext {
@@ -28,8 +27,4 @@ public interface IUserContext {
   boolean isAnonymous();
 
   boolean isSysAdmin();
-  
-  boolean hasRestrictedTenants();
-  
-  Collection<String> getTenantRestrictions();
 }

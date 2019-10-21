@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 
 public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvider {
   
@@ -31,8 +30,8 @@ public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvi
   private static final String AZP = "azp";
 
   public LegacyTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
-      IUserAccountService userAccountService, ITenantService tenantService) {
-    super(publicKeySupplier, userAccountService, tenantService);
+      IUserAccountService userAccountService) {
+    super(publicKeySupplier, userAccountService);
   }
   
   @Override

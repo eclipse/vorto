@@ -51,7 +51,8 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
 
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
-  protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, String email, Set<Role> roles) {
+  protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, 
+      String email, Set<Role> roles) {
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
         name, "N/A", SpringUserUtils.toAuthorityList(roles));
 

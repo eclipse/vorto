@@ -363,10 +363,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private Collection<String> findTenantsOfUser(IUserContext userContext) {
-    if (userContext.hasRestrictedTenants()) {
-      return userContext.getTenantRestrictions();
-    }
-    
     if (userContext.isAnonymous()) {
       return Collections.emptyList();
     } else {

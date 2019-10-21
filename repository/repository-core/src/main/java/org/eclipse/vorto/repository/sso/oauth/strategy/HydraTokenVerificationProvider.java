@@ -14,10 +14,10 @@ package org.eclipse.vorto.repository.sso.oauth.strategy;
 
 import java.security.PublicKey;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import com.google.common.collect.Sets;
 
@@ -48,37 +47,27 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
   
   private static final int FULLACCESS = 1;
   
-  private ITenantService tenantService;
-  
   public HydraTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
-      IUserAccountService userAccountService, ITenantService tenantService) {
+      IUserAccountService userAccountService) {
     super(publicKeySupplier, userAccountService);
-    this.tenantService = Objects.requireNonNull(tenantService);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
     String clientId = getClientId(jwtToken).orElseThrow(() -> new MalformedElement("No client_id"));
-    OAuth2Authentication auth = createAuthentication(clientId, "technical-user", "technical-user", null, 
-        Sets.newHashSet(Role.SYS_ADMIN, Role.USER));
-    Map<String, Object> detailsMap = (Map<String, Object>) auth.getUserAuthentication().getDetails();
-    detailsMap.put("tenants", getTenants(jwtToken));
+    
+    OAuth2Authentication auth = createAuthentication(clientId, clientId, clientId, null, getRole(jwtToken));
+    
     return auth;
   }
  
-  private List<String> getTenants(JwtToken jwtToken) {
-    return getScopes(jwtToken).entrySet().stream()
-        .map(entry -> entry.getKey())
-        .map(namespace -> tenantService.getTenantFromNamespace(namespace.getName()).orElse(null))
-        .filter(tenant -> tenant != null)
-        .map(tenant -> tenant.getTenantId())
-        .collect(Collectors.toList());        
+  private Set<Role> getRole(JwtToken jwtToken) {
+    return Sets.newHashSet(Role.USER);
   }
 
   @Override
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
-    if (!jwtToken.getHeaderMap().get("alg").equals(RS256_ALG)) {
+    if (!verifyAlgorithm(jwtToken)) {
       return false;
     }
     
@@ -91,6 +80,10 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
     }
     
     return allowAccess(httpRequest, resource(httpRequest), jwtToken);
+  }
+
+  private boolean verifyAlgorithm(JwtToken jwtToken) {
+    return jwtToken.getHeaderMap().get("alg").equals(RS256_ALG);
   }
   
   private boolean allowAccess(HttpServletRequest httpRequest, Optional<Resource> resource, JwtToken jwtToken) {

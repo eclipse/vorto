@@ -16,15 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public class UserContext implements IUserContext {
 
@@ -113,32 +108,5 @@ public class UserContext implements IUserContext {
   public static boolean isSysAdmin(Authentication authentication) {
     return authentication.getAuthorities().stream()
         .anyMatch(auth -> auth.getAuthority().equals(UserRole.ROLE_SYS_ADMIN));
-  }
-  
-  @SuppressWarnings("unchecked")
-  private Optional<Map<String, Object>> getDetailsMap(Authentication authentication) {
-    if (authentication != null && 
-        authentication instanceof OAuth2Authentication) {
-      OAuth2Authentication auth = (OAuth2Authentication) authentication;
-      if (auth.getUserAuthentication() != null && 
-          auth.getUserAuthentication().getDetails() != null &&
-          auth.getUserAuthentication().getDetails() instanceof Map) {
-        return Optional.of((Map<String, Object>) auth.getUserAuthentication().getDetails());
-      }
-    }
-    
-    return Optional.empty();
-  }
-  
-  public boolean hasRestrictedTenants() {
-    return getDetailsMap(authentication)
-        .map(detailsMap -> detailsMap.containsKey("tenants")).orElse(false);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public Collection<String> getTenantRestrictions() {
-    return getDetailsMap(authentication)
-        .map(detailsMap -> (Collection<String>) detailsMap.get("tenants"))
-        .orElse(Collections.emptyList());
   }
 }

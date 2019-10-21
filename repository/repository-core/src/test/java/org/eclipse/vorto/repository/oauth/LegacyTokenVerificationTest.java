@@ -18,7 +18,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.eclipse.vorto.repository.sso.oauth.strategy.HydraTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.LegacyTokenVerificationProvider;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -32,9 +31,7 @@ public class LegacyTokenVerificationTest extends AbstractVerifierTest {
     IUserAccountService userAccountService = Mockito.mock(IUserAccountService.class);
     Mockito.when(userAccountService.exists("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(true);
     
-    ITenantService tenantService = Mockito.mock(ITenantService.class);
-    
-    return new LegacyTokenVerificationProvider(publicKey(), userAccountService, tenantService);
+    return new LegacyTokenVerificationProvider(publicKey(), userAccountService);
   }
   
   @Test
