@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -51,7 +52,7 @@ public class KeycloakTokenVerificationProvider extends AbstractTokenVerification
    */
   @SuppressWarnings("unchecked")
   @Override
-  public OAuth2Authentication createAuthentication(JwtToken accessToken) {
+  public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken) {
     OAuth2Request request =
         new OAuth2Request(null, this.ciamClientId, null, true, null, null, null, null, null);
 

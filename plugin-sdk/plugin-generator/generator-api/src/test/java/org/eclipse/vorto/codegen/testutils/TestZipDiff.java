@@ -19,7 +19,7 @@ public class TestZipDiff {
       assertEquals(0, result.getRemoved().size());
       assertEquals(0, result.getChanged().size());
       assertEquals(4, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }
@@ -34,7 +34,7 @@ public class TestZipDiff {
       assertEquals(0, result.getRemoved().size());
       assertEquals(0, result.getChanged().size());
       assertEquals(12, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }
@@ -49,7 +49,7 @@ public class TestZipDiff {
       assertEquals(0, result.getRemoved().size());
       assertEquals(1, result.getChanged().size());
       assertEquals(11, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }
@@ -64,7 +64,7 @@ public class TestZipDiff {
       assertEquals(0, result.getRemoved().size());
       assertEquals(0, result.getChanged().size());
       assertEquals(4, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }
@@ -79,7 +79,7 @@ public class TestZipDiff {
       assertEquals(1, result.getRemoved().size());
       assertEquals(0, result.getChanged().size());
       assertEquals(4, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }
@@ -94,7 +94,7 @@ public class TestZipDiff {
       assertEquals(0, result.getRemoved().size());
       assertEquals(1, result.getChanged().size());
       assertEquals(3, result.getUnchanged().size());
-      System.out.println("-erle- : " + result.getUnchanged().size());
+      System.out.println(result.getUnchanged().size());
     } catch (IOException e) {
       fail("Exception");
     }

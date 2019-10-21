@@ -14,15 +14,22 @@ package org.eclipse.vorto.repository.sso.oauth.strategy;
 
 import java.security.PublicKey;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.eclipse.vorto.repository.sso.oauth.TokenVerificationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 
 public abstract class AbstractTokenVerificationProvider implements TokenVerificationProvider {
 
@@ -44,8 +51,23 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
 
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
-  @Override
-  public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
+  protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, String email, Set<Role> roles) {
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        name, "N/A", SpringUserUtils.toAuthorityList(roles));
+
+    Map<String, Object> detailsMap = new HashMap<String, Object>();
+    detailsMap.put(JWT_SUB, userId);
+    detailsMap.put(JWT_NAME, name);
+    detailsMap.put(JWT_EMAIL, email);
+    authToken.setDetails(detailsMap);
+    
+    OAuth2Request request =
+        new OAuth2Request(null, ciamClientId, null, true, null, null, null, null, null);
+
+    return new OAuth2Authentication(request, authToken);
+  }
+  
+  protected boolean verifyPublicKey(JwtToken jwtToken) {
     if (publicKeys == null || publicKeys.isEmpty()) {
       publicKeys = publicKeySupplier.get();
     }
@@ -61,25 +83,41 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
       throw new InvalidTokenException(
           String.format("There are no public keys with kid '%s'", keyId));
     }
-
-    if (VerificationHelper.verifyJwtToken(publicKey, jwtToken)) {
-      Map<String, Object> payloadMap = jwtToken.getPayloadMap();
-      if (payloadMap.containsKey(JWT_EXPIRY)) {
-        Optional<Instant> expirationDate =
-            Optional.ofNullable(Double.valueOf((double) payloadMap.get(JWT_EXPIRY)).longValue())
-                .map(Instant::ofEpochSecond); 
-        if (expirationDate.isPresent() && expirationDate.get().isBefore(Instant.now())) {
-          //return false;
-        }
+    
+    return VerificationHelper.verifyJwtToken(publicKey, jwtToken);
+  }
+  
+  protected boolean verifyExpiry(JwtToken jwtToken) {
+    Map<String, Object> payloadMap = jwtToken.getPayloadMap();
+    if (payloadMap.containsKey(JWT_EXPIRY)) {
+      Optional<Instant> expirationDate =
+          Optional.ofNullable(Double.valueOf((double) payloadMap.get(JWT_EXPIRY)).longValue())
+              .map(Instant::ofEpochSecond); 
+      if (expirationDate.isPresent() && expirationDate.get().isBefore(Instant.now())) {
+        return false;
       }
-
-      String userId = getUserId(payloadMap).orElseThrow(() -> new InvalidTokenException(
-          "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-
-      return userAccountService.exists(userId);
+    }
+    
+    return true;
+  }
+  
+  protected boolean verifyUserExist(JwtToken jwtToken) {
+    String userId = getUserId(jwtToken.getPayloadMap()).orElseThrow(() -> new InvalidTokenException(
+        "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
+    return userAccountService.exists(userId);
+  }
+  
+  @Override
+  public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
+    if (!verifyPublicKey(jwtToken)) {
+      return false;
     }
 
-    return false;
+    if (!verifyExpiry(jwtToken)) {
+      return false;
+    }
+
+    return verifyUserExist(jwtToken);
   }
 
 }

@@ -19,7 +19,7 @@ public interface TokenVerificationProvider {
   /*
    * Create a spring security OAuth2Authentication based on the jwt token given
    */
-  OAuth2Authentication createAuthentication(JwtToken jwtToken);
+  OAuth2Authentication createAuthentication(HttpServletRequest request, JwtToken jwtToken);
 
   /*
    * Verifies a jwt token

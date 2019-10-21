@@ -12,24 +12,34 @@
  */
 package org.eclipse.vorto.repository.sso.oauth;
 
+import java.math.BigInteger;
+import java.security.PublicKey;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.sso.oauth.strategy.CiamTokenVerificationProvider;
+import org.eclipse.vorto.repository.sso.oauth.strategy.HydraTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.KeycloakTokenVerificationProvider;
+import org.eclipse.vorto.repository.sso.oauth.strategy.LegacyTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.PublicKeyHelper;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import com.google.common.base.Strings;
 
+@Component
 public class TokenVerifier {
 
   private static final String ISSUER = "iss";
@@ -42,6 +52,18 @@ public class TokenVerifier {
 
   @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}")
   private String ciamPublicKeyUri;
+  
+  @Value("${oauth2.verification.hydra.issuer: #{null}}")
+  private String hydraJwtIssuer;
+
+  @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}")
+  private String hydraPublicKeyUri;
+  
+  @Value("${oauth2.verification.legacy.issuer: #{null}}")
+  private String legacyJwtIssuer;
+
+  @Value("${oauth2.verification.legacy.publicKeyUri: #{null}}")
+  private String legacyPublicKeyUri;
 
   @Value("${oauth2.verification.keycloak.issuer: #{null}}")
   private String keycloakJwtIssuer;
@@ -54,13 +76,17 @@ public class TokenVerifier {
 
   @Autowired
   private IUserAccountService userAccountService;
-
-  private Map<String, TokenVerificationProvider> tokenVerificationProviders = new HashMap<>();
-
+  
+  @Autowired
+  private ITenantService tenantService;
+  
+  @Autowired
+  @Qualifier("githubUserInfoTokenServices")
   private UserInfoTokenServices githubTokenService;
   
-  public TokenVerifier(UserInfoTokenServices githubTokenService) {
-    this.githubTokenService = githubTokenService;
+  private Map<String, TokenVerificationProvider> tokenVerificationProviders = new HashMap<>();
+  
+  public TokenVerifier() {
   }
 
   private Optional<TokenVerificationProvider> getVerificationProvider(JwtToken jwtToken) {
@@ -85,8 +111,20 @@ public class TokenVerifier {
           PublicKeyHelper.supplier(new RestTemplate(), keycloakPublicKeyUri), 
           userAccountService, ciamClientId, resourceClientId));
     }
+    
+    if (hydraJwtIssuer != null) {
+      tokenVerificationProviders.put(hydraJwtIssuer, 
+          new HydraTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), 
+              userAccountService, tenantService));
+    }
+    
+    if (legacyJwtIssuer != null) {
+      tokenVerificationProviders.put(legacyJwtIssuer, 
+          new LegacyTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), legacyPublicKeyUri), 
+              userAccountService, tenantService));
+    }
   }
-
+  
   public OAuth2Authentication verify(HttpServletRequest request, String accessToken)
       throws AuthenticationException, InvalidTokenException {
 
@@ -102,7 +140,7 @@ public class TokenVerifier {
       if (verificationProvider.isPresent()) {
         TokenVerificationProvider provider = verificationProvider.get();
         if (provider.verify(request, jwtToken)) {
-          return provider.createAuthentication(jwtToken);
+          return provider.createAuthentication(request, jwtToken);
         }
       }
     } else if (!Strings.nullToEmpty(accessToken).trim().isEmpty()) {

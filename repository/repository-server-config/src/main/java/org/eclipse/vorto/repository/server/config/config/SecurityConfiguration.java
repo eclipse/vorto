@@ -111,6 +111,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private TenantVerificationFilter tenantVerificationFilter;
   
   @Autowired
+  private UserInfoTokenServices githubUserInfoTokenServices;
+  
+  @Autowired
+  private TokenVerifier tokenVerifier;
+  
+  @Autowired
   private Environment env;
 
   private static final String ROLE_GENERATOR_PROVIDER = "GENERATOR_PROVIDER";
@@ -184,9 +190,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter bearerTokenFilter() {
-    UserInfoTokenServices githubUserInfoService =
-        new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
-    TokenVerifier tokenVerifier = new TokenVerifier(githubUserInfoService);
     return new AuthorizationTokenFilter(tokenVerifier);
   }
 
@@ -197,9 +200,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter githubFilter() {
-    UserInfoTokenServices githubUserInfoService =
-        new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
-    return newSsoFilter("/github/login", githubUserInfoService, accessTokenProvider,
+    //UserInfoTokenServices githubUserInfoService =
+    //    new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    return newSsoFilter("/github/login", githubUserInfoTokenServices, accessTokenProvider,
         new OAuth2RestTemplate(github, oauth2ClientContext), authoritiesExtractor("login"));
   }
 
@@ -243,6 +246,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @ConfigurationProperties("github.oauth2.client")
   public AuthorizationCodeResourceDetails github() {
     return new AuthorizationCodeResourceDetails();
+  }
+  
+  @Bean(name = "githubUserInfoTokenServices")
+  public UserInfoTokenServices githubUserInfoTokenServices() {
+    return new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
   }
 
 }

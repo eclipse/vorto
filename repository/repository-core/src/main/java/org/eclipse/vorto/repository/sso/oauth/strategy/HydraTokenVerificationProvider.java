@@ -14,78 +14,115 @@ package org.eclipse.vorto.repository.sso.oauth.strategy;
 
 import java.security.PublicKey;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import com.google.common.collect.Sets;
 
 public class HydraTokenVerificationProvider extends AbstractTokenVerificationProvider {
+
+  private static final String RS256_ALG = "RS256";
+
+  private static final String CLIENT_ID = "client_id";
+
+  private static final String READ_ACCESS = "read-access";
+
+  private static final String FULL_ACCESS = "full-access";
+
+  private static final String VORTO_SERVICE = "vorto";
+
+  private static final String SCOPE = "scp";
 
   private static final int READONLY = 0;
   
   private static final int FULLACCESS = 1;
   
+  private ITenantService tenantService;
+  
   public HydraTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
-      IUserAccountService userAccountService) {
+      IUserAccountService userAccountService, ITenantService tenantService) {
     super(publicKeySupplier, userAccountService);
+    this.tenantService = Objects.requireNonNull(tenantService);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
+    String clientId = getClientId(jwtToken).orElseThrow(() -> new MalformedElement("No client_id"));
+    OAuth2Authentication auth = createAuthentication(clientId, "technical-user", "technical-user", null, 
+        Sets.newHashSet(Role.SYS_ADMIN, Role.USER));
+    Map<String, Object> detailsMap = (Map<String, Object>) auth.getUserAuthentication().getDetails();
+    detailsMap.put("tenants", getTenants(jwtToken));
+    return auth;
+  }
+ 
+  private List<String> getTenants(JwtToken jwtToken) {
+    return getScopes(jwtToken).entrySet().stream()
+        .map(entry -> entry.getKey())
+        .map(namespace -> tenantService.getTenantFromNamespace(namespace.getName()).orElse(null))
+        .filter(tenant -> tenant != null)
+        .map(tenant -> tenant.getTenantId())
+        .collect(Collectors.toList());        
   }
 
   @Override
-  public OAuth2Authentication createAuthentication(JwtToken jwtToken) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-  
-  @Override
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
-    if (!jwtToken.getHeaderMap().get("alg").equals("RS256")) {
-      System.out.println("here 1");
+    if (!jwtToken.getHeaderMap().get("alg").equals(RS256_ALG)) {
       return false;
     }
-      
     
-    if (!(jwtToken.getPayloadMap().get("iss").equals("https://access.bosch-iot-suite.com/v2") || 
-          jwtToken.getPayloadMap().get("iss").equals("https://access.bosch-iot-suite.com/auth/realms/iot-suite"))) {
-      System.out.println("here 2");
+    if (!super.verifyPublicKey(jwtToken)) {
       return false;
     }
-      
     
-    if (!super.verify(httpRequest, jwtToken)) {
-      System.out.println("here 3");
+    if (!super.verifyExpiry(jwtToken)) {
       return false;
     }
     
     return allowAccess(httpRequest, resource(httpRequest), jwtToken);
   }
   
-  private boolean allowAccess(HttpServletRequest httpRequest, Optional<String> resource, JwtToken jwtToken) {
+  private boolean allowAccess(HttpServletRequest httpRequest, Optional<Resource> resource, JwtToken jwtToken) {
     return httpRequest.getMethod().equals("GET") && 
-        (!resource.isPresent() ||
-            getScopes(jwtToken).entrySet().stream()
-              .anyMatch(scope -> scope.getKey().owns(ModelId.fromPrettyFormat(resource.get())) &&
-                  equalOrBetter(scope.getValue(), READONLY)));
+        (!resource.isPresent() || hasPermissionForResource(jwtToken, resource.get()));
+  }
+  
+  private boolean hasPermissionForResource(JwtToken jwtToken, Resource resource) {
+    return getScopes(jwtToken).entrySet().stream()
+        .anyMatch(scope -> scopeApplies(scope.getKey(), resource) && 
+            equalOrBetterPermission(scope.getValue(), READONLY));
   }
 
-  private boolean equalOrBetter(int scope, int requestedScope) {
+  private boolean scopeApplies(Namespace namespace, Resource resource) {
+    if (resource.getType() == Resource.Type.ModelId) {
+      return namespace.owns(ModelId.fromPrettyFormat(resource.getName()));
+    } else {
+      return namespace.owns(resource.getName());
+    } 
+  }
+  
+  private boolean equalOrBetterPermission(int scope, int requestedScope) {
     return requestedScope <= scope;
   }
 
   // returns a map of namespaces and their given privilege
   @SuppressWarnings("unchecked")
-  private Map<Namespace, Integer> getScopes(JwtToken jwtToken) {
-    Collection<String> scopes = (Collection<String>) Objects.requireNonNull(jwtToken.getPayloadMap().get("scp"));
+  protected Map<Namespace, Integer> getScopes(JwtToken jwtToken) {
+    Collection<String> scopes = (Collection<String>) Objects.requireNonNull(jwtToken.getPayloadMap().get(SCOPE));
     return scopes.stream()
       .map(this::toScope)
-      .filter(scope -> "vorto".equals(scope[0]))
+      .filter(scope -> VORTO_SERVICE.equals(scope[0]))
       .collect(Collectors.toMap(this::toNamespace, this::toRank));
   }
   
@@ -106,21 +143,21 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
     return new String[] { scopeElements[1], serviceElements[0], serviceElements[1] };
   }
   
-  private Namespace toNamespace(String[] scope) {
+  protected Namespace toNamespace(String[] scope) {
     return Namespace.newNamespace(scope[1]);
   }
   
-  private int toRank(String[] scope) {
-    if (scope[2].equals("full-access")) {
+  protected int toRank(String[] scope) {
+    if (scope[2].equals(FULL_ACCESS)) {
       return FULLACCESS;
-    } else if (scope[2].equals("read-access")) {
+    } else if (scope[2].equals(READ_ACCESS)) {
       return READONLY;
     } else {
       throw new MalformedElement(String.format("service:%s:%s/%s", (Object[]) scope), scope[2]);
     }
   }
 
-  private Optional<String> resource(HttpServletRequest request) {
+  private Optional<Resource> resource(HttpServletRequest request) {
     Objects.requireNonNull(request.getRequestURI());
     String resourceUrl = request.getRequestURI().replace(request.getContextPath(), "");
     return ResourceIdentificationHelper.identifyResource(resourceUrl);
@@ -128,17 +165,15 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
 
   @Override
   protected Optional<String> getUserId(Map<String, Object> map) {
-    Optional<String> userId = Optional.ofNullable((String) map.get(JWT_SUB));
-    
-    if (!userId.isPresent()) {
-      return Optional.ofNullable((String) map.get("client_id"));
+    return Optional.ofNullable((String) map.get(JWT_SUB));
+  }
+  
+  protected Optional<String> getClientId(JwtToken token) {
+    if (token.getPayloadMap().containsKey(CLIENT_ID)) {
+      return Optional.ofNullable((String) token.getPayloadMap().get(CLIENT_ID));
     }
     
-    if (!userId.isPresent()) {
-      return Optional.ofNullable((String) map.get("azp"));
-    }
-
-    return userId;
+    return Optional.empty();
   }
 
 }

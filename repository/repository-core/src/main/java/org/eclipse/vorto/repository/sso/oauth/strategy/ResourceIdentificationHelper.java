@@ -22,17 +22,17 @@ public class ResourceIdentificationHelper {
   
   private static final Pattern namespacePattern = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)+");
   
-  public static Optional<String> identifyResource(String resourceUrl) {
+  public static Optional<Resource> identifyResource(String resourceUrl) {
     // find a modelId
     Matcher matcher = modelIdPattern.matcher(resourceUrl);
     if (matcher.find()) {
-      return Optional.ofNullable(matcher.group());
+      return Optional.ofNullable(Resource.modelId(matcher.group()));
     }
     
     // find a namespace
     matcher = namespacePattern.matcher(resourceUrl);
     if (matcher.find()) {
-      return Optional.ofNullable(matcher.group());
+      return Optional.ofNullable(Resource.namespace(matcher.group()));
     }
     
     return Optional.empty();
