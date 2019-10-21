@@ -31,7 +31,7 @@ eidp:
 #    wait_timeout: 180
 #    validationInterval: 60    
 #    validationQuery: SELECT 1
-#    driver-class-name: org.mariadb.jdbc.Driver
+#    driver-class-name: ${db_driver}
 #    url: ${db_url}
 #    username: ${db_username}
 #    password: ${db_password}
