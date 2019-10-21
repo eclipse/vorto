@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.stereotype.Component;
 
+// TODO : remove because it is not needed
 @Component("githubUserInfoTokenService")
 public class InterceptedUserInfoTokenServices extends UserInfoTokenServices {
 

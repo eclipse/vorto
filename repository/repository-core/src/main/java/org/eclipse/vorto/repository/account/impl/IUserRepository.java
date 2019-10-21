@@ -35,5 +35,5 @@ public interface IUserRepository extends CrudRepository<User, Long> {
          "WHERE u.id = tu.user.id AND " +
          "tu.id = r.user.id AND " +
          "r.role = :role")
-  Collection<User> findUsersWithRole(@Param("role") Role role); 
+  Collection<User> findUsersWithRole(@Param("role") Role role);
 }
