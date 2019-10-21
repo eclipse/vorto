@@ -12,16 +12,22 @@
  */
 package org.eclipse.vorto.repository.sso.oauth;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-public interface JwtVerifyAndIdStrategy {
+public interface TokenVerificationProvider {
+  /**
+   * 
+   * @return the issue of this token
+   */
+  String getIssuer();
   /*
    * Create a spring security OAuth2Authentication based on the jwt token given
    */
-  OAuth2Authentication createAuthentication(JwtToken jwtToken);
+  OAuth2Authentication createAuthentication(HttpServletRequest request, JwtToken jwtToken);
 
   /*
    * Verifies a jwt token
    */
-  boolean verify(JwtToken jwtToken);
+  boolean verify(HttpServletRequest request, JwtToken jwtToken);
 }

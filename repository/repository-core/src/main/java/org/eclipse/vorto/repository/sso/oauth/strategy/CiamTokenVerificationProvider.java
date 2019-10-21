@@ -12,29 +12,42 @@
  */
 package org.eclipse.vorto.repository.sso.oauth.strategy;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
+@Component
+public class CiamTokenVerificationProvider extends AbstractTokenVerificationProvider {
 
-  protected static final String JWT_CLIENT_ID = "client_id";
   private String ciamClientId;
-
-  public CiamUserStrategy(RestTemplate restTemplate, String publicKeyUri,
-      IUserAccountService userAccountService, String clientId) {
-    super(restTemplate, publicKeyUri, userAccountService);
-    this.ciamClientId = Objects.requireNonNull(clientId);
+  
+  private String ciamJwtIssuer;
+  
+  protected static final String JWT_CLIENT_ID = "client_id";
+  
+  @Autowired
+  public CiamTokenVerificationProvider(
+      @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}") String ciamPublicKeyUri,
+      @Value("${oauth2.verification.eidp.issuer: #{null}}") String ciamJwtIssuer,
+      @Value("${eidp.oauth2.client.clientId: #{null}}") String ciamClientId,
+      @Autowired IUserAccountService userAccountService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), userAccountService);
+    this.ciamClientId = ciamClientId;
+    this.ciamJwtIssuer = ciamJwtIssuer; 
+  }
+  
+  @Override
+  public String getIssuer() {
+    return ciamJwtIssuer;
   }
 
   /**
@@ -42,10 +55,7 @@ public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
    * Repository
    */
   @Override
-  public OAuth2Authentication createAuthentication(JwtToken accessToken) {
-    OAuth2Request request =
-        new OAuth2Request(null, this.ciamClientId, null, true, null, null, null, null, null);
-
+  public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken) {
     Map<String, Object> tokenPayload = accessToken.getPayloadMap();
 
     Optional<String> email = Optional.ofNullable((String) tokenPayload.get(JWT_EMAIL));
@@ -60,16 +70,7 @@ public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
       new InvalidTokenException("User from token is not a registered user in the repository!");
     }
 
-    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-        name.orElse(userId), "N/A", SpringUserUtils.toAuthorityList(user.getAllRoles()));
-
-    Map<String, String> detailsMap = new HashMap<String, String>();
-    detailsMap.put(JWT_SUB, userId);
-    detailsMap.put(JWT_NAME, name.orElse(userId));
-    detailsMap.put(JWT_EMAIL, email.orElse(null));
-    authToken.setDetails(detailsMap);
-
-    return new OAuth2Authentication(request, authToken);
+    return createAuthentication(this.ciamClientId, userId, name.orElse(userId), email.orElse(null), user.getAllRoles()); 
   }
 
   protected Optional<String> getUserId(Map<String, Object> map) {

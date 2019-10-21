@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.sso.oauth.strategy.model.Keys;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -37,6 +38,12 @@ public class PublicKeyHelper {
 
   public static PublicKeyHelper instance(RestTemplate restTemplate) {
     return new PublicKeyHelper(Objects.requireNonNull(restTemplate));
+  }
+  
+  public static Supplier<Map<String, PublicKey>> supplier(RestTemplate restTemplate, String publicKeyUri) {
+    return () -> {
+      return instance(restTemplate).getPublicKey(publicKeyUri);
+    };
   }
 
   private PublicKeyHelper(RestTemplate restTemplate) {
