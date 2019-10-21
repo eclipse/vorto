@@ -12,27 +12,42 @@
  */
 package org.eclipse.vorto.repository.sso.oauth.strategy;
 
-import java.security.PublicKey;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+@Component
 public class CiamTokenVerificationProvider extends AbstractTokenVerificationProvider {
 
-  protected static final String JWT_CLIENT_ID = "client_id";
   private String ciamClientId;
-
-  public CiamTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
-      IUserAccountService userAccountService, String clientId) {
-    super(publicKeySupplier, userAccountService);
-    this.ciamClientId = Objects.requireNonNull(clientId);
+  
+  private String ciamJwtIssuer;
+  
+  protected static final String JWT_CLIENT_ID = "client_id";
+  
+  @Autowired
+  public CiamTokenVerificationProvider(
+      @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}") String ciamPublicKeyUri,
+      @Value("${oauth2.verification.eidp.issuer: #{null}}") String ciamJwtIssuer,
+      @Value("${eidp.oauth2.client.clientId: #{null}}") String ciamClientId,
+      @Autowired IUserAccountService userAccountService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), userAccountService);
+    this.ciamClientId = ciamClientId;
+    this.ciamJwtIssuer = ciamJwtIssuer; 
+  }
+  
+  @Override
+  public String getIssuer() {
+    return ciamJwtIssuer;
   }
 
   /**

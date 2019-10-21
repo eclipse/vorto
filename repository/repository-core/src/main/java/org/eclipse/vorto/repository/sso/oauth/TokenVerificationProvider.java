@@ -16,6 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public interface TokenVerificationProvider {
+  /**
+   * 
+   * @return the issue of this token
+   */
+  String getIssuer();
   /*
    * Create a spring security OAuth2Authentication based on the jwt token given
    */

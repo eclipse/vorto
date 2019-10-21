@@ -12,71 +12,34 @@
  */
 package org.eclipse.vorto.repository.sso.oauth;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.sso.oauth.strategy.CiamTokenVerificationProvider;
-import org.eclipse.vorto.repository.sso.oauth.strategy.HydraTokenVerificationProvider;
-import org.eclipse.vorto.repository.sso.oauth.strategy.KeycloakTokenVerificationProvider;
-import org.eclipse.vorto.repository.sso.oauth.strategy.LegacyTokenVerificationProvider;
-import org.eclipse.vorto.repository.sso.oauth.strategy.PublicKeyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import com.google.common.base.Strings;
 
 @Component
 public class TokenVerifier {
 
   private static final String ISSUER = "iss";
-
-  @Value("${eidp.oauth2.client.clientId: #{null}}")
-  private String ciamClientId;
-
-  @Value("${oauth2.verification.eidp.issuer: #{null}}")
-  private String ciamJwtIssuer;
-
-  @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}")
-  private String ciamPublicKeyUri;
-  
-  @Value("${oauth2.verification.hydra.issuer: #{null}}")
-  private String hydraJwtIssuer;
-
-  @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}")
-  private String hydraPublicKeyUri;
-  
-  @Value("${oauth2.verification.legacy.issuer: #{null}}")
-  private String legacyJwtIssuer;
-
-  @Value("${oauth2.verification.legacy.publicKeyUri: #{null}}")
-  private String legacyPublicKeyUri;
-
-  @Value("${oauth2.verification.keycloak.issuer: #{null}}")
-  private String keycloakJwtIssuer;
-
-  @Value("${oauth2.verification.keycloak.publicKeyUri: #{null}}")
-  private String keycloakPublicKeyUri;
-
-  @Value("${oauth2.verification.keycloak.resource.client_id: #{null}}")
-  private String resourceClientId;
-
-  @Autowired
-  private IUserAccountService userAccountService;
   
   @Autowired
   @Qualifier("githubUserInfoTokenServices")
   private UserInfoTokenServices githubTokenService;
   
-  private Map<String, TokenVerificationProvider> tokenVerificationProviders = new HashMap<>();
+  @Autowired
+  private Collection<TokenVerificationProvider> tokenVerificationProviders;
+  
+  private Map<String, TokenVerificationProvider> tokenVerificationProviderMap = new HashMap<>();
   
   public TokenVerifier() {
   }
@@ -84,7 +47,7 @@ public class TokenVerifier {
   private Optional<TokenVerificationProvider> getVerificationProvider(JwtToken jwtToken) {
     String issuer = (String) jwtToken.getPayloadMap().get(ISSUER);
     if (issuer != null) {
-      return Optional.ofNullable(tokenVerificationProviders.get(issuer));
+      return Optional.ofNullable(tokenVerificationProviderMap.get(issuer));
     }
 
     return Optional.empty();
@@ -92,28 +55,11 @@ public class TokenVerifier {
 
   @PostConstruct
   public void init() {
-    if (ciamJwtIssuer != null) {
-      tokenVerificationProviders.put(ciamJwtIssuer, new CiamTokenVerificationProvider(
-          PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), 
-          userAccountService, ciamClientId));
-    }
-
-    if (keycloakJwtIssuer != null) {
-      tokenVerificationProviders.put(keycloakJwtIssuer, new KeycloakTokenVerificationProvider(
-          PublicKeyHelper.supplier(new RestTemplate(), keycloakPublicKeyUri), 
-          userAccountService, ciamClientId, resourceClientId));
-    }
-    
-    if (hydraJwtIssuer != null) {
-      tokenVerificationProviders.put(hydraJwtIssuer, 
-          new HydraTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), 
-              userAccountService));
-    }
-    
-    if (legacyJwtIssuer != null) {
-      tokenVerificationProviders.put(legacyJwtIssuer, 
-          new LegacyTokenVerificationProvider(PublicKeyHelper.supplier(new RestTemplate(), legacyPublicKeyUri), 
-              userAccountService));
+    for(TokenVerificationProvider tokenVerificationProvider : tokenVerificationProviders) {
+      if (tokenVerificationProvider.getIssuer() != null) {
+        tokenVerificationProviderMap.put(tokenVerificationProvider.getIssuer(), 
+            tokenVerificationProvider);
+      }
     }
   }
   

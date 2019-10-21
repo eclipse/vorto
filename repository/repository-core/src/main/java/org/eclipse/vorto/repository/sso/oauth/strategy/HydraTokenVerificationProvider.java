@@ -26,9 +26,14 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import com.google.common.collect.Sets;
 
+@Component
 public class HydraTokenVerificationProvider extends AbstractTokenVerificationProvider {
 
   private static final String RS256_ALG = "RS256";
@@ -47,9 +52,25 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
   
   private static final int FULLACCESS = 1;
   
-  public HydraTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
+  private String hydraJwtIssuer;
+  
+  @Autowired
+  public HydraTokenVerificationProvider(
+      @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
+      @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
+      @Autowired IUserAccountService userAccountService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService);
+    this.hydraJwtIssuer = hydraJwtIssuer;
+  }
+  
+  public HydraTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier, 
       IUserAccountService userAccountService) {
     super(publicKeySupplier, userAccountService);
+  }
+  
+  @Override
+  public String getIssuer() {
+    return hydraJwtIssuer;
   }
 
   @Override
@@ -168,5 +189,4 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
     
     return Optional.empty();
   }
-
 }

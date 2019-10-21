@@ -22,14 +22,26 @@ import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvider {
   
   private static final String VORTO = "vorto";
   private static final String RESOURCE_ACCESS = "resource_access";
   private static final String AZP = "azp";
 
-  public LegacyTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
+  @Autowired
+  public LegacyTokenVerificationProvider(
+      @Value("${oauth2.verification.legacy.issuer: #{null}}") String legacyJwtIssuer,
+      @Value("${oauth2.verification.legacy.publicKeyUri: #{null}}") String legacyPublicKeyUri,
+      @Autowired IUserAccountService userAccountService) {
+    super(legacyJwtIssuer, legacyPublicKeyUri, userAccountService);
+  }
+  
+  public LegacyTokenVerificationProvider(Supplier<Map<String, PublicKey>> publicKeySupplier, 
       IUserAccountService userAccountService) {
     super(publicKeySupplier, userAccountService);
   }
