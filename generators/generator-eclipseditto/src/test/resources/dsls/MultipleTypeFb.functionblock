@@ -5,7 +5,10 @@ displayname "MultipleTypeFb"
 description "Functionblock for MultipleTypeFb"
 
 functionblock MultipleTypeFb {
- status {
+ configuration {
+   mandatory alert as string
+  }
+status {
     multiple values as double "comment"
   }
-}
+  }

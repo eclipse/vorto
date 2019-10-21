@@ -3,14 +3,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
-import org.eclipse.vorto.core.api.model.BuilderUtils;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
-import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
-import org.eclipse.vorto.core.api.model.functionblock.Event;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
@@ -39,7 +32,7 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
         .read();
     InformationModel model = (InformationModel) workspace.get().stream()
         .filter(p -> p instanceof InformationModel).findAny().get();
-    
+
     return model;
   }
 
@@ -60,6 +53,26 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
     File defaultFile = new File(getClass().getClassLoader()
         .getResource("defaultFileFormat/properties-status.schema.json").toURI());
 
+    assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
+        new String(generatedfile.getContent(), "utf-8"));
+
+  }
+
+  /*
+   * Test case for checking whether the config properties are reflected in json
+   * 
+   */
+  @Test
+  public void checkAPIConfigPropertiesInFunctionBlock() throws Exception {
+    IGenerationResult generationResult = eclipseDittoGenerator.generate(
+        modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
+        InvocationContext.simpleInvocationContext());
+
+    Generated generatedfile = zipFileReader(generationResult, "properties-configuration.schema", ".json");
+
+    File defaultFile = new File(getClass().getClassLoader()
+        .getResource("defaultFileFormat/properties-configuration.schema.json").toURI());
+   
     assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
         new String(generatedfile.getContent(), "utf-8"));
 
