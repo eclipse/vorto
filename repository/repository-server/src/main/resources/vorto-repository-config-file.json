@@ -17,12 +17,9 @@
         ]
     },
     "storage" : {
-        "cacheConfiguration" : "infinispan-configuration.xml",
-        "cacheName" : "persisted-repository",
-        "binaryStorage" : {
+        "persistence" : {
             "type" : "file",
-            "directory": "${user.home}/.vorto/repo/binaries",
-            "minimumBinarySizeInBytes" : 999
+            "path": "${user.home}/.vorto/repo/binaries"
         }
     },
     "sequencing" : {
