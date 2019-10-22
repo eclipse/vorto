@@ -53,7 +53,8 @@ pipeline {
 			          def qualitygate =  utils.jsonParse(url)
 			          echo qualitygate.toString()
 			          if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
-			            error  "Quality Gate failure"
+			            //error  "Quality Gate failure"
+			            echo  "Quality Gate failure"
 			          }
                   }
                 }
