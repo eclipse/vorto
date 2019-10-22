@@ -17,11 +17,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
@@ -479,6 +481,15 @@ public class ModelRepository extends AbstractRepositoryOperation
             modelInfo.setReferences(referenceHelper.getReferences());
           }
         }
+        
+        Map<String, List<ModelInfo>> referencingModels =
+            modelRetrievalService.getModelsReferencing(modelId);
+
+        for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
+          for (ModelInfo referencee : entry.getValue()) {
+            modelInfo.getReferencedBy().add(referencee.getId());
+          }
+        }
 
         return modelInfo;
       } catch (PathNotFoundException e) {
@@ -520,8 +531,8 @@ public class ModelRepository extends AbstractRepositoryOperation
       Optional<String> version) {
     logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
-    List<ModelInfo> mappingResources = new ArrayList<>();
-    ModelInfo modelResource = getById(modelId);
+    Set<ModelInfo> mappingResources = new HashSet<>();
+    ModelInfo modelResource = getBasicInfo(modelId);
     if (modelResource != null) {
       for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
         ModelResource referenceeModelResource = this.repositoryFactory
@@ -541,7 +552,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             .getMappingModelsForTargetPlatform(referencedModelId, targetPlatform, version));
       }
     }
-    return mappingResources;
+    return new ArrayList<ModelInfo>(mappingResources);
   }
 
   private boolean isTargetPlatformMapping(ModelResource emfResource, String targetPlatform) {

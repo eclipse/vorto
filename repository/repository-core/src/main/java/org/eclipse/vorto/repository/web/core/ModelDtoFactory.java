@@ -521,9 +521,15 @@ public class ModelDtoFactory {
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
       for (MappingRule rule : getEntityRule(mappingModel.get().getRules())) {
-        StereoTypeTarget target = (StereoTypeTarget) rule.getTarget();
-        resource.addStereotype(
-            Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+        
+        if (rule.getTarget() instanceof StereoTypeTarget) {
+          StereoTypeTarget target = (StereoTypeTarget) rule.getTarget();
+          resource.addStereotype(
+              Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+        } else if (rule.getTarget() instanceof ReferenceTarget) {
+          ReferenceTarget target = (ReferenceTarget) rule.getTarget();
+          resource.setMappingReference(createModelId(target.getMappingModel()));
+        }
       }
     }
 
