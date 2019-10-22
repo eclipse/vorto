@@ -257,14 +257,14 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
 
   @Override
   public void saveSpecification(IMappingSpecification specification, IUserContext user) {
-    MappingSpecificationSerializer.create(specification, specification.getInfoModel().getTargetPlatformKey()).iterator()
+    MappingSpecificationSerializer.create(specification).iterator()
     .forEachRemaining(serializer -> {
       final ModelId createdModelId = serializer.getModelId();
       
       String serializedMapping = serializer.serialize();
       logger.trace("Saving mapping: "+serializedMapping);
       this.modelRepositoryFactory.getRepositoryByModel(createdModelId).save(createdModelId, serializedMapping.getBytes(),
-          createdModelId.getName() + ".mapping", user);
+          createdModelId.getName() + ".mapping", user,false);
       
       try {
         workflowService.start(createdModelId, user);
