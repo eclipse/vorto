@@ -37,6 +37,10 @@ public class MappingSpecificationSerializer {
       String targetPlaform) {
     return new MappingSpecificationSerializer(specification, targetPlaform);
   }
+  
+  public static MappingSpecificationSerializer create(IMappingSpecification specification) {
+    return MappingSpecificationSerializer.create(specification,specification.getInfoModel().getTargetPlatformKey());
+  }
 
   public Iterator<IMappingSerializer> iterator() {
     ModelId rootMappingId = MappingIdUtils.getIdForInfoModel(specification.getInfoModel());
@@ -59,7 +63,7 @@ public class MappingSpecificationSerializer {
         EntityModel entityModel = (EntityModel)property.getType();
         ModelId mappingId = MappingIdUtils.getIdForProperty(parentId, property);
         addSerializerRecursive(mappingId,entityModel, entityModel.getProperties(), serializers);
-        serializers.add(new EntityMappingSerializer(specification,mappingId,targetPlatform, property.getName(), entityModel, container));
+        serializers.add(new EntityMappingSerializer(specification,mappingId,targetPlatform, property.getName(), entityModel));
       }
     }
   }

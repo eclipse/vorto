@@ -282,11 +282,12 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     };
     
     $scope.save = function() {
+    	$scope.isSaving = true;
         var specification = {"infoModel":$scope.infomodel};
         $http.put("./rest/mappings/specifications/" + $scope.modelId,specification).success(
                 function(data, status, headers, config) {
                     $scope.success = true;
-					
+					$scope.isSaving = false;
 					if ($scope.mappingId == null) {
 						$scope.getMappingId();
 					}
@@ -296,6 +297,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                     },2000);
                 }).error(function(data, status, headers, config) {
                     $scope.errorMessage = data.msg;
+                    $scope.isSaving = false;
                     $timeout(function() {
                         $scope.errorMessage = null;
                     },2000);
