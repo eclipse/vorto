@@ -37,21 +37,23 @@ pipeline {
 	                sh 'mvn -o -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
 					script{
 						echo "Waiting for SonarCloud analysis to complete..."
-						def props = utils.getProperties("target/sonar/report-task.txt")
+						sh "pwd"
+						sh "cat target/sonar/report-task.txt"
+						def props = readProperties  file: 'target/sonar/report-task.txt'
 				        echo "properties=${props}"
-				        def sonarServerUrl=props.getProperty('serverUrl')
-				        def ceTaskUrl= props.getProperty('ceTaskUrl')
+				        def sonarServerUrl=props['serverUrl']
+				        def ceTaskUrl= props['ceTaskUrl']
 				        def ceTask
-				        def URL url = new URL(ceTaskUrl)
 				        timeout(time: 5, unit: 'MINUTES') {
 				          waitUntil {
-				            ceTask = utils.jsonParse(url)
+				            def response = httpRequest ceTaskUrl
+                            ceTask = readJSON text: response.content
 				            echo ceTask.toString()
 				            return "SUCCESS".equals(ceTask["task"]["status"])
 				          }
 				        }
-				        url = new URL(sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"] )
-				        def qualitygate =  utils.jsonParse(url)
+				        def response2 = httpRequest url : sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"]				        
+				        def qualitygate =  readJSON text: response2.content
 				        echo "Quality Gate status: "
 				        echo qualitygate.toString()
 				        if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
