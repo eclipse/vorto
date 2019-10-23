@@ -44,7 +44,6 @@ pipeline {
 				        def sonarServerUrl=props['serverUrl']
 				        def ceTaskUrl= props['ceTaskUrl']
 				        def ceTask
-				        def URL url = new URL(ceTaskUrl)
 				        timeout(time: 5, unit: 'MINUTES') {
 				          waitUntil {
 				            def response = httpRequest ceTaskUrl
