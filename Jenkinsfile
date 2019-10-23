@@ -61,7 +61,7 @@ pipeline {
 				        }
 					}		        
                   }
-                }          
+                }
             }
             post{
               success{
