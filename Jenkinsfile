@@ -34,12 +34,37 @@ pipeline {
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
                   withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'TOKEN')]) {
-                    sh 'mvn -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
+	                sh 'mvn -o -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
+					echo "Waiting for SonarCloud analysis to complete..."
+					def props = utils.getProperties("target/sonar/report-task.txt")
+			        echo "properties=${props}"
+			        def sonarServerUrl=props.getProperty('serverUrl')
+			        def ceTaskUrl= props.getProperty('ceTaskUrl')
+			        def ceTask
+			        def URL url = new URL(ceTaskUrl)
+			        timeout(time: 5, unit: 'MINUTES') {
+			          waitUntil {
+			            ceTask = utils.jsonParse(url)
+			            echo ceTask.toString()
+			            return "SUCCESS".equals(ceTask["task"]["status"])
+			          }
+			        }
+			        url = new URL(sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"] )
+			        def qualitygate =  utils.jsonParse(url)
+			        echo "Quality Gate status: "
+			        echo qualitygate.toString()
+			        if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {			          
+			          echo "Quality Gate failure"
+			          //error  "Quality Gate failure"
+			          throw new Exception("Quality Gate failure")
+			        }			        
                   }
-                }
-              githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
+                }              
             }
             post{
+              success{
+              	githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"    
+              }
               failure{
                 githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Failed',  status: 'FAILURE', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
               }
@@ -101,8 +126,7 @@ pipeline {
             }
           }
         }
-      }
-      
+      }      
     }
 }
 
