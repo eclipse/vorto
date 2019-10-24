@@ -15,7 +15,7 @@
 	
 	<properties>
 		<sonar.coverage.exclusions>src/main/xtend-gen/org/eclipse/vorto/plugin/generator/utils/javatemplates/*,
-		src/main/java/org/eclipse/vorto/plugin/generator/*</sonar.coverage.exclusions>
+		src/main/java/org/eclipse/vorto/plugin/generator/**/*</sonar.coverage.exclusions>
     </properties>
  <build>
     <plugins>
