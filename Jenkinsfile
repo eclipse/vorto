@@ -34,41 +34,12 @@ pipeline {
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
                   withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'TOKEN')]) {
-	                sh 'mvn -o -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
-					script{
-						echo "Waiting for SonarCloud analysis to complete..."
-						sh "pwd"
-						sh "cat target/sonar/report-task.txt"
-						def props = readProperties  file: 'target/sonar/report-task.txt'
-				        echo "properties=${props}"
-				        def sonarServerUrl=props['serverUrl']
-				        def ceTaskUrl= props['ceTaskUrl']
-				        def ceTask
-				        timeout(time: 5, unit: 'MINUTES') {
-				          waitUntil {
-				            def response = httpRequest ceTaskUrl
-                            ceTask = readJSON text: response.content
-				            echo ceTask.toString()
-				            return "SUCCESS".equals(ceTask["task"]["status"])
-				          }
-				        }
-				        def response2 = httpRequest url : sonarServerUrl + "/api/qualitygates/project_status?analysisId=" + ceTask["task"]["analysisId"]				        
-				        def qualitygate =  readJSON text: response2.content
-				        echo "Quality Gate status: "
-				        echo qualitygate.toString()
-				        if ("ERROR".equals(qualitygate["projectStatus"]["status"])) {
-				          echo "Quality Gate failure"
-				          //error  "Quality Gate failure"
-				          throw new Exception("Quality Gate failure")
-				        }
-					}		        
+                    sh 'mvn -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
                   }
                 }
+              githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
             }
             post{
-              success{
-              	githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"    
-              }
               failure{
                 githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Failed',  status: 'FAILURE', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
               }
@@ -130,7 +101,8 @@ pipeline {
             }
           }
         }
-      }      
+      }
+      
     }
 }
 
