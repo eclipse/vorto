@@ -30,37 +30,7 @@ import org.springframework.core.io.ClassPathResource;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelRepositoryTest extends AbstractIntegrationTest {
-  /*
-   * Search model info with null value
-   */
-  @Test
-  public void testSearchWithNull() {
-    importModel("Color.type");
-    assertEquals(1,
-        repositoryFactory.getRepository(createUserContext("admin")).search(null).size());
-  }
-
-  /*
-   * Search model info with empty value
-   */
-  @Test
-  public void testQueryWithEmptyExpression() {
-    importModel("Color.type");
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin")).search("").size());
-  }
-
-  /*
-   * Search model info with special character
-   */
-  @Test
-  public void testQueryWithSpecialCharacter() {
-    importModel("Color.type");
-    assertEquals(0,
-        repositoryFactory.getRepository(createUserContext("admin")).search("!!!").size());
-  }
-
-
-
+  
   @Test
   public void testGetModelById() throws Exception {
     importModel("Color.type");
@@ -159,26 +129,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testSearchAllModels() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("HueLightStrips.infomodel");
-    assertEquals(4, repositoryFactory.getRepository(createUserContext("admin")).search("*").size());
-  }
-
-  @Test
-  public void testSearchModelWithCriteria1() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("HueLightStrips.infomodel");
-    assertEquals(2,
-        repositoryFactory.getRepository(createUserContext("admin")).search("color").size());
-  }
-
-
-  @Test
   public void testGetModelWithNoImage() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
@@ -204,99 +154,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
         alex, Attachment.TAG_IMAGE);
     assertEquals(true, this.repositoryFactory.getRepository(createUserContext("admin"))
         .getById(modelId).isHasImage());
-  }
-
-  @Test
-  public void testSearchModelByModelName() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(1, modelRepository.search("name:Color").size());
-  }
-
-  @Test
-  public void testSearchModelByNameWildcard() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(2, modelRepository.search("name:Color*").size());
-  }
-
-  @Test
-  public void testSearchModelByNamespace() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("ColorLightIM.infomodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(1, modelRepository.search("namespace:org.eclipse.vorto.examples.fb").size());
-    assertEquals(1, modelRepository.search("namespace:com.mycompany.fb").size());
-    assertEquals(2, modelRepository.search("namespace:com.mycompany   version:1.0.0").size());
-
-  }
-
-  @Test
-  public void testSearchModelByType() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("ColorLightIM.infomodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(2, modelRepository.search("Functionblock").size());
-  }
-
-  @Test
-  public void testSearchModelByNameAndType() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("ColorLightIM.infomodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(0, modelRepository.search("name:Switcher InformationModel").size());
-    assertEquals(1, modelRepository.search("name:Switcher Functionblock").size());
-  }
-
-  @Test
-  public void testSearchModelWithFilters5() {
-    importModel("Color.type");
-    importModel("Colorlight.fbmodel");
-    importModel("Switcher.fbmodel");
-    importModel("ColorLightIM.infomodel");
-    importModel("HueLightStrips.infomodel");
-
-    IModelRepository modelRepository = repositoryFactory.getRepository(createUserContext("admin"));
-
-    assertEquals(1, modelRepository.search("Functionblock name:Color*").size());
-  }
-
-  @Test
-  public void testSearchModelsByCreator() {
-    IUserContext alex = createUserContext("alex", "playground");
-    importModel("Color.type", alex);
-    importModel("Colorlight.fbmodel", alex);
-    importModel("Switcher.fbmodel", createUserContext("admin", "playground"));
-    importModel("ColorLightIM.infomodel", createUserContext("admin", "playground"));
-    importModel("HueLightStrips.infomodel", createUserContext("admin", "playground"));
-
-    assertEquals(2, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("author:" + alex.getUsername()).size());
   }
 
   @Test
@@ -349,20 +206,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     } catch (ModelReferentialIntegrityException ex) {
       assertEquals(1, ex.getReferencedBy().size());
     }
-  }
-
-  @Test
-  public void testAuthorSearch() {
-    IUserContext erle = createUserContext("erle", "playground");
-    IUserContext admin = createUserContext("admin", "playground");
-    importModel("Color.type", erle);
-    importModel("Colorlight.fbmodel", erle);
-    importModel("Switcher.fbmodel", admin);
-
-    assertEquals(2, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("author:" + createUserContext("erle", "playground").getUsername()).size());
-    assertEquals(1, repositoryFactory.getRepository(createUserContext("admin"))
-        .search("author:" + createUserContext("admin", "playground").getUsername()).size());
   }
 
   @Test
