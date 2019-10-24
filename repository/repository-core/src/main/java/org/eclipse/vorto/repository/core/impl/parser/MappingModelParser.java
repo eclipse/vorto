@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import com.google.inject.Injector;
 
 /**
@@ -51,7 +51,10 @@ public class MappingModelParser extends AbstractModelParser {
         modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
         .collect(Collectors.toList()).stream().forEach(modelId -> {
           result.add(modelId);
-          result.addAll(this.modelRepoFactory.getRepositoryByModel(modelId).getById(modelId).getReferences());
+          ModelInfo _model = this.modelRepoFactory.getRepositoryByModel(modelId).getById(modelId);
+          if (_model != null) {
+            result.addAll(_model.getReferences());
+          }
         });
     
     return result;

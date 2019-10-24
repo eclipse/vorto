@@ -2,6 +2,16 @@
 
 <br />
 
+## 0.12.3
+
+**Bugfixes**
+
+- Fixes bug that array types could not be passed correctly for loop iterations to javascript converter functions [#2029](https://github.com/eclipse/vorto/issues/2029)
+- Fixes bug in Mapping Editor UI for displaying rules for nested entities [#2036](https://github.com/eclipse/vorto/issues/2036)
+
+
+<br />
+
 ## 0.12.2
 
 **Bugfixes**
