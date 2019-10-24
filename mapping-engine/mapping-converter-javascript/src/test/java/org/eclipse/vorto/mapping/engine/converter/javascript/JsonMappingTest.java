@@ -19,6 +19,7 @@ import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.converter.string.StringFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
+import org.eclipse.vorto.mapping.engine.model.binary.BinaryData;
 import org.eclipse.vorto.model.runtime.EntityPropertyValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
@@ -30,6 +31,35 @@ public class JsonMappingTest {
 
   private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+  @Test
+  public void testInvokeJsFunctionWithSingleByteArrayParam() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayType())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+
+    BinaryData data = new BinaryData();
+    data.setData("Hallo".getBytes());
+
+    InfomodelValue mappedOutput = mapper.mapSource(data);
+
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+    
+    assertEquals("H",buttonFunctionblockData.getStatusProperty("flag").get().getValue());
+  }
+  
+  @Test
+  public void testInvokeJsFunctionWithMultipleParams() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMultipleParams())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+
+    MyData data = new MyData("Hallo".getBytes(),"#");
+
+    InfomodelValue mappedOutput = mapper.mapSource(data);
+
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+    
+    assertEquals("#H",buttonFunctionblockData.getStatusProperty("flag").get().getValue());
+  }
+  
   @Test
   public void testMapNestedEntityWithCustomFunction() {
     IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntityAndCustomFunction())
@@ -129,42 +159,6 @@ public class JsonMappingTest {
   }
 
   @Test(expected = MappingException.class)
-  public void testMappingWithMalicousScript3() throws Exception {
-
-    IDataMapper mapper =
-        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
-
-          @Override
-          protected String getMaliciousFunctionBody() {
-            return "while (true) { }";
-          }
-
-        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
-
-    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
-
-    mapper.mapSource(gson.fromJson(json, Object.class));
-  }
-
-  @Test(expected = MappingException.class)
-  public void testMappingWithMalicousScript4() throws Exception {
-
-    IDataMapper mapper =
-        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
-
-          @Override
-          protected String getMaliciousFunctionBody() {
-            return "for (;;) { }";
-          }
-
-        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
-
-    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
-
-    mapper.mapSource(gson.fromJson(json, Object.class));
-  }
-
-  @Test(expected = MappingException.class)
   public void testMappingWithMalicousScriptUsingJavaImports() throws Exception {
 
     IDataMapper mapper =
@@ -230,5 +224,22 @@ public class JsonMappingTest {
     assertNull(voltageFunctionblockData);
 
     System.out.println(gson.toJson(mappedOutput.serialize()));
+  }
+  
+  public static class MyData extends BinaryData {
+    private String header;
+    
+    public MyData(byte[] data, String header) {
+      super(data);
+      this.header = header;
+    }
+
+    public String getHeader() {
+      return header;
+    }
+
+    public void setHeader(String header) {
+      this.header = header;
+    }
   }
 }
