@@ -28,6 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 import org.springframework.web.client.RestTemplate;
 
@@ -85,6 +86,7 @@ public class RepositoryConfiguration extends BaseConfiguration {
     List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
     interceptors.add(new LoggingInterceptor());
     restTemplate.setInterceptors(interceptors);
+    restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
     return restTemplate;
   }
 }

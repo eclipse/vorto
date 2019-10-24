@@ -40,7 +40,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -162,7 +161,6 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
       //
     }
 
-    restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/api/2/plugins/generators/{pluginkey}" + attachRequestParams(requestParams),
         HttpMethod.PUT, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);
@@ -184,8 +182,6 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
       throw new GenerationException(
           "Provided model is neither an information model nor a function block model!");
     }
-
-    restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
     HttpEntity<String> entity = getUserToken().map(token -> {
       HttpHeaders headers = new HttpHeaders();
