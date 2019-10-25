@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.vorto.feature_0.12.3.jar" id="org.eclipse.vorto.feature" version="0.12.3">
+   <feature url="features/org.eclipse.vorto.feature_0.12.4.jar" id="org.eclipse.vorto.feature" version="0.12.4">
       <category name="org.eclipse.vorto.product"/>
    </feature>
    <category-def name="org.eclipse.vorto.product" label="Eclipse Vorto DSL Plugins"/>
