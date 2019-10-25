@@ -1,7 +1,5 @@
 # Release Notes
 
-https://github.com/eclipse/vorto/issues/2049
-
 <br />
 
 ## 0.12.4
