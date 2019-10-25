@@ -1,6 +1,17 @@
 # Release Notes
 
+https://github.com/eclipse/vorto/issues/2049
+
 <br />
+
+## 0.12.4
+
+**Bugfixes**
+
+- Code Generator performance due to unneeded mapping resolvings [#2049](https://github.com/eclipse/vorto/issues/2049)
+
+<br />
+
 
 ## 0.12.3
 
