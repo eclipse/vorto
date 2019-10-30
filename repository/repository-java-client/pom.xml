@@ -8,7 +8,9 @@
 	</parent>
 
 	<artifactId>repository-java-client</artifactId>
-
+	<properties>
+		<sonar.coverage.exclusions>src/main/java/org/eclipse/vorto/repository/api/**/*</sonar.coverage.exclusions>
+    </properties>
 	<dependencies>
 
 		<dependency>
