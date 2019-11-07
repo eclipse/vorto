@@ -34,7 +34,7 @@ Check out more cool [Vorto Examples](https://www.github.com/eclipse/vorto-exampl
  - You want to chat with us? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  - You found a bug in Vorto? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
  - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
- - You have a problem? Reach out to our developers through [StackOverflow](https://stackoverflow.com/questions/ask) 
+ - You have a problem? Reach out to our developers through [StackOverflow](https://stackoverflow.com/questions/ask?tags=eclipse-vorto) 
 
 ## Follow us
 follow us [@EclipseVorto](https://twitter.com/EclipseVorto)
