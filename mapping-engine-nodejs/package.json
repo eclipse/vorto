@@ -1,5 +1,5 @@
 {
-  "name": "vorto-mapper",
+  "name": "vorto-metamorph",
   "version": "0.11.0",
   "description": "Maps arbitrary device json payload to vorto compliant json using mapping specification.",
   "main": "vortoMappingEngine.js",
@@ -18,14 +18,16 @@
     "url": "https://github.com/eclipse/vorto.git"
   },
   "keywords": [
+    "vorto metamorph",
     "vorto",
     "vorto mapper",
     "vorto mapping engine",
     "vorto mapping utility",
     "iot",
-    "eclipse vorto"
+    "eclipse vorto",
+    "device payload mapping"
   ],
-  "author": "Somesh Kumar",
+  "author": "Eclipse Vorto",
   "license": "EPL 2.0",
   "bugs": {
     "url": "https://github.com/eclipse/vorto/issues"

@@ -8,7 +8,7 @@ The package is an effort to making it easier for developers to map arbitrary dev
 
 ## Installation
 ```bash
-npm install vorto-mapper
+npm install vorto-metamorph
 ```
 
 ## Example Scenario
@@ -80,7 +80,7 @@ Download it to use with our nodejs library:
 
 ## Usage
 ```javascript
-const VortoMapper = require("vorto-mapper")
+const VortoMapper = require("vorto-metamorph")
 
 const vortoMapper = new VortoMapper();
 
