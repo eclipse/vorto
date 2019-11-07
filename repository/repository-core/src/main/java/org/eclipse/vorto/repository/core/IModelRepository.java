@@ -11,24 +11,25 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import java.util.List;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
- * 
+ *
  * @author Alexander Edelmann
  *
  */
 public interface IModelRepository {
 
-  public static final String VISIBILITY_PRIVATE = "private";
-  public static final String VISIBILITY_PUBLIC = "public";
+  String VISIBILITY_PRIVATE = "private";
+  String VISIBILITY_PUBLIC = "public";
 
   /**
    * Searches model resources for the given expression
-   * 
+   *
    * @param queryExpression
    * @return
    */
@@ -42,7 +43,14 @@ public interface IModelRepository {
    * @throws NotAuthorizedException if current user is not allowed to access the given model
    */
   ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
-  
+
+  /**
+   * Gets the model ID of the latest (highest and released) version for the given model.
+   * @param modelId - the ID of the model, version can be blank - it will be ignored
+   * @return the model ID with the latest version number
+   */
+  ModelId getLatestModelVersionId(ModelId modelId);
+
   /**
    * Convenience method that loads an entire model and resolves all mappings that are used by this model
    * @param modelId
@@ -53,7 +61,7 @@ public interface IModelRepository {
 
   /**
    * Get all models in this repository which are referencing the given modelId
-   * 
+   *
    * @param modelId the modelId that is being referenced
    * @return list of models referencing modelId
    */
@@ -61,7 +69,7 @@ public interface IModelRepository {
 
   /**
    * Returns the actual model content for the given model id
-   * 
+   *
    * @param modelId
    * @throws ModelNotFoundException
    * @throws NotAuthorizedException if current user is not allowed to access the given model
@@ -71,7 +79,7 @@ public interface IModelRepository {
 
   /**
    * Creates a new version of an existing model
-   * 
+   *
    * @param modelId
    * @param newVersion
    * @param user
@@ -83,7 +91,7 @@ public interface IModelRepository {
 
   /**
    * Return the resource for the modelId
-   * 
+   *
    * @param modelId
    * @return resource
    */
@@ -96,10 +104,10 @@ public interface IModelRepository {
    * @return
    */
   ModelInfo save(ModelResource resource, IUserContext user);
-  
-  
+
+
   /**
-   * 
+   *
    * @param modelId
    * @param content
    * @param fileName
@@ -108,10 +116,10 @@ public interface IModelRepository {
    * @return
    */
   ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user,boolean validate);
-  
+
   /**
    * Saves the model to the repo. If it does not exist, the model is created.
-   * 
+   *
    * @param modelId the id of the model
    * @param content the content
    * @param fileName the filename of the model
@@ -119,7 +127,7 @@ public interface IModelRepository {
    * @return model info containing model meta data of the saved model
    */
   ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user);
-  
+
   /**
    * Renames a given old modelId to the specified new modelId
    * return updated model info
@@ -128,7 +136,7 @@ public interface IModelRepository {
 
   /**
    * Gets the mapping model for the given modelId and the given target platform
-   * 
+   *
    * @param modelId
    * @param targetPlatform
    * @param version of the mapping. If not specified, latest is taken
@@ -139,14 +147,14 @@ public interface IModelRepository {
 
   /**
    * Removes the model for the given ModelID
-   * 
+   *
    * @param modelId
    */
   void removeModel(ModelId modelId) throws NotAuthorizedException;;
 
   /**
    * Updates the model meta information
-   * 
+   *
    * @param model
    * @return
    */
@@ -154,7 +162,7 @@ public interface IModelRepository {
 
   /**
    * Updates the state of the model
-   * 
+   *
    * @param modelId the model Id
    * @param state the state of the model
    * @return
@@ -163,7 +171,7 @@ public interface IModelRepository {
 
   /**
    * Updates the visibility of the model
-   * 
+   *
    * @param modelId the model Id
    * @param visibility the visibility of the model
    * @return
@@ -172,7 +180,7 @@ public interface IModelRepository {
 
   /**
    * adds the given file content to the model
-   * 
+   *
    * @param id
    * @param fileContent
    */
@@ -180,7 +188,7 @@ public interface IModelRepository {
 
   /**
    * gets file content for the given model id and file name
-   * 
+   *
    * @param modelId
    * @param fileName
    * @return
@@ -190,7 +198,7 @@ public interface IModelRepository {
 
   /**
    * Attaches the given file to the model
-   * 
+   *
    * @param modelid The modelId where to attach the file
    * @param fileContent the filename
    * @param userContext the user context
@@ -203,7 +211,7 @@ public interface IModelRepository {
 
   /**
    * Gets a list of attachments for the model (without its content)
-   * 
+   *
    * @param modelId
    * @return list of attachments of the given model
    */
@@ -211,7 +219,7 @@ public interface IModelRepository {
 
   /**
    * Gets a list of attachments having the given tag
-   * 
+   *
    * @param modelId
    * @param attachmentTag
    * @return
@@ -221,7 +229,7 @@ public interface IModelRepository {
 
   /**
    * Gets the content of the attachment
-   * 
+   *
    * @param modelid The model id where the file was attached
    * @param fileName the filename of the attachment
    * @return
@@ -231,7 +239,7 @@ public interface IModelRepository {
 
   /**
    * Deletes the attachment
-   * 
+   *
    * @param modelid The model id where the file was attached
    * @param fileName the filename of the attachment
    * @return
@@ -240,14 +248,14 @@ public interface IModelRepository {
 
   /**
    * Checks if the given model ID exists in the repository
-   * 
+   *
    * @param modelId
    * @return
    */
   boolean exists(ModelId modelId);
 
   /**
-   * 
+   *
    * @return
    */
   String getTenantId();
