@@ -11,12 +11,11 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -79,11 +77,17 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import com.google.common.collect.Lists;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -132,6 +136,8 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private static final String ATTACHMENTS_NODE = "attachments";
 
+  private static final Function<ModelInfo, String> VERSION_COMPARATOR = m -> m.getId().getVersion();
+
   private static Logger logger = Logger.getLogger(ModelRepository.class);
 
   private IModelRetrievalService modelRetrievalService;
@@ -150,6 +156,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private IModelPolicyManager policyManager;
 
+
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
       ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
@@ -163,6 +170,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     this.policyManager = policyManager;
   }
 
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
@@ -277,6 +285,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
   }
 
+  @Override
   public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext,
       boolean validate) {
     Objects.requireNonNull(content);
@@ -295,11 +304,13 @@ public class ModelRepository extends AbstractRepositoryOperation
     return modelInfo;
   }
 
+  @Override
   public ModelInfo save(ModelId modelId, byte[] content, String fileName,
       IUserContext userContext) {
     return save(modelId, content, fileName, userContext, true);
   }
 
+  @Override
   public ModelInfo save(final ModelResource modelInfo, IUserContext userContext) {
 
     return doInSession(jcrSession -> {
@@ -367,26 +378,8 @@ public class ModelRepository extends AbstractRepositoryOperation
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
-
-        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          throw new NotAuthorizedException(modelId, null);
-        }
-
-        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
-        ModelInfo modelResource = createModelResource(fileNode);
-
-        if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
-          modelResource.setHasImage(true);
-        }
-
-        if (!getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED).isEmpty()) {
-          modelResource.setImported(true);
-        }
-
-        return modelResource;
+        return getModelResource(modelId, folderNode);
       } catch (PathNotFoundException e) {
         return null;
       } catch (AccessDeniedException e) {
@@ -395,38 +388,52 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
-  private ModelInfo createModelResource(Node fileNode) throws RepositoryException {
-    final Node folderNode = fileNode.getParent();
+  @Override
+  public ModelId getLatestModelVersionId(ModelId modelId) {
+    return getModelVersions(modelId).stream()
+        .filter(m -> ModelState.RELEASED.getName().equals(m.getState()))
+        .max(Comparator.comparing(VERSION_COMPARATOR))
+        .map(ModelInfo::getId)
+        .orElse(null);
+  }
 
-    ModelInfo resource = createMinimalModelInfo(fileNode);
-    resource.setFileName(fileNode.getName());
-
-    if (folderNode.hasProperty(VORTO_REFERENCES)) {
-      Value[] referenceValues = null;
+  private List<ModelInfo> getModelVersions(ModelId modelId) {
+    return doInSession(session -> {
+      modelId.setVersion("");
+      ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
       try {
-        referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
-      } catch (Exception ex) {
-        referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
-      }
-
-      if (referenceValues != null) {
-        ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
-        for (Value referValue : referenceValues) {
-          referenceHelper.addModelReference(referValue.getString());
+        Node folderNode = session.getNode(modelIdHelper.getFullPath());
+        List<ModelInfo> models = new ArrayList<>();
+        NodeIterator nodeIterator = folderNode.getNodes();
+        while (nodeIterator.hasNext()) {
+          Node node = nodeIterator.nextNode();
+          models.add(getModelResource(modelId, node));
         }
-        resource.setReferences(referenceHelper.getReferences());
+        return models;
+      } catch (PathNotFoundException e) {
+        return null;
+      } catch (AccessDeniedException e) {
+        throw new NotAuthorizedException(modelId, e);
       }
+    });
+  }
+
+  private ModelInfo getModelResource(ModelId modelId, Node folderNode) throws RepositoryException {
+    if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+      throw new NotAuthorizedException(modelId, null);
     }
 
-    Map<String, List<ModelInfo>> referencingModels =
-        modelRetrievalService.getModelsReferencing(resource.getId());
+    ModelInfo modelResource = createModelResource(folderNode);
 
-    for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
-      for (ModelInfo modelInfo : entry.getValue()) {
-        resource.getReferencedBy().add(modelInfo.getId());
-      }
+    if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
+      modelResource.setHasImage(true);
     }
-    return resource;
+
+    if (!getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED).isEmpty()) {
+      modelResource.setImported(true);
+    }
+
+    return modelResource;
   }
 
   @Override
@@ -860,6 +867,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
+  @Override
   public boolean deleteAttachment(ModelId modelId, String fileName) {
     if (getAttachments(modelId).stream()
         .anyMatch(attachment -> (attachment.getTags().contains(Attachment.TAG_IMPORTED)
@@ -888,6 +896,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
+  @Override
   public ModelResource createVersion(ModelId existingId, String newVersion, IUserContext user) {
     ModelInfo existingModel = this.getById(existingId);
     if (existingModel == null) {
@@ -970,7 +979,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   /**
    * copies merely attachments and policies and workflow meta data from the source model to the
    * target model
-   * 
+   *
    * @param sourceModel source model to copy
    * @param targetModel target model to add data from source model
    * @param user
@@ -996,7 +1005,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   /**
    * saves the given changeset in a sorted way into the repository in the context of the given user
-   * 
+   *
    * @param changeSet
    * @param user
    */
@@ -1035,5 +1044,41 @@ public class ModelRepository extends AbstractRepositoryOperation
           referencingModel.getType());
     });
     return reader.read();
+  }
+
+  private ModelInfo createModelResource(Node folderNode) throws RepositoryException {
+    Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
+    ModelInfo resource = createMinimalModelInfo(fileNode);
+    resource.setFileName(fileNode.getName());
+
+    setReferencesOnResource(folderNode, resource);
+
+    Map<String, List<ModelInfo>> referencingModels = modelRetrievalService.getModelsReferencing(resource.getId());
+
+    for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
+      for (ModelInfo modelInfo : entry.getValue()) {
+        resource.getReferencedBy().add(modelInfo.getId());
+      }
+    }
+    return resource;
+  }
+
+  private void setReferencesOnResource(Node folderNode, ModelInfo resource) throws RepositoryException {
+    if (folderNode.hasProperty(VORTO_REFERENCES)) {
+      Value[] referenceValues;
+      try {
+        referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
+      } catch (Exception ex) {
+        referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
+      }
+
+      if (referenceValues != null) {
+        ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
+        for (Value referValue : referenceValues) {
+          referenceHelper.addModelReference(referValue.getString());
+        }
+        resource.setReferences(referenceHelper.getReferences());
+      }
+    }
   }
 }

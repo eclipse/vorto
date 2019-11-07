@@ -11,26 +11,30 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelRepositoryTest extends AbstractIntegrationTest {
-  
+
   @Test
   public void testGetModelById() throws Exception {
     importModel("Color.type");
@@ -239,5 +243,33 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     final String newVersion = "1.0.0";
     this.repositoryFactory.getRepository(createUserContext("admin"))
         .createVersion(new ModelId("Some", "demo", "1.0.0"), newVersion, alex);
+  }
+
+  @Test
+  public void testGetLatestModelVersionId() throws Exception {
+    IUserContext user = createUserContext("alex", "playground");
+    ModelInfo color = importModel("Color.type");
+    ModelInfo color6 = importModel("Color6.type");
+    importModel("Color7.type");
+    importModel("sample.mapping");
+    color.setState(ModelState.RELEASED.getName());
+    color6.setState(ModelState.RELEASED.getName());
+    this.workflow.start(color.getId(), user);
+    this.workflow.start(color6.getId(), user);
+    setReleaseState(color);
+    setReleaseState(color6);
+    ModelId id = this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getLatestModelVersionId(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+    assertEquals("org.eclipse.vorto.examples.type:Color:1.0.1", id.getPrettyFormat());
+  }
+
+  @Test
+  public void testGetLatestModelVersionIdNoReleasedVersion() throws Exception {
+    importModel("Color.type");
+    importModel("Color6.type");
+    importModel("sample.mapping");
+    ModelId id = this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getLatestModelVersionId(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+    assertNull(id);
   }
 }
