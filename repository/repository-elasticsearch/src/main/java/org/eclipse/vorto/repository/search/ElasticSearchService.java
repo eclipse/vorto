@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -135,7 +135,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (!indexExist(VORTO_INDEX)) {
       logger.info("Index doesn't exist. Try creating it.");
       createIndexWithMapping(VORTO_INDEX, createMappingForIndex());
-      logger.info("Index '" + VORTO_INDEX + "' created.");
+      logger.info(String.format("Index '%s' created.", VORTO_INDEX));
     } else {
       logger.info("Index already exist");
     }
@@ -146,7 +146,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       return client.indices().exists(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      throw new IndexingException("Error while checking if index '" + index + "' exist.", e);
+      throw new IndexingException(String.format("Error while checking if index '%s' exist.", index), e);
     }
   }
 
@@ -204,11 +204,15 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         try {
           BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
           result.addIndexedTenant(repo.getTenantId(), modelsToIndex.size());
-          logger.info("Received " + bulkResponse.getItems().length + " replies for tenant '"
-              + repo.getTenantId() + "' with " + modelsToIndex.size() + " models");
+          logger.info(
+            String.format(
+              "Received %d replies for tenant '%s' with %d models",
+              bulkResponse.getItems().length, repo.getTenantId(), modelsToIndex.size()
+            )
+          );
         } catch (IOException e) {
           throw new IndexingException(
-              "Error trying to index all models in '" + repo.getTenantId() + "' tenant.", e);
+            String.format("Error trying to index all models in '%s' tenant.", repo.getTenantId()), e);
         }
       }
     });
@@ -221,14 +225,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private void deleteByQuery(String index, QueryBuilder query) {
-    logger.info("Trying to delete all models in index '" + index + "'");
+    logger.info(String.format("Trying to delete all models in index '%s'", index));
     DeleteByQueryRequest request = new DeleteByQueryRequest(index);
     request.setQuery(query);
     try {
       BulkByScrollResponse bulkResponse = client.deleteByQuery(request, RequestOptions.DEFAULT);
-      logger.info("Deleted " + bulkResponse.getTotal() + " models in the index '" + index + "'");
+      logger.info(String.format("Deleted %d models in the index '%s'", bulkResponse.getTotal(), index));
     } catch (IOException e) {
-      throw new IndexingException("Error deleting all models in the '" + index + "' index.", e);
+      throw new IndexingException(String.format("Error deleting all models in the '%s' index.", index), e);
     }
   }
 
@@ -244,7 +248,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       return client.exists(getRequest, RequestOptions.DEFAULT);
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while querying if model '" + modelId.getPrettyFormat() + "' exist.", e);
+          String.format("Error while querying if model '%s' exist.", modelId.getPrettyFormat()), e
+      );
     }
   }
 
@@ -253,17 +258,17 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
 
-    logger.info("Indexing model '" + modelInfo.getId() + "'");
+    logger.info(String.format("Indexing model '%s'", modelInfo.getId()));
 
     try {
       IndexResponse indexResponse =
           client.index(createIndexRequest(modelInfo, tenantId), RequestOptions.DEFAULT);
       if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
-        logger.info("Index created for '" + modelInfo.getId().getPrettyFormat() + "'");
+        logger.info(String.format("Index created for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while indexing '" + modelInfo.getId().getPrettyFormat() + "'", e);
+          String.format("Error while indexing '%s'", modelInfo.getId().getPrettyFormat()), e);
     }
   }
 
@@ -284,7 +289,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   public void updateIndex(ModelInfo modelInfo) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
 
-    logger.info("Updating index of model '" + modelInfo.getId() + "'");
+    logger.info(String.format("Updating index of model '%s'", modelInfo.getId()));
 
     UpdateRequest request = new UpdateRequest(VORTO_INDEX, DOC, modelInfo.getId().getPrettyFormat())
         .doc(updateMap(modelInfo));
@@ -292,11 +297,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       UpdateResponse response = client.update(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.UPDATED) {
-        logger.info("Index updated for '" + modelInfo.getId().getPrettyFormat() + "'");
+        logger.info(String.format("Index updated for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while updating the index of '" + modelInfo.getId().getPrettyFormat() + "'", e);
+          String.format("Error while updating the index of '%s'", modelInfo.getId().getPrettyFormat()), e
+      );
     }
   }
 
@@ -322,7 +328,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while deleting the index of '" + modelId.getPrettyFormat() + "'", e);
+          String.format("Error while deleting the index of '%s'", modelId.getPrettyFormat()), e
+      );
     }
   }
 
@@ -439,15 +446,15 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
     try {
 
-      logger.info("Search Expression: " + searchExpression + " Elastic Search: "
-          + searchRequest.toString());
+      logger.info(String.format("Search Expression: %s Elastic Search: %s", searchExpression, searchRequest.toString()));
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
-      logger.info("Number of hits: " + hits.getTotalHits());
+      logger.info(String.format("Number of hits: %d", hits.getTotalHits()));
       return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
-      throw new IndexingException("Error while querying the index for '"
-          + Strings.nullToEmpty(searchExpression) + "' expression", e);
+      throw new IndexingException(
+        String.format("Error while querying the index for '%s' expression", Strings.nullToEmpty(searchExpression)), e
+      );
     }
   }
 
@@ -501,6 +508,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
     Optional<ModelState> modelState = Optional.empty();
     for (ModelState state : ModelState.values()) {
+      // TODO fix this
       if (searchExpression.contains("state:" + state.getName())) {
         modelState = Optional.of(state);
       }
