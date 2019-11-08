@@ -38,6 +38,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   }
 
   private String testUser = "testUser";
+  private String testUser2 = "testUser2";
   private String testMail = "test@mail.de";
 
   @Test
@@ -60,7 +61,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     // .content("{\"username\": \"testUser\"}").with(userAdmin))
     // .andExpect(status().isCreated());
   }
-
+ 
   @Test
   public void upgradeUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
@@ -147,7 +148,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
    */
   @Test
   public void getTenantsOfUser() throws Exception {
-    assert (this.accountService.getTenantsOfUser(testUser).isEmpty());
+    assert (this.accountService.getTenantsOfUser(testUser2).isEmpty());
   }
 
 
