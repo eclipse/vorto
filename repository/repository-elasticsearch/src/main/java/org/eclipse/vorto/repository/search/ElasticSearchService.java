@@ -331,10 +331,98 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, tenantId));
   }
 
+  /**
+   * @see ElasticSearchService#search(String, IUserContext)
+   * @param searchExpression
+   * @return
+   */
   public List<ModelInfo> search(String searchExpression) {
     return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
   }
-  
+
+  /**
+   * The {@code searchExpression} value is composed of tokens explained below. <br/>
+   * All tokens are optional, meaning that a search expression can actually be empty (and will
+   * consequently yield all known models visible to the tenant searching). <br/>
+   * <ul>
+   *   <li>
+   *     The model type, which can be:
+   *     <ul>
+   *       <li>All types (i.e. empty)</li>
+   *       <li>{@literal InformationModel}</li>
+   *       <li>{@literal Functionblock}</li>
+   *       <li>{@literal Datatype}</li>
+   *       <li>{@literal Mapping}</li>
+   *     </ul>
+   *     When specified, the model type is a hard criterion, i.e. a
+   *     <a href src="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html">must</a>
+   *     boolean query criterion for a
+   *     <a href src="https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-term-level-queries.html#java-query-dsl-term-query">term</a>
+   *     level query.
+   *     @see ModelType
+   *   </li>
+   *   <li>
+   *     The model state, which can be:
+   *    <ul>
+   *      <li>All states (i.e. empty)</li>
+   *      <li>{@literal Draft}</li>
+   *       <li>{@literal InReview}</li>
+   *      <li>{@literal Released} (default value in the repository's web UI search)</li>
+   *      <li>{@literal Deprecated}</li>
+   *    </ul>
+   *    When specified, the model state is a hard criterion, term-level query (see model type above).
+   *    @see ModelState
+   *   </li>
+   *   <li>
+   *     The free-text, case-insensitive search expression. By default, i.e. when only specifying
+   *     the desired search token in the web UI or swagger, the expression will be applied to the
+   *     model's name. However, when specified explicitly, the following tags are available to
+   *     refine the search:
+   *     <ul>
+   *       <li>Any model type value without tag (see above)</li>
+   *       <li>Any model state value preceded by tag: {@literal state:} (see above)</li>
+   *       <li>
+   *         {@literal name:} is the default, implicit tag, i.e. a tag-less search will
+   *         implicitly search for the model's name.
+   *       </li>
+   *       <li>{@literal author:}</li>
+   *       <li>{@literal userReference:}</li>
+   *      <li>{@literal visibility:}</li>
+   *     </ul>
+   *     The tags are not mutually exclusive, i.e. one or more of those tags combined can be used in
+   *     the search expression.
+   *     @// TODO: 11/8/19 no edge case considered for multiple identically tagged search terms.
+   *     When specified, each of the employed free-text search terms will be considered as a hard
+   *     criterion ("must").
+   *   </li>
+   *   <li>
+   *     The name of the model, which can be optionally specified explicitly with the relevant tag,
+   *     will be searched as a
+   *    <a href src="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html>match query phrase prefix</a>.
+   *   </li>
+   *   <li>
+   *     The author field can be specified by tag (see free-text above), or
+   *     implicitly in the web GUI by selecting the "Only my models" checkbox. It will be searched
+   *     as a term-level query.
+   *   </li>
+   *   <li>
+   *     The user reference field is a combination of the author and {@literal lastModifiedBy}
+   *     fields, searched as a term-level query in alternative to one another.
+   *   </li>
+   *   <li>
+   *     The visibility field, which can be optionally specified in the Web GUI through the
+   *     "Only public models" checkbox, will be searched as a term-level query.
+   *   </li>
+   *   <li>
+   *     In addition to those search options, a collection of tenant IDs containing the current
+   *     tenant's ID is typically inferred from context, in order to filter items by ownership.
+   *   </li>
+   *
+   * </ul>
+   * @param searchExpression The search expression
+   * @param userContext The user context with which to execute this query
+   * @return
+   */
   public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
 
     SearchParameters searchParameters =
@@ -350,6 +438,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     searchRequest.source(searchSourceBuilder);
 
     try {
+
       logger.info("Search Expression: " + searchExpression + " Elastic Search: "
           + searchRequest.toString());
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
