@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.repository.search;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +70,6 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.google.common.base.Strings;
 
 /**
  * Search Service implementation using a remote Elastic Search Service
@@ -538,7 +538,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       visibility = Optional.of(matcher.group(1));
     }
 
-    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, 
+    return new SearchParameters(tenantIds, searchExpr, modelState, modelType,
         author, userReference, visibility);
   }
 
@@ -546,7 +546,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 
     if (params.expression.isPresent()) {
-      queryBuilder = queryBuilder.must(matches(params.expression.get()));
+      queryBuilder = queryBuilder.must(buildAlternativeNameQuery(params.expression.get()));
     }
 
     if (params.state.isPresent()) {
@@ -593,7 +593,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return boolQuery;
   }
 
-  private QueryBuilder matches(String expression) {
+  /**
+   * Builds a boolean {@literal OR} query searching the following fields in alternative, with the
+   * given expression: {@link BasicIndexFieldExtractor.DISPLAY_NAME},
+   * {@link BasicIndexFieldExtractor.DESCRIPTION} or {@link BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE}.
+   * @param expression
+   * @return
+   */
+  private QueryBuilder buildAlternativeNameQuery(String expression) {
     return or(
         QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
         QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DESCRIPTION, expression),
