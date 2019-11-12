@@ -21,4 +21,22 @@ eidp:
   oauth2:
     enabled: false
     resource:
-      logoutRedirectUrl: http://localhost:8443/infomodelrepository/logout
+      logoutRedirectUrl: https://localhost:8443/infomodelrepository/logout
+      
+# To connect to a database, uncomment the section below and use the mysql config file for repo
+#spring:
+#  datasource:
+#    testWhileIdle: true
+#    timeBetweenEvictionRunsMillis: 60000
+#    wait_timeout: 180
+#    validationInterval: 60    
+#    validationQuery: SELECT 1
+#    driver-class-name: ${db_driver}
+#    url: ${db_url}
+#    username: ${db_username}
+#    password: ${db_password}
+#  jpa:
+#    show-sql: false
+#    generate-ddl: true
+#  hibernate:
+#    ddl-auto: validate
