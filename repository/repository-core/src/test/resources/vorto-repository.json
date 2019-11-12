@@ -17,7 +17,7 @@
         ]
     },
     "storage" : {
-        "cacheConfiguration" : "infinispan-configuration.xml"
+        
     },
     "sequencing" : {
     	"removeDerivedContentWithOriginal" : false,

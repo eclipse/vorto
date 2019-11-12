@@ -16,7 +16,11 @@
 	<logger name="org.eclipse.vorto" level="info" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
-
+	
+	<logger name="org.jgroups" level="info" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
 	<root level="error">
 		<appender-ref ref="STDOUT" />
 	</root>

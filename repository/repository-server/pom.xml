@@ -204,17 +204,7 @@
 			<artifactId>repository-java-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!-- following two jars are need to have models stored in database -->
-		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-cachestore-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.mchange</groupId>
-			<artifactId>c3p0</artifactId>
-		</dependency>
-		
+
 		<!-- Elastic search indexing service (start) -->
         <dependency>
 		    <groupId>org.elasticsearch</groupId>

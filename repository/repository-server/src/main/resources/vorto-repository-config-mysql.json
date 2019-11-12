@@ -1,39 +1,55 @@
 {
-    "name" : "vorto",
-    "workspaces" : {
-        "default" : "default",
-        "allowCreation" : true
+	"name": "vorto",
+	"clustering" : {
+        "clusterName" : "vorto-cluster",
+        "configuration" : "jgroups-config.xml",
+        "locking" : "db"
     },
-    "security" : {
-        "anonymous" : {
-            "roles" : ["readonly","readwrite","admin"],
-            "useOnFailedLogin" : false
-        },
-        "providers" : [
-            {
-                "name" : "Spring Security",
-                "classname" : "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
-            }
-        ]
-    },
-    "storage" : {
-      "cacheConfiguration" : "infinispan-configuration-mysql.xml",
-      "cacheName" : "contentRepository",
-      "binaryStorage" : {
-          "type"  : "database",
-          "driverClass" : "org.mariadb.jdbc.Driver",
-          "url" : "jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true",
-          "username" : "${db_username}",
-          "password" : "${db_password}"
-      }
-  },
-    "sequencing" : {
-        "removeDerivedContentWithOriginal" : false,
-        "sequencers" : {
-            "Vorto Sequencer" : {
-                "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",
-                "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
-            }
-        }
-    }
+	"workspaces": {
+		"default": "default",
+		"allowCreation": true
+	},
+	"security": {
+		"anonymous": {
+			"roles": [
+				"readonly",
+				"readwrite",
+				"admin"
+			],
+			"useOnFailedLogin": false
+		},
+		"providers": [
+			{
+				"name": "Spring Security",
+				"classname": "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
+			}
+		]
+	},
+	"storage": {
+		"persistence": {
+			"type": "db",
+			"driver": "org.mariadb.jdbc.Driver",
+			"connectionUrl": "${db_url}",
+			"username": "${db_username}",
+			"password": "${db_password}"
+		},
+		"binaryStorage": {
+			"type": "database",
+			"driverClass": "org.mariadb.jdbc.Driver",
+			"url": "${db_url}",
+			"username": "${db_username}",
+			"password": "${db_password}"
+		}
+	},
+	"sequencing": {
+		"removeDerivedContentWithOriginal": false,
+		"sequencers": {
+			"Vorto Sequencer": {
+				"classname": "org.eclipse.vorto.repository.core.impl.ModelSequencer",
+				"pathExpressions": [
+					"default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]"
+				]
+			}
+		}
+	}
 }
