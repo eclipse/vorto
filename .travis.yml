@@ -73,8 +73,8 @@ jobs:
             branch: development
 
         - provider: elasticbeanstalk
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           region: "$VORTO_S3_REGION"
           app: "Vorto-Dev-Environment"
           env: "vorto-dev"
@@ -84,8 +84,8 @@ jobs:
             branch: development
             
         - provider: elasticbeanstalk
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           region: "$VORTO_S3_REGION"
           app: "Vorto-Prod-New-Environment"
           env: "vorto-prod-new"
