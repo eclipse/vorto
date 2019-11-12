@@ -1,0 +1,14 @@
+<div ng-show="sessionExpirationWarning" class="alert alert-danger alert-danger-stick-top">
+  <div ng-if="sessionTimeoutCountdown > 0">
+    <p>
+      <i class="fa fa-fw fa-exclamation-triangle"></i>Warning - your session expires in {{sessionTimeoutDisplayValue}}.
+    </p>
+    <button ng-click="extendSession()" class="btn btn-primary pull-center">Extend session</button>
+  </div>
+  <div ng-if="sessionTimeoutCountdown == 0">
+    <p>
+      <i class="fa fa-fw fa-exclamation-triangle"></i>Warning - your session has expired. Please save your work and login again.
+    </p>
+    <button ng-click="logout()" class="btn btn-primary pull-center">Logout</button>
+  </div>
+</div>
