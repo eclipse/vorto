@@ -52,16 +52,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isNotFound());
   }
 
-  @Test
-  public void createUserAccount() throws Exception {
-    // when(accountService.create(testUser)).thenReturn(User.create(testUser));
-    // ToDo fix payload
-    // this.repositoryServer.perform(
-    // post("/rest/default/accounts").contentType(MediaType.APPLICATION_JSON)
-    // .content("{\"username\": \"testUser\"}").with(userAdmin))
-    // .andExpect(status().isCreated());
-  }
- 
+  
   @Test
   public void upgradeUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
