@@ -16,7 +16,7 @@ import java.util.Optional;
 
 /**
  * Converts between different Vorto model representations
- * 
+ *
  * @author Alexander Edelmann
  *
  * @param <Source>
@@ -24,12 +24,12 @@ import java.util.Optional;
  */
 public interface IModelConverter<Source, Target> {
 
-	/**
-	 * Converts the given source model to the target model
-	 * 
-	 * @param modelId
-	 * @param platformKey
-	 * @return
-	 */
-	Target convert(Source source, Optional<String> platformKey);
+  /**
+   * Converts the given source model to the target model
+   *
+   * @param source
+   * @param platformKey
+   * @return
+   */
+  Target convert(Source source, Optional<String> platformKey);
 }

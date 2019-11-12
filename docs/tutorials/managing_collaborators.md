@@ -47,5 +47,5 @@ Each Role provides collaborators with specific permissions for the according nam
 
 ---
 
-In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask?tags=eclipse-vorto) and we'll answer it as soon as possible!   
 Please make sure to use `eclipse-vorto` as one of the tags. 

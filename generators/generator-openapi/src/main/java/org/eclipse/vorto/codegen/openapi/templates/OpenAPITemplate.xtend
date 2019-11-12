@@ -49,7 +49,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		openapi: 3.0.0
 		info:
 		  title: Bosch IoT Things HTTP API for «infomodel.name» 
-		  description: JSON-based, REST-like API for <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name» Vorto Model</a>
+		  description: |- 
+		    This descriptions focus on the JSON-based, REST-like API for <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name»</a> Vorto Model.
+		    
+		    For more details on concepts, please consult the full [documentation](https://things.eu-1.bosch-iot-suite.com/dokuwiki/).
 		  version: "«infomodel.version»"
 		servers:
 		  - url: https://things.eu-1.bosch-iot-suite.com/api/2
@@ -267,6 +270,100 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                $ref: '#/components/schemas/AdvancedError'
 		        '412':
 		          $ref: '#/components/responses/preconditionFailed'
+		  '/things/{thingId}/features/«fbProperty.name»/properties':
+		    get:
+		      summary: Retrieve the properties of «fbProperty.name»
+		      description: >-
+		        Returns the «fbProperty.name» properties of the «infomodel.name» thing identified by the
+		        `thingId` path parameter.
+		      tags:
+		      - Features
+		      parameters:
+		      - $ref: '#/components/parameters/thingIdPathParam'
+		      responses:
+		        '200':
+		          description: The «fbProperty.name» was successfully retrieved.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/«fbProperty.type.name»Properties'
+		        '304':
+		          $ref: '#/components/responses/notModified'
+		        '400':
+		          description: >-
+		            The request could not be completed. The `thingId` either
+		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
+		              * does not conform to RFC-2396 (URI)
+		            Or at least one of the defined query parameters was invalid.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '401':
+		          description: The request could not be completed due to missing authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '404':
+		          description: >-
+		            The request could not be completed. The Thing with the given ID or the Feature with the specified
+		            `featureId` was not found.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '412':
+		          $ref: '#/components/responses/preconditionFailed'
+		  '/things/{thingId}/features/«fbProperty.name»/properties/{propertyPath}':
+		    get:
+		      summary: Retrieve a specific property of «fbProperty.name»
+		      description: >-
+		        Returns the «fbProperty.name» properties of the «infomodel.name» thing identified by the
+		        `thingId` path parameter.
+		      tags:
+		      - Features
+		      parameters:
+		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/propertyPathPathParam'
+		      responses:
+		        '200':
+		          description: The Property was successfully retrieved.
+		          headers:
+		            ETag:
+		              description: |-
+		                The (current server-side) ETag for this (sub-)resource. For top-level resources it is in the format
+		                "rev:[revision]", for sub-resources it has the format "hash:[calculated-hash]".
+		              schema:
+		                type: string
+		        '304':
+		          $ref: '#/components/responses/notModified'
+		        '400':
+		          description: >-
+		            The request could not be completed. The `thingId` either
+		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
+		              * does not conform to RFC-2396 (URI)
+		            Or at least one of the defined query parameters was invalid.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '401':
+		          description: The request could not be completed due to missing authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '404':
+		          description: >-
+		            The request could not be completed. The Thing with the given ID or the Feature with the specified
+		            `featureId` was not found.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '412':
+		          $ref: '#/components/responses/preconditionFailed'		          
 		  «IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.empty»
 		  «FOR configurationProperty : fbProperty.type.functionblock.configuration.properties»
 		  '/things/{thingId}/features/«fbProperty.name»/properties/configuration/«configurationProperty.name»':
@@ -760,6 +857,13 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      required: true
 		      schema:
 		        type: string
+		    propertyPathPathParam:
+		      name: propertyPath
+		      in: path
+		      description: The path to the Property
+		      required: true
+		      schema:
+		        type: string		        
 		  securitySchemes:
 		    bearerAuth:
 		      type: http

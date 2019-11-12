@@ -13,26 +13,23 @@
 package org.eclipse.vorto.mapping.engine.converter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.script.Bindings;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ExpressionContext;
 import org.apache.commons.jxpath.Function;
 import org.apache.commons.jxpath.JXPathException;
 import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.util.TypeUtils;
-import org.eclipse.vorto.mapping.engine.MappingException;
 import jdk.nashorn.api.scripting.ClassFilter;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 @SuppressWarnings("restriction")
 public class JavascriptEvalFunction implements Function {
-
-  private static final List<String> MALICIOUS_KEYWORDS = Arrays.asList("while", "for", "foreach");
 
   private String functionName;
 
@@ -46,8 +43,6 @@ public class JavascriptEvalFunction implements Function {
   @Override
   @SuppressWarnings({"rawtypes"})
   public Object invoke(ExpressionContext context, Object[] parameters) {
-    checkScriptForMaliciousContent();
-
     NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
     ScriptEngine engine = factory.getScriptEngine(new ClassFilter() {
 
@@ -94,16 +89,6 @@ public class JavascriptEvalFunction implements Function {
     }
   }
 
-  private void checkScriptForMaliciousContent() {
-    for (String maliciousKeyword : MALICIOUS_KEYWORDS) {
-      if (this.functionBody.contains(maliciousKeyword)) {
-        throw new MappingException(
-            "The keyword " + maliciousKeyword + " is not allowed in javascript function.");
-      }
-    }
-
-  }
-
   private Object[] unwrap(Object[] wrappedArgs) {
     List<Object> unwrapped = new ArrayList<Object>();
     for (Object o : wrappedArgs) {
@@ -119,9 +104,17 @@ public class JavascriptEvalFunction implements Function {
 
   private Class<?>[] toTypes(Object[] parameters) {
     List<Class<?>> result = new ArrayList<>();
-    for (@SuppressWarnings("unused")
-    Object o : parameters) {
-      result.add(Object.class);
+    for (Object param : parameters) {
+      if (param instanceof BasicNodeSet) {
+        BasicNodeSet nodeSet = (BasicNodeSet)param;
+        if (nodeSet.getPointers().size() > 1) {
+          result.add(Object[].class);
+        } else {
+          result.add(Object.class);
+        }
+      } else {
+        result.add(Object.class);
+      }  
     }
     return result.toArray(new Class[parameters.length]);
   }

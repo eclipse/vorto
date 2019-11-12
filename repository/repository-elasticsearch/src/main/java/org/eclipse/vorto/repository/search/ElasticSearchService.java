@@ -362,7 +362,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private List<String> findTenantsOfUser(IUserContext userContext) {
+  private Collection<String> findTenantsOfUser(IUserContext userContext) {
     if (userContext.isAnonymous()) {
       return Collections.emptyList();
     } else {

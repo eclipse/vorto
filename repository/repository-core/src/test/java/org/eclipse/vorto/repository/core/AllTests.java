@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({AttachmentValidatorTest.class, ErrorMessageProviderTest.class, MappingTest.class,
     ModelDtoFactoryTest.class, ModelIdTest.class, ModelParserTest.class,
     ModelRepositoryAttachmentTest.class, ModelRepositoryDiagnosticsTest.class,
+    ModelRepositorySearchTest.class,
     ModelRepositoryTest.class, ModelRepositoryTest2.class,BlueToothDeviceInfoProfileResolverTest.class,Lwm2mObjectIdResolverTest.class})
 public class AllTests {
 

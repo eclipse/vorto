@@ -20,9 +20,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.vorto.repository.sso.oauth.TokenVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -32,10 +32,10 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-  private UserInfoTokenServices userInfoService;
+  private TokenVerifier tokenVerifier;
 
-  public AuthorizationTokenFilter(UserInfoTokenServices userInfoService) {
-    this.userInfoService = userInfoService;
+  public AuthorizationTokenFilter(TokenVerifier tokenVerifier) {
+    this.tokenVerifier = tokenVerifier;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
       Optional<String> authToken = FilterUtils.getBearerToken((HttpServletRequest) request);
       if (authToken.isPresent()) {
         try {
-          Authentication authentication = userInfoService.loadAuthentication(authToken.get());
+          Authentication authentication = tokenVerifier.verify((HttpServletRequest) request, authToken.get());
           if (authentication != null) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);

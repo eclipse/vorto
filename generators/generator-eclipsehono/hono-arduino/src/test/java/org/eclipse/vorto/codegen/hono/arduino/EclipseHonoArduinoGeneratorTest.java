@@ -43,7 +43,7 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     IGenerationResult generationResult = eclipseArduinoGenerator.generate(modelProvider(),
         InvocationContext.simpleInvocationContext());
 
-    Generated generatedfile =
+    org.eclipse.vorto.plugin.generator.utils.Generated generatedfile =
         zipFileReader(generationResult, "StatusPropertiesFunctionBlock.cpp", ".cpp");
 
     File defaultFile = new File(getClass().getClassLoader()
