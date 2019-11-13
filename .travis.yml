@@ -47,8 +47,7 @@ jobs:
         - export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
         - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
-        - cp ./repository/repository-server/target/infomodelrepository.jar ./awsupload/repo/infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar
-        - export ARTIFACT=./awsupload/repo/infomodelrepository_${ELASTIC_BEANSTALK_LABEL}.jar
+        - export ARTIFACT=$(ls repository/repository-server/target/infomodelrepository.jar)
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
 
       deploy:

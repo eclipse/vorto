@@ -6,15 +6,15 @@ repo:
 
 spring:
   datasource:
-    url: ${db_url}
-    username: ${db_username}
-    password: ${db_password}
-    driver-class-name: ${db_driver}
     testWhileIdle: true
     timeBetweenEvictionRunsMillis: 60000
     wait_timeout: 180
-    validationInterval: 60
+    validationInterval: 60    
     validationQuery: SELECT 1
+    driver-class-name:
+    url:
+    username:
+    password:
   jpa:
     show-sql: false
     generate-ddl: true
