@@ -33,6 +33,7 @@ jobs:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
         - mvn --fail-fast -q clean package -P checkstyle
+        - mkdir ./awsupload/repo
         - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
         - echo "TRAVIS_TAG------$TRAVIS_TAG" 
         - if [ -n "$TRAVIS_TAG" ]; then
@@ -63,7 +64,7 @@ jobs:
         - provider: elasticbeanstalk
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
-          zip_file: "$ARTIFACT"
+          zip-file: "$ARTIFACT"
           region: "$VORTO_S3_REGION"
           app: "Vorto-Dev-Environment"
           env: "vorto-dev"
