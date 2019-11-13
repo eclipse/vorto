@@ -1,0 +1,8 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.examples.type
+version 1.0.1
+
+entity Color {
+	mandatory color as string
+}

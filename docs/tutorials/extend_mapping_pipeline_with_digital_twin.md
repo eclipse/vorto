@@ -69,5 +69,5 @@ If you see the updates in your application voila you just successfully extended 
 
 <br />
 
-In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
+In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask?tags=eclipse-vorto) and we'll answer it as soon as possible!   
 Please make sure to use `bosch-iot-suite` as one of the tags. 

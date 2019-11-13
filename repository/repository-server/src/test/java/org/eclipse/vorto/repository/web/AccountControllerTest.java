@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -24,94 +23,124 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+
 public class AccountControllerTest extends AbstractIntegrationTest {
 
-    private IUserAccountService accountService;
 
-    @Autowired private ApplicationContext context;
+  private IUserAccountService accountService;
 
-    @Override protected void setUpTest() throws Exception {
-        accountService = context.getBean(IUserAccountService.class);
+  @Autowired
+  private ApplicationContext context;
+
+  @Override
+  protected void setUpTest() throws Exception {
+    accountService = context.getBean(IUserAccountService.class);
+  }
+
+  private String testUser = "testUser";
+  private String testUser2 = "testUser2";
+  private String testMail = "test@mail.de";
+
+  @Test
+  public void getUser() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.USER);
     }
-
-    private String testUser = "testUser";
-    private String testMail = "test@mail.de";
-
-    @Test public void getUser() throws Exception {
-        if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, "playground", Role.USER);
-        }
-        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
-            .andExpect(status().isOk());
-        this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test public void createUserAccount() throws Exception {
-        //when(accountService.create(testUser)).thenReturn(User.create(testUser));
-        //ToDo fix payload
-        //this.repositoryServer.perform(
-        //    post("/rest/default/accounts").contentType(MediaType.APPLICATION_JSON)
-        //        .content("{\"username\": \"testUser\"}").with(userAdmin))
-        //    .andExpect(status().isCreated());
-    }
-
-    @Test public void upgradeUserAccount() throws Exception{
-        if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, "playground", Role.USER);
-        }
-        this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
-            .andExpect(status().isCreated());
-        this.repositoryServer.perform(post("/rest/accounts/doesnotexist/updateTask").with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test public void updateAccount() throws Exception{
-        if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, "playground", Role.USER);
-        }
-        this.repositoryServer.perform(
-            put("/rest/accounts/"+testUser)
-                .content(testMail).with(userAdmin))
-            .andExpect(status().isOk());
-        assert(this.accountService.getUser(testUser).getEmailAddress().equals(testMail));
-        this.repositoryServer.perform(
-            put("/rest/accounts/doesnotexist")
-                .content(testMail).with(userAdmin))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test public void deleteUserAccount() throws Exception {
-        if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, "playground", Role.USER);
-        }
-        
-        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
-          .andExpect(status().isOk());
-        
-        this.repositoryServer.perform(
-            delete("/rest/accounts/"+testUser)
-                .content(testMail).with(userAdmin))
-            .andExpect(status().isNoContent());
-        
-        this.repositoryServer.perform(get("/rest/accounts/"+testUser).with(userAdmin))
-          .andExpect(status().isNotFound());
-    }
-
-    @Test public void deleteUserFromTenant() throws Exception {
-      if(accountService.getUser(testUser) == null){
-          accountService.create(testUser, "playground", Role.USER);
-      }
-      
-      this.repositoryServer.perform(get("/rest/tenants/playground/users/"+testUser).with(userAdmin))
-      .andExpect(status().isOk());
-      
-      this.repositoryServer.perform(
-          delete("/rest/tenants/playground/users/"+testUser)
-              .content(testMail).with(userAdmin))
-          .andExpect(status().isOk());
-      
-      this.repositoryServer.perform(get("/rest/tenants/playground/users/"+testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+        .andExpect(status().isOk());
+    this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userAdmin))
         .andExpect(status().isNotFound());
+  }
+
+  
+  @Test
+  public void upgradeUserAccount() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.USER);
     }
+    this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
+        .andExpect(status().isCreated());
+    this.repositoryServer.perform(post("/rest/accounts/doesnotexist/updateTask").with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void updateAccount() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.USER);
+    }
+    this.repositoryServer
+        .perform(put("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .andExpect(status().isOk());
+    assert (this.accountService.getUser(testUser).getEmailAddress().equals(testMail));
+    this.repositoryServer
+        .perform(put("/rest/accounts/doesnotexist").content(testMail).with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void deleteUserAccount() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.USER);
+    }
+
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+        .andExpect(status().isOk());
+
+    this.repositoryServer
+        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .andExpect(status().isNoContent());
+
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
+
+  /*
+   * Test case to check if user account deletion is successful for Sys Admin role
+   */
+  @Test
+  public void deleteUserAccountSysAdmin() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.SYS_ADMIN);
+    }
+
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+        .andExpect(status().isOk());
+
+    this.repositoryServer
+        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .andExpect(status().isNoContent());
+
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void deleteUserFromTenant() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.create(testUser, "playground", Role.USER);
+    }
+
+    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))
+        .andExpect(status().isOk());
+
+    this.repositoryServer
+        .perform(
+            delete("/rest/tenants/playground/users/" + testUser).content(testMail).with(userAdmin))
+        .andExpect(status().isOk());
+
+    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))
+        .andExpect(status().isNotFound());
+  }
+
+  /*
+   * Test case to check whether empty tenant list is returned if user does not exist in user
+   * repository
+   */
+  @Test
+  public void getTenantsOfUser() throws Exception {
+    assert (this.accountService.getTenantsOfUser(testUser2).isEmpty());
+  }
+
+
 }

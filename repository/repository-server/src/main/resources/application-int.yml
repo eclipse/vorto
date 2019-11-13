@@ -6,15 +6,15 @@ repo:
 
 spring:
   datasource:
-    url: jdbc:mysql://${db_url_domain}:3306/vorto_dev?autoReconnect=true
-    username: ${db_username}
-    password: ${db_password}
-    driver-class-name: org.mariadb.jdbc.Driver
     testWhileIdle: true
     timeBetweenEvictionRunsMillis: 60000
     wait_timeout: 180
-    validationInterval: 60
+    validationInterval: 60    
     validationQuery: SELECT 1
+    driver-class-name:
+    url:
+    username:
+    password:
   jpa:
     show-sql: false
     generate-ddl: true
