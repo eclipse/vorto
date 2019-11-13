@@ -17,10 +17,10 @@
          port_range="0"/>
     <!-- <MPING/> -->
     
-    <JDBC_PING connection_url="${db_url}"
-               connection_username="${db_username}"
-               connection_password="${db_password}"
-               connection_driver="${db_driver}"
+    <JDBC_PING connection_url="${spring.datasource.url}"
+               connection_username="${spring.datasource.username}"
+               connection_password="${spring.datasource.password}"
+               connection_driver="${spring.datasource.driver-class-name}"
                initialize_sql="CREATE TABLE IF NOT EXISTS JGROUPSPING (
                        		   own_addr varchar(200) NOT NULL,
                                cluster_name varchar(200) NOT NULL,

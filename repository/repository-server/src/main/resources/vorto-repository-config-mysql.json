@@ -29,16 +29,16 @@
 		"persistence": {
 			"type": "db",
 			"driver": "org.mariadb.jdbc.Driver",
-			"connectionUrl": "${db_url}",
-			"username": "${db_username}",
-			"password": "${db_password}"
+			"connectionUrl": "${spring.datasource.url}",
+			"username": "${spring.datasource.username}",
+			"password": "${spring.datasource.password}"
 		},
 		"binaryStorage": {
 			"type": "database",
 			"driverClass": "org.mariadb.jdbc.Driver",
-			"url": "${db_url}",
-			"username": "${db_username}",
-			"password": "${db_password}"
+			"url": "${spring.datasource.url}",
+			"username": "${spring.datasource.username}",
+			"password": "${spring.datasource.password}"
 		}
 	},
 	"sequencing": {
