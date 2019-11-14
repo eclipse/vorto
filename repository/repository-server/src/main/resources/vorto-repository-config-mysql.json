@@ -28,14 +28,14 @@
 	"storage": {
 		"persistence": {
 			"type": "db",
-			"driver": "org.mariadb.jdbc.Driver",
+			"driver": "${spring.datasource.driver-class-name}",
 			"connectionUrl": "${spring.datasource.url}",
 			"username": "${spring.datasource.username}",
 			"password": "${spring.datasource.password}"
 		},
 		"binaryStorage": {
 			"type": "database",
-			"driverClass": "org.mariadb.jdbc.Driver",
+			"driverClass": "${spring.datasource.driver-class-name}",
 			"url": "${spring.datasource.url}",
 			"username": "${spring.datasource.username}",
 			"password": "${spring.datasource.password}"
