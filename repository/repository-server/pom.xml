@@ -217,6 +217,13 @@
 		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
 		    <version>6.7.2</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.lucene</groupId>
+		    <artifactId>lucene-core</artifactId>
+		    <version>7.7.0</version>
+		</dependency>
+		
 		<!-- Elastic search indexing service (end) -->
 		
 	</dependencies>
