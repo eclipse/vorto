@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.account;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -81,7 +82,7 @@ public interface IUserAccountService {
    * @param username
    * @return createdUser
    */
-  User create(String username);
+  User create(String username, AuthenticationProvider provider);
 
   /**
    * create a new user with roles in Vorto Repository, under the Playground tenant
@@ -91,6 +92,16 @@ public interface IUserAccountService {
    * @return
    */
   public User create(String username, String tenantId, Role... userRoles);
+  
+  /**
+   * Creates a new user with given roles and authentication provider.
+   * @param username
+   * @param tenantId
+   * @param provider
+   * @param userRoles
+   * @return
+   */
+  public User create(String username, String tenantId, AuthenticationProvider provider, Role... userRoles);
   
   /**
    * 

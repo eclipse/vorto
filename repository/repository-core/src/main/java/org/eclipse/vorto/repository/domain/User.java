@@ -47,6 +47,9 @@ public class User {
   @Column(name = "username")
   @NaturalId
   private String username;
+  
+  @Column(name = "authenticationProvider")
+  private String authenticationProvider;
 
   @Column(nullable = false)
   private Timestamp dateCreated;
@@ -62,14 +65,19 @@ public class User {
 
   private String emailAddress;
 
-  public static User create(String username) {
+  public static User create(String username, AuthenticationProvider provider) {
     User user = new User();
     user.setUsername(username);
+    user.setAuthenticationProvider(provider.name());
     user.setDateCreated(new Timestamp(System.currentTimeMillis()));
     user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
     user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
 
     return user;
+  }
+  
+  public static User create(String username) {
+    return create(username, AuthenticationProvider.GITHUB);
   }
 
   public static User create(String username, Tenant tenant, Role... roles) {
@@ -201,6 +209,14 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+  
+  public String getAuthenticationProvider() {
+    return authenticationProvider;
+  }
+
+  public void setAuthenticationProvider(String authenticationProvider) {
+    this.authenticationProvider = authenticationProvider;
   }
 
   public Timestamp getDateCreated() {

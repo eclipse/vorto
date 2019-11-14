@@ -287,7 +287,7 @@ public class TenantServiceTest {
   public void testUpdateTenant() {
     Tenant myTenantId =
         Tenant.newTenant("myTenantId", "com.test", Sets.newHashSet("com.test", "com.test1"));
-    myTenantId.setAuthenticationProvider(AuthenticationProvider.BOSCH_ID);
+    myTenantId.setAuthenticationProvider(AuthenticationProvider.BOSCH);
     myTenantId.setAuthorizationProvider(AuthorizationProvider.DB);
     Mockito.when(tenantRepo.findByTenantId("myTenantId")).thenReturn(myTenantId);
     Mockito.when(nsRepo.findAll())
@@ -311,7 +311,7 @@ public class TenantServiceTest {
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
     assertEquals(argCaptor2.getValue().getDefaultNamespace(), "com.test1");
     assertEquals(argCaptor2.getValue().getAuthenticationProvider(),
-        AuthenticationProvider.BOSCH_ID);
+        AuthenticationProvider.BOSCH);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 3);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()

@@ -130,7 +130,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       updateTenant(tenant, defaultNamespace, namespaces,
           authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
 
-      updateTenantAdmins(tenantAdmins, tenant);
+      updateTenantAdmins(tenant, tenantAdmins);
       eventType = EventType.TENANT_UPDATED;
     }
 
@@ -156,7 +156,12 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
         .count();
   }
 
-  private void updateTenantAdmins(Set<String> newTenantAdmins, Tenant tenant) {
+  public Tenant changeTenantAdmins(Tenant tenant, Set<String> newTenantAdmins) {
+    updateTenantAdmins(tenant, newTenantAdmins);
+    return tenantRepo.save(tenant);
+  }
+  
+  private void updateTenantAdmins(Tenant tenant, Set<String> newTenantAdmins) {
     Set<String> tenantUsers = tenant.getUsers().stream().map(user -> user.getUser().getUsername())
         .collect(Collectors.toSet());
     Set<String> oldTenantAdmins =
@@ -167,8 +172,12 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     Set<String> demotedToUsers = Sets.difference(oldTenantAdmins, newTenantAdmins);
 
     totallyNewAdmins.forEach(admin -> {
-      logger.info("Adding new tenant_admin '{}' to Tenant '{}'", admin, tenant.getTenantId());
       User user = userAccountService.getUser(admin);
+      if (user == null) {
+        throw new TenantAdminDoesntExistException(admin);
+      }
+      
+      logger.info("Adding new tenant_admin '{}' to Tenant '{}'", admin, tenant.getTenantId());
       tenant.addUser(TenantUser.createTenantUser(user, Role.TENANT_ADMIN, Role.USER,
           Role.MODEL_CREATOR, Role.MODEL_PROMOTER, Role.MODEL_REVIEWER));
     });
