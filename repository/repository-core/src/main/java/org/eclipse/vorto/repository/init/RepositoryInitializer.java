@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -146,7 +147,7 @@ public class RepositoryInitializer {
   private void createUser(String user) {
     if (!userAccountService.exists(user)) {
       logger.info("Creating technical user: {}", user);
-      userAccountService.create(user);
+      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH);
     }
   }
 

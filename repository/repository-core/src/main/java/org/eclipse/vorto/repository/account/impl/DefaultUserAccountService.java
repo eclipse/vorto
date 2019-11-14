@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -147,7 +148,7 @@ public class DefaultUserAccountService
     }
     
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
-    PreConditions.notNull(tenant, "Tenant with tenantId" + tenantId + " doesnt exists");
+    PreConditions.notNull(tenant, "Tenant with tenantId " + tenantId + " doesnt exists");
     
     Optional<TenantUser> user = tenant.getUser(username);
     if (user.isPresent()) {
@@ -159,20 +160,25 @@ public class DefaultUserAccountService
   }
 
   @Transactional
-  public User create(String username) {
+  public User create(String username, AuthenticationProvider provider) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
-    return userRepository.save(User.create(username));
+    return userRepository.save(User.create(username, provider));
   }
 
   @Transactional
-  public User create(String username, String tenantId, Role... userRoles)
+  public User create(String username, String tenantId, Role... userRoles) {
+    return create(username, tenantId, AuthenticationProvider.GITHUB, userRoles);
+  }
+  
+  @Transactional
+  public User create(String username, String tenantId, AuthenticationProvider provider, Role... userRoles)
       throws RoleNotSupportedException {
     
     PreConditions.notNullOrEmpty(username, "username");
-    PreConditions.notNullOrEmpty(tenantId, "username");
+    PreConditions.notNullOrEmpty(tenantId, "tenantId");
     
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
 
@@ -184,7 +190,7 @@ public class DefaultUserAccountService
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
     } else {
-      User user = create(username);
+      User user = create(username, provider);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
       user.addTenantUser(tenantUser);
       return userRepository.save(user);
