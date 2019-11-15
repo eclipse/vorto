@@ -2,10 +2,10 @@ define(["../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller('DetailsController', 
     ['$q','$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
-     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', 
-     'TenantService', 'confirmPublish',
+     '$uibModal', '$window', '$timeout', 'openCreateModelDialog',
+     'TenantService', 'confirmPublish', 'SessionTimeoutService',
     function ($q, $rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog, TenantService, confirmPublish) {
+        $window, $timeout, openCreateModelDialog, TenantService, confirmPublish, sessionTimeoutService) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -25,7 +25,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.attachments = [];
 		$scope.permission = "READ";
 		$scope.encodeURIComponent = encodeURIComponent;
-		$scope.newComment = {value: ""}
+		$scope.newComment = {value: ""};
 		$scope.canGenerate = true;
 		
 		$scope.editorConfig = {
@@ -45,10 +45,12 @@ repositoryControllers.controller('DetailsController',
 	        syntaxDefinition: "webjars/repository-web/dist/js/ace-modes/mode-mapping",
 	        serviceUrl: "mapping/xtext-service"
 	      }
-    	}
-		
+    	};
+
+		sessionTimeoutService.initSessionTimeoutWarning($scope);
+
 		$scope.createEditor = function(model) {
-			var language = ""
+			var language = "";
 			if (model.type === 'Datatype') {
 				language = "type";
 			} else if (model.type === 'Functionblock') {
@@ -58,7 +60,7 @@ repositoryControllers.controller('DetailsController',
 			} else {
 				language = "mapping";
 			}
-		
+
 			var defer = $q.defer();
 			require(["webjars/ace/src/ace"], function() {
 	    		require(["xtext/xtext-ace"], function(xtext) {
@@ -336,7 +338,6 @@ repositoryControllers.controller('DetailsController',
 
 		$scope.listToMatrix = function (list, n) {
 			var grid = [],
-				i = 0,
 				x = list.length,
 				col, row = -1;
 			for (var i = 0; i < x; i++) {
@@ -347,7 +348,7 @@ repositoryControllers.controller('DetailsController',
 				grid[row][col] = list[i];
 			}
 			return grid;
-		}
+		};
 
 		$scope.modelId = $routeParams.modelId;
 		

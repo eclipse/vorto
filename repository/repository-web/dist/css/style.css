@@ -1914,3 +1914,12 @@ input[type=file]::-webkit-file-upload-button {
 .alert-danger-break-word {
 	overflow-wrap: break-word;
 }
+
+.alert-danger-stick-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 2000;
+  text-align: center;
+}
