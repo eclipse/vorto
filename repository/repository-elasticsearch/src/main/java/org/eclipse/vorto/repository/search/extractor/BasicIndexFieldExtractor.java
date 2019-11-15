@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,6 +41,10 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
   public static final String MODEL_HASIMAGE = "hasImage";
   
   public static final String MODEL_CREATIONDATE = "createdOn";
+
+  public static final String NAMESPACE = "namespace";
+
+  public static final String VERSION = "version";
   
   @Override
   public Map<String, String> extractFields(ModelInfo modelInfo) {
@@ -57,7 +61,9 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, Boolean.toString(modelInfo.isHasImage()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, Long.toString(modelInfo.getCreationDate().getTime()));
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, modelInfo.getVisibility());
-    
+    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, "TODO");
+    basicFields.put(BasicIndexFieldExtractor.VERSION, "TODO");
+
     return basicFields;
   }
 
@@ -76,7 +82,9 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, FieldType.KEY);
-    
+    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.VERSION, FieldType.KEY);
+
     return basicFields;
   }
   

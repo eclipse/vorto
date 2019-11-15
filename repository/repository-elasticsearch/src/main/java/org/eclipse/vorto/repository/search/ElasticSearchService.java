@@ -14,22 +14,28 @@ package org.eclipse.vorto.repository.search;
 import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.model.EnumUtil;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.ModelVisibility;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -63,6 +69,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.SearchHit;
@@ -73,7 +80,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Search Service implementation using a remote Elastic Search Service
- *
  */
 public class ElasticSearchService implements IIndexingService, ISearchService {
 
@@ -95,19 +101,24 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<IIndexFieldExtractor>();
 
-  private Pattern searchExprPattern = Pattern.compile("name:(\\S+)\\*");
-
-  private Pattern authorExprPattern = Pattern.compile("author:(\\S+)");
-  
-  private Pattern userReferencePattern = Pattern.compile("userReference:(\\S+)");
-
-  private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
-
   private RestHighLevelClient client;
 
   private IModelRepositoryFactory repositoryFactory;
 
   private ITenantService tenantService;
+
+  private static final Map<String, Float> NAME_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
+    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DESCRIPTION, 1.0f);
+    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, 1.0f);
+  }
+
+  private static final Map<String, Float> AUTHOR_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    AUTHOR_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
+    AUTHOR_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
+  }
 
   public ElasticSearchService(RestHighLevelClient client, IModelRepositoryFactory repositoryFactory,
       ITenantService tenantService) {
@@ -344,87 +355,93 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    * @return
    */
   public List<ModelInfo> search(String searchExpression) {
-    return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
+      return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
   }
 
   /**
    * The {@code searchExpression} value is composed of tokens explained below. <br/>
    * All tokens are optional, meaning that a search expression can actually be empty (and will
    * consequently yield all known models visible to the tenant searching). <br/>
+   * Tokens are made of single values or tagged values, space-separated.<br/>
+   * Single values are always interpreted as name searches.<br/>
+   * Tagged values are expressed in the form of {@literal tagname:value}, with <b>no whitespace</b>
+   * before or after the colon. <br/>
+   * Any type of tag that is specified in the search is a hard-requirement, i.e. it <i>must</i> be
+   * present in the model that is returned. <br/>
+   * However, it is possible to use multiple identical tags with different values (e.g.
+   * {@literal type:InformationModel} {@literal type:Functionblock}). In that case, the multiple
+   * values for that tag are required <i>in alternative</i> to one another - in other words,
+   * qualifying results will contain at least one of the values for that type.<br/>
+   * To of the search types implicitly search in different fields in alternative: {@literal name:}
+   * and {@literal author:} (see below for details).<br/>
+   * The <i>only</i> search term that does not require a tag is the {@literal name:}. In
+   * essence, any untagged value is considered as {@literal name:[the value]}.<br/>
+   * All values are searched <b>case-insensitive</b>. <br/>
+   * All tags are <i>also</i> parsed <b>case-sensitive</b>, e.g. {@literal state:} can also be
+   * expressed as {@literal STATE:} (or {@literal sTaTe:}, etc. for that matter). Tags are
+   * identified by their known descriptor (see below for details), followed by a colon
+   * ({@literal :}).<br/>
+   * Multiple search terms can be separated by a single or multiple whitespaces - which is why
+   * whitespace is <b>not</b> allowed in values.<br/>
+   * All values can be expressed as plain text (e.g. {@literal author:Mena}), or with
+   * wildcards (e.g. {@literal author:?en*}.<br/>
+   * Asterisk wildcards ({@literal *}) allow multiple characters, while question mark wildcards
+   * ({@literal ?}) allow a single character.<br/>
+   * For backwards-compatibility, name values (tagged or not) that do not contain any wildcard
+   * are automatically appended a multi-character wildcard at the end, e.g. {@literal Raspberry} or
+   * {@literal name:Raspberry} become {@literal Raspberry*} and {@literal name:Raspberry*}.<br/>
+   * The supported tags are listed below:
    * <ul>
    *   <li>
-   *     The model type, which can be:
+   *     The model type (with tag {@literal type:)}, which can be:
    *     <ul>
    *       <li>All types (i.e. empty)</li>
    *       <li>{@literal InformationModel}</li>
    *       <li>{@literal Functionblock}</li>
    *       <li>{@literal Datatype}</li>
    *       <li>{@literal Mapping}</li>
+   *       <li>Any wildcard search</li>
    *     </ul>
-   *     When specified, the model type is a hard criterion, i.e. a
-   *     <a href src="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html">must</a>
-   *     boolean query criterion for a
-   *     <a href src="https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-term-level-queries.html#java-query-dsl-term-query">term</a>
-   *     level query.
+   *     In the web UI, the model type can be set to any specific type by changing the value in the
+   *     {@literal TYPES} drop-down. It defaults to all types.
    *     @see ModelType
    *   </li>
    *   <li>
-   *     The model state, which can be:
+   *     The model state (with tag {@literal state:)}, which can be:
    *    <ul>
    *      <li>All states (i.e. empty)</li>
    *      <li>{@literal Draft}</li>
    *       <li>{@literal InReview}</li>
    *      <li>{@literal Released} (default value in the repository's web UI search)</li>
    *      <li>{@literal Deprecated}</li>
+   *      <li>Any wildcard search</li>
    *    </ul>
-   *    When specified, the model state is a hard criterion, term-level query (see model type above).
+   *    In the web UI, the model state can be set to any specific type by changing the value in the
+   *    {@literal STATES} drop-down. It defaults to {@literal Released}.
    *    @see ModelState
    *   </li>
    *   <li>
-   *     The free-text, case-insensitive search expression. By default, i.e. when only specifying
-   *     the desired search token in the web UI or swagger, the expression will be applied to the
-   *     model's name. However, when specified explicitly, the following tags are available to
-   *     refine the search:
-   *     <ul>
-   *       <li>Any model type value without tag (see above)</li>
-   *       <li>Any model state value preceded by tag: {@literal state:} (see above)</li>
-   *       <li>
-   *         {@literal name:} is the default, implicit tag, i.e. a tag-less search will
-   *         implicitly search for the model's name.
-   *       </li>
-   *       <li>{@literal author:}</li>
-   *       <li>{@literal userReference:}</li>
-   *      <li>{@literal visibility:}</li>
-   *     </ul>
-   *     The tags are not mutually exclusive, i.e. one or more of those tags combined can be used in
-   *     the search expression.
-   *     @// TODO: 11/8/19 no edge case considered for multiple identically tagged search terms.
-   *     When specified, each of the employed free-text search terms will be considered as a hard
-   *     criterion ("must").
+   *     The model's name (with optional tag {@literal name:}), which is automatically searched as
+   *     {@literal displayName}, or {@literal description} or{@literal searchableName}.
    *   </li>
    *   <li>
-   *     The name of the model, which can be optionally specified explicitly with the relevant tag,
-   *     will be searched as a
-   *    <a href src="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html>match query phrase prefix</a>.
+   *     The model's author (with tag {@literal author:}). In the web UI, the author can be set
+   *     implicitly to the current user only by checking the {@literal Only My Models} checkbox.
    *   </li>
    *   <li>
-   *     The author field can be specified by tag (see free-text above), or
-   *     implicitly in the web GUI by selecting the "Only my models" checkbox. It will be searched
-   *     as a term-level query.
+   *     The model's user reference (with tag {@literal userReference:}), which is automatically
+   *     searched as {@literal author} or {@literal lastModifiedBy}.
    *   </li>
    *   <li>
-   *     The user reference field is a combination of the author and {@literal lastModifiedBy}
-   *     fields, searched as a term-level query in alternative to one another.
-   *   </li>
-   *   <li>
-   *     The visibility field, which can be optionally specified in the Web GUI through the
-   *     "Only public models" checkbox, will be searched as a term-level query.
+   *     The model's visibility (with tag {@literal visibility:}). In the web UI, the visibility
+   *     can be set implicitly to {@literal Public} by checking the {@literal Only Public Models}
+   *     checkbox.
+   *     @see ModelVisibility
    *   </li>
    *   <li>
    *     In addition to those search options, a collection of tenant IDs containing the current
    *     tenant's ID is typically inferred from context, in order to filter items by ownership.
    *   </li>
-   *
    * </ul>
    * @param searchExpression The search expression
    * @param userContext The user context with which to execute this query
@@ -432,16 +449,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    */
   public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
 
-    SearchParameters searchParameters =
-        makeSearchParams(findTenantsOfUser(userContext), Strings.nullToEmpty(searchExpression));
-
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-    searchSourceBuilder.query(makeElasticSearchQuery(searchParameters));
+    searchSourceBuilder.query(toESQuery(SearchParameters.build(findTenantsOfUser(userContext), searchExpression)));
     searchSourceBuilder.from(0);
     searchSourceBuilder.size(MAX_SEARCH_RESULTS);
     searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
 
     SearchRequest searchRequest = new SearchRequest(VORTO_INDEX);
+    searchRequest.indicesOptions().expandWildcardsOpen();
     searchRequest.source(searchSourceBuilder);
 
     try {
@@ -495,97 +510,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         Boolean.parseBoolean((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_HASIMAGE)));
     String createdOn = (String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_CREATIONDATE);
     modelInfo.setCreationDate(new Date(Long.parseLong(createdOn)));
+
+    // TODO
+    //add namespace and version?
+
     return modelInfo;
   }
 
-  private SearchParameters makeSearchParams(Collection<String> tenantIds, String searchExpression) {
-    Optional<ModelType> modelType = Optional.empty();
-    for (ModelType type : ModelType.values()) {
-      if (searchExpression.contains(type.name())) {
-        modelType = Optional.of(type);
-      }
-    }
-
-    Optional<ModelState> modelState = Optional.empty();
-    for (ModelState state : ModelState.values()) {
-      // TODO fix this
-      if (searchExpression.contains("state:" + state.getName())) {
-        modelState = Optional.of(state);
-      }
-    }
-
-    Optional<String> searchExpr = Optional.empty();
-    Matcher matcher = searchExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      searchExpr = Optional.of(matcher.group(1));
-    }
-
-    Optional<String> author = Optional.empty();
-    matcher = authorExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      author = Optional.of(matcher.group(1));
-    }
-    
-    Optional<String> userReference = Optional.empty();
-    matcher = userReferencePattern.matcher(searchExpression);
-    if (matcher.find()) {
-      userReference = Optional.of(matcher.group(1));
-    }
-
-    Optional<String> visibility = Optional.empty();
-    matcher = visibilityExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      visibility = Optional.of(matcher.group(1));
-    }
-
-    return new SearchParameters(tenantIds, searchExpr, modelState, modelType,
-        author, userReference, visibility);
-  }
-
-  private QueryBuilder makeElasticSearchQuery(SearchParameters params) {
-    BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-
-    if (params.expression.isPresent()) {
-      queryBuilder = queryBuilder.must(buildAlternativeNameQuery(params.expression.get()));
-    }
-
-    if (params.state.isPresent()) {
-      queryBuilder = queryBuilder.must(
-          QueryBuilders.termQuery(BasicIndexFieldExtractor.STATE, params.state.get().getName()));
-    }
-
-    if (params.type.isPresent()) {
-      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.MODEL_TYPE,
-          params.type.get().toString()));
-    }
-
-    if (params.author.isPresent()) {
-      queryBuilder = queryBuilder
-          .must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
-    }
-    
-    if (params.userReference.isPresent()) {
-      queryBuilder = queryBuilder
-          .must(or(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.userReference.get()),
-              QueryBuilders.termQuery(BasicIndexFieldExtractor.MODIFIED_BY, params.userReference.get())));
-    }
-
-    if (params.visibility.isPresent()) {
-      queryBuilder = queryBuilder.must(
-          QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, params.visibility.get()));
-    }
-
-    if (params.tenantIds.isEmpty()) {
-      queryBuilder = queryBuilder.must(isPublic());
-    } else {
-      queryBuilder = queryBuilder.must(or(isPublic(), isOwnedByTenants(params.tenantIds)));
-    }
-
-
-    return queryBuilder;
-  }
-
-  private QueryBuilder or(QueryBuilder... queries) {
+  private static QueryBuilder buildORBoolQueryWith(QueryBuilder... queries) {
     BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
     for (QueryBuilder query : queries) {
       boolQuery = boolQuery.should(query);
@@ -593,48 +525,189 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return boolQuery;
   }
 
-  /**
-   * Builds a boolean {@literal OR} query searching the following fields in alternative, with the
-   * given expression: {@link BasicIndexFieldExtractor.DISPLAY_NAME},
-   * {@link BasicIndexFieldExtractor.DESCRIPTION} or {@link BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE}.
-   * @param expression
-   * @return
-   */
-  private QueryBuilder buildAlternativeNameQuery(String expression) {
-    return or(
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DESCRIPTION, expression),
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, expression));
-  }
-
-  private QueryBuilder isPublic() {
+  private static QueryBuilder isPublic() {
     return QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, PUBLIC);
   }
 
-  private QueryBuilder isOwnedByTenants(Collection<String> tenants) {
+  private static QueryBuilder isOwnedByTenants(Collection<String> tenants) {
     return QueryBuilders.termsQuery(TENANT_ID, tenants);
   }
 
-  private class SearchParameters {
-    Collection<String> tenantIds;
-    Optional<String> expression;
-    Optional<ModelState> state;
-    Optional<ModelType> type;
-    Optional<String> author;
-    Optional<String> userReference;
-    Optional<String> visibility;
-
-    public SearchParameters(Collection<String> tenantIds, Optional<String> expression,
-        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author,
-        Optional<String> userReference, Optional<String> visibility) {
-      this.tenantIds = tenantIds;
-      this.expression = expression;
-      this.state = state;
-      this.type = type;
-      this.author = author;
-      this.userReference = userReference;
-      this.visibility = visibility;
+  /**
+   * Variant of {@link ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String, Class)}
+   * that is only in use for search of values into multiple keys.<br/>
+   * Contrary to its overload, this does not support enum element name correction, as it is
+   * intended to search arbitrary text such as model names, authors, etc.
+   * @param parent
+   * @param values
+   * @param keys
+   * @return
+   */
+  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, Map<String, Float> keys) {
+    // no need to go further - returning parent query as-is
+    if (values.isEmpty()) {
+      return parent;
     }
+    // single value: remove one query layer and add must query to parent directly
+    if (values.size() == 1) {
+      parent = parent.must(QueryBuilders.queryStringQuery(values.toArray(new String[values.size()])[0]).fields(keys));
+    }
+    // multiple values: wrap in bool query under parent and add leaves with OR relationship
+    else {
+      BoolQueryBuilder child = QueryBuilders.boolQuery();
+      for (String value : values) {
+        child = child.should(QueryBuilders.queryStringQuery(value).fields(keys));
+      }
+      parent = parent.must(child);
+    }
+    return parent;
+  }
+
+  /**
+   * Used by {@link ElasticSearchService#toESQuery(SearchParameters)} exclusively. <br/>
+   * Appends children bool queries to the given parent. <br/>
+   * For any given value, verifies whether the given enum type is not {@literal null}. If it isn't,
+   * attempts to transform the value searched to the exact enum type by invoking
+   * {@link EnumUtil#forNameIgnoreCase(Class, String)} and using the result (i.e. either the exact
+   * type name or if not found, the given value itself) in a term query. <br/>
+   * Values containing wildcards are searched as query strings instead, and not affected. <br/>
+   * Values containing only one element produce one child to the parent {@link BoolQueryBuilder}
+   * in an {@literal AND} relationship to its peers, which contains the search terms. <br/>
+   * Conversely, multiple values produce the same child, but also add as many children to it as
+   * there are values to search, each in an {@literal OR} relationship with one another.
+   * @param parent
+   * @param values
+   * @param key
+   * @param enumType
+   * @param <E>
+   * @return
+   */
+  private static <E extends Enum<E>> QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key, Class<E> enumType) {
+    // no need to go further - returning parent query as-is
+    if (values.isEmpty()) {
+      return parent;
+    }
+    // single value: remove one query layer and add must query to parent directly
+    if (values.size() == 1) {
+      // getting value from single collection element
+      String value = values.toArray(new String[values.size()])[0];
+      // value should be searched as query string as it contains wildcards
+      if (SearchTags.containsWildcard(value)) {
+        parent = parent.must(QueryBuilders.queryStringQuery(value).defaultField(key));
+      }
+      // value does not contain wildcards and will be searched as term query
+      else {
+        // given enum type exists - converting value to exact name if necessary/possible
+        if (enumType != null) {
+          value = EnumUtil.forNameIgnoreCase(enumType, values.toArray(new String[values.size()])[0]);
+        }
+        parent = parent.must(QueryBuilders.termQuery(key, value));
+      }
+    }
+    else {
+      BoolQueryBuilder child = QueryBuilders.boolQuery();
+      // producing a grandchild for each value
+      for (String value: values) {
+        // value should be searched as query string as it contains wildcards
+        if (SearchTags.containsWildcard(value)) {
+          child = child.should(QueryBuilders.queryStringQuery(value).defaultField(key));
+        }
+        // value does not contain wildcards and will be searched as term query
+        else {
+          // given enum type exists - converting value to exact name if necessary/possible
+          if (enumType != null) {
+            value = EnumUtil.forNameIgnoreCase(enumType, value);
+          }
+          child = child.should(QueryBuilders.termQuery(key, value));
+        }
+      }
+      parent = parent.must(child);
+    }
+    return parent;
+  }
+
+  /**
+   * @see ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String, Class)
+   * @param parent
+   * @param values
+   * @param key
+   * @return
+   */
+  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key) {
+    return makeChildQuery(parent, values, key, null);
+  }
+
+  /**
+   * Builds a boolean query for ElasticSearch, with the following rules:
+   * <ul>
+   *   <li>
+   *     Top-level arguments are all required, i.e. the top level terms are in a boolean
+   *     {@literal AND} relationship with one another. For instance, if specified, the type and
+   *     state of the searched model are both required.
+   *   </li>
+   *   <li>
+   *     Child-level arguments are <i>either</i> required, i.e. multiple terms for the same
+   *     property are in a boolean {@literal OR} relationship with one another. For instance, if
+   *     specified, two different values for the model type will return models for <i>either</i> of
+   *     the two specified values.
+   *   </li>
+   *   <li>
+   *     For name searches ({@literal name:} tag optional), 3 fields will be automatically searched
+   *     in alternative to one another: {@literal displayName}, {@literal description} and
+   *     {@literal searchableName}. Also worth noting, name search terms that have no wildcards will
+   *     automatically be appended a multi-character wildcard for backwards-compatibility.
+   *   </li>
+   *   <li>
+   *     Similarly to name searches, {@literal author:} searches use two fields in alternative to
+   *     one another: {@literal author:} and {@literal lastModifiedBy:}. Unlike name searches,
+   *     author searches are not appended any wildcard automatically (nor any other field search,
+   *     for that matter).
+   *   </li>
+   * </ul>
+   * @param parameters
+   * @return
+   */
+  public static QueryBuilder toESQuery(SearchParameters parameters) {
+    BoolQueryBuilder result = QueryBuilders.boolQuery();
+
+    // adding tenant ids
+    Set<String> tenantIds = parameters.getTenantIds();
+    if (tenantIds.isEmpty()) {
+      result = result.must(isPublic());
+    } else {
+      result = result.must(buildORBoolQueryWith(isPublic(), isOwnedByTenants(tenantIds)));
+    }
+
+    // adding names - special rule: non-wildcard values are appended a multi-character wildcard
+    Set<String> names = SearchTags.appendPostfixWildcardForNames(parameters.getNames());
+    if (!names.isEmpty()) {
+        makeChildQuery(
+            result, names, NAME_FIELDS_FOR_QUERY
+        );
+    }
+
+    // adding states
+    makeChildQuery(result, parameters.getStates(), BasicIndexFieldExtractor.STATE, ModelState.class);
+
+    // adding types
+    makeChildQuery(result, parameters.getTypes(), BasicIndexFieldExtractor.MODEL_TYPE, ModelType.class);
+
+    // adding authors
+    makeChildQuery(result, parameters.getAuthors(), BasicIndexFieldExtractor.AUTHOR);
+
+    // adding user references
+    makeChildQuery(result, parameters.getUserReferences(), AUTHOR_FIELDS_FOR_QUERY);
+
+    // adding visibilities
+    makeChildQuery(result, parameters.getVisibilities(), BasicIndexFieldExtractor.VISIBILITY, ModelVisibility.class);
+
+    // adding namespaces
+    makeChildQuery(result, parameters.getNamespaces(), BasicIndexFieldExtractor.NAMESPACE);
+
+    // adding versions
+    makeChildQuery(result, parameters.getVersions(), BasicIndexFieldExtractor.VERSION);
+
+    return result;
   }
 
   public Collection<IIndexFieldExtractor> getFieldExtractors() {

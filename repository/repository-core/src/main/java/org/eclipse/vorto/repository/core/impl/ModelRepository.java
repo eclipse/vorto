@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -384,7 +384,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public ModelId getLatestModelVersionId(ModelId modelId) {
     return getModelVersions(modelId).stream()
-        .filter(m -> ModelState.RELEASED.getName().equals(m.getState()))
+        .filter(m -> ModelState.Released.getName().equals(m.getState()))
         .max(Comparator.comparing(VERSION_COMPARATOR))
         .map(ModelInfo::getId)
         .orElse(null);

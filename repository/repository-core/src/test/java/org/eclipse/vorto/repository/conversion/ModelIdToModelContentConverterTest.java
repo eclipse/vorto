@@ -1,3 +1,14 @@
+/**
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.conversion;
 
 import org.eclipse.vorto.model.EntityModel;
@@ -59,8 +70,8 @@ public class ModelIdToModelContentConverterTest extends AbstractIntegrationTest 
     ModelInfo color6 = importModel("Color6.type");
     importModel("Color7.type");
     importModel("sample.mapping");
-    color.setState(ModelState.RELEASED.getName());
-    color6.setState(ModelState.RELEASED.getName());
+    color.setState(ModelState.Released.getName());
+    color6.setState(ModelState.Released.getName());
     this.workflow.start(color.getId(), user);
     this.workflow.start(color6.getId(), user);
     setReleaseState(color);
