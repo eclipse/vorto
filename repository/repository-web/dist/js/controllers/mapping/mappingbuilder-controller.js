@@ -1,7 +1,7 @@
 define(["../../init/appController"],function(repositoryControllers) {
 
-repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uibModal", "$routeParams", "$scope", "$location","$http", "$sce","$timeout",
-    function($rootScope,$uibModal,$routeParams, $scope, $location,$http, $sce,$timeout) {
+repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uibModal", "$routeParams", "$scope", "$location","$http", "$sce","$timeout", "SessionTimeoutService",
+    function($rootScope,$uibModal,$routeParams, $scope, $location,$http, $sce, $timeout, sessionTimeoutService) {
 
     $scope.modelId = $routeParams.modelId;
 
@@ -34,7 +34,9 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
     $scope.htmlPopover = $sce.trustAsHtml(
     "<p>Use your custom converters in your mapping rules, e.g. custom:myfunc()</p>");
-    
+
+    sessionTimeoutService.initSessionTimeoutWarning($scope);
+
     $scope.setAceLang = function() {
     	if ($scope.contentType === 'json') {
     		$scope.sourceEditorSession.setMode("ace/mode/json");
