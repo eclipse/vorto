@@ -41,6 +41,7 @@ import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -101,6 +102,8 @@ public class ModelRepository extends AbstractRepositoryOperation
   private static final String VORTO_META = "vorto:meta";
 
   private static final String VORTO_AUTHOR = "vorto:author";
+  
+  private static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
 
   private static final String VORTO_STATE = "vorto:state";
 
@@ -222,11 +225,16 @@ public class ModelRepository extends AbstractRepositoryOperation
     if (fileNode.hasProperty(VORTO_AUTHOR)) {
       resource.setAuthor(fileNode.getProperty(VORTO_AUTHOR).getString());
     }
+    if (fileNode.hasProperty(VORTO_TARGETPLATFORM)) {
+      resource.setTargetPlatformKey(fileNode.getProperty(VORTO_TARGETPLATFORM).getString());
+    }
     if (fileNode.hasProperty(VORTO_VISIBILITY)) {
       resource.setVisibility(fileNode.getProperty(VORTO_VISIBILITY).getString());
     } else {
       resource.setVisibility(VISIBILITY_PRIVATE);
     }
+    
+    setReferencesOnResource(folderNode, resource);
 
     if (resource.getType() == ModelType.InformationModel) {
       resource
@@ -324,6 +332,9 @@ public class ModelRepository extends AbstractRepositoryOperation
           fileNode.addMixin(VORTO_META);
           fileNode.setProperty(VORTO_AUTHOR, userContext.getUsername());
           fileNode.setProperty(VORTO_VISIBILITY, VISIBILITY_PRIVATE);
+          if (modelInfo.getType() == ModelType.Mapping) {
+            fileNode.setProperty(VORTO_TARGETPLATFORM, ((MappingModel)modelInfo.getModel()).getTargetPlatform());
+          }
           fileNode.addMixin(MODE_ACCESS_CONTROLLABLE);
           fileNode.addMixin(MIX_LAST_MODIFIED);
           Node contentNode = fileNode.addNode(JCR_CONTENT, NT_RESOURCE);
@@ -441,11 +452,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         for (ModelInfo modelInfo : entry.getValue()) {
           if (modelInfo.getType() == ModelType.Mapping) {
             try {
-              ModelResource emfResource = this.repositoryFactory
-                  .getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId());
-              if (emfResource != null) {
-                model.addPlatformMapping(emfResource.getTargetPlatform(), modelInfo.getId());
-              }
+              model.addPlatformMapping(modelInfo.getTargetPlatformKey(),modelInfo.getId());
             } catch (ValidationException e) {
               logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
                   e);
@@ -525,16 +532,13 @@ public class ModelRepository extends AbstractRepositoryOperation
     Set<ModelInfo> mappingResources = new HashSet<>();
     ModelInfo modelResource = getBasicInfo(modelId);
     if (modelResource != null) {
-      for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
-        ModelResource referenceeModelResource = this.repositoryFactory
-            .getRepositoryByModel(referenceeModelId).getEMFResource(referenceeModelId);
-        if (referenceeModelResource.getType() == ModelType.Mapping
-            && isTargetPlatformMapping(referenceeModelResource, targetPlatform)) {
+      for (ModelInfo referenceeModelInfo : this.getModelsReferencing(modelId)) {
+        if (referenceeModelInfo.getType() == ModelType.Mapping && referenceeModelInfo.getTargetPlatformKey().equalsIgnoreCase(targetPlatform)) {
           if (version.isPresent()
-              && !referenceeModelResource.getId().getVersion().equals(version.get())) {
+              && !referenceeModelInfo.getId().getVersion().equals(version.get())) {
             continue;
           }
-          mappingResources.add(referenceeModelResource);
+          mappingResources.add(referenceeModelInfo);
         }
       }
       for (ModelId referencedModelId : modelResource.getReferences()) {
@@ -544,14 +548,6 @@ public class ModelRepository extends AbstractRepositoryOperation
       }
     }
     return new ArrayList<ModelInfo>(mappingResources);
-  }
-
-  private boolean isTargetPlatformMapping(ModelResource emfResource, String targetPlatform) {
-    try {
-      return emfResource.matchesTargetPlatform(targetPlatform);
-    } catch (FatalModelRepositoryException e) {
-      throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
-    }
   }
 
   @Override
