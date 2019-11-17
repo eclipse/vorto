@@ -44,6 +44,9 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
     assertEquals(4, searchService.search("*").size());
+    
+    ModelInfo model = searchService.search("*").stream().filter(m -> m.getId().getName().equals("ColorLight")).findAny().get();
+    assertEquals(1,model.getReferences().size());
   }
 
   @Test

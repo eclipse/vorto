@@ -66,6 +66,8 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
     IMappingSpecification specification = mappingService.getOrCreateSpecification(modelId);
     
     mappingService.saveSpecification(specification, createUserContext("alex", "playground"));
+    
+    assertNotNull(mappingService.resolveMappingIdForModelId(modelId).get());
   }
   
   @Test

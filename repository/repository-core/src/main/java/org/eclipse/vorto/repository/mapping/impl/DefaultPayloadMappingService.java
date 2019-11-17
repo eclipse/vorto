@@ -285,7 +285,7 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
   public Optional<ModelInfo> resolveMappingIdForModelId(ModelId modelId) {
      return this.modelRepositoryFactory.getRepositoryByModel(modelId)
       .getMappingModelsForTargetPlatform(modelId, createTargetPlatformKey(modelId),Optional.of(modelId.getVersion())).stream()
-      .filter(modelInfo -> modelInfo.getType().equals(org.eclipse.vorto.model.ModelType.Mapping) && modelInfo.getReferences().contains(modelId)).findAny();
+      .filter(modelInfo -> modelInfo.getReferences().contains(modelId)).findAny();
   }
 
   @Override
