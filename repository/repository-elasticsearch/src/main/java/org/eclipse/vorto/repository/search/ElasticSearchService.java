@@ -14,25 +14,18 @@ package org.eclipse.vorto.repository.search;
 import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.model.EnumUtil;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.ModelVisibility;
@@ -69,7 +62,6 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.SearchHit;
@@ -530,7 +522,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   /**
-   * Variant of {@link ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String, Class)}
+   * Variant of {@link ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String)}
    * that is only in use for search of values into multiple keys.<br/>
    * Contrary to its overload, this does not support enum element name correction, as it is
    * intended to search arbitrary text such as model names, authors, etc.
@@ -562,10 +554,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   /**
    * Used by {@link ElasticSearchService#toESQuery(SearchParameters)} exclusively. <br/>
    * Appends children bool queries to the given parent. <br/>
-   * For any given value, verifies whether the given enum type is not {@literal null}. If it isn't,
-   * attempts to transform the value searched to the exact enum type by invoking
-   * {@link EnumUtil#forNameIgnoreCase(Class, String)} and using the result (i.e. either the exact
-   * type name or if not found, the given value itself) in a term query. <br/>
    * Values containing wildcards are searched as query strings instead, and not affected. <br/>
    * Values containing only one element produce one child to the parent {@link BoolQueryBuilder}
    * in an {@literal AND} relationship to its peers, which contains the search terms. <br/>
@@ -574,11 +562,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    * @param parent
    * @param values
    * @param key
-   * @param enumType
-   * @param <E>
    * @return
    */
-  private static <E extends Enum<E>> QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key, Class<E> enumType) {
+  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key) {
     // no need to go further - returning parent query as-is
     if (values.isEmpty()) {
       return parent;
@@ -593,10 +579,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       }
       // value does not contain wildcards and will be searched as term query
       else {
-        // given enum type exists - converting value to exact name if necessary/possible
-        if (enumType != null) {
-          value = EnumUtil.forNameIgnoreCase(enumType, values.toArray(new String[values.size()])[0]);
-        }
         parent = parent.must(QueryBuilders.termQuery(key, value));
       }
     }
@@ -610,27 +592,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         }
         // value does not contain wildcards and will be searched as term query
         else {
-          // given enum type exists - converting value to exact name if necessary/possible
-          if (enumType != null) {
-            value = EnumUtil.forNameIgnoreCase(enumType, value);
-          }
           child = child.should(QueryBuilders.termQuery(key, value));
         }
       }
       parent = parent.must(child);
     }
     return parent;
-  }
-
-  /**
-   * @see ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String, Class)
-   * @param parent
-   * @param values
-   * @param key
-   * @return
-   */
-  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key) {
-    return makeChildQuery(parent, values, key, null);
   }
 
   /**
@@ -683,10 +650,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
 
     // adding states
-    makeChildQuery(result, parameters.getStates(), BasicIndexFieldExtractor.STATE, ModelState.class);
+    makeChildQuery(result, parameters.getStates(), BasicIndexFieldExtractor.STATE);
 
     // adding types
-    makeChildQuery(result, parameters.getTypes(), BasicIndexFieldExtractor.MODEL_TYPE, ModelType.class);
+    makeChildQuery(result, parameters.getTypes(), BasicIndexFieldExtractor.MODEL_TYPE);
 
     // adding authors
     makeChildQuery(result, parameters.getAuthors(), BasicIndexFieldExtractor.AUTHOR);
@@ -695,7 +662,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     makeChildQuery(result, parameters.getUserReferences(), AUTHOR_FIELDS_FOR_QUERY);
 
     // adding visibilities
-    makeChildQuery(result, parameters.getVisibilities(), BasicIndexFieldExtractor.VISIBILITY, ModelVisibility.class);
+    makeChildQuery(result, parameters.getVisibilities(), BasicIndexFieldExtractor.VISIBILITY);
 
     // adding namespaces
     makeChildQuery(result, parameters.getNamespaces(), BasicIndexFieldExtractor.NAMESPACE);

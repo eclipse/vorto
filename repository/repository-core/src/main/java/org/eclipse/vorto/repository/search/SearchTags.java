@@ -14,11 +14,15 @@ package org.eclipse.vorto.repository.search;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.text.WordUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.EnumUtil;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.ModelVisibility;
@@ -29,7 +33,7 @@ import org.eclipse.vorto.repository.workflow.ModelState;
  * {@literal [some text until next whitespace or end of input]}.<br/>
  * The first argument is a {@link String} used to construct a {@link Pattern} as above.<br/>
  * The second argument is a {@link Predicate <String>} that validates the value grouped.
- * See {@link SearchTags#validateParsedValue(String, String, Class)} for validation logic.<br/>
+ * See {@link SearchTags#normalizeParsedValue(String, String, Class)} for validation logic.<br/>
  * The third argument is a {@link BiFunction<String, SearchParameters, SearchParameters>} taking
  * the validated match value, an existing instance of {@link SearchParameters} and providing the
  * same instance of {@link SearchParameters}, mutated with the adequate {@code with...} invocation.
@@ -42,15 +46,15 @@ public enum SearchTags {
    * Tagged name query. Value matched initially by 1+ word character or ? or * wildcard.
    */
   NAME(
-      "name", (s) -> validateParsedValue(s, "[\\w?*]+"),
+      "name", SearchTags::normalizeParsedValue,
       (s, sp) -> sp.withName(s)
   ),
   AUTHOR(
-      "author", (s) -> validateParsedValue(s, "[\\w?*]+"),
+      "author", SearchTags::normalizeParsedValue,
       (s, sp) -> sp.withAuthor(s)
   ),
   USER_REFERENCE(
-      "userReference", (s) -> validateParsedValue(s, "[\\w?*]+"),
+      "userReference", SearchTags::normalizeParsedValue,
       (s, sp) -> sp.withUserReference(s)
   ),
 
@@ -59,17 +63,17 @@ public enum SearchTags {
    */
   VISIBILITY(
       "visibility",
-      (s) -> validateParsedValue(s, "[\\w?*]+",  ModelVisibility.class),
+      (s) -> normalizeParsedValue(s, ModelVisibility.class),
       (s, sp) -> sp.withVisibility(s)
   ),
   TYPE(
       "type",
-      (s) -> validateParsedValue(s, "[\\w?*]+",  ModelType.class),
+      (s) -> normalizeParsedValue(s, ModelType.class),
       (s, sp) -> sp.withType(s)
   ),
   STATE(
       "state",
-      (s) -> validateParsedValue(s, "[\\w?*]+",  ModelState.class),
+      (s) -> normalizeParsedValue(s, ModelState.class),
       (s, sp) -> sp.withState(s)
   ),
 
@@ -79,7 +83,7 @@ public enum SearchTags {
    */
   NAMESPACE(
       "namespace",
-      (s) -> validateParsedValue(s, "[\\w?*.]+"),
+      SearchTags::normalizeParsedValue,
       (s, sp) -> sp.withNamespace(s)
   ),
 
@@ -89,10 +93,11 @@ public enum SearchTags {
    */
   VERSION(
       "version",
-      (s) -> validateParsedValue(s, "[\\w?*.:]+"),
+      SearchTags::normalizeParsedValue,
       (s, sp) -> sp.withVersion(s)
   );
 
+  private static final Logger LOGGER = Logger.getLogger(SearchTags.class);
 
   /**
    * This {@link Pattern} consumes any 1* character reluctantly until the next whitespace or end
@@ -111,37 +116,105 @@ public enum SearchTags {
   public static final String[] WILDCARDS = {"*", "?"};
 
   /**
-   * Validates a given tagged value against a {@link String} representing a whole match
+   * Represents 1+ whitespaces. Used to split a given search string to parse for un-tagged values.
+   */
+  public static final String WHITESPACE_PATTERN = "\\s+";
+
+  /**
+   * Represents the default pattern used to parse tagged values (note: only the value, not the tag
+   * itself, whose pattern is constructed with the name of the given enum element followed by colon).<br/>
+   * This is likely sufficient for all types of tagged values, but the overloads of
+   * {@link SearchTags#normalizeParsedValue(String, String, Class)} allow injecting a custom
+   * pattern if necessary.
+   */
+  public static final String DEFAULT_VALUE_PATTERN = "\\S+";
+
+  /**
+   * Normalizes a given tagged value against a {@link String} representing a whole match
    * {@link Pattern}, optionally with an enum type to match the value to a restricted set of known
-   * types (matching is performed case-insensitive in that case). <br/>
+   * types.<br/>
+   * The matching is performed case-insensitive in the latter case, however the normalized value
+   * will have its first letter automatically capitalized to match model enum types, if the string
+   * contains wildcards. This really pertains to ElasticSearch rather than a general search feauture,
+   * as the enum types are indexed as keywords and therefore searched case-sensitive (wildcards do work).
+   * It does not hurt the JCR query search, so it can be generalized here. <br/>
    * The given value is intended as the search term stripped off its tag. <br/>
-   * If the term contains wildcards, the enum validation is omitted, and the matching delegated
-   * the the backing search engine (e.g. ElasticSearch).
+   * If the parsed value is {@literal null}, empty or does not match the given pattern, an empty
+   * {@link Optional<String>} is returned. <br/>
+   * If the value is validated and no enum is provided, the {@link Optional<String>} is returned as
+   * is.<br/>
+   * If an enum is provided and the parsed value is valid but contains wildcards, no further checks
+   * can be performed and the {@link Optional<String>} will contain the value with its first letter
+   * capitalized to match model enum types' format. <br/>
+   * If the enum is provided and the value contains no wildcards, an attempt to normalize the value
+   * by first matching it against the enum's elements case-insensitive is performed. <br/>
+   * Either that succeeds and the {@link Optional<String>} contains the normalized value, or that
+   * fails and the {@link Optional<String>} contains the parsed value as-is (which likely means the
+   * search will ultimately yield no result for that condition).
    * @param parsedValue
+   * @param matchPattern
    * @param enumType
    * @return
    */
-  public static <E extends Enum<E>> boolean validateParsedValue(String parsedValue, String matchPattern, Class<E> enumType) {
+  public static <E extends Enum<E>> Optional<String> normalizeParsedValue(String parsedValue, String matchPattern, Class<E> enumType) {
+    Optional<String> result = Optional.empty();
+    // null or empty value (after trimming): empty Optional returned
     if (isBlank(parsedValue)) {
-      return false;
+      return result;
     }
+    // parsed value is invalid according to pattern for tag: empty Optional returned
     if (!parsedValue.matches(matchPattern)) {
-      return false;
+      LOGGER.debug(String.format("Parsing of value '%s' failed against pattern '%s'", parsedValue, matchPattern));
+      return result;
     }
-    if (Objects.isNull(enumType) || containsWildcard(parsedValue)) {
-      return true;
+    // parsed value matches pattern for tag, and no enum type specified: result will contain parsed
+    // value as-is
+    if (Objects.isNull(enumType)) {
+      result = Optional.of(parsedValue);
     }
-    return EnumUtil.isAnyValueOfCaseInsensitive(enumType, parsedValue);
+    // enum type given
+    else {
+      // the value contains wildcards - cannot resolve exact enum element, so capitalizing first
+      // letter only
+      if (containsWildcard(parsedValue)) {
+        result = Optional.of(WordUtils.capitalize(parsedValue));
+      }
+      // the value does not contain wildcards: attempts to normalize against known enum types or
+      // uses the value as-is if none found
+      else {
+        result = Optional.of(EnumUtil.forNameIgnoreCase(enumType, parsedValue));
+      }
+    }
+    return result;
   }
 
   /**
-   * @see SearchTags#validateParsedValue(String, String, Class)
+   * @see SearchTags#normalizeParsedValue(String, String, Class)
    * @param parsedValue
    * @param matchPattern
    * @return
    */
-  public static boolean validateParsedValue(String parsedValue, String matchPattern) {
-    return SearchTags.validateParsedValue(parsedValue, matchPattern, null);
+  public static Optional<String> normalizeParsedValue(String parsedValue, String matchPattern) {
+    return SearchTags.normalizeParsedValue(parsedValue, matchPattern, null);
+  }
+
+  /**
+   * @see SearchTags#normalizeParsedValue(String, String, Class)
+   * @param parsedValue
+   * @param enumType
+   * @return
+   */
+  public static <E extends Enum<E>>Optional<String> normalizeParsedValue(String parsedValue, Class<E> enumType) {
+    return SearchTags.normalizeParsedValue(parsedValue, DEFAULT_VALUE_PATTERN, enumType);
+  }
+
+  /**
+   * @see SearchTags#normalizeParsedValue(String, String, Class)
+   * @param parsedValue
+   * @return
+   */
+  public static <E extends Enum<E>>Optional<String> normalizeParsedValue(String parsedValue) {
+    return SearchTags.normalizeParsedValue(parsedValue, DEFAULT_VALUE_PATTERN, null);
   }
 
   /**
@@ -175,16 +248,16 @@ public enum SearchTags {
 
   private String name;
   private Pattern pattern;
-  private Predicate<String> taggedValueValidator;
+  private Function<String, Optional<String>> taggedValueNormalizer;
   private BiFunction<String, SearchParameters, SearchParameters> accumulator;
 
-  SearchTags(String name, Predicate<String> taggedValueValidator, BiFunction<String, SearchParameters, SearchParameters> accumulator) {
+  SearchTags(String name, Function<String, Optional<String>> taggedValueNormalizer, BiFunction<String, SearchParameters, SearchParameters> accumulator) {
     this.name = name;
     this.pattern = Pattern.compile(
         String.format(SEARCH_TAG_PATTERN_FORMAT, this.name, GROUP_ANYTHING_BEFORE_NEXT_WHITESPACE_OR_END),
         Pattern.CASE_INSENSITIVE
     );
-    this.taggedValueValidator = taggedValueValidator;
+    this.taggedValueNormalizer = taggedValueNormalizer;
     this.accumulator = accumulator;
   }
 
@@ -193,17 +266,6 @@ public enum SearchTags {
    */
   public String getTagName() {
     return name;
-  }
-
-  /**
-   * Validates that the given value is not {@code null} nor empty if trimmed, and that it
-   * matches the correct expression for this enum type.
-   * @see SearchTags#taggedValueValidator
-   * @param expression
-   * @return
-   */
-  public boolean validate(String expression) {
-    return !isBlank(expression) && this.taggedValueValidator.test(expression);
   }
 
   /**
@@ -216,11 +278,10 @@ public enum SearchTags {
    *   </li>
    *   <li>
    *     For any match found (i.e. any tagged expression in the given {@literal text}, it
-   *     validates <b>group 1</b> (expected to be the only back-referencing group in the pattern),
-   *     by checking for {@lilteral null} and empty values, then matching against the specific
-   *     value pattern, and if the value contains no wildcards but reflects an enumerated type,
-   *     also matching case-insensitive against any known enum elements.
-   *     See {@link SearchTags#validateParsedValue(String, String, Class)}.
+   *     validates and normalizes <b>group 1</b> (expected to be the only back-referencing group
+   *     in the pattern), by checking for {@lilteral null} and empty values, then matching against
+   *     the specific value pattern, optionally normalizing enum values (see
+   *     {@link SearchTags#normalizeParsedValue(String, String, Class)}).
    *   </li>
    *   <li>
    *     If the value is valid according to the above methodology, it is then added to the
@@ -246,10 +307,14 @@ public enum SearchTags {
     }
     Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
-      String parsedValue = matcher.group(1);
-      if (validate(parsedValue)) {
-        accumulator.apply(parsedValue, parameters);
-      }
+      /*
+      Validates / normalizes the value against group 1 of the pattern, knowing that
+      the returned Optional<String> will only be present if the value is valid or we cannot
+      validate in all certainty.
+      */
+      this.taggedValueNormalizer.apply(
+        matcher.group(1)).ifPresent(s -> accumulator.apply(s, parameters)
+      );
     }
     return parameters;
   }
@@ -278,7 +343,7 @@ public enum SearchTags {
       return result;
     }
     Arrays
-        .stream(text.split("\\s+"))
+        .stream(text.split(WHITESPACE_PATTERN))
         .filter(s -> Arrays.stream(SearchTags.values()).noneMatch(st -> s.contains(st.getTagName())))
         .forEach(result::add);
     return result;
