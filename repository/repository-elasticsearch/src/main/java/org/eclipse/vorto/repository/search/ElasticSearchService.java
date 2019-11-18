@@ -456,7 +456,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
 
     SearchRequest searchRequest = new SearchRequest(VORTO_INDEX);
-    searchRequest.indicesOptions().expandWildcardsOpen();
     searchRequest.source(searchSourceBuilder);
 
     try {
