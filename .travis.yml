@@ -46,7 +46,7 @@ jobs:
         - export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
         - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
-        - export ARTIFACT=$(ls repository/repository-server/target/infomodelrepository.jar)
+        - export ARTIFACT=infomodelrepository
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
 
       deploy:
@@ -60,26 +60,10 @@ jobs:
           on:
             branch: development
 
-        - provider: elasticbeanstalk
-          access_key_id: "$AWS_ACCESS_KEY_ID"
-          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
-          zip-file: "$ARTIFACT"
-          region: "$VORTO_S3_REGION"
-          app: "Vorto-Dev-Environment"
-          env: "vorto-dev"
-          bucket_name: "$VORTO_S3_BUCKET"
+        - provider: script
+          script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
-            branch: development
-            
-        - provider: elasticbeanstalk
-          access_key_id: "$AWS_ACCESS_KEY_ID"
-          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
-          zip-file: "$ARTIFACT"
-          region: "$VORTO_S3_REGION"
-          app: "Vorto-Prod-New-Environment"
-          env: "vorto-prod-new"
-          bucket_name: "$VORTO_S3_BUCKET"
-          skip_cleanup: true
-          on:
-            branch: master
+            branch: 
+              - development
+              - master

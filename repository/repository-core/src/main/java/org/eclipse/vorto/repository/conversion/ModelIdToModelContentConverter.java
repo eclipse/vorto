@@ -12,6 +12,11 @@
  */
 package org.eclipse.vorto.repository.conversion;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
@@ -30,17 +35,10 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId,ModelContent>{
 
@@ -68,7 +66,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
       final List<ModelInfo> mappingResources = repositoryFactory.getRepositoryByModel(modelId).getMappingModelsForTargetPlatform(modelId, platformKey.get(),Optional.empty());
       if (!mappingResources.isEmpty()) {
         // adding to workspace reader in order to resolve cross linking between mapping models correctly
-        mappingResources.forEach(mapping -> workspaceReader.addFile(new ByteArrayInputStream(((ModelResource)mapping).toDSL()), org.eclipse.vorto.model.ModelType.Mapping));
+        mappingResources.forEach(mapping -> workspaceReader.addFile(new ByteArrayInputStream(repositoryFactory.getRepositoryByModel(mapping.getId()).getFileContent(mapping.getId(), Optional.empty()).get().getContent()), org.eclipse.vorto.model.ModelType.Mapping));
 
         final IModelWorkspace workspace = workspaceReader.read();
         workspace.get().forEach(model -> {
@@ -102,8 +100,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
   }
 
   private Optional<MappingModel> getMappingModelForModel(List<ModelInfo> mappingResources, Model model) {
-    return  mappingResources.stream()
-        .filter(mappingModel -> isMappingForModel(((ModelResource) mappingModel), model)).map(t -> (MappingModel)((ModelResource) t).getModel()).findFirst();
+    return  mappingResources.stream().map(modelInfo -> (MappingModel)repositoryFactory.getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId()).getModel())
+        .filter(mappingModel -> isMappingForModel((mappingModel), model)).findFirst();
   }
 
 
@@ -145,35 +143,9 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
     return modelInfos;
   }
 
-  private boolean isMappingForModel(ModelResource resource, Model model) {
-    MappingModel p = (MappingModel)resource.getModel();
-
+  private boolean isMappingForModel(MappingModel p, Model model) {
     final ModelId modelId = new ModelId(model.getName(),model.getNamespace(),model.getVersion());
-
     return matchesMappingForModel(p,model) && p.getReferences().stream().filter(reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion()).equals(modelId)).count() > 0;
-
-//    p.getReferences().forEach(reference -> {
-//      ModelId referencedId = ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion());
-//      if (referencedId.equals(modelId)) {
-//        return true;
-//      }
-//    });
-//    
-//    if (p.getRules().isEmpty() || p.getRules().get(0).getSources().isEmpty()) {
-//      return false;
-//    }
-//    Source mappingSource = p.getRules().get(0).getSources().get(0);
-//    if (mappingSource instanceof InfomodelSource) {
-//      return EcoreUtil.equals(((InfomodelSource) mappingSource).getModel(), model);
-//    } else if (mappingSource instanceof FunctionBlockSource) {
-//      return EcoreUtil.equals(((FunctionBlockSource) mappingSource).getModel(), model);
-//    } else if (mappingSource instanceof EntitySource) {
-//      return EcoreUtil.equals(((EntitySource) mappingSource).getModel(), model);
-//    } else if (mappingSource instanceof EnumSource) {
-//      return EcoreUtil.equals(((EnumSource) mappingSource).getModel(), model);
-//    } else {
-//      return false;
-//    }
   }
 
   private boolean matchesMappingForModel(MappingModel p, Model model) {

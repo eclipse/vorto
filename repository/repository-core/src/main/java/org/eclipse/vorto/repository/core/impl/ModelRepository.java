@@ -11,7 +11,9 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import com.google.common.collect.Lists;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +25,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -82,12 +86,7 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -101,6 +100,8 @@ public class ModelRepository extends AbstractRepositoryOperation
   private static final String VORTO_META = "vorto:meta";
 
   private static final String VORTO_AUTHOR = "vorto:author";
+  
+  private static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
 
   private static final String VORTO_STATE = "vorto:state";
 
@@ -222,11 +223,16 @@ public class ModelRepository extends AbstractRepositoryOperation
     if (fileNode.hasProperty(VORTO_AUTHOR)) {
       resource.setAuthor(fileNode.getProperty(VORTO_AUTHOR).getString());
     }
+    if (fileNode.hasProperty(VORTO_TARGETPLATFORM)) {
+      resource.setTargetPlatformKey(fileNode.getProperty(VORTO_TARGETPLATFORM).getString());
+    }
     if (fileNode.hasProperty(VORTO_VISIBILITY)) {
       resource.setVisibility(fileNode.getProperty(VORTO_VISIBILITY).getString());
     } else {
       resource.setVisibility(VISIBILITY_PRIVATE);
     }
+    
+    setReferencesOnResource(folderNode, resource);
 
     if (resource.getType() == ModelType.InformationModel) {
       resource
@@ -441,11 +447,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         for (ModelInfo modelInfo : entry.getValue()) {
           if (modelInfo.getType() == ModelType.Mapping) {
             try {
-              ModelResource emfResource = this.repositoryFactory
-                  .getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId());
-              if (emfResource != null) {
-                model.addPlatformMapping(emfResource.getTargetPlatform(), modelInfo.getId());
-              }
+              model.addPlatformMapping(modelInfo.getTargetPlatformKey(),modelInfo.getId());
             } catch (ValidationException e) {
               logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
                   e);
@@ -525,18 +527,22 @@ public class ModelRepository extends AbstractRepositoryOperation
     Set<ModelInfo> mappingResources = new HashSet<>();
     ModelInfo modelResource = getBasicInfo(modelId);
     if (modelResource != null) {
-      for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
-        ModelResource referenceeModelResource = this.repositoryFactory
-            .getRepositoryByModel(referenceeModelId).getEMFResource(referenceeModelId);
-        if (referenceeModelResource.getType() == ModelType.Mapping
-            && isTargetPlatformMapping(referenceeModelResource, targetPlatform)) {
-          if (version.isPresent()
-              && !referenceeModelResource.getId().getVersion().equals(version.get())) {
-            continue;
+      for (ModelInfo referenceeModelInfo : this.getModelsReferencing(modelId)) {
+        if (referenceeModelInfo.getType() != ModelType.Mapping || version.isPresent()
+            && !referenceeModelInfo.getId().getVersion().equals(version.get())) {
+          continue;
+        }
+        
+        if (referenceeModelInfo.getTargetPlatformKey() != null) {
+          if (targetPlatform.equalsIgnoreCase(referenceeModelInfo.getTargetPlatformKey())) {
+            mappingResources.add(referenceeModelInfo);
           }
-          mappingResources.add(referenceeModelResource);
+        } else if (getEMFResource(referenceeModelInfo.getId()).matchesTargetPlatform(targetPlatform)) {
+          mappingResources.add(referenceeModelInfo);
+
         }
       }
+      
       for (ModelId referencedModelId : modelResource.getReferences()) {
 
         mappingResources.addAll(this.repositoryFactory.getRepositoryByModel(referencedModelId)
@@ -544,14 +550,6 @@ public class ModelRepository extends AbstractRepositoryOperation
       }
     }
     return new ArrayList<ModelInfo>(mappingResources);
-  }
-
-  private boolean isTargetPlatformMapping(ModelResource emfResource, String targetPlatform) {
-    try {
-      return emfResource.matchesTargetPlatform(targetPlatform);
-    } catch (FatalModelRepositoryException e) {
-      throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
-    }
   }
 
   @Override

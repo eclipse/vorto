@@ -2,7 +2,8 @@ define([
   '../service/commonDialogServices',
   '../service/modelCreationService',
   '../service/modelDetailsService',
-  '../service/tenantService'
+  '../service/tenantService',
+  '../service/sessionTimeoutService'
 ], function () {
 
 });
