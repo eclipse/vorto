@@ -511,9 +511,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     String createdOn = (String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_CREATIONDATE);
     modelInfo.setCreationDate(new Date(Long.parseLong(createdOn)));
 
-    // TODO
-    //add namespace and version?
-
     return modelInfo;
   }
 
