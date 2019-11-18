@@ -15,11 +15,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>7.7.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-core</artifactId>
 			<version>${project.version}</version>
