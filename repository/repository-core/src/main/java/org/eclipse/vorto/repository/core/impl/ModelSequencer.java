@@ -22,8 +22,11 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.modeshape.common.util.CheckArg;
@@ -63,6 +66,11 @@ public class ModelSequencer extends Sequencer {
     fileNode.setProperty("vorto:version", modelResource.getId().getVersion());
     fileNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
     fileNode.setProperty("vorto:name", modelResource.getId().getName());
+    
+    if (modelResource.getType() == ModelType.Mapping) {
+      MappingModel mappingModel = (MappingModel) ((ModelResource)modelResource).getModel();
+      fileNode.setProperty("vorto:targetplatform", mappingModel.getTargetPlatform());
+    }
     
     folderNode.addMixin("mix:referenceable");
     folderNode.addMixin("vorto:meta");
