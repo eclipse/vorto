@@ -53,19 +53,19 @@ pipeline {
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
-                  catchError { //Todo remove as soon as nexus is fixed
-                    withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
-                        // add s3upload of nexus reports
-                        //      s3Upload(file:'file.txt', bucket:'vorto-pr-artifacts', path:'repository/repository-server/target/**/*.pdf')
-                    }
+                  withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                  	def evaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                  }
+                  catchError {
+                  	def evaluation = error.policyEvaluation
+                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "${evaluation.applicationCompositionReportUrl}"
                   }
                 }
-              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${evaluation.applicationCompositionReportUrl}"
             }
             post{
               failure{
-                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
               }
             }
           }
