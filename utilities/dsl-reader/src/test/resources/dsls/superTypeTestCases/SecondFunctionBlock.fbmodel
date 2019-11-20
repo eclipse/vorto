@@ -16,6 +16,4 @@ functionblock SecondFunctionBlock extends GenericFunctionBlock{
 	subTypeStatus2 as boolean
 	}
 	
-	events {}
-	operations {}
 }

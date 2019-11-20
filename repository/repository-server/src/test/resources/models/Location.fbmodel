@@ -16,7 +16,5 @@ functionblock Location {
 	  mandatory y as float "Tracks the y axis"
 	  mandatory z as float "Tracks the z axis"	
 	}
-	
-	events {}
-	operations {}
+
 }

@@ -44,11 +44,11 @@ FunctionBlock:
 	((fault = Fault)?) &
 	
 	(('events' '{'
-		(events += Event)*
+		(events += Event)+
 	'}')?) &
 	
 	('operations' '{'
-		(operations += Operation)*
+		(operations += Operation)+
 	'}')?)		
 ;
 

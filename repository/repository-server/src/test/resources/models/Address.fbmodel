@@ -20,6 +20,4 @@ functionblock Address {
 	    mandatory deviceName as string <REGEX '[a-zA-Z][a-zA-Z][0-9]'> "Only allow 2 uppercase or lowercase characters and 1 digit for device name"
 	}
 	
-	events {}
-	operations {}
 }
