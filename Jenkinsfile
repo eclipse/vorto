@@ -1,3 +1,5 @@
+def clmEvaluation
+
 pipeline {
   agent any  
     // Options covers all other job properties or wrapper functions that apply to entire Pipeline.
@@ -54,14 +56,14 @@ pipeline {
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
                   withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                  	def evaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                  	clmEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
                   }
                   catchError {
-                  	def evaluation = error.policyEvaluation
-                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "${evaluation.applicationCompositionReportUrl}"
+                  	clmEvaluation = error.policyEvaluation
+                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "${clmEvaluation.applicationCompositionReportUrl}"
                   }
                 }
-              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${evaluation.applicationCompositionReportUrl}"
+              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${clmEvaluation.applicationCompositionReportUrl}"
             }
             post{
               failure{
