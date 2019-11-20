@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "TestFb"
+description "Function block model for TestFb"
+
+functionblock TestFb {
+	
+	status {
+		mandatory multiple foos as string
+		optional date as dateTime
+	}
+
+}
