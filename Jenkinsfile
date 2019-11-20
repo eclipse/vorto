@@ -11,6 +11,10 @@ pipeline {
             sh 'echo Proxy Host = $PROXY_HOST'
             sh 'echo Proxy Port = $PROXY_PORT'
             sh 'echo Proxy User = $PROXY_USER'
+            // Notify GitHub that checks are now in progress
+            githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
+            githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+            githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
@@ -27,8 +31,7 @@ pipeline {
                 expression { env.CHANGE_ID != null }
               }
             }
-            steps{
-              githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
+            steps{              
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
                     maven: 'maven-latest',
@@ -46,8 +49,7 @@ pipeline {
             }
           }
           stage("CLMScan Vorto-repository"){
-            steps{
-              githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+            steps{              
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
@@ -73,8 +75,7 @@ pipeline {
                 expression { env.CHANGE_ID != null }
               }
             }
-            steps{
-              githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+            steps{              
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
                 dir('avscan_infomodel') {
                   //copy files over to the new maven folder to run AntiVirus Scans
