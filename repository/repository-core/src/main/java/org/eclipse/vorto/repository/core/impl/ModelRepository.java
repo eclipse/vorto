@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,7 +87,6 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -177,10 +177,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public List<ModelInfo> search(final String expression) {
     return doInSession(session -> {
-      String queryExpression = expression;
-      if (queryExpression == null || queryExpression.isEmpty()) {
-        queryExpression = "*";
-      }
+      String queryExpression = Optional.ofNullable(expression).orElse("");
 
       List<ModelInfo> modelResources = new ArrayList<>();
       Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);

@@ -15,7 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import org.eclipse.vorto.repository.core.IUserContext;
 
 /**
  * Simple POJO to contain search parameters from text search once normalized. <br/>
@@ -38,16 +40,40 @@ public class SearchParameters {
   Set<String> namespaces = new HashSet<>();
   Set<String> versions = new HashSet<>();
 
+  /**
+   * Builds an instance of {@link SearchParameters} with the given collection of tenant IDs and
+   * search {@link String}.<br/>
+   * This iterates over all known tags (see {@link SearchTags} and collects values, then parses
+   * un-tagged values and collects them as name search terms.
+   * @param tenantIds
+   * @param freeTextSearch
+   * @return
+   */
   public static SearchParameters build(Collection<String> tenantIds, String freeTextSearch) {
     // empty instance
     SearchParameters result = new SearchParameters();
     // adding tenants
-    tenantIds.forEach(result::withTenantId);
+    if (Objects.nonNull(tenantIds)) {
+      tenantIds.forEach(result::withTenantId);
+    }
     // searching for tagged content and adding to instance
     Arrays.stream(SearchTags.values()).forEach(st -> st.parseValue(result, freeTextSearch));
     // searching for untagged content and adding to instance
     SearchTags.parseUntaggedValues(freeTextSearch).forEach(result::withName);
     return result;
+  }
+
+  /**
+   * Used in JCR query searches, where repositories are filtered and collected by tenant ID(s) 
+   * before searching, and therefore not used in {@link SearchParameters}.<br/>
+   * @see org.eclipse.vorto.repository.search.impl.SimpleSearchService#search(String) 
+   * @see org.eclipse.vorto.repository.search.impl.SimpleSearchService#search(String, IUserContext) 
+   * @see SearchParameters#build(Collection, String)
+   * @param freeTextSearch
+   * @return
+   */
+  public static SearchParameters build(String freeTextSearch) {
+    return build(null, freeTextSearch);
   }
 
   /**
@@ -70,6 +96,14 @@ public class SearchParameters {
 
   /**
    *
+   * @return
+   */
+  public boolean hasTenantIds() {
+    return !tenantIds.isEmpty();
+  }
+
+  /**
+   *
    * @param name
    * @return
    */
@@ -84,6 +118,14 @@ public class SearchParameters {
    */
   public Set<String> getNames() {
     return Collections.unmodifiableSet(names);
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean hasNames() {
+    return !names.isEmpty();
   }
 
   /**
@@ -106,6 +148,14 @@ public class SearchParameters {
 
   /**
    *
+   * @return
+   */
+  public boolean hasStates() {
+    return !states.isEmpty();
+  }
+
+  /**
+   *
    * @param type
    * @return
    */
@@ -120,6 +170,14 @@ public class SearchParameters {
    */
   public Set<String> getTypes() {
     return Collections.unmodifiableSet(types);
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean hasTypes() {
+    return !types.isEmpty();
   }
 
   /**
@@ -142,6 +200,14 @@ public class SearchParameters {
 
   /**
    *
+   * @return
+   */
+  public boolean hasAuthors() {
+    return !authors.isEmpty();
+  }
+
+  /**
+   *
    * @param userReference
    * @return
    */
@@ -160,6 +226,13 @@ public class SearchParameters {
 
   /**
    *
+   * @return
+   */
+  public boolean hasUserReferences() {
+    return !userReferences.isEmpty();
+  }
+  /**
+   *
    * @param visibility
    * @return
    */
@@ -174,6 +247,14 @@ public class SearchParameters {
    */
   public Set<String> getVisibilities() {
     return Collections.unmodifiableSet(visibilities);
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean hasVisibilities() {
+    return !visibilities.isEmpty();
   }
 
   /**
@@ -196,6 +277,14 @@ public class SearchParameters {
 
   /**
    *
+   * @return
+   */
+  public boolean hasNamespaces() {
+    return !namespaces.isEmpty();
+  }
+
+  /**
+   *
    * @param version
    * @return
    */
@@ -212,4 +301,19 @@ public class SearchParameters {
     return Collections.unmodifiableSet(versions);
   }
 
+  /**
+   *
+   * @return
+   */
+  public boolean hasVersions() {
+    return !versions.isEmpty();
+  }
+
+  /**
+   * @return whether no fields were populated (empty query).
+   */
+  public boolean isEmpty() {
+    return !hasAuthors() && !hasNames() && !hasNamespaces() && !hasStates() && !hasStates() &&
+        !hasTenantIds() && !hasTypes() && !hasUserReferences() && !hasVersions() && !hasVisibilities();
+  }
 }

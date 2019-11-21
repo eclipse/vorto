@@ -106,10 +106,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, 1.0f);
   }
 
-  private static final Map<String, Float> AUTHOR_FIELDS_FOR_QUERY = new HashMap<>();
+  private static final Map<String, Float> USER_REFERENCE_FIELDS_FOR_QUERY = new HashMap<>();
   static {
-    AUTHOR_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
-    AUTHOR_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
+    USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
+    USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
   }
 
   public ElasticSearchService(RestHighLevelClient client, IModelRepositoryFactory repositoryFactory,
@@ -659,7 +659,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     makeChildQuery(result, parameters.getAuthors(), BasicIndexFieldExtractor.AUTHOR);
 
     // adding user references
-    makeChildQuery(result, parameters.getUserReferences(), AUTHOR_FIELDS_FOR_QUERY);
+    makeChildQuery(result, parameters.getUserReferences(), USER_REFERENCE_FIELDS_FOR_QUERY);
 
     // adding visibilities
     makeChildQuery(result, parameters.getVisibilities(), BasicIndexFieldExtractor.VISIBILITY);
