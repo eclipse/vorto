@@ -62,7 +62,7 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
   public void testCreateUserAlreadyExists() throws Exception {
     User user = setupUserWithRoles("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
-    accountService.create(user.getUsername(), AuthenticationProvider.GITHUB);
+    accountService.create(user.getUsername(), AuthenticationProvider.GITHUB, null);
   }
 
   private User setupUserWithRoles(String username) {

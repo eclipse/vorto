@@ -82,7 +82,7 @@ public interface IUserAccountService {
    * @param username
    * @return createdUser
    */
-  User create(String username, AuthenticationProvider provider);
+  User create(String username, AuthenticationProvider provider, String subject);
 
   /**
    * create a new user with roles in Vorto Repository, under the Playground tenant
@@ -101,7 +101,7 @@ public interface IUserAccountService {
    * @param userRoles
    * @return
    */
-  public User create(String username, String tenantId, AuthenticationProvider provider, Role... userRoles);
+  public User create(String username, AuthenticationProvider provider, String subject, String tenantId, Role... userRoles);
   
   /**
    * 

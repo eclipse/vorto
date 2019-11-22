@@ -19,11 +19,13 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 public class Collaborator {
   private String userId;
   private String providerId;
+  private String subject;
   private Collection<String> roles;
-
+  
   public static Collaborator fromUser(TenantUser tenantUser) {
     return new Collaborator(tenantUser.getUser().getUsername(), 
         tenantUser.getUser().getAuthenticationProvider(),
+        tenantUser.getUser().getSubject(),
         tenantUser.getRoles().stream().map(role -> role.getRole().name())
           .collect(Collectors.toList()));
   }
@@ -32,10 +34,11 @@ public class Collaborator {
     
   }
   
-  public Collaborator(String userId, String providerId, Collection<String> roles) {
+  public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
     this.userId = userId;
     this.providerId = providerId;
     this.roles = roles;
+    this.subject = subject;
   }
 
   public String getUserId() {
@@ -60,5 +63,13 @@ public class Collaborator {
 
   public void setRoles(Collection<String> roles) {
     this.roles = roles;
+  }
+
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
   }
 }

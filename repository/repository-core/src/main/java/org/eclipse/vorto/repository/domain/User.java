@@ -51,6 +51,9 @@ public class User {
   @Column(name = "authenticationProvider")
   private String authenticationProvider;
 
+  @Column(name = "subject")
+  private String subject;
+  
   @Column(nullable = false)
   private Timestamp dateCreated;
 
@@ -65,10 +68,11 @@ public class User {
 
   private String emailAddress;
 
-  public static User create(String username, AuthenticationProvider provider) {
+  public static User create(String username, AuthenticationProvider provider, String subject) {
     User user = new User();
     user.setUsername(username);
     user.setAuthenticationProvider(provider.name());
+    user.setSubject(subject);
     user.setDateCreated(new Timestamp(System.currentTimeMillis()));
     user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
     user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
@@ -77,7 +81,7 @@ public class User {
   }
   
   public static User create(String username) {
-    return create(username, AuthenticationProvider.GITHUB);
+    return create(username, AuthenticationProvider.GITHUB, null);
   }
 
   public static User create(String username, Tenant tenant, Role... roles) {
@@ -253,6 +257,14 @@ public class User {
 
   public boolean hasEmailAddress() {
     return this.emailAddress != null && !"".equals(this.emailAddress);
+  }
+  
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
   }
 
   public Set<TenantUser> getTenantUsers() {

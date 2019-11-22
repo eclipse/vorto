@@ -147,7 +147,7 @@ public class RepositoryInitializer {
   private void createUser(String user) {
     if (!userAccountService.exists(user)) {
       logger.info("Creating technical user: {}", user);
-      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH);
+      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH, null);
     }
   }
 
