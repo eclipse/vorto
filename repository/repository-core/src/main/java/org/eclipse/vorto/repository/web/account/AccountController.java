@@ -249,7 +249,7 @@ public class AccountController {
     }
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User));
+    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
     SpringUserUtils.refreshSpringSecurityUser(createdUser);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);

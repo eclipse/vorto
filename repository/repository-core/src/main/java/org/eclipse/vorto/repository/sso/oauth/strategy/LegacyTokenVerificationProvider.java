@@ -57,16 +57,16 @@ public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvi
   
   @Override
   @SuppressWarnings("unchecked")
-  protected Map<Namespace, Integer> getScopes(JwtToken jwtToken) {
+  protected Collection<Scope> getScopes(JwtToken jwtToken) {
     Map<String, Object> resources = (Map<String, Object>) 
         Objects.requireNonNull(jwtToken.getPayloadMap().get(RESOURCE_ACCESS));
     return resources.entrySet().stream().map(this::resourceToScope)
-        .filter(scope -> VORTO.equals(scope[0]))
-        .collect(Collectors.toMap(this::toNamespace, this::toRank));
+        .filter(scope -> VORTO.equals(scope.serviceName))
+        .collect(Collectors.toList());
   }
   
   @SuppressWarnings("unchecked")
-  private String[] resourceToScope(Map.Entry<String, Object> entry) {
+  private Scope resourceToScope(Map.Entry<String, Object> entry) {
     String[] resources = entry.getKey().split(":");
     
     if (resources == null || resources.length < 3) {
@@ -83,6 +83,6 @@ public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvi
       throw new MalformedElement("No roles in " + entry.getKey());
     }
     
-    return new String[] { resources[1], resources[2], roles.iterator().next()};
+    return new Scope(resources[1], resources[2], roles.iterator().next());
   }
 }

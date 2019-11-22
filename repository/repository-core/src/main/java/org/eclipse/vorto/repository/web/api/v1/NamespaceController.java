@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -35,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 
 @RestController
@@ -49,10 +49,9 @@ public class NamespaceController {
   
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public Collection<NamespaceDto> getUserNamespaces(Principal user) {
-    
+  public Collection<NamespaceDto> getNamespaces(Principal user) {
     return tenantService.getTenants().stream()
-      .filter(tenant -> tenant.hasUserWithRole(user.getName(), Role.TENANT_ADMIN))
+      .filter(tenant -> tenant.hasTenantAdmin(user.getName()))
       .map(NamespaceDto::fromTenant)
       .collect(Collectors.toList());
   }
@@ -71,52 +70,6 @@ public class NamespaceController {
     }
     
     return new ResponseEntity<>(NamespaceDto.fromTenant(tenant), HttpStatus.OK);
-  }
-  
-  @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:[a-zA-Z0-9_\\.]+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<Void> modifyNamespace(
-      @ApiParam(value = "The namespace you want to retrieve", required = true) 
-      final @PathVariable String namespace,
-      @RequestBody @ApiParam(value = "The new admins of the namespace", required = true) 
-      Collection<String> newTenantAdmins,
-      Principal user) {
-    
-    if (newTenantAdmins.size() <= 0) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    
-    Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
-        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
-    
-    if (!tenant.hasTenantAdmin(user.getName())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-    
-    tenantService.changeTenantAdmins(tenant, new HashSet<String>(newTenantAdmins));
-    
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-  
-  @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}/collaborators")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<Collection<Collaborator>> getCollaborators(
-      @ApiParam(value = "The namespace whose collaborators you want to retrieve", required = true) 
-      final @PathVariable String namespace,
-      Principal user) {
-    
-    Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
-        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
-    
-    if (!tenant.hasTenantAdmin(user.getName())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-    
-    return new ResponseEntity<>(getCollaborators(tenant), HttpStatus.OK);
-  }
-
-  private Collection<Collaborator> getCollaborators(Tenant tenant) {
-    return tenant.getUsers().stream().map(Collaborator::fromUser).collect(Collectors.toList());
   }
   
   @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:[a-zA-Z0-9_\\.]+}/collaborators/{userId}")
@@ -149,11 +102,16 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
+    if (authProvider.get() == AuthenticationProvider.BOSCH_IOT_SUITE_AUTH &&
+        Strings.nullToEmpty(collaboratorInfo.getSubject()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    
     if (collaboratorInfo.getRoles().isEmpty()) {
       accountService.removeUserFromTenant(tenant.getTenantId(), collaboratorInfo.getUserId());
     } else {
-      accountService.create(collaboratorInfo.getUserId(), tenant.getTenantId(), 
-          authProvider.get(), toRoles(collaboratorInfo.getRoles()));
+      accountService.create(collaboratorInfo.getUserId(), authProvider.get(), collaboratorInfo.getSubject(), 
+          tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
     }
     
     return new ResponseEntity<>(HttpStatus.OK);

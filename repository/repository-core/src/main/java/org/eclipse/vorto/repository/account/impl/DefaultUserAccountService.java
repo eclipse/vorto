@@ -160,21 +160,21 @@ public class DefaultUserAccountService
   }
 
   @Transactional
-  public User create(String username, AuthenticationProvider provider) {
+  public User create(String username, AuthenticationProvider provider, String subject) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
-    return userRepository.save(User.create(username, provider));
+    return userRepository.save(User.create(username, provider, subject));
   }
 
   @Transactional
   public User create(String username, String tenantId, Role... userRoles) {
-    return create(username, tenantId, AuthenticationProvider.GITHUB, userRoles);
+    return create(username, AuthenticationProvider.GITHUB, null, tenantId, userRoles);
   }
   
   @Transactional
-  public User create(String username, String tenantId, AuthenticationProvider provider, Role... userRoles)
+  public User create(String username, AuthenticationProvider provider, String subject, String tenantId, Role... userRoles)
       throws RoleNotSupportedException {
     
     PreConditions.notNullOrEmpty(username, "username");
@@ -190,7 +190,7 @@ public class DefaultUserAccountService
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
     } else {
-      User user = create(username, provider);
+      User user = create(username, provider, subject);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
       user.addTenantUser(tenantUser);
       return userRepository.save(user);

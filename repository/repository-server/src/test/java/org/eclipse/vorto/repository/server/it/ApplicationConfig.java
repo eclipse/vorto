@@ -58,7 +58,7 @@ public class ApplicationConfig {
 
   @PostConstruct
   public void createUsers() {
-    accountService.create(USER_ADMIN, AuthenticationProvider.GITHUB);
+    accountService.create(USER_ADMIN, AuthenticationProvider.GITHUB, null);
     
     tenantService.createOrUpdateTenant("playground", "com.mycompany", Sets.newHashSet(USER_ADMIN), 
         Optional.of(Sets.newHashSet("com.mycompany", "com.ipso", "examples.mappings", "com.test")), 
