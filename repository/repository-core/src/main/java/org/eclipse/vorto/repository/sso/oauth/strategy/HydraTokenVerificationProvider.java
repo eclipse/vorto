@@ -13,19 +13,17 @@
 package org.eclipse.vorto.repository.sso.oauth.strategy;
 
 import java.security.PublicKey;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import com.google.common.collect.Sets;
 
 @Component
 public class HydraTokenVerificationProvider extends AbstractTokenVerificationProvider {
@@ -41,18 +38,6 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
   private static final String RS256_ALG = "RS256";
 
   private static final String CLIENT_ID = "client_id";
-
-  private static final String READ_ACCESS = "read-access";
-
-  private static final String FULL_ACCESS = "full-access";
-
-  private static final String VORTO_SERVICE = "vorto";
-
-  private static final String SCOPE = "scp";
-
-  private static final int READONLY = 0;
-  
-  private static final int FULLACCESS = 1;
   
   private String hydraJwtIssuer;
   
@@ -77,31 +62,26 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
 
   @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
-    TenantUser user = getTechnicalUserForRequest(jwtToken, httpRequest);
+    User technicalUser = getTechnicalUser(jwtToken)
+        .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
     
-    OAuth2Authentication auth = createAuthentication(user.getUser().getUsername(), user.getUser().getUsername(), 
-        user.getUser().getUsername(), null, getRoles(user));
+    OAuth2Authentication auth = createAuthentication(technicalUser.getUsername(), technicalUser.getUsername(), 
+        technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest));
     
-    return auth;
+    return auth; 
   }
 
-  private Set<Role> getRoles(TenantUser user) {
-    return user.getRoles().stream().map(userRole -> userRole.getRole()).collect(Collectors.toSet());
-  }
-  
-  private TenantUser getTechnicalUserForRequest(JwtToken jwtToken, HttpServletRequest httpRequest) {
+  private Set<Role> getRolesForRequest(User user, HttpServletRequest httpRequest) {
     Optional<Resource> resource = resource(httpRequest);
     if (resource.isPresent()) {
-      Optional<Scope> scopeToUse = getScopes(jwtToken).stream()
-          .filter(scope -> scopeApplies(scope.namespace,resource.get())).findFirst();
-      if (scopeToUse.isPresent()) {
-         
-      }
+      Optional<Namespace> ns = namespaceApplicableToResource(user, resource.get());
+      if (ns.isPresent()) {
+        return user.getUserRoles(ns.get().getTenant().getTenantId());
+      } 
     }
-    
-    return null;
+    return user.getAllRoles();
   }
-
+  
   @Override
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
     if (!verifyAlgorithm(jwtToken)) {
@@ -113,34 +93,38 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
     }
     
     if (!super.verifyExpiry(jwtToken)) {
-      return false;
-    }
-     
-    if (!verifyTechnicalUserExist(jwtToken)) {
-      return false;
+      return false; 
     }
     
-    return allowAccess(httpRequest, resource(httpRequest), jwtToken);
+    User technicalUser = getTechnicalUser(jwtToken)
+        .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+    
+    return allowAccess(httpRequest, resource(httpRequest), technicalUser);
   }
-
-  private boolean verifyTechnicalUserExist(JwtToken jwtToken) {
-    return getScopes(jwtToken).stream()
-        .allMatch(scope -> userAccountService.exists(scope.technicalUser));
+  
+  private Optional<User> getTechnicalUser(JwtToken jwtToken) {
+    String technicalUserId = getClientId(jwtToken)
+        .orElseThrow(() -> new MalformedElement("jwtToken doesn't have clientId"));
+    return Optional.ofNullable(userAccountService.getUser(technicalUserId));
   }
   
   private boolean verifyAlgorithm(JwtToken jwtToken) {
     return jwtToken.getHeaderMap().get("alg").equals(RS256_ALG);
   }
   
-  private boolean allowAccess(HttpServletRequest httpRequest, Optional<Resource> resource, JwtToken jwtToken) {
-    return httpRequest.getMethod().equals("GET") && 
-        (!resource.isPresent() || hasPermissionForResource(jwtToken, resource.get()));
+  private boolean allowAccess(HttpServletRequest httpRequest, Optional<Resource> resource, User user) {
+    return !resource.isPresent() || namespaceApplicableToResource(user, resource.get()).isPresent();
   }
   
-  private boolean hasPermissionForResource(JwtToken jwtToken, Resource resource) {
-    return getScopes(jwtToken).stream()
-        .anyMatch(scope -> scopeApplies(scope.namespace, resource) && 
-            equalOrBetterPermission(scope.rank, READONLY));
+  private Optional<Namespace> namespaceApplicableToResource(User user, Resource resource) {
+    for(Tenant tenant : user.getTenants()) {
+      for(Namespace ns : tenant.getNamespaces()) {
+        if (scopeApplies(ns, resource)) {
+          return Optional.of(ns);
+        }
+      }
+    }
+    return Optional.empty();
   }
 
   private boolean scopeApplies(Namespace namespace, Resource resource) {
@@ -149,74 +133,6 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
     } else {
       return namespace.owns(resource.getName());
     } 
-  } 
-  
-  private boolean equalOrBetterPermission(int scope, int requestedScope) {
-    return requestedScope <= scope;
-  }
-
-  @SuppressWarnings("unchecked")
-  protected Collection<Scope> getScopes(JwtToken jwtToken) {
-    Collection<String> scopes = (Collection<String>) Objects.requireNonNull(jwtToken.getPayloadMap().get(SCOPE));
-    return scopes.stream()
-      .map(this::toScope)
-      .filter(scope -> VORTO_SERVICE.equals(scope.serviceName))
-      .collect(Collectors.toList());
-  }
-  
-  // parses string of the form "service:[serviceName]:[service]/[privilege]"
-  private Scope toScope(String scope) {
-    String[] scopeElements = scope.split(":");
-    
-    if (scopeElements.length != 3) {
-      throw new MalformedElement(scope);
-    } 
-    
-    String[] serviceElements = scopeElements[2].split("/");
-    
-    if (serviceElements.length != 2) {
-      throw new MalformedElement(scope, scopeElements[2]);
-    }
-    
-    return new Scope(scopeElements[1], serviceElements[0], serviceElements[1]);
-  }
-  
-  protected class Scope {
-    private static final String SEPARATOR = "_";
-    
-    String serviceName;
-    String serviceInstanceId;
-    String roleIdentifier;
-    Namespace namespace;
-    String technicalUser;
-    int rank;
-    
-    public Scope(String serviceName, String serviceInstanceId, String roleIdentifier) {
-      this.serviceName = serviceName;
-      this.serviceInstanceId = serviceInstanceId;
-      this.roleIdentifier = roleIdentifier;
-      
-      String[] nsAndUser = serviceInstanceId.split(SEPARATOR);
-      if (nsAndUser.length < 2) {
-        throw new MalformedElement(String.format("service:%s:%s/%s", serviceName, 
-            serviceInstanceId, roleIdentifier));
-      }
-      
-      this.namespace = Namespace.newNamespace(nsAndUser[0]);
-      this.technicalUser = nsAndUser[1];
-      this.rank = getRank();
-    }
-    
-    private int getRank() {
-      if (roleIdentifier.equals(FULL_ACCESS)) {
-        return FULLACCESS;
-      } else if (roleIdentifier.equals(READ_ACCESS)) {
-        return READONLY;
-      } else {
-        throw new MalformedElement(String.format("service:%s:%s/%s", serviceName, 
-            serviceInstanceId, roleIdentifier));
-      }
-    }
   }
 
   private Optional<Resource> resource(HttpServletRequest request) {
