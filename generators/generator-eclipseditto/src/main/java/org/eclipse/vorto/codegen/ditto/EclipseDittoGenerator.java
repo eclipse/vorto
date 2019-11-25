@@ -13,15 +13,21 @@
 package org.eclipse.vorto.codegen.ditto;
 
 import org.eclipse.vorto.codegen.ditto.schema.SchemaValidatorTask;
+import org.eclipse.vorto.codegen.ditto.schema.tasks.template.JsonObjectWrappedDittoStructureTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder;
+import org.eclipse.vorto.plugin.generator.config.ConfigTemplateBuilder.ChoiceItem;
 import org.eclipse.vorto.plugin.generator.utils.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
 import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
+import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
+
 
 /**
  * Vorto Generator which generates JSON Schema files for Eclipse Ditto in order to validate whether
@@ -29,24 +35,35 @@ import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
  */
 public final class EclipseDittoGenerator implements ICodeGenerator {
 
+  private static final JsonObjectWrappedDittoStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoStructureTemplate();
+
   private static final String KEY = "eclipseditto";
+
   @Override
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
+    String target = invocationContext.getConfigurationProperties().getOrDefault("target", "");
+    if ("dittoStructure".equalsIgnoreCase(target)) {
+      SingleGenerationResult output = new SingleGenerationResult("application/json");
+      new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, output);
+      return output;
+    }
 
-    GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,KEY );
-
-    ChainedCodeGeneratorTask<InformationModel> generator =
-        new ChainedCodeGeneratorTask<InformationModel>();
+    GenerationResultZip zipOutput = new GenerationResultZip(infomodel,KEY );
+    ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<>();
     generator.addTask(new SchemaValidatorTask());
-    generator.generate(infomodel, invocationContext, zipOutputter);
-
-    GenerationResultBuilder result = GenerationResultBuilder.from(zipOutputter);
+    generator.generate(infomodel, invocationContext, zipOutput);
+    GenerationResultBuilder result = GenerationResultBuilder.from(zipOutput);
     return result.build();
   }
 
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(KEY)
+        .withConfigurationTemplate(ConfigTemplateBuilder.builder().withChoiceConfigurationItem(
+            "target", "Output format",
+            ChoiceItem.of("Ditto Structure", "dittoStructure"),
+            ChoiceItem.of("JSON Schema", ""))
+            .build())
         .withVendor("Eclipse Ditto Team")
         .withName("Eclipse Ditto")
         .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse Ditto.")

@@ -19,6 +19,7 @@ public abstract class PluginInfo {
   private String description;
   private String vendor;
   private String documentationUrl;
+  private String pluginVersion;
   
   public String getKey() {
     return key;
@@ -59,8 +60,16 @@ public abstract class PluginInfo {
   public void setDocumentationUrl(String documentationUrl) {
     this.documentationUrl = documentationUrl;
   }
-  
-  public static class PluginBuilder<T extends PluginInfo> { 
+
+  public String getPluginVersion() {
+    return pluginVersion;
+  }
+
+  public void setPluginVersion(String pluginVersion) {
+    this.pluginVersion = pluginVersion;
+  }
+
+  public static class PluginBuilder<T extends PluginInfo> {
     
     protected T info;
     
@@ -85,6 +94,11 @@ public abstract class PluginInfo {
     
     public PluginBuilder<T> withDocumentationUrl(String documentationUrl) {
       info.setDocumentationUrl(documentationUrl);
+      return this;
+    }
+
+    public PluginBuilder<T> withPluginVersion(String pluginVersion) {
+      info.setPluginVersion(pluginVersion);
       return this;
     }
     
