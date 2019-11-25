@@ -101,35 +101,6 @@ paths:
           description: 'User is not a namespace administrator'
         400:
           description: 'Request is invalid'
-  '/namespaces/{namespace}/collaborators':
-    get:
-      tags: 
-      - Namespaces
-      summary: Get all collaborators of namespace
-      description: "All collaborators of a namespace."
-      parameters:
-        - name: namespace
-          in: path
-          description: namespace
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'Successful return of all collaborators of a namespace'
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Collaborator'
-        403:
-          description: 'User is not a namespace administrator'
-        400:
-          description: 'Request is invalid'
   '/namespaces/{namespace}/collaborators/{userId}':
     put:
       tags:
@@ -851,6 +822,9 @@ components:
         providerId:
           description: The provider ID (e.g Bosch, Github) of the user
           type: string
+        subject:
+          description: Purpose of this user (only for technical users)
+          type: string
         roles:
           description: Roles of this user on this namespace
           type: array
@@ -866,11 +840,11 @@ components:
         tenantId:
           description: TenantId of this namespace
           type: string
-        tenantAdmins:
-          description: admins of this namespace
-          type: object
-          additionalProperties:
-            type: string
+        collaborators:
+          description: collaborators of this namespace
+          type: array
+          items:
+            $ref: '#/components/schemas/Collaborator'
     ImporterInfo:
       title: ImporterInfo
       type: object
