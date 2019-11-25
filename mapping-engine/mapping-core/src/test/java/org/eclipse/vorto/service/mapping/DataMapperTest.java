@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
 import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
@@ -32,6 +33,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithPropertyConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTwoFunctionblocksWithNestedEntity;
 import org.junit.Test;
+
 
 public class DataMapperTest {
   
@@ -55,8 +57,6 @@ public class DataMapperTest {
     assertEquals(0.0,
         mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
     assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
-
-
   }
 
   @Test

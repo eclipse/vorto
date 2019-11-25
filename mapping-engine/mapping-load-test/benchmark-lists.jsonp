@@ -1,0 +1,17 @@
+receiveJsonpData({
+"cols": [
+{"label": "method", "type": "string"},
+{"label": "Average time [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC time [s]", "type": "number"},
+{"label": "GC average [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC calls", "type": "number"},
+{"label": "benchmark rounds", "type": "number"},
+{"label": "warmup rounds", "type": "number"},
+{"label": "Total benchmark time", "type": "number"},
+{"label": "Total warmup time", "type": "number"}
+],
+"rows": [
+{"c": [{"v": "testSimpleCondition"}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0}, {"v": 20}, {"v": 3}, {"v": 0.05}, {"v": 0.33}]}
+]});

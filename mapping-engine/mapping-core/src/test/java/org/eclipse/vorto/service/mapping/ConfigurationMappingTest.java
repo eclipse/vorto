@@ -13,9 +13,11 @@
 package org.eclipse.vorto.service.mapping;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.functions.ClassFunction;
@@ -25,8 +27,13 @@ import org.eclipse.vorto.model.runtime.ModelValueFactory;
 import org.eclipse.vorto.model.runtime.PropertyValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConfiguration;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConfiguration2;
+import org.jsmart.zerocode.core.domain.TargetEnv;
+import org.jsmart.zerocode.core.runner.ZeroCodeUnitRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(ZeroCodeUnitRunner.class)
+@TargetEnv("loadTest.properties")
 public class ConfigurationMappingTest {
 
   @Test
