@@ -78,7 +78,7 @@ public class ModelSearchUtil {
   public static final String LOWER_EQUALS_FORMAT = "LOWER(%s) = '%s'";
   public static final String AND_FORMAT = " AND %s";
 
-  public Query createQueryFromExpression(Session session, String queryExpression) {
+  public static Query createQueryFromExpression(Session session, String queryExpression) {
     try {
 
       QueryManager queryManager = session.getWorkspace().getQueryManager();
@@ -432,7 +432,7 @@ public class ModelSearchUtil {
       query.append(String.format(AND_FORMAT, constraint));
     }
     else {
-      query.append(" ").append(constraint);
+      query.append(constraint);
     }
   }
 
@@ -496,7 +496,7 @@ public class ModelSearchUtil {
 
     // handling names
     if (params.hasNames()) {
-      appendConstraint(result, buildJCRConstraint(params.getNames(), VORTO_NAME_FIELD));
+      appendConstraint(result, buildJCRConstraint(SearchTags.appendPostfixWildcardForNames(params.getNames()), VORTO_NAME_FIELD));
     }
 
     // handling namespaces
