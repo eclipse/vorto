@@ -35,39 +35,39 @@ class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-			  "things": {
-			    "thing": {
-			      "attributes": {
-			    	"thingName": "«model.displayname»",
-			    	"definition": "«model.namespace»:«model.name»:«model.version»"
-			    	 },
-			  	"features": {
-			  	«FOR fbProperty : model.properties SEPARATOR ","»
-			  		"«fbProperty.name»" : {
-			  		"definition": [
-			  			"«fbProperty.type.namespace»:«fbProperty.type.name»:«fbProperty.type.version»"
-			  		],
-			  		"properties": {
-			  			«IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
-			  				"status": {
-			  					«FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ","»
-			  						"«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ELSEIF statusProperty.type instanceof ObjectPropertyType»«getJsonObjectType(statusProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(statusProperty.type as DictionaryPropertyType)»«ENDIF»
-			  					«ENDFOR»
-			  				}«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
-			  			«ENDIF»
-			  			«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
-			  				"configuration": {
-			  					«FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
-			  						"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSEIF configProperty.type instanceof ObjectPropertyType»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(configProperty.type as DictionaryPropertyType)»«ENDIF»
-			  					«ENDFOR»
-			  				}
-			  			«ENDIF»
-			  		}
-			  		}
-			  	«ENDFOR» 
-			}
-		}
-	}
+ "things": {
+  "thing": {
+  "attributes": {
+ 	"thingName": "«model.displayname»",
+ 	"definition": "«model.namespace»:«model.name»:«model.version»"
+ 	 },
+ 	"features": {
+ 	«FOR fbProperty : model.properties SEPARATOR ","»
+ 	"«fbProperty.name»" : {
+  	"definition": [
+ 		"«fbProperty.type.namespace»:«fbProperty.type.name»:«fbProperty.type.version»"
+ 	],
+ 	"properties": {
+ 		«IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
+ 		"status": {
+ 			«FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ","»
+ 			"«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ELSEIF statusProperty.type instanceof ObjectPropertyType»«getJsonObjectType(statusProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(statusProperty.type as DictionaryPropertyType)»«ENDIF»
+ 			«ENDFOR»
+ 		}«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
+ 		«ENDIF»
+ 		«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
+ 			"configuration": {
+ 			«FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
+ 			"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSEIF configProperty.type instanceof ObjectPropertyType»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(configProperty.type as DictionaryPropertyType)»«ENDIF»
+ 			«ENDFOR»
+ 	}
+ 		«ENDIF»
+ 	}
+ 	}
+ 	«ENDFOR»
+}
+}
+}
 		'''
 	}
 	

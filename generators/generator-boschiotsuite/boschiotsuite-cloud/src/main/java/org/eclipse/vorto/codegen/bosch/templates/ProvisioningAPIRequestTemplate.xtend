@@ -37,7 +37,7 @@ class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> 
 			      ]
 			    }
 			  },
-				«new DittoThingStructureTemplate().getContent(model, context)»
+«new DittoThingStructureTemplate().getContent(model, context)»
 			}
 		'''
 	}
