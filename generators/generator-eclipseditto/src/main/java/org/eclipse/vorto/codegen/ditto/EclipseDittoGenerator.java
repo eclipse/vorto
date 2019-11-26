@@ -35,20 +35,20 @@ import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
  */
 public final class EclipseDittoGenerator implements ICodeGenerator {
 
-  private static final JsonObjectWrappedDittoStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoStructureTemplate();
-
-  private static final String KEY = "eclipseditto";
+  private static final JsonObjectWrappedDittoThingStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoThingStructureTemplate();
+  private static final String GENERATOR_KEY = "eclipseditto";
+  private static final String DITTO_THING_STRUCTURE = "dittoThingStructure";
 
   @Override
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
     String target = invocationContext.getConfigurationProperties().getOrDefault("target", "");
-    if ("dittoStructure".equalsIgnoreCase(target)) {
+    if (DITTO_THING_STRUCTURE.equalsIgnoreCase(target)) {
       SingleGenerationResult output = new SingleGenerationResult("application/json");
       new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, output);
       return output;
     }
 
-    GenerationResultZip zipOutput = new GenerationResultZip(infomodel,KEY );
+    GenerationResultZip zipOutput = new GenerationResultZip(infomodel, GENERATOR_KEY);
     ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<>();
     generator.addTask(new SchemaValidatorTask());
     generator.generate(infomodel, invocationContext, zipOutput);
@@ -58,15 +58,17 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
 
   @Override
   public GeneratorPluginInfo getMeta() {
-    return GeneratorPluginInfo.Builder(KEY)
+    return GeneratorPluginInfo.Builder(GENERATOR_KEY)
         .withConfigurationTemplate(ConfigTemplateBuilder.builder().withChoiceConfigurationItem(
             "target", "Output format",
-            ChoiceItem.of("Ditto Structure", "dittoStructure"),
+            ChoiceItem.of("Ditto Thing Structure", DITTO_THING_STRUCTURE),
             ChoiceItem.of("JSON Schema", ""))
             .build())
         .withVendor("Eclipse Ditto Team")
         .withName("Eclipse Ditto")
-        .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse Ditto.")
+        .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse "
+            + "Ditto. With the Ditto Thing Structure Option, the generator creates a Thing JSON, "
+            + "which can be send to Ditto to create a Thing.")
         .withDocumentationUrl("https://www.eclipse.org/ditto")
         .build();
   }

@@ -23,7 +23,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
-class DittoStructureTemplate implements IFileTemplate<InformationModel> {
+class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
 
 	override getFileName(InformationModel context) {
 		return "dittoStructure.json";
