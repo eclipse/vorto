@@ -904,6 +904,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 	'''
 	«FOR constraint : rule.constraints»
 	«getConstraint(constraint.type)»«constraint.constraintValues»
+	«IF constraint.type == ConstraintIntervalType.MAX»
+	example: «constraint.constraintValues»
+	«ENDIF»
 	«ENDFOR»
 	'''
 	}
