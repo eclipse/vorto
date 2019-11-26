@@ -83,7 +83,7 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
   @Test
   public void checkThingStructure() throws Exception {
     Map<String, String> config = new HashMap<>();
-    config.put("target", "dittoStructure");
+    config.put("target", "dittoThingStructure");
     IGenerationResult generationResult = eclipseDittoGenerator.generate(
         modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
         InvocationContext.simpleInvocationContext(config));
