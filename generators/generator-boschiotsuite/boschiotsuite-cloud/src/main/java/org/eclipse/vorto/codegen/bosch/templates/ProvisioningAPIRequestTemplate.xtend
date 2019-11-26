@@ -8,7 +8,7 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
-import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoStructureTemplate
+import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoThingStructureTemplate
 
 class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> {
 
@@ -37,7 +37,7 @@ class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> 
 			      ]
 			    }
 			  },
-				«new DittoStructureTemplate().getContent(model, context)»
+				«new DittoThingStructureTemplate().getContent(model, context)»
 			}
 		'''
 	}

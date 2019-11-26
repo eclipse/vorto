@@ -13,7 +13,7 @@
 package org.eclipse.vorto.codegen.ditto;
 
 import org.eclipse.vorto.codegen.ditto.schema.SchemaValidatorTask;
-import org.eclipse.vorto.codegen.ditto.schema.tasks.template.JsonObjectWrappedDittoStructureTemplate;
+import org.eclipse.vorto.codegen.ditto.schema.tasks.template.JsonObjectWrappedDittoThingStructureTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
