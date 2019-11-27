@@ -1,27 +1,29 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
- *
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
+ * <p>
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ * <p>
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ * <p>
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.core.search;
 
 import static org.junit.Assert.assertEquals;
+
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.junit.Test;
 
 public class ModelRepositorySearchTest extends AbstractIntegrationTest {
-  
+
   @Test
   public void testSearchWithNull() {
     importModel("Color.type");
-    assertEquals(1,searchService.search(null).size());
+    assertEquals(1, searchService.search(null).size());
   }
 
   @Test
@@ -36,7 +38,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     assertEquals(0,
         searchService.search("!$@").size());
   }
-  
+
   @Test
   public void testSearchAllModelsWithWildCard() {
     importModel("Color.type");
@@ -44,13 +46,14 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
     assertEquals(4, searchService.search("*").size());
-    
-    ModelInfo model = searchService.search("*").stream().filter(m -> m.getId().getName().equals("ColorLight")).findAny().get();
-    assertEquals(1,model.getReferences().size());
+
+    ModelInfo model = searchService.search("*").stream()
+        .filter(m -> m.getId().getName().equals("ColorLight")).findAny().get();
+    assertEquals(1, model.getReferences().size());
   }
 
   @Test
-  public void testSearchByFreetext1() {
+  public void testSearchByFreetextLeadingCaseInsensitive() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
@@ -58,36 +61,46 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     assertEquals(2,
         searchService.search("color").size());
   }
-  
+
+  /**
+   * This test uses free text to search for a model name but provides no wildcard. <br/> As such,
+   * while a trailing multi-wildcard is automatically added, no leading wildcard is. <br/> Given the
+   * term does not appear at the start of either model containing it, no model is fetched.
+   */
   @Test
-  public void testSearchByFreetext2() {
+  public void testSearchByFreetextTrailingCaseInsensitive() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(2,
+    assertEquals(0,
         searchService.search("light").size());
   }
-  
+
+  /**
+   * Surrounding search term in wildcards so the one model name containing the sequence is
+   * returned.
+   */
   @Test
-  public void testSearchByFreetext3() {
+  public void testSearchByFreetextMiddleWildcardsSurrounding() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1,
-        searchService.search("tch").size());
+    assertEquals(1, searchService.search("*tch*").size());
   }
-  
+
+  /**
+   * Wildcard trailing but no model name starting with sequence and wildcard leading is <b>not</b>
+   * implied by search.
+   */
   @Test
-  public void testSearchByFreetext3ContainingWildCard() {
+  public void testSearchByFreetextTrailingWildCard() {
     importModel("Color.type");
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1,
-        searchService.search("tch*").size());
-    assertEquals("Switcher",searchService.search("tch*").get(0).getId().getName());
+    assertEquals(0, searchService.search("tch*").size());
   }
 
   @Test
@@ -96,7 +109,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    assertEquals(1, searchService.search("name:Color").size());
+    assertEquals(2, searchService.search("name:Color").size());
   }
 
   @Test
@@ -105,7 +118,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
-    
+
     assertEquals(2, searchService.search("name:Color*").size());
   }
 
@@ -131,7 +144,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
 
-    assertEquals(2, searchService.search("Functionblock").size());
+    assertEquals(2, searchService.search("type:Functionblock").size());
   }
 
   @Test
@@ -142,8 +155,8 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
 
-    assertEquals(0, searchService.search("name:Switcher InformationModel").size());
-    assertEquals(1, searchService.search("name:Switcher Functionblock").size());
+    assertEquals(0, searchService.search("name:Switcher type:InformationModel").size());
+    assertEquals(1, searchService.search("name:Switcher type:Functionblock").size());
   }
 
   @Test
@@ -154,7 +167,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("ColorLightIM.infomodel");
     importModel("HueLightStrips.infomodel");
 
-    assertEquals(1, searchService.search("Functionblock name:Color*").size());
+    assertEquals(1, searchService.search("type:Functionblock name:Color*").size());
   }
 
   @Test
@@ -168,7 +181,7 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
 
     assertEquals(2, searchService.search("author:" + alex.getUsername()).size());
   }
-  
+
   @Test
   public void testSearchByAuthor2() {
     IUserContext erle = createUserContext("erle", "playground");
@@ -177,9 +190,12 @@ public class ModelRepositorySearchTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel", erle);
     importModel("Switcher.fbmodel", admin);
 
-    assertEquals(2, searchService.search("author:" + createUserContext("erle", "playground").getUsername()).size());
-    assertEquals(1, searchService.search("author:" + createUserContext("admin", "playground").getUsername()).size());
+    assertEquals(2,
+        searchService.search("author:" + createUserContext("erle", "playground").getUsername())
+            .size());
+    assertEquals(1,
+        searchService.search("author:" + createUserContext("admin", "playground").getUsername())
+            .size());
   }
-
 
 }
