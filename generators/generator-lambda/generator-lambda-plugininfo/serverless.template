@@ -1,0 +1,13 @@
+{
+  "Description": "Returns meta-data information of Eclipse Vorto Generator.",
+  	"Resources": {
+    "VortoGeneratorsPluginInfo": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/generator-lambda-plugininfo-1.0.0-SNAPSHOT.jar"
+      }
+    }
+  }
+}

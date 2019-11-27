@@ -22,6 +22,7 @@
 		<module>generator-eclipseditto</module>
 		<module>generator-openapi</module>
 		<module>generator-runner</module>
+		<module>generator-lambda</module>
 	</modules>
 
 	<build>
