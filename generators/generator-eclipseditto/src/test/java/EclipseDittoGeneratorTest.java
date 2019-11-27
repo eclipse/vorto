@@ -1,5 +1,8 @@
 import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
@@ -76,5 +79,16 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
     assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
         new String(generatedfile.getContent(), "utf-8"));
 
+  }
+
+  @Test
+  public void checkThingStructure() throws Exception {
+    Map<String, String> config = new HashMap<>();
+    config.put("target", "thingJson");
+    IGenerationResult generationResult = eclipseDittoGenerator.generate(
+        modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
+        InvocationContext.simpleInvocationContext(config));
+
+    assertEquals("application/json", generationResult.getMediatype());
   }
 }

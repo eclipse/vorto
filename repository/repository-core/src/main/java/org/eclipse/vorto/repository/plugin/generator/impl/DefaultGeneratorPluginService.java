@@ -25,10 +25,13 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
+import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
 import org.eclipse.vorto.repository.plugin.generator.GenerationException;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
@@ -125,6 +128,10 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   @Override
   public GeneratedOutput generate(IUserContext userContext, ModelId modelId, String serviceKey,
       Map<String, String> requestParams) {
+
+
+
+    modelRepositoryFactory.getRepositoryByModel(modelId).getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED);
 
     GeneratorMetric generatorEntity = this.generatorMetrics.findByGeneratorKey(serviceKey);
     if (generatorEntity == null) {

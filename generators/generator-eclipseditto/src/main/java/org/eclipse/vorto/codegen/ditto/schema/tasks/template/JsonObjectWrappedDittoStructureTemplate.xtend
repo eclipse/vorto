@@ -1,4 +1,18 @@
-package org.eclipse.vorto.codegen.bosch.templates
+/*******************************************************************************
+	* Copyright (c) 2019 Bosch Software Innovations GmbH and others.
+	* All rights reserved. This program and the accompanying materials
+	* are made available under the terms of the Eclipse Public License v1.0
+	* and Eclipse Distribution License v1.0 which accompany this distribution.
+	*
+	* The Eclipse Public License is available at
+	* http://www.eclipse.org/legal/epl-v10.html
+	* The Eclipse Distribution License is available at
+	* http://www.eclipse.org/org/documents/edl-v10.php.
+	*
+	* Contributors:
+	* Bosch Software Innovations GmbH - Please refer to git log
+	*******************************************************************************/
+package org.eclipse.vorto.codegen.ditto.schema.tasks.template
 
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Entity
@@ -8,9 +22,8 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
-import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoThingStructureTemplate
 
-class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> {
+class JsonObjectWrappedDittoThingStructureTemplate implements IFileTemplate<InformationModel> {
 
 	override getFileName(InformationModel context) {
 		return "provisioningRequest.json";
@@ -23,21 +36,7 @@ class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> 
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
 			{
-			  "id": "{{device-id}}",
-			  "hub": {
-			    "device": {
-			      "enabled": true
-			    },
-			    "credentials": {
-			      "type": "hashed-password",
-			      "secrets": [
-			        {
-			          "password": "{{device-password}}"
-			        }
-			      ]
-			    }
-			  },
-«new DittoThingStructureTemplate().getContent(model, context)»
+				«new DittoThingStructureTemplate().getContent(model, context)»
 			}
 		'''
 	}
