@@ -37,12 +37,12 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
 
   private static final JsonObjectWrappedDittoThingStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoThingStructureTemplate();
   private static final String GENERATOR_KEY = "eclipseditto";
-  private static final String DITTO_THING_STRUCTURE = "dittoThingStructure";
+  private static final String THING_JSON = "thingJson";
 
   @Override
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
     String target = invocationContext.getConfigurationProperties().getOrDefault("target", "");
-    if (DITTO_THING_STRUCTURE.equalsIgnoreCase(target)) {
+    if (THING_JSON.equalsIgnoreCase(target)) {
       SingleGenerationResult output = new SingleGenerationResult("application/json");
       new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, output);
       return output;
@@ -61,15 +61,16 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
     return GeneratorPluginInfo.Builder(GENERATOR_KEY)
         .withConfigurationTemplate(ConfigTemplateBuilder.builder().withChoiceConfigurationItem(
             "target", "Output format",
-            ChoiceItem.of("Ditto Thing Structure", DITTO_THING_STRUCTURE),
+            ChoiceItem.of("Ditto Thing JSON", THING_JSON),
             ChoiceItem.of("JSON Schema", ""))
             .build())
         .withVendor("Eclipse Ditto Team")
         .withName("Eclipse Ditto")
         .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse "
-            + "Ditto. With the Ditto Thing Structure Option, the generator creates a Thing JSON, "
+            + "Ditto. With the Ditto Thing JSON Option, the generator creates a Thing JSON, "
             + "which can be send to Ditto to create a Thing.")
-        .withDocumentationUrl("https://www.eclipse.org/ditto")
+        .withDocumentationUrl(
+            "https://github.com/eclipse/vorto/blob/master/generators/generator-eclipseditto/Readme.md")
         .build();
   }
 }

@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
   @Test
   public void checkThingStructure() throws Exception {
     Map<String, String> config = new HashMap<>();
-    config.put("target", "dittoThingStructure");
+    config.put("target", "thingJson");
     IGenerationResult generationResult = eclipseDittoGenerator.generate(
         modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
         InvocationContext.simpleInvocationContext(config));
