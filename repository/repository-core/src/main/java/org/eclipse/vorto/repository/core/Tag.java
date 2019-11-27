@@ -21,6 +21,11 @@ public final class Tag {
     this.label = label;
   }
 
+  public Tag(String id) {
+    this.id = id;
+    this.label = id;
+  }
+
   protected Tag() {}
 
   public String getId() {

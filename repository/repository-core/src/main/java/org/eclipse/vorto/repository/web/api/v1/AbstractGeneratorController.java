@@ -72,10 +72,7 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
 
   protected Map<String, String> getRequestParams(final HttpServletRequest request) {
     Map<String, String> requestParams = new HashMap<>();
-    request.getParameterMap().entrySet().stream().forEach(x -> {
-      requestParams.put(x.getKey(), x.getValue()[0]);
-    });
-
+    request.getParameterMap().forEach((x, y) -> requestParams.put(x, y[0]));
     return requestParams;
   }
 
