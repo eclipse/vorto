@@ -3,6 +3,63 @@ dist: trusty
 
 jobs:
   include:
+   - stage: deploy-generator-lambda
+     name: Deploys the Vorto Generators as Lambda Functions to AWS
+     language: java
+     jdk: oraclejdk8
+     before_script:
+       - cd generators/lambda
+     script:
+       - mvn clean package
+     before_install:
+     before_deploy:
+       - export ARTIFACT_PLUGININFO=$(ls generators-lambda-plugininfo/target/generators-lambda-plugininfo-*.jar)
+       - export ARTIFACT_PLUGINEXECUTOR=$(ls generators-lambda-pluginexecutor/target/generators-lambda-pluginexecutor-*.jar)
+     deploy:
+       - provider: lambda
+         function_name: "generators-plugininfo-dev"
+         region: "$VORTO_S3_REGION"
+         role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+         zip: "$ARTIFACT_PLUGININFO"
+         runtime: "java8"
+         handler_name: "handler"
+         access_key_id: "$VORTO_AWS_ACCESS_KEY"
+         secret_access_key: "$VORTO_AWS_SECRET_KEY"
+         on:
+           branch: lambdadeploy
+       - provider: lambda
+         function_name: "generators-pluginexecutor-dev"
+         region: "$VORTO_S3_REGION"
+         role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+         zip: "$ARTIFACT_PLUGINEXECUTOR"
+         runtime: "java8"
+         handler_name: "handler"
+         access_key_id: "$VORTO_AWS_ACCESS_KEY"
+         secret_access_key: "$VORTO_AWS_SECRET_KEY"
+         on:
+           branch: lambdadeploy
+       - provider: lambda
+         function_name: "generators-plugininfo-prod"
+         region: "$VORTO_S3_REGION"
+         role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+         zip: "$ARTIFACT_PLUGININFO"
+         runtime: "java8"
+         handler_name: "handler"
+         access_key_id: "$VORTO_AWS_ACCESS_KEY"
+         secret_access_key: "$VORTO_AWS_SECRET_KEY"
+         on:
+           branch: master
+       - provider: lambda
+         function_name: "generators-pluginexecutor-prod"
+         region: "$VORTO_S3_REGION"
+         role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+         zip: "$ARTIFACT_PLUGINEXECUTOR"
+         runtime: "java8"
+         handler_name: "handler"
+         access_key_id: "$VORTO_AWS_ACCESS_KEY"
+         secret_access_key: "$VORTO_AWS_SECRET_KEY"
+         on:
+           branch: master
     - stage: deploy
       name: "Deploy Repository"
 
