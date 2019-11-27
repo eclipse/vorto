@@ -34,6 +34,7 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   
   @Deprecated
   private String creator;
+  
   @Deprecated
   private String infoUrl;
   
@@ -148,5 +149,5 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   public void setCreator(String creator) {
     this.creator = creator;
   }
-  
+
 }

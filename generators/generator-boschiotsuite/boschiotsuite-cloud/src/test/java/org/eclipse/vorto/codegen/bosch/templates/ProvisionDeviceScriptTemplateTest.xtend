@@ -36,7 +36,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
+		System.out.println("testCreateScriptWithSingleFb: generated:" + cleaned(generated));
 		Assert.assertEquals(cleaned(expectedTemplate1), cleaned(generated));
 	}
 
@@ -108,12 +108,12 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "outdoorTemperature", null, false)
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
+		System.out.println("testCreateScriptWithMultipleFbs: generated:" + cleaned(generated));
 		Assert.assertEquals(cleaned(expectedTemplate2), cleaned(generated));
 	}
 
 	def cleaned(String text) {
-		return StringUtils.normalizeSpace(text.replaceAll("\\\\r\\\\n", "\\\\n"))
+		return StringUtils.deleteWhitespace(StringUtils.normalizeSpace(text.replaceAll("\\\\r\\\\n", "\\\\n")))
 	}
 
 	def String getExpectedTemplate2() {
