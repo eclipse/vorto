@@ -6,10 +6,6 @@ pwd
 export GIT_BRANCH=$TRAVIS_BRANCH
 echo "this is branch name: $GIT_BRANCH"
 
-# copying the mariadb java client
-mkdir ./wgetDownload
-wget -P ./wgetDownload/ https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-2.3.0.jar
-
 # setting up artifact uploads to aws
 mkdir -p ./aws-upload/{tmp,repo,gen}
 
@@ -24,29 +20,28 @@ cp ./aws-upload/repo/infomodelrepository.jar ./aws-upload/tmp
 cd aws-upload/tmp
 jar -xvf infomodelrepository.jar
 rm -f infomodelrepository.jar
-cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
 
 if [[ "$GIT_BRANCH" == "master" ]]
 then
-   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod_new ./BOOT-INF/classes --recursive	
+  aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/prod_new ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/prod ./ --recursive
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
-  aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/dev ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/dev ./ --recursive
 else
   echo "no extra files are include from S3Bucket"
 fi
 
-jar -cvmf0 META-INF/MANIFEST.MF infomodelrepository-dbclient.jar .
+jar -cvmf0 META-INF/MANIFEST.MF infomodelrepository-updated.jar .
 cd ../..
 echo "pwd : $(pwd)"
 ls -l
-cp ./aws-upload/tmp/infomodelrepository-dbclient.jar ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
+cp ./aws-upload/tmp/infomodelrepository-updated.jar ./aws-upload/${ARTIFACT_NAME}_${ELASTIC_BEANSTALK_LABEL}.jar
 rm -rf ./aws-upload/tmp/*
 
 # list the contents of aws-upload folder
 ls -l ./aws-upload
-
-	  
 
 if [[ "$GIT_BRANCH" == "master" ]]
 then
@@ -60,7 +55,7 @@ then
 
   # updating environment in EBS
   echo "update environment in EBS"
-  aws elasticbeanstalk update-environment --application-name "Vorto-Prod-New-Environment" --environment-name "vorto-prod-new" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo_new"												 
+  aws elasticbeanstalk update-environment --application-name "Vorto-Prod-New-Environment" --environment-name "vorto-prod-new" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo_new"
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
   # uploading to s3 bucket
@@ -77,6 +72,4 @@ then
 else
   echo "the artifact is not deployed to either production or development environment in AWS"
 fi
-echo "finished running repackage-deploy-repo.sh"																																														 
-
-
+echo "finished running repackage-deploy-repo.sh"
