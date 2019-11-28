@@ -21,7 +21,9 @@
 		<module>generator-eclipsehono</module>
 		<module>generator-eclipseditto</module>
 		<module>generator-openapi</module>
+		<module>generator-jsonschema</module>
 		<module>generator-runner</module>
+		<module>generator-lambda</module>
 	</modules>
 
 	<build>
