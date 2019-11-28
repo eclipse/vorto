@@ -19,7 +19,8 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
 import org.eclipse.vorto.repository.workflow.ModelState;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -28,31 +29,35 @@ import org.junit.Test;
  * some queries cannot be tested as full strings, because the order of appearance of {@literal
  * OR}-separated values in a {@literal CONTAINS} constraint, when different values containing at
  * least one wildcard are tested for the same tag, cannot be predicted.<br/> See {@link
- * ParentSearchTest#assertContains(String, String...)} regarding that.
+ * SearchTestInfrastructure#assertContains(String, String...)} regarding that.
  *
  * @author mena-bosch
  */
-public class StateSearchSimpleTest extends ParentSearchTest {
+public class StateSearchSimpleTest {
 
-  private final void updateState(ModelInfo model, String state) {
-    repositoryFactory.getRepository(createUserContext("reviewer"))
+  static SearchTestInfrastructure testInfrastructure;
+
+  private static void updateState(ModelInfo model, String state) {
+    testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("reviewer"))
         .updateState(model.getId(), state);
   }
 
-  @Before
-  public void before() {
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+
+    testInfrastructure = new SearchTestInfrastructure();
 
     // will apply state updates after importing models
     // draft
-    importModel(FUNCTIONBLOCK_MODEL);
+    testInfrastructure.importModel(testInfrastructure.FUNCTIONBLOCK_MODEL);
     // in review
-    importModel(INFORMATION_MODEL);
+    testInfrastructure.importModel(testInfrastructure.INFORMATION_MODEL);
     // released
-    importModel(MAPPING_MODEL);
+    testInfrastructure.importModel(testInfrastructure.MAPPING_MODEL);
     // deprecated
-    importModel(DATATYPE_MODEL);
+    testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
 
-    List<ModelInfo> model = repositoryFactory.getRepository(createUserContext("alex")).search("*");
+    List<ModelInfo> model = testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("alex")).search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");
@@ -82,12 +87,17 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     );
   }
 
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
+  }
+
   @Test
   public void testNoModel() {
     String query = "state:*potato?*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '%potato_%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(0, model.size());
   }
 
@@ -96,7 +106,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:Draft";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'draft'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Draft.getName());
   }
@@ -106,7 +116,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:dRAFT";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'draft'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Draft.getName());
   }
@@ -116,7 +126,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:?R*t";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '_r%t'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Draft.getName());
   }
@@ -126,7 +136,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:InReview";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'inreview'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.InReview.getName());
   }
@@ -136,7 +146,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:iNrEVIEW";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'inreview'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.InReview.getName());
   }
@@ -146,7 +156,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:?Nr*i?w";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '_nr%i_w'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.InReview.getName());
   }
@@ -156,7 +166,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:Released";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'released'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Released.getName());
   }
@@ -166,7 +176,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:rELEASED";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'released'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Released.getName());
   }
@@ -176,7 +186,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:*l?as*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '%l_as%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Released.getName());
   }
@@ -186,7 +196,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:Deprecated";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'deprecated'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Deprecated.getName());
   }
@@ -196,7 +206,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:dEPRECATED";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) = 'deprecated'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Deprecated.getName());
   }
@@ -206,7 +216,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:*p?ECaT*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '%p_ecat%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
     assertEquals(model.get(0).getState(), ModelState.Deprecated.getName());
   }
@@ -219,7 +229,7 @@ public class StateSearchSimpleTest extends ParentSearchTest {
     String query = "state:*RE*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:state]) LIKE '%re%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
 
@@ -229,12 +239,12 @@ public class StateSearchSimpleTest extends ParentSearchTest {
   @Test
   public void testMultipleTagsRepeatedValuesSomeWildcards() {
     String query = "state:dr* state:*aft state:depre?ated state:?nr*";
-    assertContains(
+    testInfrastructure.assertContains(
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
         "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:state], '",
         "%aft", "depre_ated", "_nr%", "dr%"
     );
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
 

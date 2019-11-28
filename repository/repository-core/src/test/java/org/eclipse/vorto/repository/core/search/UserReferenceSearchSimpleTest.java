@@ -16,11 +16,11 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,27 +31,35 @@ import org.junit.Test;
  * Also, some queries cannot be tested as full strings, because the order of appearance of
  * {@literal OR}-separated values in a {@literal CONTAINS} constraint, when different values
  * containing at least one wildcard are tested for the same tag, cannot be predicted.<br/>
- * See {@link ParentSearchTest#assertContains(String, String...)} regarding that.
+ * See {@link SearchTestInfrastructure#assertContains(String, String...)} regarding that.
  *
  * @author mena-bosch
  */
-public class UserReferenceSearchSimpleTest extends ParentSearchTest {
+public class UserReferenceSearchSimpleTest {
 
-  @Before
-  public void before() {
-    importModel(DATATYPE_MODEL);
-    List<ModelInfo> model = repositoryFactory.getRepository(createUserContext("alex")).search("*");
+  static SearchTestInfrastructure testInfrastructure;
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    testInfrastructure = new SearchTestInfrastructure();
+    testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
+    List<ModelInfo> model = testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("alex")).search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");
     }
     // "reviewer" user updates the only imported model's visibility to public, i.e.
     // "lastModifiedBy" -> reviewer
-    ModelId updated = repositoryFactory.getRepository(createUserContext("reviewer"))
+    ModelId updated = testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("reviewer"))
         .updateVisibility(model.get(0).getId(), "Public");
 
     // "control group": importing another model as another user
-    importModel("HueLightStrips.infomodel", createUserContext("erle", "playground"));
+    testInfrastructure.importModel("HueLightStrips.infomodel", testInfrastructure.createUserContext("erle", "playground"));
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   /**
@@ -61,12 +69,12 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
   @Test
   public void testControlGroup() {
     String query = "userReference:alex userReference:reviewer userReference:*";
-    assertContains(
+    testInfrastructure.assertContains(
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
         "SELECT * FROM [nt:file] WHERE ", "CONTAINS ([vorto:author], '", "alex", "%", "reviewer",
         "CONTAINS ([jcr:lastModifiedBy], '"
     );
-    assertEquals(2, searchService.search(query).size());
+    assertEquals(2, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -75,9 +83,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'alex' OR LOWER([jcr:lastModifiedBy]) = 'alex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -86,9 +94,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'alex' OR LOWER([jcr:lastModifiedBy]) = 'alex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -100,7 +108,7 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'ale' OR LOWER([jcr:lastModifiedBy]) = 'ale')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(0, searchService.search(query).size());
+    assertEquals(0, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -109,9 +117,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '%lex' OR LOWER([jcr:lastModifiedBy]) LIKE '%lex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -120,9 +128,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'ale%' OR LOWER([jcr:lastModifiedBy]) LIKE 'ale%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -131,9 +139,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'a%ex' OR LOWER([jcr:lastModifiedBy]) LIKE 'a%ex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -142,9 +150,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'ale%' OR LOWER([jcr:lastModifiedBy]) LIKE 'ale%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -153,9 +161,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '_lex' OR LOWER([jcr:lastModifiedBy]) LIKE '_lex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -164,9 +172,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'ale_' OR LOWER([jcr:lastModifiedBy]) LIKE 'ale_')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -175,9 +183,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'al_x' OR LOWER([jcr:lastModifiedBy]) LIKE 'al_x')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -186,9 +194,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'a_ex' OR LOWER([jcr:lastModifiedBy]) LIKE 'a_ex')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -197,9 +205,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '%l_x' OR LOWER([jcr:lastModifiedBy]) LIKE '%l_x')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -208,9 +216,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '_le%' OR LOWER([jcr:lastModifiedBy]) LIKE '_le%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -219,9 +227,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'reviewer' OR LOWER([jcr:lastModifiedBy]) = 'reviewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -230,9 +238,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'reviewer' OR LOWER([jcr:lastModifiedBy]) = 'reviewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -244,7 +252,7 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) = 'review' OR LOWER([jcr:lastModifiedBy]) = 'review')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(0, searchService.search(query).size());
+    assertEquals(0, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -253,9 +261,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '%viewer' OR LOWER([jcr:lastModifiedBy]) LIKE '%viewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -264,9 +272,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'review%' OR LOWER([jcr:lastModifiedBy]) LIKE 'review%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -275,9 +283,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'r%iewer' OR LOWER([jcr:lastModifiedBy]) LIKE 'r%iewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -286,9 +294,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'review%' OR LOWER([jcr:lastModifiedBy]) LIKE 'review%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -297,9 +305,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '_eviewer' OR LOWER([jcr:lastModifiedBy]) LIKE '_eviewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -308,9 +316,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'reviewe_' OR LOWER([jcr:lastModifiedBy]) LIKE 'reviewe_')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -319,9 +327,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'revie_er' OR LOWER([jcr:lastModifiedBy]) LIKE 'revie_er')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -330,9 +338,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE 'r_viewer' OR LOWER([jcr:lastModifiedBy]) LIKE 'r_viewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -341,9 +349,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '%v_ewer' OR LOWER([jcr:lastModifiedBy]) LIKE '%v_ewer')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -352,9 +360,9 @@ public class UserReferenceSearchSimpleTest extends ParentSearchTest {
     assertEquals(
         "SELECT * FROM [nt:file] WHERE (LOWER([vorto:author]) LIKE '_eview%' OR LOWER([jcr:lastModifiedBy]) LIKE '_eview%')",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
 }

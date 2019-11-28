@@ -18,37 +18,45 @@ import java.util.List;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests model type based tagged searches.<br/>
- * Note that not all types are tested against all possible case and wildcard scenarios here, to
- * keep the number of tests reasonable.<br/>
- * Also, some queries cannot be tested as full strings, because the order of appearance of
- * {@literal OR}-separated values in a {@literal CONTAINS} constraint, when different values
- * containing at least one wildcard are tested for the same tag, cannot be predicted.<br/>
- * See {@link ParentSearchTest#assertContains(String, String...)} regarding that.
+ * Tests model type based tagged searches.<br/> Note that not all types are tested against all
+ * possible case and wildcard scenarios here, to keep the number of tests reasonable.<br/> Also,
+ * some queries cannot be tested as full strings, because the order of appearance of {@literal
+ * OR}-separated values in a {@literal CONTAINS} constraint, when different values containing at
+ * least one wildcard are tested for the same tag, cannot be predicted.<br/> See {@link
+ * SearchTestInfrastructure#assertContains(String, String...)} regarding that.
  *
  * @author mena-bosch
  */
-public class TypeSearchSimpleTest extends ParentSearchTest {
+public class TypeSearchSimpleTest {
 
-  @Before
-  public void before() {
+  static SearchTestInfrastructure testInfrastructure;
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    testInfrastructure = new SearchTestInfrastructure();
     // importing one model for each supported type here
     // function block
-    importModel(FUNCTIONBLOCK_MODEL);
+    testInfrastructure.importModel(testInfrastructure.FUNCTIONBLOCK_MODEL);
 
     // info model
-    importModel(INFORMATION_MODEL);
+    testInfrastructure.importModel(testInfrastructure.INFORMATION_MODEL);
 
     // data type
-    importModel(DATATYPE_MODEL);
+    testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
 
     // mapping
-    importModel(MAPPING_MODEL);
+    testInfrastructure.importModel(testInfrastructure.MAPPING_MODEL);
 
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   @Test
@@ -56,7 +64,7 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:*potato?*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) LIKE '%potato_%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(0, model.size());
   }
 
@@ -65,9 +73,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:Functionblock";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'functionblock'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(FUNCTIONBLOCK_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.FUNCTIONBLOCK_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -75,9 +83,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:fUNCTIONBLOCK";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'functionblock'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(FUNCTIONBLOCK_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.FUNCTIONBLOCK_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -85,9 +93,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:InformationModel";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'informationmodel'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -95,9 +103,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:iNFORMATIONmODEL";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'informationmodel'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -108,9 +116,11 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:*ON*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) LIKE '%on%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
-    assertTrue(model.stream().map(ModelInfo::getFileName).allMatch(s -> s.equals(INFORMATION_MODEL) || s.equals(FUNCTIONBLOCK_MODEL)));
+    assertTrue(model.stream().map(ModelInfo::getFileName).allMatch(
+        s -> s.equals(testInfrastructure.INFORMATION_MODEL) || s
+            .equals(testInfrastructure.FUNCTIONBLOCK_MODEL)));
   }
 
   @Test
@@ -118,9 +128,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:Datatype";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'datatype'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -128,9 +138,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:dATATYPE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'datatype'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -138,9 +148,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:Mapping";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'mapping'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(MAPPING_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.MAPPING_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -148,9 +158,9 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:mAPPING";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) = 'mapping'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(MAPPING_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.MAPPING_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -158,7 +168,7 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
     String query = "type:*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:type]) LIKE '%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(4, model.size());
   }
 
@@ -166,16 +176,17 @@ public class TypeSearchSimpleTest extends ParentSearchTest {
   public void testThreeTypesWithWildcardsAndRepeatedTagCaseInsensitive() {
     String query = "type:m* type:?ATA*e type:?nf????tioNm*";
     // no guarantee on order: checking query by multiple "contains" assertions
-    assertContains(
-      ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
-      "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:type], ",
-      "_nf____tionm%",
-      "_ata%e",
-      "m%"
+    testInfrastructure.assertContains(
+        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
+        "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:type], ",
+        "_nf____tionm%",
+        "_ata%e",
+        "m%"
     );
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
-    assertTrue(model.stream().map(ModelInfo::getFileName).noneMatch(s -> s.equals(FUNCTIONBLOCK_MODEL)));
+    assertTrue(model.stream().map(ModelInfo::getFileName)
+        .noneMatch(s -> s.equals(testInfrastructure.FUNCTIONBLOCK_MODEL)));
   }
 
 }

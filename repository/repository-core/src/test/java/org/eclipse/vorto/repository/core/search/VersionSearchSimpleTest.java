@@ -20,7 +20,8 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -28,31 +29,37 @@ import org.junit.Test;
  *
  * @author mena-bosch
  */
-public class VersionSearchSimpleTest extends ParentSearchTest {
+public class VersionSearchSimpleTest {
 
-  @Before
-  public void before() {
+  static SearchTestInfrastructure testInfrastructure;
 
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+
+    testInfrastructure = new SearchTestInfrastructure();
     // Color type with version 1.0.0 - will update to 1.0.1
-    importModel(DATATYPE_MODEL);
+    testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
 
     // Switcher fb with version 1.0.0 - will update to 2.1.0
-    importModel(FUNCTIONBLOCK_MODEL);
+    testInfrastructure.importModel(testInfrastructure.FUNCTIONBLOCK_MODEL);
 
-    List<ModelInfo> model = repositoryFactory.getRepository(createUserContext("alex")).search("*");
+    List<ModelInfo> model = testInfrastructure.getRepositoryFactory()
+        .getRepository(testInfrastructure.createUserContext("alex")).search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");
     }
-    IUserContext alex = createUserContext("alex");
-    IModelRepository repo = repositoryFactory.getRepository(alex);
-    ModelInfo type = model.stream().filter(m -> m.getFileName().equals(DATATYPE_MODEL)).findFirst()
+    IUserContext alex = testInfrastructure.createUserContext("alex");
+    IModelRepository repo = testInfrastructure.getRepositoryFactory().getRepository(alex);
+    ModelInfo type = model.stream()
+        .filter(m -> m.getFileName().equals(testInfrastructure.DATATYPE_MODEL)).findFirst()
         .orElseGet(() -> {
           fail("Model not found");
           return null;
         });
     ModelInfo functionBlock = model.stream()
-        .filter(m -> m.getFileName().equals(FUNCTIONBLOCK_MODEL)).findFirst().orElseGet(() -> {
+        .filter(m -> m.getFileName().equals(testInfrastructure.FUNCTIONBLOCK_MODEL)).findFirst()
+        .orElseGet(() -> {
           fail("Model not found");
           return null;
         });
@@ -63,7 +70,12 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     repo.createVersion(functionBlock.getId(), "2.1.0", alex);
     repo.removeModel(functionBlock.getId());
     // finally, importing mapping as-is (1.0.0)
-    importModel(MAPPING_MODEL);
+    testInfrastructure.importModel(testInfrastructure.MAPPING_MODEL);
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   @Test
@@ -71,7 +83,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:*potato*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '%potato%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(0, model.size());
   }
 
@@ -80,7 +92,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:1.1.1";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) = '1.1.1'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(0, model.size());
   }
 
@@ -89,7 +101,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:1.0.1";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) = '1.0.1'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
   }
 
@@ -98,7 +110,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:*.0.1";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '%.0.1'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
   }
 
@@ -110,7 +122,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:1.0.*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '1.0.%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
   }
 
@@ -122,7 +134,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:*0";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '%0'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
   }
 
@@ -131,9 +143,9 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:2.?.*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '2._.%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(model.get(0).getFileName(), FUNCTIONBLOCK_MODEL);
+    assertEquals(model.get(0).getFileName(), testInfrastructure.FUNCTIONBLOCK_MODEL);
   }
 
   /**
@@ -144,7 +156,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:1.0.?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '1.0._'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
   }
 
@@ -156,7 +168,7 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
     String query = "version:*.?.?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:version]) LIKE '%._._'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
 
@@ -167,11 +179,11 @@ public class VersionSearchSimpleTest extends ParentSearchTest {
   @Test
   public void testWildcardsAndMultipleTagsVersions() {
     String query = "version:2* version:*0* version:*1*";
-    assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
-        "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:version], '" ,
+    testInfrastructure.assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
+        "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:version], '",
         "2%", "%0%", "%1%"
     );
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
 }

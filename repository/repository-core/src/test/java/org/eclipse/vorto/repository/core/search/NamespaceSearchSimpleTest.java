@@ -18,7 +18,8 @@ import java.util.List;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,16 +27,26 @@ import org.junit.Test;
  *
  * @author mena-bosch
  */
-public class NamespaceSearchSimpleTest extends ParentSearchTest {
+public class NamespaceSearchSimpleTest {
 
-  @Before
-  public void before() {
+  static SearchTestInfrastructure testInfrastructure;
+  
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+
+    testInfrastructure = new SearchTestInfrastructure();
+    
     // Switcher fb with namespace com.mycompany.fb
-    importModel(FUNCTIONBLOCK_MODEL);
+    testInfrastructure.importModel(testInfrastructure.FUNCTIONBLOCK_MODEL);
     // ColorLight im with namespace com.mycompany
-    importModel(INFORMATION_MODEL);
+    testInfrastructure.importModel(testInfrastructure.INFORMATION_MODEL);
     // ColorLight ios mapping with very different namespace org.eclipse.vorto.examples.type
-    importModel(MAPPING_MODEL);
+    testInfrastructure.importModel(testInfrastructure.MAPPING_MODEL);
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   @Test
@@ -43,7 +54,7 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:*potato*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%potato%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(0, model.size());
   }
 
@@ -52,7 +63,7 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:*.*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
 
@@ -66,9 +77,9 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:*.*.*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.%.%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
-    assertTrue(model.stream().map(ModelInfo::getFileName).noneMatch(INFORMATION_MODEL::equals));
+    assertTrue(model.stream().map(ModelInfo::getFileName).noneMatch(testInfrastructure.INFORMATION_MODEL::equals));
   }
 
   @Test
@@ -76,9 +87,9 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:com.mycompany";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) = 'com.mycompany'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(model.get(0).getFileName(), INFORMATION_MODEL);
+    assertEquals(model.get(0).getFileName(), testInfrastructure.INFORMATION_MODEL);
   }
 
   @Test
@@ -86,9 +97,9 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:COM.MYCOMPANY";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) = 'com.mycompany'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(model.get(0).getFileName(), INFORMATION_MODEL);
+    assertEquals(model.get(0).getFileName(), testInfrastructure.INFORMATION_MODEL);
   }
 
   /**
@@ -100,10 +111,10 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:cOm?mYcOmPaNy*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE 'com_mycompany%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(2, model.size());
     assertTrue(model.stream().map(ModelInfo::getFileName)
-        .allMatch(f -> f.equals(INFORMATION_MODEL) || f.equals(FUNCTIONBLOCK_MODEL)));
+        .allMatch(f -> f.equals(testInfrastructure.INFORMATION_MODEL) || f.equals(testInfrastructure.FUNCTIONBLOCK_MODEL)));
   }
 
   @Test
@@ -111,9 +122,9 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
     String query = "namespace:*.fb";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.fb'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(model.get(0).getFileName(), FUNCTIONBLOCK_MODEL);
+    assertEquals(model.get(0).getFileName(), testInfrastructure.FUNCTIONBLOCK_MODEL);
   }
 
   /**
@@ -125,11 +136,12 @@ public class NamespaceSearchSimpleTest extends ParentSearchTest {
   @Test
   public void testMultipleTagsWithWildcardsAreORRelated() {
     String query = "namespace:*mycompany* namespace:*eclipse*";
-    assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
+    testInfrastructure.assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
         "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:namespace], '",
         "%mycompany%", "%eclipse%"
     );
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(3, model.size());
   }
+
 }

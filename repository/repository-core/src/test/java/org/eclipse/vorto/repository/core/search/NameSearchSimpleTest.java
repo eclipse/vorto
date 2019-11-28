@@ -17,7 +17,8 @@ import java.util.List;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,13 +27,21 @@ import org.junit.Test;
  *
  * @author mena-bosch
  */
-public class NameSearchSimpleTest extends ParentSearchTest {
+public class NameSearchSimpleTest {
 
-  @Before
-  public void before() {
-    importModel("Color.type");
+  static SearchTestInfrastructure testInfrastructure;
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    testInfrastructure = new SearchTestInfrastructure();
+    testInfrastructure.importModel("Color.type");
     // "control group": extraneous model that should never appear in search
-    importModel("HueLightStrips.infomodel");
+    testInfrastructure.importModel("HueLightStrips.infomodel");
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   /**
@@ -42,10 +51,10 @@ public class NameSearchSimpleTest extends ParentSearchTest {
   @Test
   public void testControlGroup() {
     String query = "name:Color name:*";
-    // TODO use assertContains here
-    assertEquals("SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:name], 'color% OR %'))",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(2, searchService.search(query).size());
+    testInfrastructure.assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
+        "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:name], '", "color%", "%"
+    );
+    assertEquals(2, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -53,9 +62,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "Color";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'color%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -63,9 +72,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "color";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'color%'",
         ModelSearchUtil.toJCRQuery((SearchParameters.build(query))));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -77,7 +86,7 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "col";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'col%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(1, searchService.search(query).size());
+    assertEquals(1, testInfrastructure.getSearchService().search(query).size());
   }
 
   /**
@@ -89,7 +98,7 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "olor";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'olor%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(0, searchService.search(query).size());
+    assertEquals(0, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -97,9 +106,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "*olor";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '%olor'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -107,9 +116,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "Colo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -117,9 +126,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "Co*or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co%or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -127,9 +136,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "colo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -137,9 +146,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "?olor";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '_olor'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -147,9 +156,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "Colo?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -157,9 +166,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "Co?or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co_or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -167,9 +176,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "co?or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co_or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -177,9 +186,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "*lo?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '%lo_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -187,9 +196,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "?olo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '_olo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -197,9 +206,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Color";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'color%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -207,9 +216,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:color";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'color%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -217,7 +226,7 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Colo";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(1, searchService.search(query).size());
+    assertEquals(1, testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -225,9 +234,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:*olor";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '%olor'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -235,9 +244,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Colo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -245,9 +254,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Co*or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co%or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -255,9 +264,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:colo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -265,9 +274,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:?olor";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '_olor'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -275,9 +284,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Colo?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'colo_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -285,9 +294,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:Co?or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co_or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -295,9 +304,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:co?or";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE 'co_or'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -305,9 +314,9 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:*lo?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '%lo_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -315,8 +324,8 @@ public class NameSearchSimpleTest extends ParentSearchTest {
     String query = "name:?olo*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:name]) LIKE '_olo%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 }

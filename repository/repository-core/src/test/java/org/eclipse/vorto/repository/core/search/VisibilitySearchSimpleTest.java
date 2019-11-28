@@ -19,7 +19,8 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -27,22 +28,30 @@ import org.junit.Test;
  *
  * @author mena-bosch
  */
-public class VisibilitySearchSimpleTest extends ParentSearchTest {
+public class VisibilitySearchSimpleTest {
 
-  @Before
-  public void before() {
-    importModel(DATATYPE_MODEL);
-    List<ModelInfo> model = repositoryFactory.getRepository(createUserContext("alex")).search("*");
+  static SearchTestInfrastructure testInfrastructure;
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    testInfrastructure = new SearchTestInfrastructure();
+    testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
+    List<ModelInfo> model = testInfrastructure.getRepositoryFactory().getRepository( testInfrastructure.createUserContext("alex")).search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");
     }
     // "alex" user updates the only imported model's visibility to public
-    ModelId updated = repositoryFactory.getRepository(createUserContext("alex"))
+    ModelId updated =  testInfrastructure.getRepositoryFactory().getRepository( testInfrastructure.createUserContext("alex"))
         .updateVisibility(model.get(0).getId(), "Public");
 
     // importing another model as private
-    importModel(INFORMATION_MODEL, createUserContext("alex", "playground"));
+     testInfrastructure.importModel( testInfrastructure.INFORMATION_MODEL,  testInfrastructure.createUserContext("alex", "playground"));
+  }
+
+  @AfterClass
+  public static void afterClass() throws Exception {
+    testInfrastructure.terminate();
   }
 
   @Test
@@ -50,9 +59,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Public";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'public'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -60,9 +69,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pUBLIC";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'public'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -73,7 +82,7 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pub";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'pub'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(0, searchService.search(query).size());
+    assertEquals(0,  testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -81,9 +90,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*blic";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%blic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -91,9 +100,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*BLIC";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%blic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -101,9 +110,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:?ublic";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '_ublic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -111,9 +120,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:?UBLIC";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '_ublic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -121,9 +130,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Publ*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'publ%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -131,9 +140,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:PUBL*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'publ%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -141,9 +150,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Publi?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'publi_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -151,9 +160,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pUBLI?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'publi_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -161,9 +170,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pu*c";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pu%c'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -171,9 +180,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pU*C";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pu%c'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -181,9 +190,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pu?lic";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pu_lic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -191,9 +200,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pU?LIC";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pu_lic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -201,9 +210,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*u?lic";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%u_lic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -211,9 +220,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*U?LIC";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%u_lic'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -221,9 +230,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:P?bl*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'p_bl%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -231,9 +240,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:p?BL*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'p_bl%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(DATATYPE_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.DATATYPE_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -241,9 +250,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Private";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'private'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -251,9 +260,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pRIVATE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'private'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   /**
@@ -264,7 +273,7 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pri";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) = 'pri'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    assertEquals(0, searchService.search(query).size());
+    assertEquals(0,  testInfrastructure.getSearchService().search(query).size());
   }
 
   @Test
@@ -272,9 +281,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*vate";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -282,9 +291,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*VATE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -292,9 +301,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:?rivate";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '_rivate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -302,9 +311,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:?RIVATE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '_rivate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -312,9 +321,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Priv*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'priv%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -322,9 +331,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pRIV*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'priv%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -332,9 +341,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Privat?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'privat_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -342,9 +351,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pRIVAT?";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'privat_'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -352,9 +361,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pr*e";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pr%e'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -362,9 +371,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pR*E";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pr%e'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -372,9 +381,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:Pr?vate";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pr_vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -382,9 +391,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:pR?VATE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'pr_vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -392,9 +401,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*r?vate";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%r_vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -402,9 +411,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:*R?VATE";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE '%r_vate'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -412,9 +421,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:P?iva*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'p_iva%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
   @Test
@@ -422,9 +431,9 @@ public class VisibilitySearchSimpleTest extends ParentSearchTest {
     String query = "visibility:p?IV*";
     assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:visibility]) LIKE 'p_iv%'",
         ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = searchService.search(query);
+    List<ModelInfo> model =  testInfrastructure.getSearchService().search(query);
     assertEquals(1, model.size());
-    assertEquals(INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals( testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
   }
 
 }
