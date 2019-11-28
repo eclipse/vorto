@@ -25,7 +25,7 @@ import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 public class CodeGeneratorV1Adapter implements IVortoCodeGenerator {
 
 	private ICodeGenerator generator;
-
+	
 	public CodeGeneratorV1Adapter(ICodeGenerator generator) {
 		this.generator = generator;
 	}
@@ -70,4 +70,7 @@ public class CodeGeneratorV1Adapter implements IVortoCodeGenerator {
 				generator.getMeta().getVendor()).production();
 	}
 
+	public ICodeGenerator getGenerator() {
+	  return this.generator;
+	}
 }
