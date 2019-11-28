@@ -807,7 +807,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       } else if (tagValue.getString().equals(Attachment.TAG_IMPORTED.getId())) {
         return Attachment.TAG_IMPORTED;
       } else {
-        return new Tag(tagValue.getString(), tagValue.getString());
+        return new Tag(tagValue.getString());
       }
     } catch (RepositoryException ex) {
       return null;

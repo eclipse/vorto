@@ -38,6 +38,7 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
   private static final JsonObjectWrappedDittoThingStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoThingStructureTemplate();
   private static final String GENERATOR_KEY = "eclipseditto";
   private static final String THING_JSON = "thingJson";
+  private static final String JSON_SCHEMA = "jsonSchema";
 
   @Override
   public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
@@ -47,13 +48,17 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
       new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, output);
       return output;
     }
-
-    GenerationResultZip zipOutput = new GenerationResultZip(infomodel, GENERATOR_KEY);
-    ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<>();
-    generator.addTask(new SchemaValidatorTask());
-    generator.generate(infomodel, invocationContext, zipOutput);
-    GenerationResultBuilder result = GenerationResultBuilder.from(zipOutput);
-    return result.build();
+    if (JSON_SCHEMA.equalsIgnoreCase(target)) {
+      GenerationResultZip zipOutput = new GenerationResultZip(infomodel, GENERATOR_KEY);
+      ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<>();
+      generator.addTask(new SchemaValidatorTask());
+      generator.generate(infomodel, invocationContext, zipOutput);
+      GenerationResultBuilder result = GenerationResultBuilder.from(zipOutput);
+      return result.build();
+    }
+    throw new IllegalArgumentException(
+        "The request parameter 'target' is required. It must have one of the values ('jsonSchema', "
+            + "'thingJson')");
   }
 
   @Override
@@ -62,7 +67,7 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
         .withConfigurationTemplate(ConfigTemplateBuilder.builder().withChoiceConfigurationItem(
             "target", "Output format",
             ChoiceItem.of("Ditto Thing JSON", THING_JSON),
-            ChoiceItem.of("JSON Schema", ""))
+            ChoiceItem.of("JSON Schema", JSON_SCHEMA))
             .build())
         .withVendor("Eclipse Ditto Team")
         .withName("Eclipse Ditto")

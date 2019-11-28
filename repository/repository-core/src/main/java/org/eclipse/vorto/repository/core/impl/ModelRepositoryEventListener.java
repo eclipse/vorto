@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
@@ -21,14 +20,9 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 /**
@@ -76,12 +70,15 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
 
   private void makeModelsAnonymous(AppEvent event) {
     String username = (String) event.getSubject();
-    
-    IUserContext technicalUserContext = UserContext.user(createAdminTechnicalUser());
-    
-    List<ModelInfo> result = searchService.search("userReference:" + username, technicalUserContext);
+
+    IUserContext technicalUserContext = PrivilegedUserContextProvider
+        .systemAdminContext(USER_ADMIN);
+
+    List<ModelInfo> result = searchService
+        .search("userReference:" + username, technicalUserContext);
     result.forEach(model -> {
-      IModelRepository repository = repositoryFactory.getRepositoryByModel(model.getId(), technicalUserContext);
+      IModelRepository repository = repositoryFactory
+          .getRepositoryByModel(model.getId(), technicalUserContext);
       if (model.getAuthor() != null &&
           model.getAuthor().equals(username)) {
         model.setAuthor(User.USER_ANONYMOUS);
@@ -90,12 +87,6 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
     });
   }
   
-  private Authentication createAdminTechnicalUser() {
-    List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-    authorities.add(new SimpleGrantedAuthority(UserRole.ROLE_SYS_ADMIN));
-    return new UsernamePasswordAuthenticationToken(USER_ADMIN, USER_ADMIN, authorities);
-  }
-
   public ModelRepositoryFactory getRepositoryFactory() {
     return repositoryFactory;
   }

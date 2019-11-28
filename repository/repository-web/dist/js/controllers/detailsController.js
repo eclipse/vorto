@@ -157,11 +157,20 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get("./api/v1/attachments/" + model.id.prettyFormat)
+			if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+				$http.get("./api/v1/attachments/" + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
-				})
-				.error(function (error) {});
+				}).error(function (error) {
+				});
+			} else {
+				$http.get("./api/v1/attachments/static/" + model.id.prettyFormat)
+				.success(function (attachments) {
+					$scope.attachments = attachments;
+				}).error(function (error) {
+				});
+			}
+
 		};
 		
 		$scope.getMappings = function () {

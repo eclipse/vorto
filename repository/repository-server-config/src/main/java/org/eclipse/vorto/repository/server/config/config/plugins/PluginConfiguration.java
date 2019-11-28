@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.repository.server.config.config.plugins;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Base64;
 import javax.annotation.PostConstruct;
@@ -28,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class PluginConfiguration {
@@ -62,15 +62,16 @@ public class PluginConfiguration {
     if (this.pluginsJson == null) {
       return;
     }
-    
-    ObjectMapper mapper = new ObjectMapper();
-    
-    Plugin[] plugins = mapper.readValue(Base64.getDecoder().decode(this.pluginsJson.getBytes()), Plugin[].class);
+
+    Plugin[] plugins = new ObjectMapper()
+        .readValue(Base64.getDecoder().decode(this.pluginsJson.getBytes()), Plugin[].class);
     
     if (plugins != null && plugins.length > 0) {
-      Arrays.asList(plugins).stream().forEach(plugin -> {
+      Arrays.stream(plugins).forEach(plugin -> {
         if (plugin.getPluginType().equals(PluginType.generator)) {
-          GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(plugin.getKey(), plugin.getApiVersion(), plugin.getEndpoint());
+          GeneratorPluginConfiguration config = GeneratorPluginConfiguration
+              .of(plugin.getKey(), plugin.getApiVersion(), plugin.getEndpoint(),
+                  plugin.getPluginVersion());
           if (plugin.getTag()!= null) {
             config.setTags(new String[] {plugin.getTag()});
           }
@@ -82,10 +83,8 @@ public class PluginConfiguration {
         }
       });
     }
-    
-    
   }
-  
+
   private RemoteImporter createImporter(ImporterPluginInfo info, String endpointUrl) {
     RemoteImporter importer = new RemoteImporter(info,endpointUrl);
     importer.setModelParserFactory(this.modelParserFactory);
