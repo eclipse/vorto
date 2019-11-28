@@ -3,6 +3,63 @@ dist: trusty
 
 jobs:
   include:
+    - stage: deploy-generator-lambda
+      name: Deploys the Vorto Generators as Lambda Functions to AWS
+      language: java
+      jdk: oraclejdk8
+      before_script:
+        - cd generators/generator-lambda
+      script:
+        - mvn clean package
+      before_install:
+      before_deploy:
+        - export ARTIFACT_PLUGININFO=$(ls generator-lambda-plugininfo/target/generator-lambda-plugininfo-*.jar)
+        - export ARTIFACT_PLUGINEXECUTOR=$(ls generator-lambda-executor/target/generator-lambda-executor-*.jar)
+      deploy:
+        - provider: lambda
+          function_name: "generators-plugininfo-dev"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGININFO"
+          runtime: "java8"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: development
+        - provider: lambda
+          function_name: "generators-pluginexecutor-dev"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGINEXECUTOR"
+          runtime: "java8"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: development
+        - provider: lambda
+          function_name: "generators-plugininfo-prod"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGININFO"
+          runtime: "java8"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: master
+        - provider: lambda
+          function_name: "generators-pluginexecutor-prod"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGINEXECUTOR"
+          runtime: "java8"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: master
     - stage: deploy
       name: "Deploy Repository"
 
