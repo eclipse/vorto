@@ -46,18 +46,8 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   }
   
   @Test
-  public void getNamespacesNonAdmin() throws Exception {
-    repositoryServer.perform(get("/api/v1/namespaces").with(userStandard)).andExpect(status().isForbidden());
-  }
-  
-  @Test
   public void getNamespace() throws Exception {
     repositoryServer.perform(get("/api/v1/namespaces/com.mycompany").with(userAdmin)).andExpect(status().isOk());
-  }
-  
-  @Test
-  public void getNamespaceNonAdmin() throws Exception {
-    repositoryServer.perform(get("/api/v1/namespaces/com.mycompany").with(userStandard)).andExpect(status().isForbidden());
   }
   
   @Test

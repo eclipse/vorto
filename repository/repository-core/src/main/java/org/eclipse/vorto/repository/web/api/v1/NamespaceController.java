@@ -48,16 +48,18 @@ public class NamespaceController {
   private IUserAccountService accountService;
   
   @RequestMapping(method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public Collection<NamespaceDto> getNamespaces(Principal user) {
-    return tenantService.getTenants().stream()
-      .filter(tenant -> tenant.hasTenantAdmin(user.getName()))
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public ResponseEntity<Collection<NamespaceDto>> getNamespaces(Principal user) {
+    Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
+      .filter(tenant -> tenant.hasUser(user.getName()))
       .map(NamespaceDto::fromTenant)
       .collect(Collectors.toList());
+    
+    return new ResponseEntity<>(namespaces, HttpStatus.OK);
   }
   
   @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<NamespaceDto> getNamespace(
       @ApiParam(value = "The namespace you want to retrieve", required = true) final @PathVariable String namespace,
       Principal user) {
@@ -65,7 +67,7 @@ public class NamespaceController {
     Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
         .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
     
-    if (!tenant.hasTenantAdmin(user.getName())) {
+    if (!tenant.hasUser(user.getName())) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     
