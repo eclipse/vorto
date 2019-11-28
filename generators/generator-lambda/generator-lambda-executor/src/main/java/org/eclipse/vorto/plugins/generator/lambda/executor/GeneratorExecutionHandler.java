@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.plugins.generator.lambda.executor;
 
 import java.io.IOException;
@@ -10,6 +22,7 @@ import java.util.Set;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
+import org.eclipse.vorto.codegen.jsonschema.JSONSchemaGenerator;
 import org.eclipse.vorto.codegen.openapi.OpenAPIGenerator;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -36,9 +49,7 @@ public class GeneratorExecutionHandler implements RequestStreamHandler {
     generators.add(new EclipseHonoGenerator());
     generators.add(new BoschIoTSuiteGenerator());
     generators.add(new OpenAPIGenerator());
-
-
-
+    generators.add(new JSONSchemaGenerator());
   }
 
   private static final ObjectMapper objectMapper = new ObjectMapper();

@@ -89,6 +89,12 @@
 
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>generator-jsonschema</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>hono-java</artifactId>
 			<version>${project.version}</version>
 		</dependency>

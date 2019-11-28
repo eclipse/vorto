@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.plugins.generator.lambda.meta.plugins.plugins;
 
 import java.util.HashMap;
@@ -13,6 +25,7 @@ public class GeneratorPluginInfoFactory {
   private static final EclipseHonoPluginInfo eclipsehonoPlugin = new EclipseHonoPluginInfo();
   private static final BoschIoTSuitePluginInfo boschiotsuitePlugin = new BoschIoTSuitePluginInfo();
   private static final OpenAPIPluginInfo openApiPlugin = new OpenAPIPluginInfo();
+  private static final JsonSchemaPluginInfo jsonSchemaPlugin = new  JsonSchemaPluginInfo();
   
   
   private final static Map<String, GeneratorPluginInfo> infos = new HashMap<String, GeneratorPluginInfo>();
@@ -22,6 +35,7 @@ public class GeneratorPluginInfoFactory {
     infos.put(eclipsehonoPlugin.getInfo().getKey(),eclipsehonoPlugin.getInfo());
     infos.put(boschiotsuitePlugin.getInfo().getKey(),boschiotsuitePlugin.getInfo());
     infos.put(openApiPlugin.getInfo().getKey(), openApiPlugin.getInfo());
+    infos.put(jsonSchemaPlugin.getInfo().getKey(), jsonSchemaPlugin.getInfo());
   }
   
   private GeneratorPluginInfoFactory() {
