@@ -23,8 +23,8 @@ jobs:
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
           handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: lambdadeploy
         - provider: lambda
@@ -34,8 +34,8 @@ jobs:
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
           handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: lambdadeploy
         - provider: lambda
@@ -45,8 +45,8 @@ jobs:
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
           handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: master
         - provider: lambda
@@ -56,8 +56,8 @@ jobs:
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
           handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
-          access_key_id: "$VORTO_AWS_ACCESS_KEY"
-          secret_access_key: "$VORTO_AWS_SECRET_KEY"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: master
     - stage: deploy
