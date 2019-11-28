@@ -8,13 +8,13 @@ jobs:
       language: java
       jdk: oraclejdk8
       before_script:
-        - cd generators/lambda
+        - cd generators/generator-lambda
       script:
         - mvn clean package
       before_install:
       before_deploy:
-        - export ARTIFACT_PLUGININFO=$(ls generators-lambda-plugininfo/target/generators-lambda-plugininfo-*.jar)
-        - export ARTIFACT_PLUGINEXECUTOR=$(ls generators-lambda-pluginexecutor/target/generators-lambda-pluginexecutor-*.jar)
+        - export ARTIFACT_PLUGININFO=$(ls generator-lambda-plugininfo/target/generator-lambda-plugininfo-*.jar)
+        - export ARTIFACT_PLUGINEXECUTOR=$(ls generator-lambda-executor/target/generator-lambda-executor-*.jar)
       deploy:
         - provider: lambda
           function_name: "generators-plugininfo-dev"
@@ -22,7 +22,7 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
-          handler_name: "handler"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
           access_key_id: "$VORTO_AWS_ACCESS_KEY"
           secret_access_key: "$VORTO_AWS_SECRET_KEY"
           on:
@@ -33,7 +33,7 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
-          handler_name: "handler"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
           access_key_id: "$VORTO_AWS_ACCESS_KEY"
           secret_access_key: "$VORTO_AWS_SECRET_KEY"
           on:
@@ -44,7 +44,7 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
-          handler_name: "handler"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
           access_key_id: "$VORTO_AWS_ACCESS_KEY"
           secret_access_key: "$VORTO_AWS_SECRET_KEY"
           on:
@@ -55,7 +55,7 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
-          handler_name: "handler"
+          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
           access_key_id: "$VORTO_AWS_ACCESS_KEY"
           secret_access_key: "$VORTO_AWS_SECRET_KEY"
           on:
