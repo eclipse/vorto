@@ -26,7 +26,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: lambdadeploy
+            branch: development
         - provider: lambda
           function_name: "generators-pluginexecutor-dev"
           region: "$VORTO_S3_REGION"
@@ -37,7 +37,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: lambdadeploy
+            branch: development
         - provider: lambda
           function_name: "generators-plugininfo-prod"
           region: "$VORTO_S3_REGION"
