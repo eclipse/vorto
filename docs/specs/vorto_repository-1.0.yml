@@ -35,8 +35,8 @@ paths:
     get:
       tags: 
       - Namespaces
-      summary: Get all namespaces where the current user is admin
-      description: "A list of all namespaces for which the user is admin."
+      summary: Get all namespaces where the current user is a collaborator
+      description: "A list of all namespaces for which the user is a collaborator."
       responses:
         200:
           description: 'Successful response with list of all namespaces'
@@ -47,15 +47,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Namespace'
-        403:
-          description: 'User is not a namespace administrator'
         400:
           description: 'Request is invalid'
   '/namespaces/{namespace}':
     get:
       tags: 
       - Namespaces
-      summary: Get namespace information
+      summary: Get namespace information for which the current user is a collaborator
       description: "All information pertaining to the namespace."
       parameters:
         - name: namespace
@@ -77,28 +75,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Namespace'
         403:
-          description: 'User is not a namespace administrator'
-        400:
-          description: 'Request is invalid'
-    put:
-      tags: 
-      - Namespaces
-      summary: Modify namespace admins
-      description: "Change the admins of a namespace"
-      parameters:
-        - name: namespace
-          in: path
-          description: namespace
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'Successful changing of admins for namespace'
-        403:
-          description: 'User is not a namespace administrator'
+          description: 'User is not a namespace collaborator'
         400:
           description: 'Request is invalid'
   '/namespaces/{namespace}/collaborators/{userId}':
@@ -820,7 +797,7 @@ components:
           description: UserId of collaborator
           type: string
         providerId:
-          description: The provider ID (e.g Bosch, Github) of the user
+          description: The provider ID of the user. Possible values are GITHUB, BOSCH, and BOSCH_IOT_SUITE_AUTH
           type: string
         subject:
           description: Purpose of this user (only for technical users)
@@ -830,15 +807,17 @@ components:
           type: array
           items:
             type: string
+            enum: [USER, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER, MODEL_PUBLISHER]
+      required:
+        - userId
+        - providerId
+        - roles
     Namespace:
       title: Namespace
       type: object
       properties:
         name: 
           description: Name of namespace
-          type: string
-        tenantId:
-          description: TenantId of this namespace
           type: string
         collaborators:
           description: collaborators of this namespace

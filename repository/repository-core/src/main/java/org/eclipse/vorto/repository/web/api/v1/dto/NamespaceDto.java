@@ -7,11 +7,10 @@ import org.eclipse.vorto.repository.tenant.TenantHasNoNamespaceException;
 
 public class NamespaceDto {
   private String name;
-  private String tenantId;
   private Collection<Collaborator> collaborators;
 
   public static NamespaceDto fromTenant(Tenant tenant) {
-    return new NamespaceDto(getNamespaceName(tenant), tenant.getTenantId(), getCollaborators(tenant));
+    return new NamespaceDto(getNamespaceName(tenant), getCollaborators(tenant));
   }
   
   private static Collection<Collaborator> getCollaborators(Tenant tenant) {
@@ -27,9 +26,8 @@ public class NamespaceDto {
     return tenant.getNamespaces().iterator().next().getName();
   }
   
-  public NamespaceDto(String name, String tenantId, Collection<Collaborator> collaborators) {
+  public NamespaceDto(String name, Collection<Collaborator> collaborators) {
     this.name = name;
-    this.tenantId = tenantId;
     this.collaborators = collaborators;
   }
 
@@ -39,14 +37,6 @@ public class NamespaceDto {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getTenantId() {
-    return tenantId;
-  }
-
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
   }
 
   public Collection<Collaborator> getCollaborators() {
