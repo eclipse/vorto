@@ -13,7 +13,10 @@ package org.eclipse.vorto.repository.core.search;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
+import org.eclipse.vorto.repository.search.SearchParameters;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,6 +41,58 @@ public class MixedSearchTest {
   @AfterClass
   public static void afterClass() throws Exception {
     testInfrastructure.terminate();
+  }
+
+  @Test
+  public void testMultipleTermsNotRepeated() {
+    String query = "version:1.0* color";
+    testInfrastructure.assertContains(
+        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)), "SELECT * FROM [nt:file] WHERE ",
+        "LOWER([vorto:version]) LIKE '1.0%'", "AND", "LOWER([vorto:name]) LIKE 'color%'"
+    );
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    assertEquals(2, model.size());
+  }
+
+  /**
+   * The two name expressions catch all names starting with c and al names ending with r, which
+   * returns <b>C</b>olor, <b>C</b>olorLight but also Switche<b>r</b>.<br/> The version is the same
+   * for all.<br/> The type is repeated and includes both types of the above models: datatype and
+   * functionblock.<br/> Finally some repetition over patterns for author and userReference include
+   * the default author / lastModifiedBy, i.e. {@literal alex}, alongside some negative noise
+   * ({@literal nobody)}.<br/> Bottomline, this is supposed to return 3 models: {@literal
+   * Color.type}, {@literal Colorlight.fbmodel} and {@literal Switcher.fbmodel}, but <b>not</b>
+   * {@literal HueLightStrips.infomodel}.<br/> The reason why the latter is not included in the
+   * result, despite the all-inclusive {@literal userReference:*}, is because <i>different</i> tags
+   * are {@code AND}-related (while conversely, same, repeated tags are {@code OR}-related).<br/>
+   * Worth reminding, {@literal userReference} aggregates {@literal author} and {@literal
+   * lastModifiedBy} in an {@code OR} condition - yet in this case, the explicit {@literal author}
+   * tag is handled separately.
+   */
+  @Test
+  public void testMultipleTermsSomeRepeated() {
+    String query = "version:1.0* c* *r type:data* type:function* author:alex author:?LE? author:NOBODY userReference:* userReference:nobody";
+    testInfrastructure.assertContains(
+        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
+        "SELECT * FROM [nt:file] WHERE ",
+        "(CONTAINS ([vorto:author], '",
+        "nobody",
+        "OR",
+        "alex",
+        "_le_",
+        "AND",
+        "(CONTAINS ([vorto:name], '",
+        "c%",
+        "%r",
+        "(CONTAINS ([vorto:type], '",
+        "function%",
+        "data%",
+        "(CONTAINS ([vorto:author], '",
+        "CONTAINS ([jcr:lastModifiedBy], '",
+        "LOWER([vorto:version]) LIKE '1.0%'"
+    );
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    assertEquals(3, model.size());
   }
 
   @Test

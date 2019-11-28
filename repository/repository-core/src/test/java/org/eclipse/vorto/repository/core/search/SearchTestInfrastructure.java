@@ -111,7 +111,7 @@ import org.springframework.security.core.Authentication;
  *
  * @author mena-bosch (refactory)
  */
-public class SearchTestInfrastructure {
+public final class SearchTestInfrastructure {
 
   /**
    * Used in child classes to test a generated query against an arbitrary number of fragments. <br/>
