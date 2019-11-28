@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.converter.date.DateFunctionFactory;
@@ -42,7 +43,6 @@ public class JsonPerformanceScenario {
 	private static final int TEST_DURATION_3 = 150_000;
 	private static final int TEST_DURATION_4 = 300_000;
 
-
 	private static final int RAMP_PERIOD = 2_000;
 
 	private static final int WARMUP_DURATION_1 = 10_000;
@@ -50,190 +50,187 @@ public class JsonPerformanceScenario {
 	private static final int WARMUP_DURATION_3 = 10_000;
 	private static final int WARMUP_DURATION_4 = 10_000;
 
-
-	private static final int EXECUTIONS_PER_SECOND_1 = 10_000;
-	private static final int EXECUTIONS_PER_SECOND_2 = 10_000;
-	private static final int EXECUTIONS_PER_SECOND_3 = 10_000;
+	private static final int EXECUTIONS_PER_SECOND_1 = 2_000;
+	private static final int EXECUTIONS_PER_SECOND_2 = 5_000;
+	private static final int EXECUTIONS_PER_SECOND_3 = 5_000;
 	private static final int EXECUTIONS_PER_SECOND_4 = 5_000;
 
-	static IDataMapper withoutConverterMapper, builtInConverterMapper, javaScriptConverterMapper;
-	static String sampleDeviceData, builtInConverterJson, javaScriptConverterJson;
+	static IDataMapper testCaseOneMapper, testCaseTwoMapper, testCaseThreeMapper, testCaseFourMapper;
+	static String testCaseOneJsonInput[], testCaseThreeJsonInput[];
+	static Double testCaseOneOutput[];
+	static Integer testCaseThreeOutput[];
+	static String testCaseTwoJson, testCaseThreeJson;
 
 	static IPayloadDeserializer deserializer;
-	
+
 	private static Gson gson = new GsonBuilder().create();
 	private static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 	static Date timestamp = new Date();
 
 	@BeforeClass
 	public static void init() {
-//Without Converter
-		withoutConverterMapper = IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntity()).build();
-		sampleDeviceData = "{\"temperature\" : 20.3 }";
-		deserializer = new JSONDeserializer();
 
 		
-//Built in Converter
-		builtInConverterMapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
+		
+//Test Case 1: No converter functions
+		testCaseOneMapper = IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntity()).build();
+		testCaseOneJsonInput = new String[] {"{\"temperature\" : 21.3 }","{\"temperature\" : 0.1 }","{\"temperature\" : 11 }"};
+	      testCaseOneOutput = new Double[] {21.3, 0.1, 11.0};
+
+
+		deserializer = new JSONDeserializer();
+
+//Test Case 2: One Built in Converter
+		testCaseTwoMapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
 				.registerConverterFunction(DateFunctionFactory.createFunctions()).build();
 
 		timestamp = new Date();
-		builtInConverterJson = "{\"time\" : " + timestamp.getTime() + "}";
+		testCaseTwoJson = "{\"time\" : " + timestamp.getTime() + "}";
+
+//Test Case 3: One Built in Converter + 1 Javascript Function
+		testCaseThreeMapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+				.registerConverterFunction(TypeFunctionFactory.createFunctions())
+				.registerConverterFunction(StringFunctionFactory.createFunctions())
+				.registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+
+		testCaseThreeJson = "{\"clickType\" : \"DOUBLE\"}";
+		
+		testCaseThreeJsonInput = new String[] {"{\"clickType\" : \"SINGLE\"}","{\"clickType\" : \"DOUBLE\"}", "{\"clickType\" : \"\"}"};
+	      testCaseThreeOutput = new Integer[] {1, 2, 99};
 
 		
-//Javascript Converter		
-		javaScriptConverterMapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-	            .registerConverterFunction(TypeFunctionFactory.createFunctions())
-	            .registerConverterFunction(StringFunctionFactory.createFunctions())
-	            .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
-
-		javaScriptConverterJson = "{\"clickType\" : \"DOUBLE\"}";
-
 	}
-
 	
-//without converter
+//Test Case 1: No converter functions
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
-	public void json_without_converter_1() throws Exception {
-		InfomodelValue mappedOutput = withoutConverterMapper.mapSource(deserializer.deserialize(sampleDeviceData));
+	public void withoutConverter1() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
-		assertEquals(20.3, temperatureValue.getValue().getPropertyValue("value").get().getValue());
+		assertEquals(testCaseOneOutput[r], temperatureValue.getValue().getPropertyValue("value").get().getValue());
 	}
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
-	public void json_without_converter_2() throws Exception {
-		InfomodelValue mappedOutput = withoutConverterMapper.mapSource(deserializer.deserialize(sampleDeviceData));
-
+	public void withoutConverter2() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
-		assertEquals(20.3, temperatureValue.getValue().getPropertyValue("value").get().getValue());
+		assertEquals(testCaseOneOutput[r], temperatureValue.getValue().getPropertyValue("value").get().getValue());
 	}
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
-	public void json_without_converter_3() throws Exception {
-		InfomodelValue mappedOutput = withoutConverterMapper.mapSource(deserializer.deserialize(sampleDeviceData));
-
+	public void withoutConverter3() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
-		assertEquals(20.3, temperatureValue.getValue().getPropertyValue("value").get().getValue());
+		assertEquals(testCaseOneOutput[r], temperatureValue.getValue().getPropertyValue("value").get().getValue());
 	}
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
-	public void json_without_converter_4() throws Exception {
-		InfomodelValue mappedOutput = withoutConverterMapper.mapSource(deserializer.deserialize(sampleDeviceData));
-
+	public void withoutConverter4() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
-		assertEquals(20.3, temperatureValue.getValue().getPropertyValue("value").get().getValue());
+		assertEquals(testCaseOneOutput[r], temperatureValue.getValue().getPropertyValue("value").get().getValue());
 	}
 
-	
-// javascript converter
-	
+//Test Case 2: Built-In Converter
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
-	public void javascript_converter_1() throws Exception {
-		 InfomodelValue mappedOutput = javaScriptConverterMapper.mapSource(gson.fromJson(javaScriptConverterJson, Object.class));
-	        FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-	        assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
-	            .get().getValue());
-	        assertEquals(2,
-	            buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
-	        FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
-	        assertNull(voltageFunctionblockData);
-	        System.out.println(gson.toJson(mappedOutput.serialize()));
+	public void builtInConverter1() throws Exception {
+		InfomodelValue mappedOutput = testCaseTwoMapper.mapSource(gson.fromJson(testCaseTwoJson, Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(JSON_DATE_FORMAT.format(timestamp),
+				buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
-	public void javascript_converter_2() throws Exception {
-		 InfomodelValue mappedOutput = javaScriptConverterMapper.mapSource(gson.fromJson(javaScriptConverterJson, Object.class));
-	        FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-	        assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
-	            .get().getValue());
-	        assertEquals(2,
-	            buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
-	        FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
-	        assertNull(voltageFunctionblockData);
-	        System.out.println(gson.toJson(mappedOutput.serialize()));
+	public void builtInConverter2() throws Exception {
+		InfomodelValue mappedOutput = testCaseTwoMapper.mapSource(gson.fromJson(testCaseTwoJson, Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(JSON_DATE_FORMAT.format(timestamp),
+				buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
-	public void javascript_converter_3() throws Exception {
-		 InfomodelValue mappedOutput = javaScriptConverterMapper.mapSource(gson.fromJson(javaScriptConverterJson, Object.class));
-	        FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-	        assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
-	            .get().getValue());
-	        assertEquals(2,
-	            buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
-	        FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
-	        assertNull(voltageFunctionblockData);
-	        System.out.println(gson.toJson(mappedOutput.serialize()));
+	public void builtInConverter3() throws Exception {
+		InfomodelValue mappedOutput = testCaseTwoMapper.mapSource(gson.fromJson(testCaseTwoJson, Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(JSON_DATE_FORMAT.format(timestamp),
+				buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
-	public void javascript_converter_4() throws Exception {
-		 InfomodelValue mappedOutput = javaScriptConverterMapper.mapSource(gson.fromJson(javaScriptConverterJson, Object.class));
-	        FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-	        assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
-	            .get().getValue());
-	        assertEquals(2,
-	            buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
-	        FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
-	        assertNull(voltageFunctionblockData);
-	        System.out.println(gson.toJson(mappedOutput.serialize()));
+	public void builtInConverter4() throws Exception {
+		InfomodelValue mappedOutput = testCaseTwoMapper.mapSource(gson.fromJson(testCaseTwoJson, Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(JSON_DATE_FORMAT.format(timestamp),
+				buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 	}
-	
 
 /// With Converter
-//  only built in converter
+//Test Case 3: Built-in Converter Function + 1 Javascript Function
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
-	public void json_builtIn_converter_1() throws Exception {
-		   InfomodelValue mappedOutput = builtInConverterMapper.mapSource(gson.fromJson(builtInConverterJson, Object.class));
-		    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-		    assertEquals(JSON_DATE_FORMAT.format(timestamp),
-		        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+	public void builtInConverterAndJs1() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(testCaseThreeOutput[r], buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+		assertNull(voltageFunctionblockData);
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
-	public void json_builtIn_converter_2() throws Exception {
-		   InfomodelValue mappedOutput = builtInConverterMapper.mapSource(gson.fromJson(builtInConverterJson, Object.class));
-		    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-		    assertEquals(JSON_DATE_FORMAT.format(timestamp),
-		        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+	public void builtInConverterAndJs2() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(testCaseThreeOutput[r], buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+		assertNull(voltageFunctionblockData);
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
-	public void json_builtIn_converter_3() throws Exception {
-		   InfomodelValue mappedOutput = builtInConverterMapper.mapSource(gson.fromJson(builtInConverterJson, Object.class));
-		    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-		    assertEquals(JSON_DATE_FORMAT.format(timestamp),
-		        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+	public void builtInConverterAndJs3() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(testCaseThreeOutput[r], buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+		assertNull(voltageFunctionblockData);
 	}
-	
+
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
-	public void json_builtIn_converter_4() throws Exception {
-		   InfomodelValue mappedOutput = builtInConverterMapper.mapSource(gson.fromJson(builtInConverterJson, Object.class));
-		    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-		    assertEquals(JSON_DATE_FORMAT.format(timestamp),
-		        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+	public void builtInConverterAndJs4() throws Exception {
+		int r = new Random().nextInt(2 + 1);
+		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(testCaseThreeOutput[r], buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+		assertNull(voltageFunctionblockData);
 	}
 	
-	
-	/// With Converter
-//  only built in converter
-	
-	
-
 }

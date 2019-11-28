@@ -25,6 +25,10 @@ To work through this tutorial, you will need:
 
 <br />
 
+## Performance
+The Vorto mapping-engine has been load-tested regarding performance and speed according to different mapping scenarios. A report and detailed description of the underlying tests can be found [here](https://github.com/eclipse/vorto/blob/development/mapping-engine/LoadTests.md).
+
+
 ## Step 1: Create Mapping Specification
 
 A mapping adds platform specific information to an Information Model. Since the representation of data can vary from platform to platform.

@@ -65,7 +65,7 @@ public class BinaryPerformanceScenario {
 	private static final int EXECUTIONS_PER_SECOND_4 = 1_000;
 
 	//// Benchmark tests Scenario 1: Binary Data Mapping
-	static IDataMapper testCaseOneMapper, testCaseTwoMapper, testCaseThreeMapper, testCaseFourMapper;
+	static IDataMapper testCaseOneMapper, testCaseTwoMapper, testCaseThreeMapper;
 
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	static String testCaseOneJson;
@@ -82,6 +82,7 @@ public class BinaryPerformanceScenario {
 
 		testCaseOneJson = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
 
+
 		// Test Case 2
 		testCaseTwoMapper = IDataMapper.newBuilder().withSpecification(new SpecBinaryConverter())
 				.registerConverterFunction(BinaryFunctionFactory.createFunctions())
@@ -93,6 +94,7 @@ public class BinaryPerformanceScenario {
 
 		testCaseTwoInput = new BinaryData(value);
 
+
 		// Test Case 3
 		testCaseThreeMapper = IDataMapper.newBuilder().withSpecification(new SpecWithByteArrayConverter())
 				.registerConverterFunction(StringFunctionFactory.createFunctions())
@@ -102,14 +104,6 @@ public class BinaryPerformanceScenario {
 		String x = "4f00630063007500700061006e0063007900200002";
 		testCaseThreeJson = "{\"data\" : \"" + x + "\"}";
 
-		// Test Case 4
-		testCaseFourMapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction())
-				.registerConverterFunction(BinaryFunctionFactory.createFunctions())
-				.registerConverterFunction(StringFunctionFactory.createFunctions())
-				.registerConditionFunction(StringFunctionFactory.createFunctions())
-				.registerConditionFunction(BinaryFunctionFactory.createFunctions()).build();
-
-		testCaseFourJson = "{\"data\" : \"aGFsbG8=\"}";
 	}
 
 //// Test Case 1: 1 Built-in (Java) Converter Function
@@ -117,6 +111,7 @@ public class BinaryPerformanceScenario {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
 	public void builtInConverter1() throws Exception {
+
 		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(gson.fromJson(testCaseOneJson, Object.class));
 		assertEquals("20", new String(
 				(byte[]) mappedOutput.get("button").getStatusProperty("digital_input_state").get().getValue()));
@@ -189,7 +184,6 @@ public class BinaryPerformanceScenario {
 				.mapSource(gson.fromJson(testCaseThreeJson, Object.class));
 		FunctionblockValue button = mappedDittoOutput.get("button");
 		assertEquals(2, button.getStatusProperty("sensor_value").get().getValue());
-		System.out.println(mappedDittoOutput);
 	}
 
 	@Test
@@ -199,7 +193,6 @@ public class BinaryPerformanceScenario {
 				.mapSource(gson.fromJson(testCaseThreeJson, Object.class));
 		FunctionblockValue button = mappedDittoOutput.get("button");
 		assertEquals(2, button.getStatusProperty("sensor_value").get().getValue());
-		System.out.println(mappedDittoOutput);
 	}
 
 	@Test
@@ -209,7 +202,6 @@ public class BinaryPerformanceScenario {
 				.mapSource(gson.fromJson(testCaseThreeJson, Object.class));
 		FunctionblockValue button = mappedDittoOutput.get("button");
 		assertEquals(2, button.getStatusProperty("sensor_value").get().getValue());
-		System.out.println(mappedDittoOutput);
 	}
 
 	@Test
@@ -219,37 +211,5 @@ public class BinaryPerformanceScenario {
 				.mapSource(gson.fromJson(testCaseThreeJson, Object.class));
 		FunctionblockValue button = mappedDittoOutput.get("button");
 		assertEquals(2, button.getStatusProperty("sensor_value").get().getValue());
-		System.out.println(mappedDittoOutput);
 	}
-
-////Test Case 4: Condition & Double Nested Converter Functions (Built-in + Built-in + Javascript)
-
-	@Test
-	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
-	public void doubleNestedConverterAndCondition1() throws Exception {
-		InfomodelValue mappedOutput = testCaseFourMapper.mapSource(gson.fromJson(testCaseFourJson, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-	}
-
-	@Test
-	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
-	public void doubleNestedConverterAndCondition2() throws Exception {
-		InfomodelValue mappedOutput = testCaseFourMapper.mapSource(gson.fromJson(testCaseFourJson, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-	}
-
-	@Test
-	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
-	public void doubleNestedConverterAndCondition3() throws Exception {
-		InfomodelValue mappedOutput = testCaseFourMapper.mapSource(gson.fromJson(testCaseFourJson, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-	}
-
-	@Test
-	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
-	public void doubleNestedConverterAndCondition4() throws Exception {
-		InfomodelValue mappedOutput = testCaseFourMapper.mapSource(gson.fromJson(testCaseFourJson, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-	}
-
 }
