@@ -5,6 +5,24 @@ pipeline {
 	    buildDiscarder(logRotator(numToKeepStr:'5'))
 	}
     stages{
+     stage("Build"){
+        steps{
+            sh 'printenv'
+            sh 'echo Proxy Host = $PROXY_HOST'
+            sh 'echo Proxy Port = $PROXY_PORT'
+            sh 'echo Proxy User = $PROXY_USER'
+            // Notify GitHub that checks are now in progress
+            
+            githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+           
+            // Maven installation declared in the Jenkins "Global Tool Configuration"
+            withMaven(
+                maven: 'maven-latest',
+                mavenLocalRepo: '.repository') {
+					sh 'mvn -P coverage clean install'
+            }
+        }
+      }
       stage('Run compliance checks') {
         parallel {
 
