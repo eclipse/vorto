@@ -19,6 +19,7 @@
 	<modules>
 		<module>mapping-core</module>
 		<module>mapping-converter-javascript</module>
+		<module>mapping-load-test</module>
 		<module>mapping-converter-string</module>
 		<module>mapping-converter-types</module>
 		<module>mapping-converter-date</module>

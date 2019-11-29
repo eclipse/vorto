@@ -25,6 +25,9 @@ To work through this tutorial, you will need:
 
 <br />
 
+## Performance
+The Vorto mapping-engine has been load-tested regarding performance and speed according to different mapping scenarios. A report and detailed description can be found[here](./docs/LoadTests.md).
+
 ## Step 1: Create Mapping Specification
 
 A mapping adds platform specific information to an Information Model. Since the representation of data can vary from platform to platform.
