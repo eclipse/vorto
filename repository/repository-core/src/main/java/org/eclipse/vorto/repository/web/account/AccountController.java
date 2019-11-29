@@ -256,11 +256,11 @@ public class AccountController {
   }
 
   // TODO : Implement better mechanism for knowing the authentication provider of logged-in user
-  private AuthenticationProvider getAuthenticationProvider(OAuth2Authentication oauth2User) {
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
     if (oauth2User.getName().startsWith("S-")) {
-      return AuthenticationProvider.BOSCH;
+      return AuthenticationProvider.BOSCH.name();
     }
-    return AuthenticationProvider.GITHUB;
+    return AuthenticationProvider.GITHUB.name();
   }
 
   @RequestMapping(method = RequestMethod.POST,

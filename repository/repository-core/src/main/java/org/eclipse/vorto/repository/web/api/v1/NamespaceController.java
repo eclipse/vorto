@@ -112,7 +112,7 @@ public class NamespaceController {
     if (collaboratorInfo.getRoles().isEmpty()) {
       accountService.removeUserFromTenant(tenant.getTenantId(), collaboratorInfo.getUserId());
     } else {
-      accountService.create(collaboratorInfo.getUserId(), authProvider.get(), collaboratorInfo.getSubject(), 
+      accountService.create(collaboratorInfo.getUserId(), authProvider.get().name(), collaboratorInfo.getSubject(), 
           tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
     }
     
