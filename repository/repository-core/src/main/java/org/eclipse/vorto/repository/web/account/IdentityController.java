@@ -92,8 +92,8 @@ public class IdentityController {
   }
   
   // TODO : Implement mechanism for knowing the authentication provider of logged-in user
-  private AuthenticationProvider getAuthenticationProvider(OAuth2Authentication oauth2User) {
-    return AuthenticationProvider.GITHUB;
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
+    return AuthenticationProvider.GITHUB.name();
   }
 
   @Deprecated
@@ -127,7 +127,8 @@ public class IdentityController {
           required = true) final @PathVariable String tenantId,
       @RequestBody List<Role> roles) {
 
-    User user = accountService.create(userName, tenantId, roles.toArray(new Role[roles.size()]));
+    User user = accountService.create(userName, AuthenticationProvider.GITHUB.name(), null, 
+        tenantId, roles.toArray(new Role[roles.size()]));
 
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.CREATED);
   }

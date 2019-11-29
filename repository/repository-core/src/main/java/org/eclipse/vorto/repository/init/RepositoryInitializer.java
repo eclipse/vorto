@@ -80,7 +80,7 @@ public class RepositoryInitializer {
   private void createAdminUser(String username) {
     if (!userAccountService.exists(username)) {
       logger.info("Creating admin user: {}", username);
-      User user = User.create(username);
+      User user = User.create(username, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), null);
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
       userAccountService.saveUser(user);
@@ -147,7 +147,7 @@ public class RepositoryInitializer {
   private void createUser(String user) {
     if (!userAccountService.exists(user)) {
       logger.info("Creating technical user: {}", user);
-      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH, null);
+      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), null);
     }
   }
 

@@ -68,10 +68,10 @@ public class User {
 
   private String emailAddress;
 
-  public static User create(String username, AuthenticationProvider provider, String subject) {
+  public static User create(String username, String provider, String subject) {
     User user = new User();
     user.setUsername(username);
-    user.setAuthenticationProvider(provider.name());
+    user.setAuthenticationProvider(provider);
     user.setSubject(subject);
     user.setDateCreated(new Timestamp(System.currentTimeMillis()));
     user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
@@ -79,13 +79,9 @@ public class User {
 
     return user;
   }
-  
-  public static User create(String username) {
-    return create(username, AuthenticationProvider.GITHUB, null);
-  }
 
-  public static User create(String username, Tenant tenant, Role... roles) {
-    User user = create(username);
+  public static User create(String username, String provider, String subject, Tenant tenant, Role... roles) {
+    User user = create(username, provider, subject);
 
     TenantUser tenantUser = new TenantUser();
     tenantUser.addRoles(roles);

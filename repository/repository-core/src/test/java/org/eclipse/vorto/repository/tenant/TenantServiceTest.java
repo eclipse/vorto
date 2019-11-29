@@ -127,7 +127,8 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 
@@ -146,7 +147,8 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 
@@ -173,7 +175,8 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 
@@ -201,7 +204,8 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 
@@ -238,7 +242,7 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findByName("com.test")).thenReturn(null);
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin"))
-        .thenReturn(User.create("admin", myTenantId, Role.SYS_ADMIN));
+        .thenReturn(User.create("admin", AuthenticationProvider.GITHUB.name(), null, myTenantId, Role.SYS_ADMIN));
     
     
 
@@ -267,7 +271,8 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 
@@ -293,8 +298,10 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
-    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin"));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
+    Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
+        AuthenticationProvider.GITHUB.name(), null));
 
     TenantService tenantService = getTenantService();
 

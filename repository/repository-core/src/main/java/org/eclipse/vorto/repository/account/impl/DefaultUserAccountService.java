@@ -23,7 +23,6 @@ import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -160,21 +159,16 @@ public class DefaultUserAccountService
   }
 
   @Transactional
-  public User create(String username, AuthenticationProvider provider, String subject) {
+  public User create(String username, String provider, String subject) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
     return userRepository.save(User.create(username, provider, subject));
   }
-
-  @Transactional
-  public User create(String username, String tenantId, Role... userRoles) {
-    return create(username, AuthenticationProvider.GITHUB, null, tenantId, userRoles);
-  }
   
   @Transactional
-  public User create(String username, AuthenticationProvider provider, String subject, String tenantId, Role... userRoles)
+  public User create(String username, String provider, String subject, String tenantId, Role... userRoles)
       throws RoleNotSupportedException {
     
     PreConditions.notNullOrEmpty(username, "username");

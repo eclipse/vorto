@@ -58,24 +58,36 @@ public class ApplicationConfig {
 
   @PostConstruct
   public void createUsers() {
-    accountService.create(USER_ADMIN, AuthenticationProvider.GITHUB, null);
+    accountService.create(USER_ADMIN, AuthenticationProvider.GITHUB.name(), null);
     
     tenantService.createOrUpdateTenant("playground", "com.mycompany", Sets.newHashSet(USER_ADMIN), 
         Optional.of(Sets.newHashSet("com.mycompany", "com.ipso", "examples.mappings", "com.test")), 
         Optional.of("GITHUB"), Optional.of("DB"), createUserContext(USER_ADMIN, "playground"));
     
-    accountService.create(USER_ADMIN, "playground", USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
-    accountService.create(USER_STANDARD, "playground", USER);
-    accountService.create(USER_STANDARD2, "playground", USER);
-    accountService.create(USER_STANDARD3, "playground", USER);
-    accountService.create(USER_STANDARD4, "playground", USER);
-    accountService.create(USER_STANDARD5, "playground", USER);
-    accountService.create(USER_STANDARD6, "playground", USER);
-    accountService.create(USER_STANDARD7, "playground", USER);
-    accountService.create(USER_STANDARD8, "playground", USER);
-    accountService.create(USER_CREATOR, "playground", USER, MODEL_CREATOR);
-    accountService.create(USER_CREATOR2, "playground", USER, MODEL_CREATOR);
-    accountService.create(USER_CREATOR3, "playground", USER, MODEL_CREATOR);
+    accountService.create(USER_ADMIN, AuthenticationProvider.GITHUB.name(), null, 
+        "playground", USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
+    accountService.create(USER_STANDARD, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD2, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD3, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD4, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD5, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD6, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD7, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_STANDARD8, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER);
+    accountService.create(USER_CREATOR, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER, MODEL_CREATOR);
+    accountService.create(USER_CREATOR2, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER, MODEL_CREATOR);
+    accountService.create(USER_CREATOR3, AuthenticationProvider.GITHUB.name(), null,
+        "playground", USER, MODEL_CREATOR);
     
   }
   
