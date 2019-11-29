@@ -5,16 +5,16 @@ pipeline {
 	    buildDiscarder(logRotator(numToKeepStr:'5'))
 	}
     stages{
-     stage("Build"){
+      stage("Build"){
         steps{
             sh 'printenv'
             sh 'echo Proxy Host = $PROXY_HOST'
             sh 'echo Proxy Port = $PROXY_PORT'
             sh 'echo Proxy User = $PROXY_USER'
             // Notify GitHub that checks are now in progress
-            
+            githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
             githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
-           
+            githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
@@ -25,23 +25,45 @@ pipeline {
       }
       stage('Run compliance checks') {
         parallel {
-
+          stage("SonarCloud"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
+            steps{              
+                withMaven(
+                    // Maven installation declared in the Jenkins "Global Tool Configuration"
+                    maven: 'maven-latest',
+                    mavenLocalRepo: '.repository') {
+                  withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'TOKEN')]) {
+                    sh 'mvn -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
+                  }
+                }
+              githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
+            }
+            post{
+              failure{
+                githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Failed',  status: 'FAILURE', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
+              }
+            }
+          }
           stage("CLMScan Vorto-repository"){
             steps{              
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
                   withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                  	script {
+                    script {
 						try {
 							def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
 						    if (policyEvaluation.criticalComponentCount > 0) {
-						      githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed, Policy Issues',  status: 'FAILURE', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"         
+						      githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed, Policy Issues Detected',  status: 'FAILURE', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"         
 						    } else {						      
 						      githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"      
 					        }							
 						} catch (error) {
-							def policyEvaluation = error.policyEvaluation
+							githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
 							throw error
 						}
 					}
@@ -57,7 +79,38 @@ pipeline {
               }
             }
           }
-
+          stage("AVScan infomodelrepository"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
+            steps{              
+                // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
+                dir('avscan_infomodel') {
+                  //copy files over to the new maven folder to run AntiVirus Scans
+                  git url: "https://github.com/eclipsevorto-jenkins/vorto_compliance_jenkins.git"
+                    sh 'cp ../repository/repository-server/target/infomodelrepository.jar ./'
+                }
+              withMaven(
+                  maven: 'maven-latest',
+                  mavenLocalRepo: '.repository') {
+                sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
+                  withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
+                  withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
+                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
+                  }
+                      s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'vorto-pr-artifacts', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
+                  }
+              }
+              githubNotify context: 'Repository - Virus Scan', description: 'Scan Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html"
+            }
+            post{
+              failure{
+                githubNotify context: 'Repository - Virus Scan', description: 'Scan Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html"
+              }
+            }
+          }
         }
       }
       
