@@ -1,9 +1,9 @@
 pipeline {
   agent any  
     // Options covers all other job properties or wrapper functions that apply to entire Pipeline.
-  	options {
-	    buildDiscarder(logRotator(numToKeepStr:'5'))
-	}
+    options {
+        buildDiscarder(logRotator(numToKeepStr:'5'))
+    }
     stages{
       stage("Build"){
         steps{
@@ -19,7 +19,7 @@ pipeline {
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
-					sh 'mvn -P coverage clean install'
+                    sh 'mvn -P coverage clean install'
             }
         }
       }
@@ -31,7 +31,7 @@ pipeline {
                 expression { env.CHANGE_ID != null }
               }
             }
-            steps{              
+            steps{
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
                     maven: 'maven-latest',
@@ -49,18 +49,29 @@ pipeline {
             }
           }
           stage("CLMScan Vorto-repository"){
-            steps{              
+            steps{
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
                   withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                  	nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                    script {
+                        try {
+                            def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                            if (policyEvaluation.criticalComponentCount > 0) {
+                              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed, Policy Issues Detected',  status: 'FAILURE', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"         
+                            } else {
+                              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"      
+                            }
+                        } catch (error) {
+                            githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
+                            throw error
+                        }
+                    }
                   }
                   catchError {
-                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://latest.nexusiq.bosch-si.com/assets/index.html#/applicationReport/vorto-repository"
+                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
                   }
                 }
-              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://latest.nexusiq.bosch-si.com/assets/index.html#/applicationReport/vorto-repository"
             }
             post{
               failure{
@@ -74,7 +85,7 @@ pipeline {
                 expression { env.CHANGE_ID != null }
               }
             }
-            steps{              
+            steps{
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
                 dir('avscan_infomodel') {
                   //copy files over to the new maven folder to run AntiVirus Scans
