@@ -28,7 +28,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: lambda
+            branch: development
         - provider: lambda
           edge: true
           function_name: "generators-pluginexecutor-dev"
@@ -41,7 +41,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: lambda
+            branch: development
         - provider: lambda
           edge: true
           function_name: "generators-plugininfo-prod"
