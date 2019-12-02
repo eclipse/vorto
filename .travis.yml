@@ -10,7 +10,7 @@ jobs:
       before_script:
         - cd generators/generator-lambda
       script:
-        - mvn clean package
+        - mvn clean package -DskipTests
       before_install:
       before_deploy:
         - export ARTIFACT_PLUGININFO=$(ls generator-lambda-plugininfo/target/generator-lambda-plugininfo-*.jar)
