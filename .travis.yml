@@ -22,7 +22,8 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
-          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
@@ -33,7 +34,8 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
-          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
@@ -44,7 +46,8 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
-          handler_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
@@ -55,7 +58,8 @@ jobs:
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
-          handler_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
