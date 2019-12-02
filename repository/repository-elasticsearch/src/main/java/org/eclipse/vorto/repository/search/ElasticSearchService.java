@@ -42,6 +42,7 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -64,6 +65,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -91,6 +93,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   private static final String DOC = "_doc";
 
   private static final String VORTO_INDEX = "vorto";
+
+  private static final String VORTO_INDEX_TEMP = "vorto_temp";
 
   private static Logger logger = Logger.getLogger(ElasticSearchService.class);
 
@@ -156,6 +160,117 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     } catch (IOException e) {
       throw new IndexingException(String.format("Error while checking if index '%s' exist.", index), e);
     }
+  }
+
+  /**
+   * This forces a full reindexing of all model, and should be used in the rare occasion where
+   * a change in the mapping has been created, e.g. a new searchable field, or a change in a field's
+   * type.<br/>
+   * The following operations are performed in order, synchronously:
+   * <ol>
+   *   <li>
+   *     Checks if the vorto index actually exists. If it doesn't, creates it and returns (nothing
+   *     else worth doing).
+   *   </li>
+   *   <li>
+   *     Checks if the vorto temp index ({@link ElasticSearchService#VORTO_INDEX_TEMP}) exists. If
+   *     so, deletes the temp index.
+   *   </li>
+   *   <li>
+   *     Creates the temp index with the current mapping.
+   *   </li>
+   *   <li>
+   *     Uses a reindex request to merge the vorto index ({@link ElasticSearchService#VORTO_INDEX})
+   *     into the temp index.
+   *   </li>
+   *   <li>
+   *     Deletes the vorto index.
+   *   </li>
+   *   <li>
+   *     Re-creates the vorto index.
+   *   </li>
+   *   <li>
+   *     Merges back the temp index in the vorto index.
+   *   </li>
+   *   <li>
+   *     Deletes the temp index.
+   *   </li>
+   *   <li>
+   *     Reindexes all model in the vorto index - see {@link IIndexingService#reindexAllModels()}.
+   *   </li>
+   * </ol>
+   *
+   * @return
+   */
+  @Override
+  public IndexingResult forceReindexAllModels() {
+    // no Vorto index - nothing to do
+    if (!indexExist(VORTO_INDEX)) {
+      createIndexIfNotExisting();
+      return new IndexingResult();
+    }
+    // first delete the VORTO_INDEX_TEMP index if it exists
+    if (indexExist(VORTO_INDEX_TEMP)) {
+      DeleteIndexRequest deleteTempIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX_TEMP);
+      try {
+        client.indices().delete(deleteTempIndexRequest, RequestOptions.DEFAULT);
+      }
+      catch (IOException ioe) {
+        throw new IndexingException(ioe.getMessage(), ioe);
+      }
+    }
+    // creates the temporary index to hold the new mapping
+    CreateIndexRequest createTempIndexRequest = new CreateIndexRequest(VORTO_INDEX_TEMP);
+    createTempIndexRequest.mapping(createMappingForIndex());
+    try {
+      client.indices().create(createTempIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // copies the vorto index data to the new temp index with new mapping
+    ReindexRequest reindexRequest = new ReindexRequest().setSourceIndices(VORTO_INDEX).setDestIndex(VORTO_INDEX_TEMP);
+    reindexRequest.setConflicts("proceed");
+    reindexRequest.setRefresh(true);
+    try {
+      client.reindex(reindexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // deletes the vorto index
+    DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX);
+    try {
+      client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // re-creates the vorto index
+    createIndexIfNotExisting();
+
+    // moves data back to vorto index
+    ReindexRequest moveBackToVortoIndex = new ReindexRequest().setSourceIndices(VORTO_INDEX_TEMP).setDestIndex(VORTO_INDEX);
+    reindexRequest.setConflicts("proceed");
+    reindexRequest.setRefresh(true);
+    try {
+      client.reindex(moveBackToVortoIndex, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+
+    // deletes the temp index
+    DeleteIndexRequest deleteTempIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX_TEMP);
+    try {
+      client.indices().delete(deleteTempIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+
+    // finally, re-import all models
+    return reindexAllModels();
   }
 
   private boolean createIndexWithMapping(String index, Map<String, Object> mapping) {
@@ -578,14 +693,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       // getting value from single collection element
       String value = values.toArray(new String[values.size()])[0];
       // value should be searched as query string as it contains wildcards
-      parent = parent.must(QueryBuilders.queryStringQuery(value).defaultField(key).analyzer(ANALYZER));
+      parent = parent.must(QueryBuilders.queryStringQuery(value).field(key).analyzer(ANALYZER));
     }
     else {
       BoolQueryBuilder child = QueryBuilders.boolQuery();
       // producing a grandchild for each value
       for (String value: values) {
         // value should be searched as query string as it contains wildcards
-        child = child.should(QueryBuilders.queryStringQuery(value).defaultField(key).analyzer(ANALYZER));
+        child = child.should(QueryBuilders.queryStringQuery(value).field(key).analyzer(ANALYZER));
       }
       parent = parent.must(child);
     }

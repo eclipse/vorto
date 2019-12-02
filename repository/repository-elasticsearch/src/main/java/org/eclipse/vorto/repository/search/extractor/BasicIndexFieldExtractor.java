@@ -75,17 +75,17 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     
     basicFields.put(BasicIndexFieldExtractor.MODEL_ID, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, FieldType.TEXT);
-    basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.DESCRIPTION, FieldType.TEXT);
-    basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.VERSION, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.VERSION, FieldType.TEXT);
 
     return basicFields;
   }
