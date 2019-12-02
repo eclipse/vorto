@@ -232,6 +232,7 @@ public class ModelConversionUtils {
     Property newProperty = DatatypeFactory.eINSTANCE.createProperty();
     newProperty.setName(property.getName());
     newProperty.setPresence(property.getPresence());
+    newProperty.setMultiplicity(property.isMultiplicity());
     newProperty.setDescription(property.getDescription());
 
     if (property.getType() instanceof PrimitivePropertyType) {

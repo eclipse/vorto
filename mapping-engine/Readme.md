@@ -249,7 +249,7 @@ from Illuminance to condition with {value:"header.type == 'I'"}
 
 # What's next ?
 
-- [Vorto Mapping Engine in action](https://github.com/eclipse/vorto-examples/tree/master/vorto-hono-subscriber/Readme.md). Tutorial that uses Vorto Mappings to convert Geolocation sensor data.
+- [Vorto Mapping Engine in action](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/Readme.md). Tutorial that uses Vorto Mappings to convert Geolocation sensor data.
 - Understand the [Mapping Specification Syntax](./docs/mapping_syntax.md)
 
 

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
@@ -38,10 +37,10 @@ import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.repository.client.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.client.generation.GeneratorInfo;
 import com.google.gson.reflect.TypeToken;
+import org.eclipse.vorto.repository.client.generation.GeneratorUrlBuilder;
 
 public class DefaultRepositoryClient extends ImplementationBase implements IRepositoryClient {
 
-  private static final String REST_BASE = "api/v1/generators";
   private static final String REST_SEARCH_BASE = "api/v1/search/models";
   private static final String REST_MODEL_BASE = "api/v1/models";
   private static final String REST_ATTACHMENT_BASE = "api/v1/attachments";
@@ -52,13 +51,8 @@ public class DefaultRepositoryClient extends ImplementationBase implements IRepo
 
   @Override
   public Set<String> getAvailableGeneratorKeys() {
-    return getAllGenerators(generators -> {
-      return generators.stream().map(generator -> generator.getKey()).collect(Collectors.toSet());
-    });
-  }
-
-  public List<GeneratorInfo> getAvailableGenerators() {
-    return getAllGenerators(Function.identity());
+    return getAllGenerators(generators -> generators.stream()
+        .map(GeneratorInfo::getKey).collect(Collectors.toSet()));
   }
 
   @Override
@@ -69,63 +63,16 @@ public class DefaultRepositoryClient extends ImplementationBase implements IRepo
         .filter(generator -> generator.getKey().equals(generatorKey)).findFirst().orElse(null));
   }
 
-  private <K> K getAllGenerators(Function<List<GeneratorInfo>, K> converter) {
-    Objects.requireNonNull(converter);
-
-    String getAllGeneratorsUrl =
-        String.format("%s/%s", getRequestContext().getBaseUrl(), String.format(REST_BASE));
-
-    return requestAndTransform(getAllGeneratorsUrl,
-        converter.compose(transformToType(new TypeToken<ArrayList<GeneratorInfo>>() {}.getType())),
-        () -> converter.apply(Collections.emptyList()));
-  }
-
   @Override
   public GeneratedOutput generate(ModelId modelId, String generatorKey,
       Map<String, String> invocationParams) {
     Objects.requireNonNull(modelId);
     Objects.requireNonNull(generatorKey);
 
-    String generateUrl =
-        getGeneratorUrl(getRequestContext().getBaseUrl(), modelId, generatorKey, invocationParams);
+    String generateUrl = GeneratorUrlBuilder.getGeneratorUrl(getRequestContext().getBaseUrl(),
+        modelId, generatorKey, invocationParams);
 
     return requestAndTransform(generateUrl, this::getGeneratedOutput);
-  }
-
-  private GeneratedOutput getGeneratedOutput(HttpResponse response) {
-    try {
-      String contentDisposition = response.getFirstHeader("Content-Disposition").getValue();
-      String filename = contentDisposition
-          .substring(contentDisposition.indexOf("filename = ") + "filename = ".length());
-      long length = response.getEntity().getContentLength();
-      byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
-      return new GeneratedOutput(content, filename, length);
-    } catch (IOException e) {
-      throw new RepositoryClientException("Error in converting response to GeneratedOutput", e);
-    }
-  }
-
-  private String getGeneratorUrl(String baseUrl, ModelId modelId, String generatorKey,
-      Map<String, String> invocationParams) {
-    try {
-      StringBuilder url = new StringBuilder();
-
-      url.append(baseUrl).append("/" + String.format(REST_BASE) + "/").append(generatorKey)
-          .append("/models/").append(modelId.getPrettyFormat())
-          .append(URLEncoder.encode(generatorKey, "utf-8"));
-
-      if (invocationParams != null && !invocationParams.isEmpty()) {
-        StringJoiner joiner = new StringJoiner("&");
-        invocationParams.forEach((key, value) -> {
-          joiner.add(key + "=" + value);
-        });
-        url.append("?").append(joiner.toString());
-      }
-
-      return url.toString();
-    } catch (UnsupportedEncodingException e) {
-      throw new RepositoryClientException("Error in generating URL for the generator", e);
-    }
   }
 
   @Override
@@ -180,7 +127,7 @@ public class DefaultRepositoryClient extends ImplementationBase implements IRepo
   public byte[] downloadAttachment(ModelId modelId, String filename) {
     String url = String.format("%s/%s/%s/files/%s", getRequestContext().getBaseUrl(),
         String.format(REST_ATTACHMENT_BASE), modelId.getPrettyFormat(), filename);
-    return requestAndTransform(url, (response) -> {
+    return requestAndTransform(url, response -> {
       try {
         return IOUtils.toByteArray(response.getEntity().getContent());
       } catch (UnsupportedOperationException | IOException e) {
@@ -188,5 +135,28 @@ public class DefaultRepositoryClient extends ImplementationBase implements IRepo
             "Error while getting attachment + '" + filename + "' with url '" + url + "'", e);
       }
     });
+  }
+
+  private <K> K getAllGenerators(Function<List<GeneratorInfo>, K> converter) {
+    Objects.requireNonNull(converter);
+
+    String getAllGeneratorsUrl = GeneratorUrlBuilder.getAllGeneratorsUrl(getRequestContext().getBaseUrl());
+
+    return requestAndTransform(getAllGeneratorsUrl,
+        converter.compose(transformToType(new TypeToken<ArrayList<GeneratorInfo>>() {}.getType())),
+        () -> converter.apply(Collections.emptyList()));
+  }
+
+  private GeneratedOutput getGeneratedOutput(HttpResponse response) {
+    try {
+      String contentDisposition = response.getFirstHeader("Content-Disposition").getValue();
+      String filename = contentDisposition
+          .substring(contentDisposition.indexOf("filename = ") + "filename = ".length());
+      long length = response.getEntity().getContentLength();
+      byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
+      return new GeneratedOutput(content, filename, length);
+    } catch (IOException e) {
+      throw new RepositoryClientException("Error in converting response to GeneratedOutput", e);
+    }
   }
 }

@@ -24,9 +24,11 @@ rm -f infomodelrepository.jar
 if [[ "$GIT_BRANCH" == "master" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/prod_new ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/prod ./ --recursive
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/dev ./BOOT-INF/classes --recursive
+  aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/dev ./ --recursive
 else
   echo "no extra files are include from S3Bucket"
 fi

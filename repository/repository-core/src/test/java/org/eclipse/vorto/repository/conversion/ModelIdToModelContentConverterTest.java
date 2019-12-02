@@ -12,6 +12,7 @@
 package org.eclipse.vorto.repository.conversion;
 
 import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
@@ -25,9 +26,23 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ModelIdToModelContentConverterTest extends AbstractIntegrationTest {
 
+  @Test
+  public void testConvertFbWithMultipleProperty() {
+    importModel("FbWithMultipleProperty.fbmodel");
+    
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.repositoryFactory);
+    
+    ModelContent content = converter.convert(ModelId.fromPrettyFormat("org.eclipse.vorto:TestFb:1.0.0"), Optional.empty());
+    FunctionblockModel fbm = (FunctionblockModel) content.getModels().get(content.getRoot());
+    assertTrue(fbm.getStatusProperty("foos").get().isMultiple());
+
+    
+  }
+  
   @Test
   public void testConvertWithTargetPlatform() throws Exception {
     importModel("Color.type");
