@@ -17,49 +17,53 @@ jobs:
         - export ARTIFACT_PLUGINEXECUTOR=$(ls generator-lambda-executor/target/generator-lambda-executor-*.jar)
       deploy:
         - provider: lambda
+          edge: true
           function_name: "generators-plugininfo-dev"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
-          handler_name: ""
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: lambda
         - provider: lambda
+          edge: true
           function_name: "generators-pluginexecutor-dev"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
-          handler_name: ""
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: lambda
         - provider: lambda
+          edge: true
           function_name: "generators-plugininfo-prod"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
           runtime: "java8"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
-          handler_name: ""
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
             branch: master
         - provider: lambda
+          edge: true
           function_name: "generators-pluginexecutor-prod"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
           runtime: "java8"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
-          handler_name: ""
+          handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
