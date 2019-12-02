@@ -10,13 +10,14 @@ jobs:
       before_script:
         - cd generators/generator-lambda
       script:
-        - mvn clean package
+        - mvn clean package -DskipTests
       before_install:
       before_deploy:
         - export ARTIFACT_PLUGININFO=$(ls generator-lambda-plugininfo/target/generator-lambda-plugininfo-*.jar)
         - export ARTIFACT_PLUGINEXECUTOR=$(ls generator-lambda-executor/target/generator-lambda-executor-*.jar)
       deploy:
         - provider: lambda
+          edge: true
           function_name: "generators-plugininfo-dev"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
@@ -29,6 +30,7 @@ jobs:
           on:
             branch: development
         - provider: lambda
+          edge: true
           function_name: "generators-pluginexecutor-dev"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
@@ -41,6 +43,7 @@ jobs:
           on:
             branch: development
         - provider: lambda
+          edge: true
           function_name: "generators-plugininfo-prod"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
@@ -53,6 +56,7 @@ jobs:
           on:
             branch: master
         - provider: lambda
+          edge: true
           function_name: "generators-pluginexecutor-prod"
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
