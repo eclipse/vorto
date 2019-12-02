@@ -119,6 +119,12 @@
 		<dependency>
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-jcr</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jgroups</groupId>
+					<artifactId>jgroups</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.modeshape</groupId>
@@ -129,11 +135,6 @@
 			<artifactId>modeshape-common</artifactId>
 		</dependency>
 		
-		<dependency>
-			 <groupId>org.jgroups</groupId>
-    		<artifactId>jgroups</artifactId>
-    		<version>3.6.11.Final</version>
-		</dependency>
 
 		<!-- Email -->
 		<dependency>
@@ -250,6 +251,17 @@
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-unit-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jgroups</groupId>
+					<artifactId>jgroups</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			 <groupId>org.jgroups</groupId>
+    		<artifactId>jgroups</artifactId>
 		</dependency>
 
 		<dependency>
