@@ -71,7 +71,10 @@ import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * Search Service implementation using a remote Elastic Search Service
+ * Search Service implementation using a remote Elastic Search Service.<br/>
+ * This search service provides a powerful and flexible way to look for specific models.<br>
+ * See documentation for {@link ElasticSearchService#search(String, IUserContext)} for full specifications.
+ * @author mena-bosch (refactored)
  */
 public class ElasticSearchService implements IIndexingService, ISearchService {
 
@@ -111,6 +114,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
     USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
   }
+
+  private static final String ANALYZER = "standard";
 
   public ElasticSearchService(RestHighLevelClient client, IModelRepositoryFactory repositoryFactory,
       ITenantService tenantService) {
@@ -199,7 +204,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       List<ModelInfo> modelsToIndex = repo.search("");
       if (!modelsToIndex.isEmpty()) {
         BulkRequest bulkRequest = new BulkRequest();
-        
+
         modelsToIndex.forEach(model -> {
           bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
         });
@@ -474,7 +479,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
           .collect(Collectors.toList());
     }
   }
-  
+
   private Predicate<Tenant> getUserFilter(IUserContext userContext) {
     if (userContext.isSysAdmin()) {
       return tenant -> true;
@@ -538,13 +543,13 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
     // single value: remove one query layer and add must query to parent directly
     if (values.size() == 1) {
-      parent = parent.must(QueryBuilders.queryStringQuery(values.toArray(new String[values.size()])[0]).fields(keys));
+      parent = parent.must(QueryBuilders.queryStringQuery(values.toArray(new String[values.size()])[0]).fields(keys).analyzer(ANALYZER));
     }
     // multiple values: wrap in bool query under parent and add leaves with OR relationship
     else {
       BoolQueryBuilder child = QueryBuilders.boolQuery();
       for (String value : values) {
-        child = child.should(QueryBuilders.queryStringQuery(value).fields(keys));
+        child = child.should(QueryBuilders.queryStringQuery(value).fields(keys).analyzer(ANALYZER));
       }
       parent = parent.must(child);
     }
@@ -554,7 +559,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   /**
    * Used by {@link ElasticSearchService#toESQuery(SearchParameters)} exclusively. <br/>
    * Appends children bool queries to the given parent. <br/>
-   * Values containing wildcards are searched as query strings instead, and not affected. <br/>
    * Values containing only one element produce one child to the parent {@link BoolQueryBuilder}
    * in an {@literal AND} relationship to its peers, which contains the search terms. <br/>
    * Conversely, multiple values produce the same child, but also add as many children to it as
@@ -574,26 +578,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       // getting value from single collection element
       String value = values.toArray(new String[values.size()])[0];
       // value should be searched as query string as it contains wildcards
-      if (SearchTags.containsWildcard(value)) {
-        parent = parent.must(QueryBuilders.queryStringQuery(value).defaultField(key));
-      }
-      // value does not contain wildcards and will be searched as term query
-      else {
-        parent = parent.must(QueryBuilders.termQuery(key, value));
-      }
+      parent = parent.must(QueryBuilders.queryStringQuery(value).defaultField(key).analyzer(ANALYZER));
     }
     else {
       BoolQueryBuilder child = QueryBuilders.boolQuery();
       // producing a grandchild for each value
       for (String value: values) {
         // value should be searched as query string as it contains wildcards
-        if (SearchTags.containsWildcard(value)) {
-          child = child.should(QueryBuilders.queryStringQuery(value).defaultField(key));
-        }
-        // value does not contain wildcards and will be searched as term query
-        else {
-          child = child.should(QueryBuilders.termQuery(key, value));
-        }
+        child = child.should(QueryBuilders.queryStringQuery(value).defaultField(key).analyzer(ANALYZER));
       }
       parent = parent.must(child);
     }
