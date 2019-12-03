@@ -269,6 +269,15 @@ public enum SearchTags {
   }
 
   /**
+   * Evaluates the given token against the case-insensitive pattern and returns whether it matches.
+   * @param token
+   * @return
+   */
+  public boolean tokenMatches(String token) {
+    return pattern.matcher(token).matches();
+  }
+
+  /**
    * Parses a tagged value from a text input. <br/>
    * This method can mutate the given {@link SearchParameters} by operating as follows:
    * <ol>
@@ -307,6 +316,7 @@ public enum SearchTags {
     }
     Matcher matcher = pattern.matcher(text);
     while (matcher.find()) {
+      String test = matcher.group(1);
       /*
       Validates / normalizes the value against group 1 of the pattern, knowing that
       the returned Optional<String> will only be present if the value is valid or we cannot
@@ -344,7 +354,7 @@ public enum SearchTags {
     }
     Arrays
         .stream(text.split(WHITESPACE_PATTERN))
-        .filter(s -> Arrays.stream(SearchTags.values()).noneMatch(st -> s.contains(st.getTagName())))
+        .filter(s -> Arrays.stream(SearchTags.values()).noneMatch(st -> st.tokenMatches(s)))
         .forEach(result::add);
     return result;
   }

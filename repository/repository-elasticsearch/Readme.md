@@ -20,7 +20,7 @@ Vorto model can be searched with the following syntax.
 See the [vortolang 1.0 specification](https://github.com/eclipse/vorto/blob/master/docs/vortolang-1.0.md) 
 for a full description of all properties below.   
 
-Field | Description | Values |Tag required | Example
+Tag | Description | Values |Tag required | Example
 ------|-------------|--------|--------------|--------
 Name | The model's name (either the `displayName` or the `description`) | Any | No |  <ul><li>`name:RaspberryPi`</li><li>`RaspberryPi`</li><li>`Rasp*`</li><li>`*aspberry??`</li><li>`name:*Pi`</li></ul>
 Author | The author of the model | Any | Yes | <ul><li>`author:mena`</li><li>`author:m*`</li></ul>
