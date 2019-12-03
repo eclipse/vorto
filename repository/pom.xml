@@ -52,8 +52,8 @@
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-webmvc</artifactId>
 					</exclusion>
-        </exclusions>
-      </dependency>
+				</exclusions>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-log4j</artifactId>
@@ -61,16 +61,16 @@
 			</dependency>
 
 			<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-      <dependency>
+			<dependency>
 				<groupId>org.springframework</groupId>
-    				<artifactId>spring-web</artifactId>
-    				<version>4.3.20.RELEASE</version>
+				<artifactId>spring-web</artifactId>
+				<version>4.3.20.RELEASE</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
 			<dependency>
 				<groupId>org.springframework</groupId>
-    				<artifactId>spring-webmvc</artifactId>
-    				<version>4.3.20.RELEASE</version>
+				<artifactId>spring-webmvc</artifactId>
+				<version>4.3.20.RELEASE</version>
 			</dependency>
 
 			<dependency>
@@ -184,6 +184,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.6</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jgroups</groupId>
+				<artifactId>jgroups</artifactId>
+				<version>3.6.11.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
