@@ -63,13 +63,11 @@ pipeline {
                               githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"      
                             }
                         } catch (error) {
-                            githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
+                            def policyEvaluation = error.policyEvaluation
+                            githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "${policyEvaluation.applicationCompositionReportUrl}"
                             throw error
                         }
                     }
-                  }
-                  catchError {
-                    githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
                   }
                 }
             }
