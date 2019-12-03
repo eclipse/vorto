@@ -36,18 +36,22 @@ import org.eclipse.vorto.repository.workflow.ModelState;
  * See {@link SearchTags#normalizeParsedValue(String, String, Class)} for validation logic.<br/>
  * The third argument is a {@link BiFunction<String, SearchParameters, SearchParameters>} taking
  * the validated match value, an existing instance of {@link SearchParameters} and providing the
- * same instance of {@link SearchParameters}, mutated with the adequate {@code with...} invocation.
+ * same instance of {@link SearchParameters}, mutated with the adequate {@code with...} invocation
+ * (and with an appended multi-character wildcard {@literal *} for tagged and un-tagged names
+ * containing no wildcard on their own).
  * @see SearchParameters
  * @author mena-bosch
  */
 public enum SearchTags {
 
   /**
-   * Tagged name query. Value matched initially by 1+ word character or ? or * wildcard.
+   * Tagged name query. Value matched initially by 1+ word character or ? or * wildcard.<br/>
+   * A multi-character wildcard {@literal *} will be appended to it if it contains no wildcards,
+   * before adding to the {@link SearchParameters}.
    */
   NAME(
       "name", SearchTags::normalizeParsedValue,
-      (s, sp) -> sp.withTaggedName(s)
+      (s, sp) -> sp.withTaggedName(appendPostfixWildcard(s))
   ),
   AUTHOR(
       "author", SearchTags::normalizeParsedValue,
@@ -340,7 +344,8 @@ public enum SearchTags {
    *   </li>
    *   <li>
    *     If the chunk does <b>not</b> contain any known tag name, then it is added to the
-   *     {@link Set<String>}.
+   *     {@link Set<String>}, after appending a multi-character wildcard {@literal *} if it contains
+   *     no wildcards already.
    *   </li>
    * </ol>
    * The order of appearance of untagged elements is not retained in the result.
@@ -355,27 +360,19 @@ public enum SearchTags {
     Arrays
         .stream(text.split(WHITESPACE_PATTERN))
         .filter(s -> Arrays.stream(SearchTags.values()).noneMatch(st -> st.tokenMatches(s)))
-        .forEach(result::add);
+        .forEach(s -> result.add(appendPostfixWildcard(s)));
     return result;
   }
 
   /**
-   * Boilerplate utility to append a multi-character wildcard ({@literal *}) to any value of
-   * the given {@link Set<String>} that does not already contain a supported wildcard (i.e.
-   * {@literal *} or {@literal ?}).
-   * @param names
+   * If the input contains no wildcard, appends a multi-character wildcard {@code *}.
+   * @param input
    * @return
    */
-  public static Set<String> appendPostfixWildcardForNames(Set<String> names) {
-    Set<String> result = new HashSet<>();
-    for (String name: names) {
-      if (containsWildcard(name)) {
-        result.add(name);
-      }
-      else {
-        result.add(name.concat("*"));
-      }
+  public static String appendPostfixWildcard(String input) {
+    if (isBlank(input)) {
+      return input;
     }
-    return result;
+    return containsWildcard(input) ? input : input.concat("*");
   }
 }

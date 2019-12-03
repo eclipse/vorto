@@ -790,14 +790,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
      2. tagged names resolve to display name / name
      3. un-tagged names resolve to name, description and display name
      */
-    Set<String> taggedNames = SearchTags.appendPostfixWildcardForNames(parameters.getTaggedNames());
+    Set<String> taggedNames = parameters.getTaggedNames();
     if (!taggedNames.isEmpty()) {
         makeChildQuery(
             result, taggedNames, TAGGED_NAME_FIELDS_FOR_QUERY
         );
     }
 
-    Set<String> unTaggedNames = SearchTags.appendPostfixWildcardForNames(parameters.getUntaggedNames());
+    Set<String> unTaggedNames = parameters.getUntaggedNames();
     if (!unTaggedNames.isEmpty()) {
       makeChildQuery(
           result, unTaggedNames, UNTAGGED_NAME_FIELDS_FOR_QUERY

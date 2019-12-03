@@ -496,7 +496,7 @@ public class ModelSearchUtil {
 
     // handling names
     if (params.hasNames()) {
-      appendConstraint(result, buildJCRConstraint(SearchTags.appendPostfixWildcardForNames(params.getNames()), VORTO_NAME_FIELD));
+      appendConstraint(result, buildJCRConstraint(params.getNames(), VORTO_NAME_FIELD));
     }
 
     // handling namespaces

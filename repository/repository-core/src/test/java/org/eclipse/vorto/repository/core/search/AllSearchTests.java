@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({GeneralSearchTest.class, MixedSearchTest.class,
+@SuiteClasses({SearchUnitTest.class, GeneralSearchTest.class, MixedSearchTest.class,
     NameSearchSimpleTest.class,
     AuthorSearchSimpleTest.class,
     UserReferenceSearchSimpleTest.class, TypeSearchSimpleTest.class, StateSearchSimpleTest.class,

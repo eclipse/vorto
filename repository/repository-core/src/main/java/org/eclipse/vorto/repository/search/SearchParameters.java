@@ -372,4 +372,32 @@ public class SearchParameters {
     return !hasAuthors() && !hasTaggedNames() && !hasUntaggedNames() && !hasNamespaces() && !hasStates() && !hasStates() &&
         !hasTenantIds() && !hasTypes() && !hasUserReferences() && !hasVersions() && !hasVisibilities();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SearchParameters that = (SearchParameters) o;
+    return tenantIds.equals(that.tenantIds) &&
+        taggedNames.equals(that.taggedNames) &&
+        unTaggedNames.equals(that.unTaggedNames) &&
+        states.equals(that.states) &&
+        types.equals(that.types) &&
+        authors.equals(that.authors) &&
+        userReferences.equals(that.userReferences) &&
+        visibilities.equals(that.visibilities) &&
+        namespaces.equals(that.namespaces) &&
+        versions.equals(that.versions);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects
+        .hash(tenantIds, taggedNames, unTaggedNames, states, types, authors, userReferences,
+            visibilities, namespaces, versions);
+  }
 }
