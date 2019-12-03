@@ -28,6 +28,7 @@ Here is a list of things that you need to work through this tutorial:
 - [Subscribe to Bosch IoT Hub](https://accounts.bosch-iot-suite.com/subscriptions/new/service/IoT-Hub/) (Free plan) for MQTT connectivity based on Eclipse Hono
 - Java 8 or higher
 - Maven
+- Docker Runtime
 - [Mosquitto_pub](http://www.steves-internet-guide.com/mosquitto_pub-sub-clients/) Client tool
 - Some IDE (e.g. Eclipse)
 
@@ -172,7 +173,7 @@ infomodel SensorOne {
 
 	functionblocks {
 	   deviceInformation as DeviceInformation "gives further meta information about the sensor" 
-		location as Geolocation "gives the position of the sensor"
+	   location as Geolocation "gives the position of the sensor"
 	}
 }
 ```
@@ -241,33 +242,16 @@ As seen in the picture, we will now setup the Eclipse Vorto Payload Normalizatio
 
 <img src="../images/tutorials/decouple_tutorial/stepOneOverview.png" />
 
-For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-hono-subscriber/Readme.md). 
+For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md). 
 
-Here are the steps:
+Here are the steps to run the middleware service:
 
-1. Git clone `https://github.com/eclipse/vorto-examples.git`
-2. Import the folder `vorto-hono-subscriber` into your IDE as a Maven project
-3. Copy the two sensor mapping specs into the folder `src/main/resources/specs` 
-4. Open the file `src/main/resources/application.yml` and add the following configurations:
+1. Pull the image from docker-hub with ```docker pull eclipsevorto/vorto-normalizer:nightly```
+2. Run the service with ```docker run -p 8080:8080 -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=amqp_url -e amqp.username=amqp_username -e amqp.password=amqp_password -e cors=http://localhost:4200 eclipsevorto/vorto-normalizer:nightly```
+> Please refer to the [middleware guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) for more information about the environment variables
+3. Optionally run the middleware frontend for better device payload monitoring capabilities. Please also refer to the middleware guide for details.
 
-```
-hono:
-  tenantId: BOSCH_IOT_HUB_TENANTID GOES HERE
-  password: BOSCH_IOT_HUB_MESSAGING_PASSWORD GOES HERE
-
-msg:
-  queue: telemetry/${hono.tenantId}
-
-session:
-  cache:
-    size: 1
-```
-
-Comment out or remove the other `amqp` configurations for now. We need them only at a later point. 
-
-Run the Spring Boot App with `mvn clean install spring-boot:run`. The console should display no errors, meaning it has successfully connected to the Bosch IoT Hub (Eclipse Hono-based) via AMQP and is now ready to receive any messages from there.
-
-Wait! Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
+Now, before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
 1. Again open the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry)
 2. Find the **PUT** Command , which updates your existing device ID. Add the following JSON content:
@@ -305,32 +289,7 @@ You should be able to see the normalized payload with the exact same structure f
 <img src="../images/tutorials/decouple_tutorial/normalized.png" />
 
 
-
-### 5. Setting up AMQP Endpoint for normalized Vorto payload
-
-At this point, we have not yet connected our IoT Geolocation app with the Vorto normalization middleware in order to receive geolocation data. That is exactly what we are going to prepare now. 
-
-As seen in the picture below, we will set up an AMQP Broker to which the Vorto normalization middleware will publish converted payload data. The Vorto normalization middleware has built-in support for publishing device messages to a configured AMQP Broker. To save us some time, we will create an instance of the [Amazon MQ](https://aws.amazon.com/amazon-mq/) on AWS. In order to do so, please follow these.
-
-<img src="../images/tutorials/decouple_tutorial/stepTwoOverview.png" />
-
-1. [Set up and Configure](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html) an Amazon MQ instance on AWS
-2. In the ActiveMQ Web Console, create a topic called `telemetry/vorto`
-3. Create two technical users. One technical user that is used by the Vorto normalization middleware to publish payload. The other technical user will be used by the Geolocation cloud application to consume the payload. 
-4. Stop the running Vorto Normalization middleware, if not already done so. Open the `src/main/resources/application.yml` and make the following changes to your configuration:
-
-```
-amqp:
-  username: TECHNICAL_USER_AMAZON_MQ_TO_PUBLISH
-  password: TECHNICAL_USER_AMAZON_MQ_PASSWORD
-  url: ssl://ENDPOINT_OF_SETUP_AMAZON_MQ_INSTANCE
-  topic:
-    native: telemetry/vorto
-```
-
-Start the spring boot application again with `mvn spring-boot:run`. 
-
-### 6. Make cloud application changes
+### 5. Make cloud application changes
 
 In this step, we are going to make a small configuration change to our existing Geolocation cloud application from the beginning, which we will now configure to point to our new Amazon MQ Broker AMQP endpoint, in order to receive normalized geo location sensor data. 
 
