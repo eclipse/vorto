@@ -12,6 +12,7 @@
 package org.eclipse.vorto.repository.core.search;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.eclipse.vorto.repository.search.SearchParameters;
 import org.junit.Test;
@@ -157,4 +158,49 @@ public class SearchUnitTest {
         .withTaggedName("ʒɽɭ?");
     assertEquals(expected, SearchParameters.build(query));
   }
+
+  /**
+   * Boilerplate null-safety check et al. below.
+   */
+  @Test
+  public void testNullQuery() {
+    String query = null;
+    SearchParameters expected = new SearchParameters();
+    assertEquals(expected, SearchParameters.build(query));
+  }
+
+  @Test
+  public void testEmptyQuery() {
+    String query = "";
+    SearchParameters expected = new SearchParameters();
+    assertEquals(expected, SearchParameters.build(query));
+  }
+
+  @Test
+  public void testWhitespaceQuery() {
+    String query = " ";
+    SearchParameters expected = new SearchParameters();
+    assertEquals(expected, SearchParameters.build(query));
+  }
+
+  @Test
+  public void testExtendedWhitespaceQuery() {
+    String query = "\u0009\r\n";
+    SearchParameters expected = new SearchParameters();
+    assertEquals(expected, SearchParameters.build(query));
+  }
+
+  /**
+   * These characters (and many more) are not trimmed out by Java natively and are presently
+   * not supported. <br/>
+   * The search will be performed with those characters as an un-tagged name query.<br/>
+   * Hopefully, this is not particularly important to fix.
+   */
+  @Test
+  public void testNastyWhitespaceQuery() {
+    String query = "\u00A0\u0009\u0085";
+    SearchParameters expected = new SearchParameters();
+    assertNotEquals(expected, SearchParameters.build(query));
+  }
+
 }
