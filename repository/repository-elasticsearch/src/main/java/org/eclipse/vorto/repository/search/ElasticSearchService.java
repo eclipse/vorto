@@ -106,14 +106,50 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private ITenantService tenantService;
 
-  private static final Map<String, Float> NAME_FIELDS_FOR_QUERY = new HashMap<>();
+  /**
+   * An un-tagged name token in a search will search into the following fields:
+   * <ul>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#DISPLAY_NAME}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#DESCRIPTION}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#MODEL_NAME_SEARCHABLE}
+   *   </li>
+   * </ul>
+   * The ranking of results is equal for the 3 fields.
+   */
+  public static final Map<String, Float> UNTAGGED_NAME_FIELDS_FOR_QUERY = new HashMap<>();
   static {
-    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
-    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DESCRIPTION, 1.0f);
-    NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, 1.0f);
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DESCRIPTION, 1.0f);
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, 1.0f);
   }
 
-  private static final Map<String, Float> USER_REFERENCE_FIELDS_FOR_QUERY = new HashMap<>();
+  /**
+   * A value tagged {@literal name:} will be searched in the following field:
+   * {@link BasicIndexFieldExtractor#DISPLAY_NAME}
+   */
+  public static final Map<String, Float> TAGGED_NAME_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    TAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
+  }
+
+  /**
+   * A value tagged {@literal userReference:} will be searched in the following two fields:
+   * <ul>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#AUTHOR}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#MODIFIED_BY}
+   *   </li>
+   * </ul>
+   * The ranking of results is equal for the 2 fields.
+   */
+  public static final Map<String, Float> USER_REFERENCE_FIELDS_FOR_QUERY = new HashMap<>();
   static {
     USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
     USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
@@ -748,12 +784,24 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       result = result.must(buildORBoolQueryWith(isPublic(), isOwnedByTenants(tenantIds)));
     }
 
-    // adding names - special rule: non-wildcard values are appended a multi-character wildcard
-    Set<String> names = SearchTags.appendPostfixWildcardForNames(parameters.getNames());
-    if (!names.isEmpty()) {
+    /*
+     adding tagged and untagged names - special rules:
+     1. non-wildcard values are appended a multi-character wildcard
+     2. tagged names resolve to display name / name
+     3. un-tagged names resolve to name, description and display name
+     */
+    Set<String> taggedNames = SearchTags.appendPostfixWildcardForNames(parameters.getTaggedNames());
+    if (!taggedNames.isEmpty()) {
         makeChildQuery(
-            result, names, NAME_FIELDS_FOR_QUERY
+            result, taggedNames, TAGGED_NAME_FIELDS_FOR_QUERY
         );
+    }
+
+    Set<String> unTaggedNames = SearchTags.appendPostfixWildcardForNames(parameters.getUntaggedNames());
+    if (!unTaggedNames.isEmpty()) {
+      makeChildQuery(
+          result, unTaggedNames, UNTAGGED_NAME_FIELDS_FOR_QUERY
+      );
     }
 
     // adding states

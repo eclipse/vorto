@@ -22,7 +22,7 @@ for a full description of all properties below.
 
 Tag | Description | Values |Tag required | Example
 ------|-------------|--------|--------------|--------
-Name | The model's name (either the `displayName` or the `description`) | Any | No |  <ul><li>`name:RaspberryPi`</li><li>`RaspberryPi`</li><li>`Rasp*`</li><li>`*aspberry??`</li><li>`name:*Pi`</li></ul>
+Name | The model's name. <ul><li>If the term is tagged explicitly with `name:`, will search the `displayName` field</li><li>If the term is not tagged, will search either the `displayName` or the `description` fields</li></ul>Values with no wildcards will automatically be added a trailing multi-character wildcard, e.g. `name:abc` becomes `name:abc*` under the hood.  | Any | No |  <ul><li>`name:RaspberryPi`</li><li>`RaspberryPi`</li><li>`Rasp*`</li><li>`*aspberry??`</li><li>`name:*Pi`</li></ul>
 Author | The author of the model | Any | Yes | <ul><li>`author:mena`</li><li>`author:m*`</li></ul>
 User reference | A shortcut for either `author:` or `lastModifiedBy` | Any | Yes | <ul><li>`userReference:m*`</li></ul>
 Visibility | Whether the model is private or public | <ul><li>`Private`</li><li>`Public`</li></ul> | Yes | <ul><li>`visibility:Private`</li><li>`visibility:*`</li></ul>

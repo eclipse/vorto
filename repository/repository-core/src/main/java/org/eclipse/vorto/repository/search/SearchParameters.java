@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 
 /**
@@ -31,7 +34,8 @@ import org.eclipse.vorto.repository.core.IUserContext;
 public class SearchParameters {
 
   Set<String> tenantIds = new HashSet<>();
-  Set<String> names = new HashSet<>();
+  Set<String> taggedNames = new HashSet<>();
+  Set<String> unTaggedNames = new HashSet<>();
   Set<String> states = new HashSet<>();
   Set<String> types = new HashSet<>();
   Set<String> authors = new HashSet<>();
@@ -59,7 +63,7 @@ public class SearchParameters {
     // searching for tagged content and adding to instance
     Arrays.stream(SearchTags.values()).forEach(st -> st.parseValue(result, freeTextSearch));
     // searching for untagged content and adding to instance
-    SearchTags.parseUntaggedValues(freeTextSearch).forEach(result::withName);
+    SearchTags.parseUntaggedValues(freeTextSearch).forEach(result::withUntaggedName);
     return result;
   }
 
@@ -104,11 +108,11 @@ public class SearchParameters {
 
   /**
    *
-   * @param name
+   * @param taggedName
    * @return
    */
-  public SearchParameters withName(String name) {
-    names.add(name);
+  public SearchParameters withTaggedName(String taggedName) {
+    taggedNames.add(taggedName);
     return this;
   }
 
@@ -116,16 +120,68 @@ public class SearchParameters {
    *
    * @return
    */
-  public Set<String> getNames() {
-    return Collections.unmodifiableSet(names);
+  public Set<String> getTaggedNames() {
+    return Collections.unmodifiableSet(taggedNames);
   }
 
   /**
    *
    * @return
    */
+  public boolean hasTaggedNames() {
+    return !taggedNames.isEmpty();
+  }
+
+  /**
+   *
+   * @param unTaggedName
+   * @return
+   */
+  public SearchParameters withUntaggedName(String unTaggedName) {
+    unTaggedNames.add(unTaggedName);
+    return this;
+  }
+
+  /**
+   *
+   * @return
+   */
+  public Set<String> getUntaggedNames() {
+    return Collections.unmodifiableSet(unTaggedNames);
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean hasUntaggedNames() {
+    return !unTaggedNames.isEmpty();
+  }
+
+  /**
+   * Legacy getter for the simple search, where name searches all resolve to {@literal [vorto:name]}.
+   * <br/>This is in contrast with the Elasticsearch service, where tagged name searches specifically
+   * resolve to the {@literal displayName} field (which seems to be always the same as the
+   * {@link ModelId#getName()} model field), while un-tagged searches are broader, and resolve to
+   * {@literal displayName}, {@literal description} and {@literal searchableName}.<br/>
+   * This getter therefore returns a junction of {@link SearchParameters#getTaggedNames()} and
+   * {@link SearchParameters#getUntaggedNames()}, and should only be used by the simple search
+   * service.
+   *
+   * @return
+   */
+  public Set<String> getNames() {
+    return Collections.unmodifiableSet(Stream.concat(taggedNames.stream(), unTaggedNames.stream()).collect(
+        Collectors.toSet()));
+  }
+
+  /**
+   *
+   * @return whether either tagged or un-tagged names have any values.
+   * @see SearchParameters#getNames() for context.
+   */
   public boolean hasNames() {
-    return !names.isEmpty();
+    return !taggedNames.isEmpty() || !unTaggedNames.isEmpty();
   }
 
   /**
@@ -313,7 +369,7 @@ public class SearchParameters {
    * @return whether no fields were populated (empty query).
    */
   public boolean isEmpty() {
-    return !hasAuthors() && !hasNames() && !hasNamespaces() && !hasStates() && !hasStates() &&
+    return !hasAuthors() && !hasTaggedNames() && !hasUntaggedNames() && !hasNamespaces() && !hasStates() && !hasStates() &&
         !hasTenantIds() && !hasTypes() && !hasUserReferences() && !hasVersions() && !hasVisibilities();
   }
 }

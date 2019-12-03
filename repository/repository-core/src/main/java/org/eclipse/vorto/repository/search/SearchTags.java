@@ -47,7 +47,7 @@ public enum SearchTags {
    */
   NAME(
       "name", SearchTags::normalizeParsedValue,
-      (s, sp) -> sp.withName(s)
+      (s, sp) -> sp.withTaggedName(s)
   ),
   AUTHOR(
       "author", SearchTags::normalizeParsedValue,
