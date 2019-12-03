@@ -36,61 +36,13 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println("testCreateScriptWithSingleFb: generated:" + cleaned(generated));
+		System.out.println(cleaned(generated));
 		Assert.assertEquals(cleaned(expectedTemplate1), cleaned(generated));
 	}
 
 	def String getExpectedTemplate1() {
 		'''
-			{
-				"variables": [],
-				"info": {
-					"name": "RPi Provisioning",
-					"_postman_id": "8147ad0e-c8f1-e51f-a036-73a13a4c567f",
-					"description": "",
-					"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-				},
-				"item": [
-					{
-						"name": "Provision Request",
-						"event": [
-							{
-								"listen": "prerequest",
-								"script": {
-									"type": "text/javascript",
-									"exec": [
-										"postman.setEnvironmentVariable(\"service-instance-id\", \"1234\");",
-										"postman.setEnvironmentVariable(\"device-password\", \"secret\");",
-										"postman.setEnvironmentVariable(\"device-id\", \"com.mycompany:4711\");"
-									]
-								}
-							}
-						],
-						"request": {
-							"url": "https://deviceprovisioning.eu-1.bosch-iot-suite.com/api/1/{{service-instance-id}}/devices",
-							"method": "POST",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json",
-									"description": ""
-								},
-								{
-									"key": "Authorization",
-									"value": "Bearer ADD_BEARER_TOKEN_HERE",
-									"description": ""
-								}
-							],
-							"body": {
-								"mode": "raw",
-								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n  \"things\": {\n    \"thing\": {\n      \"attributes\": {\n    \t\"thingName\": \"RPi\",\n    \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n    \t },\n  \t\"features\": {\n  \t\"cpuTemperature\" : {\n  \t\"definition\": [\n  \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n  \t],\n  \t\"properties\": {\n  \t\t\"status\": {\n  \t\t\t\"value\" : 0.0,\n  \t\t\t\"unit\" : \"\"\n  \t\t}\n  \t}\n  \t}\n  }\n}\n}\n}\n"
-							},
-							"description": "Provisions the RPi in the Bosch IoT Suite"
-						},
-						"response": []
-					}
-				]
-			}
+			{"variables":[],"info":{"name":"RPiProvisioning","_postman_id":"8147ad0e-c8f1-e51f-a036-73a13a4c567f","description":"","schema":"https://schema.getpostman.com/json/collection/v2.0.0/collection.json"},"item":[{"name":"ProvisionRequest","event":[{"listen":"prerequest","script":{"type":"text/javascript","exec":["postman.setEnvironmentVariable(\"service-instance-id\",\"1234\");","postman.setEnvironmentVariable(\"device-password\",\"secret\");","postman.setEnvironmentVariable(\"device-id\",\"com.mycompany:4711\");"]}}],"request":{"url":"https://deviceprovisioning.eu-1.bosch-iot-suite.com/api/1/{{service-instance-id}}/devices","method":"POST","header":[{"key":"Content-Type","value":"application/json","description":""},{"key":"Authorization","value":"BearerADD_BEARER_TOKEN_HERE","description":""}],"body":{"mode":"raw","raw":"{\n\"id\":\"{{device-id}}\",\n\"hub\":{\n\"device\":{\n\"enabled\":true\n},\n\"credentials\":{\n\"type\":\"hashed-password\",\n\"secrets\":[\n{\n\"password\":\"{{device-password}}\"\n}\n]\n}\n},\n\"things\":{\n\"thing\":{\n\"attributes\":{\n\t\"thingName\":\"RPi\",\n\t\"definition\":\"org.eclipse.vorto:RPi:1.0.0\"\n\t},\n\t\"features\":{\n\t\"cpuTemperature\":{\n\t\"definition\":[\n\t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n\t],\n\t\"properties\":{\n\t\t\"status\":{\n\t\t\t\"value\":0.0,\n\t\t\t\"unit\":\"\"\n\t\t}\n\t}\n\t}\n}\n}\n\t}\n}\n"},"description":"ProvisionstheRPiintheBoschIoTSuite"},"response":[]}]}		
 		'''
 	}
 
@@ -108,7 +60,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "outdoorTemperature", null, false)
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println("testCreateScriptWithMultipleFbs: generated:" + cleaned(generated));
+		System.out.println(cleaned(generated));
 		Assert.assertEquals(cleaned(expectedTemplate2), cleaned(generated));
 	}
 
@@ -118,55 +70,8 @@ class ProvisionDeviceScriptTemplateTest {
 
 	def String getExpectedTemplate2() {
 		'''
-			{
-				"variables": [],
-				"info": {
-					"name": "RPi Provisioning",
-					"_postman_id": "8147ad0e-c8f1-e51f-a036-73a13a4c567f",
-					"description": "",
-					"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-				},
-				"item": [
-					{
-						"name": "Provision Request",
-						"event": [
-							{
-								"listen": "prerequest",
-								"script": {
-									"type": "text/javascript",
-									"exec": [
-										"postman.setEnvironmentVariable(\"service-instance-id\", \"1234\");",
-										"postman.setEnvironmentVariable(\"device-password\", \"secret\");",
-										"postman.setEnvironmentVariable(\"device-id\", \"com.mycompany:4711\");"
-									]
-								}
-							}
-						],
-						"request": {
-							"url": "https://deviceprovisioning.eu-1.bosch-iot-suite.com/api/1/{{service-instance-id}}/devices",
-							"method": "POST",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json",
-									"description": ""
-								},
-								{
-									"key": "Authorization",
-									"value": "Bearer ADD_BEARER_TOKEN_HERE",
-									"description": ""
-								}
-							],
-							"body": {
-								"mode": "raw",
-								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n  \"things\": {\n    \"thing\": {\n      \"attributes\": {\n    \t\"thingName\": \"RPi\",\n    \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n    \t },\n  \t\"features\": {\n  \t\"cpuTemperature\" : {\n  \t\"definition\": [\n  \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n  \t],\n  \t\"properties\": {\n  \t\t\"status\": {\n  \t\t\t\"value\" : 0.0,\n  \t\t\t\"unit\" : \"\"\n  \t\t}\n  \t}\n  \t},\n  \t\"outdoorTemperature\" : {\n  \t\"definition\": [\n  \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n  \t],\n  \t\"properties\": {\n  \t\t\"status\": {\n  \t\t\t\"value\" : 0.0,\n  \t\t\t\"unit\" : \"\"\n  \t\t}\n  \t}\n  \t}\n  }\n}\n}\n}\n"
-							},
-							"description": "Provisions the RPi in the Bosch IoT Suite"
-						},
-						"response": []
-					}
-				]
-			}
+			{"variables":[],"info":{"name":"RPiProvisioning","_postman_id":"8147ad0e-c8f1-e51f-a036-73a13a4c567f","description":"","schema":"https://schema.getpostman.com/json/collection/v2.0.0/collection.json"},"item":[{"name":"ProvisionRequest","event":[{"listen":"prerequest","script":{"type":"text/javascript","exec":["postman.setEnvironmentVariable(\"service-instance-id\",\"1234\");","postman.setEnvironmentVariable(\"device-password\",\"secret\");","postman.setEnvironmentVariable(\"device-id\",\"com.mycompany:4711\");"]}}],"request":{"url":"https://deviceprovisioning.eu-1.bosch-iot-suite.com/api/1/{{service-instance-id}}/devices","method":"POST","header":[{"key":"Content-Type","value":"application/json","description":""},{"key":"Authorization","value":"BearerADD_BEARER_TOKEN_HERE","description":""}],"body":{"mode":"raw","raw":"{\n\"id\":\"{{device-id}}\",\n\"hub\":{\n\"device\":{\n\"enabled\":true\n},\n\"credentials\":{\n\"type\":\"hashed-password\",\n\"secrets\":[\n{\n\"password\":\"{{device-password}}\"\n}\n]\n}\n},\n\"things\":{\n\"thing\":{\n\"attributes\":{\n\t\"thingName\":\"RPi\",\n\t\"definition\":\"org.eclipse.vorto:RPi:1.0.0\"\n\t},\n\t\"features\":{\n\t\"cpuTemperature\":{\n\t\"definition\":[\n\t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n\t],\n\t\"properties\":{\n\t\t\"status\":{\n\t\t\t\"value\":0.0,\n\t\t\t\"unit\":\"\"\n\t\t}\n\t}\n\t},\n\t\"outdoorTemperature\":{\n\t\"definition\":[\n\t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n\t],\n\t\"properties\":{\n\t\t\"status\":{\n\t\t\t\"value\":0.0,\n\t\t\t\"unit\":\"\"\n\t\t}\n\t}\n\t}\n}\n}\n\t}\n}\n"},"description":"ProvisionstheRPiintheBoschIoTSuite"},"response":[]}]}
+			
 		'''
 	}
 
@@ -238,7 +143,7 @@ class ProvisionDeviceScriptTemplateTest {
 							],
 							"body": {
 								"mode": "raw",
-								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n  \"things\": {\n    \"thing\": {\n      \"attributes\": {\n    \t\"thingName\": \"RPi\",\n    \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n    \t },\n  \t\"features\": {\n  \t\"cpuTemperature\" : {\n  \t\"definition\": [\n  \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n  \t],\n  \t\"properties\": {\n  \t\t\"status\": {\n  \t\t\t\"value\" : {\n  \t\t\t\t\"value\" : 0.0,\n  \t\t\t\t\"unit\" : \"F\"\n  \t\t\t}\n  \t\t}\n  \t}\n  \t}\n  }\n}\n}\n}\n"
+								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n   \"things\": {\n    \"thing\": {\n      \"attributes\": {\n     \t\"thingName\": \"RPi\",\n     \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n     \t },\n     \t\"features\": {\n     \t\"cpuTemperature\" : {\n     \t\"definition\": [\n     \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n     \t],\n     \t\"properties\": {\n     \t\t\"status\": {\n     \t\t\t\"value\" : {\n     \t\t\t\t\"value\" : 0.0,\n     \t\t\t\t\"unit\" : \"F\"\n     \t\t\t}\n     \t\t}\n     \t}\n     \t}\n    }\n    }\n\t}\n}\n"
 							},
 							"description": "Provisions the RPi in the Bosch IoT Suite"
 						},
@@ -246,6 +151,8 @@ class ProvisionDeviceScriptTemplateTest {
 					}
 				]
 			}
+			
+			
 		'''
 	}
 
@@ -312,7 +219,7 @@ class ProvisionDeviceScriptTemplateTest {
 							],
 							"body": {
 								"mode": "raw",
-								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n  \"things\": {\n    \"thing\": {\n      \"attributes\": {\n    \t\"thingName\": \"RPi\",\n    \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n    \t },\n  \t\"features\": {\n  \t\"cpuTemperature\" : {\n  \t\"definition\": [\n  \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n  \t],\n  \t\"properties\": {\n  \t\t\"status\": {\n  \t\t\t\"unit\" : \"F\"\n  \t\t}\n  \t}\n  \t}\n  }\n}\n}\n}\n"
+								"raw": "{\n  \"id\": \"{{device-id}}\",\n  \"hub\": {\n    \"device\": {\n      \"enabled\": true\n    },\n    \"credentials\": {\n      \"type\": \"hashed-password\",\n      \"secrets\": [\n        {\n          \"password\": \"{{device-password}}\"\n        }\n      ]\n    }\n  },\n   \"things\": {\n    \"thing\": {\n      \"attributes\": {\n     \t\"thingName\": \"RPi\",\n     \t\"definition\": \"org.eclipse.vorto:RPi:1.0.0\"\n     \t },\n     \t\"features\": {\n     \t\"cpuTemperature\" : {\n     \t\"definition\": [\n     \t\t\"org.eclipse.vorto:Temperature:1.0.0\"\n     \t],\n     \t\"properties\": {\n     \t\t\"status\": {\n     \t\t\t\"unit\" : \"F\"\n     \t\t}\n     \t}\n     \t}\n    }\n    }\n\t}\n}\n"
 							},
 							"description": "Provisions the RPi in the Bosch IoT Suite"
 						},
