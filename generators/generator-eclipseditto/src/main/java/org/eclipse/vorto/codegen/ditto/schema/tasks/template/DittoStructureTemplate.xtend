@@ -1,17 +1,15 @@
-/*******************************************************************************
-	* Copyright (c) 2019 Bosch Software Innovations GmbH and others.
-	* All rights reserved. This program and the accompanying materials
-	* are made available under the terms of the Eclipse Public License v1.0
-	* and Eclipse Distribution License v1.0 which accompany this distribution.
-	*
-	* The Eclipse Public License is available at
-	* http://www.eclipse.org/legal/epl-v10.html
-	* The Eclipse Distribution License is available at
-	* http://www.eclipse.org/org/documents/edl-v10.php.
-	*
-	* Contributors:
-	* Bosch Software Innovations GmbH - Please refer to git log
-	*******************************************************************************/
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * 
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template
 
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
@@ -23,10 +21,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
-class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
+class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 
 	override getFileName(InformationModel context) {
-		return "dittoStructure.json";
+		return "dittoThing.json";
 	}
 
 	override getPath(InformationModel context) {
@@ -35,8 +33,7 @@ class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
- "things": {
-  "thing": {
+{
   "attributes": {
  	"thingName": "«model.displayname»",
  	"definition": "«model.namespace»:«model.name»:«model.version»"
@@ -44,7 +41,7 @@ class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
  	"features": {
  	«FOR fbProperty : model.properties SEPARATOR ","»
  	"«fbProperty.name»" : {
-  	"definition": [
+ 	"definition": [
  		"«fbProperty.type.namespace»:«fbProperty.type.name»:«fbProperty.type.version»"
  	],
  	"properties": {
@@ -56,7 +53,7 @@ class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
  		}«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
  		«ENDIF»
  		«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
- 			"configuration": {
+ 		"configuration": {
  			«FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
  			"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSEIF configProperty.type instanceof ObjectPropertyType»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(configProperty.type as DictionaryPropertyType)»«ENDIF»
  			«ENDFOR»
@@ -65,7 +62,6 @@ class DittoThingStructureTemplate implements IFileTemplate<InformationModel> {
  	}
  	}
  	«ENDFOR»
-}
 }
 }
 		'''

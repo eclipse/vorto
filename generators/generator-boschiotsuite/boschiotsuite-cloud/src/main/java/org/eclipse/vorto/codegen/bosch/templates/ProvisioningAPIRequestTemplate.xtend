@@ -1,14 +1,27 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * 
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.codegen.bosch.templates
 
+import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoStructureTemplate
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
-import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoThingStructureTemplate
 
 class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> {
 
@@ -37,7 +50,9 @@ class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> 
 			      ]
 			    }
 			  },
-«new DittoThingStructureTemplate().getContent(model, context)»
+			   "things": {
+			    "thing": «new DittoStructureTemplate().getContent(model, context)»
+				}
 			}
 		'''
 	}
@@ -51,8 +66,8 @@ class ProvisioningAPIRequestTemplate implements IFileTemplate<InformationModel> 
 	}
 
 	def String getJsonObjectType(ObjectPropertyType propertyType) {
-		if (propertyType.type instanceof org.eclipse.vorto.core.api.model.datatype.Enum) {
-			var literals = (propertyType.type as org.eclipse.vorto.core.api.model.datatype.Enum).enums;
+		if (propertyType.type instanceof Enum) {
+			var literals = (propertyType.type as Enum).enums;
 			if (literals.empty) {
 				return "\"\""
 			} else {

@@ -13,7 +13,7 @@
 package org.eclipse.vorto.codegen.ditto;
 
 import org.eclipse.vorto.codegen.ditto.schema.SchemaValidatorTask;
-import org.eclipse.vorto.codegen.ditto.schema.tasks.template.JsonObjectWrappedDittoThingStructureTemplate;
+import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoStructureTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
@@ -35,7 +35,7 @@ import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
  */
 public final class EclipseDittoGenerator implements ICodeGenerator {
 
-  private static final JsonObjectWrappedDittoThingStructureTemplate REQUEST_TEMPLATE = new JsonObjectWrappedDittoThingStructureTemplate();
+  private static final DittoStructureTemplate DITTO_THING_JSON_TEMPLATE = new DittoStructureTemplate();
   private static final String GENERATOR_KEY = "eclipseditto";
   private static final String THING_JSON = "thingJson";
 
@@ -44,7 +44,7 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
     String target = invocationContext.getConfigurationProperties().getOrDefault("target", "");
     if (THING_JSON.equalsIgnoreCase(target)) {
       SingleGenerationResult output = new SingleGenerationResult("application/json");
-      new GeneratorTaskFromFileTemplate<>(REQUEST_TEMPLATE).generate(infomodel, invocationContext, output);
+      new GeneratorTaskFromFileTemplate<>(DITTO_THING_JSON_TEMPLATE).generate(infomodel, invocationContext, output);
       return output;
     }
 
