@@ -9,7 +9,7 @@ Conversely, a custom JCR query building mechanism is in use in development envir
 
 Both resulting search services use a common intermediary syntax to simplify and harmonize the search. 
 
-The search is available as a text field in the [web UI]((http://www.eclipse.org/vorto)), and can be 
+The search is available as a text field in the [web UI](https://www.eclipse.org/vorto), and can be 
 also performed as a GET request in the [HTTP API](https://www.eclipse.org/vorto/swagger/#/Models/SearchForModels).  
  
 ## How to search
