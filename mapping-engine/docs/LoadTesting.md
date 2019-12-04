@@ -105,7 +105,6 @@ For the reason that the normalization of binary data into a mapped output requir
 
 ## **Result -** **Scenario 1** **:** Binary
 
-#### A complete overview of the results can be found under this link [benchmark_binary.html](empty_link.html)
 
 ## Test Case 1
 <table style="width:100%">  
@@ -369,7 +368,6 @@ humidity = 88.19</td>
 
 
 ## **Result - Scenario 2:**
-An overview of the complete results can be found under this link [benchmark_json.html](empty_url.html)
 
 ## Test Case 1
 <table style="width:100%">  
