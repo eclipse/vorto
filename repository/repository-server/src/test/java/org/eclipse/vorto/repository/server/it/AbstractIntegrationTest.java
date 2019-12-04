@@ -17,6 +17,7 @@ import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
 import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
 import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
 import static org.eclipse.vorto.repository.domain.Role.USER;
+import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -111,7 +112,7 @@ public abstract class AbstractIntegrationTest {
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     userAdmin = user(ApplicationConfig.USER_ADMIN).password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
+        Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
     userStandard = user(ApplicationConfig.USER_STANDARD).password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
     userStandard2 = user(ApplicationConfig.USER_STANDARD2).password("pass")

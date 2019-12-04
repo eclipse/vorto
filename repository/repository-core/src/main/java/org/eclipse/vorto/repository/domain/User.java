@@ -47,7 +47,13 @@ public class User {
   @Column(name = "username")
   @NaturalId
   private String username;
+  
+  @Column(name = "authenticationProvider")
+  private String authenticationProvider;
 
+  @Column(name = "subject")
+  private String subject;
+  
   @Column(nullable = false)
   private Timestamp dateCreated;
 
@@ -62,9 +68,11 @@ public class User {
 
   private String emailAddress;
 
-  public static User create(String username) {
+  public static User create(String username, String provider, String subject) {
     User user = new User();
     user.setUsername(username);
+    user.setAuthenticationProvider(provider);
+    user.setSubject(subject);
     user.setDateCreated(new Timestamp(System.currentTimeMillis()));
     user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
     user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
@@ -72,8 +80,8 @@ public class User {
     return user;
   }
 
-  public static User create(String username, Tenant tenant, Role... roles) {
-    User user = create(username);
+  public static User create(String username, String provider, String subject, Tenant tenant, Role... roles) {
+    User user = create(username, provider, subject);
 
     TenantUser tenantUser = new TenantUser();
     tenantUser.addRoles(roles);
@@ -202,6 +210,14 @@ public class User {
   public void setUsername(String username) {
     this.username = username;
   }
+  
+  public String getAuthenticationProvider() {
+    return authenticationProvider;
+  }
+
+  public void setAuthenticationProvider(String authenticationProvider) {
+    this.authenticationProvider = authenticationProvider;
+  }
 
   public Timestamp getDateCreated() {
     return dateCreated;
@@ -237,6 +253,14 @@ public class User {
 
   public boolean hasEmailAddress() {
     return this.emailAddress != null && !"".equals(this.emailAddress);
+  }
+  
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
   }
 
   public Set<TenantUser> getTenantUsers() {

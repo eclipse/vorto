@@ -13,7 +13,14 @@ package org.eclipse.vorto.repository.oauth;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.eclipse.vorto.repository.sso.oauth.strategy.HydraTokenVerificationProvider;
 import org.eclipse.vorto.repository.sso.oauth.strategy.VerificationHelper;
@@ -26,8 +33,12 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
   private final String expiredToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6InB1YmxpYzoxYjI2ZDEwYi1iMTZjLTQ4MDQtYmM4MC1jMWUzOWJhNTZlMjAiLCJ0eXAiOiJKV1QifQ.eyJqdGkiOiJmNjAyNGYzMy03NzQwLTQ0MmUtYWVjMC1lNTU4MzI4OTA2OTAiLCJpYXQiOjE1Mzk1ODQ0MzQsImV4cCI6MTUzOTU4NDQzNCwibmJmIjoxNTM5NTg0NDM0LCJpc3MiOiJodHRwczovL2FjY2Vzcy5ib3NjaC1pb3Qtc3VpdGUuY29tL3YyIiwiYXVkIjpbXSwiY2xpZW50X2lkIjoiZDc1OGEzNWUtOTRlZi00NDNmLTk2MjUtN2YwMzA5MmUyMDA1Iiwic2NwIjpbInNlcnZpY2U6aW90LWh1Yjp0ZTE3YjcyMDIwMDQ3NDRmM2E4ZWQ3ZDM2OWFkMTYyNTFfaHViL2Z1bGwtYWNjZXNzIiwic2VydmljZTppb3QtdGhpbmdzLWV1LTE6ZTE3YjcyMDItMDA0Ny00NGYzLWE4ZWQtN2QzNjlhZDE2MjUxX3RoaW5ncy9mdWxsLWFjY2VzcyIsInNlcnZpY2U6dm9ydG86dm9ydG8ucHJpdmF0ZS5lcmxlL2Z1bGwtYWNjZXNzIl0sInN1YiI6ImQ3NThhMzVlLTk0ZWYtNDQzZi05NjI1LTdmMDMwOTJlMjAwNSIsImV4dCI6e319.OMVa0fWqs6lo2Qsa48gscA69jn8-A9I3tSj5yiHwccIT7Xz7xYKL-EnZ4mTlAyWmXhw_J9KWyIUUrKbkGOyiGXbVjAfUxb-lltaTJMLFr4yZHxE8KOzPxBgtoqC__ZO9JwmGfnO897cblQuRqEwGF2btf-wSixXwIeJgqpkMiNvzjpaWHLfTpi6JskW50dKsCtObclxZhr3D8C0rjgom56kx6xrC-FYkIxM4XJ5FFEwzy8olZvPBPyiOmowWyA6qWAyH7i9CzT6QU71ppKYyh1xNQyqlj1TBNJxuOCwefFLcDWkgoW7YAsU_8PzWg0ST_Ruw0zUwPmbMidY_wnQabcaUrSGHrv8T2IgbIjClWDZwR-byU4nuplCcRVBpot6IKoOH8SrNDuF60Pw6GZntEeMPXSXaA3Q5V2zqCQ1tujyV0YTJXRb_iipF4Smvf7Nh8eO8wyECixtTleyqSaYscqBuiFtDyTTHNRpgxMAR-tcHQTf-VeKxB7i1fGJnHW1ztnS82zEyJxNb0OCDTFOAzvX_GFu77abVI3coX7NF1EZCRivB50JxTbpcOAFEur1XWEdO0ZlsUjzmHo2iHuXrREAs7b2GZV6FY33HXiUQlEFOHpGD4JI9nrq0xNh8UdynuMEIV34g9d6eNQr5-J4eTQeMGZH2xJMW4jjJsQCAQ1s";
   
   private HydraTokenVerificationProvider getVerifier() {
+    Tenant tenant = new Tenant("test");
+    tenant.setNamespaces(Namespace.toNamespace(Arrays.asList("vorto.private.erle"), tenant).stream().collect(Collectors.toSet()));
+    User user = User.create("d758a35e-94ef-443f-9625-7f03092e2005", AuthenticationProvider.GITHUB.name(), null, tenant, Role.USER);
+    
     IUserAccountService userAccountService = Mockito.mock(IUserAccountService.class);
-    Mockito.when(userAccountService.exists("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(true);
+    Mockito.when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
     
     return new HydraTokenVerificationProvider(publicKey(), userAccountService);
   }

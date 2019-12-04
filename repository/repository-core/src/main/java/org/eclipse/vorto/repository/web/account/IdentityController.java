@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -82,12 +83,17 @@ public class IdentityController {
 
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName());
+    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
 
     SpringUserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with
                                                             // the updated user and its roles
 
     return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+  }
+  
+  // TODO : Implement mechanism for knowing the authentication provider of logged-in user
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
+    return AuthenticationProvider.GITHUB.name();
   }
 
   @Deprecated
@@ -121,7 +127,8 @@ public class IdentityController {
           required = true) final @PathVariable String tenantId,
       @RequestBody List<Role> roles) {
 
-    User user = accountService.create(userName, tenantId, roles.toArray(new Role[roles.size()]));
+    User user = accountService.create(userName, AuthenticationProvider.GITHUB.name(), null, 
+        tenantId, roles.toArray(new Role[roles.size()]));
 
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.CREATED);
   }

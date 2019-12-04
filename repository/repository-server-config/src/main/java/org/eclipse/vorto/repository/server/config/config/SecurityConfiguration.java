@@ -200,8 +200,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter githubFilter() {
-    //UserInfoTokenServices githubUserInfoService =
-    //    new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
     return newSsoFilter("/github/login", githubUserInfoTokenServices, accessTokenProvider,
         new OAuth2RestTemplate(github, oauth2ClientContext), authoritiesExtractor("login"));
   }
@@ -250,7 +248,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   @Bean(name = "githubUserInfoTokenServices")
   public UserInfoTokenServices githubUserInfoTokenServices() {
-    return new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    UserInfoTokenServices tokenServices = new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    tokenServices.setAuthoritiesExtractor(authoritiesExtractor("login"));
+    return tokenServices;
   }
 
 }

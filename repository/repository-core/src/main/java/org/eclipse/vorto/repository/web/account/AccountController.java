@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -248,10 +249,18 @@ public class AccountController {
     }
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName());
+    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
     SpringUserUtils.refreshSpringSecurityUser(createdUser);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);
+  }
+
+  // TODO : Implement better mechanism for knowing the authentication provider of logged-in user
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
+    if (oauth2User.getName().startsWith("S-")) {
+      return AuthenticationProvider.BOSCH.name();
+    }
+    return AuthenticationProvider.GITHUB.name();
   }
 
   @RequestMapping(method = RequestMethod.POST,

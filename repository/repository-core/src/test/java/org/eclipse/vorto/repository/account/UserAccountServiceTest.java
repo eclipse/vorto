@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -61,10 +62,10 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
   public void testCreateUserAlreadyExists() throws Exception {
     User user = setupUserWithRoles("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
-    accountService.create(user.getUsername());
+    accountService.create(user.getUsername(), AuthenticationProvider.GITHUB.name(), null);
   }
 
   private User setupUserWithRoles(String username) {
-    return User.create(username, new Tenant("playground"), Role.SYS_ADMIN, Role.MODEL_CREATOR);
+    return User.create(username, AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.SYS_ADMIN, Role.MODEL_CREATOR);
   }
 }

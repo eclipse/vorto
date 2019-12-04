@@ -10,10 +10,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.domain;
+package org.eclipse.vorto.repository.tenant;
 
-public enum AuthenticationProvider {
-  GITHUB,
-  BOSCH,
-  BOSCH_IOT_SUITE_AUTH
+public class TenantHasNoNamespaceException extends RuntimeException {
+
+  private static final long serialVersionUID = 8182076506871578094L;
+
+  public TenantHasNoNamespaceException(String tenantId) {
+    super(String.format("The tenant '%s' has no namespace.", tenantId));
+  }
 }

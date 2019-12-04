@@ -22,9 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.eclipse.vorto.repository.web.tenant.dto.NamespacesRequest;
 import org.eclipse.vorto.repository.web.tenant.dto.TenantDto;
@@ -41,25 +39,6 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
   private String createTenantRequest = tenantRequest("vorto.private.abc.xyz");
-
-
-  /*
-   * private List<String> badTenantRequests = Arrays.asList(gson.toJson(newTenantRequest("com2")),
-   * new Gson().toJson(newTenantRequest("vorto.private")), new
-   * Gson().toJson(newTenantRequest("vorto")), new
-   * Gson().toJson(newTenantRequest("vorto.private.")));
-   * 
-   * private List<String> nonConflictingTenantRequests =
-   * Arrays.asList(gson.toJson(newTenantRequest("vorto.private.xyz.ecm")), new
-   * Gson().toJson(newTenantRequest("vorto.private.abc1")), new
-   * Gson().toJson(newTenantRequest("vorto.private.abc.xyz1")));
-   * 
-   * private List<String> conflictingTenantRequests =
-   * Arrays.asList(gson.toJson(newTenantRequest("vorto.private.abc")), new
-   * Gson().toJson(newTenantRequest("vorto.private.abc.xyz")), new
-   * Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc")), new
-   * Gson().toJson(newTenantRequest("vorto.private.abc.xyz.abc.ecm")));
-   */
 
   private List<String> badTenantRequests = Arrays.asList(gson.toJson(newTenantRequest("com2")),
       new Gson().toJson(newTenantRequest("vorto.private")),
@@ -155,41 +134,6 @@ public class TenantServiceIntegrationTest extends AbstractIntegrationTest {
             .contentType("application/json").with(userStandard))
         .andExpect(status().isOk());
   }
-
-  /*
-   * @Test public void testUpdateTenantNamespaces() throws Exception { addTenant("myTenant1",
-   * "vorto.private.tre", "user2",userStandard6);
-   * 
-   * repositoryServer .perform(get("/rest/tenants/myTenant1").contentType("application/json").with(
-   * userStandard6)) .andDo(result -> { TenantDto tenant =
-   * gson.fromJson(result.getResponse().getContentAsString(), TenantDto.class);
-   * System.out.println(gson.toJson(tenant)); assertEquals(1, tenant.getNamespaces().size());
-   * }).andExpect(status().isOk());
-   * 
-   * CreateTenantRequest tenantRequest = newTenantRequest("vorto.private.tre", "user2");
-   * tenantRequest.getNamespaces().add("vorto.private.tre2");
-   * tenantRequest.getNamespaces().add("vorto.private.tre3");
-   * 
-   * 
-   * repositoryServer.perform(put("/rest/tenants/myTenant1").content(gson.toJson( tenantRequest))
-   * .contentType("application/json").with(userStandard6)).andExpect(status().isOk ());
-   * 
-   * verify("myTenant1", "vorto.private.tre", "vorto.private.tre2", "vorto.private.tre3");
-   * 
-   * CreateTenantRequest notSupersetRequest = newTenantRequest("vorto.private.tre", "user2");
-   * notSupersetRequest.getNamespaces().add("vorto.private.tre3");
-   * notSupersetRequest.getNamespaces().add("vorto.private.tre4");
-   * notSupersetRequest.getNamespaces().add("vorto.private.tre5");
-   * 
-   * repositoryServer.perform(put("/rest/tenants/myTenant1").content(gson.toJson(
-   * notSupersetRequest)) .contentType("application/json").with(userStandard8)).andDo(result -> {
-   * assertTrue(result.getResponse().getContentAsString().contains("superset"));
-   * }).andExpect(status().isBadRequest());
-   * 
-   * assertTrue(true);
-   * 
-   * }
-   */
 
   public void verify(String tenantId, String... namespaces) throws Exception {
     repositoryServer

@@ -80,6 +80,14 @@ public interface ITenantService {
   boolean updateTenantNamespaces(String tenantId, Set<String> namespaces, IUserContext userContext);
 
   /**
+   * Replace the tenant admins for this tenant with a new set of tenant admins
+   * @param tenantId
+   * @param newAdmins
+   * @return
+   */
+  Tenant changeTenantAdmins(Tenant tenant, Set<String> newTenantAdmins);
+  
+  /**
    * Add namespaces to tenant
    * 
    * @param tenantId

@@ -37,6 +37,9 @@ import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.plugin.generator.GenerationException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
+import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
+import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
+import org.eclipse.vorto.repository.tenant.TenantHasNoNamespaceException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
@@ -105,6 +108,24 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during generation.")
   @ExceptionHandler(GenerationException.class)
   public void generatorProblem(final GenerationException ex) {
+    // do logging
+  }
+  
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Tenant in request doesn't exist.")
+  @ExceptionHandler(TenantDoesntExistException.class)
+  public void tenantDoesntExistProblem(final TenantDoesntExistException ex) {
+    // do logging
+  }
+  
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Given user doesn't exist.")
+  @ExceptionHandler(TenantAdminDoesntExistException.class)
+  public void userDoesntExistException(final TenantAdminDoesntExistException ex) {
+    // do logging
+  }
+  
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Tenant has no namespace.")
+  @ExceptionHandler(TenantHasNoNamespaceException.class)
+  public void tenantHasNoNamespaceProblem(final TenantHasNoNamespaceException ex) {
     // do logging
   }
   
