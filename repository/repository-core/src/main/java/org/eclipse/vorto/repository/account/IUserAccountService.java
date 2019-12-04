@@ -81,16 +81,17 @@ public interface IUserAccountService {
    * @param username
    * @return createdUser
    */
-  User create(String username);
-
+  User create(String username, String provider, String subject);
+  
   /**
-   * create a new user with roles in Vorto Repository, under the Playground tenant
-   * 
+   * Creates a new user with given roles and authentication provider.
    * @param username
+   * @param tenantId
+   * @param provider
    * @param userRoles
    * @return
    */
-  public User create(String username, String tenantId, Role... userRoles);
+  public User create(String username, String provider, String subject, String tenantId, Role... userRoles);
   
   /**
    * 
