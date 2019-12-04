@@ -31,7 +31,7 @@ State | The model's state | <ul><li>`Draft`</li><li>`InReview`</li><li>`Released
 Namespace | The model's namespace | Any | Yes | <ul><li>`namespace:vorto.private.mynamespace`</li><li>`namespace:org.*`</li></ul>
 Version | The model's version | Any | Yes | <ul><li>`version:1.*`</li><li>`version:?.?.1`</ul>
 
-**Note**: The [web UI]((http://www.eclipse.org/vorto)) contains a few drop-downs and checkboxes to 
+**Note**: The [web UI](https://www.eclipse.org/vorto) contains a few drop-downs and checkboxes to 
 complement the text-based search - those elements are equivalent to specifying a fixed value for a tag. 
 
 ### Search logic
@@ -71,7 +71,14 @@ This requires re-creating the whole Vorto index for Elasticsearch.
 One straightforward way to do this is to send an HTTP POST request to the `/rest/forcereindex` 
 endpoint while authorized as a system administrator (i.e. with role `ROLE_SYS_ADMIN`). 
 
-The invocation will entirely re-create the Vorto index, then re-index the model. 
+In the web UI, this is done by:
+ 
+1. Logging in to the Vorto site as a system administrator
+2. Navigating to the **manage** section
+3. Selecting the **Global repository functions** tab
+4. Clicking **Re-create index** (as opposed to just **Reindex**) 
+
+The operation will entirely re-create the Vorto index, then re-index the model. 
 
 **Caution is advised: back-up the model first.**
 
