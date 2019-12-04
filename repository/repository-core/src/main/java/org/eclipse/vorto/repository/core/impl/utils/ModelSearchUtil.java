@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,309 +12,524 @@
  */
 package org.eclipse.vorto.repository.core.impl.utils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.search.SearchParameters;
+import org.eclipse.vorto.repository.search.SearchTags;
 import org.springframework.stereotype.Component;
 
 /**
  * 
- * Utility class used to parse the model search query, extract the relevant search criterion and
- * their parameters and create a statement that can be converted to a {@link Query} by the
- * {@link QueryManager} interface.
- * 
- * The search criterion currently supported are:
- * <ol>
- * <li>name:
- * <li>namespace:
- * <li>version:
- * </ol>
- * 
+ * Utility class used to  extract the relevant search criteria from a text query, and convert it
+ * into a JCR-SQL2 compliant {@link Query}.
  * @author shiv
+ * @author mena-bosch (refactored by)
  *
  */
 @Component
 public class ModelSearchUtil {
 
-  public static final String SEARCH_FILTER_TYPE_INFORMATION_MODEL = "InformationModel";
+  public static final String SOURCE = "[nt:file]";
 
-  public static final String SEARCH_FILTER_TYPE_FUNCTION_BLOCK = "Functionblock";
+  public static final String SELECT_QUERY = "SELECT * FROM " + SOURCE;
 
-  public static final String SEARCH_FILTER_TYPE_DATA_TYPE = "Datatype";
+  public static final String SELECT_WHERE_QUERY =  SELECT_QUERY + " WHERE ";
 
-  public static final String[] SEARCH_FILTER_TYPE_LIST = {SEARCH_FILTER_TYPE_DATA_TYPE,
-      SEARCH_FILTER_TYPE_FUNCTION_BLOCK, SEARCH_FILTER_TYPE_INFORMATION_MODEL};
+  public static final String OR = " OR ";
 
-  public static final String SEARCH_FILTER_KEY_NAME = "name:";
+  public static final String VORTO_NAME_FIELD = "[vorto:name]";
 
-  public static final String SEARCH_FILTER_KEY_NAMESPACE = "namespace:";
+  public static final String VORTO_NAMESPACE_FIELD = "[vorto:namespace]";
 
-  public static final String SEARCH_FILTER_KEY_VERSION = "version:";
+  public static final String VORTO_VERSION_FIELD = "[vorto:version]";
 
-  public static final String SEARCH_FILTER_KEY_AUTHOR = "author:";
-  
-  public static final String SEARCH_FILTER_KEY_USER_REF = "userReference:";
+  public static final String VORTO_AUTHOR_FIELD = "[vorto:author]";
 
-  public static final String SEARCH_FILTER_KEY_STATE = "state:";
-  
-  public static final String SEARCH_FILTER_KEY_VISIBILITY = "visibility:";
+  public static final String LAST_MODIFIED_BY_FIELD = "[jcr:lastModifiedBy]";
 
-  public static final String[] SEARCH_FILTER_KEY_LIST = {
-      SEARCH_FILTER_KEY_NAME, SEARCH_FILTER_KEY_NAMESPACE, SEARCH_FILTER_KEY_VERSION,
-      SEARCH_FILTER_KEY_AUTHOR, SEARCH_FILTER_KEY_STATE,SEARCH_FILTER_KEY_VISIBILITY,
-      SEARCH_FILTER_KEY_USER_REF };
+  public static final String VORTO_VISIBILITY_FIELD = "[vorto:visibility]";
 
-  public final String VORTO_DISPLAYNAME = "vorto:name";
+  public static final String VORTO_STATE_FIELD = "[vorto:state]";
 
-  public final String VORTO_NAMESPACE = "vorto:namespace";
-
-  public final String VORTO_VERSION = "vorto:version";
-
-  public final String VORTO_AUTHOR = "vorto:author";
-  
-  public final String VORTO_VISIBILITY = "vorto:visibility";
-
-  public final String VORTO_STATE = "vorto:state";
-
-  public final String VORTO_TYPE = "vorto:type";
-
-  public final String SOURCE = "[nt:file]";
-
-  public final String SELECT_QUERY = "SELECT * FROM " + SOURCE + " WHERE ";
-
-  public final String AND = "AND";
-
-  public final String OR = "OR";
+  public static final String VORTO_TYPE_FIELD = "[vorto:type]";
 
   /**
-   * Map to store the search criterion present in the query expression with their parameters
-   * mentioned in the expression before generating the JCR Query search statement.
+   * Used to convert search query wildcards to SQL-compatible wildcards with {@code LIKE} operator.
    */
-  private HashMap<String, ArrayList<String>> searchCriteriaParameterMap = new HashMap<>();
-
-  /**
-   * The column names displayed on the main UI and the names with which the corresponding columns
-   * are stored at the JCR are different.<br>
-   * The name filter displayed on the UI is actually stored as [vorto:name] on JCR.<br>
-   * This map keeps a track of all such mappings.
-   */
-  private HashMap<String, String> map = new HashMap<>();
-
-  public ModelSearchUtil() {
-    map.put(SEARCH_FILTER_KEY_NAME, VORTO_DISPLAYNAME);
-    map.put(SEARCH_FILTER_KEY_NAMESPACE, VORTO_NAMESPACE);
-    map.put(SEARCH_FILTER_KEY_VERSION, VORTO_VERSION);
-    map.put(SEARCH_FILTER_KEY_AUTHOR, VORTO_AUTHOR);
-    map.put(SEARCH_FILTER_KEY_VISIBILITY, VORTO_VISIBILITY);
-    map.put(SEARCH_FILTER_KEY_STATE, VORTO_STATE);
+  public static final Map<String, String> WILDCARD_TO_SQL_CONVERSION = new HashMap<>();
+  static {
+    WILDCARD_TO_SQL_CONVERSION.put("*", "%");
+    WILDCARD_TO_SQL_CONVERSION.put("?", "_");
   }
 
-  /**
-   * Parses the search query and identifies the type of search strategy applicable on this query.
-   * 
-   * @param queryExpression
-   * @return {@link SearchStrategy}
-   */
-  public SearchStrategy getSearchStrategy(String queryExpression) {
-    searchCriteriaParameterMap.clear();
-    for (String string : SEARCH_FILTER_KEY_LIST) {
-      if (queryExpression.contains(string)) {
-        return SearchStrategy.FILTERED;
-      }
-    }
-    return SearchStrategy.FULL_TEXT;
-  }
+  public static final String CONTAINS_STATEMENT_FORMAT = "CONTAINS (%s, '%s')";
+  public static final String PARENTHESIS_WRAPPER_FORMAT = "(%s)";
+  public static final String LOWER_LIKE_FORMAT = "LOWER(%s) LIKE '%s'";
+  public static final String LOWER_EQUALS_FORMAT = "LOWER(%s) = '%s'";
+  public static final String AND_FORMAT = " AND %s";
 
-  /**
-   * Parses the queryExpression to extract the relevant search criterion and their parameters and
-   * creates a statement that can be converted to a {@link Query} by the {@link QueryManager}
-   * interface.
-   * <p>
-   * Returns the original queryExpression unmodified if no search criterion are present. The search
-   * criterion currently supported are:-
-   * <ol>
-   * <li>name:
-   * <li>namespace:
-   * <li>version:
-   * </ol>
-   * <p>
-   * A search query of the form <i><b>name:ColorLight</b></i> is converted to <i><b>SELECT * FROM
-   * SOURCE WHERE name = 'ColorLight'</i></b>
-   * <p>
-   * A search query of the form <i><b>name:ColorLight version:1.0.0</b></i> is converted to
-   * <i><b>SELECT * FROM SOURCE WHERE name = 'ColorLight' AND version = '1.0.0'</i></b>
-   * <p>
-   * A search query of the form <i><b>name:ColorLight name:Color</b></i> is converted to
-   * <i><b>SELECT * FROM SOURCE WHERE name IN ('ColorLight', 'Color')</i></b>
-   * 
-   * @param queryExpression
-   * @return
-   */
-  public String getJCRStatementQuery(String queryExpression) {
-    if (getSearchStrategy(queryExpression) == SearchStrategy.FULL_TEXT) {
-      return SELECT_QUERY + "[vorto:type] = '" + queryExpression + "' OR CONTAINS([vorto:name],'"
-          + queryExpression + "') or CONTAINS([vorto:description],'" + queryExpression + "')";
-    } else {
-      for (String string : SEARCH_FILTER_TYPE_LIST) {
-        if (queryExpression.contains(string)) {
-          ArrayList<String> arrayList = new ArrayList<>();
-          arrayList.add(string);
-          searchCriteriaParameterMap.put(VORTO_TYPE, arrayList);
-          break;
-        }
-      }
-      String[] array = queryExpression.split("\\s+");
-      for (String string : array) {
-        for (String filter : SEARCH_FILTER_KEY_LIST) {
-          if (string.startsWith(filter)) {
-            addToSearchCriteriaParameterMap(filter, string.replace(filter, ""));
-          }
-        }
-      }
-      return buildJCRSearchQuery();
-    }
-  }
-
-  /**
-   * Function to add the search criteria parameters to the map as the query is being parsed.
-   * 
-   * @param key
-   * @param value
-   */
-  private void addToSearchCriteriaParameterMap(String key, String value) {
-    if (searchCriteriaParameterMap.containsKey(key)) {
-      ArrayList<String> arrayList = searchCriteriaParameterMap.get(key);
-      arrayList.add(value);
-      searchCriteriaParameterMap.put(key, arrayList);
-    } else {
-      ArrayList<String> arrayList = new ArrayList<>();
-      arrayList.add(value);
-      searchCriteriaParameterMap.put(key, arrayList);
-    }
-  }
-
-  /**
-   * Builds a search query that can be converted to {@link Query} by the {@link QueryManager}
-   * interface. <br>
-   * This search query is built using the filters and their parameters specified in the original
-   * query expression.
-   * 
-   * @return
-   */
-  private String buildJCRSearchQuery() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(SELECT_QUERY);
-    Iterator<Entry<String, ArrayList<String>>> iterator =
-        searchCriteriaParameterMap.entrySet().iterator();
-    while (iterator.hasNext()) {
-      Entry<String, ArrayList<String>> entry = iterator.next();
-      if (entry.getValue().isEmpty()) {
-        continue;
-      } else {
-        String column = entry.getKey();
-        if (map.containsKey(entry.getKey())) {
-        	column = map.get(entry.getKey());
-        }
-        
-        String value = getSearchCriteriaParametersAsString(entry.getValue());
-        if (SEARCH_FILTER_KEY_USER_REF.equals(column)) {
-          stringBuilder.append("([vorto:author] = " + value + " OR [jcr:lastModifiedBy] = " + value + ")");
-        } else {
-          if (entry.getValue().get(0).endsWith("*")) {
-            stringBuilder.append(String.format("CONTAINS([%s] , %s)", column, value));
-          } else {
-            if (entry.getValue().size() == 1) {
-              stringBuilder.append(String.format("[%s] = %s", column, value));
-            } else {
-              stringBuilder.append(String.format("[%s] IN %s", column, value));
-            }
-          }
-        }
-        
-        if (iterator.hasNext()) {
-        	stringBuilder.append(" ").append(AND).append(" ");
-        }
-      }
-    }
-    return stringBuilder.toString();
-  }
-
-  /**
-   * Converts a list of search criteria parameters into their suitable string representation so that
-   * they can be used in the query statement.
-   * <p>
-   * A list of size 1 is converted to 'listitem'
-   * <p>
-   * A list of size n is converted to ('listitem1', 'listitem2', .... 'listitemn')
-   * 
-   * @param arrayList
-   * @return
-   */
-  private String getSearchCriteriaParametersAsString(ArrayList<String> criteria) {
-    StringBuilder stringBuilder = new StringBuilder();
-    if (criteria.isEmpty()) {
-      return "''";
-    } else if (criteria.size() == 1) {
-      stringBuilder.append("'").append(clean(criteria.get(0))).append("'");
-    } else {
-      stringBuilder.append("(");
-      for (String string : criteria) {
-        stringBuilder.append("'").append(string).append("', ");
-      }
-      stringBuilder.replace(stringBuilder.lastIndexOf(","), stringBuilder.length() - 1, "");
-      stringBuilder.append(")");
-    }
-    return stringBuilder.toString();
-  }
-
-  private String clean(String value) {
-	if (value.endsWith("*")) {
-		return value.substring(0,value.indexOf("*"));
-	} else {
-		return value;
-	}
-}
-
-/**
-   * Specifies the search strategies that can be applied to a model search query
-   * 
-   * @author shiv
-   *
-   */
-  enum SearchStrategy {
-    FULL_TEXT("Full Text"), FILTERED("Filtered");
-
-    private final String strategy;
-
-    public String getStrategy() {
-      return this.strategy;
-    }
-
-    SearchStrategy(String strategy) {
-      this.strategy = strategy;
-    }
-  }
-
-  public Query createQueryFromExpression(Session session, String queryExpression) {
+  public static Query createQueryFromExpression(Session session, String queryExpression) {
     try {
+
       QueryManager queryManager = session.getWorkspace().getQueryManager();
-      String jcrStatementQuery = this.getJCRStatementQuery(queryExpression);
-      if (jcrStatementQuery.equals(queryExpression)) {
-        return queryManager.createQuery(jcrStatementQuery,
-            org.modeshape.jcr.api.query.Query.JCR_SQL2);
-      } else {
-        return queryManager.createQuery(jcrStatementQuery,
-            org.modeshape.jcr.api.query.Query.JCR_SQL2);
-      }
+      String query = toJCRQuery(SearchParameters.build(queryExpression));
+
+      return queryManager.createQuery(
+        query, org.modeshape.jcr.api.query.Query.JCR_SQL2
+      );
+
     } catch (RepositoryException repoException) {
       throw new FatalModelRepositoryException("Could not create query from expression",
           repoException);
     }
   }
+
+  /**
+   * Converts common wildcard characters in set {@literal [*,?]} to their SQL equivalents:
+   * {@literal [%,_]} which work with JCL-SQL2 language.<br/>
+   * The original wildcards come from the Vorto search syntax, and are used as is when the search
+   * service is ElasticSearch, but not when the search service builds a JCR query. <br/>
+   * Note that the conversion {@literal %} is presently only useful when within a word, as
+   * wildcard searches will be used within a {@code CONTAINS} statement. <br/>
+   * Therefore, while e.g. {@code CONTAINS([vorto:name] , 'some_hing')"} or
+   * {@code CONTAINS([vorto:name] , 'so*ing')"} is useful, {@code CONTAINS([vorto:name] , '*something')"}
+   * or {@code CONTAINS([vorto:name] , 'something*')"} etc. <br/>
+   * At the time of writing, there are no clear insights on whether any performance overhead of
+   * leaving leading or trailing wildcards in a {@code CONTAINS} search would justify trimming them.
+   * @param term
+   * @return
+   */
+  public static String convertWildcardsToSQL(String term) {
+    if (SearchTags.isBlank(term)) {
+      return term;
+    }
+    String result = term;
+    for (Map.Entry<String, String> e: WILDCARD_TO_SQL_CONVERSION.entrySet()) {
+      result = result.replace(e.getKey(), e.getValue());
+    }
+    return result;
+  }
+
+  /**
+   * Batch processing for {@link ModelSearchUtil#convertWildcardsToSQL(String)}.
+   * @see ModelSearchUtil#convertWildcardsToSQL(String) 
+   * @param terms
+   * @return
+   */
+  public static Stream<String> convertWildcardsToSQL(Stream<String> terms) {
+    // usual boilerplate
+    if (Objects.isNull(terms)) {
+      return Stream.empty();
+    }
+    return terms.map(ModelSearchUtil::convertWildcardsToSQL);
+  }
+
+  /**
+   * Batch lowercasing of given terms.
+   * @param terms
+   * @return
+   */
+  public static Stream<String> lowerCase(Stream<String> terms) {
+    // usual boilerplate
+    if (Objects.isNull(terms)) {
+      return Stream.empty();
+    }
+    return terms.map(String::toLowerCase);
+  }
+
+  /**
+   * Builds an {@code OR}-separated series of free-text search constraints using the
+   * {@code CONTAINS} operator for a given collection of fields, with a given collection of values. <br/>
+   * In theory, this would used collate search logic for two fields into {@literal OR}-related
+   * child constraints for each:
+   * <ul>
+   *   <li>
+   *     The {@literal name}, which relates to:
+   *     <ul>
+   *       <li>
+   *         {@literal displayName}
+   *       </li>
+   *       <li>
+   *         {@literal description}
+   *       </li>
+   *       <li>
+   *         {@literal searchableName}
+   *       </li>
+   *     </ul>
+   *   </li>
+   *   <li>
+   *     The {@literal userReference}, which relates to:
+   *     <ul>
+   *       <li>
+   *         {@literal author}
+   *       </li>
+   *       <li>
+   *         {@literal lastModifiedBy}
+   *       </li>
+   *     </ul>
+   *   </li>
+   * </ul>
+   * In practice, this method will only be invoked with a multi-element field collection when the
+   * {@literal userReference} tag is in use. Contrary to the ElasticSearch service, not all the
+   * aggregated fields above are not queryable with a JRC-SQL string, due to the fact that
+   * {@literal displayName}, {@literal searchableName} are not supported at the time of writing.<br/>
+   * Therefore {@literal name} queries will use one field: {@literal [vorto:name]}, whereas
+   * {@literal userReference} queries will indeed use two fields: {@literal [vorto:author]} and
+   * {@literal [jcr:lastModifiedBy]}.<br/>
+   * Regardless of the fine points, the mechanism  works as follows:
+   * <ol>
+   *   <li>
+   *     First, builds an {@literal OR}-separated list containing all values, once.
+   *   </li>
+   *   <li>
+   *     Then, for each field, adds an {@literal OR}-separated constraint in the following format:
+   *     {@code CONTAINS([field0], 'the OR-separated list of values') OR CONTAINS([field1], 'the same values') OR ...}
+   *   </li>
+   *   <li>
+   *     The whole resulting constraint is enclosed within parenthesis.
+   *   </li>
+   * </ol>
+   *
+   * @param fields
+   * @param values
+   * @return
+   */
+  public static String buildContainsOrConstraint(Collection<String> fields, String... values) {
+    // boilerplate validation
+    if (Objects.isNull(fields) || fields.isEmpty() || Objects.isNull(values) || values.length == 0) {
+      return "";
+    }
+    // building OR-separated values string
+    String valuesFlattened = String.join(OR, values);
+
+    // building OR-separated formats of CONTAINS(field, 'OR-separated list of values')
+    return String.format(
+        PARENTHESIS_WRAPPER_FORMAT,
+        String.join(
+          OR,
+          fields.stream().map(
+            f -> String.format(CONTAINS_STATEMENT_FORMAT, f, valuesFlattened)
+          )
+          .collect(Collectors.toSet())
+        )
+    );
+  }
+
+  /**
+   * Builds a constraint whose terms are separated by {@code OR}.<br/>
+   * The {@code operatorFormat} argument must be a 2-variable format {@link String} such as
+   * {@link ModelSearchUtil#LOWER_EQUALS_FORMAT} or {@link ModelSearchUtil#LOWER_LIKE_FORMAT}.<br/>
+   * <b>Note:</b> for {@link ModelSearchUtil#LOWER_LIKE_FORMAT} usage, it is assumed that the
+   * values will be lower-cased by the caller. This method assumes they are and does not alter
+   * them.<br/>
+   * For each of the given fields, all values are joined into an expression that fulfills the pattern:
+   * {@code (field op value0 [OR field op value1 OR ...]*)} where:
+   * <ul>
+   *   <li>
+   *     {@code op} is the operator coming from the {@code operatorFormat} format {@link String}.
+   *   </li>
+   *   <li>
+   *     The statements between square brackets followed by an asterisk are intended as occurring
+   *     0+ times.
+   *   </li>
+   * </ul>
+   * The final result will be a parentheses-enclosed {@link String} representing a constraint in
+   * the following format:
+   * {@code ((field0 op value0 [OR field0 op value1 OR ...]*) OR (field1 op value0 [OR field1 op value1 OR...]) OR...)}
+   *
+   * @param operatorFormat
+   * @param fields
+   * @param values
+   * @return
+   */
+  public static String buildOrConstraint(String operatorFormat, Collection<String> fields, String... values) {
+    String result = "";
+    // boilerplate validation
+    if (Objects.isNull(fields) || fields.isEmpty() || Objects.isNull(values) || values.length == 0) {
+      return result;
+    }
+
+    // single append with lambda
+    result =
+      // formatting result within parenthesis
+      conditionallyWrapInParenthesis(
+        fields.size() > 1,
+        // joining mapping of field -> (field0 op value0 OR field op value1 ...) OR (field1 op...)
+        // where "op" is operatorFormat, i.e. a format String such as "%s = %s", or "%s LIKE %s"
+        String.join(
+          OR,
+          fields.stream().map(
+            f ->
+                // this builds each child constraint such as (field0 op value0 OR field0 op value1 ...)
+                conditionallyWrapInParenthesis(
+                    values.length > 1,
+                    String.join(
+                        OR,
+                        Arrays.stream(values)
+                          .map(v -> String.format(operatorFormat, f, v))
+                          .collect(Collectors.toList())
+                    )
+                )
+          )
+          .collect(Collectors.toList())
+        )
+      )
+    ;
+    return result.toString();
+  }
+
+  /**
+   * Boilerplate utility to wrap a given input {@link String} in parenthesis using the
+   * {@link ModelSearchUtil#PARENTHESIS_WRAPPER_FORMAT} format. <br/>
+   * Takes a {@code boolean} condition to infer whether the input actually needs to be wrapped. <br/>
+   * Useful to remove clutter when used within lambda expressions.<br/>
+   * The input is <b>not</b> validated in any way.
+   * @param condition
+   * @param input
+   * @return
+   */
+  public static String conditionallyWrapInParenthesis(boolean condition, String input) {
+    return condition ? String.format(PARENTHESIS_WRAPPER_FORMAT, input) : input;
+  }
+
+  /**
+   *
+   * @param item
+   * @return whether the given string contains any SQL-style wildcard.
+   * @see SearchTags#containsWildcard(String) for search-style wildcard checks instead.
+   * @see ModelSearchUtil#WILDCARD_TO_SQL_CONVERSION
+   */
+  public static boolean containsSQLWildcard(String item) {
+    // boilerplate validation
+    if (SearchTags.isBlank(item)) {
+      return false;
+    }
+    for (String value: WILDCARD_TO_SQL_CONVERSION.values()) {
+      if (item.contains(value)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Constructs a constraint with the given values and fields, by working as follows:
+   * <ol>
+   *   <li>
+   *     Firstly, validates both arguments against null/empty.
+   *   </li>
+   *   <li>
+   *     Secondly, converts any search-language wildcard into SQL wildcards.
+   *     See{@link ModelSearchUtil#convertWildcardsToSQL(Stream)}.
+   *   </li>
+   *   <li>
+   *     When dealing with a single value only, the constraint's operator will be inferred by
+   *     whether the value contains any wildcards: {@code LIKE} if it does, {@code =} if it doesn't.
+   *     In both cases, {@code LOWER} will be invoked on the field and the value will be lower-cased.
+   *     The constraint is then returned as {@code (field0 op singleValue [OR field1 op singleValue]*)},
+   *     where {@code op} is the chosen operator, the main constraint is enclosed in parenthesis,
+   *     and the number of comparisons is determined by the number of fields given.
+   *     Fields within square brackets followed by an asterisk in the example are to be interpreted
+   *     as a 0+ occurrence.
+   *   </li>
+   *   <li>
+   *     When dealing with multiple values, the impact is not just on the operator, but on the
+   *     actual type of the constraint.
+   *     <ul>
+   *       <li>
+   *         For multiple values either of which contains any wildcard, a FTS constraint is created
+   *         in the form of:
+   *         {@code (CONTAINS(field0, 'value0 OR value1 [OR...]*') [OR CONTAINS(field1, 'value0 OR value1 [OR...]*']*}
+   *       </li>
+   *       <li>
+   *         For multiple values none of which contains any wildcard, a nested "equals" constraint
+   *         is created in the form of:
+   *         {@code (field0 = 'value0' OR field0 = 'value1' [OR...]*) [OR (field1 = 'value0' OR field1 = 'value1' [OR...]*)]*}
+   *       </li>
+   *     </ul>
+   *   </li>
+   *   <li>
+   *     Lastly worth specifying, the invoked utility methods wrap what becomes the output here in
+   *     parenthesis.
+   *   </li>
+   * </ol>
+   *
+   * @see ModelSearchUtil#convertWildcardsToSQL(Stream)
+   * @see ModelSearchUtil#containsSQLWildcard(String) 
+   * @see ModelSearchUtil#buildOrConstraint(String, Collection, String...) 
+   * @see ModelSearchUtil#buildContainsOrConstraint(Collection, String...)
+   * @param values
+   * @param fields
+   * @return
+   */
+  public static String buildJCRConstraint(Collection<String> values, String... fields) {
+    // boilerplate validation
+    if (Objects.isNull(values) || values.isEmpty() || Objects.isNull(fields) || fields.length == 0) {
+      return "";
+    }
+
+    // wildcard conversion
+    String[] convertedValues = lowerCase(convertWildcardsToSQL(values.stream())).toArray(String[]::new);
+
+    // single value: using = for non-wildcard and LIKE for wildcard
+    if (convertedValues.length == 1) {
+      String value = convertedValues[0];
+      String operatorFormat = containsSQLWildcard(value) ? LOWER_LIKE_FORMAT : LOWER_EQUALS_FORMAT;
+      return buildOrConstraint(operatorFormat, Arrays.asList(fields), value);
+    }
+    // multiple values
+    else {
+      // deciding if any value has a wildcard (in which case we use CONTAINS FTS) or none
+      // (in the latter case we build nested OR statements with equals operator)
+      boolean anyWildcardInValues = Arrays.stream(convertedValues).anyMatch(ModelSearchUtil::containsSQLWildcard);
+      if (anyWildcardInValues) {
+        return buildContainsOrConstraint(Arrays.asList(fields), convertedValues);
+      }
+      else {
+        return buildOrConstraint(LOWER_EQUALS_FORMAT, Arrays.asList(fields), convertedValues);
+      }
+    }
+  }
+
+  /**
+   * Boilerplate with trivial logic wrapping the given constraint into a format {@link String} which 
+   * basically:
+   * <ol>
+   *   <li>
+   *     Checks whether the given query {@link StringBuilder} only equals
+   *     {@link ModelSearchUtil#SELECT_WHERE_QUERY}.
+   *   </li>
+   *   <li>
+   *     If so, appends a single whitespace and the constraint as-is.
+   *   </li>
+   *   <li>
+   *     If not (i.e. other constraints have already been added), prepends {@literal AND} to the
+   *     constraint through {@link String} format {@link ModelSearchUtil#AND_FORMAT}, and then
+   *     appends the formatted constraint to the given query {@link StringBuilder}.
+   *   </li>
+   * </ol>
+   * This is used when building the JCR full query while consuming the generated
+   * {@link SearchParameters}, by appending all built constraints coming from that POJO.<br/>
+   * Assumes the given constraint is syntactically valid, not empty or {@code null}.<br/>
+   * @see ModelSearchUtil#toJCRQuery(SearchParameters) where this is invoked.
+   * @see ModelSearchUtil#AND_FORMAT
+   * @param query
+   * @param constraint
+   * @return
+   */
+  public static void appendConstraint(StringBuilder query, String constraint) {
+    if (!query.toString().equals(SELECT_WHERE_QUERY)) {
+      query.append(String.format(AND_FORMAT, constraint));
+    }
+    else {
+      query.append(constraint);
+    }
+  }
+
+  /**
+   * Builds a JCR-SQL2 compatible search query based on the given {@link SearchParameters}.<br/>
+   * Contrary to the ElasticSearch service, the query is not built using a programmatic QOM here. <br/>
+   * Two main reasons for this:
+   * <ol>
+   *   <li>
+   *     The QOM API does not provide (m)any usage examples, which is especially painful when building
+   *     arbitrary queries based on user search input. See
+   *     <a href src="https://docs.jboss.org/author/display/MODE50/Query+and+search#Queryandsearch-Creatingqueries">here</a>
+   *     and
+   *     <a href src="https://docs.jboss.org/author/display/MODE/JCR-JQOM">here</a> for literally
+   *     the <i>only two</i>, minimal examples I could find.
+   *   </li>
+   *   <li>
+   *     The <a href src="https://docs.jboss.org/author/display/MODE/JCR-JQOM">docs</a> advises to:
+   *     <blockquote>[...]]not consider using the QOM API just to get a performance benefit.
+   *     The JCR-SQL2 parser is very efficient, and your application code will be far easier to
+   *     understand and maintain. Where possible, use JCR-SQL2 query expressions.</blockquote>
+   *   </li>
+   * </ol>
+   * <b>Note:</b> some of the fields indexed and used by the ElasticSearch service are not usable
+   * here, as follows:
+   * <ul>
+   *   <li>
+   *     {@literal displayName}
+   *   </li>
+   *   <li>
+   *     {@literal lastModifiedBy} - this is in fact replaced by {@literal [jcr:lastModifiedBy]}
+   *   </li>
+   *   <li>
+   *     {@literal searchableName}
+   *   </li>
+   * </ul>
+   * Finally, empty queries (resulting in empty {@link SearchParameters}) will build a static
+   * catch-all query with no constraints.
+   * @see ModelSearchUtil#buildContainsOrConstraint(Collection, String...)
+   * @see ModelSearchUtil#buildJCRConstraint(Collection, String...)
+   * @see ModelSearchUtil#buildOrConstraint(String, Collection, String...) 
+   * @param params
+   * @return
+   */
+  public static String toJCRQuery(SearchParameters params) {
+
+    StringBuilder result = new StringBuilder();
+
+    // empty search, returning query for all models
+    if (params.isEmpty()) {
+      return result.append(SELECT_QUERY).toString();
+    }
+
+    // appending WHERE
+    result.append(SELECT_WHERE_QUERY);
+
+    // handling authors
+    if (params.hasAuthors()) {
+      appendConstraint(result, buildJCRConstraint(params.getAuthors(), VORTO_AUTHOR_FIELD));
+    }
+
+    // handling names
+    if (params.hasNames()) {
+      appendConstraint(result, buildJCRConstraint(params.getNames(), VORTO_NAME_FIELD));
+    }
+
+    // handling namespaces
+    if (params.hasNamespaces()) {
+      appendConstraint(result, buildJCRConstraint(params.getNamespaces(), VORTO_NAMESPACE_FIELD));
+    }
+
+    // handling states
+    if (params.hasStates()) {
+      appendConstraint(result, buildJCRConstraint(params.getStates(), VORTO_STATE_FIELD));
+    }
+
+    // handling types
+    if (params.hasTypes()) {
+      appendConstraint(result, buildJCRConstraint(params.getTypes(), VORTO_TYPE_FIELD));
+    }
+
+    // handling user references (authors + lastModifiedBys)
+    if (params.hasUserReferences()) {
+      appendConstraint(result, buildJCRConstraint(params.getUserReferences(), VORTO_AUTHOR_FIELD, LAST_MODIFIED_BY_FIELD));
+    }
+
+    // handling versions
+    if (params.hasVersions()) {
+      appendConstraint(result, buildJCRConstraint(params.getVersions(), VORTO_VERSION_FIELD));
+    }
+
+    // handling visibilities
+    if (params.hasVisibilities()) {
+      appendConstraint(result, buildJCRConstraint(params.getVisibilities(), VORTO_VISIBILITY_FIELD));
+    }
+
+    return result.toString();
+  }
+
 }

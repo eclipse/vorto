@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -12,18 +12,19 @@
 package org.eclipse.vorto.repository.workflow;
 
 public enum ModelState {
-  DRAFT("Draft"),
-  IN_REVIEW("InReview"),
-  RELEASED("Released"),
-  DEPRECATED("Deprecated");
+  Draft("Draft"),
+  InReview("InReview"),
+  Released("Released"),
+  Deprecated("Deprecated");
   
   private String name;
 
-  private ModelState(String name) {
+  ModelState(String name) {
     this.name = name;
   }
 
   public String getName() {
     return name;
   }
+
 }

@@ -23,7 +23,16 @@ public interface IIndexingService {
    * @return a result of how many tenants, and how many models per tenant were indexed
    */
   IndexingResult reindexAllModels();
-  
+
+  /**
+   * Forces re-indexing all models including new mappings.<br/>
+   * Only implemented for Elastic Search - <b>warning</b>: destructive operation. <br/>
+   * When simple search is in use, this is equivalent to {@link IIndexingService#reindexAllModels()}
+   * (which does nothing with simple search either, at the time of writing).
+   * @return a result of how many tenants, and how many models per tenant were indexed
+   */
+  IndexingResult forceReindexAllModels();
+
   /**
    * Indexes the given model with the given tenantId 
    * 

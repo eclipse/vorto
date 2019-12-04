@@ -77,6 +77,26 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
 	            	$scope.indexingError = "";
 	            });
         };
+
+        $scope.isForceReindexing = false;
+        $scope.hasForceReindexingError = false;
+        $scope.hasForceReindexingResult = false;
+        $scope.forceReindexingError = null;
+        $scope.forceReindexingResultMessage = null;
+        $scope.forceReindex = function() {
+            $scope.isForceReindexing = true;
+            $http.post('./rest/forcereindex')
+            .then(function(result) {
+                $scope.forceReindexingResultMessage = 'Indexed ' + result.data.numberOfTenants + ' tenants with ' + result.data.totalNumberOfIndexedModels + ' models.';
+                $scope.hasForceReindexingResult = true;
+                $scope.isForceReindexing = false;
+                $scope.hasForceReindexingError = false;
+            }, function(error) {
+                $scope.isForceReindexing = false;
+                $scope.hasForceReindexingError = true;
+                $scope.forceReindexingError = "";
+            });
+        };
     }
 ]);
 

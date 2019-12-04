@@ -56,7 +56,7 @@ public class TargetPlatformUpgradeTask extends AbstractUpgradeTask implements IU
   public void doUpgrade() throws UpgradeProblem {
     setAdminUserContext();
 
-    List<ModelInfo> searchResult = modelSearchService.search("Mapping");
+    List<ModelInfo> searchResult = modelSearchService.search("type:Mapping");
 
     for (ModelInfo modelInfo : searchResult) {
       logger.info("Upgrading " + modelInfo.toString() + " for target platform key attribute....");

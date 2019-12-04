@@ -207,7 +207,7 @@ paths:
       tags:
       - Models
       summary: Search for models
-      description: "This resource can be used to search for models. It allows free-text search using the model's *Display name*, *Name* or *Description* attributes. These values can be set using the Model Editor in the Model Details page, e.g. if there are models with names: *Light* and *Lightbulb*, searching with keyword *name:light** will fetch both. If you want to include unpublished or private models in search, you must login."
+      description: "This resource can be used to search for models. It allows free-text and tagged search using the model's attributes, e.g. *Display name*, *Name* or *Description*. These values can be set using the Model Editor in the Model Details page, e.g. if there are models with names: *Light* and *Lightbulb*, searching with keyword *name:light** will fetch both. If you want to include unpublished or private models in search, you must login. The search syntax is described [here](https://github.com/eclipse/vorto/tree/master/repository/repository-elasticsearch/Readme.md)"
       operationId: SearchForModels
       parameters:
       - name: expression
