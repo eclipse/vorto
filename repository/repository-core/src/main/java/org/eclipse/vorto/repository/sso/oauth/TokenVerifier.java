@@ -13,13 +13,10 @@
 package org.eclipse.vorto.repository.sso.oauth;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Qualifier; 
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -30,8 +27,6 @@ import com.google.common.base.Strings;
 @Component
 public class TokenVerifier {
 
-  private static final String ISSUER = "iss";
-  
   @Autowired
   @Qualifier("githubUserInfoTokenServices")
   private UserInfoTokenServices githubTokenService;
@@ -39,28 +34,17 @@ public class TokenVerifier {
   @Autowired
   private Collection<TokenVerificationProvider> tokenVerificationProviders;
   
-  private Map<String, TokenVerificationProvider> tokenVerificationProviderMap = new HashMap<>();
-  
   public TokenVerifier() {
   }
 
   private Optional<TokenVerificationProvider> getVerificationProvider(JwtToken jwtToken) {
-    String issuer = (String) jwtToken.getPayloadMap().get(ISSUER);
-    if (issuer != null) {
-      return Optional.ofNullable(tokenVerificationProviderMap.get(issuer));
+    for(TokenVerificationProvider provider : tokenVerificationProviders) {
+      if (provider.canHandle(jwtToken)) {
+        return Optional.of(provider);
+      }
     }
 
     return Optional.empty();
-  }
-
-  @PostConstruct
-  public void init() {
-    for(TokenVerificationProvider tokenVerificationProvider : tokenVerificationProviders) {
-      if (tokenVerificationProvider.getIssuer() != null) {
-        tokenVerificationProviderMap.put(tokenVerificationProvider.getIssuer(), 
-            tokenVerificationProvider);
-      }
-    }
   }
   
   public OAuth2Authentication verify(HttpServletRequest request, String accessToken)
@@ -69,7 +53,7 @@ public class TokenVerifier {
     if (accessToken == null) {
       throw new InvalidTokenException("The JWT token is empty.");
     }
-    
+      
     Optional<JwtToken> maybeJwtToken = JwtToken.instance(accessToken);
 
     if (maybeJwtToken.isPresent()) {

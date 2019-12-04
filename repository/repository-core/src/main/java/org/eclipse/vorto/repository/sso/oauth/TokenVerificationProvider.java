@@ -17,10 +17,12 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public interface TokenVerificationProvider {
   /**
-   * 
-   * @return the issue of this token
+   * returns if this provider can handle this token
+   * @param jwtToken
+   * @return
    */
-  String getIssuer();
+  boolean canHandle(JwtToken jwtToken);
+  
   /*
    * Create a spring security OAuth2Authentication based on the jwt token given
    */

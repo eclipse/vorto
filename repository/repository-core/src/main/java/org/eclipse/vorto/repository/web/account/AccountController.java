@@ -260,7 +260,7 @@ public class AccountController {
     if (oauth2User.getName().startsWith("S-")) {
       return AuthenticationProvider.BOSCH.name();
     }
-    return AuthenticationProvider.GITHUB.name();
+    return AuthenticationProvider.GITHUB.name(); 
   }
 
   @RequestMapping(method = RequestMethod.POST,

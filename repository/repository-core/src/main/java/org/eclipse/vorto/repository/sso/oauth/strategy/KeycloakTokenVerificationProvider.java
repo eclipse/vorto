@@ -118,7 +118,6 @@ public class KeycloakTokenVerificationProvider extends AbstractTokenVerification
     return new OAuth2Authentication(request, authToken);
   }
 
-
   @Override
   protected Optional<String> getUserId(Map<String, Object> map) {
     Optional<String> userId = Optional.ofNullable((String) map.get(CLIENT_ID));

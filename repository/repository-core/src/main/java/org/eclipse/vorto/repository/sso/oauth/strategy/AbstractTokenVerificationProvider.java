@@ -38,6 +38,7 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
   protected static final String JWT_NAME = "name";
   protected static final String JWT_SUB = "sub";
   private static final String KEY_ID = "kid";
+  private static final String ISSUER = "iss";
 
   private Supplier<Map<String, PublicKey>> publicKeySupplier;
   private Map<String, PublicKey> publicKeys = null;
@@ -49,8 +50,16 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
     this.publicKeySupplier = Objects.requireNonNull(publicKeySupplier);
   }
 
+  protected abstract String getIssuer();
+  
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
+  @Override
+  public boolean canHandle(JwtToken jwtToken) {
+    String issuer = (String) jwtToken.getPayloadMap().get(ISSUER);
+    return issuer.equals(getIssuer());
+  }
+  
   protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, 
       String email, Set<Role> roles) {
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
