@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,13 +12,15 @@
  */
 package org.eclipse.vorto.repository.search.extractor;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.ModelInfo;
 
 public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
+
+  private static final Logger LOGGER = Logger.getLogger(BasicIndexFieldExtractor.class);
   
   public static final String VISIBILITY = "visibility";
 
@@ -41,13 +43,17 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
   public static final String MODEL_HASIMAGE = "hasImage";
   
   public static final String MODEL_CREATIONDATE = "createdOn";
+
+  public static final String NAMESPACE = "namespace";
+
+  public static final String VERSION = "version";
   
   @Override
   public Map<String, String> extractFields(ModelInfo modelInfo) {
     Map<String, String> basicFields = new HashMap<>();
     
     basicFields.put(BasicIndexFieldExtractor.MODEL_ID, modelInfo.getId().getPrettyFormat());
-    basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, breakdown(modelInfo.getId().getPrettyFormat()));
+    basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, tokenizeModelIDForSearch(modelInfo.getId().getPrettyFormat()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, modelInfo.getType().toString());
     basicFields.put(BasicIndexFieldExtractor.AUTHOR, modelInfo.getAuthor());
     basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, modelInfo.getLastModifiedBy());
@@ -57,7 +63,9 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, Boolean.toString(modelInfo.isHasImage()));
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, Long.toString(modelInfo.getCreationDate().getTime()));
     basicFields.put(BasicIndexFieldExtractor.VISIBILITY, modelInfo.getVisibility());
-    
+    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, modelInfo.getId().getNamespace());
+    basicFields.put(BasicIndexFieldExtractor.VERSION, modelInfo.getId().getVersion());
+
     return basicFields;
   }
 
@@ -67,43 +75,67 @@ public class BasicIndexFieldExtractor implements IIndexFieldExtractor {
     
     basicFields.put(BasicIndexFieldExtractor.MODEL_ID, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, FieldType.TEXT);
-    basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.MODEL_TYPE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.AUTHOR, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.MODIFIED_BY, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.DISPLAY_NAME, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.DESCRIPTION, FieldType.TEXT);
-    basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.KEY);
-    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.KEY);
+    basicFields.put(BasicIndexFieldExtractor.STATE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.VISIBILITY, FieldType.TEXT);
     basicFields.put(BasicIndexFieldExtractor.MODEL_HASIMAGE, FieldType.KEY);
     basicFields.put(BasicIndexFieldExtractor.MODEL_CREATIONDATE, FieldType.KEY);
-    
+    basicFields.put(BasicIndexFieldExtractor.NAMESPACE, FieldType.TEXT);
+    basicFields.put(BasicIndexFieldExtractor.VERSION, FieldType.TEXT);
+
     return basicFields;
   }
-  
-  private String breakdown(String prettyFormat) {
-    Collection<String> breakdown = new ArrayList<>();
-    
-    String[] sigBreakdown = prettyFormat.split(":");
-    if (sigBreakdown.length != 3) {
-      return prettyFormat;
+
+  /**
+   * Tokenizes a model version string into a whitespace-separated string, with the following rules:
+   * <ul>
+   *   <li>
+   *     Given the following example: {@literal vorto.private.test:MyModel:1.0.0}
+   *   </li>
+   *   <li>
+   *     The resulting string will be: {@literal vorto private test vorto.private.test MyModel 1.0.0}
+   *   </li>
+   *   <li>
+   *     The id is first split by colon ({@literal :}, and every token added, separated by a whitespace
+   *   </li>
+   *   <li>
+   *     The dot-separated namespace is added both as a split by dot ({@literal .}) between its
+   *     tokens, then also as-is
+   *   </li>
+   * </ul>
+   * @param modelId
+   * @return
+   */
+  private static String tokenizeModelIDForSearch(String modelId) {
+    if (Objects.isNull(modelId)) {
+      LOGGER.warn("Attempting to process an null model id.");
+      return "";
     }
-    
-    // namespace breakdown
-    String[] namespaceBreakdown = sigBreakdown[0].split("\\.");
-    for (String name : namespaceBreakdown) {
-      breakdown.add(name);
+    String trimmed = modelId.trim();
+    if (trimmed.isEmpty()) {
+      LOGGER.warn("Attempting to process an empty model id.");
+      return "";
     }
-    
-    // namespace
-    breakdown.add(sigBreakdown[0]);
-    
-    // name
-    breakdown.add(sigBreakdown[1]);
-    
-    // version
-    breakdown.add(sigBreakdown[2]);
-    
-    return String.join(" ", breakdown);
+    String[] colonSplit = trimmed.split(":");
+    if (colonSplit.length > 3) {
+      LOGGER.warn("Attempting to process invalid model id (more than 3 colon-separated tokens).");
+      return modelId;
+    }
+    StringBuilder result = new StringBuilder();
+    // not handling edge case with invalid namespace per previous implementation
+    for (String childToken: colonSplit[0].split("\\.")) {
+      result.append(childToken).append(" ");
+    }
+    for (String parentToken: colonSplit) {
+      result.append(parentToken).append(" ");
+    }
+    // deleting last whitespace
+    result.deleteCharAt(result.length() - 1);
+    return result.toString();
   }
 
 }
