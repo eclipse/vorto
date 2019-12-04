@@ -12,13 +12,10 @@
  */
 package org.eclipse.vorto.repository.web.core;
 
-import java.util.ArrayList;
+import io.swagger.annotations.Api;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
 
 /**
  * Used by the model creation dialog to fetch all released models by a certain namespace.
@@ -42,27 +38,6 @@ public class ModelSearchController extends AbstractRepositoryController {
 
   @Autowired
   private ISearchService searchService;
-  
-  @RequestMapping(value = "/releases", method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public Collection<ModelInfo> getReleasedModels(@RequestParam("type") String type,
-      @RequestParam("namespace") String namespace) {
-
-    Collection<ModelInfo> result = searchService.search("name:" + namespace);
-
-    result = result.stream()
-        .filter(info -> info.isReleased() && info.getType() == ModelType.valueOf(type))
-        .collect(Collectors.toList());
-
-    Collections.sort(new ArrayList<>(result), new Comparator<ModelInfo>() {
-      @Override
-      public int compare(ModelInfo model1, ModelInfo model2) {
-        return model1.getId().getName().compareTo(model2.getId().getName());
-      }
-    });
-
-    return result;
-  }
   
   @RequestMapping(value = "/public", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
