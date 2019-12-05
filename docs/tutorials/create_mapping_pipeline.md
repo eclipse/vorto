@@ -53,7 +53,7 @@ We can easily register our sample devices via the [Device Registry Swagger UI](h
 
 In order to use the API, you need to login via username and password. Therefore click on `Authorize`, and use the [Bosch IoT Suite Portal](https://accounts.bosch-iot-suite.com/subscriptions/) again, to  to find the `username` and `username` values at the bottom of the `Credentials` page. 
 
-1. Register 2 devices `4711` and `4712`. The following example shows the device registration for device with ID `4711`:
+1. Register 2 devices `4711` and `4712` using the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry#/devices/post_registration__tenant_id_). The following example shows the device registration for device with ID `4711`:
 
 
 ```js
@@ -65,7 +65,7 @@ In order to use the API, you need to login via username and password. Therefore 
 
 Repeat the step for the second device.
 
-2. Add device credentials for these 2 devices. The following example shows the credentials registration for a device with the ID `4711`:
+2. Add device credentials for these 2 devices using the [Credentials Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry#/credentials/post_credentials__tenant_id_). The following example shows the credentials registration for a device with the ID `4711`:
 
 ```js
 	{
