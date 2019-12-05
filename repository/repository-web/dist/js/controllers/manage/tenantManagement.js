@@ -204,13 +204,12 @@ repositoryControllers.controller("tenantManagementController",
 					};
 					
 					$scope.getPublicModelsForTenant = function() {
-						$http.get("./rest/search/public?namespace="+tenant.defaultNamespace).success(
-                            function(data, status, headers, config) {
-                            	console.log(data);
-                                $scope.hasPublicModels = data.length > 0;
-                            }).error(function(data, status, headers, config) {
-                                console.log("Problem getting data from repository");
-                            });
+            $http.get('./api/v1/search/models?expression=namespace:' + tenant.defaultNamespace + ' visibility:Public').success(
+                function(data, status, headers, config) {
+                  $scope.hasPublicModels = data.length > 0;
+                }).error(function(data, status, headers, config) {
+                  console.log("Problem getting data from repository");
+            });
 					};
 					
 					$scope.getPublicModelsForTenant();
