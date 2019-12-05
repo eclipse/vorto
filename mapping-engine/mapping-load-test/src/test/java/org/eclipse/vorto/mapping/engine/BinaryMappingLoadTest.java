@@ -1,7 +1,6 @@
 package org.eclipse.vorto.mapping.engine;
 
 import static org.junit.Assert.assertEquals;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.Conversion;
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
@@ -24,6 +23,7 @@ import com.github.noconnor.junitperf.reporting.providers.HtmlReportGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+//// Benchmark tests Scenario 1: Binary Data Mapping
 public class BinaryMappingLoadTest {
 
 	@Rule
@@ -50,7 +50,6 @@ public class BinaryMappingLoadTest {
 	private static final int EXECUTIONS_PER_SECOND_3 = 1_000;
 	private static final int EXECUTIONS_PER_SECOND_4 = 1_000;
 
-	//// Benchmark tests Scenario 1: Binary Data Mapping
 	static IDataMapper testCaseOneMapper, testCaseTwoMapper, testCaseThreeMapper;
 
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -127,7 +126,7 @@ public class BinaryMappingLoadTest {
 				(byte[]) mappedOutput.get("button").getStatusProperty("digital_input_state").get().getValue()));
 	}
 
-////// Test Case 2 - Double Nested Converter Functions (Built-in (Java) + Javascript)
+//// Test Case 2 - Double Nested Converter Functions (Built-in (Java) + Javascript)
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
@@ -161,7 +160,7 @@ public class BinaryMappingLoadTest {
 		assertEquals(88.19, mapped.get("humidity").getStatusProperty("value").get().getValue());
 	}
 
-////Test Case 3: Triple Nested Converter Functions (Built-in + Built-in + Javascript)
+//// Test Case 3: Triple Nested Converter Functions (Built-in + Built-in + Javascript)
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)

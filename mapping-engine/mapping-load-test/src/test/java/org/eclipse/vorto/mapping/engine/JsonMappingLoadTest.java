@@ -30,6 +30,8 @@ import com.github.noconnor.junitperf.reporting.providers.HtmlReportGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+//// Benchmark tests Scenario 2: Json Input Mapping
 public class JsonMappingLoadTest {
 	@Rule
 	public JUnitPerfRule perfTestRule = new JUnitPerfRule(new HtmlReportGenerator("target/benchmark_json.html"));
@@ -72,7 +74,7 @@ public class JsonMappingLoadTest {
 
 		
 		
-//Test Case 1: No converter functions
+//// Test Case 1: No converter functions
 		testCaseOneMapper = IDataMapper.newBuilder().withSpecification(new SpecWithNestedEntity()).build();
 		testCaseOneJsonInput = new String[] {"{\"temperature\" : 21.3 }","{\"temperature\" : 0.1 }","{\"temperature\" : 11 }"};
 	      testCaseOneOutput = new Double[] {21.3, 0.1, 11.0};
@@ -80,14 +82,14 @@ public class JsonMappingLoadTest {
 
 		deserializer = new JSONDeserializer();
 
-//Test Case 2: One Built in Converter
+//// Test Case 2: One Built in Converter
 		testCaseTwoMapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
 				.registerConverterFunction(DateFunctionFactory.createFunctions()).build();
 
 		timestamp = new Date();
 		testCaseTwoJson = "{\"time\" : " + timestamp.getTime() + "}";
 
-//Test Case 3: One Built in Converter + 1 Javascript Function
+//// Test Case 3: One Built in Converter + 1 Javascript Function
 		testCaseThreeMapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
 				.registerConverterFunction(TypeFunctionFactory.createFunctions())
 				.registerConverterFunction(StringFunctionFactory.createFunctions())
@@ -101,7 +103,7 @@ public class JsonMappingLoadTest {
 		
 	}
 	
-//Test Case 1: No converter functions
+//// Test Case 1: No converter functions
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
@@ -143,7 +145,7 @@ public class JsonMappingLoadTest {
 		assertEquals(testCaseOneOutput[r], temperatureValue.getValue().getPropertyValue("value").get().getValue());
 	}
 
-//Test Case 2: Built-In Converter
+//// Test Case 2: Built-In Converter
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
@@ -183,7 +185,7 @@ public class JsonMappingLoadTest {
 	}
 
 /// With Converter
-//Test Case 3: Built-in Converter Function + 1 Javascript Function
+//// Test Case 3: Built-in Converter Function + 1 Javascript Function
 
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
