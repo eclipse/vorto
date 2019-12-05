@@ -35,19 +35,21 @@ repository.factory('openCreateModelDialog',
                         $scope.selectedProperty["selectedFb"] = fb;
                     };
                     
-                    $scope.loadFunctionblocks = function(namespace) {
-                        $http.get("./rest/search/releases?type=Functionblock&namespace="+namespace).success(
+                    $scope.loadFunctionblocks = function() {
+
+                        $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto.* type:Functionblock').success(
                             function(data, status, headers, config) {
                                 $scope.functionblocks = data;
                                 $scope.isLoading = false;
                             }).error(function(data, status, headers, config) {
-                                $scope.functionblocks = [];
-                                $scope.errorMessage  = "No Functionblocks found!";
-                                $scope.isLoading = false;
-                            });         
+                            $scope.functionblocks = [];
+                            $scope.errorMessage  = "No Functionblocks found!";
+                            $scope.isLoading = false;
+                        });
+
                     };
                      
-                    $scope.loadFunctionblocks('org.eclipse.vorto');
+                    $scope.loadFunctionblocks();
                     
                     $scope.getNamespaces = function() {
                         $scope.userNamespaces = [];
