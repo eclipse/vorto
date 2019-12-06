@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;

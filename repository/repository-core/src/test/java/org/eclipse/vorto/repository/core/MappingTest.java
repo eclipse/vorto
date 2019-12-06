@@ -86,7 +86,7 @@ public class MappingTest extends AbstractIntegrationTest {
         Context.create(createUserContext("admin", "playground"),Optional.empty()));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
     this.importer.doImport(uploadResult.getHandleId(), Context.create(createUserContext("alex", "playground"),Optional.empty()));
-    assertEquals(1, repositoryFactory.getRepository(userContext).search("Mapping").size());
+    assertEquals(1, repositoryFactory.getRepository(userContext).search("type:Mapping").size());
   }
 
   @Test

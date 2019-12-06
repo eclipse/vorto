@@ -27,6 +27,12 @@
 				<i ng-show="isReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Reindex</a>
 			</br>
 			<hr>
+			<h3>Re-create index</h3>
+			<p>Move the current index to a temporary index, delete it and re-create it based on latest changes in the schema, then reindex the whole model. Backup recommended. </p>
+			<a ng-click="forceReindex()" class="btn btn-primary" ng-disabled="isForceReindexing">
+				<i ng-show="isForceReindexing" class='fa fa-refresh fa-spin'></i>&nbsp;Re-create index</a>
+			</br>
+			<hr>
 			<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
 			<h3>Diagnose</h3>
 			<p>Diagnose the entire repository for error.</p>
