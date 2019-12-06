@@ -99,8 +99,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
   @ExceptionHandler(NotAuthorizedException.class)
   public void unAuthorized(final NotAuthorizedException ex) {
-    logger.error("NotAuthorizedException occured", ex);
-    // do logging
+    logger.warn("NotAuthorizedException occured", ex);
   }
 
   @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during generation.")
