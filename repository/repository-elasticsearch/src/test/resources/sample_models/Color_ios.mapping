@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.examples.type
+version 1.0.0
+displayname "color ios mapping"
+description "color to ios mapping"
+using org.eclipse.vorto.examples.type.Color;1.0.0
+entitymapping Color_ios {
+	targetplatform ios
+	from Color.name to colortype
+}	

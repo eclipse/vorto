@@ -9,20 +9,20 @@
  * <p>
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core.search;
+package org.eclipse.vorto.repository.search;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHost;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -35,7 +35,6 @@ import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
-import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.AuthenticationProvider;
@@ -49,16 +48,15 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.search.IIndexingService;
-import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.search.IndexingEventListener;
-import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -71,10 +69,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
+import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
+import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
- * It bears notable resemblance to {@link org.eclipse.vorto.repository.AbstractIntegrationTest} for
+ * It bears notable resemblance to {@code org.eclipse.vorto.repository.AbstractIntegrationTest} for
  * good reason: it has been ported from there. <br/> The main difference in the code is that the
  * {@link org.junit.Before} and {@link org.junit.After} annotations are gone. <br/> This is because
  * this class is not intended to be used in an inheritance mechanism (i.e. actual test class
@@ -106,33 +107,48 @@ import org.springframework.security.core.Authentication;
  * {@link org.junit.Before}, i.e. for each test, including model imports, is now only happening
  * <i>once</i> per test class, on {@link org.junit.BeforeClass}.<br/>
  * To reiterate, the limitation of this approach is that the model should be considered as immutable
- * within the same test class, so the single tests are not co-dependent with one another.
+ * within the same test class, so the single tests are not co-dependent with one another.<br/>
+ * This is a conversion of the homonymous test class in the {@literal repository-core} module. <br/>
+ * The main difference with its sibling is that:
+ * <ul>
+ *   <li>
+ *     The search service is {@link ElasticSearchService}
+ *   </li>
+ *   <li>
+ *     The indexing service is not mocked, and is <i>also</i> the same {@link ElasticSearchService}
+ *   </li>
+ *   <li>
+ *     The actual Elasticsearch runtime is spun by the Allegro framework, with ports made to not
+ *     conflict with the default Elasticsearch ports
+ *   </li>
+ * </ul>
+ * Other minor modifications include:
+ * <ul>
+ *   <li>
+ *     User management: user context <i>must</i> be injected in the {@link ElasticSearchService},
+ *     see {@link SearchTestInfrastructure#getDefaultUser()} and
+ *     {@link ElasticSearchService#search(String, IUserContext)}.
+ *   </li>
+ *   <li>
+ *     Minor details such as model file name retrieval, which is a bit more convoluted here than
+ *     in the repository-core module, due to schema reasons - see {@link SearchTestInfrastructure#getFileName(ModelInfo)}.
+ *   </li>
+ * </ul>
  *
  * @author mena-bosch (refactory)
  */
 public final class SearchTestInfrastructure {
 
   /**
-   * Used in child classes to test a generated query against an arbitrary number of fragments. <br/>
-   * This is because parts of the generated queries are done so by iterating {@link
-   * java.util.HashSet}s, so the order of appearance of {@literal OR}-separated elements cannot be
-   * inferred consistently. <br/> As there is no functional need to use linked or sorted sets for
-   * those queries, this workaround is used when testing them. <br/> Obviously, this makes for a
-   * much weaker (and more convoluted) test of the generated query - luckily it only occurs when the
-   * query contains multiple {@literal OR}-separated terms with wildcards, contextually to a FTS
-   * search (think: {@literal CONTAINS([vorto:someField], '%someValue OR someOtherValue%')}). The
-   * latter implies multiple identical tags, at least one of which tags a value with a
-   * wildcard.<br/> On the other hand, non-repeated tags will always be generated in a specific
-   * order defined arbitrarily in the business logic of the simple search service instead, hence the
-   * query string can be tested as-is. <br/>
-   * <p>
-   * There is no validation of any of the parameters here.
-   *
-   * @param text
-   * @param fragments
+   * Filename property not accessible with ElasticSearch, contrary to tests with simple search. <br/>
+   * In order to easily compare a given model's file name with static file name resources, this
+   * trivial utility concatenates the model's {@link org.eclipse.vorto.model.ModelId#getName()} with the
+   * {@link ModelType#getExtension()} from {@link ModelInfo#getType()}.
+   * @param model
+   * @return
    */
-  protected static void assertContains(String text, String... fragments) {
-    assertTrue(Arrays.stream(fragments).allMatch(text::contains));
+  protected static String getFileName(ModelInfo model) {
+    return String.format(MODEL_FILENAME_FORMAT, model.getId().getName(), model.getType().getExtension());
   }
 
   /**
@@ -142,9 +158,17 @@ public final class SearchTestInfrastructure {
   protected static final String FUNCTIONBLOCK_MODEL = "Switcher.fbmodel";
   protected static final String INFORMATION_MODEL = "ColorLightIM.infomodel";
   protected static final String MAPPING_MODEL = "Color_ios.mapping";
+  protected static final String MODEL_FILENAME_FORMAT = "%s%s";
 
-  @InjectMocks
-  protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
+  private IUserContext defaultUser;
+
+  /**
+   * Field initialized last in ctor.
+   * @return a "alex" user context, used in most tests.
+   */
+  protected IUserContext getDefaultUser() {
+    return defaultUser;
+  }
 
   @Mock
   protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
@@ -169,7 +193,7 @@ public final class SearchTestInfrastructure {
 
   protected TenantService tenantService = Mockito.mock(TenantService.class);
 
-  protected IIndexingService indexingService = Mockito.mock(IIndexingService.class);
+  protected IIndexingService indexingService = null;
 
   protected TenantUserService tenantUserService = null;
 
@@ -179,7 +203,10 @@ public final class SearchTestInfrastructure {
 
   private Tenant playgroundTenant = playgroundTenant();
 
+  @InjectMocks
   protected ISearchService searchService = null;
+
+  protected EmbeddedElastic elasticSearch;
 
   protected Tenant playgroundTenant() {
     UserRole roleUser = new UserRole(Role.USER);
@@ -217,6 +244,17 @@ public final class SearchTestInfrastructure {
   }
 
   protected SearchTestInfrastructure() throws Exception {
+
+    elasticSearch = EmbeddedElastic.builder()
+        .withElasticVersion("6.7.2")
+        .withSetting(PopularProperties.HTTP_PORT, 19200)
+        .withSetting(PopularProperties.TRANSPORT_TCP_PORT, 19300)
+        //.withIndex("vorto")
+        .withSetting("discovery.type", "single-node")
+        .withJavaHome(JavaHomeOption.inheritTestSuite())
+        .build();
+    elasticSearch.start();
+
     when(tenantService.getTenantFromNamespace(Matchers.anyString()))
         .thenReturn(Optional.of(playgroundTenant));
 
@@ -244,22 +282,6 @@ public final class SearchTestInfrastructure {
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
     when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
 
-    ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
-    IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
-
-    Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
-    listeners.add(supervisor);
-    listeners.add(indexingSupervisor);
-
-    ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
-
-    accountService = new DefaultUserAccountService();
-    accountService.setNotificationService(notificationService);
-    accountService.setUserRepository(userRepository);
-    accountService.setApplicationEventPublisher(eventPublisher);
-    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
-    accountService.setTenantRepo(tenantRepo);
-
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.init();
 
@@ -267,7 +289,7 @@ public final class SearchTestInfrastructure {
     config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
+    repositoryFactory = new ModelRepositoryFactory(accountService, null,
         attachmentValidator, modelParserFactory, null, config, tenantService) {
 
       @Override
@@ -288,6 +310,31 @@ public final class SearchTestInfrastructure {
         return super.getRepository(tenant, user);
       }
     };
+
+    ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
+    RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("localhost", 19200, "http"),
+        new HttpHost("localhost", 19201, "http"), new HttpHost("localhost", 19300, "http"),
+        new HttpHost("localhost", 19301, "http"));
+    searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder), repositoryFactory, tenantService);
+
+    indexingService = (IIndexingService)searchService;
+    IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
+
+    Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
+    listeners.add(supervisor);
+    listeners.add(indexingSupervisor);
+
+    ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
+
+
+
+    accountService = new DefaultUserAccountService();
+    accountService.setNotificationService(notificationService);
+    accountService.setUserRepository(userRepository);
+    accountService.setApplicationEventPublisher(eventPublisher);
+    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
+    accountService.setTenantRepo(tenantRepo);
+
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();
 
@@ -296,7 +343,7 @@ public final class SearchTestInfrastructure {
 
     tenantUserService = new TenantUserService(tenantService, accountService);
 
-    searchService = new SimpleSearchService(tenantService, repositoryFactory);
+
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
@@ -313,10 +360,25 @@ public final class SearchTestInfrastructure {
         new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
+
+    defaultUser = createUserContext("alex");
   }
 
+  /**
+   * Stops the Elasticsearch service first, then the repository. <br/>
+   * Must be invoked on {@link org.junit.AfterClass} on each test class.
+   * @throws Exception
+   */
   public void terminate() throws Exception {
+    elasticSearch.stop();
     repositoryFactory.stop();
+  }
+
+  /**
+   * Reindexes all models.
+   */
+  public void reindex() {
+    ((IIndexingService)searchService).reindexAllModels();
   }
 
   private User getUser(String userId, Tenant tenant) {

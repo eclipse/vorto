@@ -9,15 +9,14 @@
  * <p>
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core.search;
+package org.eclipse.vorto.repository.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
-import org.eclipse.vorto.repository.search.SearchParameters;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,12 +29,12 @@ import org.junit.Test;
 public class NamespaceSearchSimpleTest {
 
   static SearchTestInfrastructure testInfrastructure;
-  
+
   @BeforeClass
   public static void beforeClass() throws Exception {
 
     testInfrastructure = new SearchTestInfrastructure();
-    
+
     // Switcher fb with namespace com.mycompany.fb
     testInfrastructure.importModel(testInfrastructure.FUNCTIONBLOCK_MODEL);
     // ColorLight im with namespace com.mycompany
@@ -52,18 +51,14 @@ public class NamespaceSearchSimpleTest {
   @Test
   public void testNoNamespace() {
     String query = "namespace:*potato*";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%potato%'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(0, model.size());
   }
 
   @Test
   public void testAllNamespaces() {
     String query = "namespace:*.*";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.%'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(3, model.size());
   }
 
@@ -75,31 +70,26 @@ public class NamespaceSearchSimpleTest {
   @Test
   public void testNamespacesWithThreeOrMoreLevels() {
     String query = "namespace:*.*.*";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.%.%'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(2, model.size());
-    assertTrue(model.stream().map(ModelInfo::getFileName).noneMatch(testInfrastructure.INFORMATION_MODEL::equals));
+    assertTrue(model.stream().map(SearchTestInfrastructure::getFileName)
+        .noneMatch(testInfrastructure.INFORMATION_MODEL::equals));
   }
 
   @Test
   public void testPlainNamespace() {
     String query = "namespace:com.mycompany";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) = 'com.mycompany'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(1, model.size());
-    assertEquals(testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.INFORMATION_MODEL, SearchTestInfrastructure.getFileName(model.get(0)));
   }
 
   @Test
   public void testPlainNamespaceCaseInsensitive() {
     String query = "namespace:COM.MYCOMPANY";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) = 'com.mycompany'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(1, model.size());
-    assertEquals(testInfrastructure.INFORMATION_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.INFORMATION_MODEL, SearchTestInfrastructure.getFileName(model.get(0)));
   }
 
   /**
@@ -109,22 +99,19 @@ public class NamespaceSearchSimpleTest {
   @Test
   public void testTrailingMultiWildcardNamespaceCaseInsensitive() {
     String query = "namespace:cOm?mYcOmPaNy*";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE 'com_mycompany%'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(2, model.size());
-    assertTrue(model.stream().map(ModelInfo::getFileName)
-        .allMatch(f -> f.equals(testInfrastructure.INFORMATION_MODEL) || f.equals(testInfrastructure.FUNCTIONBLOCK_MODEL)));
+    assertTrue(model.stream().map(SearchTestInfrastructure::getFileName)
+        .allMatch(f -> f.equals(testInfrastructure.INFORMATION_MODEL) || f
+            .equals(testInfrastructure.FUNCTIONBLOCK_MODEL)));
   }
 
   @Test
   public void testLeadingMultiWildcardNamespaceCaseInsensitive() {
     String query = "namespace:*.fb";
-    assertEquals("SELECT * FROM [nt:file] WHERE LOWER([vorto:namespace]) LIKE '%.fb'",
-        ModelSearchUtil.toJCRQuery(SearchParameters.build(query)));
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(1, model.size());
-    assertEquals(testInfrastructure.FUNCTIONBLOCK_MODEL, model.get(0).getFileName());
+    assertEquals(testInfrastructure.FUNCTIONBLOCK_MODEL, SearchTestInfrastructure.getFileName(model.get(0)));
   }
 
   /**
@@ -136,11 +123,7 @@ public class NamespaceSearchSimpleTest {
   @Test
   public void testMultipleTagsWithWildcardsAreORRelated() {
     String query = "namespace:*mycompany* namespace:*eclipse*";
-    testInfrastructure.assertContains(ModelSearchUtil.toJCRQuery(SearchParameters.build(query)),
-        "SELECT * FROM [nt:file] WHERE (CONTAINS ([vorto:namespace], '",
-        "%mycompany%", "%eclipse%"
-    );
-    List<ModelInfo> model = testInfrastructure.getSearchService().search(query);
+    List<ModelInfo> model = testInfrastructure.getSearchService().search(query, testInfrastructure.getDefaultUser());
     assertEquals(3, model.size());
   }
 
