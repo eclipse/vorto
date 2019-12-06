@@ -224,8 +224,6 @@
 		    <version>7.7.0</version>
 		</dependency>
 		
-		<!-- Elastic search indexing service (end) -->
-		
 	</dependencies>
 
 	<build>

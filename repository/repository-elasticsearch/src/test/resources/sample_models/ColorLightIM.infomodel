@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.mycompany
+version 1.0.0
+displayname "ColorLight IM"
+description "Information model for Color Light IM"
+category demo
+using org.eclipse.vorto.examples.fb.ColorLight ; 1.0.0
+
+infomodel ColorLightIM {
+	
+	functionblocks {
+		colorLight as ColorLight
+	}
+}
