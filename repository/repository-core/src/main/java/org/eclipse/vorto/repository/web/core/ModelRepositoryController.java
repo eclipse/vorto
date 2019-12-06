@@ -228,7 +228,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       }
       return new ResponseEntity<>(validationReport, HttpStatus.OK);
     } catch (ValidationException validationException) {
-      logger.error(validationException);
+      logger.warn(validationException);
       return new ResponseEntity<>(ValidationReport.invalid(null, validationException),
           HttpStatus.BAD_REQUEST);
     }
