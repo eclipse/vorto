@@ -55,11 +55,26 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
   @Override
-  public boolean canHandle(JwtToken jwtToken) {
-    String issuer = (String) jwtToken.getPayloadMap().get(ISSUER);
-    return issuer.equals(getIssuer());
+  public boolean canHandle(String accessToken) {
+    Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
+    if (jwtToken.isPresent()) {
+      String issuer = (String) jwtToken.get().getPayloadMap().get(ISSUER);
+      return issuer.equals(getIssuer());
+    }
+    return false;
   }
   
+  @Override
+  public OAuth2Authentication createAuthentication(HttpServletRequest request, String accessToken) {
+    Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
+    if (jwtToken.isPresent()) {
+      return createAuthentication(request, jwtToken.get());
+    }
+    return null;
+  }
+  
+  protected abstract OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken);
+
   protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, 
       String email, Set<Role> roles) {
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -118,6 +133,15 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
   }
   
   @Override
+  public boolean verify(HttpServletRequest httpRequest, String accessToken) {
+    Optional<JwtToken> maybeJwtToken = JwtToken.instance(accessToken);
+    if (maybeJwtToken.isPresent()) {
+      return verify(httpRequest, maybeJwtToken.get());
+    }
+    
+    return false;
+  }
+  
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
     if (!verifyPublicKey(jwtToken)) {
       return false;
@@ -129,5 +153,4 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
 
     return verifyUserExist(jwtToken);
   }
-
 }

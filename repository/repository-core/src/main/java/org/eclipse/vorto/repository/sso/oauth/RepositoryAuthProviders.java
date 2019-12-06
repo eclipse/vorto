@@ -16,35 +16,27 @@ import java.util.Collection;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier; 
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
-import com.google.common.base.Strings;
 
 @Component
-public class TokenVerifier {
-
-  @Autowired
-  @Qualifier("githubUserInfoTokenServices")
-  private UserInfoTokenServices githubTokenService;
+public class RepositoryAuthProviders {
   
   @Autowired
   private Collection<TokenVerificationProvider> tokenVerificationProviders;
   
-  public TokenVerifier() {
+  public RepositoryAuthProviders() {
   }
 
-  private Optional<TokenVerificationProvider> getVerificationProvider(JwtToken jwtToken) {
-    for(TokenVerificationProvider provider : tokenVerificationProviders) {
-      if (provider.canHandle(jwtToken)) {
-        return Optional.of(provider);
-      }
-    }
-
-    return Optional.empty();
+  public Optional<TokenVerificationProvider> getProviderFor(String jwtToken) {
+    return tokenVerificationProviders.stream().filter(provider -> provider.canHandle(jwtToken)).findFirst();
+  }
+  
+  public Optional<TokenVerificationProvider> getProviderFor(Authentication auth) {
+    return tokenVerificationProviders.stream().filter(authProvider -> authProvider.canHandle(auth)).findFirst();
   }
   
   public OAuth2Authentication verify(HttpServletRequest request, String accessToken)
@@ -54,20 +46,12 @@ public class TokenVerifier {
       throw new InvalidTokenException("The JWT token is empty.");
     }
       
-    Optional<JwtToken> maybeJwtToken = JwtToken.instance(accessToken);
-
-    if (maybeJwtToken.isPresent()) {
-      JwtToken jwtToken = maybeJwtToken.get();
-      Optional<TokenVerificationProvider> verificationProvider = getVerificationProvider(jwtToken);
-      if (verificationProvider.isPresent()) {
-        TokenVerificationProvider provider = verificationProvider.get();
-        if (provider.verify(request, jwtToken)) {
-          return provider.createAuthentication(request, jwtToken);
-        }
+    Optional<TokenVerificationProvider> verificationProvider = getProviderFor(accessToken);
+    if (verificationProvider.isPresent()) {
+      TokenVerificationProvider provider = verificationProvider.get();
+      if (provider.verify(request, accessToken)) {
+        return provider.createAuthentication(request, accessToken);
       }
-    } else if (!Strings.nullToEmpty(accessToken).trim().isEmpty()) {
-      // we have a bearer token but it is not a JWT token, most likely is it a github token
-      return githubTokenService.loadAuthentication(accessToken);
     }
     
     throw new InvalidTokenException("No provider was able to verify this token.");
