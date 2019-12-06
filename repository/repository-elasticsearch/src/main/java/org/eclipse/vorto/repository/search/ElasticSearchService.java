@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.repository.search;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,16 +20,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.ModelVisibility;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -42,6 +42,7 @@ import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -64,16 +65,18 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.google.common.base.Strings;
 
 /**
- * Search Service implementation using a remote Elastic Search Service
- *
+ * Search Service implementation using a remote Elastic Search Service.<br/>
+ * This search service provides a powerful and flexible way to look for specific models.<br>
+ * See documentation for {@link ElasticSearchService#search(String, IUserContext)} for full specifications.
+ * @author mena-bosch (refactored)
  */
 public class ElasticSearchService implements IIndexingService, ISearchService {
 
@@ -91,23 +94,68 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private static final String VORTO_INDEX = "vorto";
 
+  private static final String VORTO_INDEX_TEMP = "vorto_temp";
+
   private static Logger logger = Logger.getLogger(ElasticSearchService.class);
 
   private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<IIndexFieldExtractor>();
-
-  private Pattern searchExprPattern = Pattern.compile("name:(\\S+)\\*");
-
-  private Pattern authorExprPattern = Pattern.compile("author:(\\S+)");
-  
-  private Pattern userReferencePattern = Pattern.compile("userReference:(\\S+)");
-
-  private Pattern visibilityExprPattern = Pattern.compile("visibility:(\\w+)");
 
   private RestHighLevelClient client;
 
   private IModelRepositoryFactory repositoryFactory;
 
   private ITenantService tenantService;
+
+  /**
+   * An un-tagged name token in a search will search into the following fields:
+   * <ul>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#DISPLAY_NAME}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#DESCRIPTION}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#MODEL_NAME_SEARCHABLE}
+   *   </li>
+   * </ul>
+   * The ranking of results is equal for the 3 fields.
+   */
+  public static final Map<String, Float> UNTAGGED_NAME_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DESCRIPTION, 1.0f);
+    UNTAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, 1.0f);
+  }
+
+  /**
+   * A value tagged {@literal name:} will be searched in the following field:
+   * {@link BasicIndexFieldExtractor#DISPLAY_NAME}
+   */
+  public static final Map<String, Float> TAGGED_NAME_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    TAGGED_NAME_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.DISPLAY_NAME, 1.0f);
+  }
+
+  /**
+   * A value tagged {@literal userReference:} will be searched in the following two fields:
+   * <ul>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#AUTHOR}
+   *   </li>
+   *   <li>
+   *     {@link BasicIndexFieldExtractor#MODIFIED_BY}
+   *   </li>
+   * </ul>
+   * The ranking of results is equal for the 2 fields.
+   */
+  public static final Map<String, Float> USER_REFERENCE_FIELDS_FOR_QUERY = new HashMap<>();
+  static {
+    USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.AUTHOR, 1.0f);
+    USER_REFERENCE_FIELDS_FOR_QUERY.put(BasicIndexFieldExtractor.MODIFIED_BY, 1.0f);
+  }
+
+  private static final String ANALYZER = "standard";
 
   public ElasticSearchService(RestHighLevelClient client, IModelRepositoryFactory repositoryFactory,
       ITenantService tenantService) {
@@ -135,7 +183,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     if (!indexExist(VORTO_INDEX)) {
       logger.info("Index doesn't exist. Try creating it.");
       createIndexWithMapping(VORTO_INDEX, createMappingForIndex());
-      logger.info("Index '" + VORTO_INDEX + "' created.");
+      logger.info(String.format("Index '%s' created.", VORTO_INDEX));
     } else {
       logger.info("Index already exist");
     }
@@ -146,8 +194,119 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       return client.indices().exists(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      throw new IndexingException("Error while checking if index '" + index + "' exist.", e);
+      throw new IndexingException(String.format("Error while checking if index '%s' exist.", index), e);
     }
+  }
+
+  /**
+   * This forces a full reindexing of all model, and should be used in the rare occasion where
+   * a change in the mapping has been created, e.g. a new searchable field, or a change in a field's
+   * type.<br/>
+   * The following operations are performed in order, synchronously:
+   * <ol>
+   *   <li>
+   *     Checks if the vorto index actually exists. If it doesn't, creates it and returns (nothing
+   *     else worth doing).
+   *   </li>
+   *   <li>
+   *     Checks if the vorto temp index ({@link ElasticSearchService#VORTO_INDEX_TEMP}) exists. If
+   *     so, deletes the temp index.
+   *   </li>
+   *   <li>
+   *     Creates the temp index with the current mapping.
+   *   </li>
+   *   <li>
+   *     Uses a reindex request to merge the vorto index ({@link ElasticSearchService#VORTO_INDEX})
+   *     into the temp index.
+   *   </li>
+   *   <li>
+   *     Deletes the vorto index.
+   *   </li>
+   *   <li>
+   *     Re-creates the vorto index.
+   *   </li>
+   *   <li>
+   *     Merges back the temp index in the vorto index.
+   *   </li>
+   *   <li>
+   *     Deletes the temp index.
+   *   </li>
+   *   <li>
+   *     Reindexes all model in the vorto index - see {@link IIndexingService#reindexAllModels()}.
+   *   </li>
+   * </ol>
+   *
+   * @return
+   */
+  @Override
+  public IndexingResult forceReindexAllModels() {
+    // no Vorto index - nothing to do
+    if (!indexExist(VORTO_INDEX)) {
+      createIndexIfNotExisting();
+      return new IndexingResult();
+    }
+    // first delete the VORTO_INDEX_TEMP index if it exists
+    if (indexExist(VORTO_INDEX_TEMP)) {
+      DeleteIndexRequest deleteTempIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX_TEMP);
+      try {
+        client.indices().delete(deleteTempIndexRequest, RequestOptions.DEFAULT);
+      }
+      catch (IOException ioe) {
+        throw new IndexingException(ioe.getMessage(), ioe);
+      }
+    }
+    // creates the temporary index to hold the new mapping
+    CreateIndexRequest createTempIndexRequest = new CreateIndexRequest(VORTO_INDEX_TEMP);
+    createTempIndexRequest.mapping(createMappingForIndex());
+    try {
+      client.indices().create(createTempIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // copies the vorto index data to the new temp index with new mapping
+    ReindexRequest reindexRequest = new ReindexRequest().setSourceIndices(VORTO_INDEX).setDestIndex(VORTO_INDEX_TEMP);
+    reindexRequest.setConflicts("proceed");
+    reindexRequest.setRefresh(true);
+    try {
+      client.reindex(reindexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // deletes the vorto index
+    DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX);
+    try {
+      client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+    // re-creates the vorto index
+    createIndexIfNotExisting();
+
+    // moves data back to vorto index
+    ReindexRequest moveBackToVortoIndex = new ReindexRequest().setSourceIndices(VORTO_INDEX_TEMP).setDestIndex(VORTO_INDEX);
+    reindexRequest.setConflicts("proceed");
+    reindexRequest.setRefresh(true);
+    try {
+      client.reindex(moveBackToVortoIndex, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+
+    // deletes the temp index
+    DeleteIndexRequest deleteTempIndexRequest = new DeleteIndexRequest().indices(VORTO_INDEX_TEMP);
+    try {
+      client.indices().delete(deleteTempIndexRequest, RequestOptions.DEFAULT);
+    }
+    catch (IOException ioe) {
+      throw new IndexingException(ioe.getMessage(), ioe);
+    }
+
+    // finally, re-import all models
+    return reindexAllModels();
   }
 
   private boolean createIndexWithMapping(String index, Map<String, Object> mapping) {
@@ -196,7 +355,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       List<ModelInfo> modelsToIndex = repo.search("");
       if (!modelsToIndex.isEmpty()) {
         BulkRequest bulkRequest = new BulkRequest();
-        
+
         modelsToIndex.forEach(model -> {
           bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
         });
@@ -204,11 +363,15 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         try {
           BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
           result.addIndexedTenant(repo.getTenantId(), modelsToIndex.size());
-          logger.info("Received " + bulkResponse.getItems().length + " replies for tenant '"
-              + repo.getTenantId() + "' with " + modelsToIndex.size() + " models");
+          logger.info(
+            String.format(
+              "Received %d replies for tenant '%s' with %d models",
+              bulkResponse.getItems().length, repo.getTenantId(), modelsToIndex.size()
+            )
+          );
         } catch (IOException e) {
           throw new IndexingException(
-              "Error trying to index all models in '" + repo.getTenantId() + "' tenant.", e);
+            String.format("Error trying to index all models in '%s' tenant.", repo.getTenantId()), e);
         }
       }
     });
@@ -221,14 +384,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private void deleteByQuery(String index, QueryBuilder query) {
-    logger.info("Trying to delete all models in index '" + index + "'");
+    logger.info(String.format("Trying to delete all models in index '%s'", index));
     DeleteByQueryRequest request = new DeleteByQueryRequest(index);
     request.setQuery(query);
     try {
       BulkByScrollResponse bulkResponse = client.deleteByQuery(request, RequestOptions.DEFAULT);
-      logger.info("Deleted " + bulkResponse.getTotal() + " models in the index '" + index + "'");
+      logger.info(String.format("Deleted %d models in the index '%s'", bulkResponse.getTotal(), index));
     } catch (IOException e) {
-      throw new IndexingException("Error deleting all models in the '" + index + "' index.", e);
+      throw new IndexingException(String.format("Error deleting all models in the '%s' index.", index), e);
     }
   }
 
@@ -244,7 +407,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       return client.exists(getRequest, RequestOptions.DEFAULT);
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while querying if model '" + modelId.getPrettyFormat() + "' exist.", e);
+          String.format("Error while querying if model '%s' exist.", modelId.getPrettyFormat()), e
+      );
     }
   }
 
@@ -253,17 +417,17 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
 
-    logger.info("Indexing model '" + modelInfo.getId() + "'");
+    logger.info(String.format("Indexing model '%s'", modelInfo.getId()));
 
     try {
       IndexResponse indexResponse =
           client.index(createIndexRequest(modelInfo, tenantId), RequestOptions.DEFAULT);
       if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
-        logger.info("Index created for '" + modelInfo.getId().getPrettyFormat() + "'");
+        logger.info(String.format("Index created for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while indexing '" + modelInfo.getId().getPrettyFormat() + "'", e);
+          String.format("Error while indexing '%s'", modelInfo.getId().getPrettyFormat()), e);
     }
   }
 
@@ -284,7 +448,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   public void updateIndex(ModelInfo modelInfo) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
 
-    logger.info("Updating index of model '" + modelInfo.getId() + "'");
+    logger.info(String.format("Updating index of model '%s'", modelInfo.getId()));
 
     UpdateRequest request = new UpdateRequest(VORTO_INDEX, DOC, modelInfo.getId().getPrettyFormat())
         .doc(updateMap(modelInfo));
@@ -292,11 +456,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       UpdateResponse response = client.update(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.UPDATED) {
-        logger.info("Index updated for '" + modelInfo.getId().getPrettyFormat() + "'");
+        logger.info(String.format("Index updated for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while updating the index of '" + modelInfo.getId().getPrettyFormat() + "'", e);
+          String.format("Error while updating the index of '%s'", modelInfo.getId().getPrettyFormat()), e
+      );
     }
   }
 
@@ -322,7 +487,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       }
     } catch (IOException e) {
       throw new IndexingException(
-          "Error while deleting the index of '" + modelId.getPrettyFormat() + "'", e);
+          String.format("Error while deleting the index of '%s'", modelId.getPrettyFormat()), e
+      );
     }
   }
 
@@ -331,17 +497,108 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, tenantId));
   }
 
+  /**
+   * @see ElasticSearchService#search(String, IUserContext)
+   * @param searchExpression
+   * @return
+   */
   public List<ModelInfo> search(String searchExpression) {
-    return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
+      return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
   }
-  
+
+  /**
+   * The {@code searchExpression} value is composed of tokens explained below. <br/>
+   * All tokens are optional, meaning that a search expression can actually be empty (and will
+   * consequently yield all known models visible to the tenant searching). <br/>
+   * Tokens are made of single values or tagged values, space-separated.<br/>
+   * Single values are always interpreted as name searches.<br/>
+   * Tagged values are expressed in the form of {@literal tagname:value}, with <b>no whitespace</b>
+   * before or after the colon. <br/>
+   * Any type of tag that is specified in the search is a hard-requirement, i.e. it <i>must</i> be
+   * present in the model that is returned. <br/>
+   * However, it is possible to use multiple identical tags with different values (e.g.
+   * {@literal type:InformationModel} {@literal type:Functionblock}). In that case, the multiple
+   * values for that tag are required <i>in alternative</i> to one another - in other words,
+   * qualifying results will contain at least one of the values for that type.<br/>
+   * To of the search types implicitly search in different fields in alternative: {@literal name:}
+   * and {@literal author:} (see below for details).<br/>
+   * The <i>only</i> search term that does not require a tag is the {@literal name:}. In
+   * essence, any untagged value is considered as {@literal name:[the value]}.<br/>
+   * All values are searched <b>case-insensitive</b>. <br/>
+   * All tags are <i>also</i> parsed <b>case-sensitive</b>, e.g. {@literal state:} can also be
+   * expressed as {@literal STATE:} (or {@literal sTaTe:}, etc. for that matter). Tags are
+   * identified by their known descriptor (see below for details), followed by a colon
+   * ({@literal :}).<br/>
+   * Multiple search terms can be separated by a single or multiple whitespaces - which is why
+   * whitespace is <b>not</b> allowed in values.<br/>
+   * All values can be expressed as plain text (e.g. {@literal author:Mena}), or with
+   * wildcards (e.g. {@literal author:?en*}.<br/>
+   * Asterisk wildcards ({@literal *}) allow multiple characters, while question mark wildcards
+   * ({@literal ?}) allow a single character.<br/>
+   * For backwards-compatibility, name values (tagged or not) that do not contain any wildcard
+   * are automatically appended a multi-character wildcard at the end, e.g. {@literal Raspberry} or
+   * {@literal name:Raspberry} become {@literal Raspberry*} and {@literal name:Raspberry*}.<br/>
+   * The supported tags are listed below:
+   * <ul>
+   *   <li>
+   *     The model type (with tag {@literal type:)}, which can be:
+   *     <ul>
+   *       <li>All types (i.e. empty)</li>
+   *       <li>{@literal InformationModel}</li>
+   *       <li>{@literal Functionblock}</li>
+   *       <li>{@literal Datatype}</li>
+   *       <li>{@literal Mapping}</li>
+   *       <li>Any wildcard search</li>
+   *     </ul>
+   *     In the web UI, the model type can be set to any specific type by changing the value in the
+   *     {@literal TYPES} drop-down. It defaults to all types.
+   *     @see ModelType
+   *   </li>
+   *   <li>
+   *     The model state (with tag {@literal state:)}, which can be:
+   *    <ul>
+   *      <li>All states (i.e. empty)</li>
+   *      <li>{@literal Draft}</li>
+   *       <li>{@literal InReview}</li>
+   *      <li>{@literal Released} (default value in the repository's web UI search)</li>
+   *      <li>{@literal Deprecated}</li>
+   *      <li>Any wildcard search</li>
+   *    </ul>
+   *    In the web UI, the model state can be set to any specific type by changing the value in the
+   *    {@literal STATES} drop-down. It defaults to {@literal Released}.
+   *    @see ModelState
+   *   </li>
+   *   <li>
+   *     The model's name (with optional tag {@literal name:}), which is automatically searched as
+   *     {@literal displayName}, or {@literal description} or{@literal searchableName}.
+   *   </li>
+   *   <li>
+   *     The model's author (with tag {@literal author:}). In the web UI, the author can be set
+   *     implicitly to the current user only by checking the {@literal Only My Models} checkbox.
+   *   </li>
+   *   <li>
+   *     The model's user reference (with tag {@literal userReference:}), which is automatically
+   *     searched as {@literal author} or {@literal lastModifiedBy}.
+   *   </li>
+   *   <li>
+   *     The model's visibility (with tag {@literal visibility:}). In the web UI, the visibility
+   *     can be set implicitly to {@literal Public} by checking the {@literal Only Public Models}
+   *     checkbox.
+   *     @see ModelVisibility
+   *   </li>
+   *   <li>
+   *     In addition to those search options, a collection of tenant IDs containing the current
+   *     tenant's ID is typically inferred from context, in order to filter items by ownership.
+   *   </li>
+   * </ul>
+   * @param searchExpression The search expression
+   * @param userContext The user context with which to execute this query
+   * @return
+   */
   public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
 
-    SearchParameters searchParameters =
-        makeSearchParams(findTenantsOfUser(userContext), Strings.nullToEmpty(searchExpression));
-
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-    searchSourceBuilder.query(makeElasticSearchQuery(searchParameters));
+    searchSourceBuilder.query(toESQuery(SearchParameters.build(findTenantsOfUser(userContext), searchExpression)));
     searchSourceBuilder.from(0);
     searchSourceBuilder.size(MAX_SEARCH_RESULTS);
     searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
@@ -350,15 +607,16 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     searchRequest.source(searchSourceBuilder);
 
     try {
-      logger.info("Search Expression: " + searchExpression + " Elastic Search: "
-          + searchRequest.toString());
+
+      logger.info(String.format("Search Expression: %s Elastic Search: %s", searchExpression, searchRequest.toString()));
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
-      logger.info("Number of hits: " + hits.getTotalHits());
+      logger.info(String.format("Number of hits: %d", hits.getTotalHits()));
       return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
-      throw new IndexingException("Error while querying the index for '"
-          + Strings.nullToEmpty(searchExpression) + "' expression", e);
+      throw new IndexingException(
+        String.format("Error while querying the index for '%s' expression", Strings.nullToEmpty(searchExpression)), e
+      );
     }
   }
 
@@ -372,7 +630,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
           .collect(Collectors.toList());
     }
   }
-  
+
   private Predicate<Tenant> getUserFilter(IUserContext userContext) {
     if (userContext.isSysAdmin()) {
       return tenant -> true;
@@ -399,96 +657,11 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         Boolean.parseBoolean((String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_HASIMAGE)));
     String createdOn = (String) sourceAsMap.get(BasicIndexFieldExtractor.MODEL_CREATIONDATE);
     modelInfo.setCreationDate(new Date(Long.parseLong(createdOn)));
+
     return modelInfo;
   }
 
-  private SearchParameters makeSearchParams(Collection<String> tenantIds, String searchExpression) {
-    Optional<ModelType> modelType = Optional.empty();
-    for (ModelType type : ModelType.values()) {
-      if (searchExpression.contains(type.name())) {
-        modelType = Optional.of(type);
-      }
-    }
-
-    Optional<ModelState> modelState = Optional.empty();
-    for (ModelState state : ModelState.values()) {
-      if (searchExpression.contains("state:" + state.getName())) {
-        modelState = Optional.of(state);
-      }
-    }
-
-    Optional<String> searchExpr = Optional.empty();
-    Matcher matcher = searchExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      searchExpr = Optional.of(matcher.group(1));
-    }
-
-    Optional<String> author = Optional.empty();
-    matcher = authorExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      author = Optional.of(matcher.group(1));
-    }
-    
-    Optional<String> userReference = Optional.empty();
-    matcher = userReferencePattern.matcher(searchExpression);
-    if (matcher.find()) {
-      userReference = Optional.of(matcher.group(1));
-    }
-
-    Optional<String> visibility = Optional.empty();
-    matcher = visibilityExprPattern.matcher(searchExpression);
-    if (matcher.find()) {
-      visibility = Optional.of(matcher.group(1));
-    }
-
-    return new SearchParameters(tenantIds, searchExpr, modelState, modelType, 
-        author, userReference, visibility);
-  }
-
-  private QueryBuilder makeElasticSearchQuery(SearchParameters params) {
-    BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-
-    if (params.expression.isPresent()) {
-      queryBuilder = queryBuilder.must(matches(params.expression.get()));
-    }
-
-    if (params.state.isPresent()) {
-      queryBuilder = queryBuilder.must(
-          QueryBuilders.termQuery(BasicIndexFieldExtractor.STATE, params.state.get().getName()));
-    }
-
-    if (params.type.isPresent()) {
-      queryBuilder = queryBuilder.must(QueryBuilders.termQuery(BasicIndexFieldExtractor.MODEL_TYPE,
-          params.type.get().toString()));
-    }
-
-    if (params.author.isPresent()) {
-      queryBuilder = queryBuilder
-          .must(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.author.get()));
-    }
-    
-    if (params.userReference.isPresent()) {
-      queryBuilder = queryBuilder
-          .must(or(QueryBuilders.termQuery(BasicIndexFieldExtractor.AUTHOR, params.userReference.get()),
-              QueryBuilders.termQuery(BasicIndexFieldExtractor.MODIFIED_BY, params.userReference.get())));
-    }
-
-    if (params.visibility.isPresent()) {
-      queryBuilder = queryBuilder.must(
-          QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, params.visibility.get()));
-    }
-
-    if (params.tenantIds.isEmpty()) {
-      queryBuilder = queryBuilder.must(isPublic());
-    } else {
-      queryBuilder = queryBuilder.must(or(isPublic(), isOwnedByTenants(params.tenantIds)));
-    }
-
-
-    return queryBuilder;
-  }
-
-  private QueryBuilder or(QueryBuilder... queries) {
+  private static QueryBuilder buildORBoolQueryWith(QueryBuilder... queries) {
     BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
     for (QueryBuilder query : queries) {
       boolQuery = boolQuery.should(query);
@@ -496,41 +669,163 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return boolQuery;
   }
 
-  private QueryBuilder matches(String expression) {
-    return or(
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DISPLAY_NAME, expression),
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.DESCRIPTION, expression),
-        QueryBuilders.matchPhrasePrefixQuery(BasicIndexFieldExtractor.MODEL_NAME_SEARCHABLE, expression));
-  }
-
-  private QueryBuilder isPublic() {
+  private static QueryBuilder isPublic() {
     return QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, PUBLIC);
   }
 
-  private QueryBuilder isOwnedByTenants(Collection<String> tenants) {
+  private static QueryBuilder isOwnedByTenants(Collection<String> tenants) {
     return QueryBuilders.termsQuery(TENANT_ID, tenants);
   }
 
-  private class SearchParameters {
-    Collection<String> tenantIds;
-    Optional<String> expression;
-    Optional<ModelState> state;
-    Optional<ModelType> type;
-    Optional<String> author;
-    Optional<String> userReference;
-    Optional<String> visibility;
-
-    public SearchParameters(Collection<String> tenantIds, Optional<String> expression,
-        Optional<ModelState> state, Optional<ModelType> type, Optional<String> author,
-        Optional<String> userReference, Optional<String> visibility) {
-      this.tenantIds = tenantIds;
-      this.expression = expression;
-      this.state = state;
-      this.type = type;
-      this.author = author;
-      this.userReference = userReference;
-      this.visibility = visibility;
+  /**
+   * Variant of {@link ElasticSearchService#makeChildQuery(BoolQueryBuilder, Collection, String)}
+   * that is only in use for search of values into multiple keys.<br/>
+   * Contrary to its overload, this does not support enum element name correction, as it is
+   * intended to search arbitrary text such as model names, authors, etc.
+   * @param parent
+   * @param values
+   * @param keys
+   * @return
+   */
+  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, Map<String, Float> keys) {
+    // no need to go further - returning parent query as-is
+    if (values.isEmpty()) {
+      return parent;
     }
+    // single value: remove one query layer and add must query to parent directly
+    if (values.size() == 1) {
+      parent = parent.must(QueryBuilders.queryStringQuery(values.toArray(new String[values.size()])[0]).fields(keys).analyzer(ANALYZER));
+    }
+    // multiple values: wrap in bool query under parent and add leaves with OR relationship
+    else {
+      BoolQueryBuilder child = QueryBuilders.boolQuery();
+      for (String value : values) {
+        child = child.should(QueryBuilders.queryStringQuery(value).fields(keys).analyzer(ANALYZER));
+      }
+      parent = parent.must(child);
+    }
+    return parent;
+  }
+
+  /**
+   * Used by {@link ElasticSearchService#toESQuery(SearchParameters)} exclusively. <br/>
+   * Appends children bool queries to the given parent. <br/>
+   * Values containing only one element produce one child to the parent {@link BoolQueryBuilder}
+   * in an {@literal AND} relationship to its peers, which contains the search terms. <br/>
+   * Conversely, multiple values produce the same child, but also add as many children to it as
+   * there are values to search, each in an {@literal OR} relationship with one another.
+   * @param parent
+   * @param values
+   * @param key
+   * @return
+   */
+  private static QueryBuilder makeChildQuery(BoolQueryBuilder parent, Collection<String> values, String key) {
+    // no need to go further - returning parent query as-is
+    if (values.isEmpty()) {
+      return parent;
+    }
+    // single value: remove one query layer and add must query to parent directly
+    if (values.size() == 1) {
+      // getting value from single collection element
+      String value = values.toArray(new String[values.size()])[0];
+      // value should be searched as query string as it contains wildcards
+      parent = parent.must(QueryBuilders.queryStringQuery(value).field(key).analyzer(ANALYZER));
+    }
+    else {
+      BoolQueryBuilder child = QueryBuilders.boolQuery();
+      // producing a grandchild for each value
+      for (String value: values) {
+        // value should be searched as query string as it contains wildcards
+        child = child.should(QueryBuilders.queryStringQuery(value).field(key).analyzer(ANALYZER));
+      }
+      parent = parent.must(child);
+    }
+    return parent;
+  }
+
+  /**
+   * Builds a boolean query for ElasticSearch, with the following rules:
+   * <ul>
+   *   <li>
+   *     Top-level arguments are all required, i.e. the top level terms are in a boolean
+   *     {@literal AND} relationship with one another. For instance, if specified, the type and
+   *     state of the searched model are both required.
+   *   </li>
+   *   <li>
+   *     Child-level arguments are <i>either</i> required, i.e. multiple terms for the same
+   *     property are in a boolean {@literal OR} relationship with one another. For instance, if
+   *     specified, two different values for the model type will return models for <i>either</i> of
+   *     the two specified values.
+   *   </li>
+   *   <li>
+   *     For name searches ({@literal name:} tag optional), 3 fields will be automatically searched
+   *     in alternative to one another: {@literal displayName}, {@literal description} and
+   *     {@literal searchableName}. Also worth noting, name search terms that have no wildcards will
+   *     automatically be appended a multi-character wildcard for backwards-compatibility.
+   *   </li>
+   *   <li>
+   *     Similarly to name searches, {@literal author:} searches use two fields in alternative to
+   *     one another: {@literal author:} and {@literal lastModifiedBy:}. Unlike name searches,
+   *     author searches are not appended any wildcard automatically (nor any other field search,
+   *     for that matter).
+   *   </li>
+   * </ul>
+   * @param parameters
+   * @return
+   */
+  public static QueryBuilder toESQuery(SearchParameters parameters) {
+    BoolQueryBuilder result = QueryBuilders.boolQuery();
+
+    // adding tenant ids
+    Set<String> tenantIds = parameters.getTenantIds();
+    if (tenantIds.isEmpty()) {
+      result = result.must(isPublic());
+    } else {
+      result = result.must(buildORBoolQueryWith(isPublic(), isOwnedByTenants(tenantIds)));
+    }
+
+    /*
+     adding tagged and untagged names - special rules:
+     1. non-wildcard values are appended a multi-character wildcard
+     2. tagged names resolve to display name / name
+     3. un-tagged names resolve to name, description and display name
+     */
+    Set<String> taggedNames = parameters.getTaggedNames();
+    if (!taggedNames.isEmpty()) {
+        makeChildQuery(
+            result, taggedNames, TAGGED_NAME_FIELDS_FOR_QUERY
+        );
+    }
+
+    Set<String> unTaggedNames = parameters.getUntaggedNames();
+    if (!unTaggedNames.isEmpty()) {
+      makeChildQuery(
+          result, unTaggedNames, UNTAGGED_NAME_FIELDS_FOR_QUERY
+      );
+    }
+
+    // adding states
+    makeChildQuery(result, parameters.getStates(), BasicIndexFieldExtractor.STATE);
+
+    // adding types
+    makeChildQuery(result, parameters.getTypes(), BasicIndexFieldExtractor.MODEL_TYPE);
+
+    // adding authors
+    makeChildQuery(result, parameters.getAuthors(), BasicIndexFieldExtractor.AUTHOR);
+
+    // adding user references
+    makeChildQuery(result, parameters.getUserReferences(), USER_REFERENCE_FIELDS_FOR_QUERY);
+
+    // adding visibilities
+    makeChildQuery(result, parameters.getVisibilities(), BasicIndexFieldExtractor.VISIBILITY);
+
+    // adding namespaces
+    makeChildQuery(result, parameters.getNamespaces(), BasicIndexFieldExtractor.NAMESPACE);
+
+    // adding versions
+    makeChildQuery(result, parameters.getVersions(), BasicIndexFieldExtractor.VERSION);
+
+    return result;
   }
 
   public Collection<IIndexFieldExtractor> getFieldExtractors() {

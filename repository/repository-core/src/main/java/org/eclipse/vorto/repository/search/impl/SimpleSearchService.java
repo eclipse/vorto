@@ -72,6 +72,11 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
+  public IndexingResult forceReindexAllModels() {
+    return new IndexingResult();
+  }
+
+  @Override
   public void indexModel(ModelInfo modelInfo, String tenantId) {
     // NOOP
   }

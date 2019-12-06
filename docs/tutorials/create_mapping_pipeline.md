@@ -53,7 +53,7 @@ We can easily register our sample devices via the [Device Registry Swagger UI](h
 
 In order to use the API, you need to login via username and password. Therefore click on `Authorize`, and use the [Bosch IoT Suite Portal](https://accounts.bosch-iot-suite.com/subscriptions/) again, to  to find the `username` and `username` values at the bottom of the `Credentials` page. 
 
-1. Register 2 devices `4711` and `4712`. The following example shows the device registration for device with ID `4711`:
+1. Register 2 devices `4711` and `4712` using the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry#/devices/post_registration__tenant_id_). The following example shows the device registration for device with ID `4711`:
 
 
 ```js
@@ -65,7 +65,7 @@ In order to use the API, you need to login via username and password. Therefore 
 
 Repeat the step for the second device.
 
-2. Add device credentials for these 2 devices. The following example shows the credentials registration for a device with the ID `4711`:
+2. Add device credentials for these 2 devices using the [Credentials Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry#/credentials/post_credentials__tenant_id_). The following example shows the credentials registration for a device with the ID `4711`:
 
 ```js
 	{
@@ -242,16 +242,10 @@ As seen in the picture, we will now setup the Eclipse Vorto Payload Normalizatio
 
 <img src="../images/tutorials/decouple_tutorial/stepOneOverview.png" />
 
-For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md). 
+1. Please follow the [installation guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md#running-the-vorto-normalizer-service), on how to set up the middleware service and optionally frontend.
+2. Make sure you mounted a volume to the docker container, containing your mapping specification. You can find the instructions to do that in the installation guide as well, under _Adding your mapping specifications to the middleware_.  
 
-Here are the steps to run the middleware service:
-
-1. Pull the image from docker-hub with ```docker pull eclipsevorto/vorto-normalizer:nightly```
-2. Run the service with ```docker run -p 8080:8080 -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=amqp_url -e amqp.username=amqp_username -e amqp.password=amqp_password -e cors=http://localhost:4200 eclipsevorto/vorto-normalizer:nightly```
-> Please refer to the [middleware guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) for more information about the environment variables
-3. Optionally run the middleware frontend for better device payload monitoring capabilities. Please also refer to the middleware guide for details.
-
-Now, before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
+Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
 1. Again open the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry)
 2. Find the **PUT** Command , which updates your existing device ID. Add the following JSON content:

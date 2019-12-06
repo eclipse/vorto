@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -92,13 +92,13 @@ public class IndexingTest extends AbstractIntegrationTest {
     
     importModel("creator", "ColorEnum.type");
     
-    repositoryFactory.getRepository(creator).updateState(MODEL_ID, ModelState.DRAFT.getName());
+    repositoryFactory.getRepository(creator).updateState(MODEL_ID, ModelState.Draft.getName());
     
     ArgumentCaptor<ModelInfo> captor = ArgumentCaptor.forClass(ModelInfo.class);
     Mockito.verify(indexingService, Mockito.times(1)).updateIndex(captor.capture());
     
     ModelInfo savedModel = captor.getValue();
-    assertEquals(savedModel.getState(), ModelState.DRAFT.getName());
+    assertEquals(savedModel.getState(), ModelState.Draft.getName());
   }
   
   @Test

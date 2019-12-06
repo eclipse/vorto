@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -48,7 +48,7 @@ public class BulkReleaseFunction implements IWorkflowFunction {
     for (ModelId referenceId : model.getReferences()) {
       IModelRepository repository = repositoryFactory.getRepositoryByModel(referenceId);
       ModelInfo referenceModel = repository.getById(referenceId);
-      if (ModelState.DRAFT.getName().equals(referenceModel.getState())) {
+      if (ModelState.Draft.getName().equals(referenceModel.getState())) {
         try {
           workflowService.doAction(referenceId, user, SimpleWorkflowModel.ACTION_RELEASE.getName());
         } catch (WorkflowException e) {
