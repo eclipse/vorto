@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.sso.oauth.TokenVerificationProvider;
+import org.eclipse.vorto.repository.sso.oauth.ITokenVerificationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GithubRepositoryAuthProvider implements TokenVerificationProvider {
+public class GithubRepositoryAuthProvider implements ITokenVerificationProvider {
 
   @Autowired
   @Qualifier("githubUserInfoTokenServices")

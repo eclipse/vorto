@@ -26,16 +26,16 @@ import org.springframework.stereotype.Component;
 public class RepositoryAuthProviders {
   
   @Autowired
-  private Collection<TokenVerificationProvider> tokenVerificationProviders;
+  private Collection<ITokenVerificationProvider> tokenVerificationProviders;
   
   public RepositoryAuthProviders() {
   }
 
-  public Optional<TokenVerificationProvider> getProviderFor(String jwtToken) {
+  public Optional<ITokenVerificationProvider> getProviderFor(String jwtToken) {
     return tokenVerificationProviders.stream().filter(provider -> provider.canHandle(jwtToken)).findFirst();
   }
   
-  public Optional<TokenVerificationProvider> getProviderFor(Authentication auth) {
+  public Optional<ITokenVerificationProvider> getProviderFor(Authentication auth) {
     return tokenVerificationProviders.stream().filter(authProvider -> authProvider.canHandle(auth)).findFirst();
   }
   
@@ -46,9 +46,9 @@ public class RepositoryAuthProviders {
       throw new InvalidTokenException("The JWT token is empty.");
     }
       
-    Optional<TokenVerificationProvider> verificationProvider = getProviderFor(accessToken);
+    Optional<ITokenVerificationProvider> verificationProvider = getProviderFor(accessToken);
     if (verificationProvider.isPresent()) {
-      TokenVerificationProvider provider = verificationProvider.get();
+      ITokenVerificationProvider provider = verificationProvider.get();
       if (provider.verify(request, accessToken)) {
         return provider.createAuthentication(request, accessToken);
       }

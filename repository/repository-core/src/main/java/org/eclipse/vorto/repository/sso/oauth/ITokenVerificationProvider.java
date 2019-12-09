@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-public interface TokenVerificationProvider {
+public interface ITokenVerificationProvider {
   /**
    * The ID of this provider
    * @return

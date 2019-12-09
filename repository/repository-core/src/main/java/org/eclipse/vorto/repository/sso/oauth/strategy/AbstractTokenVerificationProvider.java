@@ -25,13 +25,13 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.sso.oauth.TokenVerificationProvider;
+import org.eclipse.vorto.repository.sso.oauth.ITokenVerificationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
-public abstract class AbstractTokenVerificationProvider implements TokenVerificationProvider {
+public abstract class AbstractTokenVerificationProvider implements ITokenVerificationProvider {
 
   protected static final String JWT_EMAIL = "email";
   private static final String JWT_EXPIRY = "exp";
