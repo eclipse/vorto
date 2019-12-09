@@ -25,19 +25,20 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
-import org.eclipse.vorto.repository.sso.oauth.TokenVerificationProvider;
+import org.eclipse.vorto.repository.sso.oauth.ITokenVerificationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
-public abstract class AbstractTokenVerificationProvider implements TokenVerificationProvider {
+public abstract class AbstractTokenVerificationProvider implements ITokenVerificationProvider {
 
   protected static final String JWT_EMAIL = "email";
   private static final String JWT_EXPIRY = "exp";
   protected static final String JWT_NAME = "name";
   protected static final String JWT_SUB = "sub";
   private static final String KEY_ID = "kid";
+  private static final String ISSUER = "iss";
 
   private Supplier<Map<String, PublicKey>> publicKeySupplier;
   private Map<String, PublicKey> publicKeys = null;
@@ -49,7 +50,30 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
     this.publicKeySupplier = Objects.requireNonNull(publicKeySupplier);
   }
 
+  protected abstract String getIssuer();
+  
   protected abstract Optional<String> getUserId(Map<String, Object> map);
+
+  @Override
+  public boolean canHandle(String accessToken) {
+    Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
+    if (jwtToken.isPresent()) {
+      String issuer = (String) jwtToken.get().getPayloadMap().get(ISSUER);
+      return issuer.equals(getIssuer());
+    }
+    return false;
+  }
+  
+  @Override
+  public OAuth2Authentication createAuthentication(HttpServletRequest request, String accessToken) {
+    Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
+    if (jwtToken.isPresent()) {
+      return createAuthentication(request, jwtToken.get());
+    }
+    return null;
+  }
+  
+  protected abstract OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken);
 
   protected OAuth2Authentication createAuthentication(String ciamClientId, String userId, String name, 
       String email, Set<Role> roles) {
@@ -109,6 +133,15 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
   }
   
   @Override
+  public boolean verify(HttpServletRequest httpRequest, String accessToken) {
+    Optional<JwtToken> maybeJwtToken = JwtToken.instance(accessToken);
+    if (maybeJwtToken.isPresent()) {
+      return verify(httpRequest, maybeJwtToken.get());
+    }
+    
+    return false;
+  }
+  
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
     if (!verifyPublicKey(jwtToken)) {
       return false;
@@ -120,5 +153,4 @@ public abstract class AbstractTokenVerificationProvider implements TokenVerifica
 
     return verifyUserExist(jwtToken);
   }
-
 }
