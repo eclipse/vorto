@@ -20,7 +20,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.vorto.repository.sso.oauth.TokenVerifier;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -32,10 +32,10 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-  private TokenVerifier tokenVerifier;
+  private RepositoryAuthProviders authProviders;
 
-  public AuthorizationTokenFilter(TokenVerifier tokenVerifier) {
-    this.tokenVerifier = tokenVerifier;
+  public AuthorizationTokenFilter(RepositoryAuthProviders authProviders) {
+    this.authProviders = authProviders;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
       Optional<String> authToken = FilterUtils.getBearerToken((HttpServletRequest) request);
       if (authToken.isPresent()) {
         try {
-          Authentication authentication = tokenVerifier.verify((HttpServletRequest) request, authToken.get());
+          Authentication authentication = authProviders.verify((HttpServletRequest) request, authToken.get());
           if (authentication != null) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);

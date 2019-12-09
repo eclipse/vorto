@@ -28,6 +28,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -56,10 +57,20 @@ public class HydraTokenVerificationProvider extends AbstractTokenVerificationPro
   }
   
   @Override
+  public String getId() {
+    return "BOSCH-IOT-SUITE-AUTH";
+  }
+
+  @Override
+  public boolean canHandle(Authentication auth) {
+    return false;
+  }
+
+  @Override
   public String getIssuer() {
     return hydraJwtIssuer; 
   }
-
+  
   @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
     User technicalUser = getTechnicalUser(jwtToken)

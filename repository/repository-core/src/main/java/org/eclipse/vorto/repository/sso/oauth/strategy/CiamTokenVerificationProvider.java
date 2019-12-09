@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
@@ -46,15 +47,34 @@ public class CiamTokenVerificationProvider extends AbstractTokenVerificationProv
   }
   
   @Override
+  public boolean canHandle(Authentication auth) {
+    if (auth == null || !(auth instanceof OAuth2Authentication)) {
+      return false;
+    }
+    
+    OAuth2Authentication oauth2Auth = (OAuth2Authentication) auth;
+    
+    if (oauth2Auth.getOAuth2Request() == null) {
+      return false;
+    }
+    
+    return ciamClientId.equals(oauth2Auth.getOAuth2Request().getClientId());
+  }
+  
+  @Override
   public String getIssuer() {
     return ciamJwtIssuer;
+  }
+  
+  @Override
+  public String getId() {
+    return "BOSCH";
   }
 
   /**
    * Authenticates the user from the CIAM issued token by checking if the user is registered in the
    * Repository
    */
-  @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken) {
     Map<String, Object> tokenPayload = accessToken.getPayloadMap();
 

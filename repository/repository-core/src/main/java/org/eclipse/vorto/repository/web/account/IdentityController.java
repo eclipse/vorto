@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
@@ -56,6 +57,9 @@ public class IdentityController {
 
   @Autowired
   private IUpgradeService updateService;
+  
+  @Autowired
+  private RepositoryAuthProviders repositoryAuthProviders;
 
   @Deprecated
   @RequestMapping(method = RequestMethod.GET, value = "/{username:.+}")
@@ -91,9 +95,8 @@ public class IdentityController {
     return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
   }
   
-  // TODO : Implement mechanism for knowing the authentication provider of logged-in user
   private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
-    return AuthenticationProvider.GITHUB.name();
+    return repositoryAuthProviders.getProviderFor(oauth2User).map(provider -> provider.getId()).orElse(null);
   }
 
   @Deprecated

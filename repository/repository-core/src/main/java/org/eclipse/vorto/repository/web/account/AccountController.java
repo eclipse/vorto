@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -68,6 +69,9 @@ public class AccountController {
 
   @Autowired
   private ITenantService tenantService;
+  
+  @Autowired
+  private RepositoryAuthProviders repositoryAuthProviders;
 
   @RequestMapping(method = RequestMethod.PUT, value = "/rest/tenants/{tenantId}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
@@ -255,12 +259,8 @@ public class AccountController {
     return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
 
-  // TODO : Implement better mechanism for knowing the authentication provider of logged-in user
   private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
-    if (oauth2User.getName().startsWith("S-")) {
-      return AuthenticationProvider.BOSCH.name();
-    }
-    return AuthenticationProvider.GITHUB.name();
+    return repositoryAuthProviders.getProviderFor(oauth2User).map(provider -> provider.getId()).orElse(null);
   }
 
   @RequestMapping(method = RequestMethod.POST,

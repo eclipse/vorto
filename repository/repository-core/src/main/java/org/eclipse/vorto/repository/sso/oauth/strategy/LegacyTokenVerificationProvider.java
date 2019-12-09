@@ -39,7 +39,7 @@ public class LegacyTokenVerificationProvider extends HydraTokenVerificationProvi
       IUserAccountService userAccountService) {
     super(publicKeySupplier, userAccountService);
   }
-  
+
   @Override
   protected Optional<String> getClientId(JwtToken token) {
     if (token.getPayloadMap().containsKey(AZP)) {
