@@ -37,7 +37,7 @@ repository.factory('openCreateModelDialog',
                     
                     $scope.loadFunctionblocks = function() {
 
-                        $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto.* type:Functionblock').success(
+                        $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto type:Functionblock').success(
                             function(data, status, headers, config) {
                                 $scope.functionblocks = data;
                                 $scope.isLoading = false;
