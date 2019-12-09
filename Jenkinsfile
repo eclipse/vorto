@@ -12,15 +12,24 @@ pipeline {
             sh 'echo Proxy Port = $PROXY_PORT'
             sh 'echo Proxy User = $PROXY_USER'
             // Notify GitHub that checks are now in progress
-            githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
-            githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
-            githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans"
+            githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING'
+            githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING'
+            githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING'
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
                     sh 'mvn -P coverage clean install'
             }
+        }
+        post{
+              failure{
+                 // Notify GitHub that checks could not proceed due to build failure
+                githubNotify context: 'SonarCloud', description: 'Aborted due to build failure',  status: 'ERROR'
+                githubNotify context: 'Repository - Compliance Checks', description: 'Aborted due to build failure',  status: 'ERROR'
+                githubNotify context: 'Repository - Virus Scan', description: 'Aborted due to build failure',  status: 'ERROR'
+                error('Aborted due to failure of Build stage')
+              }
         }
       }
       stage('Run compliance checks') {
@@ -73,7 +82,7 @@ pipeline {
             }
             post{
               failure{
-                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: ""
+                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE'
               }
             }
           }
@@ -105,7 +114,7 @@ pipeline {
             }
             post{
               failure{
-                githubNotify context: 'Repository - Virus Scan', description: 'Scan Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html"
+                githubNotify context: 'Repository - Virus Scan', description: 'Scan Failed',  status: 'FAILURE'
               }
             }
           }
