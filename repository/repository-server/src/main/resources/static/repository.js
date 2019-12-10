@@ -75,8 +75,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.tenant = "default";
     
     $rootScope.context = {
-        githubEnabled: false,
-        eidpEnabled: false,
+        providers: null,
         authenticatedSearchMode: false,
         tenant: "default"
     };
