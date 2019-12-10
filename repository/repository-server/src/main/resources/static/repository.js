@@ -75,8 +75,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.tenant = "default";
     
     $rootScope.context = {
-        githubEnabled: false,
-        eidpEnabled: false,
+        providers: null,
         authenticatedSearchMode: false,
         tenant: "default"
     };
@@ -86,7 +85,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 	};
     
     $rootScope.logout = function() {
-        window.location.href = $rootScope.context.logOutUrl;
+        window.location.href = $rootScope.userInfo.logOutUrl;
     };
 
     $rootScope.setUser = function(user) {

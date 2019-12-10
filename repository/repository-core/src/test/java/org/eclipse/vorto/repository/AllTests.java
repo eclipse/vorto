@@ -30,7 +30,6 @@ import org.junit.runners.Suite.SuiteClasses;
               org.eclipse.vorto.repository.importer.AllTests.class,
               IndexingTest.class,
               BulkOperationServiceTest.class,
-              org.eclipse.vorto.repository.oauth.AllTests.class,
               TenantServiceTest.class,
               PayloadMappingSpecificationTest.class,
               WorkflowTest.class})

@@ -224,6 +224,18 @@
 		    <version>7.7.0</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-oauth-github</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-oauth-boschid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

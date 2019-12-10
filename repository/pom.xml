@@ -25,6 +25,8 @@
 		<module>repository-server-config</module>
 		<module>repository-editor</module>
 		<module>repository-web</module>
+		<module>repository-oauth-github</module>
+		<module>repository-oauth-boschid</module>
 	</modules>
 
 	<dependencyManagement>

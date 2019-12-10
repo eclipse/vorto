@@ -15,7 +15,7 @@ package org.eclipse.vorto.repository.account.impl;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.core.Authentication;

@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.security.core.GrantedAuthority;
