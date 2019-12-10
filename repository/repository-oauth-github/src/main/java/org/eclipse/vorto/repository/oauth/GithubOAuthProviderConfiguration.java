@@ -25,7 +25,7 @@ public class GithubOAuthProviderConfiguration extends AbstractOAuthProviderConfi
 
   @Override
   public String getFilterProcessingUrl() {
-    return "/github/login";
+    return "github/login";
   }
 
   @Override

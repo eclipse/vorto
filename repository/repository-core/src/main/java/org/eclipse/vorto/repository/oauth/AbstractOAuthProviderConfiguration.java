@@ -43,7 +43,7 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
     restTemplate.setAccessTokenProvider(accessTokenProvider);
 
     OAuth2ClientAuthenticationProcessingFilter filter =
-        new OAuth2ClientAuthenticationProcessingFilter(getFilterProcessingUrl());
+        new OAuth2ClientAuthenticationProcessingFilter("/"+getFilterProcessingUrl());
     filter.setAuthenticationSuccessHandler(successHandler);
     tokenService.setRestTemplate(restTemplate);
     tokenService.setAuthoritiesExtractor(authoritiesExtractor(getUserAttributeId()));

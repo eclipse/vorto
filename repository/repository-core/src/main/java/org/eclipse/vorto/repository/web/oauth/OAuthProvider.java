@@ -18,14 +18,12 @@ public class OAuthProvider {
 
   private String id;
   private String label;
-  private String logoutUrl;
   private String loginUrl;
   private String logoHref;
   
   public OAuthProvider(String id, String label, IOAuthFlowConfiguration configuration) {
     this.id = id;
     this.label = label;
-    this.logoutUrl = configuration.getLogoutUrl();
     this.logoHref = configuration.getLogoHref();
     this.loginUrl = configuration.getFilterProcessingUrl();
   }
@@ -48,12 +46,7 @@ public class OAuthProvider {
   public void setId(String id) {
     this.id = id;
   }
-  public String getLogoutUrl() {
-    return logoutUrl;
-  }
-  public void setLogoutUrl(String logoutUrl) {
-    this.logoutUrl = logoutUrl;
-  }
+
   public String getLogoHref() {
     return logoHref;
   }

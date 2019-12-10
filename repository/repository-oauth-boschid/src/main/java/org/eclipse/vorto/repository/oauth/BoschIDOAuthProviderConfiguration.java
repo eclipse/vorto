@@ -26,7 +26,7 @@ public class BoschIDOAuthProviderConfiguration extends AbstractOAuthProviderConf
 
   @Override
   public String getFilterProcessingUrl() {
-    return "/eidp/login";
+    return "eidp/login";
   }
 
   @Override
