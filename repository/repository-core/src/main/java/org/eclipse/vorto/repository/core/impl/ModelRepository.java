@@ -718,10 +718,8 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext,
       Tag... tags) throws AttachmentException {
-    if (Arrays.stream(tags).filter(tag -> tag.equals(Attachment.TAG_IMPORTED))
-        .collect(Collectors.toList()).isEmpty()) {
-      attachmentValidator.validateAttachment(fileContent, modelId);
-    }
+
+    attachmentValidator.validateAttachment(fileContent, modelId);
 
     doInSession(session -> {
       try {
