@@ -24,11 +24,97 @@ tags:
     description: Explore attachments of models, such as images etc.
   - name: Importers
     description: Import models to be managed in the Repository
+  - name: Namespaces
+    description: Manage namespaces and collaborators
     
 security:
   - BearerAuth: []
     
 paths:
+  '/namespaces':
+    get:
+      tags: 
+      - Namespaces
+      summary: Get all namespaces where the current user is a collaborator
+      description: "A list of all namespaces for which the user is a collaborator."
+      responses:
+        200:
+          description: 'Successful response with list of all namespaces'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Namespace'
+        400:
+          description: 'Request is invalid'
+  '/namespaces/{namespace}':
+    get:
+      tags: 
+      - Namespaces
+      summary: Get namespace information for which the current user is a collaborator
+      description: "All information pertaining to the namespace."
+      parameters:
+        - name: namespace
+          in: path
+          description: namespace
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Successful response information for namespace'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Namespace'
+        403:
+          description: 'User is not a namespace collaborator'
+        400:
+          description: 'Request is invalid'
+  '/namespaces/{namespace}/collaborators/{userId}':
+    put:
+      tags:
+      - Namespaces
+      summary: Update/Add a collaborator in the namespace
+      description: "Update or add a collaborator in the namespace."
+      parameters:
+        - name: namespace
+          in: path
+          description: namespace
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        description: 'Collaborator information'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collaborator'
+      responses:
+        200:
+          description: 'Updating of collaborator successful'
+        403:
+          description: 'User is not a namespace administrator'
+        400:
+          description: 'Request is invalid'
   '/importers':
     get:
       tags: 
@@ -121,7 +207,7 @@ paths:
       tags:
       - Models
       summary: Search for models
-      description: "This resource can be used to search for models. It allows free-text search using the model's *Display name*, *Name* or *Description* attributes. These values can be set using the Model Editor in the Model Details page, e.g. if there are models with names: *Light* and *Lightbulb*, searching with keyword *name:light** will fetch both. If you want to include unpublished or private models in search, you must login."
+      description: "This resource can be used to search for models. It allows free-text and tagged search using the model's attributes, e.g. *Display name*, *Name* or *Description*. These values can be set using the Model Editor in the Model Details page, e.g. if there are models with names: *Light* and *Lightbulb*, searching with keyword *name:light** will fetch both. If you want to include unpublished or private models in search, you must login. The search syntax is described [here](https://github.com/eclipse/vorto/tree/master/repository/repository-elasticsearch/Readme.md)"
       operationId: SearchForModels
       parameters:
       - name: expression
@@ -700,9 +786,44 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-      
+
 components:
   schemas:
+    Collaborator:
+      title: Collaborator
+      type: object
+      properties:
+        userId: 
+          description: UserId of collaborator
+          type: string
+        providerId:
+          description: The provider ID of the user. Possible values are GITHUB, BOSCH, and BOSCH_IOT_SUITE_AUTH
+          type: string
+        subject:
+          description: Purpose of this user (only for technical users)
+          type: string
+        roles:
+          description: Roles of this user on this namespace
+          type: array
+          items:
+            type: string
+            enum: [USER, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER, MODEL_PUBLISHER]
+      required:
+        - userId
+        - providerId
+        - roles
+    Namespace:
+      title: Namespace
+      type: object
+      properties:
+        name: 
+          description: Name of namespace
+          type: string
+        collaborators:
+          description: collaborators of this namespace
+          type: array
+          items:
+            $ref: '#/components/schemas/Collaborator'
     ImporterInfo:
       title: ImporterInfo
       type: object

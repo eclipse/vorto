@@ -1,0 +1,13 @@
+{
+  "Description": "Executes Vorto Code Generators",
+  "Resources": {
+    "VortoGeneratorsExecutor": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/generator-lambda-executor-1.0.0-SNAPSHOT.jar"
+      }
+    }
+  }
+}

@@ -24,12 +24,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -67,6 +69,9 @@ public class AccountController {
 
   @Autowired
   private ITenantService tenantService;
+  
+  @Autowired
+  private RepositoryAuthProviders repositoryAuthProviders;
 
   @RequestMapping(method = RequestMethod.PUT, value = "/rest/tenants/{tenantId}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
@@ -248,10 +253,14 @@ public class AccountController {
     }
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName());
+    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
     SpringUserUtils.refreshSpringSecurityUser(createdUser);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);
+  }
+
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
+    return repositoryAuthProviders.getProviderFor(oauth2User).map(provider -> provider.getId()).orElse(null);
   }
 
   @RequestMapping(method = RequestMethod.POST,

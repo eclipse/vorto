@@ -23,7 +23,7 @@ import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpPrincipalExtractor;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
-import org.eclipse.vorto.repository.sso.oauth.TokenVerifier;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
@@ -114,7 +114,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private UserInfoTokenServices githubUserInfoTokenServices;
   
   @Autowired
-  private TokenVerifier tokenVerifier;
+  private RepositoryAuthProviders authProviders;
   
   @Autowired
   private Environment env;
@@ -190,7 +190,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter bearerTokenFilter() {
-    return new AuthorizationTokenFilter(tokenVerifier);
+    return new AuthorizationTokenFilter(authProviders);
   }
 
   private Filter ssoFilter() {
@@ -200,8 +200,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   private Filter githubFilter() {
-    //UserInfoTokenServices githubUserInfoService =
-    //    new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
     return newSsoFilter("/github/login", githubUserInfoTokenServices, accessTokenProvider,
         new OAuth2RestTemplate(github, oauth2ClientContext), authoritiesExtractor("login"));
   }
@@ -250,7 +248,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   @Bean(name = "githubUserInfoTokenServices")
   public UserInfoTokenServices githubUserInfoTokenServices() {
-    return new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    UserInfoTokenServices tokenServices = new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId);
+    tokenServices.setAuthoritiesExtractor(authoritiesExtractor("login"));
+    return tokenServices;
   }
 
 }

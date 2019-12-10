@@ -17,9 +17,11 @@ import java.util.List;
 import java.util.Objects;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
+import org.eclipse.vorto.repository.sso.oauth.RepositoryAuthProviders;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
@@ -55,6 +57,9 @@ public class IdentityController {
 
   @Autowired
   private IUpgradeService updateService;
+  
+  @Autowired
+  private RepositoryAuthProviders repositoryAuthProviders;
 
   @Deprecated
   @RequestMapping(method = RequestMethod.GET, value = "/{username:.+}")
@@ -82,12 +87,16 @@ public class IdentityController {
 
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName());
+    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
 
     SpringUserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with
                                                             // the updated user and its roles
 
     return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+  }
+  
+  private String getAuthenticationProvider(OAuth2Authentication oauth2User) {
+    return repositoryAuthProviders.getProviderFor(oauth2User).map(provider -> provider.getId()).orElse(null);
   }
 
   @Deprecated
@@ -121,7 +130,8 @@ public class IdentityController {
           required = true) final @PathVariable String tenantId,
       @RequestBody List<Role> roles) {
 
-    User user = accountService.create(userName, tenantId, roles.toArray(new Role[roles.size()]));
+    User user = accountService.create(userName, AuthenticationProvider.GITHUB.name(), null, 
+        tenantId, roles.toArray(new Role[roles.size()]));
 
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.CREATED);
   }

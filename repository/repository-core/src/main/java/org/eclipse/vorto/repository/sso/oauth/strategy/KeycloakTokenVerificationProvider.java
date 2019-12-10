@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -59,6 +60,16 @@ public class KeycloakTokenVerificationProvider extends AbstractTokenVerification
   @Override
   public String getIssuer() {
     return keycloakJwtIssuer;
+  }
+  
+  @Override
+  public String getId() {
+    return "KEYCLOAK";
+  }
+
+  @Override
+  public boolean canHandle(Authentication auth) {
+    return false;
   }
 
   /**
@@ -117,7 +128,6 @@ public class KeycloakTokenVerificationProvider extends AbstractTokenVerification
 
     return new OAuth2Authentication(request, authToken);
   }
-
 
   @Override
   protected Optional<String> getUserId(Map<String, Object> map) {

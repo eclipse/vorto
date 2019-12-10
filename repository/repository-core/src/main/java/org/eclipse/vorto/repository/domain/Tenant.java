@@ -57,7 +57,7 @@ public class Tenant {
   @Column(name = "authorization_provider")
   @Enumerated(EnumType.STRING)
   private AuthorizationProvider authorizationProvider;
-
+  
   @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tenant")
   private Set<Namespace> namespaces = new HashSet<Namespace>();
 
@@ -93,7 +93,7 @@ public class Tenant {
   public void setTenantId(String tenantId) {
     this.tenantId = tenantId;
   }
-
+  
   public Collection<Namespace> getNamespaces() {
     return namespaces;
   }
@@ -146,6 +146,10 @@ public class Tenant {
 
   public boolean hasUser(String username) {
     return users.stream().anyMatch(user -> user.getUser().getUsername().equals(username));
+  }
+  
+  public boolean hasUserWithRole(String username, Role role) {
+    return users.stream().anyMatch(user -> user.getUser().getUsername().equals(username) && user.hasRole(role));
   }
 
   public boolean hasTenantAdmin(String username) {

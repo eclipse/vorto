@@ -14,5 +14,6 @@ package org.eclipse.vorto.repository.domain;
 
 public enum AuthenticationProvider {
   GITHUB,
-  BOSCH_ID
+  BOSCH,
+  BOSCH_IOT_SUITE_AUTH
 }

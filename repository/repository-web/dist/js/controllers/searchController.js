@@ -48,7 +48,7 @@ define(["../init/appController"],function(repositoryControllers) {
         	}
         	
         	if ($scope.queryFilter !== "") {
-        		filter += "name:"+$scope.queryFilter+"*"
+        		filter += $scope.queryFilter
         	}
         }
 

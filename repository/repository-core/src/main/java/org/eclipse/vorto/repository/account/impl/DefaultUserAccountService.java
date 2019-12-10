@@ -147,7 +147,7 @@ public class DefaultUserAccountService
     }
     
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
-    PreConditions.notNull(tenant, "Tenant with tenantId" + tenantId + " doesnt exists");
+    PreConditions.notNull(tenant, "Tenant with tenantId " + tenantId + " doesnt exists");
     
     Optional<TenantUser> user = tenant.getUser(username);
     if (user.isPresent()) {
@@ -159,20 +159,20 @@ public class DefaultUserAccountService
   }
 
   @Transactional
-  public User create(String username) {
+  public User create(String username, String provider, String subject) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
-    return userRepository.save(User.create(username));
+    return userRepository.save(User.create(username, provider, subject));
   }
-
+  
   @Transactional
-  public User create(String username, String tenantId, Role... userRoles)
+  public User create(String username, String provider, String subject, String tenantId, Role... userRoles)
       throws RoleNotSupportedException {
     
     PreConditions.notNullOrEmpty(username, "username");
-    PreConditions.notNullOrEmpty(tenantId, "username");
+    PreConditions.notNullOrEmpty(tenantId, "tenantId");
     
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
 
@@ -184,7 +184,7 @@ public class DefaultUserAccountService
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
     } else {
-      User user = create(username);
+      User user = create(username, provider, subject);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
       user.addTenantUser(tenantUser);
       return userRepository.save(user);

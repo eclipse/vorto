@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018,2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional information regarding copyright
  * ownership.
@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractResolver implements IModelIdResolver {
 
+  protected static final String TYPE_SEARCH_FORMAT = "type:%s";
+
   @Autowired
   protected ISearchService searchService = null;
   
@@ -36,7 +38,7 @@ public abstract class AbstractResolver implements IModelIdResolver {
 
   @Override
   public ModelId resolve(final ResolveQuery query) {
-    List<ModelInfo> mappings = this.searchService.search(ModelType.Mapping.name());
+    List<ModelInfo> mappings = this.searchService.search(String.format(TYPE_SEARCH_FORMAT, ModelType.Mapping.name()));
     
     Optional<ModelId> foundId = mappings.stream()
         .filter(resource -> matchesServiceKey(resource, query.getTargetPlatformKey()))

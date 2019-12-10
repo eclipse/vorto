@@ -44,7 +44,7 @@ public class AbstractRepositoryOperation {
     } catch (NotAuthorizedException | ModelReferentialIntegrityException e) {
       throw e;
     } catch (Exception ex) {
-      logger.error("Unexpected exception", ex);
+      logger.warn("Unexpected exception", ex);
       throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
     } finally {
       if (session != null) {
