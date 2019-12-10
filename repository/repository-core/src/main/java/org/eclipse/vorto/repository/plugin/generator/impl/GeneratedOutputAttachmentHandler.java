@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author kolotu
+ * This class handles the querying and the saving of attachments that contain the output of generators.
  */
 @Component
 public class GeneratedOutputAttachmentHandler {
@@ -48,6 +49,36 @@ public class GeneratedOutputAttachmentHandler {
     this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
+  /**
+   * This method generates the Tags that are used to save and query the attachment.
+   *
+   * @param plugin        - Info about the generator
+   * @param requestParams - Parameters of the request
+   * @return an array containing all Tags used for saving / querying the attachment.
+   */
+  static Tag[] tagsForRequest(GeneratorPluginConfiguration plugin,
+      Map<String, String> requestParams) {
+    Tag[] tags = requestParams.values()
+        .stream()
+        .map(Tag::new)
+        .collect(Collectors.toSet())
+        .toArray(new Tag[requestParams.size() + 2]);
+    tags[tags.length - 1] = new Tag(plugin.getKey() + '_' + plugin.getPluginVersion());
+    tags[tags.length - 2] = new Tag("generated");
+    return tags;
+  }
+
+  /**
+   * This method queries the repository for an attachment on the given model that contains the
+   * generated output of the given generator.
+   *
+   * @param modelInfo     - Info of the model that is used to invoke the generator
+   * @param requestParams - Parameters of the incoming request
+   * @param plugin        - Info about the generator that shall be invoked
+   * @param repository    - The repository containing the model
+   * @return an optional containing the generated output, if a matching attachment exists on the
+   * model, otherwise Optional.empty().
+   */
   Optional<GeneratedOutput> getGeneratedOutputFromAttachment(ModelInfo modelInfo,
       Map<String, String> requestParams, GeneratorPluginConfiguration plugin,
       IModelRepository repository) {
@@ -66,6 +97,19 @@ public class GeneratedOutputAttachmentHandler {
     return Optional.empty();
   }
 
+  /**
+   * This method creates a new attachment on the model with the given output of a generator.
+   *
+   * @param userContext   - The current user context
+   * @param modelId       - the ID of the model used to invoke the generator
+   * @param serviceKey    - the service key of the generator
+   * @param requestParams - the parameters of the request
+   * @param response      - the output of the generator
+   * @param plugin        - the info about the invoked generator
+   * @return the generated output that has been saved as attachment. The returned value has a
+   * different file name than the one in the response parameter, as attachments of generator outputs
+   * follow a naming convention.
+   */
   GeneratedOutput attachGeneratedOutput(IUserContext userContext, ModelId modelId,
       String serviceKey, Map<String, String> requestParams, GeneratedOutput response,
       GeneratorPluginConfiguration plugin) {
@@ -104,18 +148,6 @@ public class GeneratedOutputAttachmentHandler {
       return filename.substring(i);
     }
     return "";
-  }
-
-  static Tag[] tagsForRequest(GeneratorPluginConfiguration plugin,
-      Map<String, String> requestParams) {
-    Tag[] tags = requestParams.values()
-        .stream()
-        .map(Tag::new)
-        .collect(Collectors.toSet())
-        .toArray(new Tag[requestParams.size() + 2]);
-    tags[tags.length - 1] = new Tag(plugin.getKey() + '_' + plugin.getPluginVersion());
-    tags[tags.length - 2] = new Tag("generated");
-    return tags;
   }
 
 }
