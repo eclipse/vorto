@@ -11,11 +11,11 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 /**
  *
@@ -228,9 +228,19 @@ public interface IModelRepository {
       throws NotAuthorizedException;
 
   /**
+   * Gets a list of attachments having all the given tags
+   *
+   * @param modelId
+   * @param tags
+   * @return
+   */
+  List<Attachment> getAttachmentsByTags(ModelId modelId, Set<Tag> tags)
+      throws NotAuthorizedException;
+
+  /**
    * Gets the content of the attachment
    *
-   * @param modelid The model id where the file was attached
+   * @param modelid  The model id where the file was attached
    * @param fileName the filename of the attachment
    * @return
    */

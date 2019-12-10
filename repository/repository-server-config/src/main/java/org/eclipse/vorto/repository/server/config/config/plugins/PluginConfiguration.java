@@ -11,6 +11,7 @@
  */
 package org.eclipse.vorto.repository.server.config.config.plugins;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Base64;
 import javax.annotation.PostConstruct;
@@ -28,51 +29,51 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class PluginConfiguration {
 
   @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
-  
+
   @Autowired
   private ModelParserFactory modelParserFactory;
-  
+
   @Autowired
   private IUserAccountService userAccountService;
-  
+
   @Value("${plugins:#{null}}")
   private String pluginsJson;
-  
+
   @Autowired
   private ITemporaryStorage fileStorage;
-  
-  @Autowired 
+
+  @Autowired
   private DefaultGeneratorPluginService generatorPluginService;
-  
+
   @Autowired
   private DefaultModelImportService importerPluginService;
-  
+
   @Autowired
   private RestTemplate restTemplate;
-  
+
   @PostConstruct
   public void registerPlugins() throws Exception {
     if (this.pluginsJson == null) {
       return;
     }
-    
-    ObjectMapper mapper = new ObjectMapper();
-    
-    Plugin[] plugins = mapper.readValue(Base64.getDecoder().decode(this.pluginsJson.getBytes()), Plugin[].class);
-    
+
+    Plugin[] plugins = new ObjectMapper()
+        .readValue(Base64.getDecoder().decode(this.pluginsJson.getBytes()), Plugin[].class);
+
     if (plugins != null && plugins.length > 0) {
-      Arrays.asList(plugins).stream().forEach(plugin -> {
+      Arrays.stream(plugins).forEach(plugin -> {
         if (plugin.getPluginType().equals(PluginType.generator)) {
-          GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(plugin.getKey(), plugin.getApiVersion(), plugin.getEndpoint());
-          if (plugin.getTag()!= null) {
-            config.setTags(new String[] {plugin.getTag()});
+          GeneratorPluginConfiguration config = GeneratorPluginConfiguration
+              .of(plugin.getKey(), plugin.getApiVersion(), plugin.getEndpoint(),
+                  plugin.getPluginVersion());
+          if (plugin.getTag() != null) {
+            config.setTags(new String[]{plugin.getTag()});
           }
           generatorPluginService.registerPlugin(config);
         } else {
@@ -82,10 +83,8 @@ public class PluginConfiguration {
         }
       });
     }
-    
-    
   }
-  
+
   private RemoteImporter createImporter(ImporterPluginInfo info, String endpointUrl) {
     RemoteImporter importer = new RemoteImporter(info,endpointUrl);
     importer.setModelParserFactory(this.modelParserFactory);
@@ -94,5 +93,5 @@ public class PluginConfiguration {
     importer.setUserRepository(userAccountService);
     importer.setRestTemplate(restTemplate);
     return importer;
-}
+  }
 }

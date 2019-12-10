@@ -22,6 +22,7 @@ public class Plugin {
   private String fileType;
   private String vendor;
   private String tag;
+  private String pluginVersion;
 
   public String getKey() {
     return key;
@@ -86,7 +87,7 @@ public class Plugin {
   public void setVendor(String vendor) {
     this.vendor = vendor;
   }
-  
+
   public String getTag() {
     return tag;
   }
@@ -95,7 +96,13 @@ public class Plugin {
     this.tag = tag;
   }
 
+  public String getPluginVersion() {
+    return pluginVersion;
+  }
 
+  public void setPluginVersion(String pluginVersion) {
+    this.pluginVersion = pluginVersion;
+  }
 
   public enum PluginType {
     generator, importer

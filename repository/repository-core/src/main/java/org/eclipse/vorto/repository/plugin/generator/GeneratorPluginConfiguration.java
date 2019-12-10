@@ -12,53 +12,62 @@
  */
 package org.eclipse.vorto.repository.plugin.generator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.repository.plugin.generator.impl.GeneratorPluginInfoV1;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
-  
+
   private static final DefaultGeneratorConfigUI DEFAULT_CONFIG = new DefaultGeneratorConfigUI();
 
   private String[] tags;
-  
+
   private int amountOfDownloads;
-  
+
   @JsonIgnore
   private String apiVersion;
-  
+
   @JsonIgnore
   private String endpointUrl;
-  
+
   @Deprecated
   private String creator;
-  
+
   @Deprecated
   private String infoUrl;
-  
+
   protected GeneratorPluginConfiguration() {
-    
+
   }
-  
-  public static GeneratorPluginConfiguration of(String key, String apiVersion, String endpointUrl, String...tags) {
+
+  public static GeneratorPluginConfiguration of(String key, String apiVersion, String endpointUrl,
+      String pluginVersion, String... tags) {
     GeneratorPluginConfiguration config = new GeneratorPluginConfiguration();
     config.setKey(key);
     config.setApiVersion(apiVersion);
     config.setEndpointUrl(endpointUrl);
+    config.setPluginVersion(pluginVersion);
     if (tags != null && tags.length > 0) {
       config.setTags(tags);
     } else {
-      config.setTags(new String[] {"production"});
-    } 
-    
+      config.setTags(new String[]{"production"});
+      if (StringUtils.isBlank(config.getPluginVersion())) {
+        config.setPluginVersion("1.0.0");
+      }
+    }
+
     return config;
   }
-  
-  public static GeneratorPluginConfiguration of (GeneratorPluginInfoV1 info, String endpointUrl, String... tags) {
-    GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(info.getKey(),"1",endpointUrl,tags);   
-    config.setConfigKeys(info.getConfigKeys() == null ? Collections.emptySet():info.getConfigKeys());
+
+  public static GeneratorPluginConfiguration of(GeneratorPluginInfoV1 info, String endpointUrl,
+      String pluginVersion, String... tags) {
+    GeneratorPluginConfiguration config = GeneratorPluginConfiguration
+        .of(info.getKey(), "1", endpointUrl, pluginVersion, tags);
+    config.setConfigKeys(
+        info.getConfigKeys() == null ? Collections.emptySet() : info.getConfigKeys());
     if (info.getConfigTemplate() == null || info.getConfigTemplate().length() == 0) {
       config.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
     } else {
@@ -75,11 +84,14 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
     config.setVendor(info.getCreator());
     return config;
   }
-  
-  public static GeneratorPluginConfiguration of (GeneratorPluginInfo info, String endpointUrl, String... tags) {
-    GeneratorPluginConfiguration config = GeneratorPluginConfiguration.of(info.getKey(),"2",endpointUrl,tags);   
-    config.setConfigKeys(info.getConfigKeys() == null ? Collections.emptySet():info.getConfigKeys());
-    
+
+  public static GeneratorPluginConfiguration of(GeneratorPluginInfo info, String endpointUrl,
+      String pluginVersion, String... tags) {
+    GeneratorPluginConfiguration config = GeneratorPluginConfiguration
+        .of(info.getKey(), "2", endpointUrl, pluginVersion, tags);
+    config.setConfigKeys(
+        info.getConfigKeys() == null ? Collections.emptySet() : info.getConfigKeys());
+
     if (info.getConfigTemplate() == null || info.getConfigTemplate().length() == 0) {
       config.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
     } else {
@@ -95,7 +107,7 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
     config.setVendor(info.getVendor());
     return config;
   }
-   
+
   public String[] getTags() {
     return tags;
   }
@@ -119,7 +131,7 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   public void setInfoUrl(String infoUrl) {
     this.infoUrl = infoUrl;
   }
-  
+
   public String getEndpointUrl() {
     return endpointUrl;
   }
@@ -139,7 +151,7 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   public boolean isApiVersion(String apiVersion) {
     return this.apiVersion.equalsIgnoreCase(apiVersion);
   }
-    
+
   @Deprecated
   public String getCreator() {
     return this.getVendor();
