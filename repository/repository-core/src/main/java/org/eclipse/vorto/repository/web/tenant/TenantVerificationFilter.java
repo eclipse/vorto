@@ -22,8 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.vorto.repository.sso.FilterUtils;
-import org.eclipse.vorto.repository.sso.oauth.JwtToken;
+import org.eclipse.vorto.repository.oauth.internal.BearerTokenFilterUtils;
+import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +98,7 @@ public class TenantVerificationFilter extends GenericFilterBean {
       HttpServletRequest request) {
     Optional<JwtToken> jwtToken = getJwtTokenFromAuthentication(authentication);
     if (!jwtToken.isPresent()) {
-      jwtToken = FilterUtils.getBearerToken(request).flatMap(token -> JwtToken.instance(token));
+      jwtToken = BearerTokenFilterUtils.getBearerToken(request).flatMap(token -> JwtToken.instance(token));
     }
 
     return jwtToken.map(token -> (String) token.getPayloadMap().get(TENANT_ID));

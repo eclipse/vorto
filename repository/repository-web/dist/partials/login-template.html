@@ -6,17 +6,12 @@
       <div class="social-auth-links text-center">
         <p></p>
 
-        <div ng-show="context.githubEnabled">
-          <a href="github/login" class="btn btn-default btn-block"> <img src="webjars/repository-web/dist/images/github-social.png" alt="Sign in with Github" />
-            Sign in with Github
+        <div ng-repeat="provider in context.providers">
+          <a href="{{provider.loginUrl}}" class="btn btn-default btn-block"> <img src="{{provider.logoHref}}" alt="Sign in with {{provider.label}}" />
+            Sign in with {{provider.label}}
           </a>
-        </div>
-        <br>
-        <br>
-        <div ng-show="context.eidpEnabled">
-          <a href="eidp/login" class="btn btn-default btn-block"> <img src="webjars/repository-web/dist/images/bosch-social.png" alt="Sign in with Bosch ID" />
-            Sign in with Bosch ID
-          </a>
+          </br>
+          </br>
         </div>
       </div>
     </div>
