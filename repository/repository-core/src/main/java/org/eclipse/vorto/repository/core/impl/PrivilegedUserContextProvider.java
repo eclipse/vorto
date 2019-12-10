@@ -21,14 +21,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
- * @author kolotu
+ * @author kolotu This class contains a generic mechanism to create a user context with elevated
+ * privileges (SysAdmin privileges).
  */
 public class PrivilegedUserContextProvider {
 
+  /**
+   * Create a SysAdmin user context with the default username "admin".
+   * @return a user context with SysAdmin privileges.
+   */
   public static IUserContext systemAdminContext() {
     return UserContext.user(createAdminTechnicalUser("admin"));
   }
 
+  /**
+   * Create a SysAdmin user context with the given username.
+   * @return a user context with SysAdmin privileges.
+   */
   public static IUserContext systemAdminContext(String originalUserName) {
     return UserContext.user(createAdminTechnicalUser(originalUserName));
   }
