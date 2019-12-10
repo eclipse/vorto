@@ -82,7 +82,7 @@ public class HomeController {
     map.put("isRegistered", Boolean.toString(userAccount != null));
     map.put("roles", oauthUser.getRoles());
     map.put("needUpdate", Boolean.toString(needUpdate(userAccount, updateCutoff)));
-    map.put("logOutUrl", provider.getWebflowConfiguration().get().getLogoutUrl());
+    map.put("logOutUrl", provider.getWebflowConfiguration().get().getLogoutUrl(request));
     map.put("provider", new OAuthProvider(provider.getId(), provider.getLabel(), provider.getWebflowConfiguration().get()));
 
     return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);

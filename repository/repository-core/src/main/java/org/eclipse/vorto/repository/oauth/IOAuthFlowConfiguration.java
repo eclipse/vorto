@@ -13,17 +13,45 @@
 package org.eclipse.vorto.repository.oauth;
 
 import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 
+/**
+ * OAuth2 Webflow Configuration 
+ * 
+ * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
+ *
+ */
 public interface IOAuthFlowConfiguration {
 
+  /**
+   * Creates the filter that activates this oauth provider
+   * @return
+   */
   Filter createFilter();
   
+  /**
+   * Returns the user token information service for this provider
+   * @return
+   */
   UserInfoTokenServices getUserInfoTokenService();
 
-  String getLogoutUrl();
+  /**
+   * Gets the logout Url for this oauth provider
+   * @param request
+   * @return
+   */
+  String getLogoutUrl(HttpServletRequest request);
 
+  /**
+   * Gets the oauth provider specific logo url 
+   * @return
+   */
   String getLogoHref();
   
+  /**
+   * Gets the url to initiate the oauth web flow
+   * @return
+   */
   String getFilterProcessingUrl();
 }

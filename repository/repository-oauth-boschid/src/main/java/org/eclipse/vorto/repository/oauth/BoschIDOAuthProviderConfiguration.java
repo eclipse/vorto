@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.oauth;
 
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.oauth.AbstractOAuthProviderConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -51,7 +52,7 @@ public class BoschIDOAuthProviderConfiguration extends AbstractOAuthProviderConf
   }
 
   @Override
-  public String getLogoutUrl() {
+  public String getLogoutUrl(HttpServletRequest request) {
     String idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
     return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl,
         idToken, logoutRedirectUrl);

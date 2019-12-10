@@ -16,7 +16,13 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 
+/**
+ * 
+ * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
+ *
+ */
 public interface IOAuthProvider {
+  
   /**
    * A unique ID of this provider
    * @return
@@ -24,30 +30,32 @@ public interface IOAuthProvider {
   String getId();
   
   /**
-   * 
+   * A descriptive label for the OAuth Provider
    * @return
    */
   String getLabel();
   
   /**
-   * Returns true if the provider can handle this authentication
+   * Checks if the provider can handle the given authentication object
    * @param auth
    * @return
    */
   boolean canHandle(Authentication authentication);
   
   /**
-   * returns if this provider can handle this token
+   * 
+   * Checks if this provider can handle the given token
    * @param jwtToken
    * @return
    */
   boolean canHandle(String jwtToken);
 
   /**
+   * Performs the actual authentication for the given token
+   * @param request http servlet request
+   * @param jwtToken JSON Webtoken to authenticate
+   * @return Authentication object if the provided token is valid 
    * 
-   * @param request
-   * @param jwtToken
-   * @return
    * @throws OAuthAuthenticationException if the specific token request cannot be verified
    */
   Authentication authenticate(HttpServletRequest request, String jwtToken) throws OAuthAuthenticationException;
@@ -57,18 +65,18 @@ public interface IOAuthProvider {
    * Creates an OAuth user for the given authentication object
    * 
    * @param authentication
-   * @return
+   * @return OAuthUser containing information about the authenticated user
    */
   OAuthUser createUser(Authentication authentication);
   
   /**
-   * returns true if the oauth provider supports web flow via the Repository UI
-   * @return
+   * Indicates if the provider supports OAuth Webflow. If yes, a {@link IOAuthProvider#getWebflowConfiguration()}} can be read
+   * @return true if the provider supports web flow , false otherwise
    */
   boolean supportsWebflow();
   
   /**
-   * OAuth Webflow configuration
+   * Returns a webflow configuration for the oauth provider
    * @return
    */
   Optional<IOAuthFlowConfiguration> getWebflowConfiguration();
