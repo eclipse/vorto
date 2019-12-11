@@ -11,7 +11,10 @@
  */
 package org.eclipse.vorto.repository.plugin.generator.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,7 +28,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.conversion.ModelIdToModelContentConverter;
-import org.eclipse.vorto.repository.core.Attachment;
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -47,12 +50,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Invokes remote Code Generator either of API Version 1 or 2
- * 
+ *
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Service
@@ -60,23 +61,28 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private Map<String, GeneratorPluginConfiguration> generatorsPlugins = new HashMap<>();
 
-  @Autowired
   private IGeneratorMetrics generatorMetrics;
 
-  @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
 
-  @Autowired
   private RestTemplate restTemplate = null;
+
+  private GeneratedOutputAttachmentHandler generatedOutputAttachmentHandler;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGeneratorPluginService.class);
 
-  public DefaultGeneratorPluginService() {
+  @Autowired
+  public DefaultGeneratorPluginService(IGeneratorMetrics generatorMetrics,
+      IModelRepositoryFactory modelRepositoryFactory, RestTemplate restTemplate,
+      GeneratedOutputAttachmentHandler generatedOutputAttachmentHandler) {
+    this.generatorMetrics = generatorMetrics;
+    this.modelRepositoryFactory = modelRepositoryFactory;
+    this.restTemplate = restTemplate;
+    this.generatedOutputAttachmentHandler = generatedOutputAttachmentHandler;
   }
 
   public void registerPlugin(GeneratorPluginConfiguration plugin) {
     this.generatorsPlugins.put(plugin.getKey(), plugin);
-
     if (generatorMetrics.findByGeneratorKey(plugin.getKey()) == null) {
       generatorMetrics.save(new GeneratorMetric(plugin.getKey()));
     }
@@ -90,100 +96,119 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
   @Override
   public GeneratorPluginConfiguration getPluginInfo(String serviceKey, boolean includeConfigUI) {
     GeneratorPluginConfiguration plugin = this.generatorsPlugins.get(serviceKey);
-
-    if (plugin.getName() == null) { // load from remote server
-      GeneratorPluginConfiguration pluginLoadedFromServer = loadfromRemote(plugin);
-
+    if (plugin.getName() == null) {
+      GeneratorPluginConfiguration pluginLoadedFromServer = loadFromRemote(plugin);
       this.generatorsPlugins.put(serviceKey, pluginLoadedFromServer);
       plugin = pluginLoadedFromServer;
     }
 
     plugin.setAmountOfDownloads(
         this.generatorMetrics.findByGeneratorKey(serviceKey).getInvocationCount());
-    
+
     return plugin;
-  }
-
-  private GeneratorPluginConfiguration loadfromRemote(GeneratorPluginConfiguration plugin) {
-
-    if (plugin.isApiVersion("1")) {
-      ResponseEntity<GeneratorPluginInfoV1> response = restTemplate.getForEntity(
-          plugin.getEndpointUrl()
-              + "/rest/generators/{pluginkey}/generate/info?includeConfigUI=true",
-          GeneratorPluginInfoV1.class, plugin.getKey());
-      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
-          plugin.getTags());
-    } else {
-      ResponseEntity<GeneratorPluginInfo> response = restTemplate.getForEntity(
-          plugin.getEndpointUrl() + "/api/2/plugins/generators/{pluginkey}/info",
-          GeneratorPluginInfo.class, plugin.getKey());
-
-      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
-          plugin.getTags());
-    }
   }
 
   @Override
   public GeneratedOutput generate(IUserContext userContext, ModelId modelId, String serviceKey,
       Map<String, String> requestParams) {
 
-
-
-    modelRepositoryFactory.getRepositoryByModel(modelId).getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED);
-
-    GeneratorMetric generatorEntity = this.generatorMetrics.findByGeneratorKey(serviceKey);
-    if (generatorEntity == null) {
-      throw new GenerationException(
-          "Generator plugin with key " + serviceKey + " is not found in metrics database");
+    incrementMetric(serviceKey);
+    IModelRepository repository = modelRepositoryFactory.getRepositoryByModel(modelId);
+    ModelInfo modelInfo = repository.getById(modelId);
+    GeneratorPluginConfiguration plugin = getPluginInfo(serviceKey, false);
+    if (modelInfo.isReleased() && hasGeneratorProductionTag(plugin)) {
+      return generatedOutputAttachmentHandler
+          .getGeneratedOutputFromAttachment(modelInfo, requestParams, plugin, repository).orElseGet(
+              () -> generateAndAttachOutput(userContext, modelInfo, serviceKey, requestParams,
+                  plugin)
+          );
     }
+    return doGenerate(modelInfo, serviceKey, requestParams, plugin);
+  }
 
-    generatorEntity.increaseInvocationCount();
-    this.generatorMetrics.save(generatorEntity);
+  private boolean hasGeneratorProductionTag(GeneratorPluginConfiguration plugin) {
+    return Arrays.stream(plugin.getTags()).anyMatch("production"::equalsIgnoreCase);
+  }
 
-    GeneratorPluginConfiguration plugin = this.getPluginInfo(serviceKey, false);
-
-    if (plugin.isApiVersion("2")) {
-      return doGenerateWithApiVersion2(userContext, modelId, serviceKey, requestParams,
-          plugin.getEndpointUrl());
+  private GeneratorPluginConfiguration loadFromRemote(GeneratorPluginConfiguration plugin) {
+    if (plugin.isApiVersion("1")) {
+      ResponseEntity<GeneratorPluginInfoV1> response = restTemplate.getForEntity(
+          plugin.getEndpointUrl()
+              + "/rest/generators/{pluginkey}/generate/info?includeConfigUI=true",
+          GeneratorPluginInfoV1.class, plugin.getKey());
+      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
+          plugin.getPluginVersion(), plugin.getTags());
     } else {
-      return doGenerateWithApiVersion1(userContext, modelId, serviceKey, requestParams,
-          plugin.getEndpointUrl());
+      ResponseEntity<GeneratorPluginInfo> response = restTemplate.getForEntity(
+          plugin.getEndpointUrl() + "/api/2/plugins/generators/{pluginkey}/info",
+          GeneratorPluginInfo.class, plugin.getKey());
+      return GeneratorPluginConfiguration.of(response.getBody(), plugin.getEndpointUrl(),
+          plugin.getPluginVersion(), plugin.getTags());
     }
   }
 
-  private GeneratedOutput doGenerateWithApiVersion2(IUserContext userContext, ModelId modelId,
-      String serviceKey, Map<String, String> requestParams, String baseUrl) {
+  private void incrementMetric(String serviceKey) {
+    GeneratorMetric generatorEntity = Optional
+        .ofNullable(generatorMetrics.findByGeneratorKey(serviceKey))
+        .orElseThrow(() -> new GenerationException("Generator plugin with key " + serviceKey
+            + " is not found in metrics database"));
+    generatorEntity.increaseInvocationCount();
+    generatorMetrics.save(generatorEntity);
+  }
+
+  private GeneratedOutput generateAndAttachOutput(IUserContext userContext, ModelInfo modelInfo,
+      String serviceKey, Map<String, String> requestParams, GeneratorPluginConfiguration plugin) {
+
+    GeneratedOutput output = doGenerate(modelInfo, serviceKey, requestParams, plugin);
+    return generatedOutputAttachmentHandler
+        .attachGeneratedOutput(userContext, modelInfo.getId(), serviceKey, requestParams, output,
+            plugin);
+  }
+
+  private GeneratedOutput doGenerate(ModelInfo modelInfo, String serviceKey,
+      Map<String, String> requestParams, GeneratorPluginConfiguration plugin) {
+
+    if (plugin.isApiVersion("2")) {
+      return doGenerateWithApiVersion2(modelInfo.getId(), serviceKey, requestParams,
+          plugin.getEndpointUrl());
+    }
+    return doGenerateWithApiVersion1(modelInfo, serviceKey, requestParams,
+        plugin.getEndpointUrl());
+  }
+
+  private GeneratedOutput doGenerateWithApiVersion2(ModelId modelId, String serviceKey,
+      Map<String, String> requestParams, String baseUrl) {
 
     ModelIdToModelContentConverter converter =
         new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     ModelContent content = converter.convert(modelId, Optional.empty());
-    
+
     try {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Generating with V2. Sending following json content "+ new ObjectMapper().writeValueAsString(content));
+        LOGGER.debug("Generating with V2. Sending following json content {}",
+            new ObjectMapper().writeValueAsString(content));
       }
     } catch (JsonProcessingException e) {
-      //
+      LOGGER.trace("Error processing JSON for logging", e);
     }
 
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/api/2/plugins/generators/{pluginkey}" + attachRequestParams(requestParams),
-        HttpMethod.PUT, new HttpEntity<ModelContent>(content), byte[].class, serviceKey);
+        HttpMethod.PUT, new HttpEntity<>(content), byte[].class, serviceKey);
 
     return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response),
         response.getHeaders().getContentLength());
   }
 
-  private GeneratedOutput doGenerateWithApiVersion1(IUserContext userContext, ModelId modelId,
-      String serviceKey, Map<String, String> requestParams, String baseUrl) {
-    ModelInfo modelResource = modelRepositoryFactory.getRepositoryByModel(modelId).getById(modelId);
+  private GeneratedOutput doGenerateWithApiVersion1(ModelInfo modelInfo, String serviceKey,
+      Map<String, String> requestParams, String baseUrl) {
 
-    if (modelResource == null) {
+    if (modelInfo == null) {
       throw new ModelNotFoundException("Model with the given ID does not exist", null);
     }
 
-    if (modelResource.getType() == ModelType.Datatype
-        || modelResource.getType() == ModelType.Mapping) {
+    if (modelInfo.getType() == ModelType.Datatype
+        || modelInfo.getType() == ModelType.Mapping) {
       throw new GenerationException(
           "Provided model is neither an information model nor a function block model!");
     }
@@ -191,9 +216,9 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
     HttpEntity<String> entity = getUserToken().map(token -> {
       HttpHeaders headers = new HttpHeaders();
       headers.add("Authorization", "Bearer " + token);
-      return new HttpEntity<String>("parameters", headers);
+      return new HttpEntity<>("parameters", headers);
     }).orElse(null);
-
+    ModelId modelId = modelInfo.getId();
     ResponseEntity<byte[]> response = restTemplate.exchange(
         baseUrl + "/rest/generators/{pluginkey}/generate/{namespace}/{name}/{version}"
             + attachRequestParams(requestParams),
@@ -206,7 +231,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   private Optional<String> getUserToken() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null && authentication instanceof OAuth2Authentication) {
+    if (authentication instanceof OAuth2Authentication) {
       if (authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
         OAuth2AuthenticationDetails details =
             (OAuth2AuthenticationDetails) authentication.getDetails();
@@ -245,7 +270,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   @Override
   public Collection<GeneratorPluginConfiguration> getMostlyUsed(int top) {
-    List<GeneratorMetric> topResult = new ArrayList<GeneratorMetric>();
+    List<GeneratorMetric> topResult = new ArrayList<>();
 
     for (GeneratorMetric entity : this.generatorMetrics.findByClassifier("platform")) {
       topResult.add(entity);
@@ -301,7 +326,7 @@ public class DefaultGeneratorPluginService implements IGeneratorPluginService {
 
   /**
    * Removes the cached plugin meta data for the given plugin key
-   * 
+   *
    * @param pluginKey
    */
   public void clearPluginCache(String pluginKey) {

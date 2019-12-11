@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
+import io.swagger.annotations.ApiParam;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -19,6 +20,8 @@ import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
@@ -40,13 +43,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(value = "/api/v1/attachments")
@@ -55,9 +58,13 @@ public class AttachmentController extends AbstractRepositoryController {
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String CONTENT_DISPOSITION = "content-disposition";
+  private static final Predicate<Attachment> STATIC_TAG_FILTER = attachment -> attachment.getTags()
+      .contains(Attachment.TAG_IMAGE)
+      || attachment.getTags().contains(Attachment.TAG_DOCUMENTATION)
+      || attachment.getTags().contains(Attachment.TAG_IMPORTED);
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-  
+
   @Autowired
   private ITenantService tenantService;
 
@@ -72,7 +79,7 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @RequestParam("file") MultipartFile file) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
+
     final String tenantId = getTenant(modelID).orElseThrow(
         () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
 
@@ -101,8 +108,7 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
-      produces = "application/json")
+  @GetMapping(value = "/{modelId:.+}", produces = "application/json")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public List<Attachment> getAttachments(
       @ApiParam(
@@ -110,12 +116,23 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @PathVariable String modelId) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
+
     try {
       return getModelRepository(modelID).getAttachments(modelID);
     } catch (FatalModelRepositoryException e) {
       return Collections.emptyList();
     }
+  }
+
+  @GetMapping(value = "/static/{modelId:.+}", produces = "application/json")
+  @CrossOrigin(origins = "https://www.eclipse.org")
+  public List<Attachment> getAttachmentsWithStaticTags(
+      @ApiParam(
+          value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+          required = true) @PathVariable String modelId) {
+    return getAttachments(modelId).stream()
+        .filter(STATIC_TAG_FILTER)
+        .collect(Collectors.toList());
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
@@ -129,7 +146,7 @@ public class AttachmentController extends AbstractRepositoryController {
       final HttpServletResponse response) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
+
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
       Optional<FileContent> content =
@@ -160,7 +177,7 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @PathVariable String filename) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
+
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
 
@@ -173,7 +190,7 @@ public class AttachmentController extends AbstractRepositoryController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-  
+
   private Optional<String> getTenant(ModelId modelId) {
     return tenantService.getTenantFromNamespace(modelId.getNamespace())
         .map(tenant -> tenant.getTenantId());

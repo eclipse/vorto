@@ -16,8 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
@@ -111,7 +113,35 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
       assertEquals(1, attachments.get(0).getTags().size());
       assertEquals(Attachment.TAG_DOCUMENTATION, attachments.get(0).getTags().get(0));
 
-      attachments.forEach(name -> System.out.println(name));
+      attachments.forEach(System.out::println);
+
+    } catch (IOException | FatalModelRepositoryException e) {
+      e.printStackTrace();
+      fail("Cannot load sample file");
+    }
+  }
+
+  @Test
+  public void testAttachFileWithCustomTag() {
+    IUserContext erle = createUserContext("erle", "playground");
+    importModel("Color.type", erle);
+
+    try {
+      Tag myCustomTag = new Tag("myCustom");
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+          new FileContent("backup1.xml",
+              IOUtils.toByteArray(
+                  new ClassPathResource("sample_models/backup1.xml").getInputStream())),
+          erle, myCustomTag);
+
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
+          .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+
+      assertEquals(1, attachments.get(0).getTags().size());
+      assertEquals(myCustomTag, attachments.get(0).getTags().get(0));
+
+      attachments.forEach(System.out::println);
 
     } catch (IOException | FatalModelRepositoryException e) {
       e.printStackTrace();
@@ -138,6 +168,39 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
       assertEquals(2, attachments.get(0).getTags().size());
 
       attachments.forEach(name -> System.out.println(name));
+
+    } catch (IOException | FatalModelRepositoryException e) {
+      e.printStackTrace();
+      fail("Cannot load sample file");
+    }
+  }
+
+  @Test
+  public void testAttachFileWithMultipleCustomTags() {
+    IUserContext erle = createUserContext("erle", "playground");
+    importModel("Color.type", erle);
+
+    Tag myCustomTag1 = new Tag("myCustom");
+    Tag myCustomTag2 = new Tag("myCustom2");
+    try {
+      repositoryFactory.getRepository(erle).attachFile(
+          new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
+          new FileContent("backup1.xml",
+              IOUtils.toByteArray(
+                  new ClassPathResource("sample_models/backup1.xml").getInputStream())),
+          erle, myCustomTag1, myCustomTag2);
+
+      List<Attachment> attachments = repositoryFactory.getRepository(erle)
+          .getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+
+      assertEquals(1, attachments.size());
+      assertEquals(2, attachments.get(0).getTags().size());
+      assertEquals(1, attachments.stream().map(Attachment::getTags).flatMap(Collection::stream)
+          .filter(myCustomTag1::equals).count());
+      assertEquals(1, attachments.stream().map(Attachment::getTags).flatMap(Collection::stream)
+          .filter(myCustomTag2::equals).count());
+
+      attachments.forEach(System.out::println);
 
     } catch (IOException | FatalModelRepositoryException e) {
       e.printStackTrace();

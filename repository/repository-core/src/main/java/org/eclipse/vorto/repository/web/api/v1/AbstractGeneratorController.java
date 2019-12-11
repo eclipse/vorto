@@ -26,17 +26,17 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String CONTENT_DISPOSITION = "content-disposition";
-  
+
   @Autowired
   protected IGeneratorPluginService generatorService;
-  
+
   @Autowired
   protected ITenantService tenantService;
-  
+
   protected void generateAndWriteToOutputStream(String modelId, String pluginKey, HttpServletRequest request, HttpServletResponse response) {
     generateAndWriteToOutputStream(modelId, pluginKey, getRequestParams(request), response);
   }
-  
+
   protected void generateAndWriteToOutputStream(String modelId, String pluginKey, Map<String, String> params, HttpServletResponse response) {
     ModelId modelIdToGen = ModelId.fromPrettyFormat(modelId);
 
@@ -48,7 +48,7 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
       throw new RuntimeException("Error copying file.", e);
     }
   }
-  
+
   protected IUserContext getUserContext(ModelId modelId) {
     Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
     if (!tenant.isPresent()) {
@@ -72,10 +72,7 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
 
   protected Map<String, String> getRequestParams(final HttpServletRequest request) {
     Map<String, String> requestParams = new HashMap<>();
-    request.getParameterMap().entrySet().stream().forEach(x -> {
-      requestParams.put(x.getKey(), x.getValue()[0]);
-    });
-
+    request.getParameterMap().forEach((key, value) -> requestParams.put(key, value[0]));
     return requestParams;
   }
 

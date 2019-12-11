@@ -101,7 +101,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   private static final String VORTO_META = "vorto:meta";
 
   private static final String VORTO_AUTHOR = "vorto:author";
-  
+
   private static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
 
   private static final String VORTO_STATE = "vorto:state";
@@ -749,19 +749,19 @@ public class ModelRepository extends AbstractRepositoryOperation
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
-        Node attachmentFolderNode = null;
+        Node attachmentFolderNode;
         if (!modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
           attachmentFolderNode = modelFolderNode.addNode(ATTACHMENTS_NODE, NT_FOLDER);
         } else {
           attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
         }
 
-        String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId())
-            .collect(Collectors.toList()).toArray(new String[tags.length]);
+        String[] tagIds = Arrays.stream(tags).map(Tag::getId).collect(Collectors.toList())
+            .toArray(new String[tags.length]);
 
-        Node contentNode = null;
+        Node contentNode;
         if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
-          Node attachmentNode = (Node) attachmentFolderNode.getNode(fileContent.getFileName());
+          Node attachmentNode = attachmentFolderNode.getNode(fileContent.getFileName());
           attachmentNode.addMixin(VORTO_META);
           attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
           contentNode = (Node) attachmentNode.getPrimaryItem();
@@ -795,7 +795,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
         if (modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
           Node attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
-          List<Attachment> attachments = new ArrayList<Attachment>();
+          List<Attachment> attachments = new ArrayList<>();
           NodeIterator nodeIt = attachmentFolderNode.getNodes();
           while (nodeIt.hasNext()) {
             Node fileNode = (Node) nodeIt.next();
@@ -803,7 +803,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             if (fileNode.hasProperty(VORTO_TAGS)) {
               final List<Value> tags = Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
               attachment.setTags(
-                  tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
+                  tags.stream().map(this::createTag).collect(Collectors.toList()));
             }
             attachments.add(attachment);
           }
@@ -825,7 +825,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       } else if (tagValue.getString().equals(Attachment.TAG_IMPORTED.getId())) {
         return Attachment.TAG_IMPORTED;
       } else {
-        return null;
+        return new Tag(tagValue.getString());
       }
     } catch (RepositoryException ex) {
       return null;
@@ -835,6 +835,13 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public List<Attachment> getAttachmentsByTag(final ModelId modelId, final Tag tag) {
     return getAttachments(modelId).stream().filter(attachment -> attachment.getTags().contains(tag))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Attachment> getAttachmentsByTags(final ModelId modelId, final Set<Tag> tag) {
+    return getAttachments(modelId).stream()
+        .filter(attachment -> attachment.getTags().containsAll(tag))
         .collect(Collectors.toList());
   }
 
