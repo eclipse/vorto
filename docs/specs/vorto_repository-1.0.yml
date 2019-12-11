@@ -941,12 +941,21 @@ components:
         attributes:
           type: array
           items:
-            type: object
+            $ref: '#/components/schemas/IPropertyAttribute'
         primitive:
           type: boolean
         multiple:
           type: boolean
-    
+
+    IPropertyAttribute:
+      title: IPropertyAttribute
+      type: object
+      properties:
+        type:
+          oneOf:
+            - $ref: '#/components/schemas/BooleanAttributeProperty'
+            - $ref: '#/components/schemas/EnumAttributeProperty'
+
     Constraint:
       title: Constraint
       type: object
@@ -955,7 +964,41 @@ components:
           $ref: '#/components/schemas/ConstraintType'
         value:
           type: string
-    
+
+    BooleanAttributeProperty:
+      title: BooleanAttributeProperty
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/BooleanAttributePropertyType'
+        value:
+          type: string
+
+    EnumAttributeProperty:
+      title: EnumAttributeProperty
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/EnumAttributePropertyType'
+        value:
+          type: string
+
+    BooleanAttributePropertyType:
+      title: BooleanAttributePropertyType
+      enum:
+        - READABLE
+        - WRITABLE
+        - EVENTABLE
+      type: string
+      example: READABLE
+
+    EnumAttributePropertyType:
+      title: EnumAttributePropertyType
+      enum:
+        - MEASUREMENT_UNIT
+      type: string
+      example: MEASUREMENT_UNIT
+
     FunctionblockModel:
       title: FunctionblockModel
       allOf:
