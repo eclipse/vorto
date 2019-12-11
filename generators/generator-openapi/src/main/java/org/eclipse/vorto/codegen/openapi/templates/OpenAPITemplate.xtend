@@ -366,6 +366,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/featuresFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: >-
@@ -408,13 +411,16 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features/«fbProperty.name»':
 		    get:
 		      summary: Retrieve the «fbProperty.name» of the «infomodel.name»
-		      description: >-
+		      description: |-
 		        Returns the «fbProperty.name» feature of the «infomodel.name» thing identified by the
 		        `thingId` path parameter.
 		      tags:
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/featureFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The «fbProperty.name» was successfully retrieved.
@@ -460,6 +466,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/propertiesFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The «fbProperty.name» was successfully retrieved.
@@ -498,14 +507,19 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features/«fbProperty.name»/properties/{propertyPath}':
 		    get:
 		      summary: Retrieve a specific property of «fbProperty.name»
-		      description: >-
-		        Returns the «fbProperty.name» properties of the «infomodel.name» thing identified by the
+		      description: |-
+		        Returns the «fbProperty.name» property path of «infomodel.name» identified by the
 		        `thingId` path parameter.
+		        
+		        The property (JSON) can be referenced
+		        hierarchically, by applying JSON Pointer notation (RFC-6901)
 		      tags:
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
 		      - $ref: '#/components/parameters/propertyPathPathParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The Property was successfully retrieved.
@@ -1030,6 +1044,25 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          schema:
 		            $ref: '#/components/schemas/AdvancedError'
 		  parameters:
+		    ifMatchHeaderParam:
+		      name: If-Match
+		      in: header
+		      description:  >-
+		        The `If-Match` header, which has to conform to RFC-7232 (Conditional Requests). Common usages are:
+		          * optimistic locking by specifying the `ETag` from a previous GET response, e.g. `If-Match: "rev:4711"`
+		          * retrieving or modifying a resource only if it already exists, e.g. `If-Match: *`
+		      required: false
+		      schema:
+		        type: string
+		    ifNoneMatchHeaderParam:
+		      name: If-None-Match
+		      in: header
+		      description:  >-
+		        The `If-None-Match` header, which has to conform to RFC-7232 (Conditional Requests). A common usage scenario is to
+		        modify a resource only if it does not yet exist, thus to create it, by specifying `If-None-Match: *`.
+		      required: false
+		      schema:
+		        type: string
 		    messageTimeoutParam:
 		      name: timeout
 		      in: query
@@ -1199,6 +1232,101 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        * `?namespaces=com.example.namespace`
 		        
 		        * `?namespaces=com.example.namespace1,com.example.namespace2`
+		      required: false
+		      schema:
+		        type: string
+		    propertiesFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from the properties to be
+		        included in the returned JSON.
+		        
+		        #### Selectable fields
+		        
+		        Supports selecting arbitrary sub-fields as defined in the properties by
+		        using a comma-separated list:
+		          * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		          
+		            For example:
+		              * `?fields=temperature` would select only `temperature` property value (if present)
+		              * `?fields=temperature,humidity` would select only `temperature` and `humidity` property values (if present)
+		              
+		        Supports selecting arbitrary sub-fields of objects by wrapping sub-fields
+		        inside parentheses `( )`:
+		          * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		          * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		          
+		            For example:
+		             * `?fields=location(longitude,latitude)` would select the `longitude` and `latitude` value inside the `location` property
+		             
+		        #### Examples
+		        
+		        * `?fields=temperature,humidity,location(longitude,latitude)`
+		        
+		        * `?fields=configuration,status(powerConsumption/watts)`
+		      required: false
+		      schema:
+		        type: string
+		    featuresFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from one or more Features to be
+		        included in the returned JSON.
+		        
+		        #### Selectable fields
+		        
+		        * `{featureId}` The ID of the Feature to select properties in
+		          * `properties`
+		            Supports selecting arbitrary sub-fields by using a comma-separated list:
+		              * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		                For example:
+		                  * `?fields={featureId}/properties/color` would select only `color` property value (if present) of the Feature identified with `{featureId}`
+		                  * `?fields={featureId}/properties/color,properties/brightness` would select only `color` and `brightness` property values (if present) of the Feature identified with `{featureId}`
+		            Supports selecting arbitrary sub-fields of objects by wrapping sub-fields inside parentheses `( )`:
+		              * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		              * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		                For example:
+		                 * `?fields={featureId}/properties(color,brightness)` would select only `color` and `brightness` property values (if present) of the Feature identified with `{featureId}`
+		                 * `?fields={featureId}/properties(location/longitude)` would select the `longitude` value inside the `location` object of the Feature identified with `{featureId}`
+		                 
+		                 
+		        #### Examples
+		        * `?fields=EnvironmentScanner/properties(temperature,humidity)`
+		        * `?fields=EnvironmentScanner/properties(temperature,humidity),Vehicle/properties/configuration`
+		      required: false
+		      schema:
+		        type: string
+		    featureFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from the selected Feature to be
+		        included in the returned JSON.
+		  
+		        #### Selectable fields
+		  
+		        * `properties`
+		  
+		          Supports selecting arbitrary sub-fields by using a comma-separated list:
+		            * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		  
+		              For example:
+		                * `?fields=properties/color` would select only `color` property value (if present)
+		                * `?fields=properties/color,properties/brightness` would select only `color` and `brightness` property values (if present)
+		  
+		          Supports selecting arbitrary sub-fields of objects by wrapping sub-fields inside parentheses `( )`:
+		            * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		            * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		  
+		              For example:
+		               * `?fields=properties(color,brightness)` would select only `color` and `brightness` property values (if present)
+		               * `?fields=properties(location/longitude)` would select the `longitude` value inside the `location` object
+		  
+		        #### Examples
+		  
+		        * `?fields=properties(color,brightness)`
 		      required: false
 		      schema:
 		        type: string
