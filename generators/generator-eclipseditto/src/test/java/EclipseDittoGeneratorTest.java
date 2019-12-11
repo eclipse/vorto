@@ -43,13 +43,15 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
 
   /*
    * Test case for checking whether the multiple keyword generates corresponding array type in json
-   * 
+   *
    */
   @Test
   public void checkMultipleKeywordInFunctionBlock() throws Exception {
+    Map<String, String> params = new HashMap<>();
+    params.put("target", "jsonSchema");
     IGenerationResult generationResult = eclipseDittoGenerator.generate(
         modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
-        InvocationContext.simpleInvocationContext());
+        InvocationContext.simpleInvocationContext(params));
 
     Generated generatedfile = zipFileReader(generationResult, "properties-status.schema", ".json");
 
@@ -63,19 +65,22 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
 
   /*
    * Test case for checking whether the config properties are reflected in json
-   * 
+   *
    */
   @Test
   public void checkAPIConfigPropertiesInFunctionBlock() throws Exception {
+    Map<String, String> params = new HashMap<>();
+    params.put("target", "jsonSchema");
     IGenerationResult generationResult = eclipseDittoGenerator.generate(
         modelProvider("MultiplTypeIm.infomodel", "MultipleTypeFb.functionblock"),
-        InvocationContext.simpleInvocationContext());
+        InvocationContext.simpleInvocationContext(params));
 
-    Generated generatedfile = zipFileReader(generationResult, "properties-configuration.schema", ".json");
+    Generated generatedfile = zipFileReader(generationResult, "properties-configuration.schema",
+        ".json");
 
     File defaultFile = new File(getClass().getClassLoader()
         .getResource("defaultFileFormat/properties-configuration.schema.json").toURI());
-   
+
     assertEquals(IOUtils.toString(FileUtils.openInputStream(defaultFile)),
         new String(generatedfile.getContent(), "utf-8"));
 

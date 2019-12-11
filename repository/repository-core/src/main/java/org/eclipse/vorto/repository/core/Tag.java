@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.core;
 
 public final class Tag {
+
   private String id;
   private String label;
 
@@ -21,7 +22,13 @@ public final class Tag {
     this.label = label;
   }
 
-  protected Tag() {}
+  public Tag(String id) {
+    this.id = id;
+    this.label = id;
+  }
+
+  protected Tag() {
+  }
 
   public String getId() {
     return id;
