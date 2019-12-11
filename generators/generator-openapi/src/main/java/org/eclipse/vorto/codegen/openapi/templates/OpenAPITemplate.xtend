@@ -59,9 +59,11 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    description: "Bosch IoT Things Service"
 		tags:
 		  - name: Things
-		    description: List every Thing
+		    description: Manage every Thing
 		  - name: Features
 		    description: Features of your «infomodel.name» things
+		  - name: Things-Search
+		    description: Find every Thing
 		  - name: Messages
 		    description: Send messages to / Receive event messages from «infomodel.name»
 		security:
@@ -72,18 +74,29 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  ###
 		  '/things':
 		    get:
-		      summary: List all available Things
-		      description: >-
-		          Returns all Things passed in by the required parameter `ids`. Optionally
-		          you can use field selectors (see parameter `fields`) to only get the
-		          specified fields.
+		      summary: Retrieve multiple Things with specified IDs
+		      description: |-
+		        Returns all things passed in by the required parameter `ids`, which you (the authorized subject) are allowed to read.
+		      
+		        Optionally, if you want to retrieve only some of the thing's fields, you can use the specific field selectors (see parameter `fields`) .
+		      
+		        Tip: If you don't know the thing IDs, start with the search resource.
 		      tags:
 		      - Things
+		      parameters:
+		      - name: ids
+		        in: query
+		        description: |-
+		          Contains a comma-separated list of `thingId`s to retrieve in one single request.
+		        required: true
+		        schema:
+		          type: string
+		      - $ref: '#/components/parameters/thingFieldsQueryParam'
 		      responses:
 		          '200':
-		            description: >-
-		              The successfully completed request contains as its result the first
-		              200 for the user available Things, sorted by their `thingId`.
+		            description: |-
+		              The successfully completed request contains as its result the first 200 things, 
+		              for which the user has at least read permission. The list is sorted by the `thingId`.
 		            content:
 		              application/json:
 		                schema:
@@ -141,10 +154,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          '400':
 		            description: >-
 		              The request could not be completed. The `thingId` either
-
+		              
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
-
+		              
 		              Or one of the defined query parameters was invalid.
 		            content:
 		              application/json:
@@ -175,6 +188,173 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          '412':
 		            $ref: '#/components/responses/preconditionFailed'
 		  ###
+		  ### Things-Search
+		  ###
+		  '/search/things':
+		    get:
+		      summary: Search for Things
+		      description: |-
+		        This resource can be used to search for things.
+		        
+		        * The query parameter `filter` is not mandatory. If it is not set, the
+		          result contains all things which the logged in user is allowed to read.
+		          
+		        * The search is case sensitive. In case you don't know how exactly the
+		          spelling of the namespace, name, attribute, feature etc. is, use the *like*
+		          notation for filtering
+		          
+		        * The search result is limited to the things within the namespace (or namespaces)
+		          the solution is configured for. You can explicitly search in specific namespaces
+		          by including them in the query via the *namespaces* parameter.
+		          
+		        * The resource supports sorting and paging. If paging is not explicitly
+		          specified by means of the `size` option, a default count of `25`
+		          documents is returned.
+		          
+		        * The internal search index is "eventually consistent".  Consistency with the latest
+		          thing updates should recover within milliseconds.
+		          
+		      parameters:
+		      - $ref: '#/components/parameters/searchFilter'
+		      - $ref: '#/components/parameters/namespacesFilter'
+		      - $ref: '#/components/parameters/thingFieldsQueryParam'
+		      - name: option
+		        in: query
+		        description: |-
+		          Possible values for the parameter:
+		          
+		          #### Sort operations
+		          
+		          * ```sort([+|-]{property})```
+		          * ```sort([+|-]{property},[+|-]{property},...)```
+		          
+		          #### Paging operations
+		          
+		          * ```size({page-size})```  Maximum allowed page size is `200`. Default page size is `25`.
+		          * ```cursor({cursor-id})```  Start the search from the cursor location. Specify the cursor ID without
+		          quotation marks. Cursor IDs are given in search responses and mark the position after the last entry of
+		          the previous search. The meaning of cursor IDs is unspecified and may change without notice.
+		          
+		          The paging option `limit({offset},{count})` is deprecated.
+		          It may result in slow queries or timeouts and will be removed eventually.
+		          
+		          #### Examples:
+		          
+		          * ```sort(+thingId)```
+		          * ```sort(-attributes/manufacturer)```
+		          * ```sort(+thingId,-attributes/manufacturer)```
+		          * ```size(10)``` return 10 results
+		          * ```cursor(LOREMIPSUM)```  return results after the position of the cursor `LOREMIPSUM`.
+		          
+		          #### Combine:
+		          
+		          If you need to specify multiple options, when using the swagger UI just write each option in a new line.
+		          When using the plain REST API programmatically,
+		          you will need to separate the options using a comma (,) character.
+		          
+		          ```size(200),cursor(LOREMIPSUM)```
+		          
+		          The deprecated paging option `limit` may not be combined with the other paging options `size` and `cursor`.
+		        required: false
+		        schema:
+		          type: array
+		          items:
+		            type: string
+		      tags:
+		      - Things-Search
+		      responses:
+		        '200':
+		          description: An array of the matching things.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/SearchResultThings'
+		        '400':
+		          description: |-
+		            The request could not be completed. A provided parameter is in a
+		            wrong format.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '401':
+		          description: The request could not be completed due to missing authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '403':
+		          description: The request could not be completed due to an invalid authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '504':
+		          description: The request ran out of time to execute on the the back-end. Optimize your query and try again.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		  '/search/things/count':
+		    get:
+		      summary: Count Things
+		      description: |-
+		        This resource can be used to count things.
+		        
+		        The query parameter `filter` is not mandatory. If it is not set there is
+		        returned the total amount of things which the logged in user is allowed
+		        to read.
+		        
+		        To search for nested properties, we use JSON Pointer notation
+		        (RFC-6901). See the following example how to search for the sub property
+		        `location` of the parent property `attributes` with a forward slash as
+		        separator:
+		        
+		        ```eq(attributes/location,"kitchen")```
+		        
+		        The search result is limited to the Things within the namespace (or namespaces) the solution is configured
+		        for. You can explicitly search in other namespaces by including them in the query via the `namespaces`
+		        parameter.
+		        
+		      parameters:
+		      - $ref: '#/components/parameters/searchFilter'
+		      - $ref: '#/components/parameters/namespacesFilter'
+		      tags:
+		      - Things-Search
+		      responses:
+		        '200':
+		          description: A number indicating the amount of matched things
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/SearchResultThingsCount'
+		        '400':
+		          description: |-
+		            The request could not be completed. A provided parameter is in a
+		            wrong format.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '401':
+		          description: The request could not be completed due to missing authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '403':
+		          description: The request could not be completed due to an invalid authentication.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		        '504':
+		          description: The request ran out of time to execute on the the back-end. Optimize your query and try again.
+		          content:
+		            application/json:
+		              schema:
+		                $ref: '#/components/schemas/AdvancedError'
+		  ###
 		  ### «infomodel.name» Features
 		  ###
 		  '/things/{thingId}/features':
@@ -186,6 +366,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/featuresFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: >-
@@ -199,10 +382,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        '400':
 		          description: |-
 		            The request could not be completed. The `thingId` either
-		
+		            
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
-		
+		              
 		            Or at least one of the defined query parameters was invalid.
 		          content:
 		            application/json:
@@ -228,13 +411,16 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features/«fbProperty.name»':
 		    get:
 		      summary: Retrieve the «fbProperty.name» of the «infomodel.name»
-		      description: >-
+		      description: |-
 		        Returns the «fbProperty.name» feature of the «infomodel.name» thing identified by the
 		        `thingId` path parameter.
 		      tags:
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/featureFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The «fbProperty.name» was successfully retrieved.
@@ -280,6 +466,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/propertiesFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The «fbProperty.name» was successfully retrieved.
@@ -318,14 +507,19 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features/«fbProperty.name»/properties/{propertyPath}':
 		    get:
 		      summary: Retrieve a specific property of «fbProperty.name»
-		      description: >-
-		        Returns the «fbProperty.name» properties of the «infomodel.name» thing identified by the
+		      description: |-
+		        Returns the «fbProperty.name» property path of «infomodel.name» identified by the
 		        `thingId` path parameter.
+		        
+		        The property (JSON) can be referenced
+		        hierarchically, by applying JSON Pointer notation (RFC-6901)
 		      tags:
 		      - Features
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
 		      - $ref: '#/components/parameters/propertyPathPathParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
 		          description: The Property was successfully retrieved.
@@ -427,6 +621,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        $ref: '#/components/requestBodies/«fbProperty.type.name»«configurationProperty.name.toFirstUpper»ConfigurationValue'
 		  «ENDFOR»
 		  «ENDIF»
+		  ###
+		  ### Messages
+		  ###
 		  «FOR event : fbProperty.type.functionblock.events»
 		  '/things/{thingId}/features/«fbProperty.name»/outbox/messages/«event.name»':
 		    post:
@@ -600,6 +797,16 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    Attributes:
 		      type: object
 		      description: An arbitrary JSON object describing the attributes of a Thing.
+		    SearchResultThings:
+		      properties:
+		        items:
+		          type: array
+		          items:
+		            $ref: '#/components/schemas/Thing'
+		        cursor:
+		          type: string
+		    SearchResultThingsCount:
+		      type: integer
 		    FeatureDefinition:
 		      type: array
 		      minItems: 1
@@ -837,6 +1044,25 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          schema:
 		            $ref: '#/components/schemas/AdvancedError'
 		  parameters:
+		    ifMatchHeaderParam:
+		      name: If-Match
+		      in: header
+		      description:  >-
+		        The `If-Match` header, which has to conform to RFC-7232 (Conditional Requests). Common usages are:
+		          * optimistic locking by specifying the `ETag` from a previous GET response, e.g. `If-Match: "rev:4711"`
+		          * retrieving or modifying a resource only if it already exists, e.g. `If-Match: *`
+		      required: false
+		      schema:
+		        type: string
+		    ifNoneMatchHeaderParam:
+		      name: If-None-Match
+		      in: header
+		      description:  >-
+		        The `If-None-Match` header, which has to conform to RFC-7232 (Conditional Requests). A common usage scenario is to
+		        modify a resource only if it does not yet exist, thus to create it, by specifying `If-None-Match: *`.
+		      required: false
+		      schema:
+		        type: string
 		    messageTimeoutParam:
 		      name: timeout
 		      in: query
@@ -863,7 +1089,247 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      description: The path to the Property
 		      required: true
 		      schema:
-		        type: string		        
+		        type: string
+		    thingFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields to be included in the returned
+		        JSON. Attributes can be selected in the same manner.
+		        
+		        #### Selectable fields
+		        
+		        * `thingId`
+		        * `policyId`
+		        * `attributes`
+		        
+		           Supports selecting arbitrary sub-fields by using a comma-separated list:
+		            * several attribute paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		            
+		              For example:
+		                * `?fields=attributes/model` would select only `model` attribute value (if present)
+		                * `?fields=attributes/model,attributes/location` would select only `model` and
+		                   `location` attribute values (if present)
+		                   
+		          Supports selecting arbitrary sub-fields of objects by wrapping sub-fields inside parentheses `( )`:
+		            * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901)
+		              separated with `/`) to select
+		              
+		            * sub-selectors can be used to request only specific sub-fields by placing expressions
+		              in parentheses `( )` after a selected subfield
+		              
+		              For example:
+		               * `?fields=attributes(model,location)` would select only `model`
+		                  and `location` attribute values (if present)
+		               * `?fields=attributes(coffeemaker/serialno)` would select the `serialno` value
+		                  inside the `coffeemaker` object
+		               * `?fields=attributes/address/postal(city,street)` would select the `city` and
+		                  `street` values inside the `postal` object inside the `address` object
+		                  
+		                  
+		        * `features`
+		        
+		          Supports selecting arbitrary fields in features similar to `attributes` (see also Features documentation for more details)
+		          
+		        * `_namespace`
+		        
+		          Specifically selects the namespace also contained in the `thingId`
+		          
+		        * `_revision`
+		        
+		          Specifically selects the revision of the Thing. The revision is a counter, which is incremented on each modification of a Thing.
+		          
+		        * `_modified`
+		        
+		          Specifically selects the modified timestamp of the Thing in ISO-8601 UTC format. The timestamp is set on each modification of a Thing.
+		          
+		        * `_policy`
+		        
+		          Specifically selects the content of the policy associated to the thing. (By default, only the policyId is returned.)
+		          
+		        #### Examples
+		        
+		        * `?fields=thingId,attributes,features`
+		        * `?fields=attributes(model,manufacturer),features`
+		        
+		      required: false
+		      schema:
+		        type: string
+		    searchFilter:
+		      name: filter
+		      in: query
+		      description: |-
+		      
+		        #### Filter predicates:
+		        
+		        * ```eq({property},{value})```  (i.e. equal to the given value)
+		        
+		        * ```ne({property},{value})```  (i.e. not equal to the given value)
+		        
+		        * ```gt({property},{value})```  (i.e. greater than the given value)
+		        
+		        * ```ge({property},{value})```  (i.e. equal to the given value or greater than it)
+		        
+		        * ```lt({property},{value})```  (i.e. lower than the given value or equal to it)
+		        
+		        * ```le({property},{value})```  (i.e. lower than the given value)
+		        
+		        * ```in({property},{value},{value},...)```  (i.e. contains at least one of the values listed)
+		        
+		        * ```like({property},{value})```  (i.e. contains values similar to the expressions listed)
+		        
+		        * ```exists({property})```  (i.e. all things in which the given path exists)
+		        
+		        
+		        Note: When using filter operations, only things with the specified properties are returned.
+		        For example, the filter `ne(attributes/owner, "SID123")` will only return things that do have
+		        the `owner` attribute.
+		        
+		        #### Logical operations:
+		        
+		        * ```and({query},{query},...)```
+		        
+		        * ```or({query},{query},...)```
+		        
+		        * ```not({query})```
+		        
+		        
+		        #### Examples:
+		        
+		        * ```eq(attributes/location,"kitchen")```
+		        
+		        * ```ge(thingId,"myThing1")```
+		        
+		        * ```exists(features/featureId)```
+		        
+		        * ```and(eq(attributes/location,"kitchen"),eq(attributes/color,"red"))```
+		        
+		        * ```or(eq(attributes/location,"kitchen"),eq(attributes/location,"living-room"))```
+		        
+		        * ```like(attributes/key1,"known-chars-at-start*")```
+		        
+		        * ```like(attributes/key1,"*known-chars-at-end")```
+		        
+		        * ```like(attributes/key1,"*known-chars-in-between*")```
+		        
+		        * ```like(attributes/key1,"just-som?-char?-unkn?wn")```
+		        
+		        The `like` filters with the wildcard `*` at the beginning can slow down your search request.
+		      required: false
+		      schema:
+		        type: string
+		    namespacesFilter:
+		      name: namespaces
+		      in: query
+		      description: |-
+		        A comma-separated list of namespaces. This list is used to limit the query to things in the given namespaces
+		        only. If this parameter is omitted, all registered namespaces of your solution will be queried. The solution is
+		        determined by the API token sent with the request.
+		        
+		        
+		        #### Examples:
+		        
+		        * `?namespaces=com.example.namespace`
+		        
+		        * `?namespaces=com.example.namespace1,com.example.namespace2`
+		      required: false
+		      schema:
+		        type: string
+		    propertiesFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from the properties to be
+		        included in the returned JSON.
+		        
+		        #### Selectable fields
+		        
+		        Supports selecting arbitrary sub-fields as defined in the properties by
+		        using a comma-separated list:
+		          * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		          
+		            For example:
+		              * `?fields=temperature` would select only `temperature` property value (if present)
+		              * `?fields=temperature,humidity` would select only `temperature` and `humidity` property values (if present)
+		              
+		        Supports selecting arbitrary sub-fields of objects by wrapping sub-fields
+		        inside parentheses `( )`:
+		          * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		          * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		          
+		            For example:
+		             * `?fields=location(longitude,latitude)` would select the `longitude` and `latitude` value inside the `location` property
+		             
+		        #### Examples
+		        
+		        * `?fields=temperature,humidity,location(longitude,latitude)`
+		        
+		        * `?fields=configuration,status(powerConsumption/watts)`
+		      required: false
+		      schema:
+		        type: string
+		    featuresFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from one or more Features to be
+		        included in the returned JSON.
+		        
+		        #### Selectable fields
+		        
+		        * `{featureId}` The ID of the Feature to select properties in
+		          * `properties`
+		            Supports selecting arbitrary sub-fields by using a comma-separated list:
+		              * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		                For example:
+		                  * `?fields={featureId}/properties/color` would select only `color` property value (if present) of the Feature identified with `{featureId}`
+		                  * `?fields={featureId}/properties/color,properties/brightness` would select only `color` and `brightness` property values (if present) of the Feature identified with `{featureId}`
+		            Supports selecting arbitrary sub-fields of objects by wrapping sub-fields inside parentheses `( )`:
+		              * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		              * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		                For example:
+		                 * `?fields={featureId}/properties(color,brightness)` would select only `color` and `brightness` property values (if present) of the Feature identified with `{featureId}`
+		                 * `?fields={featureId}/properties(location/longitude)` would select the `longitude` value inside the `location` object of the Feature identified with `{featureId}`
+		                 
+		                 
+		        #### Examples
+		        * `?fields=EnvironmentScanner/properties(temperature,humidity)`
+		        * `?fields=EnvironmentScanner/properties(temperature,humidity),Vehicle/properties/configuration`
+		      required: false
+		      schema:
+		        type: string
+		    featureFieldsQueryParam:
+		      name: fields
+		      in: query
+		      description: |-
+		        Contains a comma-separated list of fields from the selected Feature to be
+		        included in the returned JSON.
+		  
+		        #### Selectable fields
+		  
+		        * `properties`
+		  
+		          Supports selecting arbitrary sub-fields by using a comma-separated list:
+		            * several properties paths can be passed as a comma-separated list of JSON pointers (RFC-6901)
+		  
+		              For example:
+		                * `?fields=properties/color` would select only `color` property value (if present)
+		                * `?fields=properties/color,properties/brightness` would select only `color` and `brightness` property values (if present)
+		  
+		          Supports selecting arbitrary sub-fields of objects by wrapping sub-fields inside parentheses `( )`:
+		            * a comma-separated list of sub-fields (a sub-field is a JSON pointer (RFC-6901) separated with `/`) to select
+		            * sub-selectors can be used to request only specific sub-fields by placing expressions in parentheses `( )` after a selected subfield
+		  
+		              For example:
+		               * `?fields=properties(color,brightness)` would select only `color` and `brightness` property values (if present)
+		               * `?fields=properties(location/longitude)` would select the `longitude` value inside the `location` object
+		  
+		        #### Examples
+		  
+		        * `?fields=properties(color,brightness)`
+		      required: false
+		      schema:
+		        type: string
 		  securitySchemes:
 		    bearerAuth:
 		      type: http
