@@ -57,6 +57,11 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
   protected abstract Optional<String> getUserId(Map<String, Object> map);
 
   @Override
+  public boolean supportTechnicalUser() {
+    return false;
+  }
+
+  @Override
   public boolean canHandle(String accessToken) {
     Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
     if (jwtToken.isPresent()) {

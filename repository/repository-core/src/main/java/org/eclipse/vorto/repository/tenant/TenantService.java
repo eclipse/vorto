@@ -25,7 +25,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.AuthorizationProvider;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
@@ -117,7 +116,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       }
       
       tenant = newTenant(tenantId, defaultNamespace, namespaces,
-          authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
+          authorizationProvider.orElse(null), userContext);
       tenantAdmins.add(owner.getUsername());
       Set<TenantUser> newTenantAdmins = createNewTenantAdmins(tenantAdmins, tenant);
       tenant.setUsers(newTenantAdmins);
@@ -128,7 +127,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
       logger.info("Updating tenant '{}' - {}", tenantId, tenant);
       updateTenant(tenant, defaultNamespace, namespaces,
-          authenticationProvider.orElse(null), authorizationProvider.orElse(null), userContext);
+          authorizationProvider.orElse(null), userContext);
 
       updateTenantAdmins(tenant, tenantAdmins);
       eventType = EventType.TENANT_UPDATED;
@@ -308,7 +307,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Tenant updateTenant(Tenant tenant, String defaultNamespace,
-      Optional<Set<String>> namespaces, String authenticationProvider, String authorizationProvider,
+      Optional<Set<String>> namespaces, String authorizationProvider,
       IUserContext user) {
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
@@ -316,8 +315,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     updateTenantNamespace(tenant, tenantNamespaces, user);
 
     tenant.setDefaultNamespace(defaultNamespace);
-    tenant.setAuthenticationProvider(
-        getAuthenticationProvider(authenticationProvider, tenant.getAuthenticationProvider()));
     tenant.setAuthorizationProvider(
         getAuthorizationProvider(authorizationProvider, tenant.getAuthorizationProvider()));
     return tenant;
@@ -329,7 +326,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   private Tenant newTenant(String tenantId, String defaultNamespace,
-      Optional<Set<String>> namespaces, String authenticationProvider, String authorizationProvider,
+      Optional<Set<String>> namespaces, String authorizationProvider,
       IUserContext user) {
 
     Set<String> tenantNamespaces = combine(namespaces, defaultNamespace);
@@ -340,8 +337,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     checkForConflict(tenantNamespaces, this::conflictsWithExistingNamespace);
 
     Tenant tenant = Tenant.newTenant(tenantId, defaultNamespace, tenantNamespaces);
-    tenant.setAuthenticationProvider(
-        getAuthenticationProvider(authenticationProvider, AuthenticationProvider.GITHUB));
     tenant.setAuthorizationProvider(
         getAuthorizationProvider(authorizationProvider, AuthorizationProvider.DB));
 
@@ -393,15 +388,6 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
       AuthorizationProvider defaultVal) {
     try {
       return AuthorizationProvider.valueOf(authorizationProvider);
-    } catch (Exception e) {
-      return defaultVal;
-    }
-  }
-
-  private AuthenticationProvider getAuthenticationProvider(String authenticationProvider,
-      AuthenticationProvider defaultVal) {
-    try {
-      return AuthenticationProvider.valueOf(authenticationProvider);
     } catch (Exception e) {
       return defaultVal;
     }

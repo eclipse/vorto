@@ -18,7 +18,7 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 
 public class Collaborator {
   private String userId;
-  private String providerId;
+  private String providerId;  
   private String subject;
   private Collection<String> roles;
   

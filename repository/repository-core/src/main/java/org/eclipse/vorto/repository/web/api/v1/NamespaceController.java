@@ -17,13 +17,14 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
-import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.CollaboratorRequest;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,9 @@ public class NamespaceController {
   
   @Autowired
   private IUserAccountService accountService;
+  
+  @Autowired
+  private IOAuthProviderRegistry providerRegistry;
   
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -82,7 +86,7 @@ public class NamespaceController {
       @ApiParam(value = "The collaborator you want to add to this namespace.", required = true) 
       final @PathVariable String userId,
       @RequestBody @ApiParam(value = "Collaborator information", required = true) 
-      final Collaborator collaboratorInfo,
+      final CollaboratorRequest collaboratorInfo,
       Principal user) {
     
     collaboratorInfo.setUserId(userId);
@@ -94,37 +98,31 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     
-    Optional<AuthenticationProvider> authProvider = getProvider(collaboratorInfo);
+    Optional<IOAuthProvider> authProvider = providerRegistry.getById(collaboratorInfo.getProviderId());
     if (!authProvider.isPresent()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
-    if (authProvider.get() != AuthenticationProvider.BOSCH_IOT_SUITE_AUTH && 
-        !accountService.exists(collaboratorInfo.getUserId())) {
+    if (!collaboratorInfo.isTechnicalUser() && !accountService.exists(collaboratorInfo.getUserId())) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
-    if (authProvider.get() == AuthenticationProvider.BOSCH_IOT_SUITE_AUTH &&
-        Strings.nullToEmpty(collaboratorInfo.getSubject()).trim().isEmpty()) {
+    if (collaboratorInfo.isTechnicalUser() && !authProvider.get().supportTechnicalUser()) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    
+    if (collaboratorInfo.isTechnicalUser() && Strings.nullToEmpty(collaboratorInfo.getSubject()).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
     if (collaboratorInfo.getRoles().isEmpty()) {
       accountService.removeUserFromTenant(tenant.getTenantId(), collaboratorInfo.getUserId());
     } else {
-      accountService.create(collaboratorInfo.getUserId(), authProvider.get().name(), collaboratorInfo.getSubject(), 
+      accountService.create(collaboratorInfo.getUserId(), authProvider.get().getId(), collaboratorInfo.getSubject(), 
           tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
     }
     
     return new ResponseEntity<>(HttpStatus.OK);
-  }
-  
-  private Optional<AuthenticationProvider> getProvider(Collaborator user) {
-    try {
-      return Optional.of(AuthenticationProvider.valueOf(user.getProviderId()));
-    } catch (IllegalArgumentException e) {
-      return Optional.empty();
-    }
   }
 
   private Role[] toRoles(Collection<String> rolesStr) {

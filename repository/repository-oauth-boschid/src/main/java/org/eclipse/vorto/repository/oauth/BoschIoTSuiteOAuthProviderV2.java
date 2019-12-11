@@ -63,6 +63,11 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   public String getId() {
     return "BOSCH-IOT-SUITE-AUTH";
   }
+  
+  @Override
+  public boolean supportTechnicalUser() {
+    return true;
+  }
 
   @Override
   public boolean canHandle(Authentication auth) {

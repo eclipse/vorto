@@ -38,7 +38,6 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -264,11 +263,11 @@ public abstract class AbstractIntegrationTest {
   protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-            .thenReturn(User.create(getCallerId(), AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.USER));
+            .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
     workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
-        .thenReturn(User.create("admin", AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.SYS_ADMIN));
+        .thenReturn(User.create("admin", "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN));
     return workflow.doAction(model.getId(), createUserContext("admin", "playground"),
         SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
@@ -326,7 +325,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   private TenantUser createTenantUser(String name, Set<UserRole> roles) {
-    User _user = User.create(name, AuthenticationProvider.GITHUB.name(), null);
+    User _user = User.create(name, "GITHUB", null);
     TenantUser user = new TenantUser();
     user.setRoles(roles);
     _user.addTenantUser(user);

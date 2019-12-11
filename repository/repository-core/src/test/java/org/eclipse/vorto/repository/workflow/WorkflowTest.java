@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -176,14 +175,14 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-            .thenReturn(User.create(getCallerId(), AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.USER));
+            .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
 
     model = workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
 
     when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
-        .thenReturn(User.create("admin", AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.SYS_ADMIN));
+        .thenReturn(User.create("admin", "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN));
 
     model = workflow.doAction(model.getId(), createUserContext("admin", "playground"),
         SimpleWorkflowModel.ACTION_REJECT.getName());
@@ -210,7 +209,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-            .thenReturn(User.create(getCallerId(), AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.USER));
+            .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
     fbModel = workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), fbModel.getState());
@@ -226,7 +225,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
     when(userRepository
         .findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-            .thenReturn(User.create(getCallerId(), AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.USER));
+            .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
     workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(typeModel.getId()).getById(typeModel.getId()).getState());
@@ -244,7 +243,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-            .thenReturn(User.create(getCallerId(), AuthenticationProvider.GITHUB.name(), null, new Tenant("playground"), Role.USER));
+            .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
     workflow.doAction(typeModel.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
 
