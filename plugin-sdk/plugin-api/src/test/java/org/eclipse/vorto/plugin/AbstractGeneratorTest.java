@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.core.api.model.BuilderUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
@@ -129,5 +130,9 @@ public class AbstractGeneratorTest {
 		}
 		return false;
 	}
-
+	
+	public static String normalizeEOL(String text) {
+	    return StringUtils.deleteWhitespace(StringUtils.normalizeSpace(text.replaceAll("\\\\r\\\\n", "\\\\n")));
+	}
+	
 }
