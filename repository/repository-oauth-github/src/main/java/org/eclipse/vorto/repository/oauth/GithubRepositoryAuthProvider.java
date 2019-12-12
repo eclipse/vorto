@@ -107,10 +107,5 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
   public String getLabel() {
     return "Github";
   }
-
-  @Override
-  public boolean supportTechnicalUser() {
-    return false;
-  }
 }
 

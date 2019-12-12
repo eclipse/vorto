@@ -65,29 +65,29 @@ public class ApplicationConfig {
         Optional.of(Sets.newHashSet("com.mycompany", "com.ipso", "examples.mappings", "com.test")), 
         Optional.of(GITHUB), Optional.of("DB"), createUserContext(USER_ADMIN, "playground"));
     
-    accountService.create(USER_ADMIN, GITHUB, null, 
+    accountService.createOrUpdate(USER_ADMIN, GITHUB, null, 
         "playground", USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
-    accountService.create(USER_STANDARD, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD2, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD2, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD3, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD3, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD4, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD4, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD5, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD5, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD6, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD6, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD7, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD7, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_STANDARD8, GITHUB, null,
+    accountService.createOrUpdate(USER_STANDARD8, GITHUB, null,
         "playground", USER);
-    accountService.create(USER_CREATOR, GITHUB, null,
+    accountService.createOrUpdate(USER_CREATOR, GITHUB, null,
         "playground", USER, MODEL_CREATOR);
-    accountService.create(USER_CREATOR2, GITHUB, null,
+    accountService.createOrUpdate(USER_CREATOR2, GITHUB, null,
         "playground", USER, MODEL_CREATOR);
-    accountService.create(USER_CREATOR3, GITHUB, null,
+    accountService.createOrUpdate(USER_CREATOR3, GITHUB, null,
         "playground", USER, MODEL_CREATOR);
     
   }

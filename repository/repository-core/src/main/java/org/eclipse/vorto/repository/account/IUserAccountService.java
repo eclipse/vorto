@@ -76,22 +76,50 @@ public interface IUserAccountService {
   Collection<Tenant> getTenantsOfUser(String userId);
   
   /**
-   * creates a new account in the Vorto Repository, under the Playground tenant
+   * Creates a new NON-TECHNICAL user in the Vorto repository but without membership in any namespace
    * 
    * @param username
-   * @return createdUser
+   * @param provider
+   * @param subject
+   * @return
    */
   User create(String username, String provider, String subject);
   
   /**
-   * Creates a new user with given roles and authentication provider.
+   * Creates a new user in the Vorto repository but without membership in any namespace
+   * 
+   * @param username
+   * @param provider
+   * @param subject
+   * @param isTechnicalUser
+   * @return
+   */
+  User create(String username, String provider, String subject, boolean isTechnicalUser);
+  
+  // TODO: this number of parameters is getting unwieldy. Refactor.
+  /**
+   * Creates a new NON-TECHNICAL user in the Vorto repository, and adds him as a collaborator to @tenantId with the roles @userRoles
+   * 
    * @param username
    * @param tenantId
    * @param provider
    * @param userRoles
    * @return
    */
-  public User create(String username, String provider, String subject, String tenantId, Role... userRoles);
+  User createOrUpdate(String username, String provider, String subject, String tenantId, Role... userRoles);
+  
+  /**
+   * Creates a new user in the Vorto repository, and adds him as a collaborator to @tenantId with the roles @userRoles
+   * 
+   * @param username
+   * @param provider
+   * @param subject
+   * @param isTechnicalUser
+   * @param tenantId
+   * @param userRoles
+   * @return
+   */
+  User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId, Role... userRoles);
   
   /**
    * 

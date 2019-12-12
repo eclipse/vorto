@@ -18,13 +18,13 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 
 public class Collaborator {
   private String userId;
-  private String providerId;  
+  private String authenticationProviderId;  
   private String subject;
   private Collection<String> roles;
   
   public static Collaborator fromUser(TenantUser tenantUser) {
     return new Collaborator(tenantUser.getUser().getUsername(), 
-        tenantUser.getUser().getAuthenticationProvider(),
+        tenantUser.getUser().getAuthenticationProviderId(),
         tenantUser.getUser().getSubject(),
         tenantUser.getRoles().stream().map(role -> role.getRole().name())
           .collect(Collectors.toList()));
@@ -36,7 +36,7 @@ public class Collaborator {
   
   public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
     this.userId = userId;
-    this.providerId = providerId;
+    this.authenticationProviderId = providerId;
     this.roles = roles;
     this.subject = subject;
   }
@@ -49,12 +49,12 @@ public class Collaborator {
     this.userId = userId;
   }
 
-  public String getProviderId() {
-    return providerId;
+  public String getAuthenticationProviderId() {
+    return authenticationProviderId;
   }
 
-  public void setProviderId(String providerId) {
-    this.providerId = providerId;
+  public void setAuthenticationProviderId(String providerId) {
+    this.authenticationProviderId = providerId;
   }
 
   public Collection<String> getRoles() {

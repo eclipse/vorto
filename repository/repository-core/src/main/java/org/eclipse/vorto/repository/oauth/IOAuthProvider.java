@@ -76,12 +76,6 @@ public interface IOAuthProvider {
   boolean supportsWebflow();
   
   /**
-   * Indicates if this provider supports a technical user
-   * @return
-   */
-  boolean supportTechnicalUser();
-  
-  /**
    * Returns a webflow configuration for the oauth provider
    * @return
    */

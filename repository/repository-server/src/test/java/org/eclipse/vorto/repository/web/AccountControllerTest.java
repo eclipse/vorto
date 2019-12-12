@@ -46,7 +46,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void getUser() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
         .andExpect(status().isOk());
@@ -58,7 +58,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void upgradeUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
         .andExpect(status().isCreated());
@@ -69,7 +69,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void updateAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer
         .perform(put("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
@@ -83,7 +83,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
@@ -103,7 +103,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserAccountSysAdmin() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.SYS_ADMIN);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.SYS_ADMIN);
     }
 
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
@@ -120,7 +120,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserFromTenant() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, GITHUB, null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
     this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))

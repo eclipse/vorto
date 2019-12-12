@@ -80,7 +80,7 @@ public class NamespaceController {
   
   @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:[a-zA-Z0-9_\\.]+}/collaborators/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<Void> updateCollaborator(
+  public ResponseEntity<String> updateCollaborator(
       @ApiParam(value = "The namespace you want to add a collaborator to.", required = true) 
       final @PathVariable String namespace,
       @ApiParam(value = "The collaborator you want to add to this namespace.", required = true) 
@@ -95,31 +95,27 @@ public class NamespaceController {
         .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
     
     if (!tenant.hasTenantAdmin(user.getName())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>("User is not admin", HttpStatus.FORBIDDEN);
     }
     
-    Optional<IOAuthProvider> authProvider = providerRegistry.getById(collaboratorInfo.getProviderId());
+    Optional<IOAuthProvider> authProvider = providerRegistry.getById(collaboratorInfo.getAuthenticationProviderId());
     if (!authProvider.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>("AuthenticationProviderId is not found.", HttpStatus.BAD_REQUEST);
     }
     
     if (!collaboratorInfo.isTechnicalUser() && !accountService.exists(collaboratorInfo.getUserId())) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    
-    if (collaboratorInfo.isTechnicalUser() && !authProvider.get().supportTechnicalUser()) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>("Account doesn't exist.", HttpStatus.BAD_REQUEST);
     }
     
     if (collaboratorInfo.isTechnicalUser() && Strings.nullToEmpty(collaboratorInfo.getSubject()).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>("Subject is empty.", HttpStatus.BAD_REQUEST);
     }
     
     if (collaboratorInfo.getRoles().isEmpty()) {
       accountService.removeUserFromTenant(tenant.getTenantId(), collaboratorInfo.getUserId());
     } else {
-      accountService.create(collaboratorInfo.getUserId(), authProvider.get().getId(), collaboratorInfo.getSubject(), 
-          tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
+      accountService.createOrUpdate(collaboratorInfo.getUserId(), authProvider.get().getId(), collaboratorInfo.getSubject(), 
+          collaboratorInfo.isTechnicalUser(), tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
     }
     
     return new ResponseEntity<>(HttpStatus.OK);
