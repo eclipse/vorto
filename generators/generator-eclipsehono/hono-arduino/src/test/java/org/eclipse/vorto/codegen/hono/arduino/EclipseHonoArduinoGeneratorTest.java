@@ -22,6 +22,7 @@ import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
 import org.eclipse.vorto.plugin.generator.InvocationContext;
+import org.eclipse.vorto.plugin.generator.TestUtils;
 import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.junit.Test;
 
@@ -51,8 +52,8 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     
     
 
-    assertEquals(normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
-        normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
+    assertEquals(TestUtils.normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
+        TestUtils.normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
 
   }
 
@@ -72,8 +73,8 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     File defaultFile = new File(getClass().getClassLoader()
         .getResource("defaultFileFormat/ConfigPropertiesFunctionBlock.cpp").toURI());
 
-    assertEquals(normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
-        normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
+    assertEquals(TestUtils.normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
+        TestUtils.normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
 
   }
 
@@ -93,8 +94,8 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     File defaultFile = new File(
         getClass().getClassLoader().getResource("defaultFileFormat/UnitEntity.cpp").toURI());
 
-    assertEquals(normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
-        normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
+    assertEquals(TestUtils.normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
+        TestUtils.normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
 
   }
 
@@ -152,8 +153,8 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     File defaultFile = new File(
         getClass().getClassLoader().getResource("defaultFileFormat/MySensorApp.ino").toURI());
 
-    assertEquals(normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
-        normalizeEOL(new String(generatedFile.getContent(), "utf-8")));
+    assertEquals(TestUtils.normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
+        TestUtils.normalizeEOL(new String(generatedFile.getContent(), "utf-8")));
 
   }
 
@@ -177,8 +178,8 @@ public class EclipseHonoArduinoGeneratorTest extends AbstractGeneratorTest {
     File defaultFile =
         new File(getClass().getClassLoader().getResource("defaultFileFormat/MySensor.cpp").toURI());
 
-    assertEquals(normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
-        normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
+    assertEquals(TestUtils.normalizeEOL(IOUtils.toString(FileUtils.openInputStream(defaultFile))),
+        TestUtils.normalizeEOL(new String(generatedfile.getContent(), "utf-8")));
 
   }
 
