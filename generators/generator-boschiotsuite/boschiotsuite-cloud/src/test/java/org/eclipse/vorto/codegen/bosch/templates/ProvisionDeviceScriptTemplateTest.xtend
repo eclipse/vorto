@@ -12,12 +12,12 @@
  */
 package org.eclipse.vorto.codegen.bosch.templates
 
-import org.apache.commons.lang3.StringUtils
 import org.eclipse.vorto.core.api.model.BuilderUtils
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
 import org.eclipse.vorto.plugin.generator.InvocationContext
+import org.eclipse.vorto.plugin.generator.TestUtils
 import org.junit.Assert
 import org.junit.Test
 
@@ -36,8 +36,8 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(cleaned(generated));
-		Assert.assertEquals(cleaned(expectedTemplate1), cleaned(generated));
+		System.out.println(TestUtils.normalizeEOL(generated));
+		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate1), TestUtils.normalizeEOL(generated));
 	}
 
 	def String getExpectedTemplate1() {
@@ -60,13 +60,10 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "outdoorTemperature", null, false)
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(cleaned(generated));
-		Assert.assertEquals(cleaned(expectedTemplate2), cleaned(generated));
+		System.out.println(TestUtils.normalizeEOL(generated));
+		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate2), TestUtils.normalizeEOL(generated));
 	}
 
-	def cleaned(String text) {
-		return StringUtils.deleteWhitespace(StringUtils.normalizeSpace(text.replaceAll("\\\\r\\\\n", "\\\\n")))
-	}
 
 	def String getExpectedTemplate2() {
 		'''
@@ -96,7 +93,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(cleaned(expectedTemplate3), cleaned(generated));
+		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate3), TestUtils.normalizeEOL(generated));
 
 	}
 
@@ -172,7 +169,7 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
 		System.out.println(generated);
-		Assert.assertEquals(cleaned(expectedTemplate4), cleaned(generated));
+		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate4), TestUtils.normalizeEOL(generated));
 
 	}
 
