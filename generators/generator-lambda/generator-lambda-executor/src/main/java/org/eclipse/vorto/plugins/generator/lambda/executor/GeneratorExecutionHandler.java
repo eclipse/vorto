@@ -12,6 +12,9 @@
  */
 package org.eclipse.vorto.plugins.generator.lambda.executor;
 
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,9 +38,6 @@ import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.plugin.utils.ApiGatewayRequest;
 import org.eclipse.vorto.plugin.utils.ApiGatewayResponse;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GeneratorExecutionHandler implements RequestStreamHandler {
 
@@ -104,7 +104,7 @@ public class GeneratorExecutionHandler implements RequestStreamHandler {
   private ApiGatewayResponse createResponse(IGenerationResult generatorResult) {
     return ApiGatewayResponse.builder().addHeader("Content-Type", "application/octet-stream")
         .addHeader("Content-Disposition",
-            "attachment; filename=\"" + generatorResult.getFileName() + "\"")
+            "attachment; filename=" + generatorResult.getFileName())
         .setBinaryBody(generatorResult.getContent()).build();
   }
 
