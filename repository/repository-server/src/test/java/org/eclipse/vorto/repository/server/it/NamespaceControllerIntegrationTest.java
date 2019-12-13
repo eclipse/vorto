@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collection;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
-import org.eclipse.vorto.repository.web.api.v1.dto.CollaboratorRequest;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +55,12 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaborator() throws Exception {
-    CollaboratorRequest collaborator = new CollaboratorRequest("userstandard2", GITHUB, null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     updateCollaborator("com.mycompany", collaborator);
     checkCollaboratorRoles("com.mycompany", "userstandard2", null, "USER", "MODEL_CREATOR");
     
-    collaborator = new CollaboratorRequest("userstandard2", GITHUB, null, 
+    collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER"));
     updateCollaborator("com.mycompany", collaborator);
     checkCollaboratorRoles("com.mycompany", "userstandard2", null, "USER");
@@ -89,7 +88,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
       .andExpect(status().isOk());
   }
 
-  private void updateCollaborator(String namespace, CollaboratorRequest collaborator) throws Exception {
+  private void updateCollaborator(String namespace, Collaborator collaborator) throws Exception {
     repositoryServer.perform(
        put("/api/v1/namespaces/" + namespace + "/collaborators/" + collaborator.getUserId())
          .content(new Gson().toJson(collaborator))
@@ -102,16 +101,17 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   public void updateCollaboratorAddTechnicalUser() throws Exception {
     assertFalse(accountService.exists("my-technical-user"));
     
-    CollaboratorRequest collaborator = new CollaboratorRequest("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     collaborator.setTechnicalUser(true);
     updateCollaborator("com.mycompany", collaborator);
     
     assertTrue(accountService.exists("my-technical-user"));
+    assertTrue(accountService.getUser("my-technical-user").isTechnicalUser());
     
     checkCollaboratorRoles("com.mycompany", "my-technical-user", "ProjectX", "USER", "MODEL_CREATOR");
     
-    collaborator = new CollaboratorRequest("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
+    collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER"));
     updateCollaborator("com.mycompany", collaborator);
     
@@ -120,7 +120,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorNonAdmin() throws Exception {
-    CollaboratorRequest collaborator = new CollaboratorRequest("userstandard2", GITHUB, null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
        put("/api/v1/namespaces/com.mycompany/collaborators/userstandard2")
@@ -144,7 +144,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorAddTechnicalUserNoSubject() throws Exception {
-    CollaboratorRequest collaborator = new CollaboratorRequest("my-technical-user", BOSCH_IOT_SUITE_AUTH, null, 
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     collaborator.setTechnicalUser(true);
     repositoryServer.perform(

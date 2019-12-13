@@ -24,7 +24,7 @@ import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
-import org.eclipse.vorto.repository.web.api.v1.dto.CollaboratorRequest;
+import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,7 +86,7 @@ public class NamespaceController {
       @ApiParam(value = "The collaborator you want to add to this namespace.", required = true) 
       final @PathVariable String userId,
       @RequestBody @ApiParam(value = "Collaborator information", required = true) 
-      final CollaboratorRequest collaboratorInfo,
+      final Collaborator collaboratorInfo,
       Principal user) {
     
     collaboratorInfo.setUserId(userId);
