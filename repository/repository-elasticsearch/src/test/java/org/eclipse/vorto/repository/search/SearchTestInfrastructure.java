@@ -250,6 +250,7 @@ public final class SearchTestInfrastructure {
         //.withIndex("vorto")
         .withSetting("discovery.type", "single-node")
         .withJavaHome(JavaHomeOption.inheritTestSuite())
+        .withInResourceLocation("elasticsearch-6.7.2.zip")
         .build();
     elasticSearch.start();
 
