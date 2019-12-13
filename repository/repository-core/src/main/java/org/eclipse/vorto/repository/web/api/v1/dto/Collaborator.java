@@ -18,27 +18,32 @@ import org.eclipse.vorto.repository.domain.TenantUser;
 
 public class Collaborator {
   private String userId;
-  private String providerId;
+  private String authenticationProviderId;  
   private String subject;
+  private boolean isTechnicalUser;
   private Collection<String> roles;
   
   public static Collaborator fromUser(TenantUser tenantUser) {
     return new Collaborator(tenantUser.getUser().getUsername(), 
-        tenantUser.getUser().getAuthenticationProvider(),
+        tenantUser.getUser().getAuthenticationProviderId(),
         tenantUser.getUser().getSubject(),
+        tenantUser.getUser().isTechnicalUser(),
         tenantUser.getRoles().stream().map(role -> role.getRole().name())
           .collect(Collectors.toList()));
   }
   
-  public Collaborator() {
-    
-  }
+  public Collaborator() {}
   
   public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
+    this(userId, providerId, subject, false, roles);
+  }
+  
+  public Collaborator(String userId, String providerId, String subject, boolean isTechnicalUser, Collection<String> roles) {
     this.userId = userId;
-    this.providerId = providerId;
+    this.authenticationProviderId = providerId;
     this.roles = roles;
     this.subject = subject;
+    this.isTechnicalUser = isTechnicalUser;
   }
 
   public String getUserId() {
@@ -49,12 +54,12 @@ public class Collaborator {
     this.userId = userId;
   }
 
-  public String getProviderId() {
-    return providerId;
+  public String getAuthenticationProviderId() {
+    return authenticationProviderId;
   }
 
-  public void setProviderId(String providerId) {
-    this.providerId = providerId;
+  public void setAuthenticationProviderId(String providerId) {
+    this.authenticationProviderId = providerId;
   }
 
   public Collection<String> getRoles() {
@@ -71,5 +76,22 @@ public class Collaborator {
 
   public void setSubject(String subject) {
     this.subject = subject;
+  }
+  
+  public boolean isTechnicalUser() {
+    return isTechnicalUser;
+  }
+
+  public void setTechnicalUser(boolean isTechnicalUser) {
+    this.isTechnicalUser = isTechnicalUser;
+  }
+  
+  // Jackson mapping oddity
+  public boolean getIsTechnicalUser() {
+    return isTechnicalUser;
+  }
+  
+  public void setIsTechnicalUser(boolean isTechnicalUser) {
+    this.isTechnicalUser = isTechnicalUser;
   }
 }

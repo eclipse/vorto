@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.Collection;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.junit.Test;
@@ -30,6 +29,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
 public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest {
+
+  private static final String BOSCH_IOT_SUITE_AUTH = "BOSCH-IOT-SUITE-AUTH";
+
+  private static final String GITHUB = "GITHUB";
 
   private IUserAccountService accountService;
   
@@ -52,12 +55,12 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaborator() throws Exception {
-    Collaborator collaborator = new Collaborator("userstandard2", AuthenticationProvider.GITHUB.name(), null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     updateCollaborator("com.mycompany", collaborator);
     checkCollaboratorRoles("com.mycompany", "userstandard2", null, "USER", "MODEL_CREATOR");
     
-    collaborator = new Collaborator("userstandard2", AuthenticationProvider.GITHUB.name(), null, 
+    collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER"));
     updateCollaborator("com.mycompany", collaborator);
     checkCollaboratorRoles("com.mycompany", "userstandard2", null, "USER");
@@ -98,15 +101,17 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   public void updateCollaboratorAddTechnicalUser() throws Exception {
     assertFalse(accountService.exists("my-technical-user"));
     
-    Collaborator collaborator = new Collaborator("my-technical-user", AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), "ProjectX", 
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
+    collaborator.setTechnicalUser(true);
     updateCollaborator("com.mycompany", collaborator);
     
     assertTrue(accountService.exists("my-technical-user"));
+    assertTrue(accountService.getUser("my-technical-user").isTechnicalUser());
     
     checkCollaboratorRoles("com.mycompany", "my-technical-user", "ProjectX", "USER", "MODEL_CREATOR");
     
-    collaborator = new Collaborator("my-technical-user", AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), "ProjectX", 
+    collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER"));
     updateCollaborator("com.mycompany", collaborator);
     
@@ -115,7 +120,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorNonAdmin() throws Exception {
-    Collaborator collaborator = new Collaborator("userstandard2", AuthenticationProvider.GITHUB.name(), null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
        put("/api/v1/namespaces/com.mycompany/collaborators/userstandard2")
@@ -139,8 +144,9 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorAddTechnicalUserNoSubject() throws Exception {
-    Collaborator collaborator = new Collaborator("my-technical-user", AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), null, 
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
+    collaborator.setTechnicalUser(true);
     repositoryServer.perform(
        put("/api/v1/namespaces/com.mycompany/collaborators/my-technical-user")
          .content(new Gson().toJson(collaborator))
@@ -151,7 +157,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorUserDoesntExist() throws Exception {
-    Collaborator collaborator = new Collaborator("unknownUser", AuthenticationProvider.GITHUB.name(), null, 
+    Collaborator collaborator = new Collaborator("unknownUser", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
        put("/api/v1/namespaces/com.mycompany/collaborators/unknownUser")
@@ -163,7 +169,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   
   @Test
   public void updateCollaboratorTenantDoesntExist() throws Exception {
-    Collaborator collaborator = new Collaborator("userstandard2", AuthenticationProvider.GITHUB.name(), null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
        put("/api/v1/namespaces/com.unknowntenant/collaborators/userstandard2")

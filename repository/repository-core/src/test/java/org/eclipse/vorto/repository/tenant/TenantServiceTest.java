@@ -23,7 +23,6 @@ import org.assertj.core.util.Lists;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.AuthorizationProvider;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
@@ -42,6 +41,7 @@ import wiremock.com.google.common.collect.Sets;
 
 public class TenantServiceTest {
 
+  private static final String GITHUB = "GITHUB";
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
@@ -128,7 +128,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -148,7 +148,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -162,7 +162,6 @@ public class TenantServiceTest {
 
     assertEquals(argCaptor.getValue().getTenantId(), "myTenantId");
     assertEquals(argCaptor.getValue().getDefaultNamespace(), "vorto.private.test");
-    assertEquals(argCaptor.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor.getValue().getNamespaces().size(), 1);
     assertEquals(argCaptor.getValue().getNamespaces().toArray(new Namespace[1])[0].getName(),
@@ -176,7 +175,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -191,7 +190,6 @@ public class TenantServiceTest {
 
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
     assertEquals(argCaptor2.getValue().getDefaultNamespace(), "vorto.private.test");
-    assertEquals(argCaptor2.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 1);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
@@ -205,7 +203,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -222,7 +220,6 @@ public class TenantServiceTest {
 
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
     assertEquals(argCaptor2.getValue().getDefaultNamespace(), "vorto.private.test");
-    assertEquals(argCaptor2.getValue().getAuthenticationProvider(), AuthenticationProvider.GITHUB);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 3);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()
@@ -242,7 +239,7 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findByName("com.test")).thenReturn(null);
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin"))
-        .thenReturn(User.create("admin", AuthenticationProvider.GITHUB.name(), null, myTenantId, Role.SYS_ADMIN));
+        .thenReturn(User.create("admin", GITHUB, null, myTenantId, Role.SYS_ADMIN));
     
     
 
@@ -272,7 +269,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -292,16 +289,15 @@ public class TenantServiceTest {
   public void testUpdateTenant() {
     Tenant myTenantId =
         Tenant.newTenant("myTenantId", "com.test", Sets.newHashSet("com.test", "com.test1"));
-    myTenantId.setAuthenticationProvider(AuthenticationProvider.BOSCH);
     myTenantId.setAuthorizationProvider(AuthorizationProvider.DB);
     Mockito.when(tenantRepo.findByTenantId("myTenantId")).thenReturn(myTenantId);
     Mockito.when(nsRepo.findAll())
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        AuthenticationProvider.GITHUB.name(), null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -317,8 +313,6 @@ public class TenantServiceTest {
 
     assertEquals(argCaptor2.getValue().getTenantId(), "myTenantId");
     assertEquals(argCaptor2.getValue().getDefaultNamespace(), "com.test1");
-    assertEquals(argCaptor2.getValue().getAuthenticationProvider(),
-        AuthenticationProvider.BOSCH);
     assertEquals(argCaptor2.getValue().getAuthorizationProvider(), AuthorizationProvider.DB);
     assertEquals(argCaptor2.getValue().getNamespaces().size(), 3);
     assertTrue(argCaptor2.getValue().getNamespaces().stream()

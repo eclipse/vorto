@@ -18,7 +18,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -42,12 +41,6 @@ public class RepositoryInitializer {
   @Value("${server.admin:#{null}}")
   private String[] admins;
 
-  @Value("${oauth2.verification.eidp.technicalUsers:}")
-  private String[] ciamTechnicalUsers;
-
-  @Value("${oauth2.verification.keycloak.technicalUsers:}")
-  private String[] keycloakTechnicalUsers;
-
   @Autowired
   private IUserAccountService userAccountService;
 
@@ -70,9 +63,6 @@ public class RepositoryInitializer {
     predefinedTenants.getPredefinedTenants().forEach(this::createTenantIfNotExisting);
 
     Stream.of(admins).forEach(this::addSysAdRole);
-
-    Stream.concat(Stream.of(ciamTechnicalUsers), Stream.of(keycloakTechnicalUsers))
-        .forEach(this::createUser);
     
     tenantService.getTenants().forEach(this::createWorkspaceIfNotExisting);
   }
@@ -80,7 +70,7 @@ public class RepositoryInitializer {
   private void createAdminUser(String username) {
     if (!userAccountService.exists(username)) {
       logger.info("Creating admin user: {}", username);
-      User user = User.create(username, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), null);
+      User user = User.create(username, null, null);
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
       userAccountService.saveUser(user);
@@ -143,12 +133,4 @@ public class RepositoryInitializer {
       }
     };
   }
-
-  private void createUser(String user) {
-    if (!userAccountService.exists(user)) {
-      logger.info("Creating technical user: {}", user);
-      userAccountService.create(user, AuthenticationProvider.BOSCH_IOT_SUITE_AUTH.name(), null);
-    }
-  }
-
 }
