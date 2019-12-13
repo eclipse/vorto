@@ -10,6 +10,10 @@
   <artifactId>repository-elasticsearch</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <elasticsearch.version>6.7.2</elasticsearch.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.eclipse.vorto</groupId>
@@ -20,13 +24,13 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>6.7.2</version>
+      <version>${elasticsearch.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>elasticsearch-rest-high-level-client</artifactId>
-      <version>6.7.2</version>
+      <version>${elasticsearch.version}</version>
     </dependency>
 
     <dependency>
@@ -50,7 +54,6 @@
       <version>2.10.0</version>
       <scope>test</scope>
     </dependency>
-
     <!--
     Required by Allegro above, due to some signature usage incompatible with 2.2 (currently in
     use in the parent.
@@ -92,14 +95,34 @@
           </execution>
         </executions>
       </plugin>
-	  <!-- TODO : Skipping while test for this hasn't been fixed. -->
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-surefire-plugin</artifactId>
-		  <configuration>
-			<skipTests>true</skipTests>
-		  </configuration>
-	  </plugin>
+      <!-- Use the dependency plugin to download the embedded elasticsearch artifact via maven-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>copy-elasticsearchdistr</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.elasticsearch.distribution.zip</groupId>
+              <artifactId>elasticsearch-oss</artifactId>
+              <version>${elasticsearch.version}</version>
+              <type>zip</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+              <destFileName>elasticsearch-${elasticsearch.version}.zip</destFileName>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
