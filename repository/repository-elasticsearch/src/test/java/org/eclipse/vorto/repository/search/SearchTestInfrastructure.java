@@ -12,9 +12,6 @@
 package org.eclipse.vorto.repository.search;
 
 import static org.mockito.Mockito.when;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -37,7 +34,6 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -69,6 +65,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
@@ -236,7 +234,7 @@ public final class SearchTestInfrastructure {
   }
 
   private TenantUser createTenantUser(String name, Set<UserRole> roles) {
-    User _user = User.create(name, AuthenticationProvider.GITHUB.name(), null);
+    User _user = User.create(name, "GITHUB", null);
     TenantUser user = new TenantUser();
     user.setRoles(roles);
     _user.addTenantUser(user);

@@ -21,7 +21,6 @@ import org.eclipse.vorto.repository.domain.User;
 public class TenantDto {
   private String tenantId;
   private Collection<String> admins;
-  private String authenticationProvider;
   private String authorizationProvider;
   private String defaultNamespace;
   private Collection<String> namespaces;
@@ -31,7 +30,6 @@ public class TenantDto {
     dto.setTenantId(tenant.getTenantId());
     dto.setAdmins(tenant.getTenantAdmins().stream().map(User::getUsername)
         .collect(Collectors.toList()));
-    dto.setAuthenticationProvider(tenant.getAuthenticationProvider().toString());
     dto.setAuthorizationProvider(tenant.getAuthorizationProvider().toString());
     dto.setDefaultNamespace(tenant.getDefaultNamespace());
     dto.setNamespaces(
@@ -53,14 +51,6 @@ public class TenantDto {
 
   public void setAdmins(Collection<String> admins) {
     this.admins = admins;
-  }
-
-  public String getAuthenticationProvider() {
-    return authenticationProvider;
-  }
-
-  public void setAuthenticationProvider(String authenticationProvider) {
-    this.authenticationProvider = authenticationProvider;
   }
 
   public String getAuthorizationProvider() {

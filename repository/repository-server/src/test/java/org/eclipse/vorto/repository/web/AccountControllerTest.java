@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.junit.Test;
@@ -27,6 +26,8 @@ import org.springframework.context.ApplicationContext;
 
 public class AccountControllerTest extends AbstractIntegrationTest {
 
+
+  private static final String GITHUB = "GITHUB";
 
   private IUserAccountService accountService;
 
@@ -45,7 +46,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void getUser() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
         .andExpect(status().isOk());
@@ -57,7 +58,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void upgradeUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
         .andExpect(status().isCreated());
@@ -68,7 +69,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void updateAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer
         .perform(put("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
@@ -82,7 +83,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserAccount() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
@@ -102,7 +103,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserAccountSysAdmin() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.SYS_ADMIN);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.SYS_ADMIN);
     }
 
     this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
@@ -119,7 +120,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
   @Test
   public void deleteUserFromTenant() throws Exception {
     if (accountService.getUser(testUser) == null) {
-      accountService.create(testUser, AuthenticationProvider.GITHUB.name(), null, "playground", Role.USER);
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
     this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))

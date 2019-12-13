@@ -48,11 +48,14 @@ public class User {
   @NaturalId
   private String username;
   
-  @Column(name = "authenticationProvider")
-  private String authenticationProvider;
+  @Column(name = "authenticationProviderId")
+  private String authenticationProviderId;
 
   @Column(name = "subject")
   private String subject;
+  
+  @Column(name = "isTechnicalUser")
+  private boolean isTechnicalUser;
   
   @Column(nullable = false)
   private Timestamp dateCreated;
@@ -69,10 +72,15 @@ public class User {
   private String emailAddress;
 
   public static User create(String username, String provider, String subject) {
+    return create(username, provider, subject, false);
+  }
+  
+  public static User create(String username, String provider, String subject, boolean isTechnicalUser) {
     User user = new User();
     user.setUsername(username);
-    user.setAuthenticationProvider(provider);
+    user.setAuthenticationProviderId(provider);
     user.setSubject(subject);
+    user.setTechnicalUser(isTechnicalUser);
     user.setDateCreated(new Timestamp(System.currentTimeMillis()));
     user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
     user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
@@ -81,7 +89,11 @@ public class User {
   }
 
   public static User create(String username, String provider, String subject, Tenant tenant, Role... roles) {
-    User user = create(username, provider, subject);
+    return create(username, provider, subject, false, tenant, roles);
+  }
+  
+  public static User create(String username, String provider, String subject, boolean isTechnicalUser, Tenant tenant, Role... roles) {
+    User user = create(username, provider, subject, isTechnicalUser);
 
     TenantUser tenantUser = new TenantUser();
     tenantUser.addRoles(roles);
@@ -211,12 +223,12 @@ public class User {
     this.username = username;
   }
   
-  public String getAuthenticationProvider() {
-    return authenticationProvider;
+  public String getAuthenticationProviderId() {
+    return authenticationProviderId;
   }
 
-  public void setAuthenticationProvider(String authenticationProvider) {
-    this.authenticationProvider = authenticationProvider;
+  public void setAuthenticationProviderId(String authenticationProvider) {
+    this.authenticationProviderId = authenticationProvider;
   }
 
   public Timestamp getDateCreated() {
@@ -261,6 +273,14 @@ public class User {
 
   public void setSubject(String subject) {
     this.subject = subject;
+  }
+
+  public boolean isTechnicalUser() {
+    return isTechnicalUser;
+  }
+
+  public void setTechnicalUser(boolean isTechnicalUser) {
+    this.isTechnicalUser = isTechnicalUser;
   }
 
   public Set<TenantUser> getTenantUsers() {

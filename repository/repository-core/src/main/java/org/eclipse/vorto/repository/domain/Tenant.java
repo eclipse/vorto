@@ -50,10 +50,6 @@ public class Tenant {
   @Column(name = "default_namespace")
   private String defaultNamespace;
 
-  @Column(name = "authentication_provider")
-  @Enumerated(EnumType.STRING)
-  private AuthenticationProvider authenticationProvider;
-
   @Column(name = "authorization_provider")
   @Enumerated(EnumType.STRING)
   private AuthorizationProvider authorizationProvider;
@@ -212,14 +208,6 @@ public class Tenant {
     this.defaultNamespace = defaultNamespace;
   }
 
-  public AuthenticationProvider getAuthenticationProvider() {
-    return authenticationProvider;
-  }
-
-  public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
-    this.authenticationProvider = authenticationProvider;
-  }
-
   public AuthorizationProvider getAuthorizationProvider() {
     return authorizationProvider;
   }
@@ -239,9 +227,8 @@ public class Tenant {
   @Override
   public String toString() {
     return "Tenant [id=" + id + ", tenantId=" + tenantId + ", defaultNamespace=" + defaultNamespace
-        + ", authenticationProvider=" + authenticationProvider + ", authorizationProvider="
-        + authorizationProvider + ", namespaces=" + toString(namespaces) + ", users=" + users
-        + "]";
+        + ", authorizationProvider=" + authorizationProvider + ", namespaces=" + toString(namespaces) + 
+        ", users=" + users + "]";
   }
 
   private String toString(Set<Namespace> namespaces) {

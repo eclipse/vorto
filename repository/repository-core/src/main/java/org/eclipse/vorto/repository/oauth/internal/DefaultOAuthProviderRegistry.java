@@ -46,7 +46,10 @@ public class DefaultOAuthProviderRegistry implements IOAuthProviderRegistry {
   @Override
   public IOAuthProvider getByAuthentication(Authentication auth) {
     return providers.stream().filter(authProvider -> authProvider.canHandle(auth)).findFirst().get();
-
+  }
+  
+  public Optional<IOAuthProvider> getById(String providerId) {
+    return providers.stream().filter(authProvider -> authProvider.getId().equals(providerId)).findFirst();
   }
 
   @Override

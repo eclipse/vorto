@@ -160,15 +160,26 @@ public class DefaultUserAccountService
 
   @Transactional
   public User create(String username, String provider, String subject) {
+    return create(username, provider, subject, false);
+  }
+  
+  @Transactional
+  public User create(String username, String provider, String subject, boolean isTechnicalUser) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
-    return userRepository.save(User.create(username, provider, subject));
+    return userRepository.save(User.create(username, provider, subject, isTechnicalUser));
   }
   
   @Transactional
-  public User create(String username, String provider, String subject, String tenantId, Role... userRoles)
+  public User createOrUpdate(String username, String provider, String subject, String tenantId, Role... userRoles)
+      throws RoleNotSupportedException {
+    return createOrUpdate(username, provider, subject, false, tenantId, userRoles);
+  }
+  
+  @Transactional
+  public User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId, Role... userRoles)
       throws RoleNotSupportedException {
     
     PreConditions.notNullOrEmpty(username, "username");
@@ -184,7 +195,7 @@ public class DefaultUserAccountService
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
     } else {
-      User user = create(username, provider, subject);
+      User user = create(username, provider, subject, isTechnicalUser);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
       user.addTenantUser(tenantUser);
       return userRepository.save(user);

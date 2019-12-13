@@ -2,6 +2,7 @@ package org.eclipse.vorto.repository.oauth;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Optional;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -26,6 +27,13 @@ public interface IOAuthProviderRegistry {
    * @return
    */
   IOAuthProvider getByAuthentication(Authentication authentication); 
+  
+  /**
+   * Gets a provider with the given id
+   * @param providerId
+   * @return
+   */
+  Optional<IOAuthProvider> getById(String providerId);
   
   /**
    * Lists all registered providers
