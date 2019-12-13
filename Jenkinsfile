@@ -35,11 +35,6 @@ pipeline {
       stage('Run compliance checks') {
         parallel {
           stage("SonarCloud"){
-            when {
-              allOf {
-                expression { env.CHANGE_ID != null }
-              }
-            }
             steps{
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
@@ -87,11 +82,6 @@ pipeline {
             }
           }
           stage("AVScan infomodelrepository"){
-            when {
-              allOf {
-                expression { env.CHANGE_ID != null }
-              }
-            }
             steps{
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
                 dir('avscan_infomodel') {
