@@ -41,6 +41,7 @@ import wiremock.com.google.common.collect.Sets;
 
 public class TenantServiceTest {
 
+  private static final String GITHUB = "GITHUB";
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
@@ -127,7 +128,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -147,7 +148,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -174,7 +175,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -202,7 +203,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("vorto.private.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -238,7 +239,7 @@ public class TenantServiceTest {
     Mockito.when(nsRepo.findByName("com.test")).thenReturn(null);
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin"))
-        .thenReturn(User.create("admin", "GITHUB", null, myTenantId, Role.SYS_ADMIN));
+        .thenReturn(User.create("admin", GITHUB, null, myTenantId, Role.SYS_ADMIN));
     
     
 
@@ -268,7 +269,7 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
@@ -294,9 +295,9 @@ public class TenantServiceTest {
         .thenReturn(Lists.newArrayList(Namespace.newNamespace("com.test3")));
     Mockito.when(accountService.exists("admin")).thenReturn(true);
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
     Mockito.when(accountService.getUser("admin")).thenReturn(User.create("admin", 
-        "GITHUB", null));
+        GITHUB, null));
 
     TenantService tenantService = getTenantService();
 
