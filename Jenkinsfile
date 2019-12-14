@@ -7,10 +7,6 @@ pipeline {
     stages{
       stage("Build"){
         steps{
-            sh 'printenv'
-            sh 'echo Proxy Host = $PROXY_HOST'
-            sh 'echo Proxy Port = $PROXY_PORT'
-            sh 'echo Proxy User = $PROXY_USER'
             // Notify GitHub that checks are now in progress
             githubNotify context: 'SonarCloud', description: 'SonarCloud Scan In Progress',  status: 'PENDING'
             githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING'
