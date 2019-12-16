@@ -28,7 +28,8 @@ cp ../../wgetDownload/mariadb-java-client-2.3.0.jar ./BOOT-INF/lib/
 
 if [[ "$GIT_BRANCH" == "master" ]]
 then
-   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod_new ./BOOT-INF/classes --recursive	
+   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/prod_new ./BOOT-INF/classes --recursive
+   aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/prod ./ --recursive
 elif [[ "$GIT_BRANCH" == "development" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/files_for_infinispan/dev ./BOOT-INF/classes --recursive
