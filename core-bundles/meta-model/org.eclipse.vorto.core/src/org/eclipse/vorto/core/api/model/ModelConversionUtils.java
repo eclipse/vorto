@@ -26,6 +26,7 @@ import org.eclipse.internal.xtend.type.baseimpl.types.PropertyTypeImpl;
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
@@ -245,6 +246,12 @@ public class ModelConversionUtils {
       ObjectPropertyType newObjectType = DatatypeFactory.eINSTANCE.createObjectPropertyType();
       ObjectPropertyType oldObjectType = (ObjectPropertyType) property.getType();
       newObjectType.setType(oldObjectType.getType());
+      newProperty.setType(newObjectType);
+    } else if (property.getType() instanceof DictionaryPropertyType) {
+      DictionaryPropertyType newObjectType = DatatypeFactory.eINSTANCE.createDictionaryPropertyType();
+      DictionaryPropertyType oldObjectType = (DictionaryPropertyType) property.getType();
+      newObjectType.setKeyType(oldObjectType.getKeyType());
+      newObjectType.setValueType(oldObjectType.getValueType());
       newProperty.setType(newObjectType);
     }
 

@@ -23,13 +23,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
 import org.eclipse.vorto.model.EnumModel;
@@ -40,7 +40,6 @@ import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.repository.client.RepositoryClientException;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -61,8 +60,11 @@ public class ImplementationBase {
             JsonDeserializationContext context) throws JsonParseException {
           if (jsonElement.isJsonPrimitive()) {
             return PrimitiveType.valueOf(jsonElement.getAsString());
+          } else if (jsonElement.getAsJsonObject().has("type") && jsonElement.getAsJsonObject().get("type").getAsString().equals("dictionary")) {
+            return context.deserialize(jsonElement, DictionaryType.class);
+          } else {
+            return context.deserialize(jsonElement, ModelId.class);
           }
-          return context.deserialize(jsonElement, ModelId.class);
         }
       }).registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
         public IPropertyAttribute deserialize(JsonElement jsonElement, Type type,

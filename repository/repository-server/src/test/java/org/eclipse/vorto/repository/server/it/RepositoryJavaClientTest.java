@@ -14,10 +14,14 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.util.Optional;
+import org.eclipse.vorto.model.DictionaryType;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
 import org.eclipse.vorto.model.EnumModel;
+import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
 import org.junit.Test;
@@ -33,9 +37,20 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest {
     setPublic("com.test:Zone:1.0.0");
     createModel("Color2.type", "com.test:Color:1.0.0");
     setPublic("com.test:Color:1.0.0");
+    createModel("Fb_withDictionary.fbmodel", "com.test:InstalledSoftware:1.0.0");
+    setPublic("com.test:InstalledSoftware:1.0.0");
 
     this.repositoryClient = IRepositoryClient.newBuilder()
         .setBaseUrl("http://localhost:" + port + "/infomodelrepository").build();
+  }
+  
+  @Test
+  public void testParseDictionary() {
+    ModelContent content =
+        repositoryClient.getContent(ModelId.fromPrettyFormat("com.test:InstalledSoftware:1.0.0"));
+    Optional<ModelProperty> description = ((FunctionblockModel)content.getModels().get(content.getRoot())).getStatusProperties().stream().filter(p -> p.getName().equals("description")).findAny();
+    assertTrue(description.isPresent());
+    assertTrue(description.get().getType() instanceof DictionaryType);
   }
 
   @Test
