@@ -2,6 +2,20 @@
 
 <br />
 
+## 0.12.5
+
+**Bugfixes**
+
+- Missing models for attributes in Repository OpenAPI/Swagger [#2116](https://github.com/eclipse/vorto/issues/2116)
+- Web Editor creates duplicate fields [#2058](https://github.com/eclipse/vorto/issues/2058)
+- Array types, defined in DSL, are not properly serialized to JSON [#2057](https://github.com/eclipse/vorto/issues/2057)
+
+**Improvements**
+
+- Proper error handling and reporting [#2062](https://github.com/eclipse/vorto/issues/2062)
+
+<br />
+
 ## 0.12.4
 
 **Bugfixes**
