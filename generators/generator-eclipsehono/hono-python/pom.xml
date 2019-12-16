@@ -4,7 +4,7 @@
 	<parent>
         <groupId>org.eclipse.vorto</groupId>
         <artifactId>generator-eclipsehono</artifactId>
-        <version>0.12.4</version>
+        <version>0.12.5</version>
     </parent>
     
 	<artifactId>hono-python</artifactId>	
