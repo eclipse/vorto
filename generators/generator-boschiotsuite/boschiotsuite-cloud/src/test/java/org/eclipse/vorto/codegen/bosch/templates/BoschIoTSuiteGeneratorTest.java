@@ -1,7 +1,11 @@
 package org.eclipse.vorto.codegen.bosch.templates;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.plugin.AbstractGeneratorTest;
@@ -11,12 +15,6 @@ import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.plugin.generator.utils.Generated;
 import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BoschIoTSuiteGeneratorTest extends AbstractGeneratorTest {
 
