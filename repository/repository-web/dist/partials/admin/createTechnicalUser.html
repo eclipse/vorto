@@ -7,23 +7,24 @@
   </h4>
 </div>
 <div class="modal-body">
-  <div class="row">
-    User <i>{{user.username}}</i> does not exist. <br/><br/>
-    Create a new technical user and add it to the <i>{{tenant.defaultNamespace}}</i> namespace by selecting the
-    desired authentication provider below.
+  <div>
+      User <i>{{user.username}}</i> does not exist. <br/><br/>
+      Create a new technical user and add it to the <i>{{tenant.defaultNamespace}}</i> namespace by selecting the
+      desired authentication provider below.
     <hr/>
   </div>
+
 
   <div class="row" ng-show="errorMessage !== ''">
     <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
   </div>
 
   <div class="table">
+    <br/>
     <div ng-repeat="provider in context.providers" class="table-row-cell" >
         <input id={{provider.id}} type="radio" name="authorizationProvider" ng-model=$parent.selectedAuthenticationProviderId class="btn btn-default" value={{provider.id}} />
         <img src="{{provider.logoHref}}" alt="Select {{provider.label}}"/>
         <label  for={{provider.id}}>{{provider.label}}</label>
-        </br>
     </div>
   </div>
 </div>
