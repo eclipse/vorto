@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
+import com.google.common.base.Strings;
+import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +36,7 @@ import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.ControllerUtils;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
@@ -52,8 +55,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.base.Strings;
-import io.swagger.annotations.ApiParam;
 
 @RestController
 public class AccountController {
@@ -100,6 +101,48 @@ public class AccountController {
       }
       return new ResponseEntity<>(accountService.addUserToTenant(tenantId, userId, toRoles(user)),
           HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    } catch (Exception e) {
+      LOGGER.error("error at addOrUpdateUsersForTenant()", e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @RequestMapping(method = RequestMethod.POST, value = "/rest/tenants/{tenantId}/users/{userId}")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  public ResponseEntity<Boolean> createTechnicalUserForTenant(
+      @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
+      @ApiParam(value = "userId", required = true) @PathVariable String userId,
+      @RequestBody @ApiParam(value = "The user to be added to the tenant",
+          required = true) final TenantTechnicalUserDto user) {
+
+    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (user.getRoles().stream()
+        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    try {
+      LOGGER.info("Creating technical user [" + userId + "] and adding to tenant [" + tenantId + "] with role(s) [" + Arrays.toString(user.getRoles().toArray()) + "]");
+      if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
+      return new ResponseEntity<>(
+        accountService.createTechnicalUserAndAddToTenant(tenantId, userId, user.getAuthenticationProviderId(), toRoles(user)),
+        HttpStatus.OK
+      );
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     } catch (Exception e) {
@@ -237,6 +280,7 @@ public class AccountController {
     if (user != null) {
       return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
     } else {
+      // TODO return something to prompt front-end to request creating technical user with given authentication provider ID
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }

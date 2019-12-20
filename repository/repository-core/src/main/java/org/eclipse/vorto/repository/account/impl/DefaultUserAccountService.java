@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -51,15 +51,18 @@ public class DefaultUserAccountService
   @Value("${server.admin:#{null}}")
   private String[] admins;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private IUserRepository userRepository;
 
   @Autowired
   private INotificationService notificationService;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ITenantRepository tenantRepo;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ITenantUserRepo tenantUserRepo;
 
@@ -87,14 +90,37 @@ public class DefaultUserAccountService
     return true;
   }
 
-  public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
+  private Tenant validateAndReturnTenant(String tenantId, String userId, String authenticationProviderId, Role... roles) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(userId, "userId");
     PreConditions.notNullOrEmpty(roles, "roles should not be empty");
-
+    if (authenticationProviderId != null) {
+      if (authenticationProviderId.trim().isEmpty()) {
+        throw new IllegalArgumentException("Given authentication provider cannot be empty.");
+      }
+    }
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
-
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+    return tenant;
+  }
+
+  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, String authenticationProviderId, Role... roles) {
+
+    Tenant tenant = validateAndReturnTenant(tenantId, userId, authenticationProviderId, roles);
+    // this creates and persists the technical user
+    User user = User.create(userId, authenticationProviderId, null, true);
+    userRepository.save(user);
+    // this creates and persists the "tenant user"
+    TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
+    tenantUserRepo.save(tenantUser);
+    eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));
+    return true;
+  }
+
+  public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
+
+    // cannot validate authentication provider within context
+    Tenant tenant = validateAndReturnTenant(tenantId, userId, null, roles);
 
     Optional<TenantUser> maybeUser = tenant.getUser(userId);
     if (maybeUser.isPresent()) {
