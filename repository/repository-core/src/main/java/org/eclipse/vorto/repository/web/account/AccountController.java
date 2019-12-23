@@ -135,7 +135,14 @@ public class AccountController {
     }
 
     try {
-      LOGGER.info("Creating technical user [" + userId + "] and adding to tenant [" + tenantId + "] with role(s) [" + Arrays.toString(user.getRoles().toArray()) + "]");
+      LOGGER.info(
+        String.format(
+          "Creating technical user [%s] and adding to tenant [%s] with role(s) [%s]",
+          userId,
+          tenantId,
+          user.getRoles()
+        )
+      );
       if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
@@ -290,7 +297,7 @@ public class AccountController {
   public ResponseEntity<Collection<UserDto>> findUsers(
       @ApiParam(value = "Username", required = true) @PathVariable String partial) {
 
-    Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial));
+    Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
     if (users != null) {
       return new ResponseEntity<>(users.stream().map(UserDto::fromUser).collect(Collectors.toList()), HttpStatus.OK);
     } else {

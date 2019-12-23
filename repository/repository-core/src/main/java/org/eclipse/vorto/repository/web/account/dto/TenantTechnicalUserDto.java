@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.web.account.dto;
 
-import org.eclipse.vorto.repository.domain.User;
-
 /**
  * Represents a payload for requests to perform both:
  * <ul>

@@ -36,7 +36,7 @@ public interface IUserRepository extends CrudRepository<User, Long> {
    * @param partial
    * @return
    */
-  @Query("SELECT u from User u WHERE u.username LIKE %?1%")
+  @Query("SELECT u from User u WHERE LOWER(u.username) LIKE %?1%")
   Collection<User> findUserByPartial(String partial);
 
   @Query("SELECT u from User u, TenantUser tu, UserRole r " + 
