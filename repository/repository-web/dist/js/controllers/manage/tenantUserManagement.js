@@ -110,6 +110,41 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.isCurrentlyAddingOrUpdating = false;
         $scope.errorMessage = "";
         $scope.selectedAuthenticationProviderId = null;
+        $scope.userPartial = "";
+        $scope.selectedUser = null;
+        $scope.retrievedUsers = [];
+
+        $scope.selectUser = function() {
+            document.getElementById('userId').value = $scope.selectedUser.username;
+        }
+
+        $scope.findUsers = function() {
+            // only initiates user search if partial name is larger >= 4 characters
+            // this is to prevent unmanageably large drop-downs
+            if ($scope.userPartial && $scope.userPartial.length >= 4) {
+                //document.getElementById("userSearchSelect").style.visibility = 'visible';
+                $http.get("./rest/accounts/search/" + $scope.userPartial)
+                .then(function (result) {
+                    console.log(result);
+                    if (result.data) {
+                        $scope.retrievedUsers = result.data;
+                        if ($scope.retrievedUsers.length == 1) {
+                            $scope.selectedUser = $scope.retrievedUsers[0];
+                            $scope.selectUser();
+                        }
+                    } else {
+                        $scope.retrievedUsers = [];
+                        $scope.selectedUser = null;
+                    }
+                });
+            }
+            else {
+                $scope.retrievedUsers = [];
+                $scope.selectedUser = null;
+            }
+        };
+
+        //$scope.findUsers();
         
         $scope.cancel = function() {
             $uibModalInstance.dismiss("Canceled.");  
@@ -153,6 +188,14 @@ repositoryControllers.controller("createOrUpdateUserController",
         };
 
         $scope.addOrUpdateUser = function() {
+            // adds username to scope user by either using selected user from
+            // drop-down if any, or using the string in user's input box
+            if ($scope.selectedUser) {
+                $scope.user.username = $scope.selectedUser.username;
+            }
+            else {
+                $scope.user.username = $scope.userPartial;
+            }
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;

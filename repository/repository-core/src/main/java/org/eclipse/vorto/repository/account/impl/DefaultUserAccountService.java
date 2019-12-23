@@ -288,6 +288,11 @@ public class DefaultUserAccountService
   }
 
   @Override
+  public Collection<User> findUsers(String partial) {
+    return this.userRepository.findUserByPartial(partial);
+  }
+
+  @Override
   public void saveUser(User user) {
     this.userRepository.save(user);
   }

@@ -285,6 +285,20 @@ public class AccountController {
     }
   }
 
+  @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/search/{partial:.+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Collection<UserDto>> findUsers(
+      @ApiParam(value = "Username", required = true) @PathVariable String partial) {
+
+    Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial));
+    if (users != null) {
+      return new ResponseEntity<>(users.stream().map(UserDto::fromUser).collect(Collectors.toList()), HttpStatus.OK);
+    } else {
+      // TODO return something to prompt front-end to request creating technical user with given authentication provider ID
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/accounts")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #user.name == authentication.name")

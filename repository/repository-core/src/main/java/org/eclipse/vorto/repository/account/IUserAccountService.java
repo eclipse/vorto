@@ -29,7 +29,14 @@ public interface IUserAccountService {
    * @return users who are system administrators
    */
   Collection<User> getSystemAdministrators();
-  
+
+  /**
+   * Finds a list of users matching the given partial username.
+   * @param partial
+   * @return
+   */
+  Collection<User> findUsers(String partial);
+
   /**
    * 
    * @param tenantId the tenant from which to remove the user
