@@ -49,8 +49,10 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		openapi: 3.0.0
 		info:
 		  title: Bosch IoT Things HTTP API for «infomodel.name» 
-		  description: |- 
-		    This descriptions focus on the JSON-based, REST-like API for <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name»</a> Vorto Model.
+		  description: |-
+		    Bosch IoT Things enables applications to manage digital twins of IoT device assets in a simple, convenient, robust, and secure way.
+		    
+		    These descriptions focus on the JSON-based, REST-like API of the <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name»</a> Vorto Model.
 		    
 		    For more details on concepts, please consult the full [documentation](https://things.eu-1.bosch-iot-suite.com/dokuwiki/).
 		  version: "«infomodel.version»"
@@ -102,9 +104,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                schema:
 		                  type: array
 		                  items:
-		                  $ref: '#/components/schemas/Thing'
+		                    $ref: '#/components/schemas/Thing'
 		          '400':
-		            description: >-
+		            description: |-
 		              The request could not be completed. At least one of the defined
 		              query parameters was invalid.
 		            content:
@@ -118,7 +120,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                schema:
 		                  $ref: '#/components/schemas/AdvancedError'
 		          '403':
-		            description: >-
+		            description: |-
 		              The request could not be completed due to a missing or invalid API
 		              Token.
 		            content:
@@ -126,25 +128,35 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                schema:
 		                  $ref: '#/components/schemas/AdvancedError'
 		          '414':
-		            description: >-
+		            description: |-
 		              The request could not be completed due to an URI length exceeding 8k
 		              characters.
 		  '/things/{thingId}':
 		    get:
 		      summary: Retrieve a specific Thing
-		      description: >-
-		          Returns the Thing identified by the `thingId` path parameter. The
-		          response includes details about the Thing. Note that the Thing's Policy
-		          is not included in the response per default. Optionally you can use
-		          field selectors (see parameter `fields`) to only get the specified
-		          fields. E.g., you can get the Thing's Policy by using a field selector.
+		      description: |-
+		        Returns the thing identified by the `thingId` path parameter. The
+		        response includes details about the thing.
+		        
+		        Optionally, you can use the field selectors (see parameter `fields`) to only get specific
+		        fields, which you are interested in.
 		      tags:
 		      - Things
 		      parameters:
 		      - $ref: '#/components/parameters/thingIdPathParam'
+		      - $ref: '#/components/parameters/thingFieldsQueryParam'
+		      - $ref: '#/components/parameters/ifMatchHeaderParam'
+		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		          '200':
 		            description: The request successfully returned the specific Thing.
+		            headers:
+		              ETag:
+		                description: |-
+		                  The (current server-side) ETag for this (sub-)resource. For top-level resources it is in the format
+		                  "rev:[revision]", for sub-resources it has the format "hash:[calculated-hash]".
+		                schema:
+		                  type: string
 		            content:
 		              application/json:
 		                schema:
@@ -152,13 +164,11 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          '304':
 		            $ref: '#/components/responses/notModified'
 		          '400':
-		            description: >-
-		              The request could not be completed. The `thingId` either
-		              
-		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
-		              * does not conform to RFC-2396 (URI)
-		              
-		              Or one of the defined query parameters was invalid.
+		            description: |-
+		              The request could not be completed. Possible reasons:
+		            
+		                * the `thingId` does not conform to the namespaced entity ID notation (see [Ditto documentation on namespaced entity IDs](https://www.eclipse.org/ditto/basic-namespaces-and-names.html#namespaced-id))
+		                * at least one of the defined query parameters is invalid
 		            content:
 		              application/json:
 		                schema:
@@ -170,7 +180,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                schema:
 		                  $ref: '#/components/schemas/AdvancedError'
 		          '403':
-		            description: >-
+		            description: |-
 		              The request could not be completed due to a missing or invalid API
 		              Token.
 		            content:
@@ -178,7 +188,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                schema:
 		                  $ref: '#/components/schemas/AdvancedError'
 		          '404':
-		            description: >-
+		            description: |-
 		              The request could not be completed. The Thing with the given ID was
 		              not found.
 		            content:
@@ -360,7 +370,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features':
 		    get:
 		      summary: List all features of a «infomodel.name» 
-		      description: >-
+		      description: |-
 		        Returns all features of the «infomodel.name» thing identified by the `thingId` path parameter.
 		      tags:
 		      - Features
@@ -371,8 +381,15 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      - $ref: '#/components/parameters/ifNoneMatchHeaderParam'
 		      responses:
 		        '200':
-		          description: >-
+		          description: |-
 		            The list of features of the «infomodel.name» were successfully retrieved.
+		          headers:
+		            ETag:
+		              description: |-
+		                The (current server-side) ETag for this (sub-)resource. For top-level resources it is in the format
+		                "rev:[revision]", for sub-resources it has the format "hash:[calculated-hash]".
+		              schema:
+		                type: string
 		          content:
 		            application/json:
 		              schema:
@@ -398,7 +415,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              schema:
 		                $ref: '#/components/schemas/AdvancedError'
 		        '404':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The Thing with the given ID was not found or the Features have not
 		            been defined.
 		          content:
@@ -412,8 +429,8 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    get:
 		      summary: Retrieve the «fbProperty.name» of the «infomodel.name»
 		      description: |-
-		        Returns the «fbProperty.name» feature of the «infomodel.name» thing identified by the
-		        `thingId` path parameter.
+		        Returns the specific feature `«fbProperty.name»`
+		        of the thing identified by the `thingId` path parameter.
 		      tags:
 		      - Features
 		      parameters:
@@ -431,7 +448,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        '304':
 		          $ref: '#/components/responses/notModified'
 		        '400':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The `thingId` either
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
@@ -447,7 +464,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              schema:
 		                $ref: '#/components/schemas/AdvancedError'
 		        '404':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The Thing with the given ID or the Feature with the specified
 		            `featureId` was not found.
 		          content:
@@ -459,9 +476,8 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  '/things/{thingId}/features/«fbProperty.name»/properties':
 		    get:
 		      summary: Retrieve the properties of «fbProperty.name»
-		      description: >-
-		        Returns the «fbProperty.name» properties of the «infomodel.name» thing identified by the
-		        `thingId` path parameter.
+		      description: |-
+		        Returns all properties of the feature `«fbProperty.name»` identified by the `thingId` path parameter.
 		      tags:
 		      - Features
 		      parameters:
@@ -479,7 +495,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        '304':
 		          $ref: '#/components/responses/notModified'
 		        '400':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The `thingId` either
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
@@ -495,7 +511,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              schema:
 		                $ref: '#/components/schemas/AdvancedError'
 		        '404':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The Thing with the given ID or the Feature with the specified
 		            `featureId` was not found.
 		          content:
@@ -508,9 +524,8 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    get:
 		      summary: Retrieve a specific property of «fbProperty.name»
 		      description: |-
-		        Returns the «fbProperty.name» property path of «infomodel.name» identified by the
-		        `thingId` path parameter.
-		        
+		        Returns the specific property path of the feature `«fbProperty.name»` identified by the `thingId` path parameter.
+		        	
 		        The property (JSON) can be referenced
 		        hierarchically, by applying JSON Pointer notation (RFC-6901)
 		      tags:
@@ -533,7 +548,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        '304':
 		          $ref: '#/components/responses/notModified'
 		        '400':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The `thingId` either
 		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
 		              * does not conform to RFC-2396 (URI)
@@ -549,7 +564,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		              schema:
 		                $ref: '#/components/schemas/AdvancedError'
 		        '404':
-		          description: >-
+		          description: |-
 		            The request could not be completed. The Thing with the given ID or the Feature with the specified
 		            `featureId` was not found.
 		          content:
@@ -627,14 +642,12 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  «FOR event : fbProperty.type.functionblock.events»
 		  '/things/{thingId}/features/«fbProperty.name»/outbox/messages/«event.name»':
 		    post:
-		      summary: Receive «event.name» emitted by the device
+		      summary: Send a message FROM a specific Feature `«fbProperty.name»` of a specific Thing.
 		      description: |-
-		        Send a message with the subject `«event.name»` `FROM` the Thing
-		        identified by the `thingId` path parameter. The request body contains
-		        the device event payload and the `Content-Type` header defines its type.
-		        
-		        In order to send a message, the user needs `WRITE` permission at the
-		        Thing level.
+		        Send a message with the subject `«event.name»` **from** the feature
+		        specified by the featureId `«fbProperty.name»` and `thingId` path parameter. The request
+		        body contains the message payload and the `Content-Type` header defines
+		        its type.
 		        
 		        The HTTP request blocks until a response to the message is available
 		        or until the `timeout` is expired. If many clients respond to
@@ -642,6 +655,11 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        
 		        In order to handle the message in a fire and forget manner, add
 		        a query-parameter `timeout=0` to the request.
+		        
+		        ### Who
+		        You will need `WRITE` permission on the root "message:/" resource, or at least
+		        the resource `message:/features/featureId/outbox/messages/messageSubject`.
+		        Such permission is managed  within the policy which controls the access on the thing.
 		      tags:
 		        - Messages
 		      parameters:
@@ -690,8 +708,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      description: |-
 		        «IF operation.description !== null»«operation.description»«ELSE»Executes the «operation.name» on the device.«ENDIF»
 		      
-		        The API does not provide any kind of acknowledgement that the
-		        message was received by the Feature. In order to send a message, the user needs `WRITE` permission at the Thing level.
+		        Send a message with the messageSubject `«operation.name»` **to** the feature specified by the featureId `«fbProperty.name»` 
+		        and thingId path parameter. The request body contains the message payload and the Content-Type header defines its type. 
+		        The API does not provide any kind of acknowledgement that the message was received by the feature.
 		        
 		        The HTTP request blocks until a response to the message is available
 		        or until the `timeout` is expired. If many clients respond to
@@ -699,6 +718,11 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		        
 		        In order to handle the message in a fire and forget manner, add
 		        a query-parameter `timeout=0` to the request.
+		        
+		        ### Who
+		        You will need `WRITE` permission on the root "message:/" resource, or at least
+		        the resource `message:/outbox/messages/messageSubject`.
+		        Such permission is managed  within the policy which controls the access on the thing.
 		      tags:
 		        - Messages
 		      parameters:
@@ -721,11 +745,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          «ENDIF»
 		        '400':
 		          description: |-
-		            The request could not be completed. The `thingId` either
-		              * does not contain the mandatory namespace prefix (java package notation + `:` colon)
-		              * does not conform to RFC-2396 (URI)
-		          
-		            Or at least one of the defined path parameters was invalid.
+		            The request could not be completed. Possible reasons:
+		              * the `thingId` does not conform to the namespaced entity ID notation (see [Ditto documentation on namespaced entity IDs](https://www.eclipse.org/ditto/basic-namespaces-and-names.html#namespaced-id)).
+		              * at least one of the defined path parameters is invalid.
 		          content:
 		            application/json:
 		              schema:
@@ -738,9 +760,11 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		                $ref: '#/components/schemas/AdvancedError'
 		        '403':
 		          description: |-
-		            The request could not be completed. Either
-		            * due to a missing or invalid API Token.
-		            * as the caller does not have `WRITE` permission on the resource message:/features/`featureId`/inbox/messages/`messageSubject`.
+		            The request could not be completed. Possible reasons:
+		            	
+		            * the API Token is missing or invalid
+		            * the caller has insufficient permissions
+		              You need `WRITE` permission on the resource `message:/features/{featureId}/inbox/messages/{messageSubject}`.
 		          content:
 		            application/json:
 		              schema:
@@ -903,7 +927,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    «ENDFOR»
 		    «infomodel.name»Features:
 		      type: object
-		      description: >-
+		      description: |-
 		        List all Features of the «infomodel.name»
 		      properties:
 		        «FOR fbProperty : infomodel.properties»
@@ -1016,25 +1040,25 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		          schema:
 		            $ref: '#/components/schemas/AdvancedError'
 		    notModified:
-		      description: >-
+		      description: |-
 		        The (sub-)resource has not been modified. This happens when you specified a If-None-Match header which
 		        matches the current ETag of the (sub-)resource.
 		      headers:
 		        ETag:
-		          description: >-
+		          description: |-
 		            The (current server-side) ETag for this (sub-)resource. For top-level resources it is in the format
 		            "rev:[revision]", for sub-resources it has the format "hash:[calculated-hash]".
 		          schema:
 		            type: string
 		    preconditionFailed:
-		      description: >-
+		      description: |-
 		        A precondition for reading or writing the (sub-)resource failed. This will happen for write requests, when you
 		        specified an If-Match or If-None-Match header which fails the precondition check against the current ETag of
 		        the (sub-)resource. For read requests, this error may only happen for a failing If-Match header. In case of a
 		        failing If-None-Match header for a read request, status 304 will be returned instead.
 		      headers:
 		        ETag:
-		          description: >-
+		          description: |-
 		            The (current server-side) ETag for this (sub-)resource. For top-level resources it is in the format
 		            "rev:[revision]", for sub-resources it has the format "hash:[calculated-hash]".
 		          schema:
@@ -1047,7 +1071,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    ifMatchHeaderParam:
 		      name: If-Match
 		      in: header
-		      description:  >-
+		      description:  |-
 		        The `If-Match` header, which has to conform to RFC-7232 (Conditional Requests). Common usages are:
 		          * optimistic locking by specifying the `ETag` from a previous GET response, e.g. `If-Match: "rev:4711"`
 		          * retrieving or modifying a resource only if it already exists, e.g. `If-Match: *`
@@ -1057,7 +1081,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		    ifNoneMatchHeaderParam:
 		      name: If-None-Match
 		      in: header
-		      description:  >-
+		      description:  |-
 		        The `If-None-Match` header, which has to conform to RFC-7232 (Conditional Requests). A common usage scenario is to
 		        modify a resource only if it does not yet exist, thus to create it, by specifying `If-None-Match: *`.
 		      required: false
@@ -1077,9 +1101,9 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		      name: thingId
 		      in: path
 		      description: |-
-		        The ID of the Thing - has to:
-		          * contain the mandatory namespace prefix (java package notation + `:` colon)
-		          * conform to RFC-2396 (URI)
+		        The ID of a thing needs to follow the namespaced entity ID notation (see [Ditto documentation on namespaced entity IDs](https://www.eclipse.org/ditto/basic-namespaces-and-names.html#namespaced-id)).
+		        
+		        The namespace needs to be registered for your solution.
 		      required: true
 		      schema:
 		        type: string

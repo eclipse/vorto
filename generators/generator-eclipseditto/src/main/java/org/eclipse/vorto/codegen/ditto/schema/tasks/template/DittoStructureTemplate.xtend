@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
- * 
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * https://www.eclipse.org/legal/epl-2.0
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template
@@ -30,13 +30,13 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 	override getPath(InformationModel context) {
 		return null;
 	}
-	
+
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
 {
+  "definition": ["«model.namespace»:«model.name»:«model.version»"],
   "attributes": {
- 	"thingName": "«model.displayname»",
- 	"definition": "«model.namespace»:«model.name»:«model.version»"
+ 	"thingName": "«model.displayname»"
  	 },
  	"features": {
  	«FOR fbProperty : model.properties SEPARATOR ","»
@@ -66,7 +66,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 }
 		'''
 	}
-	
+
 	def getJsonDictionaryType(DictionaryPropertyType propertyType) {
 		'''
 			{
@@ -121,5 +121,5 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 			return "\"\""
 		}
 	}
-	
+
 }

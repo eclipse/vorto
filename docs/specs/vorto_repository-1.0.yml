@@ -797,7 +797,7 @@ components:
           description: UserId of collaborator
           type: string
         providerId:
-          description: The provider ID of the user. Possible values are GITHUB, BOSCH, and BOSCH_IOT_SUITE_AUTH
+          description: The provider ID of the user.
           type: string
         subject:
           description: Purpose of this user (only for technical users)
