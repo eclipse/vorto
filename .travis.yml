@@ -3,6 +3,71 @@ dist: trusty
 
 jobs:
   include:
+    - stage: deploy-generator-lambda
+      name: Deploys the Vorto Generators as Lambda Functions to AWS
+      language: java
+      jdk: oraclejdk8
+      before_script:
+        - cd generators/generator-lambda
+      script:
+        - mvn clean package -DskipTests
+      before_install:
+      before_deploy:
+        - export ARTIFACT_PLUGININFO=$(ls generator-lambda-plugininfo/target/generator-lambda-plugininfo-*.jar)
+        - export ARTIFACT_PLUGINEXECUTOR=$(ls generator-lambda-executor/target/generator-lambda-executor-*.jar)
+      deploy:
+        - provider: lambda
+          edge: true
+          function_name: "generators-plugininfo-dev"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGININFO"
+          runtime: "java8"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          handler_name: "handleRequest"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: development
+        - provider: lambda
+          edge: true
+          function_name: "generators-pluginexecutor-dev"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGINEXECUTOR"
+          runtime: "java8"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          handler_name: "handleRequest"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            branch: development
+        - provider: lambda
+          edge: true
+          function_name: "generators-plugininfo-prod"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGININFO"
+          runtime: "java8"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
+          handler_name: "handleRequest"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            tags: true
+        - provider: lambda
+          edge: true
+          function_name: "generators-pluginexecutor-prod"
+          region: "$VORTO_S3_REGION"
+          role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
+          zip: "$ARTIFACT_PLUGINEXECUTOR"
+          runtime: "java8"
+          module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
+          handler_name: "handleRequest"
+          access_key_id: "$AWS_ACCESS_KEY_ID"
+          secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          on:
+            tags: true
     - stage: deploy
       name: "Deploy Repository"
 
@@ -12,14 +77,6 @@ jobs:
         - docker
 
       jdk: oraclejdk8
-
-      addons:
-        sonarcloud:
-          organization: "vorto"
-          token:
-            secure: $SONAR_TOKEN
-          branches:
-            - development
 
       cache:
         npm: false
@@ -40,11 +97,7 @@ jobs:
       script:
         - remark -i .remark_ignore -f -u validate-links .
         - remark -i .remark_ignore -u lint-no-dead-urls .
-        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-          mvn --fail-fast -q clean package -DskipTests -P checkstyle;
-          mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -P coverage;
-          else mvn --fail-fast -q clean package -P checkstyle;
-          fi
+        - mvn --fail-fast -q clean package -P checkstyle
         - docker build --build-arg JAR_FILE=./repository/repository-server/target/infomodelrepository.jar -f docker/Repository_Dockerfile -t eclipsevorto/vorto-repo:nightly .;
         - echo "TRAVIS_TAG------$TRAVIS_TAG" 
         - if [ -n "$TRAVIS_TAG" ]; then
@@ -58,7 +111,7 @@ jobs:
         - export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
         - export TRAVIS_COMMIT_SHORT=$(git rev-parse --short HEAD)
         - export ELASTIC_BEANSTALK_LABEL="${TRAVIS_JOB_NUMBER}_${TRAVIS_COMMIT_SHORT}"
-        - export ARTIFACT_NAME=infomodelrepository
+        - export ARTIFACT=infomodelrepository
         - export ELASTIC_BEANSTALK_DESCRIPTION="Build-Job ${TRAVIS_JOB_NUMBER} - Git Revision ${TRAVIS_COMMIT_SHORT} ${ARTIFACT_NAME}"
 
       deploy:
@@ -71,11 +124,11 @@ jobs:
           script: bash docker/docker_push
           on:
             branch: development
-            
+
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
+            tags: true
             branch: 
               - development
-              - master
