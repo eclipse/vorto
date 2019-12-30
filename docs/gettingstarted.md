@@ -93,11 +93,11 @@ If you want to see the full process of creating, integrating and visualizing sen
 
 #### Developer Guide
 
-- [Developing Vorto Plugins](../plugin-sdk/Readme.md)
+- [Integrate Vorto with AWS Kinesis for anomaly detection](tutorials/integrate_aws_kinesis.md)
+- [Developing Vorto Generator Plugins](../plugin-sdk/Readme.md) for a Code Generation toolchain
 - [Parse Vorto DSL files with Java](../utilities/Readme.md)
 - Map arbitrary device payload to Vorto compliant data structures
   * [Mapping Engine for Java](../mapping-engine/Readme.md)
-  * [Mapping Engine for Node.js](../mapping-engine-nodejs/README.md)
   * [Decouple IoT solution from connected sensors](tutorials/create_mapping_pipeline.md)
 
 
