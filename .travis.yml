@@ -54,7 +54,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: master
+            tags: true
         - provider: lambda
           edge: true
           function_name: "generators-pluginexecutor-prod"
@@ -67,7 +67,7 @@ jobs:
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           on:
-            branch: master
+            tags: true
     - stage: deploy
       name: "Deploy Repository"
 
