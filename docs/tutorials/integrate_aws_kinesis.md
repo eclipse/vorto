@@ -72,8 +72,7 @@ Here are the steps, that we are going to take during this tutorial:
 6. Select **Connect streaming data** and select **Kinesis data stream** as source
 7. Choose the data stream, we had created in step 1, e.g. *vortoDemo*
 8. Leave the other selections as default.
-9. Click **Discover schema**. Make sure you are sending data to the Vorto middleware, so that AWS is able to discover the schema from the data it receives. You should be able to see a table, similar to this:
-<img src="../images/tutorials/integrate_kinesis/kinesis_discover_schema.png"/>
+9. Click **Discover schema**. Make sure you are sending data to the Vorto middleware, so that AWS is able to discover the schema from the data it receives. You should be able to see a table, similar to this:<img src="../images/tutorials/integrate_kinesis/kinesis_discover_schema.png"/>
 10. Select **Save and confinue**
 11. Choose **Go to SQL Editor** in order to process the incoming device data. You can choose from many templates to get you started easily, e.g. **Anomaly detection**
 12. Once you have started the kinesis application, you can define your SQL statements on the incoming Vorto harmonized IoT data.
