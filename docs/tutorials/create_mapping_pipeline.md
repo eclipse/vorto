@@ -301,6 +301,7 @@ When you start the application and send data for the two sensors via MQTT, you w
 
 ## What's next?
 
+- [Integrate with AWS Kinesis for realtime data analytics](./integrate_aws_kinesis.md)
 - [Extend the solution with a digital twin service](./extend_mapping_pipeline_with_digital_twin.md)
 
 <br />
