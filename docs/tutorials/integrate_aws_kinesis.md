@@ -6,7 +6,9 @@ In this tutorial, you are going to learn, how you can use Eclipse Vorto to send 
 
 > With AWS Kinesis, you can collect and process large amount of data in real time, for example to do anomaly detection or other cool stuff.
 
-With Eclipse Vorto, it is very easy to integrate with AWS Kinesis, thanks to the already available [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md). It basically transforms your IoT data to a normalized, semantic format (e.g. from binary to JSON) and then send it to AWS Kinesis for further processing. 
+If you are now asking yourself, what role Eclipse Vorto plays in using Kinesis, the answer is simple: Eclipse Vorto harmonizes the connected device data before sending it to AWS Kinesis, so that data analytics  can work with the same data format, regardless of how the device/sensors sends the data. 
+
+In short, Eclipse Vorto makes it very easy to integrate with AWS Kinesis, thanks to the already available [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md). It basically transforms your IoT device data to a normalized, semantic format (e.g. from binary to JSON) and then send it to AWS Kinesis for further processing. 
 
 <img src="../images/tutorials/integrate_kinesis/cover.png"/>
 
@@ -79,7 +81,7 @@ Here are the steps, that we are going to take during this tutorial:
 
 > Don't forget to keep sending data to AWS Kinesis, in order to discover data for defining your SQL statements, as Kinesis operates on real time data. 
 
-Congratulations! You can now easily process Vorto harmonized IoT device data using AWS Kinesis data streams.
+**Congratulations!** You can now easily process Vorto harmonized IoT device data using AWS Kinesis data streams. Checkout the **What's next** section to learn more about Kinesis and the cool use cases it supports .
 
 ## What's next?
 
