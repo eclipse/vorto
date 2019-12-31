@@ -2,6 +2,8 @@
 
 In this tutorial, you are going to learn, how you can use Eclipse Vorto to send harmonized device telemetry data to AWS Kinesis. 
 
+<img src="../images/tutorials/integrate_kinesis/cover.png"/>
+
 > **What is AWS Kinesis?** 
 
 > With AWS Kinesis, you can collect and process large amount of data in real time, for example to do anomaly detection or other cool stuff.
@@ -10,7 +12,8 @@ If you are now asking yourself, what role Eclipse Vorto plays in using Kinesis, 
 
 In short, Eclipse Vorto makes it very easy to integrate with AWS Kinesis, thanks to the already available [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md). It basically transforms your IoT device data to a normalized, semantic format (e.g. from binary to JSON) and then send it to AWS Kinesis for further processing. 
 
-<img src="../images/tutorials/integrate_kinesis/cover.png"/>
+<img src="../images/tutorials/integrate_kinesis/overview_kinesis_vorto.png"/>
+
 
 ## Prerequisites
 
