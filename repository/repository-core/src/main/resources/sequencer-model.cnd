@@ -25,5 +25,6 @@
 - vorto:state (string)
 - vorto:imported (boolean)
 - vorto:visibility (string)
+- vorto:targetplatform (string)
 - vorto:tags (string) multiple
 - vorto:references (string) multiple

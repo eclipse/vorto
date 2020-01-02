@@ -2,6 +2,15 @@
 
 <br />
 
+## 0.12.6
+
+**Improvements**
+
+- Payload Mapping Editor lacks performance for bigger models [#2193](https://github.com/eclipse/vorto/issues/2193)
+
+<br />
+
+
 ## 0.12.5
 
 **Bugfixes**
