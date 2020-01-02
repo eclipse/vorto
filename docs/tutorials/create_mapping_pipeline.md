@@ -246,9 +246,9 @@ As seen in the picture, we will now setup the Eclipse Vorto Payload Normalizatio
 1. Please follow the [installation guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md#running-the-vorto-normalizer-service), on how to set up the middleware service.
 2. Make sure you mounted a volume to the docker container, containing your mapping specification. You can find the instructions to do that in the installation guide as well, under _Adding your mapping specifications to the middleware_.  
 
-Start the middleware with using the [Eclipse Vorto AMQP plugin](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/middleware-ext-amqp) (requires an AMQP Messaging service, such as AWS MQ):
+Start the middleware with using the [Eclipse Vorto AMQP plugin](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/middleware-ext-amqp) and mounting a _mappings_ folder which contains your downloaded mapping specifications:
 
-```docker run -it -p 8080:8080 -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=myurl -e amqp.topic.vorto=telemetry/vorto -e amqp.username=myusername -e amqp.password=mypassword eclipsevorto/vorto-normalizer:nightly```
+```docker run -it -p 8080:8080 -v //C/absolute_local_dir:/mappings -p 8080:8080 -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=myurl -e amqp.topic.vorto=telemetry/vorto -e amqp.username=myusername -e amqp.password=mypassword eclipsevorto/vorto-normalizer:nightly```
 
 Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
