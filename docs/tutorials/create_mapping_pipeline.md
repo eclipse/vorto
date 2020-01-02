@@ -26,6 +26,7 @@ Here is a list of things that you need to work through this tutorial:
 
 - Bosch ID Account
 - [Subscribe to Bosch IoT Hub](https://accounts.bosch-iot-suite.com/subscriptions/new/service/IoT-Hub/) (Free plan) for MQTT connectivity based on Eclipse Hono
+- [Amazon MQ](https://aws.amazon.com/amazon-mq) cloud service for AMQP messaging
 - Java 8 or higher
 - Maven
 - Docker Runtime
@@ -242,16 +243,14 @@ As seen in the picture, we will now setup the Eclipse Vorto Payload Normalizatio
 
 <img src="../images/tutorials/decouple_tutorial/stepOneOverview.png" />
 
-For more information about the Vorto normalization middleware, please follow this [link](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md). 
+1. Please follow the [installation guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md#running-the-vorto-normalizer-service), on how to set up the middleware service.
+2. Make sure you mounted a volume to the docker container, containing your mapping specification. You can find the instructions to do that in the installation guide as well, under _Adding your mapping specifications to the middleware_.  
 
-Here are the steps to run the middleware service:
+Start the middleware with using the [Eclipse Vorto AMQP plugin](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/middleware-ext-amqp) (requires an AMQP Messaging service, such as AWS MQ):
 
-1. Pull the image from docker-hub with ```docker pull eclipsevorto/vorto-normalizer:nightly```
-2. Run the service with ```docker run -p 8080:8080 -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=amqp_url -e amqp.username=amqp_username -e amqp.password=amqp_password -e cors=http://localhost:4200 eclipsevorto/vorto-normalizer:nightly```
-> Please refer to the [middleware guide](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) for more information about the environment variables
-3. Optionally run the middleware frontend for better device payload monitoring capabilities. Please also refer to the middleware guide for details.
+```docker run -it -p 8080:8080 -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=myurl -e amqp.topic.vorto=telemetry/vorto -e amqp.username=myusername -e amqp.password=mypassword eclipsevorto/vorto-normalizer:nightly```
 
-Now, before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
+Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
 1. Again open the [Device Registry Swagger UI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Hub%20-%20Device%20Registry)
 2. Find the **PUT** Command , which updates your existing device ID. Add the following JSON content:
@@ -291,7 +290,7 @@ You should be able to see the normalized payload with the exact same structure f
 
 ### 5. Make cloud application changes
 
-In this step, we are going to make a small configuration change to our existing Geolocation cloud application from the beginning, which we will now configure to point to our new Amazon MQ Broker AMQP endpoint, in order to receive normalized geo location sensor data. 
+In this step, we are going to make a small configuration change to our existing Geolocation cloud application from the beginning, which we will now configure to point to our new [Amazon MQ Broker](https://aws.amazon.com/amazon-mq/) AMQP endpoint, in order to receive normalized geo location sensor data. 
 
 Please open the `application.yml` and replace the url, topic and credentials as seen below:
 
@@ -307,6 +306,7 @@ When you start the application and send data for the two sensors via MQTT, you w
 
 ## What's next?
 
+- [Integrate with AWS Kinesis for realtime data analytics](./integrate_aws_kinesis.md)
 - [Extend the solution with a digital twin service](./extend_mapping_pipeline_with_digital_twin.md)
 
 <br />
