@@ -1,6 +1,6 @@
 # Integrating AWS Kinesis with Eclipse Vorto for IoT anomaly detection
 
-In this tutorial, you are going to learn, how you can use Eclipse Vorto to send harmonized device telemetry data to AWS Kinesis. 
+In this tutorial, you are going to learn, how you can use [Eclipse Vorto](https://www.eclipse.org/vorto) with [AWS Kinesis](https://aws.amazon.com/kinesis/) in order to do realtime device data analytics. 
 
 <img src="../images/tutorials/integrate_kinesis/cover.png"/>
 
@@ -8,22 +8,19 @@ In this tutorial, you are going to learn, how you can use Eclipse Vorto to send 
 
 > With AWS Kinesis, you can collect and process large amount of data in real time, for example to do anomaly detection or other cool stuff.
 
-If you are now asking yourself, what role Eclipse Vorto plays in using Kinesis, the answer is simple: Eclipse Vorto harmonizes the connected device data before sending it to AWS Kinesis, so that data analytics  can work with the same data format, regardless of how the device/sensors sends the data. 
+We are going to use the GPS sensors, that we had described and connected with Vorto to Eclipse Hono in the [mapping pipeline tutorial](create_mapping_pipeline.md). Makes sure you had worked yourself through that tutorial thoroughly before proceeding because it gives you a very good understanding of the essence of the Eclipse Vorto project and prepares everything you need for this tutorial. 
+Done? Great. Let us proceed then. 
 
-In short, Eclipse Vorto makes it very easy to integrate with AWS Kinesis, thanks to the already available [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md). It basically transforms your IoT device data to a normalized, semantic format (e.g. from binary to JSON) and then send it to AWS Kinesis for further processing. 
-
+As illustrated, we are going to send GPS location data via MQTT to Eclipse Hono and intercept the different payload formats (CSV, JSON) using the [Eclipse Vorto normalization middleware](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) and the existing [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md), in order to transform the data to a normalized, semantically enriched JSON before forwarding this data to an AWS Kinesis data stream, where we analyze the data.
+ 
 <img src="../images/tutorials/integrate_kinesis/overview_kinesis_vorto.png"/>
 
 
 ## Prerequisites
 
-* Read the introduction on the [Eclipse Vorto middleware service](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md)
-* Set up the Eclipse Vorto normalization middleware and created payload mapping specifications for your connected sensors. Please follow the [mapping pipeline tutorial](create_mapping_pipeline.md) for details.
-* AWS account for using the Kinesis service
+* Successfully completed the [mapping pipeline tutorial](create_mapping_pipeline.md)
 
 <br />
-
-Ready? Cool, let's get started.
 
 ## Steps
 
@@ -32,7 +29,8 @@ Here are the steps, that we are going to take during this tutorial:
 1. Setting up Kinesis on AWS
 2. Configuring and starting the Vorto middleware with your AWS Kinesis data stream settings
 3. Sending device data to Eclipse Hono via MQTT and monitor the incoming data in the Eclipse Vorto middleware dashboard
-4. Verifying the normalized device payload in AWS Kinesis
+4. Creating an AWS Kinesis analytics application
+5. Testing the analytics application
 
 <br />
 
@@ -67,7 +65,7 @@ Here are the steps, that we are going to take during this tutorial:
 
 > Head over to the [mapping tutorial](create_mapping_pipeline.md) to find out more about the right settings. 
 
-## Step 4: Verifying the data in Kinesis
+## Step 4: Creating an AWS Kinesis analytics application
 
 1. Open the Kinesis service dashboard in AWS
 2. Click **Create Analytics Application**
@@ -79,12 +77,25 @@ Here are the steps, that we are going to take during this tutorial:
 8. Leave the other selections as default.
 9. Click **Discover schema**. Make sure you are sending data to the Vorto middleware, so that AWS is able to discover the schema from the data it receives. You should be able to see a table, similar to this:<img src="../images/tutorials/integrate_kinesis/kinesis_discover_schema.png"/>
 10. Select **Save and confinue**
-11. Choose **Go to SQL Editor** in order to process the incoming device data. You can choose from many templates to get you started easily, e.g. **Anomaly detection**
-12. Once you have started the kinesis application, you can define your SQL statements on the incoming Vorto harmonized IoT data.
+11. Choose **Go to SQL Editor** in order to process the incoming device data. Copy the following SQL snippet in the SQL editor and **save&run** the SQL: 
 
-> Don't forget to keep sending data to AWS Kinesis, in order to discover data for defining your SQL statements, as Kinesis operates on real time data. 
+```
+HERE goes the SQL analytics snippet for the gps analytics 
+```
 
-**Congratulations!** You can now easily process Vorto harmonized IoT device data using AWS Kinesis data streams. Checkout the **What's next** section to learn more about Kinesis and the cool use cases it supports .
+TODO: Explain the SQL snippet.
+
+## Step 5: Testing the analytics application
+
+In this step, we are going to send some test data of our first GPS sensor with location data, not meeting the analytics rule.  
+
+```mosquitto pub sending JSON with location data```
+
+Now, we are sending test data of the second gps sensor in CSV format that meets the geofence condition:
+
+```mosquitto pub sending JSON with location data```
+
+Now you can check the Kinesis analytics application on AWS where the stream now contains the data of our second sensor. 
 
 ## What's next?
 
