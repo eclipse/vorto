@@ -221,6 +221,7 @@ You should be able to see the following mapped output:
 }
 ```
 
+<img src="../images/tutorials/decouple_tutorial/mappingEditor.png" />
 
 **Fantastic!** You have just created a mapping for one sensor that sends its payload as JSON. 
 
@@ -236,15 +237,21 @@ This completes the Vorto Modelling. In summary, we described two sensor types as
 
 In the next step, we are going to see these Vorto models and mappings in action.
 
-### 4. Setting up Eclipse Vorto Payload Normalization Middleware
+### 4. Setting up Eclipse Vorto Payload Normalization Middleware with Vorto AMQP Plugin 
 
 <img src="../images/tutorials/decouple_tutorial/stepOneOverview.png" />
 
 As seen in the picture, we will now setup the Eclipse Vorto Payload Normalization Middleware, which is a micro service written in Java, that consumes data from Eclipse Hono via AMQP and converts the data to semantic data structures, defined as Vorto Function Blocks. For this, the middleware utilizes the Mapping Specification that we created in the previous step. 
 
-Now start the middleware using the [Eclipse Vorto AMQP plugin](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/middleware-ext-amqp) and mounting a _mappings_ folder which contains your sensor mapping specifications:
+Now for the normalized data to be consumed by our IoT application we will send the normalized data from middleware to Amazon MQ and in the next step configure the IoT application to receive data from the new endpoint.
 
-```docker run -it -p 8080:8080 -v //C/absolute_local_dir:/mappings -p 8080:8080 -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password eclipsevorto/vorto-normalizer:nightly```
+> Create an Amazon MQ Broker using the tutorial from AWS [here](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html).
+
+Now start the middleware using the [Eclipse Vorto AMQP plugin](https://github.com/eclipse/vorto-examples/tree/master/vorto-middleware/middleware-ext-amqp) and mounting a _mappings_ folder which contains your sensor mapping specifications. We will configure our IoT Solution to subscribe to the new AMQP endpoint in the next step.
+
+```
+docker run -it -p 8080:8080 -v c:/absolute_local_dir:/mappings -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=OpenWire_endpoint -e amqp.topic.vorto=telemetry/vorto -e amqp.username=myusername -e amqp.password=mypassword eclipsevorto/vorto-normalizer:nightly
+```
 
 Before we can start sending data via MQTT again, we need to make some changes to the Bosch IoT Hub Device Registry. These changes are required by the Vorto middleware to work properly. 
 
@@ -280,23 +287,14 @@ Repeat this step for the second device ID (4712) , with the following content:
 **Finally!** We are all set to start sending the same data as in **step 2** using `mosquitto_pub`. You should be able to see the normalized payload with the exact same structure for both sensor types in the Vorto Middleware [monitoring logs](http://localhost:8080/#/monitoring). 
 
 
-<img src="../images/tutorials/decouple_tutorial/normalized.png" />
+<img src="../images/tutorials/decouple_tutorial/middlewareMonitoringLog.png" />
 
 
-### 5. Make cloud application changes
+### 5. Make IoT application changes
 
 <img src="../images/tutorials/decouple_tutorial/stepTwoOverview.png" />
 
-In order to see the data in our IoT application again we need to send the normalized data into an MQ and then subscribe to it from our app. Let's use Amazon MQ to do this. 
-
-> Create an Amazon MQ Broker using the tutorial from AWS [here](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/amazon-mq-creating-configuring-broker.html).
-
-Restart docker with the new MQ credentials to publish data into Amazon MQ. We will configure our IoT Solution to subscribe to the new AMQP endpoint.
-
-```docker run -it -p 8080:8080 -v //C/absolute_local_dir:/mappings -p 8080:8080 -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e amqp.url=myurl -e amqp.topic.vorto=telemetry/vorto -e amqp.username=myusername -e amqp.password=mypassword eclipsevorto/vorto-normalizer:nightly```
-
-
-Now just change the configuration of the Geolocation IoT application, by pointing it to our new [Amazon MQ Broker](https://aws.amazon.com/amazon-mq/) AMQP endpoint, in order to receive the normalized geolocation sensor data.
+Change the configuration of the Geolocation IoT application, by pointing it to our new [Amazon MQ Broker](https://aws.amazon.com/amazon-mq/) AMQP endpoint, in order to receive the normalized geolocation sensor data.
 
 Please open the `application.yml` and replace the url, topic and credentials as seen below:
 
@@ -308,7 +306,7 @@ amqp:
   queue: telemetry/vorto
 ```
 
-When you start the application and send data for the two sensors via MQTT, you will now see the normalized geolocation data in the console of the application.
+When you start the application and send data for the two sensors via MQTT, you will see the normalized geolocation data printed in the console of the application.
 
 ## What's next?
 
