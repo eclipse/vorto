@@ -11,14 +11,14 @@ In this tutorial, you are going to learn, how you can use [Eclipse Vorto](https:
 We are going to use the GPS sensors, that we had described and connected with Vorto in the [mapping pipeline tutorial](create_mapping_pipeline.md). Make sure you had worked through that tutorial thoroughly before proceeding because it gives you a very good understanding of the essence of the Eclipse Vorto project and prepares everything you need for this tutorial. 
 Ready? Great. Let's proceed. 
 
-As shown in the following illustration, we send GPS location data from two different sensors using different data formats via MQTT to Eclipse Hono. The [Eclipse Vorto normalization middleware](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) consumes the sensor data and uses the [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md), in order to transform the data to a normalized, semantically enriched JSON before forwarding this data to an AWS Kinesis data stream. In Kinesis we will then write a small application, that analyzes the harmonized location data.
+As shown in the following illustration, we send GPS location data from two different sensors using different data formats via MQTT to Eclipse Hono. The [Eclipse Vorto normalization middleware](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/Readme.md) consumes the sensor data and uses the [Vorto AWS Kinesis plugin](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md), in order to transform the data to a normalized, semantically enriched JSON before forwarding this data to an AWS Kinesis data stream. In Kinesis we will then write a small analytics application, that analyzes the Vorto compliant location data. 
  
 <img src="../images/tutorials/integrate_kinesis/overview_kinesis_vorto.png"/>
 
 
 ## Prerequisites
 
-* Successfully completed the [mapping pipeline tutorial](create_mapping_pipeline.md)
+* Successfully completed the entire [mapping pipeline tutorial](create_mapping_pipeline.md)
 
 <br />
 
@@ -28,9 +28,8 @@ Here are the steps, that we are going to take during this tutorial:
 
 1. Setting up Kinesis on AWS
 2. Configuring and starting the Vorto middleware with your AWS Kinesis data stream settings
-3. Sending device data to Eclipse Hono via MQTT and monitor the incoming data in the Eclipse Vorto middleware dashboard
-4. Creating an AWS Kinesis analytics application
-5. Testing the analytics application
+3. Creating an AWS Kinesis analytics application
+4. Testing the analytics application by sending device data via MQTT
 
 <br />
 
@@ -45,24 +44,16 @@ Here are the steps, that we are going to take during this tutorial:
 
 ## Step 2: Configurating & Starting the Eclipse Vorto Middleware
 
-1. Head over to AWS IAM, and create a technical user with AWS Kinesis full access permissions. Keep note of the access key and secret key. 
-2. Start the Eclipse Vorto Middleware docker with the required [Kinesis environment variables](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md#configuration) ```docker run -it -p 8080:8080 -v //C/absolute_local_dir:/mappings -p 8080:8080 -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e kinesis.streamName=vortoDemo -kinesis.accessKey=mykey -e kinesis.secretKey=mysecret eclipsevorto/vorto-normalizer:nightly```
-3. Once the service has started successfully, open the local [Eclipse Vorto middleware dashboard](http://localhost:8080/#/plugins). You should see the AWS Kinesis plugin in active mode (green light). 
+* Head over to AWS IAM, and create a technical user with AWS Kinesis full access permissions. Keep note of the access key and secret key. 
+* Start the Eclipse Vorto Middleware docker with the required [Kinesis environment variables](https://github.com/eclipse/vorto-examples/blob/master/vorto-middleware/middleware-ext-kinesis/Readme.md#configuration) 
+
+```docker run -it -p 8080:8080 -v c:/absolute_local_dir:/mappings -e mapping_spec_dir=/mappings -e github.client.clientId=your_github_clientid -e github.client.clientSecret=your_github_clientsecret -e hono.tenantId=your_tenantId -e hono.password=your_hono_password -e kinesis.streamName=vortoDemo -kinesis.accessKey=mykey -e kinesis.secretKey=mysecret eclipsevorto/vorto-normalizer:nightly```
+
+* Once the service has started successfully, open the local [Eclipse Vorto middleware dashboard](http://localhost:8080/#/plugins). You should see the AWS Kinesis plugin in active mode (green light). 
 
 **Congrats!** Your middleware is all set now to receive IoT device data from Eclipse Hono protocol adapters and forward it to your AWS Kinesis stream.
 
-## Step 3: Sending device data
-
-Send some location data to Eclipse Hono via MQTT 
-
-```mosquitto pub ....```
-
-Open the [Vorto Middleware Monitoring dashboard](http://localhost:8080/#/monitoring) and observe the logs. You should see something like this: 
-
-//TODO: Fixme to show the monitoring logs showing the gps sensor data
-<img src="../images/tutorials/integrate_kinesis/kinesis_logs.png"/>
-
-## Step 4: Creating an AWS Kinesis analytics application
+## Step 3: Creating an AWS Kinesis analytics application
 
 1. Open the Kinesis service dashboard in AWS
 2. Click **Create Analytics Application**
@@ -72,29 +63,56 @@ Open the [Vorto Middleware Monitoring dashboard](http://localhost:8080/#/monitor
 6. Select **Connect streaming data** and select **Kinesis data stream** as source
 7. Choose the data stream, we had created in step 1, e.g. *vortoDemo*
 8. Leave the other selections as default.
-9. Click **Discover schema**. Make sure you are sending data to the Vorto middleware, so that AWS is able to discover the schema from the data it receives. You should be able to see a table, similar to this:<img src="../images/tutorials/integrate_kinesis/kinesis_discover_schema.png"/>
+9. Click **Discover schema**. Make sure you are sending data to the Vorto middleware, so that AWS is able to discover the schema from the data it receives. You should be able to see a table, similar to this:<img src="../images/tutorials/integrate_kinesis/schemaDiscovery.png"/>
 10. Select **Save and confinue**
-11. Choose **Go to SQL Editor** in order to process the incoming device data. Copy the following SQL snippet in the SQL editor and **save&run** the SQL: 
+11. Choose **Go to SQL Editor** in order to process the incoming device data. Copy the following SQL snippet in the SQL editor: 
 
 ```
-HERE goes the SQL analytics snippet for the gps analytics 
+CREATE OR REPLACE STREAM "DESTINATION_SQL_STREAM"
+           ("latitude" DECIMAL(5,4),
+            "longitude" DECIMAL(7,4),
+            "deviceId" INTEGER);
+ 
+CREATE OR REPLACE PUMP "STREAM_PUMP" AS
+   INSERT INTO "DESTINATION_SQL_STREAM"
+      SELECT STREAM "latitude", "longitude", "deviceId"
+      FROM   "SOURCE_SQL_STREAM_001"
+      WHERE "latitude" <> 1.3475 and "longitude" <> 103.8410; 
 ```
 
-TODO: Explain the SQL snippet.
+Firstly, we create a new destination stream, which will contain all data that we are interested in for further processing.
+In the second statement,  we find all devices and their locations that do not match a specific reference point and insert them into our destination stream.
 
-## Step 5: Testing the analytics application
+> This is very basic and simple example. Feel free to modify it to your liking, for a more complex analytics scenerio.  
 
-In this step, we are going to send some test data of our first GPS sensor with location data, **not meeting the geofence condition**.  
+Finally, make sure, that you **save&run** the SQL. This sets up the realtime analytics application, ready to receive data from our Vorto middleware.
 
-```mosquitto pub sending JSON with location data```
+## Step 4: Testing the analytics application
 
-Now, we are sending test data of the second gps sensor in CSV format that **meets the geofence condition**:
+In this step, we are going to test our analytics app by sending some test data via MQTT from both of our gps sensors: 
 
-```mosquitto pub sending CSV with location data```
+* Firstly, we send data from the first GPS sensor **not meeting the location reference point condition**. This will be detected by our analytics algorithm and insert the data into our destination kinesis stream. 
 
-Now you can check our Kinesis analytics application where the destination stream now contains the data of our second sensor:
+	```
+	mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u 4711@tenantID -P secret -t telemetry/tenantID/4711 -m '{"longitude": "103.8410", "latitude": "1.3474"}' --cafile iothub.crt
+	```
 
-ADD ILLUSTRATION HERE
+* Now, let's send some data from the other gps sensor that **meets the reference point condition**:
+
+	```
+	mosquitto_pub -h mqtt.bosch-iot-hub.com -p 8883 -u 4712@tenantID -P secret -t telemetry/tenantID/4712 -m '103.8410,1.3475' --cafile iothub.crt
+	```
+
+
+* You can check if the correct location data is pushed into our kinesis destination stream:
+
+	<img src="../images/tutorials/integrate_kinesis/sql.png"/>
+	
+	
+* Optionally: For easy debugging, you can observe the [monitoring dashboard](http://localhost:8080/#/monitoring) for any inbound/outbound device messages.
+
+
+**Way to go!** That's it. You just saw how easy it is to use the Vorto Kinesis plugin with the Eclipse Vorto normalization middleware, in order to push normalized/semantic device data to AWS Kinesis.
 
 ## What's next?
 
