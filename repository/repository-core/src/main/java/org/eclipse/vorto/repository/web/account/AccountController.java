@@ -286,8 +286,8 @@ public class AccountController {
     User user = accountService.getUser(ControllerUtils.sanitize(username));
     if (user != null) {
       return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
-    } else {
-      // TODO return something to prompt front-end to request creating technical user with given authentication provider ID
+    }
+    else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -300,8 +300,8 @@ public class AccountController {
     Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
     if (users != null) {
       return new ResponseEntity<>(users.stream().map(UserDto::fromUser).collect(Collectors.toList()), HttpStatus.OK);
-    } else {
-      // TODO return something to prompt front-end to request creating technical user with given authentication provider ID
+    }
+    else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
