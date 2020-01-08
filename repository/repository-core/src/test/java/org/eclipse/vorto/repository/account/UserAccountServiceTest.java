@@ -65,11 +65,17 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
     accountService.create(user.getUsername(), "GITHUB", null);
   }
 
+  /**
+   * Tests that creating a technical user and adding to a non-existing namespace fails.
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testCreateTechnicalUserAndAddToNonExistingNamespace() {
     accountService.createTechnicalUserAndAddToTenant("doesNotExist", "pepe", "GITHUB", Role.USER);
   }
 
+  /**
+   * Tests that creating a technical user with no authentication provider fails.
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testCreateTechnicalUserWithoutAuthenticationProvider() {
     // this implicitly creates the "playground" namespace
