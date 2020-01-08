@@ -41,7 +41,9 @@
 						</div>
 					</td>
 					<td class="col-md-2">
-						<div ng-repeat="admin in tenant.admins">{{admin}}</div>
+						<div style="min-height:40px;max-height:160px;overflow-y:scroll">
+							<div ng-repeat="admin in tenant.admins | orderBy:admin">{{admin}}</div>
+						</div>
 					</td>
 					<td class="col-md-3">
 							<a ng-click="openDeleteDialog(tenant)" data-toggle="tooltip" data-placement="bottom" title="Delete Namespace">
