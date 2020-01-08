@@ -4,6 +4,17 @@
 			display:block;
 			visibility: hidden;
 		}
+		.dropDownUL {
+			list-style-type:none;
+			margin:0;
+			padding:0;
+			min-height:40px;
+			max-height:160px;
+			overflow:auto;
+			width:auto;
+			border:1px solid #7fc6e7;
+			z-index: 99;
+		}
 	</style>
 	<div class="modal-header">
 		<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
@@ -27,40 +38,37 @@
 					 ng-model-options="{ debounce: 1000 }" ng-change="findUsers()">
 				</div>
 			</div>
-
-			<div class="row" ng-show="retrievedUsers.length > 0">
+			<div class="row">
 				<div class="col-sm-offset-2 col-sm-10">
-					<select class="form-control" id="userSearchSelect"
-						ng-options="user as user.username for user in retrievedUsers track by user.username"
-						ng-model="selectedUser"
-						ng-value="retrievedUsers[0].username"
-						ng-show="retrievedUsers.length > 0"
-						ng-change="selectUser()"
-					>
-					</select>
-
+					<ul class="dropDownUL" ng-show="retrievedUsers.length > 0" ng->
+						<li id="{{user.username}}" ng-repeat="user in retrievedUsers track by user.username"
+								ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
+								ng-mouseleave="unhighlightUser(user)">
+							{{user.username}}
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" ng-model="user.roleUser"> VIEW <small>permission to browse models</small>
-						</label>
-					</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleUser"> VIEW <small>permission to browse models</small>
+					</label>
 				</div>
 			</div>
+		</div>
 
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" ng-model="user.roleModelCreator"> CREATE <small>permission to create and modify models</small>
-								</label>
-							</div>
-				</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelCreator"> CREATE <small>permission to create and modify models</small>
+							</label>
+						</div>
+			</div>
 		</div>
 
 		<div class="form-group">

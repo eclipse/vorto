@@ -114,18 +114,36 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.selectedUser = null;
         $scope.retrievedUsers = [];
 
-        $scope.selectUser = function() {
-            document.getElementById('userId').value = $scope.selectedUser.username;
+        $scope.selectUser = function(user) {
+            if (user) {
+                $scope.selectedUser = user;
+                document.getElementById('userId').value = $scope.selectedUser.username;
+            }
+            $scope.retrievedUsers = [];
+        }
+
+        $scope.highlightUser = function(user) {
+            var element = document.getElementById(user.username);
+            if (element) {
+                element.style.backgroundColor = '#7fc6e7';
+                element.style.color = '#ffffff'
+            }
+        }
+
+        $scope.unhighlightUser = function(user) {
+            var element = document.getElementById(user.username);
+            if (element) {
+                element.style.backgroundColor = 'initial';
+                element.style.color = 'initial';
+            }
         }
 
         $scope.findUsers = function() {
             // only initiates user search if partial name is larger >= 4 characters
             // this is to prevent unmanageably large drop-downs
             if ($scope.userPartial && $scope.userPartial.length >= 4) {
-                //document.getElementById("userSearchSelect").style.visibility = 'visible';
                 $http.get("./rest/accounts/search/" + $scope.userPartial)
                 .then(function (result) {
-                    console.log(result);
                     if (result.data) {
                         $scope.retrievedUsers = result.data;
                         if ($scope.retrievedUsers.length == 1) {
