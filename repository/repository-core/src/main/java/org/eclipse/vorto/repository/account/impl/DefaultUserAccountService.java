@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -51,15 +51,18 @@ public class DefaultUserAccountService
   @Value("${server.admin:#{null}}")
   private String[] admins;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private IUserRepository userRepository;
 
   @Autowired
   private INotificationService notificationService;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ITenantRepository tenantRepo;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ITenantUserRepo tenantUserRepo;
 
@@ -87,14 +90,92 @@ public class DefaultUserAccountService
     return true;
   }
 
-  public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
+  /**
+   * This method does to extraneous things - ugly but convenient to centralize some validation logic:
+   * <ul>
+   *   <li>
+   *     Validates all "id" string parameters and fails if any invalid ({@literal null} or empty).
+   *   </li>
+   *   <li>
+   *     Validates that the given roles are not empty.
+   *   </li>
+   *   <li>
+   *     Attempts to find an existing tenant (namespace) with the given id, and fails if not found.
+   *   </li>
+   *   <li>
+   *     If found, returns the tenant (namespace).
+   *   </li>
+   * </ul>
+   * With the current usage, it's probably not worth re-writing / separating scopes.
+   *
+   * @param tenantId
+   * @param userId
+   * @param authenticationProviderId
+   * @param roles
+   * @return
+   */
+  private Tenant validateAndReturnTenant(String tenantId, String userId, String authenticationProviderId, Role... roles) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(userId, "userId");
     PreConditions.notNullOrEmpty(roles, "roles should not be empty");
-
+    if (authenticationProviderId != null) {
+      if (authenticationProviderId.trim().isEmpty()) {
+        throw new IllegalArgumentException("Given authentication provider cannot be empty.");
+      }
+    }
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
+    PreConditions.notNull(tenant, "Tenant with given tenantId does not exist");
+    return tenant;
+  }
 
-    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+  /**
+   * This is invoked through a {@code POST} request in the {@link org.eclipse.vorto.repository.web.account.AccountController},
+   * when an administrator wants to add a new technical user to a given namespace. <br/>
+   * @see DefaultUserAccountService#addUserToTenant(String, String, Role...) for situations where the
+   * user exists already, instead.
+   * @param tenantId
+   * @param userId
+   * @param authenticationProviderId
+   * @param roles
+   * @return
+   */
+  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, String authenticationProviderId, Role... roles) {
+
+    Tenant tenant = validateAndReturnTenant(tenantId, userId, authenticationProviderId, roles);
+
+    // additional validation for authentication provider id
+    PreConditions.notNullOrEmpty(authenticationProviderId, "authenticationProviderId");
+
+    // this creates and persists the technical user
+    User user = User.create(userId, authenticationProviderId, null, true);
+    userRepository.save(user);
+    // this creates and persists the "tenant user"
+    TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
+    tenantUserRepo.save(tenantUser);
+    eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));
+    return true;
+  }
+
+  /**
+   * As the name implies, adds a given user to the given tenant/namespace, with the given roles.<br/>
+   * As the name does <b>not</b> imply, the given user represented by the {@code userId} parameter
+   * must exist.<br/>
+   * For the purpose of ensuring the user exists, the front-end will first invoke a user search. <br/>
+   * If the user is found, then this method gets eventually invoked after the {@code PUT} method is
+   * called in the {@link org.eclipse.vorto.repository.web.account.AccountController}.<br/>
+   * If the user search returns {@literal 404}, then the {@code POST} method is invoked instead in
+   * the {@link org.eclipse.vorto.repository.web.account.AccountController}, which may end up invoking
+   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, String, Role...)},
+   * upon administrative user confirmation that they want to create a technical user instead.
+   * @param tenantId the tenant to add this user to
+   * @param userId the user id
+   * @param roles the roles to be given to the user
+   * @return
+   */
+  public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
+
+    // cannot validate authentication provider within context
+    Tenant tenant = validateAndReturnTenant(tenantId, userId, null, roles);
 
     Optional<TenantUser> maybeUser = tenant.getUser(userId);
     if (maybeUser.isPresent()) {
@@ -259,6 +340,11 @@ public class DefaultUserAccountService
   @Override
   public User getUser(String username) {
     return this.userRepository.findByUsername(username);
+  }
+
+  @Override
+  public Collection<User> findUsers(String partial) {
+    return this.userRepository.findUserByPartial(partial);
   }
 
   @Override

@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
+  <h4 class="modal-title">Create technical user
+    <a class="help-icon"
+       href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/managing_collaborators.md" target="_blank"
+       title="Read more about managing Collaborators"><span class="fa fa-question-circle" /></a>
+  </h4>
+</div>
+<div class="modal-body">
+  <div>
+      User <i>{{user.username}}</i> does not exist. <br/><br/>
+      Create a new technical user and add it to the <i>{{tenant.defaultNamespace}}</i> namespace by selecting the
+      desired authentication provider below.
+    <hr/>
+  </div>
+
+
+  <div class="row" ng-show="errorMessage !== ''">
+    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+  </div>
+
+  <div class="table">
+    <br/>
+    <div ng-repeat="provider in context.providers" class="table-row-cell" >
+        <input id={{provider.id}} type="radio" name="authorizationProvider" ng-model=$parent.selectedAuthenticationProviderId class="btn btn-default" value={{provider.id}} />
+        <img src="{{provider.logoHref}}" alt="Select {{provider.label}}"/>
+        <label  for={{provider.id}}>{{provider.label}}</label>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div class="form-group">
+    <button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary pull-right" ng-click="createNewTechnicalUser()" ng-disabled="isCurrentlyAddingOrUpdating || !selectedAuthenticationProviderId">
+      <i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i> Create
+    </button>
+  </div>
+</div>
+</form>

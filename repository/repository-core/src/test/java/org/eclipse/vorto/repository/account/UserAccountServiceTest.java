@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.account;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
@@ -62,6 +63,24 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
     User user = setupUserWithRoles("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
     accountService.create(user.getUsername(), "GITHUB", null);
+  }
+
+  /**
+   * Tests that creating a technical user and adding to a non-existing namespace fails.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserAndAddToNonExistingNamespace() {
+    accountService.createTechnicalUserAndAddToTenant("doesNotExist", "pepe", "GITHUB", Role.USER);
+  }
+
+  /**
+   * Tests that creating a technical user with no authentication provider fails.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithoutAuthenticationProvider() {
+    // this implicitly creates the "playground" namespace
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant("playground", "pepe", null, Role.USER);
   }
 
   private User setupUserWithRoles(String username) {
