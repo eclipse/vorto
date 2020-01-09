@@ -30,7 +30,15 @@ public interface IUserRepository extends CrudRepository<User, Long> {
    * @return
    */
   User findByUsername(String username);
-  
+
+  /**
+   * Finds a list of users matching the given partial username.
+   * @param partial
+   * @return
+   */
+  @Query("SELECT u from User u WHERE LOWER(u.username) LIKE %?1%")
+  Collection<User> findUserByPartial(String partial);
+
   @Query("SELECT u from User u, TenantUser tu, UserRole r " + 
          "WHERE u.id = tu.user.id AND " +
          "tu.id = r.user.id AND " +

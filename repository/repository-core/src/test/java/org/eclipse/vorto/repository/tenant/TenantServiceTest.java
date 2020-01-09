@@ -46,15 +46,13 @@ public class TenantServiceTest {
   private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
   protected TenantService tenantServiceObj = Mockito.mock(TenantService.class);
-//  private Tenant playgroundTenant = playgroundTenant();
-  
-  
-  
+
   @Before
   public void beforeEach() throws Exception {
 	  List<Tenant> tenantList = new ArrayList<Tenant>();
 	  Mockito.when(tenantRepo.findAll()).thenReturn(tenantList);
   }
+
   @Test
   public void testPreconditions() {
     Mockito.when(accountService.exists("admin")).thenReturn(false);
