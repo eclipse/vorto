@@ -129,6 +129,10 @@ public class AccountController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
+    if (Strings.nullToEmpty(user.getSubject()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
     if (user.getRoles().stream()
         .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
@@ -147,7 +151,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
       return new ResponseEntity<>(
-        accountService.createTechnicalUserAndAddToTenant(tenantId, userId, user.getAuthenticationProviderId(), toRoles(user)),
+        accountService.createTechnicalUserAndAddToTenant(tenantId, userId, user, toRoles(user)),
         HttpStatus.OK
       );
     } catch (IllegalArgumentException e) {

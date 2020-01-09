@@ -12,10 +12,17 @@
  */
 package org.eclipse.vorto.repository.utils;
 
-import java.util.Collection;
 import com.google.common.base.Strings;
+import java.util.Collection;
 
 public class PreConditions {
+
+  public static void withPattern(String pattern, String item, String name) {
+    notNullOrEmpty(item, name);
+    if (!item.matches(pattern)) {
+      throw new IllegalArgumentException(String.format("%s '%s' does not match pattern: '%s'", name, item, pattern));
+    }
+  }
   
   public static void notNullOrEmpty(String item, String name) {
     if (Strings.nullToEmpty(item).trim().isEmpty()) {

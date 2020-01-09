@@ -113,6 +113,7 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.userPartial = "";
         $scope.selectedUser = null;
         $scope.retrievedUsers = [];
+        $scope.technicalUserSubject = null;
 
         $scope.selectUser = function(user) {
             if (user) {
@@ -123,7 +124,7 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.highlightUser = function(user) {
-            var element = document.getElementById(user.username);
+            let element = document.getElementById(user.username);
             if (element) {
                 element.style.backgroundColor = '#7fc6e7';
                 element.style.color = '#ffffff'
@@ -131,7 +132,7 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.unhighlightUser = function(user) {
-            var element = document.getElementById(user.username);
+            let element = document.getElementById(user.username);
             if (element) {
                 element.style.backgroundColor = 'initial';
                 element.style.color = 'initial';
@@ -160,16 +161,15 @@ repositoryControllers.controller("createOrUpdateUserController",
                 $scope.retrievedUsers = [];
                 $scope.selectedUser = null;
             }
+            $scope.toggleSubmitButton();
         };
 
-        //$scope.findUsers();
-        
         $scope.cancel = function() {
             $uibModalInstance.dismiss("Canceled.");  
         };
 
         $scope.promptCreateNewTechnicalUser = function() {
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: "webjars/repository-web/dist/partials/admin/createTechnicalUser.html",
                 size: "md",
@@ -194,24 +194,42 @@ repositoryControllers.controller("createOrUpdateUserController",
             $http.post("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
                 "username": $scope.user.username,
                 "roles" : $scope.getRoles($scope.user),
-                "authenticationProviderId": $scope.selectedAuthenticationProviderId
+                "authenticationProviderId": $scope.selectedAuthenticationProviderId,
+                "subject": $scope.technicalUserSubject
             })
-            .then(function(result) {
-                $uibModalInstance.close($scope.user);
-            }, function(reason) {
-                $scope.errorMessage = "Creation of technical user " +
-                    $scope.user.username + " in namespace " +
-                    $scope.tenant.defaultNamespace + " failed. ";
-            });
+            .then(
+                function(result) {
+                    $uibModalInstance.close($scope.user);
+                },
+                function(reason) {
+                    $scope.errorMessage = "Creation of technical user " +
+                        $scope.user.username + " in namespace " +
+                        $scope.tenant.defaultNamespace + " failed. ";
+                }
+            );
         };
+
+        $scope.toggleSubmitButton = function() {
+            let button = document.getElementById("submitButton");
+            if (button) {
+                button.disabled = !(
+                    ($scope.user && $scope.user.username)
+                    ||
+                    $scope.userPartial
+                    ||
+                    $scope.selectedUser
+                );
+            }
+            return button && !button.disabled;
+        }
 
         $scope.addOrUpdateUser = function() {
             // adds username to scope user by either using selected user from
             // drop-down if any, or using the string in user's input box
             if ($scope.selectedUser) {
-                $scope.user.username = $scope.selectedUser.username;
+                $scope.user = $scope.selectedUser;
             }
-            else {
+            else if ($scope.userPartial) {
                 $scope.user.username = $scope.userPartial;
             }
             $scope.validate($scope.user, function(result) {

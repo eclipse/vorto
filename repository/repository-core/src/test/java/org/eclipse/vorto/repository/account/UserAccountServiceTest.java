@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
@@ -70,7 +71,11 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testCreateTechnicalUserAndAddToNonExistingNamespace() {
-    accountService.createTechnicalUserAndAddToTenant("doesNotExist", "pepe", "GITHUB", Role.USER);
+    accountService.createTechnicalUserAndAddToTenant(
+        "doesNotExist", "pepe",
+        new TenantTechnicalUserDto().setAuthenticationProviderId("GITHUB").setSubject("subject"),
+        Role.USER
+    );
   }
 
   /**

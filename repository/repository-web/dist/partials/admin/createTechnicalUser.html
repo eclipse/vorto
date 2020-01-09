@@ -6,21 +6,29 @@
        title="Read more about managing Collaborators"><span class="fa fa-question-circle" /></a>
   </h4>
 </div>
-<div class="modal-body">
+<div class="modal-header">
   <div>
-      User <i>{{user.username}}</i> does not exist. <br/><br/>
-      Create a new technical user and add it to the <i>{{tenant.defaultNamespace}}</i> namespace by selecting the
-      desired authentication provider below.
-    <hr/>
+    <h5>User <i>{{user.username}}</i> does not exist. </h5>
+    <br/>
+    Create a new technical user and add it to the <i>{{tenant.defaultNamespace}}</i> namespace by:
+    <br/>
+    <br/>
+    <ul>
+        <li>Choosing a subject</li>
+        <li>Selecting the desired authentication provider</li>
+      </ul>
   </div>
+</div>
 
-
+<div class="modal-body">
   <div class="row" ng-show="errorMessage !== ''">
     <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
   </div>
 
-  <div class="table">
-    <br/>
+  <div class="form-group">
+    <!-- -->
+    <input ng-pattern="/^[a-zA-Z0-9]{4,}$/" class="form-control" id="subject" type="text" name="subject" ng-model=technicalUserSubject placeholder="Subject" required>
+    <hr/>
     <div ng-repeat="provider in context.providers" class="table-row-cell" >
         <input id={{provider.id}} type="radio" name="authorizationProvider" ng-model=$parent.selectedAuthenticationProviderId class="btn btn-default" value={{provider.id}} />
         <img src="{{provider.logoHref}}" alt="Select {{provider.label}}"/>
@@ -28,10 +36,11 @@
     </div>
   </div>
 </div>
+
 <div class="modal-footer">
   <div class="form-group">
     <button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
-    <button type="button" class="btn btn-primary pull-right" ng-click="createNewTechnicalUser()" ng-disabled="isCurrentlyAddingOrUpdating || !selectedAuthenticationProviderId">
+    <button type="button" class="btn btn-primary pull-right" ng-click="createNewTechnicalUser()" ng-disabled="isCurrentlyAddingOrUpdating || !selectedAuthenticationProviderId || !technicalUserSubject">
       <i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i> Create
     </button>
   </div>
