@@ -65,10 +65,11 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(GENERATOR_KEY)
-        .withConfigurationTemplate(ConfigTemplateBuilder.builder().withChoiceConfigurationItem(
-            "target", "Output format",
-            ChoiceItem.of("Ditto Thing JSON", THING_JSON),
-            ChoiceItem.of("JSON Schema", JSON_SCHEMA))
+        .withConfigurationKey("target")
+        .withConfigurationTemplate(ConfigTemplateBuilder.builder()
+            .withChoiceConfigurationItem("target", "Output format",
+                ChoiceItem.of("Ditto Thing JSON", THING_JSON),
+                ChoiceItem.of("JSON Schema", JSON_SCHEMA))
             .build())
         .withVendor("Eclipse Ditto Team")
         .withName("Eclipse Ditto")
