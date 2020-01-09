@@ -33,6 +33,7 @@ import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -67,6 +68,14 @@ public class DefaultUserAccountService
   private ITenantUserRepo tenantUserRepo;
 
   private ApplicationEventPublisher eventPublisher = null;
+
+  /**
+   * Defines the minimum validation requirement for a subject string. <br/>
+   * Set arbitrarily to 4+ alphanumeric characters for now. <br/>
+   * This is and should be reflected in the front-end validation - see resource
+   * {@literal createTechnicalUser.html}.
+   */
+  public static final String AUTHENTICATION_SUBJECT_VALIDATION_PATTERN = "^[a-zA-Z0-9]{4,}$";
 
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
@@ -135,23 +144,29 @@ public class DefaultUserAccountService
    * user exists already, instead.
    * @param tenantId
    * @param userId
-   * @param authenticationProviderId
+   * @param user
    * @param roles
    * @return
    */
-  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, String authenticationProviderId, Role... roles) {
+  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, TenantTechnicalUserDto user, Role... roles) {
+
+    String authenticationProviderId = user.getAuthenticationProviderId();
+    String subject = user.getSubject();
 
     Tenant tenant = validateAndReturnTenant(tenantId, userId, authenticationProviderId, roles);
 
-    // additional validation for authentication provider id
+    // additional validation for authentication provider id and subject
     PreConditions.notNullOrEmpty(authenticationProviderId, "authenticationProviderId");
+    PreConditions.withPattern(AUTHENTICATION_SUBJECT_VALIDATION_PATTERN, subject, "subject");
 
     // this creates and persists the technical user
-    User user = User.create(userId, authenticationProviderId, null, true);
-    userRepository.save(user);
+    User userToCreate = User.create(userId, authenticationProviderId, subject, true);
+    userRepository.save(userToCreate);
+
     // this creates and persists the "tenant user"
-    TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
-    tenantUserRepo.save(tenantUser);
+    TenantUser tenantUserToCreate = TenantUser.createTenantUser(tenant, userToCreate, roles);
+    tenantUserRepo.save(tenantUserToCreate);
+
     eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));
     return true;
   }
@@ -165,7 +180,7 @@ public class DefaultUserAccountService
    * called in the {@link org.eclipse.vorto.repository.web.account.AccountController}.<br/>
    * If the user search returns {@literal 404}, then the {@code POST} method is invoked instead in
    * the {@link org.eclipse.vorto.repository.web.account.AccountController}, which may end up invoking
-   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, String, Role...)},
+   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, TenantTechnicalUserDto, Role...)},
    * upon administrative user confirmation that they want to create a technical user instead.
    * @param tenantId the tenant to add this user to
    * @param userId the user id

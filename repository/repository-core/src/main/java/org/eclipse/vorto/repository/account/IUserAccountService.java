@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -59,11 +60,11 @@ public interface IUserAccountService {
    * the given tenant.
    * @param tenantId
    * @param userId
-   * @param authenticationProviderId
+   * @param user
    * @param roles
    * @return always {@literal true} (fails with runtime exception if some operation failed).
    */
-  boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, String authenticationProviderId, Role... roles);
+  boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, TenantTechnicalUserDto user, Role... roles);
 
   /**
    * Returns if the particular user as the role in the Tenant
