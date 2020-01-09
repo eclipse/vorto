@@ -11,17 +11,26 @@
  */
 package org.eclipse.vorto.repository.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.web.servlet.MvcResult;
 
 
 public class AccountControllerTest extends AbstractIntegrationTest {
@@ -54,6 +63,44 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isNotFound());
   }
 
+  @Test
+  public void searchExistingUserStartingWith() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
+    }
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/test").with(userAdmin))
+        .andExpect(status().isOk())
+        .andReturn();
+    // quick, but dirty
+    String expectedUsernameKV = "\"username\":\"testUser\"";
+    assertTrue(result.getResponse().getContentAsString().contains(expectedUsernameKV));
+  }
+
+  @Test
+  public void searchExistingUserContaining() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
+    }
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/stuse").with(userAdmin))
+        .andExpect(status().isOk())
+        .andReturn();
+    // quick, but dirty
+    String expectedUsernameKV = "\"username\":\"testUser\"";
+    assertTrue(result.getResponse().getContentAsString().contains(expectedUsernameKV));
+  }
+
+  @Test
+  public void searchNonExistingUser() throws Exception {
+    if (accountService.getUser(testUser) == null) {
+      accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
+    }
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/blah").with(userAdmin))
+        .andExpect(status().isOk())
+        .andReturn();
+    // quick, but dirty
+    String expectedUsernameKV = "\"username\":\"testUser\"";
+    assertEquals(result.getResponse().getContentAsString(), "[]");
+  }
   
   @Test
   public void upgradeUserAccount() throws Exception {
