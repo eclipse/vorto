@@ -85,7 +85,33 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
   public void testCreateTechnicalUserWithoutAuthenticationProvider() {
     // this implicitly creates the "playground" namespace
     User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant("playground", "pepe", null, Role.USER);
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("subject").setAuthenticationProviderId(null), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithoutSubject() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject(null).setAuthenticationProviderId("GITHUB"), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithSubjectTooShort() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("abc").setAuthenticationProviderId("GITHUB"), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithSubjectNotAlphanumeric() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("!§$%").setAuthenticationProviderId("GITHUB"), Role.USER
+    );
   }
 
   private User setupUserWithRoles(String username) {
