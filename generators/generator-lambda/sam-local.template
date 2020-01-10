@@ -1,0 +1,39 @@
+{
+  "Description": "Executes Vorto Code Generators",
+  "Resources": {
+    "VortoGeneratorsExecutor": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler",
+        "Events": {
+                  "Api": {
+                    "Type": "Api",
+                    "Properties": {
+                      "Path": "/api/2/plugins/generators/{pluginkey}",
+                      "Method": "put"
+                    }
+                  }
+                },
+        "Runtime" : "java8",
+        "CodeUri" : "./generator-lambda-executor/target/generator-lambda-executor-1.0.0-SNAPSHOT.jar"
+      }
+    },
+    "VortoGeneratorsPluginInfo": {
+          "Type": "AWS::Serverless::Function",
+          "Properties": {
+            "Handler": "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler",
+            "Events": {
+                              "Api": {
+                                "Type": "Api",
+                                "Properties": {
+                                  "Path": "/api/2/plugins/generators/{pluginkey}/info",
+                                  "Method": "get"
+                                }
+                              }
+                            },
+            "Runtime" : "java8",
+            "CodeUri" : "./generator-lambda-plugininfo/target/generator-lambda-plugininfo-1.0.0-SNAPSHOT.jar"
+          }
+        }
+  }
+}

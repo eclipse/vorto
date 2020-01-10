@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,7 +29,14 @@ public interface IUserAccountService {
    * @return users who are system administrators
    */
   Collection<User> getSystemAdministrators();
-  
+
+  /**
+   * Finds a list of users matching the given partial username.
+   * @param partial
+   * @return
+   */
+  Collection<User> findUsers(String partial);
+
   /**
    * 
    * @param tenantId the tenant from which to remove the user
@@ -46,12 +53,23 @@ public interface IUserAccountService {
    * @return status if the user was added successfully
    */
   boolean addUserToTenant(String tenantId, String userId, Role ... roles);
-  
+
+  /**
+   * Creates a technical user with the given id, authentication provider and roles, then adds it to
+   * the given tenant.
+   * @param tenantId
+   * @param userId
+   * @param authenticationProviderId
+   * @param roles
+   * @return always {@literal true} (fails with runtime exception if some operation failed).
+   */
+  boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, String authenticationProviderId, Role... roles);
+
   /**
    * Returns if the particular user as the role in the Tenant
    * 
    * @param tenantId the tenant to check 
-   * @param userId the user id
+   * @param authentication the authentication
    * @param role the role to check (e.g ROLE_TENANT_ADMIN, ROLE_USER,..)
    * @return
    */

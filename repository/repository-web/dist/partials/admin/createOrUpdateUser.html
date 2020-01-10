@@ -1,4 +1,21 @@
 <form class="form-horizontal" name="tenantForm">
+	<style>
+		.ng-hide:not(.ng-hide-animate) {
+			display:block;
+			visibility: hidden;
+		}
+		.dropDownUL {
+			list-style-type:none;
+			margin:0;
+			padding:0;
+			min-height:40px;
+			max-height:160px;
+			overflow:auto;
+			width:auto;
+			border:1px solid #7fc6e7;
+			z-index: 99;
+		}
+	</style>
 	<div class="modal-header">
 		<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
 		<h4 class="modal-title">{{ mode }} User <a class="help-icon" 
@@ -11,74 +28,90 @@
 		<div class="row" ng-show="errorMessage !== ''">
 			<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
 		</div>
-		
+
 		<div class="form-group">
-		    <label for="userId" class="col-sm-2 control-label">User ID</label>
-		    <div class="col-sm-10">
-		    	<input type="text" class="form-control" id="userId" placeholder="userId" ng-model="user.username" ng-readonly="user.edit">
-		    </div>
+			<div class="row">
+				<label for="userId" class="col-sm-2 control-label">User ID</label>
+				<div class="col-sm-10">
+					<input autofocus type="search" class="search-box-query-filter form-control search-input"
+					 id="userId" placeholder="userId" ng-model="userPartial" ng-readonly="user.edit"
+					 ng-model-options="{ debounce: 1000 }" ng-change="findUsers()">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-offset-2 col-sm-10">
+					<ul class="dropDownUL" ng-show="retrievedUsers.length > 0" ng->
+						<li id="{{user.username}}" ng-repeat="user in retrievedUsers track by user.username"
+								ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
+								ng-mouseleave="unhighlightUser(user)">
+							{{user.username}}
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleUser"> VIEW <small>permission to browse models</small>
-			        </label>
-		      	</div>
-		    </div>
+					</label>
+				</div>
+			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleModelCreator"> CREATE <small>permission to create and modify models</small>
-			        </label>
-		      	</div>
-		    </div>
+							</label>
+						</div>
+			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleModelPromoter"> PROMOTE <small>permission to release models</small>
-			        </label>
-		      	</div>
-		    </div>
+							</label>
+						</div>
+				</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleModelReviewer"> REVIEW <small>permission to review and approve models</small>
-			        </label>
-		      	</div>
-		    </div>
+							</label>
+						</div>
+			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleModelPublisher"> PUBLISH <small>permission to change the visibility of models</small>
-			        </label>
-		      	</div>
-		    </div>
+							</label>
+						</div>
+			</div>
 		</div>
-		
+
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" ng-model="user.roleAdmin"> MANAGE <small>permission to manage namespaces</small>
-			        </label>
-		      	</div>
-		    </div>
+							</label>
+						</div>
+				</div>
+			</div>
 		</div>
-	</div>
+
 	<div class="modal-footer">	
 		<div class="form-group">
 			<div class="col-sm-12">
