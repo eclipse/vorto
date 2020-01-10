@@ -36,7 +36,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 {
   "definition": ["«model.namespace»:«model.name»:«model.version»"],
   "attributes": {
- 	"thingName": "«model.displayname»"
+ 	"modelDisplayName": "«model.displayname»"
  	 },
  	"features": {
  	«FOR fbProperty : model.properties SEPARATOR ","»
