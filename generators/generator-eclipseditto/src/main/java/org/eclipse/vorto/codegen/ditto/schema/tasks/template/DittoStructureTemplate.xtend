@@ -34,9 +34,9 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
 {
-  "definition": ["«model.namespace»:«model.name»:«model.version»"],
+  "definition": "«model.namespace»:«model.name»:«model.version»",
   "attributes": {
- 	"thingName": "«model.displayname»"
+ 	"modelDisplayName": "«model.displayname»"
  	 },
  	"features": {
  	«FOR fbProperty : model.properties SEPARATOR ","»
