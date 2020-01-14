@@ -12,13 +12,18 @@
 package org.eclipse.vorto.repository.search;
 
 import static org.mockito.Mockito.when;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
@@ -65,8 +70,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
@@ -206,6 +209,56 @@ public final class SearchTestInfrastructure {
 
   protected EmbeddedElastic elasticSearch;
 
+  /**
+   * When building in a non-isolated environment, concurrent builds may not work while testing
+   * ES tests as the same ports would be in use, e.g. probably on Jenkins.<br/>
+   * This tiny utility randomizes ports for Allegro and the REST client with a few basic criteria,
+   * such as:
+   * <ul>
+   *  <li>Ports are not production ES ports</li>
+   *  <li>Ports are {@literal > 10000} (to broadly avoid collision with other "known" ports)</li>
+   *  <li>HTTP port (see {@link PopularProperties#HTTP_PORT}) and TCP port
+   *  (see {@link PopularProperties#TRANSPORT_TCP_PORT}) are expressed as a range of {@literal 1}</li>
+   *  <li>HTTP port and TCP port have a distance of {@literal 100} (arbitrary rule)</li>
+   * </ul>
+   */
+  private static class ESPortsRandomizer {
+    private static final int MAX_PORT = 65535;
+    private static final int MIN_PORT = 10000;
+    private int httpStart = 19200;
+    private int tcpStart = 19300;
+    private ESPortsRandomizer withHTTPStart(int start) {
+      this.httpStart = start;
+      return this;
+    }
+    private ESPortsRandomizer withTCPStart(int start) {
+      this.tcpStart = start;
+      return this;
+    }
+    int getHTTPStartPort() {
+      return httpStart;
+    }
+    int getHTTPEndPort() {
+      return httpStart + 1;
+    }
+    int getTCPStartPort() {
+      return tcpStart;
+    }
+    int getTCPEndPort() {
+      return tcpStart + 1;
+    }
+    private ESPortsRandomizer(){};
+    static ESPortsRandomizer newInstance() {
+      int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
+      return new ESPortsRandomizer()
+          .withHTTPStart(httpStart)
+          .withTCPStart(httpStart + 100);
+    }
+  }
+
+  private static final Logger LOGGER = Logger.getLogger(SearchTestInfrastructure.class);
+  private static final String RANDOM_ES_PORTS_LOG_FORMAT = "Initializing Elasticsearch test service port randomizer with HTTP [%d-%d] and TRANSPORT TCP [%d-%d]";
+
   protected Tenant playgroundTenant() {
     UserRole roleUser = new UserRole(Role.USER);
     UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
@@ -243,11 +296,21 @@ public final class SearchTestInfrastructure {
 
   protected SearchTestInfrastructure() throws Exception {
 
+    ESPortsRandomizer rando = ESPortsRandomizer.newInstance();
+    LOGGER.info(
+        String.format(
+            RANDOM_ES_PORTS_LOG_FORMAT,
+            rando.getHTTPStartPort(),
+            rando.getHTTPEndPort(),
+            rando.getTCPStartPort(),
+            rando.getTCPEndPort()
+        )
+    );
+
     elasticSearch = EmbeddedElastic.builder()
         .withElasticVersion("6.7.2")
-        .withSetting(PopularProperties.HTTP_PORT, 19200)
-        .withSetting(PopularProperties.TRANSPORT_TCP_PORT, 19300)
-        //.withIndex("vorto")
+        .withSetting(PopularProperties.HTTP_PORT, rando.getHTTPStartPort())
+        .withSetting(PopularProperties.TRANSPORT_TCP_PORT, rando.getTCPStartPort())
         .withSetting("discovery.type", "single-node")
         .withJavaHome(JavaHomeOption.inheritTestSuite())
         .withInResourceLocation("elasticsearch-6.7.2.zip")
@@ -311,9 +374,12 @@ public final class SearchTestInfrastructure {
     };
 
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
-    RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("localhost", 19200, "http"),
-        new HttpHost("localhost", 19201, "http"), new HttpHost("localhost", 19300, "http"),
-        new HttpHost("localhost", 19301, "http"));
+    RestClientBuilder clientBuilder = RestClient.builder(
+      new HttpHost("localhost", rando.getHTTPStartPort(), "http"),
+      new HttpHost("localhost", rando.getHTTPEndPort(), "http"),
+      new HttpHost("localhost", rando.getTCPStartPort(), "http"),
+      new HttpHost("localhost", rando.getTCPEndPort(), "http")
+    );
     searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder), repositoryFactory, tenantService);
 
     indexingService = (IIndexingService)searchService;
