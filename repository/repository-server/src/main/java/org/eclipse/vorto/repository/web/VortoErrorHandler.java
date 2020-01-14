@@ -1,9 +1,8 @@
 package org.eclipse.vorto.repository.web;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
@@ -41,21 +40,27 @@ public class VortoErrorHandler extends AbstractErrorController {
     }
 
     private void loadHtmlTemplate() {
-        URL url = getClass().getClassLoader().getResource("static/error/error-template.html");
-        if (Objects.nonNull(url)) {
-            File file = new File(url.getFile());
-            htmlTemplate = readHtmlTemplate(file);
+        InputStream is = getClass().getClassLoader()
+            .getResourceAsStream("static/error/error-template.html");
+        if (Objects.nonNull(is)) {
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader reader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            reader.lines().forEach(sb::append);
+            htmlTemplate = sb.toString();
+        } else {
+            LOGGER.error("Template Resource Stream was null.");
         }
     }
 
     private String[] getErrorDataAsStringArray(Map<String, Object> errors) {
         return new String[]{
-                        errors.getOrDefault("status", "").toString(),
-                        errors.getOrDefault("error", "").toString(),
-                        errors.getOrDefault("timestamp", "").toString(),
-                        errors.getOrDefault("message", "").toString(),
-                        errors.getOrDefault("path", "").toString(),
-                };
+            errors.getOrDefault("status", "").toString(),
+            errors.getOrDefault("error", "").toString(),
+            errors.getOrDefault("timestamp", "").toString(),
+            errors.getOrDefault("message", "").toString(),
+            errors.getOrDefault("path", "").toString(),
+        };
     }
 
     private String initializationError(Map<String, Object> errors) {
@@ -67,18 +72,6 @@ public class VortoErrorHandler extends AbstractErrorController {
         }
         LOGGER.error("Throwing exception");
         throw new IllegalStateException("Error page could not be loaded.");
-    }
-
-    private String readHtmlTemplate(File file) {
-        try(FileReader fileReader = new FileReader(file)) {
-            BufferedReader br = new BufferedReader(fileReader);
-            StringBuilder sb = new StringBuilder();
-            br.lines().forEach(sb::append);
-            return sb.toString();
-        } catch (Exception e) {
-            LOGGER.error("Exception while loading the error page HTML template", e);
-        }
-        return null;
     }
 
     @Override
