@@ -45,6 +45,13 @@ you need to pass an event containing the generator info and in case of the Vorto
 also the model data. Events can be passed using the -e option with the sam local invoke command. 
 Just create a JSON file and reference it with the -e option.  
 
+### Debugging 
+
+To debug the local Lambda functions, just add the debug parameter to the invocation command and
+specify a port for the debugger to connect to.  
+
+    sam local invoke -t sam-local.template "VortoGeneratorsExecutor" -d 5858
+
 ## Using a local generator in the Vorto Repository: 
 
 To use the local generator in your Vorto Repository, you need to run the Lambda functions 
