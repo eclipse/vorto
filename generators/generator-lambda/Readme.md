@@ -48,7 +48,8 @@ Just create a JSON file and reference it with the -e option.
 ### Debugging 
 
 To debug the local Lambda functions, just add the debug parameter to the invocation command and
-specify a port for the debugger to connect to.  
+specify a port for the debugger to connect to. The execution will halt and wait for a debugger to
+connect.
 
     sam local invoke -t sam-local.template "VortoGeneratorsExecutor" -d 5858
 
@@ -74,6 +75,12 @@ console output. To configure your Vorto Repository to use the local generators, 
 SpringBoot property needs to be adjusted, to point to the URL and port shown on the console
  (in this example http://127.0.0.1:3000). When that is done, the Vorto Repository can be started - 
  it uses the local generators now. 
+ 
+### Debugging
+
+The debug option also works with the start-api command.
+
+    sam local start-api -t sam-local.template -d 5858
  
 ### Caution: 
 
