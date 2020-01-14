@@ -3,6 +3,7 @@ pipeline {
     // Options covers all other job properties or wrapper functions that apply to entire Pipeline.
     options {
         buildDiscarder(logRotator(numToKeepStr:'5'))
+        disableConcurrentBuilds()
     }
     stages{
       stage("Build"){
