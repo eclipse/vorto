@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
@@ -70,7 +71,11 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testCreateTechnicalUserAndAddToNonExistingNamespace() {
-    accountService.createTechnicalUserAndAddToTenant("doesNotExist", "pepe", "GITHUB", Role.USER);
+    accountService.createTechnicalUserAndAddToTenant(
+        "doesNotExist", "pepe",
+        new TenantTechnicalUserDto().setAuthenticationProviderId("GITHUB").setSubject("subject"),
+        Role.USER
+    );
   }
 
   /**
@@ -80,7 +85,33 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
   public void testCreateTechnicalUserWithoutAuthenticationProvider() {
     // this implicitly creates the "playground" namespace
     User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant("playground", "pepe", null, Role.USER);
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("subject").setAuthenticationProviderId(null), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithoutSubject() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject(null).setAuthenticationProviderId("GITHUB"), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithSubjectTooShort() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("abc").setAuthenticationProviderId("GITHUB"), Role.USER
+    );
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateTechnicalUserWithSubjectNotAlphanumeric() {
+    User user = setupUserWithRoles("alex");
+    accountService.createTechnicalUserAndAddToTenant(
+        "playground", "pepe", new TenantTechnicalUserDto().setSubject("!§$%").setAuthenticationProviderId("GITHUB"), Role.USER
+    );
   }
 
   private User setupUserWithRoles(String username) {

@@ -26,10 +26,19 @@ package org.eclipse.vorto.repository.web.account.dto;
  */
 public class TenantTechnicalUserDto extends TenantUserDto {
   private String authenticationProviderId;
+  private String subject;
   public String getAuthenticationProviderId() {
     return authenticationProviderId;
   }
-  public void setAuthenticationProviderId(String value) {
+  public TenantTechnicalUserDto setAuthenticationProviderId(String value) {
     this.authenticationProviderId = value;
+    return this;
+  }
+  public String getSubject() {
+    return subject;
+  }
+  public TenantTechnicalUserDto setSubject(String value) {
+    this.subject = value;
+    return this;
   }
 }

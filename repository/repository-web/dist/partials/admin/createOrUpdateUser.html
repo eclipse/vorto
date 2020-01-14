@@ -1,9 +1,5 @@
 <form class="form-horizontal" name="tenantForm">
 	<style>
-		.ng-hide:not(.ng-hide-animate) {
-			display:block;
-			visibility: hidden;
-		}
 		.dropDownUL {
 			list-style-type:none;
 			margin:0;
@@ -35,7 +31,7 @@
 				<div class="col-sm-10">
 					<input autofocus type="search" class="search-box-query-filter form-control search-input"
 					 id="userId" placeholder="userId" ng-model="userPartial" ng-readonly="user.edit"
-					 ng-model-options="{ debounce: 1000 }" ng-change="findUsers()">
+					 ng-model-options="{ debounce: 200 }" ng-change="findUsers()" ng-focus="toggleSubmitButton()">
 				</div>
 			</div>
 			<div class="row">
@@ -116,7 +112,8 @@
 		<div class="form-group">
 			<div class="col-sm-12">
 				<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
-				<button type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">
+				<!-- ng-disabled does not seem to work properly or ever refresh -->
+				<button id="submitButton" type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">
 					<i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i>{{ mode }}
 				</button>
 			</div>
