@@ -49,7 +49,7 @@ public class VortoErrorHandler extends AbstractErrorController {
             reader.lines().forEach(sb::append);
             htmlTemplate = sb.toString();
         } else {
-            LOGGER.error("URL for error template was null.");
+            LOGGER.error("Template Resource Stream was null.");
         }
     }
 
