@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -222,18 +223,27 @@ public final class SearchTestInfrastructure {
    *  <li>HTTP port and TCP port have a distance of {@literal 100} (arbitrary rule)</li>
    * </ul>
    */
-  private static class ESPortsRandomizer {
+  private static class ESRandomizer {
     private static final int MAX_PORT = 65535;
     private static final int MIN_PORT = 10000;
     private int httpStart = 19200;
     private int tcpStart = 19300;
-    private ESPortsRandomizer withHTTPStart(int start) {
+    private String installationDirectory = ".";
+    private static final String PATH_FORMAT = "temporaryESWithHTTP%dTCP%d";
+    private ESRandomizer withHTTPStart(int start) {
       this.httpStart = start;
       return this;
     }
-    private ESPortsRandomizer withTCPStart(int start) {
+    private ESRandomizer withTCPStart(int start) {
       this.tcpStart = start;
       return this;
+    }
+    private ESRandomizer withInstallationDirectory(String path) {
+      this.installationDirectory = path;
+      return this;
+    }
+    String getInstallationDirectory() {
+      return installationDirectory;
     }
     int getHTTPStartPort() {
       return httpStart;
@@ -247,17 +257,18 @@ public final class SearchTestInfrastructure {
     int getTCPEndPort() {
       return tcpStart + 1;
     }
-    private ESPortsRandomizer(){};
-    static ESPortsRandomizer newInstance() {
+    private ESRandomizer(){};
+    static ESRandomizer newInstance() {
       int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
-      return new ESPortsRandomizer()
+      return new ESRandomizer()
           .withHTTPStart(httpStart)
-          .withTCPStart(httpStart + 100);
+          .withTCPStart(httpStart + 100)
+          .withInstallationDirectory(String.format(PATH_FORMAT, httpStart, httpStart+100));
     }
   }
 
   private static final Logger LOGGER = Logger.getLogger(SearchTestInfrastructure.class);
-  private static final String RANDOM_ES_PORTS_LOG_FORMAT = "Initializing Elasticsearch test service port randomizer with HTTP [%d-%d] and TRANSPORT TCP [%d-%d]";
+  private static final String RANDOM_ES_LOG_FORMAT = "Initializing Elasticsearch test service port randomizer with HTTP [%d-%d] and TRANSPORT TCP [%d-%d] and installation directory: %s";
 
   protected Tenant playgroundTenant() {
     UserRole roleUser = new UserRole(Role.USER);
@@ -296,14 +307,15 @@ public final class SearchTestInfrastructure {
 
   protected SearchTestInfrastructure() throws Exception {
 
-    ESPortsRandomizer rando = ESPortsRandomizer.newInstance();
+    ESRandomizer rando = ESRandomizer.newInstance();
     LOGGER.info(
         String.format(
-            RANDOM_ES_PORTS_LOG_FORMAT,
+            RANDOM_ES_LOG_FORMAT,
             rando.getHTTPStartPort(),
             rando.getHTTPEndPort(),
             rando.getTCPStartPort(),
-            rando.getTCPEndPort()
+            rando.getTCPEndPort(),
+            rando.getInstallationDirectory()
         )
     );
 
@@ -314,6 +326,7 @@ public final class SearchTestInfrastructure {
         .withSetting("discovery.type", "single-node")
         .withJavaHome(JavaHomeOption.inheritTestSuite())
         .withInResourceLocation("elasticsearch-6.7.2.zip")
+        .withInstallationDirectory(new File(rando.getInstallationDirectory()))
         .build();
     elasticSearch.start();
 
