@@ -1923,3 +1923,14 @@ input[type=file]::-webkit-file-upload-button {
   z-index: 2000;
   text-align: center;
 }
+
+.alert-danger-background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1999;
+  opacity: 75%;
+  background-color: grey;
+}
