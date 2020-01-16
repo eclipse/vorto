@@ -42,7 +42,7 @@ Open the ```src/main/resources/application.yml``` and configure the tenantId, us
 
 Run the app with ```mvn spring-boot:run```. You should not see any data coming in just yet. But we can change that quickly by sending some geolocation data to the MQTT endpoint.
 
-## Step 2: Sending geolocation data to MQTT
+## Step 2: Sending geolocation data to Bosch IoT Hub using MQTT protocol
 
 First let's register a device in the device registry under a specific device-id. Only then we can send data for that device-id to the Bosch IoT Hub. 
 
