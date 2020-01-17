@@ -212,15 +212,17 @@ public final class SearchTestInfrastructure {
 
   /**
    * When building in a non-isolated environment, concurrent builds may not work while testing
-   * ES tests as the same ports would be in use, e.g. probably on Jenkins.<br/>
-   * This tiny utility randomizes ports for Allegro and the REST client with a few basic criteria,
-   * such as:
+   * ES tests as the same ports would be in use.<br/>
+   * Moreover, the default ES installation directory in the {@literal /tmp} folder can be an issue
+   * too. <br/>
+   * This tiny utility randomizes ports and ES installation directory for Allegro, with a few basic criteria:
    * <ul>
    *  <li>Ports are not production ES ports</li>
    *  <li>Ports are {@literal > 10000} (to broadly avoid collision with other "known" ports)</li>
    *  <li>HTTP port (see {@link PopularProperties#HTTP_PORT}) and TCP port
    *  (see {@link PopularProperties#TRANSPORT_TCP_PORT}) are expressed as a range of {@literal 1}</li>
    *  <li>HTTP port and TCP port have a distance of {@literal 100} (arbitrary rule)</li>
+   *  <li>The temporary installation folder is a relative path under the {@literal target} directory</li>
    * </ul>
    */
   private static class ESRandomizer {
@@ -229,7 +231,7 @@ public final class SearchTestInfrastructure {
     private int httpStart = 19200;
     private int tcpStart = 19300;
     private String installationDirectory = ".";
-    private static final String PATH_FORMAT = "temporaryESWithHTTP%dTCP%d";
+    private static final String PATH_FORMAT = "target/temporaryESWithHTTP%dTCP%d";
     private ESRandomizer withHTTPStart(int start) {
       this.httpStart = start;
       return this;
