@@ -33,7 +33,7 @@ define(["../init/appController"],function(repositoryControllers) {
         	filter = $scope.queryFilter;
         } else {
         	if ($scope.modelType !== 'all') {
-        		filter += $scope.modelType+" ";
+        		filter += "type:" + $scope.modelType+" ";
         	}
         	if ($scope.modelState !== 'all') {
         		filter += "state:"+$scope.modelState+" ";
