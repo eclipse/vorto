@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
@@ -329,6 +330,8 @@ public final class SearchTestInfrastructure {
         .withJavaHome(JavaHomeOption.inheritTestSuite())
         .withInResourceLocation("elasticsearch-6.7.2.zip")
         .withInstallationDirectory(new File(rando.getInstallationDirectory()))
+        // defaults to 15 seconds, making it up to 1 minute to try and smoothe down tests in slower machines
+        .withStartTimeout(1, TimeUnit.MINUTES)
         .build();
     elasticSearch.start();
 
