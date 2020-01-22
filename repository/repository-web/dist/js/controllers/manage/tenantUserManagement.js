@@ -149,7 +149,7 @@ repositoryControllers.controller("createOrUpdateUserController",
                         $scope.retrievedUsers = result.data;
                         if ($scope.retrievedUsers.length == 1) {
                             $scope.selectedUser = $scope.retrievedUsers[0];
-                            $scope.selectUser();
+                            $scope.selectUser($scope.selectedUser);
                         }
                     } else {
                         $scope.retrievedUsers = [];
@@ -225,9 +225,9 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.addOrUpdateUser = function() {
             // adds username to scope user by either using selected user from
-            // drop-down if any, or using the string in user's input box
+            // drop-down if any, or using the string in user's input     box
             if ($scope.selectedUser) {
-                $scope.user = $scope.selectedUser;
+                $scope.user.username = $scope.selectedUser.username;
             }
             else if ($scope.userPartial) {
                 $scope.user.username = $scope.userPartial;
