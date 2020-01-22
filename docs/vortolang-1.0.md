@@ -879,6 +879,37 @@ A model property can be used by events, function block properties or entities.
 		IntervalType: INT | SIGNEDINT | FLOAT | DATETIME | STRING | BOOLEAN;
 
 
+## Function Block Mapping
+A Function Block Mapping describes a mapping of a Function Block and its properties for a 
+specific platform. 
+
+### BNF (Backus Normal Form)
+        'vortolang' 1.0
+    
+        'namespace' qualifiedName
+        'version' version
+        ('displayname' string)?
+        ('description' string)?
+        ('category' ID('/' ID)*)?
+    
+        (modelReference)*
+        
+        'functionblockmapping' ID '{'
+            'targetplatform' ID
+            
+            (MappingInstruction)*
+            
+        '}'
+        ;
+        
+        ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+        version : int('.' int)*('-'ID)?;
+        qualifiedName: ID ('.' ID)*;
+        modelReference: 'using' qualifiedName ';' version;
+        MappingInstruction: 'from' ID to ID 'with '{' MappingProperty (',' MappingProperty)* '}'
+        MappingProperty: ID ':' '"'string'"'
+        
+    
 ## Further links
 
 * [Describing a device with Vorto in 5 minutes](tutorials/describe_device-in-5min.md)
