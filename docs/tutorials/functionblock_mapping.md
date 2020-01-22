@@ -56,10 +56,7 @@ A basic example:
     	}
     }
 
-You can also find a real life example for LWM2M [here](https://github.com/eclipse/vorto-examples/blob/master/vorto
--generators
-/org
-.eclipse.vorto.codegen.lwm2m/sample/mappings/ColorLight_lwm2m.mapping).
+You can also find a real life example for LWM2M [here](https://github.com/eclipse/vorto-examples/blob/master/vorto-generators/org.eclipse.vorto.codegen.lwm2m/sample/mappings/ColorLight_lwm2m.mapping).
 
 ## Applying the Function Block Mapping 
 
