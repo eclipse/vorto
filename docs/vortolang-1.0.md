@@ -909,8 +909,7 @@ specific platform.
         MappingInstruction: 'from' ID to ID 'with '{' MappingProperty (',' MappingProperty)* '}'
         MappingProperty: ID ':' '"'string'"'
         
-### Example
-
+    
 ## Further links
 
 * [Describing a device with Vorto in 5 minutes](tutorials/describe_device-in-5min.md)
