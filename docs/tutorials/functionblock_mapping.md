@@ -47,7 +47,7 @@ A basic example:
     using vorto.private.kolotu.test.TestFb;1.0.0
     
     functionblockmapping TestFbMapping {
-    	targetplatform functionalitem
+    	targetplatform exampleTargetPlatform
     	from TestFb to FI_CLASS with {
     	    classname:"org.targetplatform.fi.TestFb"
     	}
@@ -108,7 +108,7 @@ This will return the model with attached stereotypes that are defined in the Fun
           "fullQualifiedFileName": "vorto.private.kolotu.test-TestFbMapping-1.0.0.mapping"
         },
         "vorto.private.kolotu.test:TestFb:1.0.0": {
-          "targetPlatformKey": "functionalitem",
+          "targetPlatformKey": "exampleTargetPlatform",
           "stereotypes": [
             {
               "name": "FI_CLASS",
@@ -135,7 +135,7 @@ This will return the model with attached stereotypes that are defined in the Fun
           "configurationProperties": [],
           "statusProperties": [
             {
-              "targetPlatformKey": "functionalitem",
+              "targetPlatformKey": "exampleTargetPlatform",
               "stereotypes": [
               {
                 "propertyName" :"val1", 
