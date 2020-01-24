@@ -63,6 +63,7 @@ public class TenantManagementController {
     this.tenantService = tenantService;
   }
 
+  // moved to NamespaceController
   @PreAuthorize("isAuthenticated()")
   @PutMapping(value = "/tenants/{tenantId:.+}", produces = "application/json")
   public ResponseEntity<Result> createTenant(
@@ -108,6 +109,7 @@ public class TenantManagementController {
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 
   @PreAuthorize("isAuthenticated()")
   @DeleteMapping(value = "/tenants/{tenantId:.+}", produces = "application/json")
