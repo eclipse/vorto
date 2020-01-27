@@ -236,6 +236,7 @@ public class ModelConversionUtils {
     newProperty.setPresence(property.getPresence());
     newProperty.setMultiplicity(property.isMultiplicity());
     newProperty.setDescription(property.getDescription());
+    newProperty.setConstraintRule(property.getConstraintRule());
 
     if (property.getType() instanceof PrimitivePropertyType) {
       PrimitivePropertyType newPrimitiveType =
