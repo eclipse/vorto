@@ -1,12 +1,12 @@
 define(["../../init/appController"],function(repositoryControllers) {
 
-repositoryControllers.controller("tenantUserManagementController", 
-    [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "tenant", "dialogConfirm", 
-    function($rootScope, $scope, $http, $uibModal, $uibModalInstance, tenant, dialogConfirm) {
+repositoryControllers.controller("namespaceUserManagementController",
+    [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "namespace", "dialogConfirm",
+    function($rootScope, $scope, $http, $uibModal, $uibModalInstance, namespace, dialogConfirm) {
         
-    	  $scope.tenant = tenant;
-        $scope.isRetrievingTenantUsers = false;
-        $scope.userTenantUsers = [];
+    	  $scope.namespace = namespace;
+        $scope.isRetrievingNamespaceUsers = false;
+        $scope.namespaceUsers = [];
 
         $scope.cancel = function() {
             $uibModalInstance.dismiss("Canceled.");
@@ -16,20 +16,20 @@ repositoryControllers.controller("tenantUserManagementController",
            // $scope.getTenants();
         });
 
-        $scope.getTenantUsers = function(tenantId) {
-            $scope.isRetrievingTenantUsers = true;
-
-            $http.get("./rest/tenants/" + tenantId + "/users")
+        $scope.getNamespaceUsers = function(namespacename) {
+            $scope.isRetrievingNamespaceUsers = true;
+            $http.get("./api/v1/namespaces/" + namespacename + "/users")
                 .then(function(result) {
-                    $scope.isRetrievingTenantUsers = false;
-                    $scope.userTenantUsers = result.data;
-                }, function(reason) {
-                    $scope.isRetrievingTenantUsers = false;
+                    $scope.isRetrievingNamespaceUsers = false;
+                    $scope.namespaceUsers = result.data;
+                },
+                function(reason) {
+                    $scope.isRetrievingNamespaceUsers = false;
                     // TODO : handling of failures
                 });
         };
 
-        $scope.getTenantUsers($scope.tenant.tenantId);
+        $scope.getNamespaceUsers($scope.namespace.name);
 
         $scope.newUser = function() {
             return {
@@ -67,25 +67,26 @@ repositoryControllers.controller("tenantUserManagementController",
                     user: function () {
                         return user;
                     },
-                    tenant: function() {
-                        return $scope.tenant;
+                    namespace: function() {
+                        return $scope.namespace;
                     }
                 }
             });
 
             modalInstance.result.finally(function(result) {
-                $scope.getTenantUsers($scope.tenant.tenantId);
+                $scope.getNamespaceUsers($scope.namespace.name);
                 $rootScope.init();
             });
         };
         
         $scope.deleteUser = function(user) {
         	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.username + "'?", ["Confirm", "Cancel"]);
-        	
+
+        	// TODO implement endpoint and change
         	dialog.setCallback("Confirm", function() {
 	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.username)
 	                .then(function(result) {
-	                    $scope.getTenantUsers($scope.tenant.tenantId);
+	                    $scope.getNamespaceUsers($scope.namespace.name);
 	                }, function(reason) {
 	                    // TODO : Show error on window
 	                });
@@ -101,12 +102,12 @@ repositoryControllers.controller("tenantUserManagementController",
 ]);
 
 repositoryControllers.controller("createOrUpdateUserController", 
-    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "user", "tenant",
-    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, user, tenant) {
+    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "user", "namespace",
+    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, user, namespace) {
         
         $scope.mode = user.edit ? "Update" : "Add";
         $scope.user = user;
-        $scope.tenant = tenant;
+        $scope.namespace = namespace;
         $scope.isCurrentlyAddingOrUpdating = false;
         $scope.errorMessage = "";
         $scope.selectedAuthenticationProviderId = null;
@@ -178,8 +179,8 @@ repositoryControllers.controller("createOrUpdateUserController",
                     user: function () {
                         return user;
                     },
-                    tenant: function() {
-                        return tenant;
+                    namespace: function() {
+                        return namespace;
                     }
                 }
             });
@@ -191,6 +192,7 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
+            // TODO implement endpoint and change
             $http.post("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
                 "username": $scope.user.username,
                 "roles" : $scope.getRoles($scope.user),
@@ -235,6 +237,7 @@ repositoryControllers.controller("createOrUpdateUserController",
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
+                    // TODO implement endpoint and change
                     $http.put("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
                             "username": $scope.user.username,
                             "roles" : $scope.getRoles($scope.user)

@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
-	<h4 class="modal-title">Manage Collaborators <a class="help-icon" 
+	<h4 class="modal-title">Manage Collaborators <a class="help-icon"
 		href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/managing_collaborators.md" target="_blank" 
 		title="Read more about managing Collaborators"><span class="fa fa-question-circle" /></a>
 	</h4>
@@ -8,12 +8,12 @@
 <div class="modal-body">
 	<div class="row">
 		<div class="col-sm-8">
-			<div class="row" ng-show="isRetrievingTenantUsers">
+			<div class="row" ng-show="isRetrievingNamespaceUsers">
 				<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching collaborators ...
 			</div>
 		</div>
 		<div class="col-sm-4">
-			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingTenantUsers" ng-click="createOrUpdateUser(newUser())">
+			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingNamespaceUsers" ng-click="createOrUpdateUser(newUser())">
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add</button>
 		</div>
 	</div> 
@@ -29,23 +29,23 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="tenantUser in userTenantUsers">
-						<td>{{ tenantUser.username }}</td>
+					<tr ng-repeat="namespaceUser in namespaceUsers | orderBy: 'userId'">
+						<td>{{ namespaceUser.userId }}</td>
 						<td>
-							<span class="label label-default" ng-show="hasUserRole('ROLE_USER', tenantUser.roles)">VIEW</span>
-							<span class="label label-primary" ng-show="hasUserRole('ROLE_MODEL_CREATOR', tenantUser.roles)">CREATE</span>
-							<span class="label label-success" ng-show="hasUserRole('ROLE_MODEL_PROMOTER', tenantUser.roles)">PROMOTE</span>
-							<span class="label label-info" ng-show="hasUserRole('ROLE_MODEL_REVIEWER', tenantUser.roles)">REVIEW</span>
-							<span class="label label-info" ng-show="hasUserRole('ROLE_MODEL_PUBLISHER', tenantUser.roles)">PUBLISH</span>
-							<span class="label label-danger" ng-show="hasUserRole('ROLE_TENANT_ADMIN', tenantUser.roles)">MANAGE</span>
+							<span class="label label-default" ng-show="hasUserRole('USER', namespaceUser.roles)">VIEW</span>
+							<span class="label label-primary" ng-show="hasUserRole('MODEL_CREATOR', namespaceUser.roles)">CREATE</span>
+							<span class="label label-success" ng-show="hasUserRole('MODEL_PROMOTER', namespaceUser.roles)">PROMOTE</span>
+							<span class="label label-info" ng-show="hasUserRole('MODEL_REVIEWER', namespaceUser.roles)">REVIEW</span>
+							<span class="label label-info" ng-show="hasUserRole('MODEL_PUBLISHER', namespaceUser.roles)">PUBLISH</span>
+							<span class="label label-danger" ng-show="hasUserRole('TENANT_ADMIN', namespaceUser.roles)">MANAGE</span>
 						</td>
 						<td>
 							<div>
 								<div>
-									<a ng-click="createOrUpdateUser(editableUser(tenantUser))" ng-hide="tenantUser.username === user" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
+									<a ng-click="createOrUpdateUser(editableUser(namespaceUser))" ng-hide="namespaceUser.userId === user" data-toggle="tooltip" data-placement="bottom" title="Edit Collaborator">
 									<i class="fa fa-pencil fa-2x"  aria-hidden="true"></i>
 									</a>
-									<a ng-click="deleteUser(tenantUser)" ng-hide="tenantUser.username === user" data-toggle="tooltip" data-placement="bottom" title="Delete Collaborator">
+									<a ng-click="deleteUser(namespaceUser)" ng-hide="namespaceUser.userId === user" data-toggle="tooltip" data-placement="bottom" title="Delete Collaborator">
 									<i class="fa fa-trash fa-2x"  aria-hidden="true"></i>
 									</a>
 								</div>
