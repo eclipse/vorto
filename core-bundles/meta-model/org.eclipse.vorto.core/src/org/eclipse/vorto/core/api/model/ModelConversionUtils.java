@@ -209,6 +209,7 @@ public class ModelConversionUtils {
             if (objectType.getType() instanceof Entity) { // only flatten entities
               Entity entity = (Entity) ((ObjectPropertyType) property.getType()).getType();
               EList<Property> entityProperties = getFlatProperties(entity);
+              entity.getProperties().clear();
               entity.getProperties().addAll(entityProperties);
               if (entity.getSuperType() != null) {
                 removeSuperTypeModelReference(entity);
