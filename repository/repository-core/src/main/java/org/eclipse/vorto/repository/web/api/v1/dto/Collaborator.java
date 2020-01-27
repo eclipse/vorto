@@ -13,8 +13,12 @@
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRole;
 
 public class Collaborator {
   private String userId;
@@ -23,7 +27,7 @@ public class Collaborator {
   private boolean isTechnicalUser;
   private Collection<String> roles;
   
-  public static Collaborator fromUser(TenantUser tenantUser) {
+  public static Collaborator fromTenantUser(TenantUser tenantUser) {
     return new Collaborator(tenantUser.getUser().getUsername(), 
         tenantUser.getUser().getAuthenticationProviderId(),
         tenantUser.getUser().getSubject(),
@@ -31,7 +35,22 @@ public class Collaborator {
         tenantUser.getRoles().stream().map(role -> role.getRole().name())
           .collect(Collectors.toList()));
   }
-  
+
+  public static Collaborator fromUser(User user) {
+    return new Collaborator(
+        user.getUsername(),
+        user.getAuthenticationProviderId(),
+        user.getSubject(),
+        user.isTechnicalUser(),
+        user.getRoles(user.getUsername())
+            .stream()
+            .map(UserRole::getRole)
+            .map(Role::name)
+            .collect(Collectors.toList())
+    );
+
+  }
+
   public Collaborator() {}
   
   public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {

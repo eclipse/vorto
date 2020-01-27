@@ -96,6 +96,27 @@ public class NamespaceController {
     
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
   }
+
+  /**
+   * This endpoint is supposed to replace {@link NamespaceController#getNamespaces(Principal)} in
+   * the long run, if we agree that injecting a principal is not required, i.e. there is no need
+   * to retrieve namespaces for a given user programmatically, and the body of the method can
+   * infer the logged on user instead. <br/>
+   * Since there is no easy way to inject the given {@link Principal} from the front-end (let alone
+   * that it is not designed an API parameter), the sibling endpoint seems rather useless in a REST
+   * context.
+   * @return all namespaces the logged on user has access to.
+   */
+  @RequestMapping(method = RequestMethod.GET, value="/all")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
+        .filter(tenant -> tenant.hasUser(userContext.getUsername()))
+        .map(NamespaceDto::fromTenant)
+        .collect(Collectors.toList());
+    return new ResponseEntity<>(namespaces, HttpStatus.OK);
+  }
   
   @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}")
   @PreAuthorize("hasRole('ROLE_USER')")
