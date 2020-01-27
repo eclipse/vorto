@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
