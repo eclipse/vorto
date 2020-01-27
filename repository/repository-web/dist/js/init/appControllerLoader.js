@@ -10,7 +10,7 @@ define([
     '../controllers/signUpController',
     '../controllers/updateController',
     '../controllers/mapping/mappingbuilder-controller',
-    '../controllers/manage/tenantManagement',
+    '../controllers/manage/namespaceManagement',
     '../controllers/manage/tenantUserManagement'
 ], function () {
 
