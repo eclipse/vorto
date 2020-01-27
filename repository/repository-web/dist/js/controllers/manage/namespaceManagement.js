@@ -171,15 +171,15 @@ define(["../../init/appController"], function (repositoryControllers) {
             });
           };
 
-          $scope.manageUsers = function (tenant) {
+          $scope.manageUsers = function (namespace) {
             var modalInstance = $uibModal.open({
               animation: true,
-              templateUrl: "webjars/repository-web/dist/partials/admin/tenantUserManagement.html",
+              templateUrl: "webjars/repository-web/dist/partials/admin/namespaceUserManagement.html",
               size: "lg",
-              controller: "tenantUserManagementController",
+              controller: "namespaceUserManagementController",
               resolve: {
-                tenant: function () {
-                  return tenant;
+                namespace: function () {
+                  return namespace;
                 }
               },
               backdrop: 'static'

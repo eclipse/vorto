@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -40,6 +42,7 @@ import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
+import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
@@ -72,7 +75,7 @@ import org.springframework.web.bind.annotation.RestController;
  * place.
  */
 @RestController
-@RequestMapping(value = "/api/v1/namespaces")
+                @RequestMapping(value = "/api/v1/namespaces")
 public class NamespaceController {
 
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
@@ -116,6 +119,40 @@ public class NamespaceController {
         .map(NamespaceDto::fromTenant)
         .collect(Collectors.toList());
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
+  }
+
+  /**
+   * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#getUsersForTenant}. <br/>
+   * Instead of returning a list of {@link TenantUserDto}, it returns {@link Collaborator}s.<br/>
+   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   * @param namespace
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/users")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
+      @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
+
+    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.PRECONDITION_FAILED);
+    }
+
+    try {
+      Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
+      if (maybeTenant.isPresent()) {
+        Set<TenantUser> tenantUserSet= maybeTenant.get().getUsers();
+        Set<Collaborator> collaborators = tenantUserSet.stream().map(Collaborator::fromTenantUser).collect(
+            Collectors.toSet());
+        return new ResponseEntity<>(collaborators, HttpStatus.OK);
+      }
+      else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
+    catch (Exception e) {
+      LOGGER.error("Error in getUsersForTenant()", e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
   
   @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}")

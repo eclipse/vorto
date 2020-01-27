@@ -11,7 +11,7 @@ define([
     '../controllers/updateController',
     '../controllers/mapping/mappingbuilder-controller',
     '../controllers/manage/namespaceManagement',
-    '../controllers/manage/tenantUserManagement'
+    '../controllers/manage/namespaceUserManagement'
 ], function () {
 
 });
