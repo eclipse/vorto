@@ -245,7 +245,9 @@ public class NamespaceController {
    * For instance, when this endpoint is employed to add an <i>existing</i> technical user to a
    * given namespace, the {@link Collaborator} payload will show {@code isTechnicalUser == false},
    * since this property is not sent by the UI and will default. <br/>
-   * Since the user itself is not and should not be persisted here, that's rather irrelevant.
+   * Since the user itself is not and should not be persisted here, that's rather irrelevant.<br/>
+   * <b>TL;DR</b>The only reason why this is not implemented with an empty body is that we need the roles from
+   * the UI.
    * @param namespace
    * @param userId
    * @param user
