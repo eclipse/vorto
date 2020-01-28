@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -150,7 +151,7 @@ public class NamespaceController {
       }
     }
     catch (Exception e) {
-      LOGGER.error("Error in getUsersForTenant()", e);
+      LOGGER.error("Error in getUsersForNamespace()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -434,6 +435,65 @@ public class NamespaceController {
       ),
       HttpStatus.OK
     );
+  }
+
+  /**
+   * Another temporary endpoint to accommodate the transition between tenant-based and namespace-based
+   * taxonomy. <br/>
+   * Uses the {@link IUserAccountService} behind the scenes to remove the given user from the given
+   * namespace.
+   * @param namespace
+   * @param userId
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/users/{userId}")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  public ResponseEntity<Boolean> deleteUserFromNamespace(
+      @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+      @ApiParam(value = "userId", required = true) @PathVariable String userId) {
+
+    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    // gets tenant for namespace
+    Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
+    if (tenant == null) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
+
+    // You cannot delete yourself if you are tenant admin
+    Authentication user = SecurityContextHolder.getContext().getAuthentication();
+    if (user.getName().equals(userId)) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    try {
+
+      LOGGER.info(
+          String.format(
+              "Removing user [%s] from namespace [%s]",
+              ControllerUtils.sanitize(userId),
+              ControllerUtils.sanitize(namespace)
+          )
+      );
+      return new ResponseEntity<>(
+          accountService.removeUserFromTenant(tenant.getTenantId(), userId),
+          HttpStatus.OK
+      );
+
+    }
+    catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+    catch (Exception e) {
+      LOGGER.error("Error in deleteUserFromNamespace()", e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 
