@@ -30,6 +30,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -41,6 +42,7 @@ import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
@@ -74,7 +76,7 @@ import org.springframework.web.bind.annotation.RestController;
  * place.
  */
 @RestController
-                @RequestMapping(value = "/api/v1/namespaces")
+@RequestMapping(value = "/api/v1/namespaces")
 public class NamespaceController {
 
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
@@ -153,6 +155,78 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#createTechnicalUserForTenant}. <br/>
+   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   * @param namespace
+   * @param userId
+   * @param user
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/users/{userId}")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  public ResponseEntity<Boolean> createTechnicalUserForTenant(
+      @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+      @ApiParam(value = "userId", required = true) @PathVariable String userId,
+      @RequestBody @ApiParam(value = "The user to be added to the tenant",
+          required = true) final Collaborator user) {
+
+    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
+    if (!maybeTenant.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(user.getSubject()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (user.getRoles().stream()
+        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    try {
+      LOGGER.info(
+          String.format(
+              "Creating technical user [%s] and adding to namespace [%s] with role(s) [%s]",
+              userId,
+              namespace,
+              user.getRoles()
+          )
+      );
+      if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
+
+      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
+
+      return new ResponseEntity<>(
+          accountService.createTechnicalUserAndAddToTenant(
+            maybeTenant.get().getTenantId(), userId, user, roles
+          ),
+          HttpStatus.OK
+      );
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    } catch (Exception e) {
+      LOGGER.error("error at addOrUpdateUsersForTenant()", e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   
   @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}")
   @PreAuthorize("hasRole('ROLE_USER')")

@@ -34,6 +34,7 @@ import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
+import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -148,7 +149,7 @@ public class DefaultUserAccountService
    * @param roles
    * @return
    */
-  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, TenantTechnicalUserDto user, Role... roles) {
+  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, ICollaborator user, Role... roles) {
 
     String authenticationProviderId = user.getAuthenticationProviderId();
     String subject = user.getSubject();

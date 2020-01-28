@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,15 +12,15 @@
  */
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 
-public class Collaborator {
+public class Collaborator implements ICollaborator {
   private String userId;
   private String authenticationProviderId;  
   private String subject;
@@ -96,7 +96,7 @@ public class Collaborator {
   public void setSubject(String subject) {
     this.subject = subject;
   }
-  
+
   public boolean isTechnicalUser() {
     return isTechnicalUser;
   }
@@ -105,12 +105,4 @@ public class Collaborator {
     this.isTechnicalUser = isTechnicalUser;
   }
   
-  // Jackson mapping oddity
-  public boolean getIsTechnicalUser() {
-    return isTechnicalUser;
-  }
-  
-  public void setIsTechnicalUser(boolean isTechnicalUser) {
-    this.isTechnicalUser = isTechnicalUser;
-  }
 }

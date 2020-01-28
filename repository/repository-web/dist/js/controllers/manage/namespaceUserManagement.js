@@ -193,11 +193,12 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
             // TODO implement endpoint and change
-            $http.post("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
-                "username": $scope.user.username,
+            $http.post("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.username, {
+                "userId": $scope.user.username,
                 "roles" : $scope.getRoles($scope.user),
                 "authenticationProviderId": $scope.selectedAuthenticationProviderId,
-                "subject": $scope.technicalUserSubject
+                "subject": $scope.technicalUserSubject,
+                "isTechnicalUser" : true
             })
             .then(
                 function(result) {
