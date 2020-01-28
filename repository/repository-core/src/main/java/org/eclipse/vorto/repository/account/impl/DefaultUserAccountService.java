@@ -33,7 +33,6 @@ import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -181,7 +180,7 @@ public class DefaultUserAccountService
    * called in the {@link org.eclipse.vorto.repository.web.account.AccountController}.<br/>
    * If the user search returns {@literal 404}, then the {@code POST} method is invoked instead in
    * the {@link org.eclipse.vorto.repository.web.account.AccountController}, which may end up invoking
-   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, TenantTechnicalUserDto, Role...)},
+   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, ICollaborator, Role...)},
    * upon administrative user confirmation that they want to create a technical user instead.
    * @param tenantId the tenant to add this user to
    * @param userId the user id
