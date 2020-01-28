@@ -47,17 +47,18 @@ repositoryControllers.controller("namespaceUserManagementController",
         $scope.editableUser = function(user) {
             return {
                 edit: true,
-                username : user.username,
-                roleModelCreator : user.roles.includes("ROLE_MODEL_CREATOR"),
-                roleModelPromoter : user.roles.includes("ROLE_MODEL_PROMOTER"),
-                roleModelReviewer : user.roles.includes("ROLE_MODEL_REVIEWER"),
-                roleModelPublisher : user.roles.includes("ROLE_MODEL_PUBLISHER"),
-                roleUser : user.roles.includes("ROLE_USER"),
-                roleAdmin : user.roles.includes("ROLE_TENANT_ADMIN")
+                userId : user.userId,
+                roleModelCreator : user.roles.includes("MODEL_CREATOR"),
+                roleModelPromoter : user.roles.includes("MODEL_PROMOTER"),
+                roleModelReviewer : user.roles.includes("MODEL_REVIEWER"),
+                roleModelPublisher : user.roles.includes("MODEL_PUBLISHER"),
+                roleUser : user.roles.includes("USER"),
+                roleAdmin : user.roles.includes("TENANT_ADMIN")
             };
         };
 
-        $scope.createOrUpdateUser = function(user, tenant) {
+        $scope.createOrUpdateUser = function(user, namespace) {
+            $scope.mode = user.edit ? "Update" : "Add";
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: "webjars/repository-web/dist/partials/admin/createOrUpdateUser.html",
@@ -68,7 +69,7 @@ repositoryControllers.controller("namespaceUserManagementController",
                         return user;
                     },
                     namespace: function() {
-                        return $scope.namespace;
+                        return  $scope.namespace;
                     }
                 }
             });
@@ -80,11 +81,11 @@ repositoryControllers.controller("namespaceUserManagementController",
         };
         
         $scope.deleteUser = function(user) {
-        	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.username + "'?", ["Confirm", "Cancel"]);
+        	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.userId + "'?", ["Confirm", "Cancel"]);
 
         	// TODO implement endpoint and change
         	dialog.setCallback("Confirm", function() {
-	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.username)
+	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.userId)
 	                .then(function(result) {
 	                    $scope.getNamespaceUsers($scope.namespace.name);
 	                }, function(reason) {
@@ -119,13 +120,13 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.selectUser = function(user) {
             if (user) {
                 $scope.selectedUser = user;
-                document.getElementById('userId').value = $scope.selectedUser.username;
+                document.getElementById('userId').value = $scope.selectedUser.userId;
             }
             $scope.retrievedUsers = [];
         }
 
         $scope.highlightUser = function(user) {
-            let element = document.getElementById(user.username);
+            let element = document.getElementById(user.userId);
             if (element) {
                 element.style.backgroundColor = '#7fc6e7';
                 element.style.color = '#ffffff'
@@ -133,7 +134,7 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.unhighlightUser = function(user) {
-            let element = document.getElementById(user.username);
+            let element = document.getElementById(user.userId);
             if (element) {
                 element.style.backgroundColor = 'initial';
                 element.style.color = 'initial';
@@ -192,8 +193,8 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
-            $http.post("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.username, {
-                "userId": $scope.user.username,
+            $http.post("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
+                "userId": $scope.user.userId,
                 "roles" : $scope.getRoles($scope.user),
                 "authenticationProviderId": $scope.selectedAuthenticationProviderId,
                 "subject": $scope.technicalUserSubject,
@@ -205,7 +206,7 @@ repositoryControllers.controller("createOrUpdateUserController",
                 },
                 function(reason) {
                     $scope.errorMessage = "Creation of technical user " +
-                        $scope.user.username + " in namespace " +
+                        $scope.user.userId + " in namespace " +
                         $scope.namespace.name + " failed. ";
                 }
             );
@@ -215,7 +216,7 @@ repositoryControllers.controller("createOrUpdateUserController",
             let button = document.getElementById("submitButton");
             if (button) {
                 button.disabled = !(
-                    ($scope.user && $scope.user.username)
+                    ($scope.user && $scope.user.userId)
                     ||
                     $scope.userPartial
                     ||
@@ -229,16 +230,16 @@ repositoryControllers.controller("createOrUpdateUserController",
             // adds username to scope user by either using selected user from
             // drop-down if any, or using the string in user's input     box
             if ($scope.selectedUser) {
-                $scope.user.username = $scope.selectedUser.username;
+                $scope.user.userId = $scope.selectedUser.userId;
             }
             else if ($scope.userPartial) {
-                $scope.user.username = $scope.userPartial;
+                $scope.user.userId = $scope.userPartial;
             }
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    $http.put("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.username, {
-                        "username": $scope.user.username,
+                    $http.put("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
+                        "username": $scope.user.userId,
                         "roles" : $scope.getRoles($scope.user)
                     })
                     .then(function(result) {
@@ -284,24 +285,26 @@ repositoryControllers.controller("createOrUpdateUserController",
         };
         
         $scope.validate = function(user, callback) {
-            if (user.username === undefined || user.username.trim() === '') {
+            if (user.userId === undefined || user.userId.trim() === '') {
                 callback({
-                        valid : false,
-                        errorMessage : "UserId must not be null."
-                    });
+                    valid : false,
+                    errorMessage : "userId must not be null."
+                });
                 return;
             }
             
-            $http.get("./rest/accounts/" + user.username)
+            $http.get("./rest/accounts/" + user.userId)
                 .then(function(result) {
                     callback({ valid: true });
-                }, function(reason) {
+                },
+                function(reason) {
                     if (reason.status == 404) {
                         callback({
                             valid: false,
                             errorMessage: "User doesn't exist."
                         });
-                    } else {
+                    }
+                    else {
                         callback({
                             valid: false,
                             errorMessage: "Error while accessing the server."

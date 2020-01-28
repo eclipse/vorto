@@ -1,4 +1,4 @@
-<form class="form-horizontal" name="tenantForm">
+<form class="form-horizontal" name="namespaceForm">
 	<div class="modal-header">
 		<button ng-disabled="isCreatingOrUpdating" type="button" class="close"
 			ng-click="cancel()">&times;</button>
@@ -14,37 +14,8 @@
 			  {{ errorMessage }}
 			</div>
 		</div>
-	
+
 		<div class="row">
-			<!-- <div ng-if="tenant.edit" class="col-sm-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<div class="row">
-							<div class="col-sm-10">Owners</div>
-							<div class="col-sm-2">
-								<button type="button" class="btn btn-primary pull-right" ng-click="addAdmin()">
-									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-								</button>
-							</div>
-						</div>
-					</div>
-					<div class="panel-body">
-						<ul class="list-group">
-							<li class="list-group-item" ng-repeat="admin in tenant.admins">
-								<div class="row">
-									<div class="col-sm-10">{{ admin }}</div>
-									<div class="col-sm-2">
-										<button type="button" class="btn btn-default pull-right btn-xs" ng-click="removeAdmin(admin)">
-											Delete
-										</button>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div> -->
-	
 			<div ng-if="tenant.edit" class="col-sm-10" style="width: 580px;">
 				<div class="panel panel-default">
 					<div class="panel-heading">
