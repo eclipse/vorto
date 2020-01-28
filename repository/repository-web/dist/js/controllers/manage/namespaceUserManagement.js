@@ -207,7 +207,7 @@ repositoryControllers.controller("createOrUpdateUserController",
                 function(reason) {
                     $scope.errorMessage = "Creation of technical user " +
                         $scope.user.username + " in namespace " +
-                        $scope.tenant.defaultNamespace + " failed. ";
+                        $scope.namespace.name + " failed. ";
                 }
             );
         };
