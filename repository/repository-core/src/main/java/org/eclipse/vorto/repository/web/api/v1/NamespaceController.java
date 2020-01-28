@@ -294,7 +294,7 @@ public class NamespaceController {
           )
       );
 
-      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
+        Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
 
       return new ResponseEntity<>(
           accountService.addUserToTenant(maybeTenant.get().getTenantId(), userId, roles),
