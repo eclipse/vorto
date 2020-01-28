@@ -165,10 +165,10 @@ public class NamespaceController {
    */
   @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<Boolean> createTechnicalUserForTenant(
+  public ResponseEntity<Boolean> createTechnicalUserForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @ApiParam(value = "userId", required = true) @PathVariable String userId,
-      @RequestBody @ApiParam(value = "The user to be added to the tenant",
+      @RequestBody @ApiParam(value = "The user to be added to the namespace",
           required = true) final Collaborator user) {
 
     if (Strings.nullToEmpty(userId).trim().isEmpty()) {
@@ -197,7 +197,12 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
+    if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     try {
+
       LOGGER.info(
           String.format(
               "Creating technical user [%s] and adding to namespace [%s] with role(s) [%s]",
@@ -206,9 +211,6 @@ public class NamespaceController {
               user.getRoles()
           )
       );
-      if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-      }
 
       Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
 
@@ -221,6 +223,86 @@ public class NamespaceController {
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     } catch (Exception e) {
+      LOGGER.error("error at addOrUpdateUsersForTenant()", e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * This endpoint is temporary and adapted from
+   * {@link org.eclipse.vorto.repository.web.account.AccountController#addOrUpdateUsersForTenant(String, String, TenantUserDto)}. <br/>
+   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.<br/>
+   * The main difference with the same POST endpoint {@link NamespaceController#createTechnicalUserForNamespace(String, String, Collaborator)}
+   * is that we assume the user exists here, and will not be created.<br/>
+   * The bottomline is that creating a user on the spot to add to a namespace implies we are dealing
+   * with a technical user - otherwise one can only add an existing user (technical or not).<br/>
+   * Technical users also must have a subject.<br/>
+   * Note for debugging purposes: the {@link Collaborator} represented in the payload will default
+   * some properties, since they are not populated in the UI - because we are dealing with an existing
+   * user. <br/>
+   * Therefore, it is possible to see some incoherences between the payload and the actual user,
+   * since only the username/userId really matters here. <br/>
+   * For instance, when this endpoint is employed to add an <i>existing</i> technical user to a
+   * given namespace, the {@link Collaborator} payload will show {@code isTechnicalUser == false},
+   * since this property is not sent by the UI and will default. <br/>
+   * Since the user itself is not and should not be persisted here, that's rather irrelevant.
+   * @param namespace
+   * @param userId
+   * @param user
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/users/{userId}")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  public ResponseEntity<Boolean> addOrUpdateUsersForNamespace(
+      @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+      @ApiParam(value = "userId", required = true) @PathVariable String userId,
+      @RequestBody @ApiParam(value = "The user to be added to the namespace",
+          required = true) final Collaborator user) {
+
+    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (user.getRoles().stream()
+        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
+    if (!maybeTenant.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+
+      LOGGER.info(
+          String.format(
+              "Adding user [%s] to namespace [%s] with role(s) [%s]",
+              userId,
+              namespace,
+              user.getRoles()
+          )
+      );
+
+      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
+
+      return new ResponseEntity<>(
+          accountService.addUserToTenant(maybeTenant.get().getTenantId(), userId, roles),
+          HttpStatus.OK
+      );
+    }
+    catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+    catch (Exception e) {
       LOGGER.error("error at addOrUpdateUsersForTenant()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }

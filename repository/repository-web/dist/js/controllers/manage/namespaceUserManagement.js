@@ -192,7 +192,6 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
-            // TODO implement endpoint and change
             $http.post("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.username, {
                 "userId": $scope.user.username,
                 "roles" : $scope.getRoles($scope.user),
@@ -238,17 +237,18 @@ repositoryControllers.controller("createOrUpdateUserController",
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    // TODO implement endpoint and change
-                    $http.put("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
-                            "username": $scope.user.username,
-                            "roles" : $scope.getRoles($scope.user)
-                        })
-                        .then(function(result) {
-                            $uibModalInstance.close($scope.user); 
-                        }, function(reason) {
-                            $scope.errorMessage = "You cannot change your own permissions.";
-                        });
-                } else {
+                    $http.put("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.username, {
+                        "username": $scope.user.username,
+                        "roles" : $scope.getRoles($scope.user)
+                    })
+                    .then(function(result) {
+                        $uibModalInstance.close($scope.user);
+                    },
+                    function(reason) {
+                        $scope.errorMessage = "You cannot change your own permissions.";
+                    });
+                }
+                else {
                     $scope.promptCreateNewTechnicalUser();
                 }
             });
