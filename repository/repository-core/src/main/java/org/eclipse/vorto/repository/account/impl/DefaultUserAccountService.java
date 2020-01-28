@@ -207,7 +207,8 @@ public class DefaultUserAccountService
       user.addRoles(roles);
       tenantUserRepo.save(user);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_MODIFIED));
-    } else {
+    }
+    else {
       User user = userRepository.findByUsername(userId);
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
       tenantUserRepo.save(tenantUser);

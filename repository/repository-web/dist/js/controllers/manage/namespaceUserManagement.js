@@ -83,14 +83,15 @@ repositoryControllers.controller("namespaceUserManagementController",
         $scope.deleteUser = function(user) {
         	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.userId + "'?", ["Confirm", "Cancel"]);
 
-        	// TODO implement endpoint and change
         	dialog.setCallback("Confirm", function() {
-	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.userId)
-	                .then(function(result) {
-	                    $scope.getNamespaceUsers($scope.namespace.name);
-	                }, function(reason) {
-	                    // TODO : Show error on window
-	                });
+	            $http
+                .delete("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + user.userId)
+	              .then(function(result) {
+                  $scope.getNamespaceUsers($scope.namespace.name);
+                },
+                function(reason) {
+                  // TODO : Show error on window
+                });
         	});
         	
         	dialog.run();
