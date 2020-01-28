@@ -15,7 +15,6 @@ package org.eclipse.vorto.repository.web.api.v1.dto;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.tenant.TenantHasNoNamespaceException;
 
 public class NamespaceDto {
