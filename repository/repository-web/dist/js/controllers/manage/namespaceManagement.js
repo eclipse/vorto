@@ -191,7 +191,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             });
           }
 
-          $scope.openDeleteDialog = function (tenant) {
+          $scope.openDeleteDialog = function (namespace) {
             var modalInstance = $uibModal.open({
               animation: true,
               controller: function ($scope) {
@@ -199,7 +199,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
                 $scope.delete = function () {
                   $http
-                  .delete("./api/v1/namespaces/" + tenant.defaultNamespace)
+                  .delete("./api/v1/namespaces/" + namespace.name)
                   .then(function (result) {
                     modalInstance.close();
                   },
@@ -212,17 +212,25 @@ define(["../../init/appController"], function (repositoryControllers) {
                   });
                 };
 
-                $scope.getPublicModelsForTenant = function () {
-                  $http.get('./api/v1/search/models?expression=namespace:'
-                      + tenant.defaultNamespace + ' visibility:Public').success(
+                $scope.getPublicModelsForNamespace = function () {
+                  $http
+                  .get(
+                      './api/v1/search/models?expression=namespace:'
+                      + namespace.name + ' visibility:Public'
+                  )
+                  .success(
                       function (data, status, headers, config) {
                         $scope.hasPublicModels = data.length > 0;
-                      }).error(function (data, status, headers, config) {
-                    console.log("Problem getting data from repository");
-                  });
+                      }
+                    )
+                  .error(
+                      function (data, status, headers, config) {
+                        console.log("Problem getting data from repository");
+                      }
+                  );
                 };
 
-                $scope.getPublicModelsForTenant();
+                $scope.getPublicModelsForNamespace();
 
                 $scope.cancel = function () {
                   modalInstance.dismiss();
@@ -231,8 +239,8 @@ define(["../../init/appController"], function (repositoryControllers) {
               templateUrl: "deleteNamespace.html",
               size: "lg",
               resolve: {
-                tenant: function () {
-                  return tenant;
+                namespace: function () {
+                  return namespace;
                 }
               },
               backdrop: 'static'
