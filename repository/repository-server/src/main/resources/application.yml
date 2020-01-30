@@ -2,7 +2,7 @@ server:
   port: 8080
   contextPath: /infomodelrepository
   use-forward-headers: true
-  admin: aedelmann, erlemantos
+  admin: aedelmann, erlemantos, kolotu, t-gauss, mena-bosch
   config:
     authenticatedSearchMode: false
     generatorUser: generator
@@ -26,7 +26,7 @@ repo:
         authenticationProvider: GITHUB
         authorizationProvider: DB
   attachment.allowed:
-    extension: ext, pdf, doc, zip, jpg, png, svg, html, json
+    extension: ext, pdf, doc, zip, jpg, png, svg, html, json, yml, yaml
     fileSize: 5
 
 github:
