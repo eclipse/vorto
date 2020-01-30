@@ -72,12 +72,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
     $rootScope.user = null;
     
-    $rootScope.tenant = "default";
-    
     $rootScope.context = {
         providers: null,
-        authenticatedSearchMode: false,
-        tenant: "default"
+        authenticatedSearchMode: false
     };
     
     $rootScope.modelId = function(namespace,name,version) {
@@ -137,7 +134,6 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.init = function() {    	
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
-            $rootScope.tenant = $rootScope.context.tenant;
             if (!$rootScope.context.authenticatedSearchMode) {
                 $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators", "/payloadmapping", "/privacy"];
             } else {

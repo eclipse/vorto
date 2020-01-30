@@ -8,6 +8,7 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
             $scope.resultMessage = "";
             $rootScope.error = "";
 
+            // TODO change endpoint and refactor
             var fileToUpload = document.getElementById('file-upload').files[0];
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
@@ -38,7 +39,8 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
         $scope.diagnosticsError = "";
         $scope.isRunningDiagnostics = false;
         $scope.hasDiagnosticsError = false
-        
+
+        // TODO change endpoint and refactor
         $scope.diagnose = function() {            
             $scope.isRunningDiagnostics = true;
             $scope.hasDiagnosticsError = false;
@@ -79,22 +81,19 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
         };
 
         $scope.isForceReindexing = false;
-        $scope.hasForceReindexingError = false;
-        $scope.hasForceReindexingResult = false;
-        $scope.forceReindexingError = null;
         $scope.forceReindexingResultMessage = null;
         $scope.forceReindex = function() {
             $scope.isForceReindexing = true;
             $http.post('./rest/forcereindex')
             .then(function(result) {
                 $scope.forceReindexingResultMessage = 'Indexed ' + result.data.numberOfTenants + ' tenants with ' + result.data.totalNumberOfIndexedModels + ' models.';
-                $scope.hasForceReindexingResult = true;
+                $scope.hasIndexingResult = true;
                 $scope.isForceReindexing = false;
                 $scope.hasForceReindexingError = false;
             }, function(error) {
                 $scope.isForceReindexing = false;
                 $scope.hasForceReindexingError = true;
-                $scope.forceReindexingError = "";
+                $scope.indexingError = "";
             });
         };
     }

@@ -62,17 +62,6 @@ public class BackupController extends AbstractRepositoryController {
     return tenant -> tenant.owns(namespace);
   }
   
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/{tenantId}/backup")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-  public void backupRepository(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final HttpServletResponse response) throws Exception {
-    
-    backupRepository(response, tenantWithId(tenantId), 
-        Optional.of(String.format("-%s", ControllerUtils.sanitize(tenantId))));
-  }
-  
   @RequestMapping(method = RequestMethod.GET, value = "/rest/namespaces/{namespace}/backup")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public void backupRepositoryOfNamespace(
@@ -82,13 +71,6 @@ public class BackupController extends AbstractRepositoryController {
     
     backupRepository(response, tenantWhoOwnsNamespace(namespace), 
         Optional.of(String.format("-%s", ControllerUtils.sanitize(namespace))));
-  }
-  
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/backup")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
-  public void backupRepository(final HttpServletResponse response) {
-    
-    backupRepository(response, id -> true, Optional.empty());
   }
   
   private void backupRepository(final HttpServletResponse response, Predicate<Tenant> tenantFilter, Optional<String> ext) {

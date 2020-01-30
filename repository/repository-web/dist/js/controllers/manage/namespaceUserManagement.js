@@ -13,12 +13,12 @@ repositoryControllers.controller("namespaceUserManagementController",
         };
 
         $scope.$on("USER_CONTEXT_UPDATED", function(evt, data) {
-           // $scope.getTenants();
+
         });
 
         $scope.getNamespaceUsers = function(namespacename) {
             $scope.isRetrievingNamespaceUsers = true;
-            $http.get("./api/v1/namespaces/" + namespacename + "/users")
+            $http.get("./rest/namespaces/" + namespacename + "/users")
                 .then(function(result) {
                     $scope.isRetrievingNamespaceUsers = false;
                     $scope.namespaceUsers = result.data;
@@ -85,7 +85,7 @@ repositoryControllers.controller("namespaceUserManagementController",
 
         	dialog.setCallback("Confirm", function() {
 	            $http
-                .delete("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + user.userId)
+                .delete("./rest/namespaces/" + $scope.namespace.name + "/users/" + user.userId)
 	              .then(function(result) {
                   $scope.getNamespaceUsers($scope.namespace.name);
                 },
@@ -194,7 +194,7 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
-            $http.post("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
+            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
                 "userId": $scope.user.userId,
                 "roles" : $scope.getRoles($scope.user),
                 "authenticationProviderId": $scope.selectedAuthenticationProviderId,
@@ -239,7 +239,7 @@ repositoryControllers.controller("createOrUpdateUserController",
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    $http.put("./api/v1/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
+                    $http.put("./rest/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
                         "username": $scope.user.userId,
                         "roles" : $scope.getRoles($scope.user)
                     })

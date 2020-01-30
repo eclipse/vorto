@@ -50,7 +50,8 @@ repository.factory('openCreateModelDialog',
                     };
                      
                     $scope.loadFunctionblocks();
-                    
+
+                    // TODO change endpoint and refactor
                     $scope.getNamespaces = function() {
                         $scope.userNamespaces = [];
                         $http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
@@ -138,20 +139,9 @@ repository.factory('openCreateModelDialog',
                         $scope.modelName = modelName;
                         $scope.modelVersion = modelVersion;
                     };
-                    
-                    $scope.getTenant = function(namespaceRoot) {
-                        for(var i=0; i < $scope.userNamespaces.length; i++) {
-                            if ($scope.userNamespaces[i].namespace === namespaceRoot.namespace) {
-                                return $scope.userNamespaces[i].tenant; 
-                            }
-                        }
-                        
-                        return null;
-                    }
-                    
+
                     $scope.create = function(namespaceRoot, modelType, modelNamespace, modelName, modelVersion) {
                         $scope.isLoading = true;
-                        var tenantId = $scope.getTenant(namespaceRoot);
 						  $http.post('./rest/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType, $scope.selected.properties)
 						.success(function(result){
                                 $scope.isLoading = false;
