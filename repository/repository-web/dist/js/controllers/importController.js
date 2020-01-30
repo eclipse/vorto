@@ -13,6 +13,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
 		$scope.getNamespaces = function() {
         	$scope.userNamespaces = [];
+        	// TODO move endpoint and refactor
             	$http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
                 	.then(function(result) {
                     	var tenants = result.data;

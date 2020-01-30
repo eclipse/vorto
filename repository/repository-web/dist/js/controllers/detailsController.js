@@ -4,10 +4,10 @@ repositoryControllers.controller('DetailsController',
 		['$q', '$rootScope', '$scope', '$http', '$routeParams', '$location',
 			'$route',
 			'$uibModal', '$window', '$timeout', 'openCreateModelDialog',
-			'TenantService', 'confirmPublish', 'SessionTimeoutService',
+			'confirmPublish', 'SessionTimeoutService',
 			function ($q, $rootScope, $scope, $http, $routeParams, $location, $route,
 					$uibModal,
-					$window, $timeout, openCreateModelDialog, TenantService,
+					$window, $timeout, openCreateModelDialog,
 					confirmPublish, sessionTimeoutService) {
 
 				$scope.model = [];
@@ -277,6 +277,7 @@ repositoryControllers.controller('DetailsController',
 						$scope.canCreateModels = false;
 
 						if ($rootScope.authenticated) {
+							// TODO refactor this
 							var promise = TenantService.getNamespacesForRole(
 									'ROLE_MODEL_CREATOR');
 							promise.then(

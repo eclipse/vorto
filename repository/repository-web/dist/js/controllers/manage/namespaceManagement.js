@@ -12,11 +12,13 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.getNamespaces = function () {
             $scope.isRetrievingNamespaces = true;
-            $http.get("./api/v1/namespaces/all")
+            $http
+            .get("./rest/namespaces/all")
             .then(function (result) {
               $scope.isRetrievingNamespaces = false;
               $scope.namespaces = result.data;
-            }, function (reason) {
+            },
+            function (reason) {
               $scope.isRetrievingNamespaces = false;
               // TODO : handling of failures
             });
@@ -32,42 +34,48 @@ define(["../../init/appController"], function (repositoryControllers) {
             };
           };
 
-          // TODO seems unused
           $scope.editableNamespace = function (namespace) {
             namespace.edit = true;
             return namespace;
           };
 
-          $scope.createOrUpdateTenant = function (tenant) {
-            var modalInstance = $uibModal.open({
-              animation: true,
-              templateUrl: "webjars/repository-web/dist/partials/admin/createOrUpdateTenant.html",
-              controller: "createOrUpdateTenantController",
-              resolve: {
-                tenant: function () {
-                  return tenant;
-                },
-                tenants: function () {
-                  return $scope.namespaces;
+          $scope.suggestNamespaceName = function() {
+            // sanitizes user ID by only leaving namespace-compatible characters
+            let sanitizedUserID = $rootScope.user.replace(/[^a-zA-Z0-9_]/g, "");
+            let namespaceNames = $scope.namespaces.map( n => n.name );
+            // sanitized user ID not present in available namespace names
+            if (!namespaceNames.includes(sanitizedUserID)) {
+              return sanitizedUserID;
+            }
+            // namespace already exists with sanitized user ID - suggesting
+            // name prepended with integer
+            else {
+              let index = 0;
+              // hard-capping at 99 - not expecting anybody to have more than
+              // 99 namespaces with their name + integer
+              while (index < 100) {
+                let appended = sanitizedUserID + index;
+                if (!namespaceNames.includes(appended)) {
+                  return appended;
                 }
-              },
-              backdrop: 'static'
-            });
+                else {
+                  index++;
+                }
+              }
+              // giving up and returning existing namespace name suggestion
+              // of sanitized user ID
+              return sanitizedUserID;
+            }
+          }
 
-            modalInstance.result.finally(function (result) {
-              $scope.getNamespaces();
-              $rootScope.init();
-            });
-          };
-
-          $scope.createNamespace = function (namespace) {
+          $scope.createNamespace = function (namespace, namespaces) {
             var modalInstance = $uibModal.open({
               animation: true,
               title: "Add Namespace",
               label: "Namespace",
               prefix: "vorto.private.",
               templateUrl: "webjars/repository-web/dist/partials/admin/createNamespace.html",
-              controller: "createOrUpdateNamespaceController",
+              controller: "createNamespaceController",
               resolve: {
                 namespace: function () {
                   namespace.prefixText = "vorto.private.";
@@ -75,6 +83,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                   namespace.title = "Create Namespace";
                   namespace.createNameSpaceId = $rootScope.displayName;
                   namespace.sysAdmin = $rootScope.hasAuthority("ROLE_SYS_ADMIN");
+                  // suggests namespace name based on user ID, sanitized
+                  namespace.name = $scope.suggestNamespaceName();
                   return namespace;
                 },
                 namespaces: function () {
@@ -90,7 +100,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             });
           };
 
-          $scope.restoreTenant = function (tenant) {
+          $scope.restoreNamespace = function (namespace) {
             var modalInstance = $uibModal.open({
               animation: true,
               templateUrl: "webjars/repository-web/dist/partials/dialog/restoration_prompt_and_confirm.html",
@@ -99,19 +109,14 @@ define(["../../init/appController"], function (repositoryControllers) {
                 $scope.allowRestore = false;
                 $scope.errorMessage = null;
 
+                // TODO check why we need this
+                // TODO this can be refactored into a one liner anyway
                 $scope.getNamespace = function () {
-                  if (tenant != null) {
-                    return "'" + tenant.namespaces[0] + "' ";
-                  } else {
-                    return "";
+                  if (namespace != null) {
+                    return "'" + namespace.name + "' ";
                   }
-                };
-
-                $scope.getNamespaceParameter = function () {
-                  if (tenant != null) {
-                    return "namespaces/" + tenant.namespaces[0];
-                  } else {
-                    return "tenants";
+                  else {
+                    return "";
                   }
                 };
 
@@ -132,8 +137,9 @@ define(["../../init/appController"], function (repositoryControllers) {
                       && element.files.length > 0) {
                     var fd = new FormData();
                     fd.append('file', element.files[0]);
+                    // TODO verify restore endpoints
                     $http.post(
-                        './rest/' + $scope.getNamespaceParameter() + '/restore',
+                        './rest/' + $scope.namespace.name + '/restore',
                         fd, {
                           transformRequest: angular.identity,
                           headers: {
@@ -142,6 +148,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                         })
                     .success(function (result) {
                       console.log(JSON.stringify(result));
+                      // TODO sanitize
                       var updatedTenants = result;
                       if (updatedTenants.length < 1) {
                         $scope.errorMessage = "No tenants were restored. Maybe you used the wrong backup file?";
@@ -163,8 +170,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                 };
               },
               resolve: {
-                tenant: function () {
-                  return tenant;
+                namespace: function () {
+                  return $scope.namespace;
                 }
               },
               backdrop: 'static'
@@ -199,7 +206,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
                 $scope.delete = function () {
                   $http
-                  .delete("./api/v1/namespaces/" + namespace.name)
+                  .delete("./rest/namespaces/" + namespace.name)
                   .then(function (result) {
                     modalInstance.close();
                   },
@@ -259,15 +266,15 @@ define(["../../init/appController"], function (repositoryControllers) {
     };
   });
 
-  repositoryControllers.controller("createOrUpdateTenantController",
+  repositoryControllers.controller("createNamespaceController",
       ["$rootScope", "$scope", "$uibModal", "$uibModalInstance",
-        "dialogConfirm", "$http", "tenant", "tenants",
+        "dialogConfirm", "$http", "namespace", "namespaces",
         function ($rootScope, $scope, $uibModal, $uibModalInstance,
-            dialogConfirm, $http, tenant, tenants) {
+            dialogConfirm, $http, namespace, namespaces) {
 
-          $scope.namespace = tenant;
-          $scope.mode = tenant.edit ? "Update" : "Create";
-          $scope.originalNamespaces = tenant.namespaces.slice();
+          $scope.namespace = namespace;
+          $scope.namespaces = namespaces;
+          $scope.mode = namespace.edit ? "Update" : "Create";
           $scope.errorMessage = "";
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
 
@@ -277,47 +284,53 @@ define(["../../init/appController"], function (repositoryControllers) {
             $uibModalInstance.dismiss("Canceled.");
           };
 
-          $scope.createOrUpdateTenant = function () {
+          /*
+          There seems to have been an intent to allow users to manipulate
+          namespaces other than creating, deleting or adding users - i.e.
+          basically renaming them, but it was never implemented (and for good
+          reason: it would require modifying all the model inside the given namespace).
+          Therefore, this PUT operation only sends the new namespace's name as
+          a path variable, with an empty body.
+          The back-end will figure out which user to set as admin, i.e. the
+          logged on user.
+          The back-end will also refuse to create an additional namespace for
+          non-sysadmin users who already have one private namespace.
+           */
+          $scope.createOrUpdateNamespace = function () {
+
             $scope.isCreatingOrUpdating = true;
-            var defaultValue = 'vorto.private.';
-            if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
-              defaultValue = "";
-            }
 
             var indexOfNewNamespace = 0;
             if ($scope.mode == "Create") {
-              $scope.namespaceToRegister = defaultValue
-                  + $scope.namespace.createNameSpaceId;
-
-              indexOfNewNamespace = $scope.namespace.namespaces.push(
-                  $scope.namespaceToRegister) - 1;
-              if ($scope.namespace.namespaces.length == 1) {
-                $scope.namespace.defaultNamespace = $scope.namespace.namespaces[0];
+              // Defines whether namespace name will be preceded by vorto.private
+              // based on user privileges. This will also be checked in the
+              // back-end.
+              var defaultValue = 'vorto.private.';
+              if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+                defaultValue = "";
               }
-              $scope.namespace.admins.push($rootScope.user);
+              $scope.namespace.name = defaultValue + $scope.namespace.name;
             }
             $http
-            .put("./api/v1/namespaces/" + $scope.namespaceToRegister, {})
+            .put("./rest/namespaces/" + $scope.namespace.name, {})
             .then(function (result) {
+                  // add user as admin
+                  $scope.namespace.admins.push($rootScope.user);
+                  // adds to known namespaces list
+                  indexOfNewNamespace = $scope.namespaces.push($scope.namespace) - 1;
                   $scope.isCreatingOrUpdating = false;
                   $uibModalInstance.close($scope.namespace);
                 },
                 function (reason) {
                   $scope.errorMessage = reason.data.errorMessage;
                   $scope.isCreatingOrUpdating = false;
-                  $scope.namespace.namespaces.splice(indexOfNewNamespace, 1);
+                  $scope.namespaces.splice(indexOfNewNamespace, 1);
                 });
           };
 
           $scope.isInvalid = function () {
             return
-            $scope.namespace.admins.length <= 0 ||
-            $scope.namespace.namespaces.length <= 0 ||
-            $scope.namespace.defaultNamespace === '';
-          };
-
-          $scope.setDefault = function (namespace) {
-            $scope.namespace.defaultNamespace = namespace;
+            $scope.namespace.admins.length <= 0;
           };
 
           $scope.removeAdmin = function (admin) {
@@ -325,8 +338,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           };
 
           $scope.readonlyNamespace = function (namespace) {
-            return $scope.namespace.edit && $scope.originalNamespaces.includes(
-                namespace);
+            return $scope.namespace.edit;
           };
 
           $scope.removeNamespace = function (namespace) {
@@ -335,57 +347,10 @@ define(["../../init/appController"], function (repositoryControllers) {
                 ["Yes, Delete", "Cancel"]);
 
             dialog.setCallback("Yes, Delete", function () {
-              $scope.removeFromArray($scope.namespace.namespaces, namespace);
-              if (namespace == $scope.namespace.defaultNamespace) {
-                $scope.namespace.defaultNamespace = "";
-              }
+              $scope.namespaces = $scope.namespaces.filter((e) => {return e != namespace});
             });
             dialog.run();
           }
-
-          $scope.removeFromArray = function (theArray, theValue) {
-            for (var i = 0; i < theArray.length; i++) {
-              if (theArray[i] === theValue) {
-                theArray.splice(i, 1);
-              }
-            }
-          };
-
-          $scope.addAdmin = function () {
-            $scope.addItem({
-              title: "Add Admin",
-              label: "User ID",
-              validate: function (value, resultFn) {
-                if ($scope.namespace.admins.includes(value)) {
-                  resultFn({
-                    valid: false,
-                    errorMessage: "Collaborator already exists."
-                  });
-                  return;
-                }
-
-                $http.get("./rest/accounts/" + value)
-                .then(function (result) {
-                  resultFn({valid: true});
-                }, function (reason) {
-                  if (reason.status == 404) {
-                    resultFn({
-                      valid: false,
-                      errorMessage: "User does not have a Vorto Repository account."
-                    });
-                  } else {
-                    resultFn({
-                      valid: false,
-                      errorMessage: "Error while accessing the server."
-                    });
-                  }
-                });
-              },
-              successFn: function (value) {
-                $scope.namespace.admins.push(value);
-              }
-            });
-          };
 
           $scope.addNamespace = function () {
             var prefix = $rootScope.privateNamespacePrefix;
@@ -434,7 +399,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           };
 
           $scope.addItem = function (dialogSettings) {
-            var tenant = $scope.namespace;
+            var namespace = $scope.namespace;
             var modalInstance = $uibModal.open({
               animation: true,
               templateUrl: "addItem.html",

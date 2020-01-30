@@ -1,7 +1,7 @@
 define(["../init/appController"],function(repositoryControllers) {
 
-repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window', 'TenantService',
-	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window, TenantService) {
+repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window',
+	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window) {
 
 	$scope.deleteAccount = function() {
 	   	$http.delete('./rest/accounts/'+$rootScope.user)

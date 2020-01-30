@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -55,6 +56,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,13 +75,36 @@ import org.springframework.web.bind.annotation.RestController;
  * in favor of a simplified namespace-based architecture that is already partially in place.<br/>
  * In the meantime, this controller can act as a proxy for the UI, tests and servlet filters, while
  * delegating its core functionality to the existing controllers until the full replacement is in
- * place.
+ * place.<br/>
+ * <b>Note</b>: while this controller is conveniently placed in the API v.1 package, the endpoints
+ * stay with {@literal /rest/...} for now, until we are ready to release them as official API with
+ * the relevant documentation.
  */
 @RestController
-@RequestMapping(value = "/api/v1/namespaces")
+@RequestMapping(value = "/rest/namespaces")
 public class NamespaceController {
 
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
+
+  private static final class NamespaceValidator {
+    private static final String NAMESPACE_PREFIX = "vorto.private.";
+    private static final String VALID_NAMESPACE = "(\\p{Alnum}|_)+(\\.(\\p{Alnum}|_)+)*";
+    private static Optional<NamespaceOperationResult> validate(String namespace, IUserContext context) {
+      if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+        return Optional.of(NamespaceOperationResult.failure("Empty namespace"));
+      }
+      if (!namespace.matches(VALID_NAMESPACE)) {
+        return Optional.of(NamespaceOperationResult.failure("Invalid namespace notation."));
+      }
+      if (!context.isSysAdmin()) {
+        if (!namespace.startsWith(NAMESPACE_PREFIX)) {
+          return Optional.of(NamespaceOperationResult.failure("User can only register a private namespace."));
+        }
+      }
+      return Optional.ofNullable(null);
+    }
+  }
+
   
   @Autowired
   private ITenantService tenantService;
@@ -116,7 +141,7 @@ public class NamespaceController {
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
     IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
     Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
-        .filter(tenant -> tenant.hasUser(userContext.getUsername()))
+        .filter(tenant -> userContext.isSysAdmin() || tenant.hasTenantAdmin(userContext.getUsername()))
         .map(NamespaceDto::fromTenant)
         .collect(Collectors.toList());
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
@@ -334,20 +359,22 @@ public class NamespaceController {
    * The endpoint takes an empty body and a namespace path variable, then tries to create it by
    * associating the necessary user/tenant information before handing over to the autowired
    * {@link ITenantService}.<br/>
-   * Ultimately everything "tenant" should be refactored and simplified, so the tenant service
+   * Everything "tenant" should be refactored and simplified further on, so the tenant service
    * should be gone and replaced with a namespace service eventually.
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value="/{namespace:[a-zA-Z0-9_\\.]+}", produces = "application/json")
+  @RequestMapping(method = RequestMethod.PUT, value="/{namespace}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
       @ApiParam(value = "The name of the namespace to be created", required = true)
       final @PathVariable String namespace
   ) {
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Empty namespace"), HttpStatus.BAD_REQUEST);
+      IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    // validating namespace notation and user-related (private vs public)
+    Optional<NamespaceOperationResult> validationError = NamespaceValidator.validate(namespace, userContext);
+    if (validationError.isPresent()) {
+      return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -403,6 +430,50 @@ public class NamespaceController {
     }
   }
 
+  /**
+   * This is a port of {@link TenantManagementController#getTenants} and was used in the UI by the
+   * TenantService (now deleted), to return a list of namespaces where the user had a specific role,
+   * e.g. for model details, a list of namespaces where the user is creator (the list was then
+   * filtered again in the front-end to match the namespace of the specific model).<br/>
+   * This still uses the {@link ITenantService} behind the scenes for now. <br/>
+   * Due to current usage, the role is always passed as one argument, so it does not seem useful to
+   * allow a collection of roles at this time - therefore, the parameter has been modified to be a
+   * path variable. <br/>
+   * It is, however, still optional: if absent, the response will contain all namespaces where this
+   * user has any permission.
+   * @param role
+   * @return
+   */
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping(value = "/{role}", produces = "application/json")
+  public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
+      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
+          required = false) final @PathVariable(value = "role", required = false) String role) {
+
+
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
+    // user is sysadmin, return all namespaces and ignore role
+    if (userContext.isSysAdmin()) {
+      return new ResponseEntity(
+          tenantService.getTenants().stream().map(NamespaceDto::fromTenant).collect(Collectors.toList()),
+          HttpStatus.OK
+      );
+    }
+    else {
+      Predicate<Tenant> filter = isOwner(userContext.getUsername());
+      if (role != null) {
+        Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
+        filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
+      }
+      return new ResponseEntity<>(
+          tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant).collect(Collectors.toList()),
+          HttpStatus.OK
+      );
+    }
+
+  }
+
   @DeleteMapping(value = "/{namespace:[a-zA-Z0-9_\\.]+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> deleteNamespace(
@@ -428,12 +499,21 @@ public class NamespaceController {
       return new ResponseEntity<>(NamespaceOperationResult.failure("Operation forbidden for this user"), HttpStatus.FORBIDDEN);
     }
 
+    boolean success = false;
+    String message = "Operation failed for unknown reasons";
+    try {
+      success = tenantService.deleteTenant(tenant, userContext);
+    }
+    catch (TenantNotFoundException e) {
+      message = e.getMessage();
+      LOGGER.warn(String.format("Could not delete namespace %s", namespace), e);
+    }
     return new ResponseEntity<>(
       NamespaceOperationResult.generate(
-          tenantService.deleteTenant(tenant, userContext),
-          Optional.of("Operation failed for unknown reasons")
+          success,
+          Optional.of(message)
       ),
-      HttpStatus.OK
+      success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 
@@ -547,5 +627,11 @@ public class NamespaceController {
 
   private static Predicate<Tenant> isOwner(String username) {
     return tenant -> tenant.hasTenantAdmin(username);
+  }
+
+  private static Predicate<Tenant> hasMemberWithRole(String username, Role role) {
+    return tenant -> tenant.getUsers().stream()
+        .anyMatch(user -> user.getUser().getUsername().equals(username)
+            && !user.getRoles().isEmpty() && user.hasRole(role));
   }
 }

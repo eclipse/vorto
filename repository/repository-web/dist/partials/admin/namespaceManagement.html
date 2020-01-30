@@ -53,10 +53,10 @@
 								<i class="fa fa-user fa-2x"  aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
 							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{namespace.name}}/backup"
-								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this tenant for backup.">
+								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this namespace for backup.">
 								<i class="fa fa-download fa-2x" aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
-							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreTenant(namespace)"
+							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreNamespace(namespace)"
 								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this namespace using backup.">
 								<span class="fa fa-wrench fa-2x" aria-hidden="true"></span>
 							</a>&nbsp;&nbsp;

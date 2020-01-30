@@ -19,7 +19,7 @@
     		<uib-tab-heading><i class="fa fa-info-circle"></i> Global Repository Functions</uib-tab-heading>
 			
 			<div ng-if="error" class="alert alert-danger">{{error}}</div>
-			<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
+			<div ng-if="hasIndexingError || hasForceReindexingError" class="alert alert-danger">{{ indexingError }}</div>
 			<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
 			<h3>Reindex</h3>
 			<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
