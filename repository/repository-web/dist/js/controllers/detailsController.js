@@ -30,6 +30,7 @@ repositoryControllers.controller('DetailsController',
 				$scope.encodeURIComponent = encodeURIComponent;
 				$scope.newComment = {value: ""};
 				$scope.canGenerate = true;
+				$scope.canPublishModel = false;
 
 				$scope.editorConfig = {
 					infomodel: {
@@ -291,6 +292,7 @@ repositoryControllers.controller('DetailsController',
 									});
 
 							$scope.getUserPolicy();
+							$scope.getAllUserPolicies();
 						}
 
 						$scope.showReferences = false;
@@ -903,6 +905,17 @@ repositoryControllers.controller('DetailsController',
 							//$scope.modelEditor.setReadOnly(true);
 						}
 					});
+				};
+
+				$scope.getAllUserPolicies = function() {
+					$http.get('./rest/models/' + $scope.modelId + '/policies')
+						.success(function(result) {
+							$scope.canPublishModel = result.some(function(e, i, a) {return e.principalId && e.principalId == "MODEL_PUBLISHER";});
+						})
+						.error(function(data, status, headers, config) {
+							$scope.permission = "READ";
+							$scope.canPublishModel = false;
+						});
 				};
 
 				$scope.diagnoseModel = function () {
