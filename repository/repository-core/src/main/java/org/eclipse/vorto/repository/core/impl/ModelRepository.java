@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -41,6 +42,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -85,6 +87,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import com.google.common.collect.Lists;
 
+import com.google.common.collect.Lists;
+
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
 
@@ -97,7 +101,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   private static final String VORTO_META = "vorto:meta";
 
   private static final String VORTO_AUTHOR = "vorto:author";
-  
+
   private static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
 
   private static final String VORTO_STATE = "vorto:state";
@@ -505,7 +509,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       }
     }
   }
-  
+
   @Override
   public List<ModelInfo> getModelsReferencing(ModelId modelId) {
     return doInSession(session -> {
@@ -752,8 +756,8 @@ public class ModelRepository extends AbstractRepositoryOperation
           attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
         }
 
-        String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId())
-            .collect(Collectors.toList()).toArray(new String[tags.length]);
+          String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
+                  .toArray(new String[tags.length]);
 
         Node contentNode = null;
         if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
@@ -970,7 +974,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   /**
    * copies merely attachments and policies and workflow meta data from the source model to the
    * target model
-   * 
+   *
    * @param sourceModel source model to copy
    * @param targetModel target model to add data from source model
    * @param user
@@ -996,7 +1000,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   /**
    * saves the given changeset in a sorted way into the repository in the context of the given user
-   * 
+   *
    * @param changeSet
    * @param user
    */
