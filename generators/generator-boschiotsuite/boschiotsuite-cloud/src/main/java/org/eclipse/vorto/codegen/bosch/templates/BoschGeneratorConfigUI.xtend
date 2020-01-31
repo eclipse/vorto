@@ -91,6 +91,22 @@ class BoschGeneratorConfigUI {
 											<div class="col-sm-4">
 												<div class="box box-primary">
 													<div class="box-header with-border">
+														<h3 class="box-title">Template for Developer Console</h3>
+													</div><!-- /.box-header -->
+													<div class="box-body">
+														<p>
+															Template file for the provisioning wizard of the
+															developer console of the Bosch IoT Suite.
+															<br/>
+														</p>
+														<a
+																href="./api/v1/generators/boschiotsuite/models/{{model.id.prettyFormat}}?provision=true&requestBodyOnly=true" class="btn btn-primary btn-sm pull-right"><i class="fa fa-download"></i> Download</a>
+													</div><!-- /.box-body -->
+												</div><!-- /.box -->
+											</div>
+											<div class="col-sm-4">
+												<div class="box box-primary">
+													<div class="box-header with-border">
 														<h3 class="box-title">Device Digital Twin API</h3>
 													</div><!-- /.box-header -->
 													<div class="box-body">
