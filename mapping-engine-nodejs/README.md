@@ -55,7 +55,7 @@ Now add a Mapping key to uniquely identify your mapping to the device it belongs
 
 ![platform key](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/specify_mapping_key.png)
 
-Click Create and the web editor opens allowing you to add mapping expression for the Function Blocks you added. You can write XPath 3.1 like notation. Behind the scenes the engine uses [fotonxpath](https://www.npmjs.com/package/fontoxpath) to apply XPath expressions on the DOM created using the device json. To add functionality that may not be possible using xpath alone, you can also use/create custom JavaScript functions (courtesy fotonxpath) . Once you have written your xpath expressions, press Save.
+Click Create and the web editor opens allowing you to add mapping expression for the Function Blocks you added. You can write XPath 3.1 like notation. Behind the scenes the engine uses [fontoxpath](https://www.npmjs.com/package/fontoxpath) to apply XPath expressions on the DOM created using the device json. To add functionality that may not be possible using xpath alone, you can also use/create custom JavaScript functions (courtesy fontoxpath) . Once you have written your xpath expressions, press Save.
 
 ![xpath](https://github.com/eclipse/vorto/raw/master/mapping-engine-nodejs/images/xpath.png)
 
