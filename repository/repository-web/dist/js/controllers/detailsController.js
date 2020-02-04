@@ -277,19 +277,18 @@ repositoryControllers.controller('DetailsController',
 						$scope.canCreateModels = false;
 
 						if ($rootScope.authenticated) {
-							// TODO refactor this
-							var promise = TenantService.getNamespacesForRole(
-									'ROLE_MODEL_CREATOR');
-							promise.then(
-									function (namespaces) {
-										for (entry of namespaces) {
-											if ($scope.model.id.namespace.startsWith(
-													entry.namespace)) {
-												$scope.canCreateModels = true;
-												return;
-											}
-										}
-									});
+							$http
+							.get("./rest/namespaces/ROLE_MODEL_CREATOR/" + $scope.model.id.namespace)
+							.then(function(result) {
+								if (result.data) {
+									$scope.canCreateModels = result.data;
+								}
+							},
+							function(error) {
+								if (error.message) {
+									$scope.errorLoading = error.message;
+								}
+							});
 
 							$scope.getUserPolicy();
 						}
