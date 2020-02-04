@@ -39,7 +39,7 @@ import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/api/v1/namespaces")
+@RequestMapping(value = "/rest/namespaces")
 public class NamespaceController {
   
   @Autowired
