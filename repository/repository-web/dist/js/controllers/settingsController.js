@@ -2,7 +2,9 @@ define(["../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
 	function ($location, $rootScope, $scope, $http, $uibModal, $timeout) {
-		
+
+  $scope.userId = $rootScope.user;
+
 	$scope.saveSettings = function() {
 		 $http.put("./rest/accounts/" + $rootScope.user, $scope.user.email).success(
                 function(data, status, headers, config) {
@@ -18,7 +20,7 @@ repositoryControllers.controller('SettingsController', [ '$location', '$rootScop
 
                 });
 	};
-	
+
 	$scope.getSettings = function() {
 		$http.get("./rest/accounts/" + $rootScope.user).success(
                 function(data, status, headers, config) {
@@ -31,18 +33,19 @@ repositoryControllers.controller('SettingsController', [ '$location', '$rootScop
 	$scope.getSettings();
 
 	$scope.openRemoveAccount = function() {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "RemoveAccountModalController",
-        templateUrl: "deleteAccount.html",
-        size: "medium",
-      });
+    var modalInstance = $uibModal.open({
+      animation: true,
+      controller: "RemoveAccountModalController",
+      templateUrl: "deleteAccount.html",
+      size: "medium"
+    });
       
-      modalInstance.result.then(
-				function () {
-					$location.path("/login");
-				});
-    };
+    modalInstance.result.then(
+      function () {
+        $location.path("/login");
+      }
+    );
+  };
     
 }]);
 

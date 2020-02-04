@@ -245,7 +245,10 @@ public class NamespaceController {
    * allow a collection of roles at this time - therefore, the parameter has been modified to be a
    * path variable. <br/>
    * It is, however, still optional: if absent, the response will contain all namespaces where this
-   * user has any permission.
+   * user has any permission.<br/>
+   * Note also that for UI REST calls, we can privilege {@link NamespaceController#hasRoleOnNamespace},
+   * since originally the UI would contain that logic but it can be more efficiently handled in
+   * the back-end (see for instance the model details controller Javascript resource).
    * @param role
    * @return
    */
@@ -254,7 +257,6 @@ public class NamespaceController {
   public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
       @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
           required = false) final @PathVariable(value = "role", required = false) String role) {
-
 
     IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
 
@@ -276,8 +278,83 @@ public class NamespaceController {
           HttpStatus.OK
       );
     }
-
   }
+
+  /**
+   * This new endpoint aims at replacing the functionality of both the front-end TenantService and
+   * {@link TenantManagementController#getTenants}. <br/>
+   * The goal is to return whether the authenticated user has the specified role on the specified
+   * namespace. <br/>
+   * As most endpoints here, we are still temporarily querying the tenant-based service (and
+   * subsequently the tenant repository) behind the scenes.
+   * @param role
+   * @param namespace
+   * @return
+   */
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping(value = "/{role}/{namespace}", produces = "application/json")
+  public ResponseEntity<Boolean> hasRoleOnNamespace(
+      @ApiParam(value = "The role to verify", required = true)
+      final @PathVariable(value = "role") String role,
+      @ApiParam(value = "The target namespace", required = true)
+      final @PathVariable(value = "namespace", required = true) String namespace
+      )
+  {
+
+    if (Strings.nullToEmpty(role).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
+    // user is sysadmin, the answer is yes regardless
+    if (userContext.isSysAdmin()) {
+      return new ResponseEntity(
+          true,
+          HttpStatus.OK
+      );
+    }
+    else {
+      Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
+      Predicate<Tenant> filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
+      return new ResponseEntity<>(
+          tenantService.getTenants().stream().filter(filter).anyMatch((t) -> t.getDefaultNamespace().equals(namespace)),
+          HttpStatus.OK
+      );
+    }
+  }
+
+  /**
+   * This endpoint replaces a specific function of the functionalities used by the  former
+   * TenantService Angular service. <br/>
+   * Namely, it verifies whether the given user has any namespace where they are the only
+   * administrator. <br/>
+   * In turn, this is used in the "remove account" Angular controller, in order to verify whether the
+   * user can delete their account, or they should delete any namespace / add a different administrator
+   * first.
+   * @return
+   */
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping(value = "/userIsOnlyAdmin", produces = "application/json")
+  public ResponseEntity<Boolean> isOnlyAdminForAnyNamespace() {
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
+    return new ResponseEntity<>(
+        tenantService
+            .getTenants()
+            .stream()
+            // filter "tenants" where user has the "tenant admin" role
+            .filter(hasMemberWithRole(userContext.getUsername(), Role.TENANT_ADMIN))
+            // verifies there is no more than one user with the TENANT_ADMIN role for that "tenant"
+            .anyMatch((n) -> n.getTenantAdmins().size() == 1),
+        HttpStatus.OK
+    );
+  }
+
 
   @DeleteMapping(value = "/{namespace:[a-zA-Z0-9_\\.]+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
