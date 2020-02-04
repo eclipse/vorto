@@ -108,17 +108,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               controller: function ($scope) {
                 $scope.allowRestore = false;
                 $scope.errorMessage = null;
-
-                // TODO check why we need this
-                // TODO this can be refactored into a one liner anyway
-                $scope.getNamespace = function () {
-                  if (namespace != null) {
-                    return "'" + namespace.name + "' ";
-                  }
-                  else {
-                    return "";
-                  }
-                };
+                $scope.namespaceName = namespace.name;
 
                 $scope.fileNameChanged = function (element) {
                   $scope.$apply(function ($scope) {
@@ -137,9 +127,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                       && element.files.length > 0) {
                     var fd = new FormData();
                     fd.append('file', element.files[0]);
-                    // TODO verify restore endpoints
                     $http.post(
-                        './rest/' + $scope.namespace.name + '/restore',
+                        './rest/namespaces/' + $scope.namespaceName + '/restore',
                         fd, {
                           transformRequest: angular.identity,
                           headers: {
@@ -147,20 +136,18 @@ define(["../../init/appController"], function (repositoryControllers) {
                           }
                         })
                     .success(function (result) {
-                      console.log(JSON.stringify(result));
-                      // TODO sanitize
-                      var updatedTenants = result;
-                      if (updatedTenants.length < 1) {
-                        $scope.errorMessage = "No tenants were restored. Maybe you used the wrong backup file?";
-                      } else {
+                      var updatedNamespaces = result;
+                      if (updatedNamespaces && updatedNamespaces.length && updatedNamespaces.length < 1) {
+                        $scope.errorMessage = "No namespaces were restored. Maybe you used the wrong backup file?";
+                      }
+                      else {
                         $scope.errorMessage = null;
                         modalInstance.dismiss();
                       }
                     })
                     .error(function (result) {
-                      console.log(JSON.stringify(result));
                       // TODO : better error message
-                      $scope.errorMessage = "Error on server.";
+                      $scope.errorMessage = "Unkown server error.";
                     });
                   }
                 };
