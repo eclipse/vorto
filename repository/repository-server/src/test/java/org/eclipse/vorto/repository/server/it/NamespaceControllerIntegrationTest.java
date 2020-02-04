@@ -45,12 +45,12 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
 
   @Test
   public void getNamespaces() throws Exception {
-    repositoryServer.perform(get("/api/v1/namespaces").with(userAdmin)).andExpect(status().isOk());
+    repositoryServer.perform(get("/rest/namespaces").with(userAdmin)).andExpect(status().isOk());
   }
   
   @Test
   public void getNamespace() throws Exception {
-    repositoryServer.perform(get("/api/v1/namespaces/com.mycompany").with(userAdmin)).andExpect(status().isOk());
+    repositoryServer.perform(get("/rest/namespaces/com.mycompany").with(userAdmin)).andExpect(status().isOk());
   }
   
   @Test
@@ -67,7 +67,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
   }
 
   private void checkCollaboratorRoles(String namespace, String user, String subject, String ... roles) throws Exception {
-    repositoryServer.perform(get("/api/v1/namespaces/" + namespace).with(userAdmin))
+    repositoryServer.perform(get("/rest/namespaces/" + namespace).with(userAdmin))
       .andDo(handler -> {
         NamespaceDto ns = new Gson().fromJson(handler.getResponse().getContentAsString(), NamespaceDto.class);
         Collection<Collaborator> collabs = ns.getCollaborators();
@@ -90,7 +90,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
 
   private void updateCollaborator(String namespace, Collaborator collaborator) throws Exception {
     repositoryServer.perform(
-       put("/api/v1/namespaces/" + namespace + "/collaborators/" + collaborator.getUserId())
+       put("/rest/namespaces/" + namespace + "/collaborators/" + collaborator.getUserId())
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
@@ -123,7 +123,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/api/v1/namespaces/com.mycompany/collaborators/userstandard2")
+       put("/rest/namespaces/com.mycompany/collaborators/userstandard2")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userStandard))
@@ -135,7 +135,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", "unknownProvider", null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/api/v1/namespaces/com.mycompany/collaborators/userstandard2")
+       put("/rest/namespaces/com.mycompany/collaborators/userstandard2")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
@@ -148,7 +148,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     collaborator.setTechnicalUser(true);
     repositoryServer.perform(
-       put("/api/v1/namespaces/com.mycompany/collaborators/my-technical-user")
+       put("/rest/namespaces/com.mycompany/collaborators/my-technical-user")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
@@ -160,7 +160,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("unknownUser", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/api/v1/namespaces/com.mycompany/collaborators/unknownUser")
+       put("/rest/namespaces/com.mycompany/collaborators/unknownUser")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
@@ -172,7 +172,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/api/v1/namespaces/com.unknowntenant/collaborators/userstandard2")
+       put("/rest/namespaces/com.unknowntenant/collaborators/userstandard2")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
