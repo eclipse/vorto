@@ -12,48 +12,38 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         $scope.targetNamespace = null;
 
 		$scope.getNamespaces = function() {
-        	$scope.userNamespaces = [];
-        	// TODO move endpoint and refactor
-            	$http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
-                	.then(function(result) {
-                    	var tenants = result.data;
-                        if (tenants != null) {
-                        	for(var i=0; i < tenants.length; i++) {
-                            	if (tenants[i].namespaces != null) {
-                                	for(var k=0; k < tenants[i].namespaces.length; k++) {
-                                    	$scope.userNamespaces.push({
-                                        	tenant: tenants[i].tenantId,
-                                            namespace: tenants[i].namespaces[k]
-                                        }); 
-                                    }
-                                }
-                             }
-                         }
-                         if ($scope.userNamespaces.length > 0) {
-                         	$scope.userNamespaces.sort(function (a, b) {
-                            	return a.namespace.localeCompare(b.namespace);
-                            });
-                            }
-                       }, function(reason) {
-                                // TODO : handling of failures
-          			});
-         };
+		    $scope.userNamespaces = [];
+        $http.get("./rest/namespaces/ROLE_MODEL_CREATOR")
+          .then(function(result) {
+              if (result.data) {
+                  $scope.userNamespaces = result.data;
+                  if ($scope.userNamespaces.length > 0) {
+                      $scope.userNamespaces.sort(function (a, b) {
+                          return a.name.localeCompare(b.name);
+                      });
+                  }
+              }
+          },
+          function(reason) {
+            // TODO : handling of failures
+          });
+		};
                     
-         $scope.getNamespaces();
+		$scope.getNamespaces();
 
-        $scope.uploadModel = function () {
-            $scope.showResultBox = false;
-            $scope.uploadResult = {};
-            $scope.resultMessage = "";
-			$scope.fileImported = false;
-            $scope.beingUploaded = true;
-            $scope.error = null;
+    $scope.uploadModel = function () {
+        $scope.showResultBox = false;
+        $scope.uploadResult = {};
+        $scope.resultMessage = "";
+			  $scope.fileImported = false;
+        $scope.beingUploaded = true;
+        $scope.error = null;
 
             var fileToUpload = document.getElementById('file-upload').files[0];
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                upload('./api/v1/importers?targetNamespace='+$scope.targetNamespace.namespace, fileToUpload);
+                upload('./api/v1/importers?targetNamespace='+$scope.targetNamespace.name, fileToUpload);
                 
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
