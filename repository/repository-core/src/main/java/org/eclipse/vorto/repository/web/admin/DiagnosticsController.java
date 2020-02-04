@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.admin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -24,10 +25,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.common.collect.Lists;
 
+/**
+ * This controller shares the same base path as {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController},
+ * but it lives in its own package scoped to administrator functionalities. <br/>
+ * It only provides one endpoint to diagnose all namespaces (formerly "tenants"). <br/>
+ * This is only available to sysadmin users, so all namespaces are diagnosed without filter. <br/>
+ * It still utilizes the {@link ITenantService} behind the scenes, up until that is refactored.
+ */
 @RestController
-@RequestMapping(value = "/rest/{tenantId}/diagnostics")
+@RequestMapping(value = "/rest/namespaces/diagnostics")
 public class DiagnosticsController {
 
   @Autowired
@@ -39,7 +46,7 @@ public class DiagnosticsController {
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public Collection<Diagnostic> diagnose() {
-    Collection<Diagnostic> diagnostics = Lists.newArrayList();
+    Collection<Diagnostic> diagnostics = new ArrayList<>();
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
     for (Tenant tenant : tenantService.getTenants()) {

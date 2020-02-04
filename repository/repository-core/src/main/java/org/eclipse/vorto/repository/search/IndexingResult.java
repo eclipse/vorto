@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,25 +16,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IndexingResult {
-  private Map<String, Integer> indexedTenants = new HashMap<>();
+  private Map<String, Integer> indexedNamespaces = new HashMap<>();
 
-  public Map<String, Integer> getIndexedTenants() {
-    return indexedTenants;
+  public Map<String, Integer> getIndexedNamespaces() {
+    return indexedNamespaces;
   }
   
-  public int getNumberOfTenants() {
-    return indexedTenants.size();
+  public int getNumberOfNamespaces() {
+    return indexedNamespaces.size();
   }
   
   public int getTotalNumberOfIndexedModels() {
-    return indexedTenants.entrySet().stream().mapToInt(entry -> entry.getValue()).sum();
+    return indexedNamespaces.entrySet().stream().mapToInt(entry -> entry.getValue()).sum();
   }
 
-  public void setIndexedTenants(Map<String, Integer> indexedTenants) {
-    this.indexedTenants = indexedTenants;
+  public void setIndexedNamespaces(Map<String, Integer> indexedNamespaces) {
+    this.indexedNamespaces = indexedNamespaces;
   }
   
-  public void addIndexedTenant(String tenant, int numModels) {
-    indexedTenants.put(tenant, numModels);
+  public void addIndexedNamespace(String namespace, int numModels) {
+    indexedNamespaces.put(namespace, numModels);
   }
 }

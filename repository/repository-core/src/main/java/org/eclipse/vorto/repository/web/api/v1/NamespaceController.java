@@ -86,10 +86,25 @@ public class NamespaceController {
 
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
 
-  private static final class NamespaceValidator {
-    private static final String NAMESPACE_PREFIX = "vorto.private.";
-    private static final String VALID_NAMESPACE = "(\\p{Alnum}|_)+(\\.(\\p{Alnum}|_)+)*";
-    private static Optional<NamespaceOperationResult> validate(String namespace, IUserContext context) {
+  /**
+   * As the name indicates, validates a namespace name based on whether:
+   * <ul>
+   *   <li>
+   *     the user is a sysadmin and does not need to prepend {@link NamespaceValidator#NAMESPACE_PREFIX}
+   *     to the namespace's name, and
+   *   </li>
+   *   <li>
+   *     the actual namespace name is valid according to the {@link NamespaceValidator#VALID_NAMESPACE}
+   *     pattern.
+   *   </li>
+   * </ul>
+   * The {@link NamespaceValidator#validate(String, IUserContext)} method returns an {@link Optional}
+   * of {@link NamespaceOperationResult} that will be empty if the namespace is valid, and
+   */
+  public static final class NamespaceValidator {
+    public static final String NAMESPACE_PREFIX = "vorto.private.";
+    public static final String VALID_NAMESPACE = "(\\p{Alnum}|_)+(\\.(\\p{Alnum}|_)+)*";
+    public static Optional<NamespaceOperationResult> validate(String namespace, IUserContext context) {
       if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
         return Optional.of(NamespaceOperationResult.failure("Empty namespace"));
       }
@@ -101,7 +116,7 @@ public class NamespaceController {
           return Optional.of(NamespaceOperationResult.failure("User can only register a private namespace."));
         }
       }
-      return Optional.ofNullable(null);
+      return Optional.empty();
     }
   }
 
@@ -652,7 +667,6 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
 
   @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:[a-zA-Z0-9_\\.]+}/collaborators/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
