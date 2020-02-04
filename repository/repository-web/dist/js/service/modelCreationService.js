@@ -51,31 +51,20 @@ repository.factory('openCreateModelDialog',
                      
                     $scope.loadFunctionblocks();
 
-                    // TODO change endpoint and refactor
                     $scope.getNamespaces = function() {
                         $scope.userNamespaces = [];
-                        $http.get("./rest/tenants?role=ROLE_MODEL_CREATOR")
-                            .then(function(result) {
-                                var tenants = result.data;
-                                if (tenants != null) {
-                                    for(var i=0; i < tenants.length; i++) {
-                                        if (tenants[i].namespaces != null) {
-                                            for(var k=0; k < tenants[i].namespaces.length; k++) {
-                                                $scope.userNamespaces.push({
-                                                    tenant: tenants[i].tenantId,
-                                                    namespace: tenants[i].namespaces[k]
-                                                }); 
-                                            }
-                                        }
+                        $http.get("./rest/namespaces/ROLE_MODEL_CREATOR")
+                        .then(function(result) {
+                                if (result.data) {
+                                    $scope.userNamespaces = result.data;
+                                    if ($scope.userNamespaces.length > 0) {
+                                        $scope.userNamespaces.sort(function (a, b) {
+                                            return a.name.localeCompare(b.name);
+                                        });
                                     }
                                 }
-                                if ($scope.userNamespaces.length > 0) {
-                                    $scope.userNamespaces.sort(function (a, b) {
-                                        return a.namespace.localeCompare(b.namespace);
-                                    });
-                                    $scope.namespaceRoot = $scope.userNamespaces[0].namespace; 
-                                }
-                            }, function(reason) {
+                            },
+                            function(reason) {
                                 // TODO : handling of failures
                             });
                     };
