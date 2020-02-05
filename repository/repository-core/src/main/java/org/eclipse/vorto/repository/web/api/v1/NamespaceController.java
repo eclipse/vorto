@@ -78,7 +78,11 @@ import org.springframework.web.bind.annotation.RestController;
  * place.<br/>
  * <b>Note</b>: while this controller is conveniently placed in the API v.1 package, the endpoints
  * stay with {@literal /rest/...} for now, until we are ready to release them as official API with
- * the relevant documentation.
+ * the relevant documentation.<br/>
+ * Note on path variable validation: in order to avoid Spring's default config truncating the
+ * dot-separated last part of a namespace, all "validation" is set with a loose regular expression
+ * in the path variables. <br/>
+ * When so required, namespace names are validated programmatically, i.e. before creation.
  */
 @RestController
 @RequestMapping(value = "/rest/namespaces")
@@ -169,7 +173,7 @@ public class NamespaceController {
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/users")
+  @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}/users")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
@@ -204,7 +208,7 @@ public class NamespaceController {
    * @param user
    * @return
    */
-  @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/users/{userId}")
+  @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> createTechnicalUserForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
@@ -290,19 +294,17 @@ public class NamespaceController {
    * <b>TL;DR</b>The only reason why this is not implemented with an empty body is that we need the roles from
    * the UI.
    * @param namespace
-   * @param userId
    * @param user
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/users/{userId}")
+  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}/users")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> addOrUpdateUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-      @ApiParam(value = "userId", required = true) @PathVariable String userId,
       @RequestBody @ApiParam(value = "The user to be added to the namespace",
           required = true) final Collaborator user) {
 
-    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
+    if (Strings.nullToEmpty(user.getUserId()).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
@@ -320,7 +322,7 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
-    if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+    if (user.getUserId().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -329,16 +331,18 @@ public class NamespaceController {
       LOGGER.info(
           String.format(
               "Adding user [%s] to namespace [%s] with role(s) [%s]",
-              userId,
+              user.getUserId(),
               namespace,
               user.getRoles()
           )
       );
 
         Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
+        ResponseEntity<Boolean> test = new ResponseEntity<>(true, HttpStatus.OK);
+        String foo = test.toString();
 
       return new ResponseEntity<>(
-          accountService.addUserToTenant(maybeTenant.get().getTenantId(), userId, roles),
+          accountService.addUserToTenant(maybeTenant.get().getTenantId(), user.getUserId(), roles),
           HttpStatus.OK
       );
     }
@@ -352,7 +356,7 @@ public class NamespaceController {
   }
 
   
-  @RequestMapping(method = RequestMethod.GET, value="/{namespace:[a-zA-Z0-9_\\.]+}")
+  @RequestMapping(method = RequestMethod.GET, value="/{namespace:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<NamespaceDto> getNamespace(
       @ApiParam(value = "The namespace you want to retrieve", required = true) final @PathVariable String namespace,
@@ -379,13 +383,20 @@ public class NamespaceController {
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value="/{namespace}", produces = "application/json")
+  @RequestMapping(method = RequestMethod.PUT, value="/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
       @ApiParam(value = "The name of the namespace to be created", required = true)
       final @PathVariable String namespace
   ) {
-      IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    /*
+      This creates a fake "tenant ID" to feed the tenant service and pointlessly populate the
+      tenant table. Once everything "tenant-wise" is replaced with a simpler namespace-oriented
+      architecture, the UUID itself should be removed, i.e. a "namespace service" would not care
+      to use an additional unique ID since the namespace names are unique.
+      */
+    String fakeTenantId = UUID.randomUUID().toString().replace("-", "");
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), fakeTenantId);
     // validating namespace notation and user-related (private vs public)
     Optional<NamespaceOperationResult> validationError = NamespaceValidator.validate(namespace, userContext);
     if (validationError.isPresent()) {
@@ -393,13 +404,6 @@ public class NamespaceController {
     }
 
     try {
-      /*
-      This creates a fake "tenant ID" to feed the tenant service and pointlessly populate the
-      tenant table. Once everything "tenant-wise" is replaced with a simpler namespace-oriented
-      architecture, the UUID itself should be removed, i.e. a "namespace service" would not care
-      to use an additional unique ID since the namespace names are unique.
-      */
-      String fakeTenantId = UUID.randomUUID().toString().replace("-", "");
       /*
       This wraps the only admin (i.e. the given user for this request) in a set, as the service
       API allows multiple admins (but it makes no sense upon creation of a new namespace - only
@@ -502,7 +506,7 @@ public class NamespaceController {
    * @return
    */
   @PreAuthorize("isAuthenticated()")
-  @GetMapping(value = "/{role}/{namespace}", produces = "application/json")
+  @GetMapping(value = "/{role}/{namespace:.+}", produces = "application/json")
   public ResponseEntity<Boolean> hasRoleOnNamespace(
       @ApiParam(value = "The role to verify", required = true)
       final @PathVariable(value = "role") String role,
@@ -566,7 +570,7 @@ public class NamespaceController {
   }
 
 
-  @DeleteMapping(value = "/{namespace:[a-zA-Z0-9_\\.]+}", produces = "application/json")
+  @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> deleteNamespace(
       @ApiParam(value = "The name of the namespace to be deleted", required = true)
@@ -618,7 +622,7 @@ public class NamespaceController {
    * @param userId
    * @return
    */
-  @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/users/{userId}")
+  @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace:.+}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> deleteUserFromNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
@@ -668,7 +672,7 @@ public class NamespaceController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:[a-zA-Z0-9_\\.]+}/collaborators/{userId}")
+  @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:.+}/collaborators/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<String> updateCollaborator(
       @ApiParam(value = "The namespace you want to add a collaborator to.", required = true) 

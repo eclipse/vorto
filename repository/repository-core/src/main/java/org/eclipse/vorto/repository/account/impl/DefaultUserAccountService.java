@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -68,6 +69,8 @@ public class DefaultUserAccountService
   private ITenantUserRepo tenantUserRepo;
 
   private ApplicationEventPublisher eventPublisher = null;
+
+  private static final Logger LOGGER = Logger.getLogger(DefaultUserAccountService.class);
 
   /**
    * Defines the minimum validation requirement for a subject string. <br/>
@@ -209,6 +212,15 @@ public class DefaultUserAccountService
     }
     else {
       User user = userRepository.findByUsername(userId);
+      // at this point the user cannot be null
+      if (user == null) {
+        LOGGER.warn(
+          String.format(
+            "Aborting operation to add existing user [%s] to the [%s] namespace, because the user does not exist.", userId, tenant.getDefaultNamespace()
+          )
+        );
+        return false;
+      }
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
       tenantUserRepo.save(tenantUser);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));

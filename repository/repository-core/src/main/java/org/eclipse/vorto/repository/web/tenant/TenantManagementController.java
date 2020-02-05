@@ -12,50 +12,11 @@
  */
 package org.eclipse.vorto.repository.web.tenant;
 
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import org.apache.log4j.Logger;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.NamespaceExistException;
-import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
-import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
-import org.eclipse.vorto.repository.tenant.RestrictTenantPerOwnerException;
-import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
-import org.eclipse.vorto.repository.tenant.TenantService;
-import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
-import org.eclipse.vorto.repository.web.ControllerUtils;
-import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
-import org.eclipse.vorto.repository.web.tenant.dto.NamespacesRequest;
-import org.eclipse.vorto.repository.web.tenant.dto.TenantDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import com.google.common.base.Strings;
-import io.swagger.annotations.ApiParam;
-
-@RestController
-@RequestMapping(value = "/rest")
+/*@RestController
+@RequestMapping(value = "/rest")*/
 public class TenantManagementController {
 
-  private static Logger logger = Logger.getLogger(TenantManagementController.class);
+  /*private static Logger logger = Logger.getLogger(TenantManagementController.class);
 
   private TenantService tenantService;
 
@@ -195,7 +156,7 @@ public class TenantManagementController {
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The information needed to update the namespaces of tenant",
-          required = true) final @RequestBody NamespacesRequest namespacesRequest) {
+          required = true) final @RequestBody NamespaceRequest namespacesRequest) {
 
     String tenantID = ControllerUtils.sanitize(tenantId);
     
@@ -223,7 +184,7 @@ public class TenantManagementController {
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       @RequestBody @ApiParam(value = "The information needed to update the namespaces of tenant",
-          required = true) final NamespacesRequest namespacesRequest) {
+          required = true) final NamespaceRequest namespacesRequest) {
 
     String tenantID = ControllerUtils.sanitize(tenantId);
 
@@ -272,5 +233,5 @@ public class TenantManagementController {
     public String getErrorMessage() {
       return errorMessage;
     }
-  }
+  }*/
 }

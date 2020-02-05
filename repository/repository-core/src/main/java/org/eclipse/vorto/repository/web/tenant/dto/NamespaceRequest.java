@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,15 +15,15 @@ package org.eclipse.vorto.repository.web.tenant.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-public class NamespacesRequest {
+public class NamespaceRequest {
 
-  private Set<String> namespaces = new HashSet<>();
+  private String namespace;
 
-  public Set<String> getNamespaces() {
-    return namespaces;
+  public String getNamespace() {
+    return namespace;
   }
 
-  public void setNamespaces(Set<String> namespaces) {
-    this.namespaces = namespaces;
+  public void setNamespaces(String namespace) {
+    this.namespace = namespace;
   }
 }
