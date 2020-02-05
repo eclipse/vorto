@@ -239,8 +239,8 @@ repositoryControllers.controller("createOrUpdateUserController",
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    $http.put("./rest/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
-                        "username": $scope.user.userId,
+                    $http.put("./rest/namespaces/" + $scope.namespace.name + "/users", {
+                        "userId": $scope.user.userId,
                         "roles" : $scope.getRoles($scope.user)
                     })
                     .then(function(result) {
