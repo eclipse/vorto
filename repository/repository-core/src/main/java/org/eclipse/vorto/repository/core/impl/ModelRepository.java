@@ -419,7 +419,6 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   private ModelId ifLatestTagSetUpdateModelId(final ModelId modelId) {
-    final ModelId finalModelId;
     if ("latest".equalsIgnoreCase(modelId.getVersion())) {
       return getLatestModelVersionId(modelId);
     }
