@@ -21,7 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
@@ -41,6 +43,7 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
   protected static final String JWT_SUB = "sub";
   private static final String KEY_ID = "kid";
   private static final String ISSUER = "iss";
+  private static final String KEY_EMAIL = "email";
 
   private Supplier<Map<String, PublicKey>> publicKeySupplier;
   private Map<String, PublicKey> publicKeys = null;
@@ -67,11 +70,9 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
   }
   
   private Authentication createAuthentication(HttpServletRequest request, String accessToken) {
-    Optional<JwtToken> jwtToken = JwtToken.instance(accessToken);
-    if (jwtToken.isPresent()) {
-      return createAuthentication(request, jwtToken.get());
-    }
-    return null;
+    return JwtToken.instance(accessToken)
+            .map(jwtToken -> createAuthentication(request, jwtToken))
+            .orElse(null);
   }
   
   protected abstract Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken);
@@ -81,7 +82,7 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
         name, "N/A", SpringUserUtils.toAuthorityList(roles));
 
-    Map<String, Object> detailsMap = new HashMap<String, Object>();
+    Map<String, Object> detailsMap = new HashMap<>();
     detailsMap.put(JWT_SUB, userId);
     detailsMap.put(JWT_NAME, name);
     detailsMap.put(JWT_EMAIL, email);
@@ -106,8 +107,7 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
 
     PublicKey publicKey = publicKeys.get(keyId);
     if (publicKey == null) {
-      throw new InvalidTokenException(
-          String.format("There are no public keys with kid '%s'", keyId));
+      throw new InvalidTokenException(String.format("There are no public keys with kid '%s'", keyId));
     }
     
     return VerificationHelper.verifyJwtToken(publicKey, jwtToken);
@@ -138,26 +138,23 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
     Optional<JwtToken> maybeJwtToken = JwtToken.instance(accessToken);
     if (maybeJwtToken.isPresent()) {
       boolean isValid = verify(httpRequest, maybeJwtToken.get());
-      if (!isValid) {
+      if (isValid) {
         return createAuthentication(httpRequest, accessToken);
       } else {
         throw new IOAuthProvider.OAuthAuthenticationException("Authentication failed");
-
       }
     } else {
       throw new IOAuthProvider.OAuthAuthenticationException(new InvalidTokenException("Specified token is invalid. Cannot authenticate"));
     }
   }
-  
-  
-  private static final String KEY_EMAIL = "email";
-  
+
   /**
    * Creates an OAuth user for the given authentication object
    * 
    * @param authentication
    * @return
    */
+  @Override
   @SuppressWarnings("rawtypes")
   public OAuthUser createUser(Authentication authentication) {
     OAuthUser user = new OAuthUser();
@@ -172,7 +169,7 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
     }
     
     Set<String> roles = new HashSet<>();
-    authentication.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
+    authentication.getAuthorities().forEach(e -> roles.add(e.getAuthority()));
     user.setRoles(roles);
     
     return user;

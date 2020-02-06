@@ -22,16 +22,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
 import org.eclipse.vorto.repository.account.UserUtils;
 import org.hibernate.annotations.NaturalId;
+
 import com.google.common.collect.Sets;
 
 @Entity
@@ -56,7 +60,7 @@ public class User {
   
   @Column(name = "isTechnicalUser")
   private boolean isTechnicalUser;
-  
+
   @Column(nullable = false)
   private Timestamp dateCreated;
 
@@ -66,15 +70,15 @@ public class User {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
-  @OneToMany(orphanRemoval = true, mappedBy = "user")
-  private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
+  @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<TenantUser> tenantUsers = new HashSet<>();
 
   private String emailAddress;
 
   public static User create(String username, String provider, String subject) {
     return create(username, provider, subject, false);
   }
-  
+
   public static User create(String username, String provider, String subject, boolean isTechnicalUser) {
     User user = new User();
     user.setUsername(username);
