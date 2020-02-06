@@ -63,6 +63,15 @@ eidp:
       logoutRedirectUrl: 
       preferTokenInfo: true
 
+oauth2:
+  verification:
+    legacy:
+      issuer: https://access.bosch-iot-suite.com/auth/realms/iot-suite
+      publicKeyUri: https://access.bosch-iot-suite.com/auth/realms/iot-suite/protocol/openid-connect/certs
+    hydra:
+      issuer: https://access.bosch-iot-suite.com/v2/
+      publicKeyUri: https://identity.bosch.com/.well-known/jwks
+      
 mail:
   smtp:
     host: localhost
