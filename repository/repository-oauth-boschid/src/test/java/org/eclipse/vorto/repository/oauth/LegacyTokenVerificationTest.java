@@ -14,8 +14,12 @@ package org.eclipse.vorto.repository.oauth;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
@@ -31,12 +35,17 @@ public class LegacyTokenVerificationTest extends AbstractVerifierTest {
   
   private BoschIoTSuiteOAuthProviderV1 getVerifier() {
     Tenant tenant = new Tenant("test");
-    tenant.setNamespaces(Namespace.toNamespace(Arrays.asList("vorto.private.erle"), tenant).stream().collect(Collectors.toSet()));
+    tenant.setNamespaces(
+            Namespace.toNamespace(Arrays.asList("vorto.private.erle"), tenant).stream().collect(Collectors.toSet()));
     User user = User.create("d758a35e-94ef-443f-9625-7f03092e2005", "GITHUB", null, tenant, Role.USER);
-    
+
     IUserAccountService userAccountService = Mockito.mock(IUserAccountService.class);
     Mockito.when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
-    
+
+    List<Tenant> tenantList = new ArrayList<>();
+    tenantList.add(tenant);
+    Mockito.when(userAccountService.getTenants(user)).thenReturn(tenantList);
+
     return new BoschIoTSuiteOAuthProviderV1(publicKey(), userAccountService);
   }
   
