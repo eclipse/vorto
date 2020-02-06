@@ -13,12 +13,15 @@
 package org.eclipse.vorto.repository.oauth;
 
 import java.security.PublicKey;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -44,12 +47,12 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   private static final String CLIENT_ID = "client_id";
   
   private String hydraJwtIssuer;
-  
+
   @Autowired
   public BoschIoTSuiteOAuthProviderV2(
-      @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
-      @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
-      @Autowired IUserAccountService userAccountService) {
+          @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
+          @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
+          @Autowired IUserAccountService userAccountService) {
     super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService);
     this.hydraJwtIssuer = hydraJwtIssuer;
   }
@@ -76,13 +79,10 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   
   @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
-    User technicalUser = getTechnicalUser(jwtToken)
-        .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
-    
-    OAuth2Authentication auth = createAuthentication(technicalUser.getUsername(), technicalUser.getUsername(), 
-        technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest));
-    
-    return auth; 
+    return getTechnicalUser(jwtToken)
+            .map(technicalUser -> createAuthentication(technicalUser.getUsername(), technicalUser.getUsername(),
+                    technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest)))
+            .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
   }
 
   private Set<Role> getRolesForRequest(User user, HttpServletRequest httpRequest) {
@@ -90,10 +90,10 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     if (resource.isPresent()) {
       Optional<Namespace> ns = namespaceApplicableToResource(user, resource.get());
       if (ns.isPresent()) {
-        return user.getUserRoles(ns.get().getTenant().getTenantId());
+        return userAccountService.getRoles(user, ns.get().getTenant().getTenantId());
       } 
     }
-    return user.getAllRoles();
+    return userAccountService.getAllRoles(user);
   }
   
   @Override
@@ -101,38 +101,39 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     if (!verifyAlgorithm(jwtToken)) {
       return false;
     }
-    
+
     if (!super.verifyPublicKey(jwtToken)) {
       return false;
     }
-    
+
     if (!super.verifyExpiry(jwtToken)) {
-      return false; 
+      return false;
     }
-    
+
     User technicalUser = getTechnicalUser(jwtToken)
-        .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
-    
-    return allowAccess(httpRequest, resource(httpRequest), technicalUser);
+            .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+
+    return allowAccess(resource(httpRequest), technicalUser);
   }
-  
+
   private Optional<User> getTechnicalUser(JwtToken jwtToken) {
     String technicalUserId = getClientId(jwtToken)
-        .orElseThrow(() -> new MalformedElement("jwtToken doesn't have clientId"));
+            .orElseThrow(() -> new MalformedElement("jwtToken doesn't have clientId"));
     return Optional.ofNullable(userAccountService.getUser(technicalUserId));
   }
-  
+
   private boolean verifyAlgorithm(JwtToken jwtToken) {
     return jwtToken.getHeaderMap().get("alg").equals(RS256_ALG);
   }
-  
-  private boolean allowAccess(HttpServletRequest httpRequest, Optional<Resource> resource, User user) {
+
+  private boolean allowAccess(Optional<Resource> resource, User user) {
     return !resource.isPresent() || namespaceApplicableToResource(user, resource.get()).isPresent();
   }
-  
+
   private Optional<Namespace> namespaceApplicableToResource(User user, Resource resource) {
-    for(Tenant tenant : user.getTenants()) {
-      for(Namespace ns : tenant.getNamespaces()) {
+    Collection<Tenant> tenants = userAccountService.getTenants(user);
+    for (Tenant tenant : tenants) {
+      for (Namespace ns : tenant.getNamespaces()) {
         if (scopeApplies(ns, resource)) {
           return Optional.of(ns);
         }
@@ -164,7 +165,6 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     if (token.getPayloadMap().containsKey(CLIENT_ID)) {
       return Optional.ofNullable((String) token.getPayloadMap().get(CLIENT_ID));
     }
-    
     return Optional.empty();
   }
 

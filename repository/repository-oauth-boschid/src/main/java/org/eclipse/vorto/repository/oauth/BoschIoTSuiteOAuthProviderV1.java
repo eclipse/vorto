@@ -16,6 +16,7 @@ import java.security.PublicKey;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,6 @@ public class BoschIoTSuiteOAuthProviderV1 extends BoschIoTSuiteOAuthProviderV2 {
     if (token.getPayloadMap().containsKey(AZP)) {
       return Optional.ofNullable((String) token.getPayloadMap().get(AZP));
     }
-    
     return Optional.empty();
   }
 }
