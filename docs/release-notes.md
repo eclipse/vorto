@@ -2,6 +2,43 @@
 
 <br />
 
+## 0.13
+
+Vorto 0.13 is a minor release providing both new features, enhancements, bug fixes and additional documentation.
+The highlights are:
+
+- Improved functionality and usability for model search
+- Improved user experience for generators
+- Enhanced handling of authentication mechanisms as intermediary step towards Vorto being authentication provider
+ agnostics in further releases
+ 
+ **Bugfixes**
+- \#2243 Bugfix: users with no "publish" permission can no longer see the "publish" button on a model's details
+- \#2057 Bugfix: reliability fixes in "isMultiplicity" property for generator API
+- \#2114 Bugfix: improved logic for attachment validation
+- \#2168 Bugfix: improved handling of Content-Disposition header for lambda generators
+- \#2172 Bugfix: entities no longer at risk of generating duplicate mapping keys for OpenAPI generator
+
+
+**Improvements**
+- \#1878 Feature: REST API for models allows accessing latest model version by specifying "latest" instead of a specific
+ version
+- \#1735, #2154 Feature: web UI user is warned when session about to expire, and prevented from performing any non
+-applicable operation when session is expired
+- \#2269 Enhancement: "requestBodyOnly" option for the Bosch IoT Suite Generator added to the UI 
+- \#2028 #2030 #2035 Enhancement: improved tutorial documentation for mapping pipeline
+- \#1833 #2046 #2217 #2221 #2229 #2132 #2137 #2242 Enhancement: improved model search syntax by adding multiple wildcard support, case-insensitive search and documentation
+- \#2206 Feature: added custom error page for unhandled exceptions
+- \#2191 Enhancement: presentational improvements in namespace collaborator management
+- \#2088 #2208 Feature: namespace managers can now add non-existing users as technical users, by providing a user ID and a subject, and selecting an oauth provider 
+- \#1930 Enhancement: improved Oauth support for technical users
+- \#2058 Enhancement: improved reliability of "event" and "operation" syntactical block handling
+- \#1929 Feature: Vorto repository can now run in cluster mode for high availability
+- \#2130 #2157 Feature: added Oauth provider API,JWT provider API for 3rd party technical user authentication, and documentation
+- \#2106 Feature: added Vorto generator versioning and caching
+- \#2159 #2219 Support: migration scripts are now provided for self-hosted Vorto repository administrators
+- \#2248 Enhancement: function block mapping is now documented
+
 ## 0.12.5
 
 **Bugfixes**
