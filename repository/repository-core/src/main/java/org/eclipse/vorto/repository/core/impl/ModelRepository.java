@@ -374,15 +374,16 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public ModelInfo getById(ModelId modelId) {
+    final ModelId finalModelId = ifLatestTagSetUpdateModelId(modelId);
     return doInSession(session -> {
       try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        ModelIdHelper modelIdHelper = new ModelIdHelper(finalModelId);
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
-        return getModelResource(modelId, folderNode);
+        return getModelResource(finalModelId, folderNode);
       } catch (PathNotFoundException e) {
         return null;
       } catch (AccessDeniedException e) {
-        throw new NotAuthorizedException(modelId, e);
+        throw new NotAuthorizedException(finalModelId, e);
       }
     });
   }
@@ -390,10 +391,10 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public ModelId getLatestModelVersionId(ModelId modelId) {
     return getModelVersions(modelId).stream()
-        .filter(m -> ModelState.Released.getName().equals(m.getState()))
-        .max(Comparator.comparing(VERSION_COMPARATOR))
-        .map(ModelInfo::getId)
-        .orElse(null);
+            .filter(m -> ModelState.Released.getName().equals(m.getState()))
+            .max(Comparator.comparing(VERSION_COMPARATOR))
+            .map(ModelInfo::getId)
+            .orElse(null);
   }
 
   private List<ModelInfo> getModelVersions(ModelId modelId) {
@@ -415,6 +416,16 @@ public class ModelRepository extends AbstractRepositoryOperation
         throw new NotAuthorizedException(modelId, e);
       }
     });
+  }
+
+  private ModelId ifLatestTagSetUpdateModelId(final ModelId modelId) {
+    final ModelId finalModelId;
+    if ("latest".equalsIgnoreCase(modelId.getVersion())) {
+      finalModelId = getLatestModelVersionId(modelId);
+    } else {
+      finalModelId = modelId;
+    }
+    return finalModelId;
   }
 
   private ModelInfo getModelResource(ModelId modelId, Node folderNode) throws RepositoryException {
