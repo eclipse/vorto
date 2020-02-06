@@ -421,11 +421,9 @@ public class ModelRepository extends AbstractRepositoryOperation
   private ModelId ifLatestTagSetUpdateModelId(final ModelId modelId) {
     final ModelId finalModelId;
     if ("latest".equalsIgnoreCase(modelId.getVersion())) {
-      finalModelId = getLatestModelVersionId(modelId);
-    } else {
-      finalModelId = modelId;
+      return getLatestModelVersionId(modelId);
     }
-    return finalModelId;
+    return modelId;
   }
 
   private ModelInfo getModelResource(ModelId modelId, Node folderNode) throws RepositoryException {
