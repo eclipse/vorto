@@ -11,51 +11,39 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
+import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.junit.Assert.fail;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
-import org.eclipse.vorto.repository.web.tenant.dto.TenantDto;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
 
+  /**
+   * Not sure why this was using Gson when we have Jackson with Spring - leaving as is for now.
+   * Could use a cleanup.
+   */
   private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-  /*private String createNamespaceRequest = namespaceRequest("vorto.private.abc.xyz");
-
-  private List<String> badTenantRequests = Arrays.asList(gson.toJson(newNamespaceRequest("com2")),
-      new Gson().toJson(newNamespaceRequest("vorto.private")),
-      new Gson().toJson(newNamespaceRequest("vorto")),
-      new Gson().toJson(newNamespaceRequest("vorto.private.")));
-
-  private List<String> nonConflictingTenantRequests =
-      Arrays.asList(gson.toJson(newNamespaceRequest("vorto.private.xyz.ecm")));
-
-  private List<String> conflictingTenantRequests =
-      Arrays.asList(gson.toJson(newNamespaceRequest("vorto.private.abc")));*/
 
   /**
    * Since this is set to 2 in test profile for reasons unclear, taking value directly from config
@@ -276,10 +264,9 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
                 .contentType("application/json").with(userCreator)
         )
         .andExpect(status().isConflict())
-        .andExpect(status().isOk())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                gson.toJson(NamespaceOperationResult.failure("Namespace Quota of 1 exceeded."))
             )
         );
   }
@@ -290,7 +277,7 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
    */
   @Test
   public void testAddNamespaceUserWithOneRole() throws Exception {
-    // first, create the namespace for the admin user
+    // first, creates the namespace for the admin user
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace")
@@ -325,7 +312,6 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
                 "true"
             )
         );
-
   }
 
   /**
@@ -334,7 +320,7 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
    */
   @Test
   public void testAddNamespaceNonExistingUser() throws Exception {
-    // first, create the namespace for the admin user
+    // first, creates the namespace for the admin user
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace")
@@ -377,7 +363,7 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
    */
   @Test
   public void testRemoveExistingUserFromNamespace() throws Exception {
-    // first, create the namespace for the admin user
+    // first, creates the namespace for the admin user
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace")
@@ -413,325 +399,527 @@ public class NamespaceServiceIntegrationTest extends AbstractIntegrationTest {
             )
         );
     // now removes the user
-
-  }
-
-  // TODO
-  // remove non-existing user
-  // remove existing user who was not added to namespace
-  // remove exisiting user from namespace with insufficient privileges?
-  // update user roles
-  // check other endpoints, e.g. the ones replacing the dreaded TenantService.js
-  // delete the TenantManagementController (already commented out) once coverage ok
-  // delete the NamespaceRequest class if not used (likely)
-
-  /*@Test
-  public void testUpdateTenantAdmins() throws Exception {
-    addTenant("myTenant1", "vorto.private.tre", "user2", userStandard);
-
-    repositoryServer.perform(get("/rest/tenants/myTenant1").with(userAdmin))
-        .andExpect(status().isOk());
-
-    checkAdminCount(1);
-
-    repositoryServer.perform(
-        put("/rest/tenants/myTenant1").content(
-            namespaceRequest("vorto.private.tre", "user2", "user1"))
-            .contentType("application/json").with(userStandard))
-        .andExpect(status().isOk());
-
-    repositoryServer
-        .perform(put("/rest/tenants/myTenant1").content(
-            namespaceRequest("vorto.private.tre", "user3"))
-            .contentType("application/json").with(userCreator))
-        .andExpect(status().isBadRequest());
-
-    checkAdminCount(2);
-
-    assertTrue(true);
-  }*/
-
-  private void checkAdminCount(int count) throws Exception {
-    repositoryServer
-        .perform(get("/rest/tenants/myTenant1").contentType("application/json").with(userStandard))
-        .andDo(result -> {
-          TenantDto tenant =
-              gson.fromJson(result.getResponse().getContentAsString(), TenantDto.class);
-          System.out.println(gson.toJson(tenant));
-          assertEquals(count, tenant.getAdmins().size());
-        }).andExpect(status().isOk());
-  }
-
- /* private void addTenant(String tenantId, String namespace, String admin,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard) throws Exception {
-    repositoryServer
-        .perform(put("/rest/tenants/" + tenantId).content(namespaceRequest(namespace, admin))
-            .contentType("application/json").with(userStandard))
-        .andExpect(status().isOk());
-  }*/
-
-  public void verify(String tenantId, String... namespaces) throws Exception {
     repositoryServer
         .perform(
-            get("/rest/tenants/" + tenantId).contentType("application/json").with(userStandard))
-        .andDo(result -> {
-          TenantDto tenant =
-              gson.fromJson(result.getResponse().getContentAsString(), TenantDto.class);
-          System.out.println(gson.toJson(tenant));
-          assertEquals(namespaces.length, tenant.getNamespaces().size());
-          for (String namespace : namespaces) {
-            assertTrue(tenant.getNamespaces().stream().anyMatch(str -> str.equals(namespace)));
-          }
-        }).andExpect(status().isOk());
+            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", ApplicationConfig.USER_CREATOR))
+            .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
   }
 
-  /*@Test
-  public void testUpdateNamespaces() throws Exception {
-    addTenant("myTenant2", "vorto.private.mytenant2tre", "user2", userStandard3);
-
-    NamespaceRequest updateNamespace = new NamespaceRequest();
-    updateNamespace.getNamespaces().add("vorto.private.mytenant2tre");
-    updateNamespace.getNamespaces().add("vorto.private.mytenant2tre1");
-    updateNamespace.getNamespaces().add("vorto.private.mytenant2tre2");
-
-    repositoryServer.perform(put("/rest/tenants/myTenant2/namespaces")
-        .content(gson.toJson(updateNamespace)).contentType("application/json").with(userAdmin))
-        .andExpect(status().isOk());
-
-    verify("myTenant2", "vorto.private.mytenant2tre", "vorto.private.mytenant2tre1",
-        "vorto.private.mytenant2tre2");
-
-    repositoryServer.perform(
-        put("/rest/tenants/myTenant2/namespaces").contentType("application/json").with(userAdmin))
-        .andExpect(status().isBadRequest());
-
-    assertTrue(true);
-  }*/
-
-  /*@Test
-  public void testAddNamespaces() throws Exception {
-    addTenant("myTenant3", "vorto.private.mytenant3", "user2", userStandard3);
-
-    NamespaceRequest addNamespaces = new NamespaceRequest();
-    addNamespaces.getNamespaces().add("vorto.private.mytenant31");
-    addNamespaces.getNamespaces().add("vorto.private.mytenant32");
-
-    repositoryServer.perform(post("/rest/tenants/myTenant3/namespaces")
-        .content(gson.toJson(addNamespaces)).contentType("application/json").with(userAdmin))
-        .andExpect(status().isOk());
-
-    NamespaceRequest additionalNamespaces = new NamespaceRequest();
-    additionalNamespaces.getNamespaces().add("vorto.private.mytenant32");
-    additionalNamespaces.getNamespaces().add("vorto.private.mytenant33");
-
-    repositoryServer.perform(post("/rest/tenants/myTenant3/namespaces")
-        .content(gson.toJson(addNamespaces)).contentType("application/json").with(userAdmin))
-        .andExpect(status().isConflict());
-
-    verify("myTenant3", "vorto.private.mytenant3", "vorto.private.mytenant31",
-        "vorto.private.mytenant32");
-
-    repositoryServer.perform(
-        post("/rest/tenants/myTenant3/namespaces").contentType("application/json").with(userAdmin))
-        .andExpect(status().isBadRequest());
-
-    assertTrue(true);
-  }*/
-
-  /*
-   * Empty namespace must return Bad request
+  /**
+   * Tests that removing a non-existing user from a namespace fails.<br/>
+   * Note that the response will just return "false" if no user has been removed here.
+   * @throws Exception
    */
-  /*@Test
-  public void testEmptyOrNullNamespaces() throws Exception {
-    addTenant("myTenant3", "vorto.private.mytenant3", "user2", userStandard3);
-
-    NamespaceRequest addNamespaces = new NamespaceRequest();
-
-    repositoryServer.perform(post("/rest/tenants/myTenant3/namespaces")
-        .content(gson.toJson(addNamespaces)).contentType("application/json").with(userAdmin))
-        .andExpect(status().isBadRequest());
-
-    assertTrue(true);
+  @Test
+  public void testRemoveNonExistingUserFromNamespace() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace")
+                .contentType("application/json").with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
+    // now removes a user that has not been added
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", ApplicationConfig.USER_CREATOR))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+                "false"
+            )
+        );
   }
 
+  /**
+   * Tests that removing an existing user from a namespace fails if the user performing the operation
+   * has no "tenant admin" role for that namespace. <br/>
+   * In this case, we're creating a third user with tenant admin authority, who is not added as
+   * admin of that namespace, and will try to remove the simple user.<br/>
+   * Note that it might be worth thinking of the edge case where a user simply wants to be removed
+   * from a namespace they have been added to, regardless of their role in that namespace. <br/>
+   * See {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController#removeUserFromNamespace(String, String)}
+   * for specifications on how authorization is enforced.
+   * @throws Exception
+   */
   @Test
-  public void testIsValidNamespace() throws Exception {
-    addTenant("myTenant4", "vorto.private.mytenant4", "user2", userStandard4);
+  public void testRemoveExistingUserFromNamespaceWithNoPrivileges() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace")
+                .contentType("application/json").with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
 
-    repositoryServer.perform(get("/rest/namespaces/vorto.private.mytenant41/valid")
-        .contentType("application/json").with(userStandard)).andDo(result -> {
-          assertEquals("true", result.getResponse().getContentAsString());
-        }).andExpect(status().isOk());
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    userCreatorCollaborator.setRoles(roles);
 
-    repositoryServer.perform(get("/rest/namespaces/vorto.private.mytenant4/valid")
-        .contentType("application/json").with(userStandard)).andDo(result -> {
-          assertEquals("false", result.getResponse().getContentAsString());
-        }).andExpect(status().isOk());
+    // adds the collaborator with "USER" roles to the namespace
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
 
-    assertTrue(true);
+    // creates a user with tenant admin privileges but no access to the namespace in question
+    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor thirdUser = user("thirdPartyUser")
+        .password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(
+          Sets.newHashSet(USER, TENANT_ADMIN))
+        );
+
+    // finally removes the user from the namespace but with the "thirdPartyUser" who is tenant admin
+    // "somewhere else", which fails due to lack of tenant admin role on that given namespace
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", ApplicationConfig.USER_CREATOR))
+                .with(thirdUser)
+        )
+        .andExpect(status().isPreconditionFailed());
   }
 
+  /**
+   * Tests that changing roles on a namespace works for an existing user who has been previously
+   * added to that namespace.
+   * @throws Exception
+   */
   @Test
-  public void testCreateTenantWithBadRequest() throws Exception {
-    for (int i = 0; i < badTenantRequests.size(); i++) {
-      String badTenantRequest = badTenantRequests.get(i);
-      repositoryServer.perform(put("/rest/tenants/tenantWithBadRequest" + i)
-          .content(badTenantRequest).contentType("application/json").with(userCreator2))
-          .andDo(result -> {
-            System.out.println(
-                "Request: " + badTenantRequest + " Reply:" + result.getResponse().getStatus());
-          });// .andExpect(status().isBadRequest());
-    }
+  public void testChangeUserRolesOnNamespaceUser() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace")
+                .contentType("application/json").with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
 
-    assertTrue(true);
+    // then, add the creator user
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
+    // finally, change the user roles on the DTO and PUT again
+    roles.add("MODEL_CREATOR");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
   }
 
+  /**
+   * Tests that changing a user's roles on a namespace from a user who's tenant admin, but not on
+   * that namespace, fails.
+   * @throws Exception
+   */
   @Test
-  public void testCreateTenantWithNamespaceConflict() throws Exception {
-    repositoryServer.perform(put("/rest/tenants/myTenant").content(createNamespaceRequest)
-        .contentType("application/json").with(userCreator)).andExpect(status().isOk());
+  public void testChangeUserRolesOnNamespaceUserWithExtraneousUser() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace")
+                .contentType("application/json").with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
 
-    for (int i = 0; i < conflictingTenantRequests.size(); i++) {
-      String conflictingTenantRequest = conflictingTenantRequests.get(i);
-      repositoryServer.perform(put("/rest/tenants/tenantWithConflict" + i)
-          .content(conflictingTenantRequest).contentType("application/json").with(userCreator2))
-          .andDo(result -> {
-            System.out.println("Request: " + conflictingTenantRequest + " Reply:"
-                + result.getResponse().getStatus());
-          }).andExpect(status().isConflict());
-    }
+    // then, add the creator user
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
 
-    for (int i = 0; i < nonConflictingTenantRequests.size(); i++) {
-      String nonConflictingTenantRequest = nonConflictingTenantRequests.get(i);
-      repositoryServer.perform(put("/rest/tenants/tenantWithNoConflict" + i)
-          .content(nonConflictingTenantRequest).contentType("application/json").with(userCreator3))
-          .andDo(result -> {
-            System.out.println("Request: " + nonConflictingTenantRequest + " Reply:"
-                + result.getResponse().getStatus());
-          }).andExpect(status().isOk());
-    }
+    // creates a user with tenant admin privileges but no access to the namespace in question
+    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor thirdUser = user("thirdPartyUser")
+        .password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(
+            Sets.newHashSet(USER, TENANT_ADMIN))
+        );
 
-    assertTrue(true);
-  }*/
-
-  /*@Test
-  public void testAdminCanRequestNonPrivateNamespace() throws Exception {
-    String officialNs = gson.toJson(newNamespaceRequest("com.myofficial.namespace"));
-    repositoryServer.perform(put("/rest/tenants/adminTenant").content(officialNs)
-        .contentType("application/json").with(userAdmin)).andDo(result -> {
-          System.out
-              .println("Request: " + officialNs + " Reply:" + result.getResponse().getStatus());
-        }).andExpect(status().isOk());
-
-    assertTrue(true);
-  }*/
-
-  @Test
-  public void testTenantNotFound() throws Exception {
-    repositoryServer.perform(get("/rest/tenants/myTenantNotFound").with(userCreator))
-        .andExpect(status().isNotFound());
-
-    assertTrue(true);
+    // finally, change the user roles on the DTO and PUT again
+    roles.add("MODEL_CREATOR");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(thirdUser)
+        )
+        .andExpect(status().isPreconditionFailed());
   }
 
-/*  @Test
-  public void testDeleteTenant() throws Exception {
-    repositoryServer.perform(put("/rest/tenants/myTenant").content(createNamespaceRequest)
-        .contentType("application/json").with(userCreator)).andExpect(status().isOk());
-
-    repositoryServer.perform(get("/rest/tenants/myTenant").with(userCreator))
-        .andExpect(status().isOk());
-
-    repositoryServer.perform(delete("/rest/tenants/myTenant").with(userCreator))
-        .andExpect(status().isOk());
-
-    repositoryServer.perform(get("/rest/tenants/myTenant").with(userCreator))
-        .andExpect(status().isNotFound());
-
-    assertTrue(true);
-  }*/
-
+  /**
+   * Tests that checking whether the logged on user has a given role on a given namespace works as
+   * expected.<br/>
+   * The endpoint is a simplification of the former TenantService.js all deferred to the back-end,
+   * and is used contextually to verifying whether a user can modify a model.
+   * @throws Exception
+   */
   @Test
-  public void testDeleteTenantPreconditions() throws Exception {
-    repositoryServer.perform(delete("/rest/tenants/tenantThatDoesntExist").with(userCreator))
-        .andExpect(status().isBadRequest());
+  public void testHasRoleOnNamespace() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace")
+                .contentType("application/json").with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
 
-    assertTrue(true);
+    // then, add the creator user
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/myAdminNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
+    // now checks whether the user has USER role
+    repositoryServer
+        .perform(
+            get("/rest/namespaces/USER/myAdminNamespace")
+            .with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+              "true"
+            )
+        );
+    // finally, checks whether the user has MODEL_CREATOR role, which they haven't
+    repositoryServer
+        .perform(
+            get("/rest/namespaces/MODEL_CREATOR/myAdminNamespace")
+                .with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+                "false"
+            )
+        );
   }
 
- /* @Test
-  public void testCannotDeleteTenantIfNonTenantAdmin() throws Exception {
-    repositoryServer.perform(put("/rest/tenants/myTenant").content(createNamespaceRequest)
-        .contentType("application/json").with(userCreator)).andExpect(status().isOk());
+  /**
+   * Tests that checking whether the logged on user is the only admin on any of their namespaces
+   * returns as expected. <br/>
+   * The endpoint is a simplification of the former TenantService.js all deferred to the back-end,
+   * and is used contextually to a user trying to delete their account.
+   * @throws Exception
+   */
+  @Test
+  public void testIsOnlyAdminOnAnyNamespace() throws Exception {
+    // first, creates the namespace for the admin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/vorto.private.myNamespace")
+                .contentType("application/json").with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
 
-    repositoryServer.perform(delete("/rest/tenants/myTenant").with(nonTenantUser))
-        .andExpect(status().isForbidden());
+    // now checks whether the creator user is the only admin user of any namespace - since they
+    // only have one, this will return true
+    repositoryServer
+        .perform(
+            get("/rest/namespaces/userIsOnlyAdmin")
+                .with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
 
-    assertTrue(true);
-  }*/
+    /*
+    Now adds another user as tenant admin for the namespace.
+    Note: this is done with the admin user here, because of the pre-authorization checks in the
+    controller, that verify if a user has the Spring role at all.
+    Since those users are mocked and their roles cannot be changed during tests, the userCreator
+    user would fail to add a collaborator at this point (but not in real life, since they would be
+    made tenant admin of the namespace they just created).
+    */
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR2);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    roles.add("TENANT_ADMIN");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/vorto.private.myNamespace/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
+    // finally, checks whether the original user is still only admin in any of their namespaces -
+    // which they aren't now, since we've added another user with tenant admin privileges
+    repositoryServer
+        .perform(
+            get("/rest/namespaces/userIsOnlyAdmin")
+                .with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().string(
+                "false"
+            )
+        );
+  }
 
-  /*@Test
-  public void testGetTenants() throws Exception {
-    for (int i = 0; i < 2; i++) {
-      repositoryServer.perform(put("/rest/tenants/getTenants" + i)
-          .content(namespaceRequest("vorto.private.testgettenants" + i, "user3"))
-          .contentType("application/json").with(userCreator2)).andExpect(status().isOk());
-    }
+  /**
+   * Verifies the list of namespaces where the logged on user has a given role is correct.
+   * @throws Exception
+   */
+  @Test
+  public void testAccessibleNamespacesWithRole() throws Exception {
+    // first, creates a namespace for the userCreator user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/vorto.private.myNamespace")
+                .contentType("application/json").with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
+
+    // now, creates a namespace for the userCreator2 user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/vorto.private.myNamespace2")
+                .contentType("application/json").with(userCreator2)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+            content().json(
+                gson.toJson(NamespaceOperationResult.success())
+            )
+        );
+    //
+    /*
+    Now adds userCreator to userCreator2's namespace as model creator
+    Note: this is done with the admin user here, because of the pre-authorization checks in the
+    controller, that verify if a user has the Spring role at all.
+    Since those users are mocked and their roles cannot be changed during tests, the userCreator
+    user would fail to add a collaborator at this point (but not in real life, since they would be
+    made tenant admin of the namespace they just created).
+    */
+    Collaborator userCreatorCollaborator = new Collaborator();
+    userCreatorCollaborator.setUserId(ApplicationConfig.USER_CREATOR);
+    Set<String> roles = new HashSet<>();
+    roles.add("USER");
+    roles.add("MODEL_CREATOR");
+    userCreatorCollaborator.setRoles(roles);
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/vorto.private.myNamespace2/users")
+                .contentType("application/json")
+                .content(gson.toJson(userCreatorCollaborator))
+                .with(userAdmin)
+        )
+        .andExpect(status().isOk())
+        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        .andExpect(
+            content().string(
+                "true"
+            )
+        );
+
+    // finally, lists all namespaces where userCreator has the MODEL_CREATOR role, that is, their own
+    // and userCreator2's namespace
+
+    // expected namespaces
+    Collection<NamespaceDto> expectedNamespaces = new ArrayList<>();
+
+    // admins and users of the userCreator's namespace
+    Collection<Collaborator> userCreatorNSAdmins = new ArrayList<>();
+    Collection<Collaborator> userCreatorNSUsers = new ArrayList<>();
+
+    /*
+    Creating set of namespace owner roles - note: those reflect the admin's role but
+    namespace admin Collaborators seem to not have any role by design (arguably because they
+    implicitly have all roles) - so basically the roles below reflect userCreator as user of
+    their namespace, but not as admin.
+    */
+    Set<String> ownerRoles = new HashSet<>();
+    ownerRoles.add("USER");
+    ownerRoles.add("MODEL_CREATOR");
+    ownerRoles.add("TENANT_ADMIN");
+    ownerRoles.add("MODEL_PROMOTER");
+    ownerRoles.add("MODEL_REVIEWER");
+
+    // for some WEIRD reason, the publisher role is not granted automatically to namespace owners...
+
+    // creating Collaborator for userCreator as admin in their own namespace
+    Collaborator userCreatorCollaboratorAsAdmin = new Collaborator();
+    userCreatorCollaboratorAsAdmin.setUserId(ApplicationConfig.USER_CREATOR);
+    userCreatorNSAdmins.add(userCreatorCollaboratorAsAdmin);
+
+    // creating Collaborator for userCreator as user in their own namespace - all roles but sysadmin
+    Collaborator userCreatorCollaboratorAsUserAdmin = new Collaborator();
+    userCreatorCollaboratorAsUserAdmin.setUserId(ApplicationConfig.USER_CREATOR);
+    userCreatorCollaboratorAsUserAdmin.setRoles(ownerRoles);
+    userCreatorNSUsers.add(userCreatorCollaboratorAsUserAdmin);
+
+    // creating namespace for userCreator
+    NamespaceDto userCreatorNS = new NamespaceDto("vorto.private.myNamespace", userCreatorNSUsers, userCreatorNSAdmins);
+
+    // creating userCreator2 as a Collaborator object
+    Collaborator userCreator2CollaboratorAsAdmin = new Collaborator();
+    userCreator2CollaboratorAsAdmin.setUserId(ApplicationConfig.USER_CREATOR2);
+
+    Collaborator userCreator2CollaboratorAsUserAdmin = new Collaborator();
+    userCreator2CollaboratorAsUserAdmin.setUserId(ApplicationConfig.USER_CREATOR2);
+    userCreator2CollaboratorAsUserAdmin.setRoles(ownerRoles);
+
+    // adding to userCreator2 namespace admins
+    Collection<Collaborator> userCreator2NSAdmins = new ArrayList<>();
+    userCreator2NSAdmins.add(userCreator2CollaboratorAsAdmin);
+
+    // adding both userCreator2 collaborator and userCreator (the non-admin collaborator from up above)
+    // to the userCreator2 namespace users
+    Collection<Collaborator> userCreator2NSUsers = new ArrayList<>();
+    userCreator2NSUsers.add(userCreator2CollaboratorAsUserAdmin);
+    userCreator2NSUsers.add(userCreatorCollaborator);
+
+    // creating ns for userCreator2
+    NamespaceDto userCreator2NS = new NamespaceDto("vorto.private.myNamespace2", userCreator2NSUsers, userCreator2NSAdmins);
+
+    // adding both ns to expected collection
+    expectedNamespaces.add(userCreatorNS);
+    expectedNamespaces.add(userCreator2NS);
+
+    // late fix: some "com.test" namespace added to user1 in parent class where userCreator has creator role
+    repositoryServer
+        .perform(
+            delete("/rest/namespaces/com.test")
+            .with(userAdmin)
+        );
+        // don't care about the outcome here
 
     repositoryServer
-        .perform(get("/rest/tenants").contentType("application/json").with(userCreator2))
-        .andDo(result -> {
-          List<TenantDto> tenants = toTenantList(result);
-          System.out.println("tenants.size() = " + tenants.size());
-          // assertTrue(tenants.size() >= 10);
-        }).andExpect(status().isOk());
+        .perform(
+            get("/rest/namespaces/role/ROLE_MODEL_CREATOR")
+            .with(userCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+          content().json(gson.toJson(expectedNamespaces))
+        );
 
-    repositoryServer.perform(get("/rest/tenants").contentType("application/json").with(userAdmin))
-        .andDo(result -> {
-          List<TenantDto> tenants = toTenantList(result);
-          System.out.println("tenants.size() = " + tenants.size());
-          // assertTrue(tenants.size() >= 10);
-        }).andExpect(status().isOk());
-
-    repositoryServer
-        .perform(get("/rest/tenants").contentType("application/json").with(nonTenantUser))
-        .andDo(result -> {
-          List<TenantDto> tenants = toTenantList(result);
-          System.out.println("tenants.size() = " + tenants.size());
-          // assertTrue(tenants.size() <= 0);
-        }).andExpect(status().isOk());
-
-    assertTrue(true);
-  }*/
-
-  private List<TenantDto> toTenantList(MvcResult result) throws UnsupportedEncodingException {
-    Type founderListType = new TypeToken<ArrayList<TenantDto>>() {}.getType();
-    List<TenantDto> tenants =
-        gson.fromJson(result.getResponse().getContentAsString(), founderListType);
-    return tenants;
   }
-
-  /*@Test
-  public void testGetTenant() throws Exception {
-    repositoryServer.perform(put("/rest/tenants/getTenant")
-        .content(namespaceRequest("vorto.private.testgettenant", "user3"))
-        .contentType("application/json").with(userCreator3)).andExpect(status().isOk());
-
-    repositoryServer
-        .perform(get("/rest/tenants/getTenant").contentType("application/json").with(userCreator3))
-        .andExpect(status().isOk());
-
-    repositoryServer
-        .perform(get("/rest/tenants/getTenant").contentType("application/json").with(userAdmin))
-        .andExpect(status().isOk());
-
-    repositoryServer
-        .perform(get("/rest/tenants/getTenant").contentType("application/json").with(nonTenantUser))
-        .andExpect(status().isNotFound());
-
-    assertTrue(true);
-  }*/
-
-
 
 }

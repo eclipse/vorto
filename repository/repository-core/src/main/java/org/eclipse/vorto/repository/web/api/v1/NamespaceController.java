@@ -18,6 +18,7 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
@@ -47,13 +49,11 @@ import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
-import org.eclipse.vorto.repository.web.tenant.TenantManagementController;
 import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -208,13 +208,14 @@ public class NamespaceController {
    * @param user
    * @return
    */
-  @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users/{userId}")
+  @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> createTechnicalUserForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-      @ApiParam(value = "userId", required = true) @PathVariable String userId,
       @RequestBody @ApiParam(value = "The user to be added to the namespace",
           required = true) final Collaborator user) {
+
+    String userId = user.getUserId();
 
     if (Strings.nullToEmpty(userId).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
@@ -229,7 +230,13 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
+    // validates authentication provider as required for tech user
     if (Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    // also needs to validate authentication provider as a known one
+    if (providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
@@ -308,6 +315,13 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
+    // validates authentication provider only if not empty. empty providers are ok since the user
+    // might exist already
+    // also needs to validate authentication provider as a known one
+    if (providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
+      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
     if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
@@ -317,13 +331,36 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
-    Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
-    if (!maybeTenant.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    // gets tenant for namespace
+    Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
+    if (tenant == null) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
-    if (user.getUserId().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+    // gets logged on user context
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
+    if (user.getUserId().equals(userContext.getUsername())) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    /*
+    The @PreAuthorize annotation checks whether user is sysadmin or "tenant admin".
+    The latter would return true regardless of the given namespace, as long as the user logged on
+    has that role anywhere.
+    However, we need to check if the user actually has admin rights on >> this << namespace.
+    That does not apply to sysadmins.
+    */
+    if (!userContext.isSysAdmin()) {
+      if (tenant.getTenantAdmins().stream().map(User::getUsername).noneMatch(a -> a.equals(userContext.getUsername()))) {
+        LOGGER.warn(
+          String.format(
+            "User [%s] not authorized to remove user [%s] from namespace [%s].",
+            userContext.getUsername(), user.getUserId(), namespace
+          )
+        );
+        return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+      }
     }
 
     try {
@@ -338,11 +375,9 @@ public class NamespaceController {
       );
 
         Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
-        ResponseEntity<Boolean> test = new ResponseEntity<>(true, HttpStatus.OK);
-        String foo = test.toString();
 
       return new ResponseEntity<>(
-          accountService.addUserToTenant(maybeTenant.get().getTenantId(), user.getUserId(), roles),
+          accountService.addUserToTenant(tenant.getTenantId(), user.getUserId(), roles),
           HttpStatus.OK
       );
     }
@@ -373,7 +408,7 @@ public class NamespaceController {
   }
 
   /**
-   * This is a transitory endpoint to create namespaces that will ultimately replace
+   * This is a temporary endpoint to create namespaces that will ultimately replace
    * {@link TenantManagementController#createTenant(String, CreateTenantRequest)}. <br/>
    * The endpoint takes an empty body and a namespace path variable, then tries to create it by
    * associating the necessary user/tenant information before handing over to the autowired
@@ -467,7 +502,7 @@ public class NamespaceController {
    * @return
    */
   @PreAuthorize("isAuthenticated()")
-  @GetMapping(value = "/{role}", produces = "application/json")
+  @GetMapping(value = "/role/{role}", produces = "application/json")
   public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
       @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
           required = false) final @PathVariable(value = "role", required = false) String role) {
@@ -487,6 +522,7 @@ public class NamespaceController {
         Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
         filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
       }
+      List<NamespaceDto> test = tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant).collect(Collectors.toList());
       return new ResponseEntity<>(
           tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant).collect(Collectors.toList()),
           HttpStatus.OK
@@ -569,7 +605,6 @@ public class NamespaceController {
     );
   }
 
-
   @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> deleteNamespace(
@@ -617,14 +652,23 @@ public class NamespaceController {
    * Another temporary endpoint to accommodate the transition between tenant-based and namespace-based
    * taxonomy. <br/>
    * Uses the {@link IUserAccountService} behind the scenes to remove the given user from the given
-   * namespace.
+   * namespace.<br/>
+   * The permissions for this are checked twice differently. <br/>
+   * In the pre-authorization, we chek whether the logged on user is either sys admin, or has
+   * a "tenant admin" role. <br/>
+   * However, the latter is not sufficient, because they could have that role in another namespace
+   * unrelated to the given one. <br/>
+   * Therefore, another check is performed within the method's body to ensure the logged on user
+   * has that role for that given namespace (that is, assuming they are not sysadmin to start with). <br/>
+   * The drawback for this is that a user who has been added to a namespace as non-admin cannot
+   * remove themselves at this time.
    * @param namespace
    * @param userId
    * @return
    */
   @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace:.+}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<Boolean> deleteUserFromNamespace(
+  public ResponseEntity<Boolean> removeUserFromNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @ApiParam(value = "userId", required = true) @PathVariable String userId) {
 
@@ -642,10 +686,24 @@ public class NamespaceController {
       return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
-    // You cannot delete yourself if you are tenant admin
-    Authentication user = SecurityContextHolder.getContext().getAuthentication();
-    if (user.getName().equals(userId)) {
+    // You cannot delete yourself if you are tenant admin of the same namespace
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    if (userContext.getUsername().equals(userId)) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+    }
+
+    /*
+    The @PreAuthorize annotation checks whether user is sysadmin or "tenant admin".
+    The latter would return true regardless of the given namespace, as long as the user logged on
+    has that role anywhere.
+    However, we need to check if the user actually has admin rights on >> this << namespace.
+    That does not apply to sysadmins.
+    */
+    if (!userContext.isSysAdmin()) {
+      if (tenant.getTenantAdmins().stream().map(User::getUsername).noneMatch(a -> a.equals(userContext.getUsername()))) {
+        LOGGER.warn(String.format("User [%s] not authorized to remove user [%s] from namespace [%s].", userContext.getUsername(), userId, namespace));
+        return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+      }
     }
 
     try {
@@ -672,50 +730,7 @@ public class NamespaceController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", value="/{namespace:.+}/collaborators/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
-  public ResponseEntity<String> updateCollaborator(
-      @ApiParam(value = "The namespace you want to add a collaborator to.", required = true) 
-      final @PathVariable String namespace,
-      @ApiParam(value = "The collaborator you want to add to this namespace.", required = true) 
-      final @PathVariable String userId,
-      @RequestBody @ApiParam(value = "Collaborator information", required = true) 
-      final Collaborator collaboratorInfo,
-      Principal user) {
-    
-    collaboratorInfo.setUserId(userId);
-    
-    Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
-        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
-    
-    if (!tenant.hasTenantAdmin(user.getName())) {
-      return new ResponseEntity<>("User is not admin", HttpStatus.FORBIDDEN);
-    }
-    
-    Optional<IOAuthProvider> authProvider = providerRegistry.getById(collaboratorInfo.getAuthenticationProviderId());
-    if (!authProvider.isPresent()) {
-      return new ResponseEntity<>("AuthenticationProviderId is not found.", HttpStatus.BAD_REQUEST);
-    }
-    
-    if (!collaboratorInfo.isTechnicalUser() && !accountService.exists(collaboratorInfo.getUserId())) {
-      return new ResponseEntity<>("Account doesn't exist.", HttpStatus.BAD_REQUEST);
-    }
-    
-    if (collaboratorInfo.isTechnicalUser() && Strings.nullToEmpty(collaboratorInfo.getSubject()).trim().isEmpty()) {
-      return new ResponseEntity<>("Subject is empty.", HttpStatus.BAD_REQUEST);
-    }
-    
-    if (collaboratorInfo.getRoles().isEmpty()) {
-      accountService.removeUserFromTenant(tenant.getTenantId(), collaboratorInfo.getUserId());
-    } else {
-      accountService.createOrUpdate(collaboratorInfo.getUserId(), authProvider.get().getId(), collaboratorInfo.getSubject(), 
-          collaboratorInfo.isTechnicalUser(), tenant.getTenantId(), toRoles(collaboratorInfo.getRoles()));
-    }
-    
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  private Role[] toRoles(Collection<String> rolesStr) {
+  private static Role[] toRoles(Collection<String> rolesStr) {
     Collection<Role> roles = rolesStr.stream().map(roleStr -> Role.of(roleStr)).collect(Collectors.toList());
     return roles.toArray(new Role[roles.size()]);
   }

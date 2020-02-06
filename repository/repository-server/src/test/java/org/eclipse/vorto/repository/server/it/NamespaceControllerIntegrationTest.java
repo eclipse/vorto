@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018, 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,8 +15,13 @@ package org.eclipse.vorto.repository.server.it;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import java.util.Collection;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
@@ -25,8 +30,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 
 public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest {
 
@@ -36,8 +39,9 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
 
   private IUserAccountService accountService;
   
-  @Autowired private ApplicationContext context;
-  
+  @Autowired
+  private ApplicationContext context;
+
   @Override
   protected void setUpTest() throws Exception {
     accountService = context.getBean(IUserAccountService.class);
@@ -88,9 +92,18 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
       .andExpect(status().isOk());
   }
 
+  private void createTechnicalUser(String namespace, Collaborator technicalUser) throws Exception {
+    repositoryServer.perform(
+        post("/rest/namespaces/" + namespace + "/users")
+            .content(new Gson().toJson(technicalUser))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userAdmin))
+        .andExpect(status().isOk());
+  }
+
   private void updateCollaborator(String namespace, Collaborator collaborator) throws Exception {
     repositoryServer.perform(
-       put("/rest/namespaces/" + namespace + "/collaborators/" + collaborator.getUserId())
+       put("/rest/namespaces/" + namespace + "/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
@@ -104,7 +117,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     collaborator.setTechnicalUser(true);
-    updateCollaborator("com.mycompany", collaborator);
+    createTechnicalUser("com.mycompany", collaborator);
     
     assertTrue(accountService.exists("my-technical-user"));
     assertTrue(accountService.getUser("my-technical-user").isTechnicalUser());
@@ -113,6 +126,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     
     collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "ProjectX", 
         Lists.newArrayList("USER"));
+    // cannot re-create tech user so adding as collaborator since it already exists now
     updateCollaborator("com.mycompany", collaborator);
     
     checkCollaboratorRoles("com.mycompany", "my-technical-user", "ProjectX", "USER");
@@ -123,7 +137,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/rest/namespaces/com.mycompany/collaborators/userstandard2")
+       put("/rest/namespaces/com.mycompany/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userStandard))
@@ -135,11 +149,11 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", "unknownProvider", null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/rest/namespaces/com.mycompany/collaborators/userstandard2")
+       put("/rest/namespaces/com.mycompany/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
-      .andExpect(status().isBadRequest());
+      .andExpect(status().isPreconditionFailed());
   }
   
   @Test
@@ -148,11 +162,11 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     collaborator.setTechnicalUser(true);
     repositoryServer.perform(
-       put("/rest/namespaces/com.mycompany/collaborators/my-technical-user")
+       post("/rest/namespaces/com.mycompany/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
-      .andExpect(status().isBadRequest());
+      .andExpect(status().isPreconditionFailed());
   }
   
   @Test
@@ -160,11 +174,12 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("unknownUser", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/rest/namespaces/com.mycompany/collaborators/unknownUser")
+       put("/rest/namespaces/com.mycompany/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
-      .andExpect(status().isBadRequest());
+      .andExpect(status().isOk())
+      .andExpect(content().string("false"));
   }
   
   @Test
@@ -172,10 +187,11 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
     Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     repositoryServer.perform(
-       put("/rest/namespaces/com.unknowntenant/collaborators/userstandard2")
+       put("/rest/namespaces/com.unknowntenant/users")
          .content(new Gson().toJson(collaborator))
          .contentType(MediaType.APPLICATION_JSON)
          .with(userAdmin))
-      .andExpect(status().isBadRequest());
+      .andExpect(status().isNotFound());
   }
+
 }

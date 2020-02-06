@@ -84,6 +84,12 @@ public class DefaultUserAccountService
     this.eventPublisher = applicationEventPublisher;
   }
 
+  /**
+   * Attempts to remove user with given userId from "tenant". <br/>
+   * @param tenantId the tenant from which to remove the user
+   * @param userId the user to be removed
+   * @return {@literal true} if the user was present, {@literal false} otherwise.
+   */
   public boolean removeUserFromTenant(String tenantId, String userId) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(userId, "userId");
@@ -93,13 +99,20 @@ public class DefaultUserAccountService
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
 
     Optional<TenantUser> maybeUser = tenant.getUser(userId);
+
+    boolean userIsPresent = false;
+
     if (maybeUser.isPresent()) {
-      tenant.removeUser(maybeUser.get());
+      userIsPresent = tenant.hasUser(maybeUser.get().getUser().getUsername());
+      if (userIsPresent) {
+        tenant.removeUser(maybeUser.get());
+      }
+
     }
 
     tenantRepo.save(tenant);
 
-    return true;
+    return userIsPresent;
   }
 
   /**

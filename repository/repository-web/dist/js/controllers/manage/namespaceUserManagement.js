@@ -194,7 +194,7 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
-            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users/" + $scope.user.userId, {
+            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users", {
                 "userId": $scope.user.userId,
                 "roles" : $scope.getRoles($scope.user),
                 "authenticationProviderId": $scope.selectedAuthenticationProviderId,
