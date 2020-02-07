@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.eclipse.vorto</groupId>
@@ -64,7 +64,7 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-		
+
 	</properties>
 
 	<distributionManagement>
@@ -152,7 +152,7 @@
 					<outputDirectory>xtend-gen</outputDirectory>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -189,6 +189,37 @@
 						</environment>
 					</environments>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<inherited>false</inherited>
+				<configuration>
+					<header>license-header.txt</header>
+					<properties>
+						<owner>Bosch.IO GmbH</owner>
+					</properties>
+					<includes>
+						<include>**/*.java</include>
+						<include>**/*.xtext</include>
+						<include>**/*.xtend</include>
+					</includes>
+					<excludes>
+						<exclude>**/codegen/</exclude>
+						<exclude>**/src-gen/</exclude>
+						<exclude>**/xtend-gen/</exclude>
+					</excludes>
+					<strictCheck>true</strictCheck>
+					<aggregate>true</aggregate>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -346,34 +377,7 @@
 			<id>checkstyle</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>com.mycila</groupId>
-						<artifactId>license-maven-plugin</artifactId>
-						<version>3.0</version>
-						<configuration>
-							<header>license-header.txt</header>
-							<properties>
-								<owner>Bosch Software Innovations GmbH</owner>
-							</properties>
-							<includes>
-								<include>**/*.java</include>
-								<include>**/*.xtext</include>
-								<include>**/*.xtend</include>
-							</includes>
-							<excludes>
-								<exclude>**/codegen/</exclude>
-								<exclude>**/src-gen/</exclude>
-								<exclude>**/xtend-gen/</exclude>
-							</excludes>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
