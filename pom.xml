@@ -190,6 +190,49 @@
 					</environments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<inherited>false</inherited>
+				<configuration>
+					<header>license-header.txt</header>
+					<headerDefinitions>
+						<headerDefinition>${project.basedir}/license-header-xml-def.xml</headerDefinition>
+					</headerDefinitions>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>target/**</exclude>
+						<exclude>**/xtend-gen/**</exclude>
+						<exclude>**/src-gen/**</exclude>
+						<exclude>**/src/test/**</exclude>
+						<exclude>*.xml</exclude>
+					</excludes>
+					<aggregate>true</aggregate>
+					<quiet>false</quiet>
+					<failIfMissing>false</failIfMissing>
+					<failIfUnknown>false</failIfUnknown>
+					<strictCheck>false</strictCheck>
+					<skipExistingHeaders>true</skipExistingHeaders>
+					<useDefaultExcludes>true</useDefaultExcludes>
+					<encoding>UTF-8</encoding>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+					</mapping>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+							<goal>check</goal>
+						</goals>
+						<phase>validate</phase>
+						<inherited>false</inherited>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
