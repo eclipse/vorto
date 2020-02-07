@@ -215,7 +215,7 @@
 					<quiet>false</quiet>
 					<failIfMissing>true</failIfMissing>
 					<failIfUnknown>false</failIfUnknown>
-					<strictCheck>false</strictCheck>
+					<strictCheck>true</strictCheck>
 					<skipExistingHeaders>true</skipExistingHeaders>
 					<useDefaultExcludes>true</useDefaultExcludes>
 					<encoding>UTF-8</encoding>
