@@ -228,7 +228,7 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
-						<phase>validate</phase>
+						<phase>package</phase>
 						<inherited>false</inherited>
 					</execution>
 				</executions>
