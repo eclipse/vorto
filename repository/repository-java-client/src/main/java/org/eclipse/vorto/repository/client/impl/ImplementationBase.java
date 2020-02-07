@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,6 +41,7 @@ import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.repository.client.RepositoryClientException;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -50,71 +52,98 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 public class ImplementationBase {
-  protected HttpClient httpClient;
-  protected RequestContext requestContext;
-  protected static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); 
-  
-  protected Gson gson = new GsonBuilder()
-      .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
-        public IReferenceType deserialize(JsonElement jsonElement, Type type,
-            JsonDeserializationContext context) throws JsonParseException {
-          if (jsonElement.isJsonPrimitive()) {
-            return PrimitiveType.valueOf(jsonElement.getAsString());
-          } else if (jsonElement.getAsJsonObject().has("type") && jsonElement.getAsJsonObject().get("type").getAsString().equals("dictionary")) {
-            return context.deserialize(jsonElement, DictionaryType.class);
-          } else {
-            return context.deserialize(jsonElement, ModelId.class);
-          }
-        }
-      }).registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
-        public IPropertyAttribute deserialize(JsonElement jsonElement, Type type,
-            JsonDeserializationContext context) throws JsonParseException {
-          if (jsonElement.getAsJsonObject().get("value").isJsonPrimitive()) {
-            return context.deserialize(jsonElement, BooleanAttributeProperty.class);
-          } else {
-            return context.deserialize(jsonElement, EnumAttributeProperty.class);
-          }
-        }
-      }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-        public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-          try {
-            return dateFormat.parse(json.getAsJsonPrimitive().getAsString());
-          } catch (ParseException e) {
-            throw new JsonParseException(e);
-          }
-        }
-      })
-      .registerTypeAdapter(Map.class, new JsonDeserializer<HashMap<ModelId, AbstractModel>>() {
-        public HashMap<ModelId, AbstractModel> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
-                throws JsonParseException {
-            
-            if (!jsonElement.isJsonObject()) {
-                return null;
-            }
 
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            Set<Entry<String, JsonElement>> jsonEntrySet = jsonObject.entrySet();
-            HashMap<ModelId, AbstractModel> deserializedMap = new HashMap<ModelId, AbstractModel>();
+    protected HttpClient httpClient;
+    protected RequestContext requestContext;
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-            for (Entry<java.lang.String, JsonElement> entry : jsonEntrySet) {
-                AbstractModel value = null;
-                if (entry.getValue().getAsJsonObject().has("type") && entry.getValue().getAsJsonObject().get("type").getAsJsonPrimitive().getAsString().equals("InformationModel")) {
-                    value = context.deserialize(entry.getValue(), Infomodel.class);
-                } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue().getAsJsonObject().get("type").getAsJsonPrimitive().getAsString().equals("Functionblock")) {
-                    value = context.deserialize(entry.getValue(), FunctionblockModel.class);
-                } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue().getAsJsonObject().get("type").getAsJsonPrimitive().getAsString().equals("Datatype") && ((JsonElement) entry.getValue()).getAsJsonObject().has("literals")) {
-                    value = context.deserialize(entry.getValue(), EnumModel.class);
-                } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue().getAsJsonObject().get("type").getAsJsonPrimitive().getAsString().equals("Datatype")) {
-                    value = context.deserialize(entry.getValue(), EntityModel.class);
-                } 
-                if (value != null) {
-                    deserializedMap.put(getModelId(entry.getKey()), value);
+    protected Gson gson = new GsonBuilder()
+            .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
+                @Override
+                public IReferenceType deserialize(JsonElement jsonElement, Type type,
+                        JsonDeserializationContext context) throws JsonParseException {
+                    if (jsonElement.isJsonPrimitive()) {
+                        return PrimitiveType.valueOf(jsonElement.getAsString());
+                    } else if (jsonElement.getAsJsonObject().has("type") &&
+                            jsonElement.getAsJsonObject().get("type").getAsString().equals("dictionary")) {
+                        return context.deserialize(jsonElement, DictionaryType.class);
+                    } else {
+                        return context.deserialize(jsonElement, ModelId.class);
+                    }
                 }
-               
-            }
-            return deserializedMap;
-        }
+            }).registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
+                @Override
+                public IPropertyAttribute deserialize(JsonElement jsonElement, Type type,
+                        JsonDeserializationContext context) throws JsonParseException {
+                    if (jsonElement.getAsJsonObject().get("value").isJsonPrimitive()) {
+                        return context.deserialize(jsonElement, BooleanAttributeProperty.class);
+                    } else {
+                        return context.deserialize(jsonElement, EnumAttributeProperty.class);
+                    }
+                }
+            }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                @Override
+                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                        throws JsonParseException {
+                    try {
+                        return DATE_FORMAT.parse(json.getAsJsonPrimitive().getAsString());
+                    } catch (ParseException e) {
+                        throw new JsonParseException(e);
+                    }
+                }
+            })
+      .registerTypeAdapter(Map.class, new JsonDeserializer<HashMap<ModelId, AbstractModel>>() {
+          @Override
+          public HashMap<ModelId, AbstractModel> deserialize(JsonElement jsonElement, Type type,
+                  JsonDeserializationContext context)
+                  throws JsonParseException {
+
+              if (!jsonElement.isJsonObject()) {
+                  return null;
+              }
+
+              JsonObject jsonObject = jsonElement.getAsJsonObject();
+              Set<Entry<String, JsonElement>> jsonEntrySet = jsonObject.entrySet();
+              HashMap<ModelId, AbstractModel> deserializedMap = new HashMap<ModelId, AbstractModel>();
+
+              for (Entry<java.lang.String, JsonElement> entry : jsonEntrySet) {
+                  AbstractModel value = null;
+                  if (entry.getValue().getAsJsonObject().has("type") && entry.getValue()
+                          .getAsJsonObject()
+                          .get("type")
+                          .getAsJsonPrimitive()
+                          .getAsString()
+                          .equals("InformationModel")) {
+                      value = context.deserialize(entry.getValue(), Infomodel.class);
+                  } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue()
+                          .getAsJsonObject()
+                          .get("type")
+                          .getAsJsonPrimitive()
+                          .getAsString()
+                          .equals("Functionblock")) {
+                      value = context.deserialize(entry.getValue(), FunctionblockModel.class);
+                  } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue()
+                          .getAsJsonObject()
+                          .get("type")
+                          .getAsJsonPrimitive()
+                          .getAsString()
+                          .equals("Datatype") && ((JsonElement) entry.getValue()).getAsJsonObject().has("literals")) {
+                      value = context.deserialize(entry.getValue(), EnumModel.class);
+                  } else if (entry.getValue().getAsJsonObject().has("type") && entry.getValue()
+                          .getAsJsonObject()
+                          .get("type")
+                          .getAsJsonPrimitive()
+                          .getAsString()
+                          .equals("Datatype")) {
+                      value = context.deserialize(entry.getValue(), EntityModel.class);
+                  }
+                  if (value != null) {
+                      deserializedMap.put(getModelId(entry.getKey()), value);
+                  }
+
+              }
+              return deserializedMap;
+          }
 
         private ModelId getModelId(String modelId) {
             try {
