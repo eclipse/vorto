@@ -16,7 +16,7 @@
 <feature
       id="org.eclipse.vorto.feature"
       label="Vorto DSL Plugins "
-      version="0.12.6"
+      version="0.12.7"
       provider-name="Eclipse Vorto Team">
 
    <requires>

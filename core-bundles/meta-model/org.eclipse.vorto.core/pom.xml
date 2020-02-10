@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>meta-model</artifactId>
-		<version>0.12.6</version>
+		<version>0.12.7</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.core</artifactId>
