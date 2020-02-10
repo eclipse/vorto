@@ -317,8 +317,11 @@ public class NamespaceController {
 
     // validates authentication provider only if not empty. empty providers are ok since the user
     // might exist already
-    // also needs to validate authentication provider as a known one
-    if (providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
+    // validation implies checking whether the authentication provider ID is a known one
+    if (
+        !Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty() &&
+        providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))
+    ) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 

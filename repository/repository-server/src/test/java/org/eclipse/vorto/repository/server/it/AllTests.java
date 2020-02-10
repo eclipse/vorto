@@ -7,7 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({AttachmentsControllerIntegrationTest.class, ModelControllerIntegrationTest.class,
     ModelSearchControllerIntegrationTest.class, RepositoryJavaClientTest.class,
-    NamespaceServiceIntegrationTest.class})
+    NamespaceControllerIntegrationTest.class})
 public class AllTests {
 
 }
