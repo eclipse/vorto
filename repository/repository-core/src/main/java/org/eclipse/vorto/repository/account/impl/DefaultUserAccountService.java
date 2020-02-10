@@ -34,6 +34,7 @@ import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,10 +81,12 @@ public class DefaultUserAccountService
    */
   public static final String AUTHENTICATION_SUBJECT_VALIDATION_PATTERN = "^[a-zA-Z0-9]{4,}$";
 
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
 
+  @Override
   /**
    * Attempts to remove user with given userId from "tenant". <br/>
    * @param tenantId the tenant from which to remove the user
@@ -164,6 +167,7 @@ public class DefaultUserAccountService
    * @param roles
    * @return
    */
+  @Override
   public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, ICollaborator user, Role... roles) {
 
     String authenticationProviderId = user.getAuthenticationProviderId();
@@ -203,6 +207,7 @@ public class DefaultUserAccountService
    * @param roles the roles to be given to the user
    * @return
    */
+  @Override
   public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
 
     // cannot validate authentication provider within context
@@ -211,14 +216,14 @@ public class DefaultUserAccountService
     Optional<TenantUser> maybeUser = tenant.getUser(userId);
     if (maybeUser.isPresent()) {
       TenantUser user = maybeUser.get();
-      
+
       Set<UserRole> oldUserRolesToRemove =
-          user.getRoles().stream()
-          	.filter(userRole -> userRole.getRole() != Role.SYS_ADMIN)
-          	.collect(Collectors.toSet());
-      
-      oldUserRolesToRemove.forEach(_userRole -> user.removeRole(_userRole));
-      
+              user.getRoles().stream()
+                      .filter(userRole -> userRole.getRole() != Role.SYS_ADMIN)
+                      .collect(Collectors.toSet());
+
+      oldUserRolesToRemove.forEach(user::removeRole);
+
       user.addRoles(roles);
       tenantUserRepo.save(user);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_MODIFIED));
@@ -242,6 +247,7 @@ public class DefaultUserAccountService
     return true;
   }
 
+  @Override
   public Collection<Tenant> getTenantsOfUser(String userId) {
     PreConditions.notNullOrEmpty(userId, "userId");
 
@@ -250,41 +256,45 @@ public class DefaultUserAccountService
       return Collections.emptyList();
     }
 
-    return user.getTenantUsers().stream().map(tenantUser -> tenantUser.getTenant())
-        .collect(Collectors.toList());
+    return user.getTenantUsers().stream().map(TenantUser::getTenant)
+            .collect(Collectors.toList());
   }
-  
+
+  @Override
   public boolean hasRole(String tenantId, Authentication authentication, String role) {
     PreConditions.notNull(authentication, "authentication should not be null");
     return hasRole(tenantId, authentication.getName(), role);
   }
-  
+
+  @Override
   public boolean hasRole(String tenantId, String username, String role) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(role, "role");
     PreConditions.notNullOrEmpty(username, "username");
-    
+
     if (!Role.exist(role)) {
       throw new IllegalArgumentException("role must be in Role enum");
     }
-    
+
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
     PreConditions.notNull(tenant, "Tenant with tenantId " + tenantId + " doesnt exists");
-    
+
     Optional<TenantUser> user = tenant.getUser(username);
     if (user.isPresent()) {
       TenantUser tenantUser = user.get();
       return tenantUser.hasRole(Role.valueOf(role.replace(Role.rolePrefix, "")));
     }
-    
+
     return false;
   }
 
+  @Override
   @Transactional
   public User create(String username, String provider, String subject) {
     return create(username, provider, subject, false);
   }
-  
+
+  @Override
   @Transactional
   public User create(String username, String provider, String subject, boolean isTechnicalUser) {
     if (userRepository.findByUsername(username) != null) {
@@ -293,24 +303,27 @@ public class DefaultUserAccountService
 
     return userRepository.save(User.create(username, provider, subject, isTechnicalUser));
   }
-  
+
+  @Override
   @Transactional
   public User createOrUpdate(String username, String provider, String subject, String tenantId, Role... userRoles)
-      throws RoleNotSupportedException {
+          throws RoleNotSupportedException {
     return createOrUpdate(username, provider, subject, false, tenantId, userRoles);
   }
-  
+
+  @Override
   @Transactional
-  public User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId, Role... userRoles)
-      throws RoleNotSupportedException {
-    
+  public User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId,
+          Role... userRoles)
+          throws RoleNotSupportedException {
+
     PreConditions.notNullOrEmpty(username, "username");
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
-    
+
     Tenant tenant = tenantRepo.findByTenantId(tenantId);
 
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
-    
+
     User existingUser = userRepository.findByUsername(username);
 
     if (existingUser != null) {
@@ -324,19 +337,15 @@ public class DefaultUserAccountService
     }
   }
 
+  @Override
   @Transactional
   public User removeUserRole(String userName, String tenantId, List<Role> roles) {
-
     User user = userRepository.findByUsername(userName);
     if (Objects.isNull(user)) {
       throw new UsernameNotFoundException("User Not Found: " + userName);
     }
     Set<UserRole> userRoles = user.getRoles(tenantId);
-
-    roles.forEach(role -> {
-      userRoles.removeIf(e -> role == e.getRole());
-    });
-
+    roles.forEach(role -> userRoles.removeIf(e -> role == e.getRole()));
     user.setRoles(tenantId, userRoles);
 
     return userRepository.save(user);
@@ -346,9 +355,7 @@ public class DefaultUserAccountService
   @Transactional
   public void delete(final String userId) {
     User userToDelete = userRepository.findByUsername(userId);
-
     if (userToDelete != null) {
-      
       if (deleteWillOrphanTenants(userToDelete)) {
         throw AccountDeletionNotAllowed.reason("Deleting this user will orphan some tenants.");
       }
@@ -359,18 +366,6 @@ public class DefaultUserAccountService
         notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
       }
     }
-  }
-
-  private boolean deleteWillOrphanTenants(User userToDelete) {
-    for(Tenant tenant : tenantRepo.findAll()) {
-      if (tenant != null &&
-          tenant.hasTenantAdmin(userToDelete.getUsername()) &&
-          tenant.getTenantAdmins().size() <= 1) {
-        return true;
-      }
-    }
-    
-    return false;
   }
 
   @Override
@@ -392,11 +387,41 @@ public class DefaultUserAccountService
   public void saveUser(User user) {
     this.userRepository.save(user);
   }
-  
+
   @Override
   public Collection<User> getSystemAdministrators() {
     return userRepository.findUsersWithRole(Role.SYS_ADMIN);
   }
+
+  @Override
+  @Transactional
+  public Collection<Tenant> getTenants(User user) {
+    return userRepository.findOne(user.getId()).getTenants();
+  }
+
+  @Override
+  @Transactional
+  public Set<Role> getRoles(User user, String tenantId) {
+    return userRepository.findOne(user.getId()).getUserRoles(tenantId);
+  }
+
+  @Override
+  @Transactional
+  public Set<Role> getAllRoles(User user) {
+    return userRepository.findOne(user.getId()).getAllRoles();
+  }
+
+  private boolean deleteWillOrphanTenants(User userToDelete) {
+    for (Tenant tenant : tenantRepo.findAll()) {
+      if (tenant != null &&
+              tenant.hasTenantAdmin(userToDelete.getUsername()) &&
+              tenant.getTenantAdmins().size() <= 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   public IUserRepository getUserRepository() {
     return userRepository;

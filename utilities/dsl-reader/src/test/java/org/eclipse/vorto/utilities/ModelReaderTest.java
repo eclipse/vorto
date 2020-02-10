@@ -200,7 +200,7 @@ public class ModelReaderTest {
 
     ObjectPropertyType type = (ObjectPropertyType) colorLightProperty.getType();
     Entity colorLight = (Entity) type.getType();
-    assertEquals(3, colorLight.getProperties().size());
+    assertEquals(2, colorLight.getProperties().size());
     assertEquals(1, colorLight.getReferences().size());
 
     assertEquals(1, infomodel.getProperties().get(0).getType().getReferences().size());

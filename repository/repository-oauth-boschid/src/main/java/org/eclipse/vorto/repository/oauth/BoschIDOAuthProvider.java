@@ -14,7 +14,9 @@ package org.eclipse.vorto.repository.oauth;
 
 import java.util.Map;
 import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
@@ -52,7 +54,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
   
   @Override
   public boolean canHandle(Authentication auth) {
-    if (auth == null || !(auth instanceof OAuth2Authentication)) {
+    if (!(auth instanceof OAuth2Authentication)) {
       return false;
     }
     
@@ -79,6 +81,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
    * Authenticates the user from the CIAM issued token by checking if the user is registered in the
    * Repository
    */
+  @Override
   public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken) {
     Map<String, Object> tokenPayload = accessToken.getPayloadMap();
 
@@ -91,18 +94,18 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
     User user = userAccountService.getUser(userId);
 
     if (user == null) {
-      new InvalidTokenException("User from token is not a registered user in the repository!");
+      throw new InvalidTokenException("User from token is not a registered user in the repository!");
     }
 
     return createAuthentication(this.ciamClientId, userId, name.orElse(userId), email.orElse(null), user.getAllRoles()); 
   }
 
+  @Override
   protected Optional<String> getUserId(Map<String, Object> map) {
     Optional<String> userId = Optional.ofNullable((String) map.get(JWT_SUB));
     if (!userId.isPresent()) {
       return Optional.ofNullable((String) map.get(JWT_CLIENT_ID));
     }
-
     return userId;
   }
   
@@ -110,10 +113,8 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
   @SuppressWarnings("rawtypes")
   public OAuthUser createUser(Authentication authentication) {
     OAuthUser user = super.createUser(authentication);
-    
-    /**
-     * Override the display name for BOSCH ID users by parsing the email 
-     */
+
+    //Override the display name for BOSCH ID users by parsing the email
     if (authentication instanceof OAuth2Authentication) {
       Authentication userAuthentication = ((OAuth2Authentication)authentication).getUserAuthentication();
       if (userAuthentication.getDetails() != null && ((Map)userAuthentication.getDetails()).containsKey("email")) {

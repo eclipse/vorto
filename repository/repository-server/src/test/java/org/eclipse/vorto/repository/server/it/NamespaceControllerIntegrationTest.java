@@ -59,7 +59,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
    */
   @Value("${config.restrictTenant}")
   private String restrictTenantConfig;
-  
+
   @Autowired
   private ApplicationContext context;
 
@@ -100,7 +100,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
         .andExpect(status().isOk()
     );
 
-    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null, 
+    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null,
         Lists.newArrayList("USER", "MODEL_CREATOR"));
     updateCollaborator("com.mycompany", collaborator);
     checkCollaboratorRoles("com.mycompany", "userstandard2", null, "USER", "MODEL_CREATOR");

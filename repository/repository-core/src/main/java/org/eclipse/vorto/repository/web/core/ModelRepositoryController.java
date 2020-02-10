@@ -466,20 +466,28 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(	#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
+  @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/policies")
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
 
     Objects.requireNonNull(modelId, "model ID must not be null");
     try {
+      ModelId modelID = ModelId.fromPrettyFormat(modelId);
+      String tenantId = getTenant(modelId);
+      Authentication user = SecurityContextHolder.getContext().getAuthentication();
       return new ResponseEntity<>(
-          getPolicyManager(getTenant(modelId)).getPolicyEntries(ModelId.fromPrettyFormat(modelId)),
+          getPolicyManager(tenantId).getPolicyEntries(modelID)
+          .stream()
+          .filter(userHasPolicyEntry(user, tenantId))
+          .collect(Collectors.toList()),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    catch (NotAuthorizedException ex) {
+      logger.warn(ex);
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
 

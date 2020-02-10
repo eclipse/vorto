@@ -11,7 +11,6 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -44,6 +44,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -87,6 +88,8 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -371,15 +374,16 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public ModelInfo getById(ModelId modelId) {
+    final ModelId finalModelId = ifLatestTagSetUpdateModelId(modelId);
     return doInSession(session -> {
       try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        ModelIdHelper modelIdHelper = new ModelIdHelper(finalModelId);
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
-        return getModelResource(modelId, folderNode);
+        return getModelResource(finalModelId, folderNode);
       } catch (PathNotFoundException e) {
         return null;
       } catch (AccessDeniedException e) {
-        throw new NotAuthorizedException(modelId, e);
+        throw new NotAuthorizedException(finalModelId, e);
       }
     });
   }
@@ -387,10 +391,10 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public ModelId getLatestModelVersionId(ModelId modelId) {
     return getModelVersions(modelId).stream()
-        .filter(m -> ModelState.Released.getName().equals(m.getState()))
-        .max(Comparator.comparing(VERSION_COMPARATOR))
-        .map(ModelInfo::getId)
-        .orElse(null);
+            .filter(m -> ModelState.Released.getName().equals(m.getState()))
+            .max(Comparator.comparing(VERSION_COMPARATOR))
+            .map(ModelInfo::getId)
+            .orElse(null);
   }
 
   private List<ModelInfo> getModelVersions(ModelId modelId) {
@@ -412,6 +416,13 @@ public class ModelRepository extends AbstractRepositoryOperation
         throw new NotAuthorizedException(modelId, e);
       }
     });
+  }
+
+  private ModelId ifLatestTagSetUpdateModelId(final ModelId modelId) {
+    if ("latest".equalsIgnoreCase(modelId.getVersion())) {
+      return getLatestModelVersionId(modelId);
+    }
+    return modelId;
   }
 
   private ModelInfo getModelResource(ModelId modelId, Node folderNode) throws RepositoryException {
@@ -733,8 +744,8 @@ public class ModelRepository extends AbstractRepositoryOperation
           attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
         }
 
-        String[] tagIds = Arrays.stream(tags).map(Tag::getId).collect(Collectors.toList())
-            .toArray(new String[tags.length]);
+          String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
+                  .toArray(new String[tags.length]);
 
         Node contentNode;
         if (attachmentFolderNode.hasNode(fileContent.getFileName())) {

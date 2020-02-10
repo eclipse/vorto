@@ -44,7 +44,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS') && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
+			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || canPublishModel) && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
 				<button class="btn btn-default pull-left"  role="button"
 				    ng-click="makePublic(model)">
 					<span class="fa fa-globe" aria-hidden="true"></span>&nbsp;Publish</button>
