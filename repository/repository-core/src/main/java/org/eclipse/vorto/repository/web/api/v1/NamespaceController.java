@@ -124,7 +124,6 @@ public class NamespaceController {
     }
   }
 
-  
   @Autowired
   private ITenantService tenantService;
   
