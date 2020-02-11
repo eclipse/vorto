@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -49,6 +48,7 @@ import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,57 +90,23 @@ public class NamespaceController {
 
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
 
-  /**
-   * As the name indicates, validates a namespace name based on whether:
-   * <ul>
-   *   <li>
-   *     the user is a sysadmin and does not need to prepend {@link NamespaceValidator#NAMESPACE_PREFIX}
-   *     to the namespace's name, and
-   *   </li>
-   *   <li>
-   *     the actual namespace name is valid according to the {@link NamespaceValidator#VALID_NAMESPACE}
-   *     pattern.
-   *   </li>
-   * </ul>
-   * The {@link NamespaceValidator#validate(String, IUserContext)} method returns an {@link Optional}
-   * of {@link NamespaceOperationResult} that will be empty if the namespace is valid, and
-   */
-  public static final class NamespaceValidator {
-    public static final String NAMESPACE_PREFIX = "vorto.private.";
-    public static final String VALID_NAMESPACE = "(\\p{Alnum}|_)+(\\.(\\p{Alnum}|_)+)*";
-    public static Optional<NamespaceOperationResult> validate(String namespace, IUserContext context) {
-      if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-        return Optional.of(NamespaceOperationResult.failure("Empty namespace"));
-      }
-      if (!namespace.matches(VALID_NAMESPACE)) {
-        return Optional.of(NamespaceOperationResult.failure("Invalid namespace notation."));
-      }
-      if (!context.isSysAdmin()) {
-        if (!namespace.startsWith(NAMESPACE_PREFIX)) {
-          return Optional.of(NamespaceOperationResult.failure("User can only register a private namespace."));
-        }
-      }
-      return Optional.empty();
-    }
-  }
-
   @Autowired
   private ITenantService tenantService;
-  
+
   @Autowired
   private IUserAccountService accountService;
-  
+
   @Autowired
   private IOAuthProviderRegistry providerRegistry;
-  
+
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Collection<NamespaceDto>> getNamespaces(Principal user) {
     Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
-      .filter(tenant -> tenant.hasUser(user.getName()))
-      .map(NamespaceDto::fromTenant)
-      .collect(Collectors.toList());
-    
+        .filter(tenant -> tenant.hasUser(user.getName()))
+        .map(NamespaceDto::fromTenant)
+        .collect(Collectors.toList());
+
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
   }
 
@@ -154,12 +120,14 @@ public class NamespaceController {
    * context.
    * @return all namespaces the logged on user has access to.
    */
-  @RequestMapping(method = RequestMethod.GET, value="/all")
+  @RequestMapping(method = RequestMethod.GET, value = "/all")
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
     Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
-        .filter(tenant -> userContext.isSysAdmin() || tenant.hasTenantAdmin(userContext.getUsername()))
+        .filter(
+            tenant -> userContext.isSysAdmin() || tenant.hasTenantAdmin(userContext.getUsername()))
         .map(NamespaceDto::fromTenant)
         .collect(Collectors.toList());
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
@@ -184,16 +152,15 @@ public class NamespaceController {
     try {
       Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
       if (maybeTenant.isPresent()) {
-        Set<TenantUser> tenantUserSet= maybeTenant.get().getUsers();
-        Set<Collaborator> collaborators = tenantUserSet.stream().map(Collaborator::fromTenantUser).collect(
-            Collectors.toSet());
+        Set<TenantUser> tenantUserSet = maybeTenant.get().getUsers();
+        Set<Collaborator> collaborators = tenantUserSet.stream().map(Collaborator::fromTenantUser)
+            .collect(
+                Collectors.toSet());
         return new ResponseEntity<>(collaborators, HttpStatus.OK);
-      }
-      else {
+      } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOGGER.error("Error in getUsersForNamespace()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -235,7 +202,8 @@ public class NamespaceController {
     }
 
     // also needs to validate authentication provider as a known one
-    if (providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
+    if (providerRegistry.list().stream().map(IOAuthProvider::getId)
+        .noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
@@ -267,7 +235,7 @@ public class NamespaceController {
 
       return new ResponseEntity<>(
           accountService.createTechnicalUserAndAddToTenant(
-            maybeTenant.get().getTenantId(), userId, user, roles
+              maybeTenant.get().getTenantId(), userId, user, roles
           ),
           HttpStatus.OK
       );
@@ -319,7 +287,8 @@ public class NamespaceController {
     // validation implies checking whether the authentication provider ID is a known one
     if (
         !Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty() &&
-        providerRegistry.list().stream().map(IOAuthProvider::getId).noneMatch(p -> p.equals(user.getAuthenticationProviderId()))
+            providerRegistry.list().stream().map(IOAuthProvider::getId)
+                .noneMatch(p -> p.equals(user.getAuthenticationProviderId()))
     ) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
@@ -340,7 +309,8 @@ public class NamespaceController {
     }
 
     // gets logged on user context
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
 
     if (user.getUserId().equals(userContext.getUsername())) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -354,12 +324,13 @@ public class NamespaceController {
     That does not apply to sysadmins.
     */
     if (!userContext.isSysAdmin()) {
-      if (tenant.getTenantAdmins().stream().map(User::getUsername).noneMatch(a -> a.equals(userContext.getUsername()))) {
+      if (tenant.getTenantAdmins().stream().map(User::getUsername)
+          .noneMatch(a -> a.equals(userContext.getUsername()))) {
         LOGGER.warn(
-          String.format(
-            "User [%s] not authorized to remove user [%s] from namespace [%s].",
-            userContext.getUsername(), user.getUserId(), namespace
-          )
+            String.format(
+                "User [%s] not authorized to remove user [%s] from namespace [%s].",
+                userContext.getUsername(), user.getUserId(), namespace
+            )
         );
         return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
       }
@@ -376,36 +347,34 @@ public class NamespaceController {
           )
       );
 
-        Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
+      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
 
       return new ResponseEntity<>(
           accountService.addUserToTenant(tenant.getTenantId(), user.getUserId(), roles),
           HttpStatus.OK
       );
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOGGER.error("error at addOrUpdateUsersForTenant()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  
-  @RequestMapping(method = RequestMethod.GET, value="/{namespace:.+}")
+
+  @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<NamespaceDto> getNamespace(
       @ApiParam(value = "The namespace you want to retrieve", required = true) final @PathVariable String namespace,
       Principal user) {
-    
+
     Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
         .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
-    
+
     if (!tenant.hasUser(user.getName())) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
-    
+
     return new ResponseEntity<>(NamespaceDto.fromTenant(tenant), HttpStatus.OK);
   }
 
@@ -420,11 +389,10 @@ public class NamespaceController {
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value="/{namespace:.+}", produces = "application/json")
+  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
-      @ApiParam(value = "The name of the namespace to be created", required = true)
-      final @PathVariable String namespace
+      @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace
   ) {
     /*
       This creates a fake "tenant ID" to feed the tenant service and pointlessly populate the
@@ -433,9 +401,11 @@ public class NamespaceController {
       to use an additional unique ID since the namespace names are unique.
       */
     String fakeTenantId = UUID.randomUUID().toString().replace("-", "");
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), fakeTenantId);
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication(), fakeTenantId);
     // validating namespace notation and user-related (private vs public)
-    Optional<NamespaceOperationResult> validationError = NamespaceValidator.validate(namespace, userContext);
+    Optional<NamespaceOperationResult> validationError = NamespaceValidator
+        .validate(namespace, userContext);
     if (validationError.isPresent()) {
       return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
     }
@@ -465,20 +435,18 @@ public class NamespaceController {
       );
 
       return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
-    }
-    catch (NamespaceExistException e) {
+    } catch (NamespaceExistException e) {
       return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace already exist"),
           HttpStatus.CONFLICT);
-    }
-    catch (RestrictTenantPerOwnerException e) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace Quota of 1 exceeded."),
+    } catch (RestrictTenantPerOwnerException e) {
+      return new ResponseEntity<>(
+          NamespaceOperationResult.failure("Namespace Quota of 1 exceeded."),
           HttpStatus.CONFLICT);
-    }
-    catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
+    } catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
         | NewNamespacesNotSupersetException | NewNamespaceNotPrivateException e) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-    catch (Exception e) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(e.getMessage()),
+          HttpStatus.BAD_REQUEST);
+    } catch (Exception e) {
       LOGGER.error(e);
       return new ResponseEntity<>(
           NamespaceOperationResult.failure("Internal error. Consult the vorto administrators!"),
@@ -509,24 +477,27 @@ public class NamespaceController {
       @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
           required = false) final @PathVariable(value = "role", required = false) String role) {
 
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
 
     // user is sysadmin, return all namespaces and ignore role
     if (userContext.isSysAdmin()) {
       return new ResponseEntity(
-          tenantService.getTenants().stream().map(NamespaceDto::fromTenant).collect(Collectors.toList()),
+          tenantService.getTenants().stream().map(NamespaceDto::fromTenant)
+              .collect(Collectors.toList()),
           HttpStatus.OK
       );
-    }
-    else {
+    } else {
       Predicate<Tenant> filter = isOwner(userContext.getUsername());
       if (role != null) {
         Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
         filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
       }
-      List<NamespaceDto> test = tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant).collect(Collectors.toList());
+      List<NamespaceDto> test = tenantService.getTenants().stream().filter(filter)
+          .map(NamespaceDto::fromTenant).collect(Collectors.toList());
       return new ResponseEntity<>(
-          tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant).collect(Collectors.toList()),
+          tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant)
+              .collect(Collectors.toList()),
           HttpStatus.OK
       );
     }
@@ -546,12 +517,9 @@ public class NamespaceController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/{role}/{namespace:.+}", produces = "application/json")
   public ResponseEntity<Boolean> hasRoleOnNamespace(
-      @ApiParam(value = "The role to verify", required = true)
-      final @PathVariable(value = "role") String role,
-      @ApiParam(value = "The target namespace", required = true)
-      final @PathVariable(value = "namespace", required = true) String namespace
-      )
-  {
+      @ApiParam(value = "The role to verify", required = true) final @PathVariable(value = "role") String role,
+      @ApiParam(value = "The target namespace", required = true) final @PathVariable(value = "namespace", required = true) String namespace
+  ) {
 
     if (Strings.nullToEmpty(role).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
@@ -561,7 +529,8 @@ public class NamespaceController {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
 
     // user is sysadmin, the answer is yes regardless
     if (userContext.isSysAdmin()) {
@@ -569,12 +538,12 @@ public class NamespaceController {
           true,
           HttpStatus.OK
       );
-    }
-    else {
+    } else {
       Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
       Predicate<Tenant> filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
       return new ResponseEntity<>(
-          tenantService.getTenants().stream().filter(filter).anyMatch((t) -> t.getDefaultNamespace().equals(namespace)),
+          tenantService.getTenants().stream().filter(filter)
+              .anyMatch((t) -> t.getDefaultNamespace().equals(namespace)),
           HttpStatus.OK
       );
     }
@@ -593,7 +562,8 @@ public class NamespaceController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/userIsOnlyAdmin", produces = "application/json")
   public ResponseEntity<Boolean> isOnlyAdminForAnyNamespace() {
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
 
     return new ResponseEntity<>(
         tenantService
@@ -610,43 +580,46 @@ public class NamespaceController {
   @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> deleteNamespace(
-      @ApiParam(value = "The name of the namespace to be deleted", required = true)
-      final @PathVariable String namespace
+      @ApiParam(value = "The name of the namespace to be deleted", required = true) final @PathVariable String namespace
   ) {
     // validates given namespace
     if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Empty namespace"), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Empty namespace"),
+          HttpStatus.BAD_REQUEST);
     }
 
     // gets tenant for namespace
     Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
     if (tenant == null) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace does not exist"), HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace does not exist"),
+          HttpStatus.NOT_FOUND);
     }
 
     // gets user (tenant ID required here, otherwise the service will fail to delete even with the given tenant)
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenant.getTenantId());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication(), tenant.getTenantId());
 
     // validates user permissions on this namespace
     if (!(userContext.isSysAdmin() || isOwner(userContext.getUsername()).test(tenant))) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Operation forbidden for this user"), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(
+          NamespaceOperationResult.failure("Operation forbidden for this user"),
+          HttpStatus.FORBIDDEN);
     }
 
     boolean success = false;
     String message = "Operation failed for unknown reasons";
     try {
       success = tenantService.deleteTenant(tenant, userContext);
-    }
-    catch (TenantNotFoundException e) {
+    } catch (TenantNotFoundException e) {
       message = e.getMessage();
       LOGGER.warn(String.format("Could not delete namespace %s", namespace), e);
     }
     return new ResponseEntity<>(
-      NamespaceOperationResult.generate(
-          success,
-          Optional.of(message)
-      ),
-      success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+        NamespaceOperationResult.generate(
+            success,
+            Optional.of(message)
+        ),
+        success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 
@@ -689,7 +662,8 @@ public class NamespaceController {
     }
 
     // You cannot delete yourself if you are tenant admin of the same namespace
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
     if (userContext.getUsername().equals(userId)) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
@@ -702,8 +676,11 @@ public class NamespaceController {
     That does not apply to sysadmins.
     */
     if (!userContext.isSysAdmin()) {
-      if (tenant.getTenantAdmins().stream().map(User::getUsername).noneMatch(a -> a.equals(userContext.getUsername()))) {
-        LOGGER.warn(String.format("User [%s] not authorized to remove user [%s] from namespace [%s].", userContext.getUsername(), userId, namespace));
+      if (tenant.getTenantAdmins().stream().map(User::getUsername)
+          .noneMatch(a -> a.equals(userContext.getUsername()))) {
+        LOGGER.warn(String
+            .format("User [%s] not authorized to remove user [%s] from namespace [%s].",
+                userContext.getUsername(), userId, namespace));
         return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
       }
     }
@@ -722,18 +699,17 @@ public class NamespaceController {
           HttpStatus.OK
       );
 
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOGGER.error("Error in deleteUserFromNamespace()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   private static Role[] toRoles(Collection<String> rolesStr) {
-    Collection<Role> roles = rolesStr.stream().map(roleStr -> Role.of(roleStr)).collect(Collectors.toList());
+    Collection<Role> roles = rolesStr.stream().map(roleStr -> Role.of(roleStr))
+        .collect(Collectors.toList());
     return roles.toArray(new Role[roles.size()]);
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018, 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -106,11 +106,8 @@ public class DefaultUserAccountService
     boolean userIsPresent = false;
 
     if (maybeUser.isPresent()) {
-      userIsPresent = tenant.hasUser(maybeUser.get().getUser().getUsername());
-      if (userIsPresent) {
-        tenant.removeUser(maybeUser.get());
-      }
-
+      userIsPresent = true;
+      tenant.removeUser(maybeUser.get());
     }
 
     tenantRepo.save(tenant);
