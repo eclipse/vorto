@@ -97,9 +97,9 @@ repository.factory('openCreateModelDialog',
                     
                     $scope.createNamespace = function(namespaceRoot, namespaceAppend) {
                         if (namespaceAppend == null || namespaceAppend === '') {
-                            return namespaceRoot.namespace;
+                            return namespaceRoot.name;
                         } else {
-                            return namespaceRoot.namespace + "." + namespaceAppend;
+                            return namespaceRoot.name + "." + namespaceAppend;
                         }
                     };
                     
