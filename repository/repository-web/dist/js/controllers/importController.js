@@ -158,7 +158,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         checkinSingle = function (handleId) {
-        	var importUrl = "./api/v1/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.namespace;
+        	var importUrl = "./api/v1/importers/" + handleId + "?key=" + $scope.selectedImporter.key + "&targetNamespace="+$scope.targetNamespace.name;
 
             $http.put(importUrl)
                 .success(function (result) {
