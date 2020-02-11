@@ -349,7 +349,6 @@ define(["../../init/appController"], function (repositoryControllers) {
               label: "Namespace",
               prefix: prefix,
               validate: function (value, resultFn) {
-                //if ($scope.namespace.namespaces.includes($rootScope.privateNamespacePrefix + value)) {
                 if ($scope.namespace.namespaces.includes(prefix + value)) {
                   resultFn({
                     valid: false,
@@ -358,7 +357,6 @@ define(["../../init/appController"], function (repositoryControllers) {
                   return;
                 }
 
-                //$http.get("./rest/namespaces/" + $rootScope.privateNamespacePrefix + value + "/valid")
                 $http.get("./rest/namespaces/" + prefix + value + "/valid")
                 .then(function (result) {
                   if (result.data) {
