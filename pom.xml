@@ -209,6 +209,8 @@
 						<exclude>**/codegen/</exclude>
 						<exclude>**/src-gen/</exclude>
 						<exclude>**/xtend-gen/</exclude>
+						<exclude>**/generated-sources/</exclude>
+						<exclude>**/test/resources/</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 					<aggregate>true</aggregate>
