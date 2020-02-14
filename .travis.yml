@@ -27,6 +27,7 @@ jobs:
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          timeout: 300
           on:
             branch: development
         - provider: lambda
@@ -40,6 +41,7 @@ jobs:
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          timeout: 300
           on:
             branch: development
         - provider: lambda
@@ -53,6 +55,7 @@ jobs:
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          timeout: 300
           on:
             tags: true
         - provider: lambda
@@ -66,6 +69,7 @@ jobs:
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+          timeout: 300
           on:
             tags: true
     - stage: deploy
