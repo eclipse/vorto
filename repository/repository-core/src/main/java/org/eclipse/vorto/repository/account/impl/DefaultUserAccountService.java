@@ -19,9 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
-
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -36,6 +35,7 @@ import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
+import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -71,6 +71,8 @@ public class DefaultUserAccountService
 
   private ApplicationEventPublisher eventPublisher = null;
 
+  private static final Logger LOGGER = Logger.getLogger(DefaultUserAccountService.class);
+
   /**
    * Defines the minimum validation requirement for a subject string. <br/>
    * Set arbitrarily to 4+ alphanumeric characters for now. <br/>
@@ -85,6 +87,12 @@ public class DefaultUserAccountService
   }
 
   @Override
+  /**
+   * Attempts to remove user with given userId from "tenant". <br/>
+   * @param tenantId the tenant from which to remove the user
+   * @param userId the user to be removed
+   * @return {@literal true} if the user was present, {@literal false} otherwise.
+   */
   public boolean removeUserFromTenant(String tenantId, String userId) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(userId, "userId");
@@ -93,9 +101,18 @@ public class DefaultUserAccountService
 
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
 
-    tenant.getUser(userId).ifPresent(tenant::removeUser);
+    Optional<TenantUser> maybeUser = tenant.getUser(userId);
+
+    boolean userIsPresent = false;
+
+    if (maybeUser.isPresent()) {
+      userIsPresent = true;
+      tenant.removeUser(maybeUser.get());
+    }
+
     tenantRepo.save(tenant);
-    return true;
+
+    return userIsPresent;
   }
 
   /**
@@ -148,7 +165,7 @@ public class DefaultUserAccountService
    * @return
    */
   @Override
-  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, TenantTechnicalUserDto user, Role... roles) {
+  public boolean createTechnicalUserAndAddToTenant(String tenantId, String userId, ICollaborator user, Role... roles) {
 
     String authenticationProviderId = user.getAuthenticationProviderId();
     String subject = user.getSubject();
@@ -180,12 +197,12 @@ public class DefaultUserAccountService
    * called in the {@link org.eclipse.vorto.repository.web.account.AccountController}.<br/>
    * If the user search returns {@literal 404}, then the {@code POST} method is invoked instead in
    * the {@link org.eclipse.vorto.repository.web.account.AccountController}, which may end up invoking
-   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, TenantTechnicalUserDto, Role...)},
+   * sibling method here {@link DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, ICollaborator, Role...)},
    * upon administrative user confirmation that they want to create a technical user instead.
    * @param tenantId the tenant to add this user to
    * @param userId the user id
    * @param roles the roles to be given to the user
-   * @return true
+   * @return
    */
   @Override
   public boolean addUserToTenant(String tenantId, String userId, Role... roles) {
@@ -207,8 +224,18 @@ public class DefaultUserAccountService
       user.addRoles(roles);
       tenantUserRepo.save(user);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_MODIFIED));
-    } else {
+    }
+    else {
       User user = userRepository.findByUsername(userId);
+      // at this point the user cannot be null
+      if (user == null) {
+        LOGGER.warn(
+          String.format(
+            "Aborting operation to add existing user [%s] to the [%s] namespace, because the user does not exist.", userId, tenant.getDefaultNamespace()
+          )
+        );
+        return false;
+      }
       TenantUser tenantUser = TenantUser.createTenantUser(tenant, user, roles);
       tenantUserRepo.save(tenantUser);
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_ADDED));

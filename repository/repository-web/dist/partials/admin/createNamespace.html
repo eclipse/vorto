@@ -1,0 +1,44 @@
+   <div class="modal-header">
+      <button ng-disabled="isCreatingOrUpdating" type="button" class="close"
+         ng-click="cancel()">&times;</button>
+      <h4 class="modal-title">{{namespace.title}} <a class="help-icon"
+		href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/managing_namespaces.md" target="_blank" 
+		title="Read more about managing Namespaces"><span class="fa fa-question-circle" /></a>
+	  </h4>
+   </div>
+      <div class="modal-body">
+      	  <div class="alert alert-info">
+		<p>
+			Device manufacturers and entities managing Vorto models directly on the behalf of device manufacturers are
+			eligible
+			for an official vendor namespace with the name of the device manufacturer. Official vendor namespaces can be used
+			to manage public models.
+		</p>
+		<br>
+		<p>
+			If you wish to have an official vendor namespace, such as <i>com.acme</i>, you need to drop us an <a
+			href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body={{requestEmailTemplate}}">email</a>.
+		</p>
+	</div>
+	<div class="alert alert-warning">
+		Official vendor namespaces are not meant for specific projects or personal use only.
+		 </div>
+	      <form name="namespaceForm" novalidate>
+	      	  <div class="row" ng-show="errorMessage !== ''">
+					<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+			  </div>
+			  <div class="form-group">
+				<label>Specify namespace</label>
+				<div class="input-group">
+					<span  ng-if="!namespace.sysAdmin" class="input-group-addon">{{ namespace.prefixText }}</span>
+					<input type="text" name="namespace" ng-pattern="/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*$/" ng-model="namespace.name" placeholder="{{user}}" class="form-control" required>
+				</div>
+				<div class="invalid-input" ng-show="namespaceForm.namespace.$error.pattern">Namespaces are made of alphanumeric sequences including underscores, optionally separated by dots</div>
+			 </div>   
+		</form>
+	</div>
+   <div class="modal-footer" style="margin-top: 90px;">       
+   	<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary pull-right" type="button" ng-disabled="namespaceForm.$invalid || isCreatingOrUpdating" ng-click="createOrUpdateNamespace()">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create</button>
+  </div>

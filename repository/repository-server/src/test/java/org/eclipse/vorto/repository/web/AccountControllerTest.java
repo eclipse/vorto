@@ -73,7 +73,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
-    String expectedUsernameKV = "\"username\":\"testUser\"";
+    String expectedUsernameKV = "\"userId\":\"testUser\"";
     assertTrue(result.getResponse().getContentAsString().contains(expectedUsernameKV));
   }
 
@@ -86,7 +86,8 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
-    String expectedUsernameKV = "\"username\":\"testUser\"";
+    String expectedUsernameKV = "\"userId\":\"testUser\"";
+    String debug = result.getResponse().getContentAsString();
     assertTrue(result.getResponse().getContentAsString().contains(expectedUsernameKV));
   }
 
@@ -99,7 +100,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
-    String expectedUsernameKV = "\"username\":\"testUser\"";
+    String expectedUsernameKV = "\"userId\":\"testUser\"";
     assertEquals(result.getResponse().getContentAsString(), "[]");
   }
   

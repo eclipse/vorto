@@ -2,7 +2,7 @@
     "name" : "vorto",
     "workspaces" : {
         "default" : "playground",
-        "allowCreation" : true
+        "allowCreation" : true,
     },
     "security" : {
         "anonymous" : {

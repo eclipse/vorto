@@ -4,10 +4,10 @@ repositoryControllers.controller('DetailsController',
 		['$q', '$rootScope', '$scope', '$http', '$routeParams', '$location',
 			'$route',
 			'$uibModal', '$window', '$timeout', 'openCreateModelDialog',
-			'TenantService', 'confirmPublish', 'SessionTimeoutService',
+			'confirmPublish', 'SessionTimeoutService',
 			function ($q, $rootScope, $scope, $http, $routeParams, $location, $route,
 					$uibModal,
-					$window, $timeout, openCreateModelDialog, TenantService,
+					$window, $timeout, openCreateModelDialog,
 					confirmPublish, sessionTimeoutService) {
 
 				$scope.model = [];
@@ -278,18 +278,18 @@ repositoryControllers.controller('DetailsController',
 						$scope.canCreateModels = false;
 
 						if ($rootScope.authenticated) {
-							var promise = TenantService.getNamespacesForRole(
-									'ROLE_MODEL_CREATOR');
-							promise.then(
-									function (namespaces) {
-										for (entry of namespaces) {
-											if ($scope.model.id.namespace.startsWith(
-													entry.namespace)) {
-												$scope.canCreateModels = true;
-												return;
-											}
-										}
-									});
+							$http
+							.get("./rest/namespaces/ROLE_MODEL_CREATOR/" + $scope.model.id.namespace)
+							.then(function(result) {
+								if (result.data) {
+									$scope.canCreateModels = result.data;
+								}
+							},
+							function(error) {
+								if (error.message) {
+									$scope.errorLoading = error.message;
+								}
+							});
 
 							$scope.getUserPolicy();
 							$scope.getAllUserPolicies();

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.domain.Tenant;
 
 public interface ITenantService {
@@ -103,6 +104,6 @@ public interface ITenantService {
    * @param userContext
    * @return
    */
-  boolean deleteTenant(Tenant tenant, IUserContext userContext);
+  boolean deleteTenant(Tenant tenant, IUserContext userContext) throws TenantNotFoundException;
   
 }

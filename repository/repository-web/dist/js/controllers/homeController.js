@@ -1,7 +1,26 @@
 define(["../init/appController"],function(repositoryControllers) {
 
-repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window', 'TenantService',
-	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window, TenantService) {
+repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance','$window',
+	function ($location, $scope, $rootScope, $http, $uibModalInstance,$window) {
+
+		$scope.isOnlyAdminForNamespaces = function() {
+			$http
+			.get("./rest/namespaces/userIsOnlyAdmin")
+			.then(
+					function(result) {
+						// result.data cannot be undefined, i.e. falsey, so either
+						// this or error
+						$scope.soleNamespaceAdmin = result.data;
+					},
+					function(error) {
+						// no error handling within context but setting soleNamespaceAdmin
+						// as false for safety
+						$scope.soleNamespaceAdmin = true;
+					}
+			);
+		};
+
+		$scope.isOnlyAdminForNamespaces();
 
 	$scope.deleteAccount = function() {
 	   	$http.delete('./rest/accounts/'+$rootScope.user)
@@ -15,28 +34,6 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 	       });
 	};
 	
-	$scope.soleNamespaceAdmin = true;
-	
-	$scope.ownsNamespaces = function() {
-		var promise = TenantService.getNamespacesForRole('ROLE_TENANT_ADMIN');
-		promise.then(
-			function(namespaces) {
-				if (namespaces != null && namespaces.length > 0) {
-					for(var i=0; i < namespaces.length; i++) {
-						if (namespaces[i].admins != null && namespaces[i].admins.length < 2) {
-							$scope.soleNamespaceAdmin = true;
-							return;
-						}
-					}
-				}
-				
-				$scope.soleNamespaceAdmin = false;
-			}
-		);
-	};
-	
-	$scope.ownsNamespaces();
-
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss("cancel");
 };

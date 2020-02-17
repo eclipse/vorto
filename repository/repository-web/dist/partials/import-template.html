@@ -59,7 +59,7 @@
 			<div class="input-description">Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',&nbsp;')}}</div>
 		</div>
 		<div class="col-md-5">
-			<select class="form-control" id="targetNamespace" ng-model="targetNamespace" ng-options="item.namespace for item in userNamespaces">
+			<select class="form-control" id="targetNamespace" ng-model="targetNamespace" ng-options="item.name for item in userNamespaces">
 	    		<option value="">Select target namespace</option>
 	    	</select>
 	    	<div class="input-description">All uploaded model(s) will be prefixed with the selected namespace.</div>

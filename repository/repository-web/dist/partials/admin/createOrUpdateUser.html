@@ -1,4 +1,4 @@
-<form class="form-horizontal" name="tenantForm">
+<form class="form-horizontal" name="namespaceUserForm">
 	<style>
 		.dropDownUL {
 			list-style-type:none;
@@ -29,18 +29,20 @@
 			<div class="row">
 				<label for="userId" class="col-sm-2 control-label">User ID</label>
 				<div class="col-sm-10">
-					<input autofocus type="search" class="search-box-query-filter form-control search-input"
-					 id="userId" placeholder="userId" ng-model="userPartial" ng-readonly="user.edit"
+					<input ng-if="!user.edit" autofocus type="search" class="search-box-query-filter form-control search-input"
+					 id="userId" placeholder="userId" ng-model="$parent.userPartial"
 					 ng-model-options="{ debounce: 200 }" ng-change="findUsers()" ng-focus="toggleSubmitButton()">
+					<input ng-if="user.edit" autofocus type="text" class="form-control" id="userIdEdit"
+					 placeholder="userId" ng-model="user.userId" ng-readonly="true">
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-offset-2 col-sm-10">
 					<ul class="dropDownUL" ng-show="retrievedUsers.length > 0" ng->
-						<li id="{{user.username}}" ng-repeat="user in retrievedUsers track by user.username"
+						<li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
 								ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
 								ng-mouseleave="unhighlightUser(user)">
-							{{user.username}}
+							{{user.userId}}
 						</li>
 					</ul>
 				</div>

@@ -39,6 +39,7 @@ import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
+import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,12 +299,12 @@ public class AccountController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Collection<UserDto>> findUsers(
+  public ResponseEntity<Collection<Collaborator>> findUsers(
       @ApiParam(value = "Username", required = true) @PathVariable String partial) {
 
     Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
     if (users != null) {
-      return new ResponseEntity<>(users.stream().map(UserDto::fromUser).collect(Collectors.toList()), HttpStatus.OK);
+      return new ResponseEntity<>(users.stream().map(Collaborator::fromUser).collect(Collectors.toList()), HttpStatus.OK);
     }
     else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
