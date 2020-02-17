@@ -1,17 +1,26 @@
 <div class="row">
-	<div class="col-sm-4">
-		<div class="row" ng-show="isRetrievingNamespaces">
+	<div class="col-sm-4" ng-show="isRetrievingNamespaces">
 			<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching namespaces ...
-		</div>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-4 col-sm-offset-4">
+		<input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search" class="search-box-query-filter form-control search-input"
+					 id="namespaceSearch" placeholder="Search namespaces..." ng-model="namespaceSearchTerm"
+					 ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()" >
+
+	</div>
+
+	<div class="col-sm-1">
+		<button type="button" class="btn btn-primary"
+						ng-disabled="isRetrievingNamespaces" ng-click="createNamespace(newNamespace())">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create
+		</button>
+	</div>
+
+	<div class="col-sm-3">
 		<a uib-popover="Request for an official namespace, e.g. com.mycompany" popover-placement="top" popover-trigger="'mouseover'" href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body={{requestEmailTemplate}}" class="btn btn-default pull-right">
 			<i class="fa fa-envelope"></i>&nbsp;Request Official Namespace
 		</a>
-		<button type="button" class="btn btn-primary pull-right"
-			ng-disabled="isRetrievingNamespaces" ng-click="createNamespace(newNamespace())">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create
-		</button>
+
 	</div>
 </div> 
 <div class="row" style="height: 10px;"></div>
@@ -23,7 +32,7 @@
 <p>
 {{namespaces.length}} namespaces found
 </p>
-<div ng-if="namespaces.length > 0" class="row">
+<div ng-if="filteredNamespaces.length > 0" class="row">
 	<div class="col-sm-12">
 		<table class="table table-bordered table-striped table-condensed">
 			<thead>
@@ -33,7 +42,7 @@
 					<th class="col-md-3">Actions</th>
 				</tr>
 			</thead>
-			<tbody ng-repeat="namespace in namespaces">
+			<tbody ng-repeat="namespace in filteredNamespaces">
 				<tr>
 					<td class="col-md-7">
 						<div>
