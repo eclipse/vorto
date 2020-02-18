@@ -4,9 +4,9 @@
 	</div>
 	<div class="col-sm-4 col-sm-offset-4">
 		<input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search" class="search-box-query-filter form-control search-input"
-					 id="namespaceSearch" placeholder="Search namespaces..." ng-model="namespaceSearchTerm"
-					 ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()" >
-
+					 id="namespaceSearch" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
+					 ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
+		>
 	</div>
 
 	<div class="col-sm-1">

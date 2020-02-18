@@ -20,6 +20,11 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.isRetrievingNamespaces = false;
               $scope.namespaces = result.data;
               $scope.filteredNamespaces = $scope.namespaces;
+              // disabling filter here if 0 or 1 namespaces (typical user)
+              // cannot use ng-disabled as it is executed before retrieving the namespaces
+              if (!$scope.namespaces || $scope.namespaces.length <= 1) {
+                document.getElementById("namespaceSearch").disabled = true;
+              }
             },
             function (reason) {
               $scope.isRetrievingNamespaces = false;
