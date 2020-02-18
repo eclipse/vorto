@@ -181,6 +181,20 @@ public class NamespaceController {
       return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
     }
 
+    /*
+      Simple "sanitization" of namespace name to lower case.
+      The namespace always ended up being persisted lowercase by the "tenant"-based controller, but
+      this was dug deep within layers of boilerplate.
+      As a result, creating a namespace with capital letters was allowed by the lax patterns in the
+      UI, and lowercased behind the scenes.
+      This has been ignored initially while performing tenant -> namespace refactory (#2152), which
+      led to the edge case of a user creating a namespace with capital letters, but unable to
+      retrieve it when creating a model, because the tenant service would be made to look for the
+      lower-cased version thereof.
+     */
+    String lowercasedNamespace = namespace.toLowerCase();
+
+
     try {
       /*
       This creates a fake "tenant ID" to feed the tenant service and pointlessly populate the
@@ -203,7 +217,7 @@ public class NamespaceController {
       fakeNamespaces.add(namespace);
       tenantService.createOrUpdateTenant(
           fakeTenantId,
-          namespace,
+          lowercasedNamespace,
           fakeAdmins,
           Optional.of(fakeNamespaces),
           // no authentication or authorization provider necessary
