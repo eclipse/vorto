@@ -64,6 +64,7 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+		<guava.version>18.0</guava.version>
 
 	</properties>
 
@@ -148,6 +149,13 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.guava</groupId>
+						<artifactId>guava</artifactId>
+							<version>${guava.version}</version>
+					</dependency>
+				</dependencies>
 				<configuration>
 					<outputDirectory>xtend-gen</outputDirectory>
 				</configuration>
