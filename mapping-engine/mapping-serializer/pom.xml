@@ -66,13 +66,6 @@
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtext.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>com.google.guava</groupId>
-							<artifactId>guava</artifactId>
-							<version>${guava.version}</version>
-						</dependency>
-					</dependencies>
 					<executions>
 						<execution>
 							<goals>
