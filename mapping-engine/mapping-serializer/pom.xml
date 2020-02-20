@@ -19,26 +19,13 @@
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>${xtext.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<pluginManagement>
@@ -66,13 +53,6 @@
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtext.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>com.google.guava</groupId>
-							<artifactId>guava</artifactId>
-							<version>${guava.version}</version>
-						</dependency>
-					</dependencies>
 					<executions>
 						<execution>
 							<goals>
