@@ -22,14 +22,14 @@ The Bosch IoT Suite Code Generators can be easily invoked by 3rd party tools via
 
 Generate for Arduino platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=arduino
+	curl -GET https://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=arduino
 
 Generate for Python platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=python
+	curl -GET https://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=python
 
 Generate for Java platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=java
+	curl -GET https://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/org.eclipse.vorto:Temperature:1.0.0?language=java
 
 	
