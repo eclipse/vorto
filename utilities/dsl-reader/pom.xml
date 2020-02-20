@@ -82,18 +82,9 @@
 					<artifactId>asm</artifactId>
 					<groupId>org.ow2.asm</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
