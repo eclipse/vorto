@@ -17,7 +17,7 @@ pipeline {
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
 
-                    sh 'mvn -U -P coverage clean install'
+                    sh 'mvn -P coverage clean install'
 
             }
         }
