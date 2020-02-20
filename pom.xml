@@ -54,7 +54,7 @@
 		<tycho-version>1.3.0</tycho-version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 		<tomcat-embed.version>8.5.50</tomcat-embed.version>
-		<xtext.version>2.16.0</xtext.version>
+		<xtext.version>2.20.0</xtext.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -64,8 +64,50 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+		<guava.version>18.0</guava.version>
+		<org.eclipse.emf.version>2.11.1</org.eclipse.emf.version>
 
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe2.launch</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe2.runtime</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe2.language</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe.utils</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe.core</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.emf</groupId>
+				<artifactId>org.eclipse.emf.mwe.lib</artifactId>
+				<version>${org.eclipse.emf.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<distributionManagement>
 		<repository>
