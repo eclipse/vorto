@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.web.account.dto;
 
+import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
+
 /**
  * Represents a payload for requests to perform both:
  * <ul>
@@ -24,21 +26,40 @@ package org.eclipse.vorto.repository.web.account.dto;
  * </ul>
  * @author mena-bosch
  */
-public class TenantTechnicalUserDto extends TenantUserDto {
+public class TenantTechnicalUserDto extends TenantUserDto implements ICollaborator {
   private String authenticationProviderId;
   private String subject;
+
+  @Override
+  public String getUserId() {
+    return getUsername();
+  }
+
+  @Override
+  public void setUserId(String userId) {
+    setUsername(userId);
+  }
+
   public String getAuthenticationProviderId() {
     return authenticationProviderId;
   }
-  public TenantTechnicalUserDto setAuthenticationProviderId(String value) {
+  public void setAuthenticationProviderId(String value) {
     this.authenticationProviderId = value;
-    return this;
   }
   public String getSubject() {
     return subject;
   }
-  public TenantTechnicalUserDto setSubject(String value) {
+  public void setSubject(String value) {
     this.subject = value;
-    return this;
+  }
+
+  @Override
+  public boolean isTechnicalUser() {
+    return true;
+  }
+
+  @Override
+  public void setTechnicalUser(boolean isTechnicalUser) {
+    // nothing here
   }
 }

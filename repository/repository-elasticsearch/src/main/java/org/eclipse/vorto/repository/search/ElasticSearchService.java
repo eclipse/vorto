@@ -41,6 +41,7 @@ import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor.FieldType;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.PreConditions;
+import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -343,6 +344,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return property;
   }
 
+  private void deleteAllModels(String index) {
+    deleteByQuery(index, QueryBuilders.matchAllQuery());
+  }
+
   @Override
   public IndexingResult reindexAllModels() {
     IndexingResult result = new IndexingResult();
@@ -363,7 +368,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
         try {
           BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-          result.addIndexedTenant(repo.getTenantId(), modelsToIndex.size());
+          // temporary fix: getting namespace name instead of tenant ID here
+          // in the long run, once the tenant service is gone we can normalize
+          result.addIndexedNamespace(NamespaceDto.fromTenant(tenant).getName(), modelsToIndex.size());
           logger.info(
             String.format(
               "Received %d replies for tenant '%s' with %d models",
@@ -378,10 +385,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     });
 
     return result;
-  }
-
-  private void deleteAllModels(String index) {
-    deleteByQuery(index, QueryBuilders.matchAllQuery());
   }
 
   private void deleteByQuery(String index, QueryBuilder query) {

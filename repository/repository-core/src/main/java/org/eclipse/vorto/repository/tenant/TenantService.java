@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.AuthorizationProvider;
@@ -296,7 +297,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return false;
   }
 
-  public boolean deleteTenant(Tenant tenant, IUserContext userContext) {
+  public boolean deleteTenant(Tenant tenant, IUserContext userContext) throws TenantNotFoundException {
     PreConditions.notNull(tenant, "Tenant should not be null");
         
     eventPublisher.publishEvent(new AppEvent(this, tenant, userContext, EventType.TENANT_DELETED));

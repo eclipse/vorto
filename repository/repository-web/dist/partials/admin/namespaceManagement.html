@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-sm-4">
-		<div class="row" ng-show="isRetrievingTenants">
+		<div class="row" ng-show="isRetrievingNamespaces">
 			<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching namespaces ...
 		</div>
 	</div>
@@ -9,7 +9,7 @@
 			<i class="fa fa-envelope"></i>&nbsp;Request Official Namespace
 		</a>
 		<button type="button" class="btn btn-primary pull-right"
-			ng-disabled="isRetrievingTenants" ng-click="createTenant(newTenant())">
+			ng-disabled="isRetrievingNamespaces" ng-click="createNamespace(newNamespace())">
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create
 		</button>
 	</div>
@@ -21,9 +21,9 @@
 </div>
 
 <p>
-{{tenants.length}} namespaces found
+{{namespaces.length}} namespaces found
 </p>
-<div ng-if="tenants.length > 0" class="row">
+<div ng-if="namespaces.length > 0" class="row">
 	<div class="col-sm-12">
 		<table class="table table-bordered table-striped table-condensed">
 			<thead>
@@ -33,31 +33,31 @@
 					<th class="col-md-3">Actions</th>
 				</tr>
 			</thead>
-			<tbody ng-repeat="tenant in tenants">
+			<tbody ng-repeat="namespace in namespaces">
 				<tr>
 					<td class="col-md-7">
-						<div ng-repeat="namespace in tenant.namespaces">
-							{{namespace}}
+						<div>
+							{{namespace.name}}
 						</div>
 					</td>
 					<td class="col-md-2">
 						<div style="min-height:40px;max-height:160px;overflow-y:scroll">
-							<div ng-repeat="admin in tenant.admins | orderBy:admin">{{admin}}</div>
+							<div ng-repeat="admin in namespace.admins | orderBy:admin">{{admin.userId}}</div>
 						</div>
 					</td>
 					<td class="col-md-3">
-							<a ng-click="openDeleteDialog(tenant)" data-toggle="tooltip" data-placement="bottom" title="Delete Namespace">
+							<a ng-click="openDeleteDialog(namespace)" data-toggle="tooltip" data-placement="bottom" title="Delete Namespace">
 								<i class="fa fa-trash fa-2x"  aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
-							<a ng-click="manageUsers(tenant)" data-toggle="tooltip" data-placement="bottom" title="Manage Collaborators">
+							<a ng-click="manageUsers(namespace)" data-toggle="tooltip" data-placement="bottom" title="Manage Collaborators">
 								<i class="fa fa-user fa-2x"  aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
-							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{tenant.namespaces[0]}}/backup" 
-								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this tenant for backup.">
+							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{namespace.name}}/backup"
+								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this namespace for backup.">
 								<i class="fa fa-download fa-2x" aria-hidden="true"></i>
 							</a>&nbsp;&nbsp;
-							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreTenant(tenant)" 
-								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this tenant using backup.">
+							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreNamespace(namespace)"
+								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this namespace using backup.">
 								<span class="fa fa-wrench fa-2x" aria-hidden="true"></span>
 							</a>&nbsp;&nbsp;
 					</td>
@@ -66,8 +66,8 @@
 		</table>
 	</div>
 </div>
-<div  ng-if="tenants.length == 0" >Currently you do not own any namespace yet.
-	<a href ng-click="createTenant(newTenant())">Create your own namespace
+<div  ng-if="namespaces.length == 0" >Currently you do not own any namespace yet.
+	<a href ng-click="createNamespace(newNamespace())">Create your own namespace
 	</a>
 </div>
 

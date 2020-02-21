@@ -1,6 +1,6 @@
 <section class="content">
 
-  <div id="settings">
+  <div id="settings" >
     <h2 class="modelHeader ng-binding">Account Settings</h2>
     <hr>
 	<br/>
@@ -31,7 +31,7 @@
 	<form name="settings">
 		<div class="form-group">
 			<label>User Id</label>
-			<input readonly type="text" name="userId" id="userId" class="form-control" value="{{user.username}}" />     
+			<input readonly type="text" name="userId" id="userId" class="form-control" value="{{userId}}" />
 		</div>
 	  	<div class="form-group">
 			<label>Email</label>
@@ -49,7 +49,8 @@
       </div>
     </div>
   </div>
-  
+	</form>
+
   
 	
   <script type="text/ng-template" id="deleteAccount.html">
@@ -67,7 +68,7 @@
 	  <div class="row">
 		<div class="col-md-12">
         	<div ng-hide="soleNamespaceAdmin" class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: <ol> <li>Your user profile will be permanently removed from the database.</li> <li>Your models will be anonymized.</li> <ol> </div>
-      		<div ng-show="soleNamespaceAdmin" class="alert alert-warning" role="alert">You cannot delete your account just yet, because you still own a namespace. Please go to <b>Manage</b> and delete your namespace or transfer the ownership to somebody else.</div>
+      		<div ng-show="soleNamespaceAdmin" class="alert alert-warning" role="alert">You cannot delete your account just yet, because you are still the only manager of at least one namespace. Please go to <b>Manage</b> and delete the namespace(s) where you are the only manager, or give another user the <i>manage</i> permission.</div>
       	</div>
      </div>
 	</div>

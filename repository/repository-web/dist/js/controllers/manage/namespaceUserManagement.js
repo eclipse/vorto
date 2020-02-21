@@ -1,35 +1,35 @@
 define(["../../init/appController"],function(repositoryControllers) {
 
-repositoryControllers.controller("tenantUserManagementController", 
-    [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "tenant", "dialogConfirm", 
-    function($rootScope, $scope, $http, $uibModal, $uibModalInstance, tenant, dialogConfirm) {
+repositoryControllers.controller("namespaceUserManagementController",
+    [ "$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance", "namespace", "dialogConfirm",
+    function($rootScope, $scope, $http, $uibModal, $uibModalInstance, namespace, dialogConfirm) {
         
-    	  $scope.tenant = tenant;
-        $scope.isRetrievingTenantUsers = false;
-        $scope.userTenantUsers = [];
+    	  $scope.namespace = namespace;
+        $scope.isRetrievingNamespaceUsers = false;
+        $scope.namespaceUsers = [];
 
         $scope.cancel = function() {
             $uibModalInstance.dismiss("Canceled.");
         };
 
         $scope.$on("USER_CONTEXT_UPDATED", function(evt, data) {
-           // $scope.getTenants();
+
         });
 
-        $scope.getTenantUsers = function(tenantId) {
-            $scope.isRetrievingTenantUsers = true;
-
-            $http.get("./rest/tenants/" + tenantId + "/users")
+        $scope.getNamespaceUsers = function(namespacename) {
+            $scope.isRetrievingNamespaceUsers = true;
+            $http.get("./rest/namespaces/" + namespacename + "/users")
                 .then(function(result) {
-                    $scope.isRetrievingTenantUsers = false;
-                    $scope.userTenantUsers = result.data;
-                }, function(reason) {
-                    $scope.isRetrievingTenantUsers = false;
+                    $scope.isRetrievingNamespaceUsers = false;
+                    $scope.namespaceUsers = result.data;
+                },
+                function(reason) {
+                    $scope.isRetrievingNamespaceUsers = false;
                     // TODO : handling of failures
                 });
         };
 
-        $scope.getTenantUsers($scope.tenant.tenantId);
+        $scope.getNamespaceUsers($scope.namespace.name);
 
         $scope.newUser = function() {
             return {
@@ -47,17 +47,18 @@ repositoryControllers.controller("tenantUserManagementController",
         $scope.editableUser = function(user) {
             return {
                 edit: true,
-                username : user.username,
-                roleModelCreator : user.roles.includes("ROLE_MODEL_CREATOR"),
-                roleModelPromoter : user.roles.includes("ROLE_MODEL_PROMOTER"),
-                roleModelReviewer : user.roles.includes("ROLE_MODEL_REVIEWER"),
-                roleModelPublisher : user.roles.includes("ROLE_MODEL_PUBLISHER"),
-                roleUser : user.roles.includes("ROLE_USER"),
-                roleAdmin : user.roles.includes("ROLE_TENANT_ADMIN")
+                userId : user.userId,
+                roleModelCreator : user.roles.includes("MODEL_CREATOR"),
+                roleModelPromoter : user.roles.includes("MODEL_PROMOTER"),
+                roleModelReviewer : user.roles.includes("MODEL_REVIEWER"),
+                roleModelPublisher : user.roles.includes("MODEL_PUBLISHER"),
+                roleUser : user.roles.includes("USER"),
+                roleAdmin : user.roles.includes("TENANT_ADMIN")
             };
         };
 
-        $scope.createOrUpdateUser = function(user, tenant) {
+        $scope.createOrUpdateUser = function(user, namespace) {
+            $scope.mode = user.edit ? "Update" : "Add";
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: "webjars/repository-web/dist/partials/admin/createOrUpdateUser.html",
@@ -67,28 +68,30 @@ repositoryControllers.controller("tenantUserManagementController",
                     user: function () {
                         return user;
                     },
-                    tenant: function() {
-                        return $scope.tenant;
+                    namespace: function() {
+                        return  $scope.namespace;
                     }
                 }
             });
 
             modalInstance.result.finally(function(result) {
-                $scope.getTenantUsers($scope.tenant.tenantId);
+                $scope.getNamespaceUsers($scope.namespace.name);
                 $rootScope.init();
             });
         };
         
         $scope.deleteUser = function(user) {
-        	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.username + "'?", ["Confirm", "Cancel"]);
-        	
+        	var dialog = dialogConfirm($scope, "Are you sure you want to remove user '" + user.userId + "'?", ["Confirm", "Cancel"]);
+
         	dialog.setCallback("Confirm", function() {
-	            $http.delete("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + user.username)
-	                .then(function(result) {
-	                    $scope.getTenantUsers($scope.tenant.tenantId);
-	                }, function(reason) {
-	                    // TODO : Show error on window
-	                });
+	            $http
+                .delete("./rest/namespaces/" + $scope.namespace.name + "/users/" + user.userId)
+	              .then(function(result) {
+                  $scope.getNamespaceUsers($scope.namespace.name);
+                },
+                function(reason) {
+                  // TODO : Show error on window
+                });
         	});
         	
         	dialog.run();
@@ -101,12 +104,12 @@ repositoryControllers.controller("tenantUserManagementController",
 ]);
 
 repositoryControllers.controller("createOrUpdateUserController", 
-    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "user", "tenant",
-    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, user, tenant) {
+    ["$rootScope", "$scope", "$uibModal", "$uibModalInstance", "$http", "user", "namespace",
+    function($rootScope, $scope, $uibModal, $uibModalInstance, $http, user, namespace) {
         
         $scope.mode = user.edit ? "Update" : "Add";
         $scope.user = user;
-        $scope.tenant = tenant;
+        $scope.namespace = namespace;
         $scope.isCurrentlyAddingOrUpdating = false;
         $scope.errorMessage = "";
         $scope.selectedAuthenticationProviderId = null;
@@ -118,13 +121,13 @@ repositoryControllers.controller("createOrUpdateUserController",
         $scope.selectUser = function(user) {
             if (user) {
                 $scope.selectedUser = user;
-                document.getElementById('userId').value = $scope.selectedUser.username;
+                document.getElementById('userId').value = $scope.selectedUser.userId;
             }
             $scope.retrievedUsers = [];
         }
 
         $scope.highlightUser = function(user) {
-            let element = document.getElementById(user.username);
+            let element = document.getElementById(user.userId);
             if (element) {
                 element.style.backgroundColor = '#7fc6e7';
                 element.style.color = '#ffffff'
@@ -132,7 +135,7 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.unhighlightUser = function(user) {
-            let element = document.getElementById(user.username);
+            let element = document.getElementById(user.userId);
             if (element) {
                 element.style.backgroundColor = 'initial';
                 element.style.color = 'initial';
@@ -178,8 +181,8 @@ repositoryControllers.controller("createOrUpdateUserController",
                     user: function () {
                         return user;
                     },
-                    tenant: function() {
-                        return tenant;
+                    namespace: function() {
+                        return namespace;
                     }
                 }
             });
@@ -191,11 +194,12 @@ repositoryControllers.controller("createOrUpdateUserController",
 
         $scope.createNewTechnicalUser = function() {
             $scope.isCurrentlyAddingOrUpdating = false;
-            $http.post("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
-                "username": $scope.user.username,
+            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users", {
+                "userId": $scope.user.userId,
                 "roles" : $scope.getRoles($scope.user),
                 "authenticationProviderId": $scope.selectedAuthenticationProviderId,
-                "subject": $scope.technicalUserSubject
+                "subject": $scope.technicalUserSubject,
+                "isTechnicalUser" : true
             })
             .then(
                 function(result) {
@@ -203,8 +207,8 @@ repositoryControllers.controller("createOrUpdateUserController",
                 },
                 function(reason) {
                     $scope.errorMessage = "Creation of technical user " +
-                        $scope.user.username + " in namespace " +
-                        $scope.tenant.defaultNamespace + " failed. ";
+                        $scope.user.userId + " in namespace " +
+                        $scope.namespace.name + " failed. ";
                 }
             );
         };
@@ -213,7 +217,7 @@ repositoryControllers.controller("createOrUpdateUserController",
             let button = document.getElementById("submitButton");
             if (button) {
                 button.disabled = !(
-                    ($scope.user && $scope.user.username)
+                    ($scope.user && $scope.user.userId)
                     ||
                     $scope.userPartial
                     ||
@@ -227,24 +231,26 @@ repositoryControllers.controller("createOrUpdateUserController",
             // adds username to scope user by either using selected user from
             // drop-down if any, or using the string in user's input     box
             if ($scope.selectedUser) {
-                $scope.user.username = $scope.selectedUser.username;
+                $scope.user.userId = $scope.selectedUser.userId;
             }
             else if ($scope.userPartial) {
-                $scope.user.username = $scope.userPartial;
+                $scope.user.userId = $scope.userPartial;
             }
             $scope.validate($scope.user, function(result) {
                 if (result.valid) {
                     $scope.isCurrentlyAddingOrUpdating = false;
-                    $http.put("./rest/tenants/" + $scope.tenant.tenantId + "/users/" + $scope.user.username, {
-                            "username": $scope.user.username,
-                            "roles" : $scope.getRoles($scope.user)
-                        })
-                        .then(function(result) {
-                            $uibModalInstance.close($scope.user); 
-                        }, function(reason) {
-                            $scope.errorMessage = "You cannot change your own permissions.";
-                        });
-                } else {
+                    $http.put("./rest/namespaces/" + $scope.namespace.name + "/users", {
+                        "userId": $scope.user.userId,
+                        "roles" : $scope.getRoles($scope.user)
+                    })
+                    .then(function(result) {
+                        $uibModalInstance.close($scope.user);
+                    },
+                    function(reason) {
+                        $scope.errorMessage = "You cannot change your own permissions.";
+                    });
+                }
+                else {
                     $scope.promptCreateNewTechnicalUser();
                 }
             });
@@ -280,24 +286,26 @@ repositoryControllers.controller("createOrUpdateUserController",
         };
         
         $scope.validate = function(user, callback) {
-            if (user.username === undefined || user.username.trim() === '') {
+            if (user.userId === undefined || user.userId.trim() === '') {
                 callback({
-                        valid : false,
-                        errorMessage : "UserId must not be null."
-                    });
+                    valid : false,
+                    errorMessage : "userId must not be null."
+                });
                 return;
             }
             
-            $http.get("./rest/accounts/" + user.username)
+            $http.get("./rest/accounts/" + user.userId)
                 .then(function(result) {
                     callback({ valid: true });
-                }, function(reason) {
+                },
+                function(reason) {
                     if (reason.status == 404) {
                         callback({
                             valid: false,
                             errorMessage: "User doesn't exist."
                         });
-                    } else {
+                    }
+                    else {
                         callback({
                             valid: false,
                             errorMessage: "Error while accessing the server."

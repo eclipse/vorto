@@ -13,13 +13,13 @@
 	<uib-tabset justified="false">
 		<uib-tab index="0">
     		<uib-tab-heading><span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;Namespaces</uib-tab-heading>
-    		<div tenant-management ng-controller="tenantManagementController"></div>
+    		<div namespace-management="" ng-controller="namespaceManagementController"></div>
     	</uib-tab>
     	<uib-tab ng-show="hasAuthority('ROLE_SYS_ADMIN')" index="1">
     		<uib-tab-heading><i class="fa fa-info-circle"></i> Global Repository Functions</uib-tab-heading>
 			
 			<div ng-if="error" class="alert alert-danger">{{error}}</div>
-			<div ng-if="hasIndexingError" class="alert alert-danger">{{ indexingError }}</div>
+			<div ng-if="hasIndexingError || hasForceReindexingError" class="alert alert-danger">{{ indexingError }}</div>
 			<div ng-if="hasIndexingResult" class="alert alert-success">{{ indexingResultMessage }}</div>
 			<h3>Reindex</h3>
 			<p>Reindex the entire repository. This will purge the index and rebuild the index based on the repository.</p>
@@ -55,7 +55,7 @@
 			            </tr>
 			        </tbody>
 			    </table>
-			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>		    	
+			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> No issues found in the repository.</div>
     	</uib-tab>
   	</uib-tabset>
 </section>
