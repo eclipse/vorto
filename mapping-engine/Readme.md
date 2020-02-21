@@ -26,7 +26,7 @@ To work through this tutorial, you will need:
 <br />
 
 ## Performance
-The Vorto mapping-engine has been load-tested regarding performance and speed according to different mapping scenarios. A report and detailed description can be found[here](./docs/LoadTesting.md).
+The Vorto mapping-engine has been load-tested regarding performance and speed according to different mapping scenarios. A report and detailed description can be found [here](./docs/LoadTesting.md).
 
 ## Step 1: Create Mapping Specification
 
