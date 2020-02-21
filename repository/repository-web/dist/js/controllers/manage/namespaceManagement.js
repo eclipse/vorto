@@ -6,9 +6,11 @@ define(["../../init/appController"], function (repositoryControllers) {
         function ($rootScope, $scope, $http, $uibModal, dialogConfirm,
             dialogPrompt) {
           $scope.namespaces = [];
+          $scope.filteredNamespaces = [];
           $scope.isRetrievingNamespaces = false;
           $scope.errorMessage = "";
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
+          $scope.namespaceSearchTerm = "";
 
           $scope.getNamespaces = function () {
             $scope.isRetrievingNamespaces = true;
@@ -17,6 +19,12 @@ define(["../../init/appController"], function (repositoryControllers) {
             .then(function (result) {
               $scope.isRetrievingNamespaces = false;
               $scope.namespaces = result.data;
+              $scope.filteredNamespaces = $scope.namespaces;
+              // disabling filter here if 0 or 1 namespaces (typical user)
+              // cannot use ng-disabled as it is executed before retrieving the namespaces
+              if (!$scope.namespaces || $scope.namespaces.length <= 1) {
+                document.getElementById("namespaceSearch").disabled = true;
+              }
             },
             function (reason) {
               $scope.isRetrievingNamespaces = false;
@@ -25,6 +33,17 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.getNamespaces();
+
+          $scope.filterNamespaces = function() {
+            if (!$scope.namespaceSearchTerm) {
+              $scope.filteredNamespaces = $scope.namespaces;
+            }
+            else {
+              $scope.filteredNamespaces = $scope.namespaces.filter(
+                namespace => namespace.name.toLowerCase().includes($scope.namespaceSearchTerm.toLowerCase())
+              );
+            }
+          }
 
           $scope.newNamespace = function () {
             return {
