@@ -24,17 +24,19 @@
   <div class="row" ng-show="errorMessage !== ''">
     <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
   </div>
-
-  <div class="form-group">
-    <!-- -->
-    <input ng-pattern="/^[a-zA-Z0-9]{4,}$/" class="form-control" id="subject" type="text" name="subject" ng-model=technicalUserSubject placeholder="Subject" required>
-    <hr/>
-    <div ng-repeat="provider in context.providers" class="table-row-cell" >
-        <input id={{provider.id}} type="radio" name="authorizationProvider" ng-model=$parent.selectedAuthenticationProviderId class="btn btn-default" value={{provider.id}} />
-        <img src="{{provider.logoHref}}" alt="Select {{provider.label}}"/>
-        <label  for={{provider.id}}>{{provider.label}}</label>
+  <form name="createTechnicalUserForm" novalidate>
+    <div class="form-group">
+      <!-- -->
+      <input ng-pattern="/^[a-zA-Z0-9]{4,}$/" class="form-control" id="subject" type="text" name="subject" ng-model=technicalUserSubject placeholder="Subject" required>
+      <div class="invalid-input" ng-show="createTechnicalUserForm.subject.$error.pattern">The subject must be a sequence of at least 4 alphanumeric characters, without whitespace.</div>
+      <hr/>
+      <div ng-repeat="provider in context.providers" class="table-row-cell" >
+          <input id={{provider.id}} type="radio" name="authorizationProvider" ng-model=$parent.selectedAuthenticationProviderId class="btn btn-default" value={{provider.id}} />
+          <img src="{{provider.logoHref}}" alt="Select {{provider.label}}"/>
+          <label  for={{provider.id}}>{{provider.label}}</label>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
 <div class="modal-footer">
