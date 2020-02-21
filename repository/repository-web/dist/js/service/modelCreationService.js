@@ -131,8 +131,8 @@ repository.factory('openCreateModelDialog',
 
                     $scope.create = function(namespaceRoot, modelType, modelNamespace, modelName, modelVersion) {
                         $scope.isLoading = true;
-						  $http.post('./rest/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType, $scope.selected.properties)
-						.success(function(result){
+						            $http.post('./rest/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType, $scope.selected.properties)
+						            .success(function(result){
                                 $scope.isLoading = false;
                                 if (result.status === 409) {
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
