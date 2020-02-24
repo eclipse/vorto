@@ -12,6 +12,9 @@
  */
 package org.eclipse.vorto.repository.web;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,9 +38,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 public class HomeController {
@@ -93,27 +93,43 @@ public class HomeController {
         && new Date().after(updateCutoff);
   }
 
+  /**
+   * This creates a map with boolean key: {@link IOAuthProvider#supportsWebflow()} , and values as a
+   * list of {@link OAuthProvider} POJOS.<br/>
+   * The {@code providers} property of the context {@link Map} sent back to the UI is the list of
+   * providers actually supporting web flow (e.g. Github, Bosch ID...), for backwards-compatibility
+   * reasons.<br/>
+   * The new {@code unsupportedProviders} property of the context {@link Map} sent back to the UI is
+   * the list of providers that do not support web flow (e.g. Bosch Suite OAuth), but the UI needs
+   * to know about them, e.g. when creating a technical user.<br/>
+   * <b>Note</b>: since Bosch IoT Suite versions are user-agnostic, only one provider is returned
+   * through the non-webflows-compatibles, by a (debatable) proprietary "merging" logic.
+   * @param request
+   * @param user
+   * @return
+   */
   @RequestMapping(value = {"/context"}, method = RequestMethod.GET)
   public Map<String, Object> globalContext(final HttpServletRequest request, Principal user) {
     
     Map<String, Object> context = new LinkedHashMap<>();
-    
-    List<OAuthProvider> availableProviders = this.registry.list().stream().filter(p -> p.supportsWebflow()).map(p -> new OAuthProvider(p.getId(),p.getLabel(), p.getWebflowConfiguration().get())).collect(Collectors.toList());
 
-    context.put("providers", availableProviders);
+    Map<Boolean, List<OAuthProvider>> allProviders = this.registry.list().stream()
+      .collect(
+          Collectors.partitioningBy(
+              p -> p.supportsWebflow(),
+              Collectors.mapping(
+                  OAuthProvider::from,
+                  Collectors.toList()
+              )
+          )
+      );
+
+    context.put("providers", allProviders.get(true));
+    context.put("nonWebflowProviders", OAuthProvider.mergeBoschIotSuiteOAuthProviders(allProviders.get(false)));
     context.put("attachmentAllowedSize", attachmentAllowedSize);
     context.put("supportEmail", supportEmail);
     return context;
   }
-
-//  public String getBaseUrl(HttpServletRequest request) {
-//    if (request.getRequestURI().equals("/") || request.getRequestURI().equals("")) {
-//      return request.getRequestURL().toString();
-//    } else {
-//      return request.getRequestURL().toString().replace(request.getRequestURI(), "");
-//    }
-//
-//  }
 
 
 }
