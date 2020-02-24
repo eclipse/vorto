@@ -150,10 +150,6 @@ repositoryControllers.controller("createOrUpdateUserController",
                 .then(function (result) {
                     if (result.data) {
                         $scope.retrievedUsers = result.data;
-                        if ($scope.retrievedUsers.length == 1) {
-                            $scope.selectedUser = $scope.retrievedUsers[0];
-                            $scope.selectUser($scope.selectedUser);
-                        }
                     } else {
                         $scope.retrievedUsers = [];
                         $scope.selectedUser = null;
