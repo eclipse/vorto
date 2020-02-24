@@ -68,10 +68,15 @@ public class OAuthProvider {
       IOAuthFlowConfiguration config = source.getWebflowConfiguration().get();
       result.setLogoHref(config.getLogoHref());
       result.setLoginUrl(config.getFilterProcessingUrl());
-      // TODO this is temporary and ugly: assigning the Bosch ID icon to the non-webflow providers
-      // because there will only be the two Suite OAuth versions in there  for now.
+      /*
+      Assigning the Bosch ID icon to the non-webflow providers, because there will only be the two
+      Suite OAuth versions in there for now (actually "merged" into one for presentational
+      purposes).
+       */
     } else {
-      result.setLogoHref("webjars/repository-web/dist/images/bosch-social.png");
+      if (source.getLabel().equals(BOSCH_SUITE_OAUTH_LABEL)) {
+        result.setLogoHref("webjars/repository-web/dist/images/bosch-social.png");
+      }
     }
     return result;
   }
