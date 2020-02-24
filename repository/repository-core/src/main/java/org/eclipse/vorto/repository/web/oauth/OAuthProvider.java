@@ -47,6 +47,8 @@ public class OAuthProvider {
    */
   public static List<OAuthProvider> mergeBoschIotSuiteOAuthProviders(List<OAuthProvider> providers) {
     // reducing any number of providers with Bosch Suite OAuth label to one, if applicable
+    // we don't care which one, as both versions have the same presentational properties ("fake" picture
+    // and label)
     Optional<OAuthProvider> singleSuiteOAuthProvider = providers.stream().filter(i -> i.getLabel().equals(BOSCH_SUITE_OAUTH_LABEL)).reduce((a,b) -> a);
     // getting non-Bosch Suite OAuth providers if any
     List<OAuthProvider> result = providers.stream().filter(i -> !i.getLabel().equals(BOSCH_SUITE_OAUTH_LABEL)).collect(
