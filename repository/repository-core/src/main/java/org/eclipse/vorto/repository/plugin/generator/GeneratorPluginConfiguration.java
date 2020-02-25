@@ -12,12 +12,15 @@
  */
 package org.eclipse.vorto.repository.plugin.generator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.repository.plugin.generator.impl.GeneratorPluginInfoV1;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
 
@@ -88,14 +91,17 @@ public class GeneratorPluginConfiguration extends GeneratorPluginInfo {
   public static GeneratorPluginConfiguration of(GeneratorPluginInfo info, String endpointUrl,
       String pluginVersion, String... tags) {
     GeneratorPluginConfiguration config = GeneratorPluginConfiguration
-        .of(info.getKey(), "2", endpointUrl, pluginVersion, tags);
+            .of(info.getKey(), "2", endpointUrl, pluginVersion, tags);
     config.setConfigKeys(
-        info.getConfigKeys() == null ? Collections.emptySet() : info.getConfigKeys());
+            info.getConfigKeys() == null ? Collections.emptySet() : info.getConfigKeys());
 
     if (info.getConfigTemplate() == null || info.getConfigTemplate().length() == 0) {
       config.setConfigTemplate(DEFAULT_CONFIG.getContent().toString());
     } else {
       config.setConfigTemplate(info.getConfigTemplate());
+    }
+    if (Objects.nonNull(info.getPluginVersion())) {
+      config.setPluginVersion(info.getPluginVersion());
     }
     config.setName(info.getName() == null ? info.getKey() : info.getName());
     config.setCreator(info.getVendor());

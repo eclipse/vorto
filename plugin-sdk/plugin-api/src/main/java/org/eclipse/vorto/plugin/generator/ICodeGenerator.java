@@ -12,10 +12,15 @@
  */
 package org.eclipse.vorto.plugin.generator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * 
+ *
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  *
  */
@@ -23,7 +28,7 @@ public interface ICodeGenerator {
 
   /**
    * Converts the given information models into platform specific code
-   * 
+   *
    * @param model information model containing functionblocks and datatype metadata of a specific
    *        device
    * @param context generation invocation context, e.g. mapping rules or invocation parameters
@@ -34,9 +39,19 @@ public interface ICodeGenerator {
   /**
    * Unique service key of the generator. This key correlates to the mapping model service key
    * identifier.
-   * 
-   * @return
    */
   GeneratorPluginInfo getMeta();
+
+  default String loadVersionFromResources() {
+    InputStream is = getClass().getClassLoader().getResourceAsStream("build.version");
+    if (Objects.nonNull(is)) {
+      try {
+        return IOUtils.toString(is).trim();
+      } catch (IOException e) {
+        return "unknown";
+      }
+    }
+    return "unknown";
+  }
 
 }

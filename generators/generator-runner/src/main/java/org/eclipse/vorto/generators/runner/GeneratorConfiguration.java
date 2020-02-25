@@ -26,11 +26,16 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
 
 	@Override
 	protected void doSetup() {
-		addGenerator(Generator.create("/generators/bosch.properties", new CodeGeneratorV1Adapter(new BoschIoTSuiteGenerator())));
-	    addGenerator(Generator.create("/generators/ditto.properties", new CodeGeneratorV1Adapter(new EclipseDittoGenerator())));
-	    addGenerator(Generator.create("/generators/hono.properties", new CodeGeneratorV1Adapter(new EclipseHonoGenerator())));
-	    addGenerator(Generator.create("/generators/openapi.properties",new CodeGeneratorV1Adapter(new OpenAPIGenerator())));
-	    addGenerator(Generator.create("/generators/jsonschema.properties",new CodeGeneratorV1Adapter(new JSONSchemaGenerator()))); 
+		addGenerator(Generator.create("/generators/bosch.properties",
+				new CodeGeneratorV1Adapter(new BoschIoTSuiteGenerator())));
+		addGenerator(Generator.create("/generators/ditto.properties",
+				new CodeGeneratorV1Adapter(new EclipseDittoGenerator())));
+		addGenerator(Generator.create("/generators/hono.properties",
+				new CodeGeneratorV1Adapter(new EclipseHonoGenerator())));
+		addGenerator(
+				Generator.create("/generators/openapi.properties", new CodeGeneratorV1Adapter(new OpenAPIGenerator())));
+		addGenerator(Generator.create("/generators/jsonschema.properties",
+				new CodeGeneratorV1Adapter(new JSONSchemaGenerator())));
 	}
 
 }

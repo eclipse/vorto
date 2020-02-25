@@ -15,7 +15,6 @@ package org.eclipse.vorto.codegen.ditto;
 import org.eclipse.vorto.codegen.ditto.schema.SchemaValidatorTask;
 import org.eclipse.vorto.codegen.ditto.schema.tasks.template.DittoStructureTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.plugin.generator.GeneratorException;
 import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 import org.eclipse.vorto.plugin.generator.ICodeGenerator;
 import org.eclipse.vorto.plugin.generator.IGenerationResult;
@@ -40,13 +39,19 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
   private static final String THING_JSON = "thingJson";
   private static final String JSON_SCHEMA = "jsonSchema";
 
+  private final String version;
+
+  public EclipseDittoGenerator() {
+    version = loadVersionFromResources();
+  }
+
   @Override
-  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
+  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) {
     String target = invocationContext.getConfigurationProperties().getOrDefault("target", "");
     if (THING_JSON.equalsIgnoreCase(target)) {
       SingleGenerationResult output = new SingleGenerationResult("application/json");
       new GeneratorTaskFromFileTemplate<>(DITTO_THING_JSON_TEMPLATE)
-          .generate(infomodel, invocationContext, output);
+              .generate(infomodel, invocationContext, output);
       return output;
     }
     if (JSON_SCHEMA.equalsIgnoreCase(target)) {
@@ -65,19 +70,20 @@ public final class EclipseDittoGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(GENERATOR_KEY)
-        .withConfigurationKey("target")
-        .withConfigurationTemplate(ConfigTemplateBuilder.builder()
-            .withChoiceConfigurationItem("target", "Output format",
-                ChoiceItem.of("Ditto Thing JSON", THING_JSON),
-                ChoiceItem.of("JSON Schema", JSON_SCHEMA))
-            .build())
-        .withVendor("Eclipse Ditto Team")
-        .withName("Eclipse Ditto")
-        .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse "
-            + "Ditto. With the Ditto Thing JSON Option, the generator creates a Thing JSON, "
-            + "which can be send to Ditto to create a Thing.")
-        .withDocumentationUrl(
-            "https://github.com/eclipse/vorto/blob/master/generators/generator-eclipseditto/Readme.md")
+            .withConfigurationKey("target")
+            .withConfigurationTemplate(ConfigTemplateBuilder.builder()
+                    .withChoiceConfigurationItem("target", "Output format",
+                            ChoiceItem.of("Ditto Thing JSON", THING_JSON),
+                            ChoiceItem.of("JSON Schema", JSON_SCHEMA))
+                    .build())
+            .withVendor("Eclipse Ditto Team")
+            .withName("Eclipse Ditto")
+            .withDescription("Creates JSON schema files in order to validate Things managed by Eclipse "
+                    + "Ditto. With the Ditto Thing JSON Option, the generator creates a Thing JSON, "
+                    + "which can be send to Ditto to create a Thing.")
+            .withDocumentationUrl(
+                    "https://github.com/eclipse/vorto/blob/master/generators/generator-eclipseditto/Readme.md")
+            .withPluginVersion(version)
         .build();
   }
 }

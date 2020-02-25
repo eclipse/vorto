@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.plugins.generator.lambda.executor;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
@@ -38,6 +36,10 @@ import org.eclipse.vorto.plugin.generator.InvocationContext;
 import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.plugin.utils.ApiGatewayRequest;
 import org.eclipse.vorto.plugin.utils.ApiGatewayResponse;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GeneratorExecutionHandler implements RequestStreamHandler {
 
