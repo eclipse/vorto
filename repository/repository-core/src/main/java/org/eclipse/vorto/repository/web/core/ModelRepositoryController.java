@@ -134,14 +134,24 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     IModelRepository modelRepo = getModelRepository(modelID);
 
+    // first searches by "display image" tag
     List<Attachment> imageAttachments =
-        modelRepo.getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+        modelRepo.getAttachmentsByTag(modelID, Attachment.TAG_DISPLAY_IMAGE);
 
+    // if none present, searches just by "image" tag (for backwards compatibility)
+    if (imageAttachments.isEmpty()) {
+      imageAttachments =
+          modelRepo.getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+    }
+
+    // still nope
     if (imageAttachments.isEmpty()) {
       response.setStatus(404);
       return;
     }
 
+    // fetches the first element: either it's the only one (if the display image tag is present)
+    // or arbitrarily the first image found (for backwards compatibility)
     Optional<FileContent> imageContent =
         modelRepo.getAttachmentContent(modelID, imageAttachments.get(0).getFilename());
 
@@ -181,7 +191,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       getModelRepository(ModelId.fromPrettyFormat(modelId))
           .attachFile(ModelId.fromPrettyFormat(modelId),
               new FileContent(file.getOriginalFilename(), file.getBytes()), user,
-              Attachment.TAG_IMAGE);
+              Attachment.TAG_IMAGE, Attachment.TAG_DISPLAY_IMAGE);
     } catch (IOException e) {
       throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
           e);

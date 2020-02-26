@@ -27,6 +27,11 @@ public class Attachment {
   public static final Tag TAG_DOCUMENTATION =
       new Tag("org.eclipse.vorto.tag.documentation", "Documentation");
   public static final Tag TAG_IMAGE = new Tag("org.eclipse.vorto.tag.image", "Image");
+  /**
+   * This tag indicates that the image will be the one displayed for the model in the presentational
+   * layer.
+   */
+  public static final Tag TAG_DISPLAY_IMAGE = new Tag("org.eclipse.vorto.tag.displayImage", "Display image");
 
   public static Attachment newInstance(ModelId modelId, String filename) {
     return new Attachment(modelId, filename);
