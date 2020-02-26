@@ -16,6 +16,7 @@
 		<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
 	</properties>
 
+
 	<build>
 		<plugins>
 			<plugin>

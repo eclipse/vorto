@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -30,25 +29,33 @@ import org.eclipse.vorto.plugin.generator.utils.SingleGenerationResult;
 public class BoschIoTSuiteGenerator implements ICodeGenerator {
 
   private static final String KEY_PROVISION = "provision";
-  
+
   private static final String KEY_BODY_TEMPLATE = "requestBodyOnly";
 
   private static final String KEY_LANGUAGE = "language";
 
   private static final String KEY = "boschiotsuite";
-  
+
   private static final BoschGeneratorConfigUI CONFIG_TEMPLATE = new BoschGeneratorConfigUI();
-  
+
   private static final ProvisioningAPIRequestTemplate REQUEST_TEMPLATE = new ProvisioningAPIRequestTemplate();
 
-  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) throws GeneratorException {
+  private final String version;
+
+  public BoschIoTSuiteGenerator() {
+    version = loadVersionFromResources();
+  }
+
+  @Override
+  public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext)
+          throws GeneratorException {
 
     GenerationResultZip output = new GenerationResultZip(infomodel, KEY);
 
     GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
     String platform = invocationContext.getConfigurationProperties().getOrDefault(KEY_LANGUAGE, "");
-    
+
     if (platform.equalsIgnoreCase("arduino")) {
       result.append(generateArduino(infomodel, invocationContext));
     } else if (platform.equalsIgnoreCase("python")) {
@@ -87,12 +94,14 @@ public class BoschIoTSuiteGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder(KEY)
-        .withConfigurationKey(KEY_LANGUAGE,KEY_PROVISION)
-        .withConfigurationTemplate(CONFIG_TEMPLATE.getContent().toString())
-        .withName("Bosch IoT Suite")
-        .withVendor("Eclipse Vorto Team")
-        .withDescription("Generates source code templates for integrating devices with the Bosch IoT Suite.")
-        .withDocumentationUrl("https://github.com/eclipse/vorto/blob/master/generators/generator-boschiotsuite/Readme.md")
+            .withConfigurationKey(KEY_LANGUAGE, KEY_PROVISION)
+            .withConfigurationTemplate(CONFIG_TEMPLATE.getContent().toString())
+            .withName("Bosch IoT Suite")
+            .withVendor("Eclipse Vorto Team")
+            .withDescription("Generates source code templates for integrating devices with the Bosch IoT Suite.")
+            .withDocumentationUrl(
+                    "https://github.com/eclipse/vorto/blob/master/generators/generator-boschiotsuite/Readme.md")
+            .withPluginVersion(version)
         .build();
   }
 

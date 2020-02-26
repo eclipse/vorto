@@ -29,11 +29,16 @@ import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
 /**
  * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector.
  * The data is compliant to a Vorto & Ditto format.
- *
  */
 public class EclipseHonoGenerator implements ICodeGenerator {
 
   private static final String KEY_LANGUAGE = "language";
+
+  private final String version;
+
+  public EclipseHonoGenerator() {
+    version = loadVersionFromResources();
+  }
 
   @Override
   public IGenerationResult generate(InformationModel model, InvocationContext context) throws GeneratorException {
@@ -71,13 +76,17 @@ public class EclipseHonoGenerator implements ICodeGenerator {
   @Override
   public GeneratorPluginInfo getMeta() {
     return GeneratorPluginInfo.Builder("eclipsehono")
-        .withConfigurationKey(KEY_LANGUAGE)
-        .withConfigurationTemplate(ConfigTemplateBuilder.builder()
-            .withChoiceConfigurationItem(KEY_LANGUAGE, "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java")).build())
-        .withVendor("Eclipse Vorto Team")
-        .withName("Eclipse Hono")
-        .withDescription("Generates device code (Arduino, Python, Java) that sends device telemetry data to Eclipse Hono MQTT Connector.")
-        .withDocumentationUrl("https://www.eclipse.org/hono")
-        .build();
+            .withConfigurationKey(KEY_LANGUAGE)
+            .withConfigurationTemplate(ConfigTemplateBuilder.builder()
+                    .withChoiceConfigurationItem(KEY_LANGUAGE, "Device Platform",
+                            ChoiceItem.of("Arduino (ESP8266)", "Arduino"), ChoiceItem.of("Python (v2)", "Python"),
+                            ChoiceItem.of("Java", "Java")).build())
+            .withVendor("Eclipse Vorto Team")
+            .withName("Eclipse Hono")
+            .withDescription(
+                    "Generates device code (Arduino, Python, Java) that sends device telemetry data to Eclipse Hono MQTT Connector.")
+            .withDocumentationUrl("https://www.eclipse.org/hono")
+            .withPluginVersion(version)
+            .build();
   }
 }
