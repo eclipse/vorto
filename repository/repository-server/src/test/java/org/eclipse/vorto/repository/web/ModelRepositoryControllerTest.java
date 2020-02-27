@@ -17,7 +17,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.google.common.io.ByteStreams;
+import java.io.ByteArrayInputStream;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.server.it.TestModel;
@@ -32,8 +36,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
 
-  // private String tenant = "/tenants/playground";
-
   @Override
   protected void setUpTest() throws Exception {
     // accountService = context.getBean(IUserAccountService.class);
@@ -45,6 +47,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
     MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
         getClass().getClassLoader().getResourceAsStream("models/" + filename));
+
     /*
      * MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload("/rest" +
      * tenant + "/models/" + modelId + "/images");
@@ -65,8 +68,6 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
         .andExpect(status().isOk());
-
-    assertTrue(true);
   }
 
   /*
@@ -78,16 +79,32 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
         .andExpect(status().isNotFound());
 
-    assertTrue(true);
+    
   }
 
+  /**
+   * This originally only tested that consecutive image attachments on a same model responded with
+   * HTTP 201. <br/>
+   * With the new "display image" tag that is programmatically unique to the last image updated to
+   * a model, this test is enriched with a few additional checks. <br/>
+   * There is little to test at controller-level, because the images themselves are mocked, and the
+   * GET calls actually return the model name as image in the header (so one cannot check that the
+   * actual image file name is returned).<br/>
+   * Here, we only check that there is indeed an image once it's been added - twice. <br/>
+   * More thorough tests are added at repository level.
+   * @throws Exception
+   */
   @Test
   public void uploadModelImage() throws Exception {
     createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
         .andExpect(status().isCreated());
+    this.repositoryServer
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .andExpect(status().isOk());
     createImage("model_image.png", testModel.prettyName, userAdmin).andExpect(status().isCreated());
-
-    assertTrue(true);
+    this.repositoryServer
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .andExpect(status().isOk());
   }
 
 
@@ -153,7 +170,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .andExpect(status().isConflict());
     repositoryServer.perform(delete("/rest/models/" + modelId).with(userAdmin));
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -166,7 +183,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     repositoryServer.perform(delete("/rest/models/" + testModel.prettyName).with(userAdmin));
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -190,7 +207,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     repositoryServer.perform(delete("/rest/models/com.test:ASDASD:0.0.1").with(userAdmin))
         .andExpect(status().isNotFound());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -198,7 +215,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer.perform(get("/rest/models/mine/download").with(userAdmin))
         .andExpect(status().isOk());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -211,7 +228,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .perform(get("/rest/models/com.test:Test1:1.0.0/download/mappings/test").with(userAdmin))
         .andExpect(status().isNotFound());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -223,7 +240,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .perform(get("/rest/models/test:Test123:1.0.0/diagnostics").with(userAdmin))
         .andExpect(status().isNotFound());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -237,7 +254,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer.perform(get("/rest/models/test:Test123:1.0.0/policies").with(userAdmin))
         .andExpect(status().isNotFound());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -252,7 +269,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userCreator))
         .andExpect(status().isOk());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -269,7 +286,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         .andExpect(result -> result.getResponse().getContentAsString().contains(
             "{\"principalId\":\"user3\",\"principalType\":\"User\",\"permission\":\"READ\",\"adminPolicy\":false}"));
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -282,7 +299,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
         .andExpect(status().isBadRequest());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -295,7 +312,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
         .andExpect(status().isBadRequest());
 
-    assertTrue(true);
+    
   }
 
   @Test
@@ -312,7 +329,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             delete("/rest/models/" + testModel.prettyName + "/policies/user2/User").with(userAdmin))
         .andExpect(status().isOk());
 
-    assertTrue(true);
+    
   }
 
   /*
@@ -323,7 +340,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userAdmin))
         .andExpect(status().isForbidden());
-    assertTrue(true);
+    
   }
 
   /*
@@ -335,7 +352,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(nonTenantUser))
         .andExpect(status().isUnauthorized());
-    assertTrue(true);
+    
   }
 
   
