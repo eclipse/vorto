@@ -12,6 +12,12 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import static org.eclipse.vorto.repository.core.Attachment.TAG_DISPLAY_IMAGE;
+import static org.eclipse.vorto.repository.core.Attachment.TAG_DOCUMENTATION;
+import static org.eclipse.vorto.repository.core.Attachment.TAG_IMAGE;
+import static org.eclipse.vorto.repository.core.Attachment.TAG_IMPORTED;
+
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -45,7 +50,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -89,8 +93,6 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-
-import com.google.common.collect.Lists;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -237,7 +239,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     if (resource.getType() == ModelType.InformationModel) {
       resource
-          .setHasImage(!this.getAttachmentsByTag(resource.getId(), Attachment.TAG_IMAGE).isEmpty());
+          .setHasImage(!this.getAttachmentsByTag(resource.getId(), TAG_IMAGE).isEmpty());
     }
 
     return resource;
@@ -433,11 +435,11 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     ModelInfo modelResource = createModelResource(folderNode);
 
-    if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
+    if (!getAttachmentsByTag(modelId, TAG_IMAGE).isEmpty()) {
       modelResource.setHasImage(true);
     }
 
-    if (!getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED).isEmpty()) {
+    if (!getAttachmentsByTag(modelId, TAG_IMPORTED).isEmpty()) {
       modelResource.setImported(true);
     }
 
@@ -745,8 +747,31 @@ public class ModelRepository extends AbstractRepositoryOperation
           attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
         }
 
-          String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
-                  .toArray(new String[tags.length]);
+        String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
+                .toArray(new String[tags.length]);
+
+        // if the display image tag is present (we're uploading a new image for presentational
+        // purposes), removes the tag from all other attachments
+        if (Arrays.stream(tags).anyMatch(t -> t.equals(TAG_DISPLAY_IMAGE))) {
+          NodeIterator attachments = attachmentFolderNode.getNodes();
+          while (attachments.hasNext()) {
+            Node next = attachments.nextNode();
+            Property attachmentTags = next.getProperty(VORTO_TAGS);
+            Value[] attachmentTagsValuesFiltered = Arrays.stream(attachmentTags.getValues())
+                .filter(
+                    v -> {
+                       try {
+                         return !v.getString().equals(TAG_DISPLAY_IMAGE.getId());
+                         // swallowing here
+                       } catch (RepositoryException re) {
+                         return false;
+                       }
+                    }
+                )
+                .toArray(Value[]::new);
+            next.setProperty(VORTO_TAGS, attachmentTagsValuesFiltered);
+          }
+        }
 
         Node contentNode;
         if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
@@ -792,7 +817,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             if (fileNode.hasProperty(VORTO_TAGS)) {
               final List<Value> tags = Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
               attachment.setTags(
-                  tags.stream().map(this::createTag).collect(Collectors.toList()));
+                  tags.stream().map(ModelRepository::fromModeshapeValue).filter(Objects::nonNull).collect(Collectors.toList()));
             }
             attachments.add(attachment);
           }
@@ -805,20 +830,34 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
-  private Tag createTag(Value tagValue) {
+
+  private static final Set<Tag> TAGS = new HashSet<>();
+  static {
+    TAGS.add(TAG_IMAGE);
+    TAGS.add(TAG_DISPLAY_IMAGE);
+    TAGS.add(TAG_DOCUMENTATION);
+    TAGS.add(TAG_IMPORTED);
+  }
+  /**
+   * Transforms a modeshape {@link Value} to a {@link Tag} if possible.
+   * @param value
+   * @return one of the known Vorto tags or null.
+   */
+  public static Tag fromModeshapeValue(Value value) {
+    final String tagValue;
     try {
-      if (tagValue.getString().equals(Attachment.TAG_DOCUMENTATION.getId())) {
-        return Attachment.TAG_DOCUMENTATION;
-      } else if (tagValue.getString().equals(Attachment.TAG_IMAGE.getId())) {
-        return Attachment.TAG_IMAGE;
-      } else if (tagValue.getString().equals(Attachment.TAG_IMPORTED.getId())) {
-        return Attachment.TAG_IMPORTED;
-      } else {
-        return new Tag(tagValue.getString());
-      }
-    } catch (RepositoryException ex) {
+      tagValue = value.getString();
+    }
+    catch (RepositoryException re) {
+      logger.warn("Could not retrieve tag value from JCR node.");
       return null;
     }
+    return TAGS.stream()
+      .filter(t -> t.getId().equals(tagValue))
+      .findAny()
+      .orElse(
+        new Tag(tagValue)
+      );
   }
 
   @Override
@@ -863,7 +902,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public boolean deleteAttachment(ModelId modelId, String fileName) {
     if (getAttachments(modelId).stream()
-        .anyMatch(attachment -> (attachment.getTags().contains(Attachment.TAG_IMPORTED)
+        .anyMatch(attachment -> (attachment.getTags().contains(TAG_IMPORTED)
             && attachment.getFilename().equals(fileName)))) {
       return false;
     }

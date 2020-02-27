@@ -51,7 +51,6 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
       assertEquals(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),
           attachments.get(0).getModelId());
       assertEquals(0, attachments.get(0).getTags().size());
-      attachments.forEach(attachment -> System.out.println(attachment));
 
     } catch (IOException | FatalModelRepositoryException e) {
       e.printStackTrace();
