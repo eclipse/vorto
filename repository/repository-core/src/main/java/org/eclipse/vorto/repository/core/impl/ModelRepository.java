@@ -844,15 +844,20 @@ public class ModelRepository extends AbstractRepositoryOperation
    * @return one of the known Vorto tags or null.
    */
   public static Tag fromModeshapeValue(Value value) {
-    return TAGS.stream().filter(t -> {
-          try {
-            return t.getId().equals(value.getString());
-            // swallowing here
-          } catch (Exception e) {
-            return false;
-          }
-        }
-    ).findAny().orElse(null);
+    final String tagValue;
+    try {
+      tagValue = value.getString();
+    }
+    catch (RepositoryException re) {
+      logger.warn("Could not retrieve tag value from JCR node.");
+      return null;
+    }
+    return TAGS.stream()
+      .filter(t -> t.getId().equals(tagValue))
+      .findAny()
+      .orElse(
+        new Tag(tagValue)
+      );
   }
 
   @Override
