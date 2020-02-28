@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Optional;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.model.ModelId;
@@ -143,6 +142,25 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
         .getById(new ModelId("HueLightStrips", "com.mycompany", "1.0.0")).isHasImage());
   }
 
+  /**
+   * Originally, this only tested that a given persisted model had an image once an image was
+   * attached. <br/>
+   * In light of changes to tags (with the introduction of {@link Attachment#TAG_DISPLAY_IMAGE}
+   * which is unique among a model's images and signifies this is the image to display, the test
+   * verifies a few more things:
+   * <ol>
+   *  <li>
+   *    That the both the {@link Attachment#TAG_DISPLAY_IMAGE} and {@link Attachment#TAG_IMAGE} tags
+   *    are present once attached (unfortunately this is rather trivial since the operation is
+   *    directed at controller level).
+   *  </li>
+   *  <li>
+   *    More importantly, that once another image is attached, only one
+   *    {@link Attachment#TAG_DISPLAY_IMAGE} is found, and that it belongs to the latest resource.
+   *  </li>
+   * </ol>
+   * @throws Exception
+   */
   @Test
   public void testGetModelWithImage() throws Exception {
     IUserContext alex = UserContext.user("alex", "playground");
@@ -152,13 +170,52 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Colorlight.fbmodel");
     importModel("Switcher.fbmodel");
     importModel("HueLightStrips.infomodel");
+    // this adds the two tags "image" and "display image" as the controller would do when
+    // uploading an image attachment
     this.repositoryFactory.getRepository(createUserContext("admin")).attachFile(modelId,
         new FileContent("sample.png",
             IOUtils
                 .toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),
-        alex, Attachment.TAG_IMAGE);
+        alex, Attachment.TAG_IMAGE, Attachment.TAG_DISPLAY_IMAGE);
     assertEquals(true, this.repositoryFactory.getRepository(createUserContext("admin"))
         .getById(modelId).isHasImage());
+    assertEquals(1, this.repositoryFactory.getRepository(createUserContext("admin"))
+      .getAttachmentsByTag(modelId, Attachment.TAG_DISPLAY_IMAGE).size());
+    assertEquals(1, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).size());
+
+    // adding "another" image - will test if only one has tag display image
+    this.repositoryFactory.getRepository(createUserContext("admin")).attachFile(modelId,
+        new FileContent("sample2.png",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/sample2.png").getInputStream())),
+        alex, Attachment.TAG_IMAGE, Attachment.TAG_DISPLAY_IMAGE);
+    // only one display image tag present among attachments
+    assertEquals(1, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_DISPLAY_IMAGE).size());
+    // two image tags among attachments
+    assertEquals(2, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).size());
+    // display image tag pertains to latest attachment added
+    assertEquals(true, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_DISPLAY_IMAGE).get(0).getFilename().contains("sample2.png"));
+
+    // adding a third non-image resource with custom tags
+    this.repositoryFactory.getRepository(createUserContext("admin")).attachFile(modelId,
+        new FileContent("backup1.xml",
+            IOUtils
+                .toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())),
+        alex, new Tag("custom"));
+
+    // only one display image tag present among attachments
+    assertEquals(1, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_DISPLAY_IMAGE).size());
+    // two image tags among attachments
+    assertEquals(2, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).size());
+    // display image tag pertains to latest attachment added
+    assertEquals(true, this.repositoryFactory.getRepository(createUserContext("admin"))
+        .getAttachmentsByTag(modelId, Attachment.TAG_DISPLAY_IMAGE).get(0).getFilename().contains("sample2.png"));
   }
 
   @Test
