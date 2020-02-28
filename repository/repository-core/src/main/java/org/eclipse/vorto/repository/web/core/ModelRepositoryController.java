@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,6 +53,7 @@ import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -65,6 +67,7 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.Status;
+import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
@@ -72,6 +75,7 @@ import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -117,6 +121,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   
   @Autowired
   private ModelValidationHelper modelValidationHelper;
+
+  @Autowired
+  private AttachmentValidator attachmentValidator;
 
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -176,7 +183,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
-  public ResponseEntity<Boolean> uploadModelImage(
+  public ResponseEntity<AttachResult> uploadModelImage(
       @ApiParam(value = "The image to upload",
           required = true) @RequestParam("file") MultipartFile file,
       @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
@@ -184,19 +191,43 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
 
+    ModelId actualModelID = ModelId.fromPrettyFormat(modelId);
+
+    if (!attachmentValidator.validateAttachmentForController(file)) {
+      return new ResponseEntity<>(
+          AttachResult.fail(
+            actualModelID,
+            file.getOriginalFilename(),
+            String.format(
+              "The attachment is too large. Maximum size allowed is %dMB",
+              attachmentValidator.getMaxFileSizeSetting()
+            )
+          ),
+          HttpStatus.PAYLOAD_TOO_LARGE
+      );
+    }
+
+
     try {
       IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
           getTenant(modelId));
 
-      getModelRepository(ModelId.fromPrettyFormat(modelId))
-          .attachFile(ModelId.fromPrettyFormat(modelId),
-              new FileContent(file.getOriginalFilename(), file.getBytes()), user,
-              Attachment.TAG_IMAGE, Attachment.TAG_DISPLAY_IMAGE);
+
+      getModelRepository(actualModelID)
+        .attachFile(actualModelID,
+          new FileContent(
+            file.getOriginalFilename(), file.getBytes()
+          ),
+          user,
+          Attachment.TAG_IMAGE,
+          Attachment.TAG_DISPLAY_IMAGE
+        );
+
     } catch (IOException e) {
       throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
           e);
     }
-    return new ResponseEntity<>(false, HttpStatus.CREATED);
+    return new ResponseEntity<>(AttachResult.success(actualModelID, file.getOriginalFilename()), HttpStatus.CREATED);
   }
 
   // ToDo add Getter method

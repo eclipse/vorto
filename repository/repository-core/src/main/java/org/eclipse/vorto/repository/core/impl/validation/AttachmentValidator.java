@@ -22,6 +22,7 @@ import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class AttachmentValidator {
@@ -45,7 +46,31 @@ public class AttachmentValidator {
       throw new AttachmentException(modelId,
           "File type not supported. Supported File types :" + allowedExtension);
     }
+  }
 
+  /**
+   * This is invoked at controller level to provide the end-user with a human-readable error message
+   * when uploading e.g. an image to a model. <br/>
+   * Contrary to {@link AttachmentValidator#validateAttachment(FileContent, ModelId)}, this only
+   * validate the size of a {@link MultipartFile} against the {@code repo.attachment.allowed.fileSize}
+   * configured value.<br/>
+   * Another important point worth noting is that the validation here is much more precise, meaning
+   * that instead of truncating down the real size of the file to an integer and comparing it with
+   * the configured value in MB, it converts the configured value to an exact number of bytes, to
+   * be compared with the actual size in bytes too.
+   * @param file
+   * @return
+   */
+  public boolean validateAttachmentForController(MultipartFile file) {
+    return file.getSize() < fileSize * 1024 * 1024;
+  }
+
+  /**
+   * Invoked to specify maximum allowed in controller responses.
+   * @return
+   */
+  public int getMaxFileSizeSetting() {
+    return fileSize;
   }
 
   private void validateFileLength(FileContent file, ModelId modelId) throws AttachmentException {
@@ -60,7 +85,7 @@ public class AttachmentValidator {
     }
   }
 
-  private long getFileSizeInMegaBytes(long size) {
+  private long  getFileSizeInMegaBytes(long size) {
     return size / (ONE_KB * ONE_KB);
   }
 
