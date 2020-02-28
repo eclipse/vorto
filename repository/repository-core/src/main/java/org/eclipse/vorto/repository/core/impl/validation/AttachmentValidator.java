@@ -38,7 +38,7 @@ public class AttachmentValidator {
   public void validateAttachment(FileContent file, ModelId modelId) throws AttachmentException {
     validateFileLength(file, modelId);
 
-    if (getFileSizeInMegaBytes(file.getSize()) > fileSize) {
+    if (validateAttachmentSize(file.getSize())) {
       throw new AttachmentException(modelId,
           "File size exceeded. Allowed max size: " + fileSize + " MB.");
     }
@@ -54,16 +54,19 @@ public class AttachmentValidator {
    * Contrary to {@link AttachmentValidator#validateAttachment(FileContent, ModelId)}, this only
    * validate the size of a {@link MultipartFile} against the {@code repo.attachment.allowed.fileSize}
    * configured value.<br/>
-   * Another important point worth noting is that the validation here is much more precise, meaning
-   * that instead of truncating down the real size of the file to an integer and comparing it with
-   * the configured value in MB, it converts the configured value to an exact number of bytes, to
-   * be compared with the actual size in bytes too.
-   * @param file
+   * Another important point worth noting is that the validation here is much more precise than it
+   * used to be, meaning that instead of truncating down the real size of the file to an integer and
+   * comparing it with the configured value in MB, it converts the configured value to an exact
+   * number of bytes, to be compared with the actual size in bytes too.<br/>
+   * Therefore, this is also used at repository level now, aka invoked in the implementation of
+   * {@link AttachmentValidator#validateAttachment(FileContent, ModelId)}.
+   * @param fileSize
    * @return
    */
-  public boolean validateAttachmentForController(MultipartFile file) {
-    return file.getSize() < fileSize * 1024 * 1024;
+  public boolean validateAttachmentSize(long fileSize) {
+    return fileSize < this.fileSize * 1024 * 1024;
   }
+
 
   /**
    * Invoked to specify maximum allowed in controller responses.
@@ -83,10 +86,6 @@ public class AttachmentValidator {
     if (fileName.length() > 100) {
       throw new AttachmentException(modelId, "Name of File exceeds 100 Characters");
     }
-  }
-
-  private long  getFileSizeInMegaBytes(long size) {
-    return size / (ONE_KB * ONE_KB);
   }
 
   private Predicate<String> isExtensionAllowed(String fileName) {

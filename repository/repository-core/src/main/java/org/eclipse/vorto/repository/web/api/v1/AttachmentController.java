@@ -32,6 +32,7 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
@@ -68,6 +69,9 @@ public class AttachmentController extends AbstractRepositoryController {
   @Autowired
   private ITenantService tenantService;
 
+  @Autowired
+  private AttachmentValidator attachmentValidator;
+
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
@@ -79,6 +83,18 @@ public class AttachmentController extends AbstractRepositoryController {
           required = true) @RequestParam("file") MultipartFile file) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    // early file size validation
+    if (!attachmentValidator.validateAttachmentSize(file.getSize())) {
+      return AttachResult.fail(
+        modelID,
+        file.getOriginalFilename(),
+        String.format(
+            "The attachment is too large. Maximum size allowed is %dMB",
+            attachmentValidator.getMaxFileSizeSetting()
+        )
+      );
+    }
 
     final String tenantId = getTenant(modelID).orElseThrow(
         () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
