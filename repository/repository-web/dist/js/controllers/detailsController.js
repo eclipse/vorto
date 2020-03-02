@@ -124,31 +124,37 @@ repositoryControllers.controller('DetailsController',
 					var fd = new FormData();
 					fd.append('file', document.getElementById('imageFile').files[0]);
 					$http.post(
-							'./rest/models/' + $scope.model.id.prettyFormat + '/images/', fd,
-							{
-								transformRequest: angular.identity,
-								headers: {
-									'Content-Type': undefined
-								}
-							})
-					.success(function (result) {
-						$timeout(function () {
-							$window.location.reload();
-						}, 500);
-					}).error(function (data, status, headers, config) {
-						if (status == 403) {
-							$rootScope.error = "Operation is Forbidden";
-						} else if (status == 401) {
-							$rootScope.error = "Unauthorized Operation";
-						} else if (status == 400) {
-							$rootScope.error = "Bad Request. Server Down";
-						} else if (status == 500) {
-							$rootScope.error = data.message;
-						} else {
-							$rootScope.error = "Failed Request with response status "
-									+ status;
+						'./rest/models/' + $scope.model.id.prettyFormat + '/images/', fd,
+						{
+							transformRequest: angular.identity,
+							headers: {
+								'Content-Type': undefined
+							}
 						}
-					});
+					)
+					.success(
+						function (result) {
+							$timeout(
+								function () {
+									$window.location.reload();
+								},
+								500
+							);
+						}
+					)
+					.error(
+						function (result) {
+							if (result && result.errorMessage) {
+								$rootScope.error = {
+									"message": result.errorMessage
+								};
+							} else {
+								$rootScope.error = {
+									"message": "Could not upload the image at this time. "
+								};
+							}
+						}
+					);
 				};
 
 				$scope.hasImage = function () {

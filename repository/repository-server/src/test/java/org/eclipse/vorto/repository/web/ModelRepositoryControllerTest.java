@@ -12,21 +12,19 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.google.common.io.ByteStreams;
-import java.io.ByteArrayInputStream;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.server.it.TestModel;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -36,6 +34,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
 
+  @Autowired
+  protected AttachmentValidator attachmentValidator;
+
   @Override
   protected void setUpTest() throws Exception {
     // accountService = context.getBean(IUserAccountService.class);
@@ -44,9 +45,15 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
   }
 
   private ResultActions createImage(String filename, String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
-    MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
-        getClass().getClassLoader().getResourceAsStream("models/" + filename));
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, Integer size) throws Exception {
+    MockMultipartFile file = null;
+    if (size == null) {
+      file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
+          getClass().getClassLoader().getResourceAsStream("models/" + filename));
+    }
+    else {
+      file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE, new byte[size]);
+    }
 
     /*
      * MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload("/rest" +
@@ -58,6 +65,11 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
       request.setMethod("POST");
       return request;
     }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+  }
+
+  private ResultActions createImage(String filename, String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
+    return createImage(filename, modelId, user, null);
   }
 
   @Test
@@ -78,8 +90,6 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
         .andExpect(status().isNotFound());
-
-    
   }
 
   /**
@@ -105,6 +115,24 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
         .andExpect(status().isOk());
+  }
+
+  /**
+   * Contrary to the attachment controller, which is API v.1 and cannot be changed, we can
+   * respond with a specific status in the ModelRepositoryController when an attachment is too
+   * large.
+   * @throws Exception
+   */
+  @Test
+  public void uploadModelImageSizeTooLarge() throws Exception {
+    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin, (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
+        .andExpect(status().isPayloadTooLarge());
+  }
+
+  @Test
+  public void uploadModelImageSizeReasonable() throws Exception {
+    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin, (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
+        .andExpect(status().isCreated());
   }
 
 
