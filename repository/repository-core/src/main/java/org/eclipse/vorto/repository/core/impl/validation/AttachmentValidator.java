@@ -38,7 +38,7 @@ public class AttachmentValidator {
   public void validateAttachment(FileContent file, ModelId modelId) throws AttachmentException {
     validateFileLength(file, modelId);
 
-    if (validateAttachmentSize(file.getSize())) {
+    if (!validateAttachmentSize(file.getSize())) {
       throw new AttachmentException(modelId,
           "File size exceeded. Allowed max size: " + fileSize + " MB.");
     }

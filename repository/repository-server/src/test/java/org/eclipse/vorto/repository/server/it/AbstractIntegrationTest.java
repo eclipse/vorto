@@ -16,14 +16,18 @@ import static org.eclipse.vorto.repository.domain.Role.MODEL_CREATOR;
 import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
 import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
 import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
-import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
+import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,9 +63,6 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles( profiles={"local-test"})
@@ -97,7 +98,24 @@ public abstract class AbstractIntegrationTest {
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator3;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor nonTenantUser;
 
-  protected Gson gson = new Gson();
+  // fixed this to ensure null values are serialized as we are returning nulls in some response DTOs
+  protected Gson gson = new GsonBuilder().serializeNulls().create();
+
+  /**
+   * This is a wrapper to allow comparison of JSON payloads involving {@link ModelId}, as it features
+   * a public method {@link ModelId#getPrettyFormat()} that does not have a correspective field. <br/>
+   * Therefore, expecting {@link ModelId} alone will fail when comparing JSON content because the
+   * actual response will contain the pretty format string whereas the expectation will not.
+   */
+  public static class SerializableModelId extends ModelId {
+    protected String prettyFormat;
+    protected SerializableModelId(ModelId from) {
+      this.prettyFormat = from.getPrettyFormat();
+      this.setName(from.getName());
+      this.setNamespace(from.getNamespace());
+      this.setVersion(from.getVersion());
+    }
+  }
 
   @BeforeClass
   public static void configureOAuthConfiguration() {
@@ -201,24 +219,11 @@ public abstract class AbstractIntegrationTest {
 
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
       String fileName, String modelId) throws Exception {
-		/*
-		 * repositoryServer .perform(post("/rest/tenants/playground/models/" + modelId +
-		 * "/" + ModelType.fromFileName(fileName))
-		 * .with(user).contentType(MediaType.APPLICATION_JSON))
-		 * .andExpect(status().isCreated());
-		 */
-    
+
     repositoryServer
     .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
         .with(user).contentType(MediaType.APPLICATION_JSON))
     .andExpect(status().isCreated());
-    
-		/*
-		 * repositoryServer .perform(put("/rest/tenants/playground/models/" +
-		 * modelId).with(user)
-		 * .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
-		 * .andExpect(status().isOk());
-		 */
     
     repositoryServer
     .perform(put("/rest/models/" + modelId).with(user)
@@ -239,9 +244,9 @@ public abstract class AbstractIntegrationTest {
 
   public ResultActions addAttachment(String modelId,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
-      MediaType mediaType) throws Exception {
+      MediaType mediaType, Integer size) throws Exception {
     MockMultipartFile file =
-        new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
+        new MockMultipartFile("file", fileName, mediaType.toString(), size == null ? "{\"test\":123}".getBytes() : new byte[size]);
     MockMultipartHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
     return repositoryServer.perform(builder.file(file).with(request -> {
@@ -249,5 +254,12 @@ public abstract class AbstractIntegrationTest {
       return request;
     }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
   }
+
+  public ResultActions addAttachment(String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
+      MediaType mediaType) throws Exception {
+    return addAttachment(modelId, user, fileName, mediaType, null);
+  }
+
 
 }

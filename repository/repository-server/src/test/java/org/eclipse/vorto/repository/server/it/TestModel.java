@@ -39,6 +39,7 @@ public class TestModel {
       + description + "\"," + "\"displayname\":\"" + modelName + "\"," + "\"category\":null,"
       + "\"properties\":[]" + "}," + "\"targetPlatform\":\"" + targetPlatform + "\","
       + "\"released\":false" + "}";
+  public ModelId id;
 
   public TestModel(String namespace, String modelName, String description, String version) {
     this.namespace = namespace;
@@ -46,6 +47,7 @@ public class TestModel {
     this.description = description;
     this.version = version;
     this.prettyName = new ModelId(modelName, namespace, version).getPrettyFormat();
+    this.id = new ModelId(modelName, namespace, version);
   }
 
   public void createModel(MockMvc mockMvc,
@@ -57,6 +59,10 @@ public class TestModel {
 		 */
     mockMvc.perform(post("/rest/models/" + prettyName + "/InformationModel").with(user1)
             .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+  }
+
+  public ModelId getId() {
+    return this.id;
   }
 
 
