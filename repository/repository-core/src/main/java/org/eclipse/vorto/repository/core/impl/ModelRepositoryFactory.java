@@ -12,10 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -63,6 +60,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
+  public static final String ANONYMOUS_USER = "anonymousUser";
+
   @Autowired
   private IUserAccountService userAccountService;
 
@@ -86,7 +85,10 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Autowired
   private TenantService tenantService;
-  
+
+  @Autowired
+  private RequestRepositorySessionHelper sessionHelper;
+
   private ApplicationEventPublisher eventPublisher = null;
 
   private Repository repository;
@@ -162,14 +164,14 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   @Override
   public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
     Diagnostician diagnostics = new Diagnostician(repoDiagnostics);
-    diagnostics.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    diagnostics.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
     return diagnostics;
   }
 
   @Override
   public IRepositoryManager getRepositoryManager(String tenant, Authentication user) {
     RepositoryManager repoManager = new RepositoryManager();
-    repoManager.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    repoManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
     repoManager.setDefaultSessionSupplier(defaultWorkspaceSessionSupplier(user));
     return repoManager;
   }
@@ -177,7 +179,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
     ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService);
-    policyManager.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    policyManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
     return policyManager;
   }
 
@@ -189,8 +191,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   public IModelRepository getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
         this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService,getPolicyManager(tenant, user),errorMessageProvider);
-
-    modelRepository.setSessionSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    modelRepository.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);
     
     return modelRepository;
@@ -206,20 +207,15 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     return getRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
   }
   
-  private Supplier<Session> namedWorkspaceSessionSupplier(String tenant, Authentication user) {
+  private Supplier<RequestRepositorySessionHelper> namedWorkspaceSessionSupplier(String tenant, Authentication user) {
     return () -> {
-      try {
-        return repository.login(
-            new SpringSecurityCredentials(user, getUserRolesInTenant(tenant, user.getName())),
-            tenant);
-      } catch (LoginException e) {
-        throw new UserLoginException(user.getName(), e);
-      } catch (NoSuchWorkspaceException e) {
-        throw new TenantNotFoundException(tenant, e);
-      } catch (RepositoryException e) {
-        throw new FatalModelRepositoryException("Error while getting repository given tenant ["
-            + tenant + "] and user [" + user.getName() + "]", e);
-      }
+      if(sessionHelper == null)
+        sessionHelper = new RequestRepositorySessionHelper(false);
+      sessionHelper.setRepository(repository);
+      sessionHelper.setTenantId(tenant);
+      sessionHelper.setRolesInTenant(getUserRolesInTenant(tenant, user.getName()));
+      sessionHelper.setUser(user);
+      return sessionHelper;
     };
   }
   
@@ -236,9 +232,11 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   }
 
   private Set<Role> getUserRolesInTenant(String tenantId, String username) {
+    // TODO improve caching for non anon users
+    if(UserContext.isAnonymous(username))
+      return new HashSet<Role>();
     Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(
         () -> new IllegalArgumentException("tenantId '" + tenantId + "' doesn't exist!"));
-    
     return tenant
         .getUser(username).map(
             tUser -> tUser.getRoles().stream().map(
