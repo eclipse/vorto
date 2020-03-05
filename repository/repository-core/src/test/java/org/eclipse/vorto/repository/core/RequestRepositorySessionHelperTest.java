@@ -12,22 +12,18 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.impl.RequestRepositorySessionHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest {
 
@@ -77,30 +73,16 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
 
     private Repository createMockRepository() throws RepositoryException {
         Repository myRepository = Mockito.mock(Repository.class);
-        // when login is called return a new session mock
-        when(myRepository.login(anyObject(), anyString())).thenAnswer(new Answer<Session>() {
-            private boolean isLive = true;
-            public Session answer(InvocationOnMock invocation) {
-                // when a new session mock is returned thet the live property to true
-                isLive = true;
-                Session mySession = Mockito.mock(Session.class);
-                doAnswer(new Answer<Void>() {
-                    // when logout is called set the isLive property to false;
-                    @Override
-                    public Void answer(InvocationOnMock invocation) throws Throwable {
-                        isLive = false;
-                        return null;
-                    }
-                }).when(mySession).logout();
-                when(mySession.isLive()).thenAnswer(new Answer<Boolean>() {
-                    @Override
-                    public Boolean answer(InvocationOnMock invocation) throws Throwable {
-                        return isLive;
-                    }
-                });
-                return mySession;
-            }
-        });
+        when(myRepository.login(anyObject(), anyString())).thenAnswer(inv -> createNewMockSession());
         return myRepository;
     }
+
+    private Session createNewMockSession() {
+        Session liveSession = Mockito.mock(Session.class);
+
+        when(liveSession.isLive()).thenAnswer(inv -> Mockito.mockingDetails(liveSession)
+            .getInvocations().stream().noneMatch(i -> "logout".equals(i.getMethod().getName())));
+        return liveSession;
+    }
+
 }
