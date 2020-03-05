@@ -142,7 +142,7 @@ jobs:
             branch: development
 
         - provider: script
-            script: bash build-scripts/repackage-deploy-repo.sh
-            skip_cleanup: true
-            on:
-              branch: deployment
+          script: bash build-scripts/repackage-deploy-repo.sh
+          skip_cleanup: true
+          on:
+            branch: deployment
