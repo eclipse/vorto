@@ -25,7 +25,7 @@ if [[ "$GIT_BRANCH" == "master" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/prod_new ./BOOT-INF/classes --recursive
   aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/prod ./ --recursive
-elif [[ "$GIT_BRANCH" == "development" ]]
+elif [[ "$GIT_BRANCH" == "development" || "$GIT_BRANCH" == "deployment" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/dev ./BOOT-INF/classes --recursive
   aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/dev ./ --recursive
@@ -56,7 +56,7 @@ then
   # updating environment in EBS
   echo "update environment in EBS"
   aws elasticbeanstalk update-environment --application-name "Vorto-Prod-New-Environment" --environment-name "vorto-prod-new" --version-label "build-job_${ELASTIC_BEANSTALK_LABEL}_repo_new"
-elif [[ "$GIT_BRANCH" == "development" ]]
+elif [[ "$GIT_BRANCH" == "development" || "$GIT_BRANCH" == "deployment" ]]
 then
   # uploading to s3 bucket
   echo "uploading to s3 bucket"
