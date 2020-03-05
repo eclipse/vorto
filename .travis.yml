@@ -134,10 +134,17 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
-       
+
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
-            branch: 
+            branch:
               - development
+
+        - provider: script
+          script: bash build-scripts/repackage-deploy-repo.sh
+          skip_cleanup: true
+          on:
+            branch:
+              - deployment
