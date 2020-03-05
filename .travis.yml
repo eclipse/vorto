@@ -57,7 +57,7 @@ jobs:
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           timeout: 300
           on:
-            tags: true
+            branch: deployment
         - provider: lambda
           edge: true
           function_name: "generators-pluginexecutor-prod"
@@ -71,7 +71,7 @@ jobs:
           secret_access_key: "$AWS_SECRET_ACCESS_KEY"
           timeout: 300
           on:
-            tags: true
+            branch: deployment
     - stage: deploy
       name: "Deploy Repository"
 
@@ -133,16 +133,10 @@ jobs:
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
-            tags: true
+            branch: deployment
 
         - provider: script
           script: bash build-scripts/repackage-deploy-repo.sh
           skip_cleanup: true
           on:
             branch: development
-
-        - provider: script
-          script: bash build-scripts/repackage-deploy-repo.sh
-          skip_cleanup: true
-          on:
-            branch: deployment
