@@ -110,6 +110,12 @@
 			<artifactId>hono</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.vorto.examples</groupId>
+			<artifactId>org.eclipse.vorto.codegen.azure</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
