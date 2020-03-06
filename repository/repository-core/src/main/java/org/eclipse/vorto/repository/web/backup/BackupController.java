@@ -86,7 +86,7 @@ public class BackupController extends AbstractRepositoryController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/rest/tenants/restore")
+  @RequestMapping(method = RequestMethod.POST, value = "/rest/namespaces/restore")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public Collection<String> restoreRepository(@RequestParam("file") MultipartFile file) 
       throws Exception {
@@ -123,5 +123,12 @@ public class BackupController extends AbstractRepositoryController {
     return backupRestoreService.restoreRepository(file.getBytes(), tenantPredicate)
         .stream().map(tenant -> tenant.getNamespaces().iterator().next().getName())
         .collect(Collectors.toList());
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/rest/namespaces/backup")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  public void backupRepository(final HttpServletResponse response) {
+
+    backupRepository(response, id -> true, Optional.empty());
   }
 }
