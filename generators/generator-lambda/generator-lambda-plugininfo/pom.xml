@@ -91,6 +91,12 @@
 			<groupId>org.eclipse.vorto.examples</groupId>
 			<artifactId>org.eclipse.vorto.codegen.azure</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
