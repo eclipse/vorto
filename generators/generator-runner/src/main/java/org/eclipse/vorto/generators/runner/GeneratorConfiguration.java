@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.generators.runner;
 
+import org.eclipse.vorto.codegen.azure.AzureGenerator;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
@@ -36,6 +37,8 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
 				Generator.create("/generators/openapi.properties", new CodeGeneratorV1Adapter(new OpenAPIGenerator())));
 		addGenerator(Generator.create("/generators/jsonschema.properties",
 				new CodeGeneratorV1Adapter(new JSONSchemaGenerator())));
+		addGenerator(Generator.create("/generators/azure.properties",
+				new CodeGeneratorV1Adapter(new AzureGenerator())));
 	}
 
 }
