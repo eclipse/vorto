@@ -27,13 +27,13 @@ public class AbstractRepositoryOperation {
   protected static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
   private static Logger logger = Logger.getLogger(AbstractRepositoryOperation.class);
-  
-  private Supplier<Session> sessionSupplier;
-  
+
+  private Supplier<RequestRepositorySessionHelper> repositorySessionHelperSupplier;
+
   public <ReturnType> ReturnType doInSession(SessionFunction<ReturnType> fn) {
     Session session = null;
     try {
-      session = sessionSupplier.get();
+      session = repositorySessionHelperSupplier.get().getSession();
       return fn.apply(session);
     } catch (PathNotFoundException e) {
       logger.error(e);
@@ -48,13 +48,13 @@ public class AbstractRepositoryOperation {
       throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
     } finally {
       if (session != null) {
-        session.logout();
+        repositorySessionHelperSupplier.get().logoutSessionIfNotReusable(session);
       }
     }
   }
 
-  public void setSessionSupplier(Supplier<Session> sessionSupplier) {
-    this.sessionSupplier = sessionSupplier;
+  public void setRepositorySessionHelperSupplier(Supplier<RequestRepositorySessionHelper> repositorySessionHelperSupplier) {
+    this.repositorySessionHelperSupplier = repositorySessionHelperSupplier;
   }
 
   @FunctionalInterface
