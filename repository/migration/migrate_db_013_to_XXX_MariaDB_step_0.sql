@@ -46,7 +46,8 @@
     table.
     The table will only have one column expressing the user_id as both primary key and foreign key
     from the user table, since it does not express a user/namespace relationship but rather a list
-    of privileged users.
+    of privileged users who can administrate the system and operate with top privileges in every
+    area.
 
     Notes:
 
@@ -55,10 +56,12 @@
             and the actual namespace_admin role for that user in the user_permissions table.
         b) When deleting a user account where the user's namespace(s) has other users with the
             namespace_admin role (which is the pre-condition to delete the account), the ownership of
-            the namespace will be "orphaned". However, since the ownership does not differ practically
-            from having the namespace_admin role (and there could be multiple other user with that role
-            on the orphaned namespace), this should pose no issue.
-        c) As hinted above, the TENANT_ADMIN role becomes namespace_admin (cosmetics)
+            the namespace will be "orphaned", as the application may not be able to choose a next
+            administrator among users with the appropriate permission.
+            However, since the ownership does not differ practically from having the namespace_admin
+            permission (and there could be multiple other user with that permission on the orphaned
+            namespace), this should pose no issue.
+        c) As hinted above, the TENANT_ADMIN permission becomes namespace_admin (cosmetics)
  */
 
 # 1) refactor_namespace_ownership_reference
@@ -139,7 +142,7 @@ drop procedure if exists create_user_permissions;
 create procedure create_user_permissions()
 begin
     declare user_permissions tinyint;
-    # Checks if the namespace table already has a owner_user_id field
+    # Checks if the user_permissions table already has a owner_user_id field
     set user_permissions = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'user_permissions'
     );
@@ -258,4 +261,25 @@ begin
     close thecursor;
 end;
 
-# 6) create_and_populate_sysadmins TODO
+# 6) create_and_populate_sysadmins
+drop procedure if exists create_and_populate_sysadmins;
+
+create procedure create_and_populate_sysadmins()
+begin
+    declare sysadmins tinyint;
+    # Checks if the namespace table already has a owner_user_id field
+    set sysadmins = (
+        select count(*) from information_schema.TABLES where TABLE_NAME = 'sysadmins'
+    );
+    if (sysadmins = 0) then
+        create table sysadmins (
+            user_id bigint not null primary key,
+            foreign key (user_id) references user(id)
+        );
+        insert into sysadmins
+        select u.id from user_role
+            inner join tenant_user tu on user_role.tenant_user_id = tu.id
+        inner join user u on tu.user_id = u.id
+        where user_role.role = 'SYS_ADMIN';
+    end if;
+end;
