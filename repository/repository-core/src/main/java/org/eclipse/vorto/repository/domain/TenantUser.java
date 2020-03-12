@@ -29,6 +29,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tenant_user")
+@Deprecated
 public class TenantUser {
 
   @Id

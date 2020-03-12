@@ -35,6 +35,7 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "tenant")
+@Deprecated
 public class Tenant {
 
   public static final String STANDARDIZATION_TENANT_ID = "standardization";

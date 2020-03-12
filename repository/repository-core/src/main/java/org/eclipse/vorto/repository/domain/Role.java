@@ -17,6 +17,7 @@ import java.util.Arrays;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Deprecated
 public enum Role {
   // minimal role for using the repository. It is restricted to only read access, but can generate
   // things and write comments

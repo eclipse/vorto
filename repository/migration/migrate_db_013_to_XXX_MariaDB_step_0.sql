@@ -152,7 +152,7 @@ begin
         (
             user_id      bigint not null,
             namespace_id bigint not null,
-            permission   bigint not null default 0,
+            permissions  bigint not null default 0,
             primary key (user_id, namespace_id),
             foreign key (user_id) references user (id),
             foreign key (namespace_id) references namespace (id)
@@ -202,7 +202,7 @@ begin
     declare c_role varchar(255);
     # the new permission which might be overwritten by each iteration for same namespace/user records
     # (which means it need to be operated upon to sum)
-    declare c_permission bigint;
+    declare c_permissions bigint;
     declare thecursor cursor for select u.id, n.id, role, permission
                                  from user_role
                                           inner join tenant_user tu on tu.id = tenant_user_id
@@ -218,7 +218,7 @@ begin
 
     read_loop: loop
         # fetches each record one by one
-        fetch thecursor into c_user_id, c_namespace_id, c_role, c_permission;
+        fetch thecursor into c_user_id, c_namespace_id, c_role, c_permissions;
         # break condition
         if done then
             leave read_loop;
@@ -234,22 +234,22 @@ begin
         case (c_role)
 
             when ('USER') then
-                update user_permissions set permission = permission + 1
+                update user_permissions set permissions = permissions + 1
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             when ('MODEL_CREATOR') then
-                update user_permissions set permission = permission + 2
+                update user_permissions set permissions = permissions + 2
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             when ('MODEL_PROMOTER') then
-                update user_permissions set permission = permission + 4
+                update user_permissions set permissions = permissions + 4
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             when ('MODEL_REVIEWER') then
-                update user_permissions set permission = permission + 8
+                update user_permissions set permissions = permissions + 8
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             when ('MODEL_PUBLISHER') then
-                update user_permissions set permission = permission + 16
+                update user_permissions set permissions = permissions + 16
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             when ('TENANT_ADMIN') then
-                update user_permissions set permission = permission + 32
+                update user_permissions set permissions = permissions + 32
                 where user_id = c_user_id and namespace_id = c_namespace_id;
             # no handling for different cases such as 'SYS_ADMIN'
             else begin end;

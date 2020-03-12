@@ -21,6 +21,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.eclipse.vorto.model.ModelId;
@@ -40,6 +41,10 @@ public class Namespace {
   @ManyToOne
   @JoinColumn(name = "tenant_id")
   private Tenant tenant;
+
+  @ManyToOne
+  @JoinColumn(name = "owner_user_id", referencedColumnName = "id")
+  private User owner;
 
   @NaturalId
   private String name;

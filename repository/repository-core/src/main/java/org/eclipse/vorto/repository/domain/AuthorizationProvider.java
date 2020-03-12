@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.domain;
-
+@Deprecated
 public enum AuthorizationProvider {
   DB
 }

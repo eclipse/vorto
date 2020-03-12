@@ -70,6 +70,7 @@ public class User {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
+  // TODO remove
   @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
   private Set<TenantUser> tenantUsers = new HashSet<>();
 
@@ -92,10 +93,14 @@ public class User {
     return user;
   }
 
+  // TODO remove  ops and move to user service
+
+  // TODO remove
   public static User create(String username, String provider, String subject, Tenant tenant, Role... roles) {
     return create(username, provider, subject, false, tenant, roles);
   }
-  
+
+  // TODO remove
   public static User create(String username, String provider, String subject, boolean isTechnicalUser, Tenant tenant, Role... roles) {
     User user = create(username, provider, subject, isTechnicalUser);
 
@@ -109,24 +114,26 @@ public class User {
     return user;
   }
 
+  // TODO remove
   public Set<UserRole> getRoles(String tenantId) {
     return getTenantUser(tenantId).map(TenantUser::getRoles).orElse(Collections.emptySet());
   }
 
-  // TODO: Set better name that describes behavior
+  // TODO: remove
   public void setRoles(String tenantId, Set<UserRole> roles) {
     getTenantUser(tenantId).ifPresent((tenantUser) -> {
       tenantUser.setRoles(roles);
     });
   }
 
-  // TODO: Set better name that describes behavior
+  // TODO remove
   public void addRolesIfExistingTenant(String tenantId, Role... roles) {
     getTenantUser(tenantId).ifPresent((tenantUser) -> {
       tenantUser.addRoles(roles);
     });
   }
 
+  // TODO remove
   public void addRoles(Tenant tenant, Role... roles) {
     Optional<TenantUser> _tenantUser = getTenantUser(tenant.getTenantId());
     if (_tenantUser.isPresent()) {
@@ -140,21 +147,25 @@ public class User {
     }
   }
 
+  // TODO remove
   public Map<String, Set<Role>> getTenantRoles() {
     return tenantUsers.stream()
         .collect(Collectors.toMap(tenantUser -> tenantUser.getTenant().getTenantId(),
             tenantUser -> toRoles(tenantUser.getRoles())));
   }
 
+  // TODO remove
   public Set<Role> getAllRoles() {
     return getTenantRoles().values().stream().reduce(Sets.newHashSet(),
         (set1, set2) -> Sets.union(set1, set2));
   }
 
+  // TODO remove
   private static Set<Role> toRoles(Collection<UserRole> userRoles) {
     return userRoles.stream().map(UserRole::getRole).collect(Collectors.toSet());
   }
 
+  // TODO remove
   private static Set<UserRole> toUserRoles(Collection<Role> roles) {
     return roles.stream().map(role -> {
       UserRole userRole = new UserRole();
@@ -163,6 +174,7 @@ public class User {
     }).collect(Collectors.toSet());
   }
 
+  // TODO remove
   private Optional<TenantUser> getTenantUser(String tenantId) {
     if (tenantUsers == null || tenantUsers.isEmpty()) {
       return Optional.empty();
@@ -174,10 +186,12 @@ public class User {
         .findFirst();
   }
 
+  // TODO remove
   public Set<Role> getUserRoles(String tenantId) {
     return UserUtils.extractRolesAsList(getRoles(tenantId));
   }
 
+  // TODO remove
   public Set<Tenant> getTenants() {
     if (tenantUsers == null || tenantUsers.isEmpty()) {
       return Collections.emptySet();
@@ -187,6 +201,7 @@ public class User {
         .collect(Collectors.toSet());
   }
 
+  // etc.
   public boolean isSysAdmin(String tenantId) {
     return hasRole(tenantId, Role.SYS_ADMIN);
   }

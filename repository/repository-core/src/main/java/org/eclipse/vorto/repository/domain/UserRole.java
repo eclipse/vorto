@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Deprecated
 @Entity
 @Table(name = "user_role")
 public class UserRole implements Serializable {
