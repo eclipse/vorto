@@ -61,7 +61,7 @@
         c) As hinted above, the TENANT_ADMIN role becomes namespace_admin (cosmetics)
  */
 
-# refactor_namespace_ownership_reference
+# 1) refactor_namespace_ownership_reference
 drop procedure if exists refactor_namespace_ownership_reference;
 
 create procedure refactor_namespace_ownership_reference()
@@ -102,7 +102,7 @@ end;
 
 call refactor_namespace_ownership_reference();
 
-# create_permissions
+# 2) create_permissions
 drop procedure if exists create_permissions;
 
 create procedure create_permissions()
@@ -133,7 +133,7 @@ end;
 
 call create_permissions();
 
-# create_user_permissions
+# 3) create_user_permissions
 drop procedure if exists create_user_permissions;
 
 create procedure create_user_permissions()
@@ -159,7 +159,7 @@ end;
 
 call create_user_permissions();
 
-# pre_populate_user_permissions
+# 4) pre_populate_user_permissions
 drop procedure if exists pre_populate_user_permissions;
 
 create procedure pre_populate_user_permissions()
@@ -184,7 +184,8 @@ end;
 
 call pre_populate_user_permissions();
 
-# populate_user_permissions
+# 5) populate_user_permissions - optionally, run the debug_permissions script after this one in
+# order to ensure the data is populated correctly
 drop procedure if exists populate_user_permissions;
 
 # this one requires an explicit cursor, as it iterates over all user_role records and
@@ -256,3 +257,5 @@ begin
 
     close thecursor;
 end;
+
+# 6) create_and_populate_sysadmins TODO
