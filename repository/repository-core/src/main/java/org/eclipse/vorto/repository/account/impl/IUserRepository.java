@@ -50,4 +50,7 @@ public interface IUserRepository extends CrudRepository<User, Long> {
   @Query("select u from User u where u.sysadmin = true")
   boolean isSysadmin(User user);
 
+  @Query("select u from User u where u.username = :name and u.sysadmin = true")
+  boolean isSysadmin(String name);
+
 }
