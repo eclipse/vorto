@@ -41,13 +41,9 @@
     Fetches and aggreates records from the user_role table to compute the specific permission for
     each user/namespace association.
 
-    6) create_and_populate_sysadmins
-    Creates a sysadmins table by fetching records containing the 'SYS_ADMIN' role in the user_role
-    table.
-    The table will only have one column expressing the user_id as both primary key and foreign key
-    from the user table, since it does not express a user/namespace relationship but rather a list
-    of privileged users who can administrate the system and operate with top privileges in every
-    area.
+    6) populate_sysadmins
+    Modifies the user table to add a boolean field indicating whether a user is sysadmin, based on
+    data from the old user_role table.
 
     Notes:
 
@@ -261,25 +257,22 @@ begin
     close thecursor;
 end;
 
-# 6) create_and_populate_sysadmins
-drop procedure if exists create_and_populate_sysadmins;
+# 6) populate_sysadmins
+drop procedure if exists populate_sysadmins;
 
-create procedure create_and_populate_sysadmins()
+create procedure populate_sysadmins()
 begin
     declare sysadmins tinyint;
     # Checks if the namespace table already has a owner_user_id field
     set sysadmins = (
-        select count(*) from information_schema.TABLES where TABLE_NAME = 'sysadmins'
+        select count(*) from information_schema.COLUMNS where TABLE_NAME = 'user' and COLUMN_NAME = 'sysadmin'
     );
     if (sysadmins = 0) then
-        create table sysadmins (
-            user_id bigint not null primary key,
-            foreign key (user_id) references user(id)
-        );
-        insert into sysadmins
-        select u.id from user_role
-            inner join tenant_user tu on user_role.tenant_user_id = tu.id
-        inner join user u on tu.user_id = u.id
-        where user_role.role = 'SYS_ADMIN';
+        alter table user add column sysadmin boolean default false not null;
+        update user
+            inner join tenant_user tu on user.id = tu.user_id
+            right outer join user_role ur on tu.id = ur.tenant_user_id
+        set user.sysadmin = true
+        where ur.role = 'SYS_ADMIN';
     end if;
 end;

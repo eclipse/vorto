@@ -24,7 +24,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "permissions")
-public class Permission implements Serializable {
+  public class Permission implements Serializable {
 
   private static final long serialVersionUID = -5897575755499074106L;
 

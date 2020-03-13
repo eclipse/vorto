@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,9 +41,10 @@ import com.google.common.collect.Sets;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
 
   public static final String USER_ANONYMOUS = "anonymous";
+  private static final long serialVersionUID = 5561604486210150801L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,13 +54,13 @@ public class User {
   @NaturalId
   private String username;
   
-  @Column(name = "authenticationProviderId")
+  @Column(name = "authentication_provider_id")
   private String authenticationProviderId;
 
   @Column(name = "subject")
   private String subject;
   
-  @Column(name = "isTechnicalUser")
+  @Column(name = "is_technical_user")
   private boolean isTechnicalUser;
 
   @Column(nullable = false)
@@ -75,6 +77,9 @@ public class User {
   private Set<TenantUser> tenantUsers = new HashSet<>();
 
   private String emailAddress;
+
+  @Column(nullable = false)
+  private boolean sysadmin;
 
   public static User create(String username, String provider, String subject) {
     return create(username, provider, subject, false);
@@ -224,6 +229,10 @@ public class User {
       tenantUser.setTenant(null);
       tenantUser.setUser(null);
     }
+  }
+
+  public boolean isSysadmin() {
+    return sysadmin;
   }
   
   public Long getId() {

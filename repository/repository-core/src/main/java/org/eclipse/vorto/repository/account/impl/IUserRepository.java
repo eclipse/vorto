@@ -18,10 +18,12 @@ import org.eclipse.vorto.repository.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Repository
 public interface IUserRepository extends CrudRepository<User, Long> {
   /**
    * Finds the user by the specified username
@@ -39,9 +41,13 @@ public interface IUserRepository extends CrudRepository<User, Long> {
   @Query("SELECT u from User u WHERE LOWER(u.username) LIKE %?1%")
   Collection<User> findUserByPartial(String partial);
 
-  @Query("SELECT u from User u, TenantUser tu, UserRole r " + 
-         "WHERE u.id = tu.user.id AND " +
-         "tu.id = r.user.id AND " +
-         "r.role = :role")
+  @Query("SELECT u from User u, TenantUser tu, UserRole r " +
+      "WHERE u.id = tu.user.id AND " +
+      "tu.id = r.user.id AND " +
+      "r.role = :role")
   Collection<User> findUsersWithRole(@Param("role") Role role);
+
+  @Query("select u from User u where u.sysadmin = true")
+  boolean isSysadmin(User user);
+
 }

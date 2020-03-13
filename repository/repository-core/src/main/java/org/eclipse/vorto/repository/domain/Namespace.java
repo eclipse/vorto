@@ -38,6 +38,7 @@ public class Namespace {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  // TODO remove
   @ManyToOne
   @JoinColumn(name = "tenant_id")
   private Tenant tenant;
@@ -49,6 +50,7 @@ public class Namespace {
   @NaturalId
   private String name;
 
+  // TODO move biz logic away
   public static Collection<Namespace> toNamespace(Collection<String> namespaces, Tenant tenant) {
     return namespaces.stream().map(name -> {
       Namespace namespace = new Namespace();

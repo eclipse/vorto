@@ -10,18 +10,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.tenant.repository;
+package org.eclipse.vorto.repository.repositories;
 
-import java.util.List;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.springframework.data.repository.CrudRepository;
+import java.util.Set;
+import org.eclipse.vorto.repository.domain.Permission;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface INamespaceRepository extends CrudRepository<Namespace, Long> {
-  
-  Namespace findByName(String name);
-  
-  List<Namespace> findByNameIgnoreCaseContaining(String name);
-  
+public interface PermissionsRepository extends org.springframework.data.repository.Repository<Permission, Long> {
+  @Query("select p from Permission p where p.name = :name")
+  Permission find(String name);
+  Set<Permission> findAll();
 }
