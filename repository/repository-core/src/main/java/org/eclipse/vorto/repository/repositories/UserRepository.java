@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.account.impl;
+package org.eclipse.vorto.repository.repositories;
 
 import java.util.Collection;
 import org.eclipse.vorto.repository.domain.Role;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Repository
-public interface IUserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
   /**
    * Finds the user by the specified username
    * 
@@ -46,11 +46,5 @@ public interface IUserRepository extends CrudRepository<User, Long> {
       "tu.id = r.user.id AND " +
       "r.role = :role")
   Collection<User> findUsersWithRole(@Param("role") Role role);
-
-  @Query("select u from User u where u.sysadmin = true")
-  boolean isSysadmin(User user);
-
-  @Query("select u from User u where u.username = :name and u.sysadmin = true")
-  boolean isSysadmin(String name);
 
 }

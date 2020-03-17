@@ -32,7 +32,7 @@ import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.utils.PreConditions;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   private ITenantRepository tenantRepo;
 
-  private INamespaceRepository namespaceRepo;
+  private NamespaceRepository namespaceRepo;
 
   private IUserAccountService userAccountService;
   
@@ -65,7 +65,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   private String restrictTenantConfig;
 
   public TenantService(@Autowired ITenantRepository tenantRepo,
-      @Autowired INamespaceRepository namespaceRepo,
+      @Autowired NamespaceRepository namespaceRepo,
       @Autowired IUserAccountService accountService) {
     this.tenantRepo = tenantRepo;
     this.namespaceRepo = namespaceRepo;

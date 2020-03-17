@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.tenant.repository;
+package org.eclipse.vorto.repository.repositories;
 
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface INamespaceRepository extends CrudRepository<Namespace, Long> {
+public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
   
   Namespace findByName(String name);
   

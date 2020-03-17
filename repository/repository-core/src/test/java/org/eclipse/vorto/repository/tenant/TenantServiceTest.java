@@ -28,7 +28,7 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class TenantServiceTest {
 
   private static final String GITHUB = "GITHUB";
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
-  private INamespaceRepository nsRepo = Mockito.mock(INamespaceRepository.class);
+  private NamespaceRepository nsRepo = Mockito.mock(NamespaceRepository.class);
   private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
   protected TenantService tenantServiceObj = Mockito.mock(TenantService.class);
 

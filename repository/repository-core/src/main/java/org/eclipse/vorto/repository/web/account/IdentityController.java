@@ -28,7 +28,7 @@
 //import java.util.List;
 //import java.util.Objects;
 //import org.eclipse.vorto.repository.account.IUserAccountService;
-//import org.eclipse.vorto.repository.account.impl.IUserRepository;
+//import org.eclipse.vorto.repository.repositories.IUserRepository;
 //import org.eclipse.vorto.repository.domain.AuthenticationProvider;
 //import org.eclipse.vorto.repository.domain.Role;
 //import org.eclipse.vorto.repository.domain.User;

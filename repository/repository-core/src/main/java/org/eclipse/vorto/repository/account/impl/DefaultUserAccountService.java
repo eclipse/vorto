@@ -31,10 +31,10 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +56,7 @@ public class DefaultUserAccountService
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
-  private IUserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
   private INotificationService notificationService;
@@ -420,11 +420,11 @@ public class DefaultUserAccountService
   }
 
 
-  public IUserRepository getUserRepository() {
+  public UserRepository getUserRepository() {
     return userRepository;
   }
 
-  public void setUserRepository(IUserRepository userRepository) {
+  public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

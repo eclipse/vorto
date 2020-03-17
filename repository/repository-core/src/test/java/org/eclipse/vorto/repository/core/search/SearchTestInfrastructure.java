@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -146,7 +146,7 @@ public final class SearchTestInfrastructure {
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 
   @Mock
-  protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
+  protected UserRepository userRepository = Mockito.mock(UserRepository.class);
 
   @Mock
   protected AttachmentValidator attachmentValidator = Mockito

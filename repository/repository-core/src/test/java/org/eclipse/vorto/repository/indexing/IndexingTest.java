@@ -28,7 +28,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.tenant.TenantService;
-import org.eclipse.vorto.repository.tenant.repository.INamespaceRepository;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Test;
@@ -123,7 +123,7 @@ public class IndexingTest extends AbstractIntegrationTest {
   public void deletingATenantShouldDeleteAllModelsOfTenantInIndex() {
     TenantService tenantService = new TenantService(
         Mockito.mock(ITenantRepository.class), 
-        Mockito.mock(INamespaceRepository.class), 
+        Mockito.mock(NamespaceRepository.class),
         Mockito.mock(IUserAccountService.class));
     
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);

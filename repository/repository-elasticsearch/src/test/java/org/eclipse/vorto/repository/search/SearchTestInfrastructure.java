@@ -29,7 +29,7 @@ import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -175,7 +175,7 @@ public final class SearchTestInfrastructure {
   }
 
   @Mock
-  protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
+  protected UserRepository userRepository = Mockito.mock(UserRepository.class);
 
   @Mock
   protected AttachmentValidator attachmentValidator = Mockito
