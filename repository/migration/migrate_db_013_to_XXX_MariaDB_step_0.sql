@@ -228,7 +228,7 @@ begin
         (
             user_id      bigint not null,
             namespace_id bigint not null,
-            role         bigint not null default 0,
+            roles        bigint not null default 0,
             primary key (user_id, namespace_id),
             foreign key (user_id) references user (id),
             foreign key (namespace_id) references namespace (id)
@@ -310,27 +310,27 @@ begin
         case (c_old_role)
 
             when ('USER') then update user_namespace_roles
-                               set role = role + 1
+                               set roles = roles + 1
                                where user_id = c_user_id
                                  and namespace_id = c_namespace_id;
             when ('MODEL_CREATOR') then update user_namespace_roles
-                                        set role = role + 2
+                                        set roles = roles + 2
                                         where user_id = c_user_id
                                           and namespace_id = c_namespace_id;
             when ('MODEL_PROMOTER') then update user_namespace_roles
-                                         set role = role + 4
+                                         set roles = roles + 4
                                          where user_id = c_user_id
                                            and namespace_id = c_namespace_id;
             when ('MODEL_REVIEWER') then update user_namespace_roles
-                                         set role = role + 8
+                                         set roles = roles + 8
                                          where user_id = c_user_id
                                            and namespace_id = c_namespace_id;
             when ('MODEL_PUBLISHER') then update user_namespace_roles
-                                          set role = role + 16
+                                          set roles = roles + 16
                                           where user_id = c_user_id
                                             and namespace_id = c_namespace_id;
             when ('TENANT_ADMIN') then update user_namespace_roles
-                                       set role = role + 32
+                                       set roles = roles + 32
                                        where user_id = c_user_id
                                          and namespace_id = c_namespace_id;
             # no handling for different cases such as 'SYS_ADMIN' here
@@ -362,7 +362,7 @@ begin
         create table user_repository_roles
         (
             user_id bigint primary key not null,
-            role    bigint             not null default 0,
+            roles   bigint             not null default 0,
             foreign key (user_id) references user (id)
         );
         insert into user_repository_roles
