@@ -14,32 +14,35 @@ package org.eclipse.vorto.repository.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Represents a supported permissions assigned to a user on a namespace.
+ * Represents a role applicable to a namespace.<br/>
+ * A role is made of the sum of a number of {@link Privilege}s, expressed as a 64-bit integer value.
+ * <br/>
+ * Inferring which privileges a role has can be done through bitwise {@code &}.
  */
 @Entity
-@Table(name = "permissions")
-  public class Permission implements Serializable {
+@Table(name = "namespace_roles")
+public class NamespaceRole implements Serializable {
 
-  private static final long serialVersionUID = -5897575755499074106L;
+  private static final long serialVersionUID = 760754614830691891L;
 
   @Id
-  private long permission;
+  private long role;
 
-  @Column
   private String name;
 
-  public long getPermission() {
-    return permission;
+  private long privileges;
+
+  public long getRole() {
+    return role;
   }
 
-  public void setPermission(long permission) {
-    this.permission = permission;
+  public void setRole(long role) {
+    this.role = role;
   }
 
   public String getName() {
@@ -50,6 +53,14 @@ import javax.persistence.Table;
     this.name = name;
   }
 
+  public long getPrivileges() {
+    return privileges;
+  }
+
+  public void setPrivileges(long privileges) {
+    this.privileges = privileges;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -58,13 +69,14 @@ import javax.persistence.Table;
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Permission that = (Permission) o;
-    return permission == that.permission &&
+    NamespaceRole that = (NamespaceRole) o;
+    return role == that.role &&
+        privileges == that.privileges &&
         name.equals(that.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(permission, name);
+    return Objects.hash(role, name, privileges);
   }
 }

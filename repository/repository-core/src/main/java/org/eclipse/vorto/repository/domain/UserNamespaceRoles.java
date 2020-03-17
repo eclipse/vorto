@@ -24,12 +24,12 @@ import javax.persistence.Table;
 
 
 /**
- * Represents the permissions a user has on a namespace.
+ * Represents the roles a user has on a namespace.
  */
 @Entity
 @IdClass(UserNamespaceID.class)
-@Table(name = "user_permissions")
-public class UserPermissions implements Serializable {
+@Table(name = "user_namespace_roles")
+public class UserNamespaceRoles implements Serializable {
 
   private static final long serialVersionUID = -5348119599452266874L;
 
@@ -44,7 +44,7 @@ public class UserPermissions implements Serializable {
   private Namespace namespace;
 
   @Column(nullable = false)
-  private long permissions;
+  private long roles;
 
 
   public User getUser() {
@@ -63,12 +63,12 @@ public class UserPermissions implements Serializable {
     this.namespace = namespace;
   }
 
-  public long getPermissions() {
-    return permissions;
+  public long getRoles() {
+    return roles;
   }
 
-  public void setPermission(long permissions) {
-    this.permissions = permissions;
+  public void setRoles(long roles) {
+    this.roles = roles;
   }
 
   @Override
@@ -79,15 +79,15 @@ public class UserPermissions implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserPermissions that = (UserPermissions) o;
-    return permissions == that.permissions &&
+    UserNamespaceRoles that = (UserNamespaceRoles) o;
+    return roles == that.roles &&
         Objects.equals(user, that.user) &&
         Objects.equals(namespace, that.namespace);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(user, namespace, permissions);
+    return Objects.hash(user, namespace, roles);
   }
 
 }

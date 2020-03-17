@@ -12,14 +12,12 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import java.util.Set;
-import org.eclipse.vorto.repository.domain.Permission;
-import org.springframework.data.jpa.repository.Query;
+import org.eclipse.vorto.repository.domain.UserNamespaceID;
+import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PermissionsRepository extends org.springframework.data.repository.Repository<Permission, Long> {
-  @Query("select p from Permission p where p.name = :name")
-  Permission find(String name);
-  Set<Permission> findAll();
+public interface UserNamespaceRolesRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
+
 }
