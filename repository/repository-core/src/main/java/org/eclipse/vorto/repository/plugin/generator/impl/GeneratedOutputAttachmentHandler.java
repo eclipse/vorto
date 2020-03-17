@@ -115,20 +115,12 @@ public class GeneratedOutputAttachmentHandler {
       String serviceKey, Map<String, String> requestParams, GeneratedOutput response,
       GeneratorPluginConfiguration plugin) {
 
-    IUserContext userContextForAttaching = getUserContextForCreatingAttachment(userContext);
     String filename = buildAttachmentFilename(modelId, serviceKey, requestParams, response, plugin);
     FileContent fc = new FileContent(filename, response.getContent());
-    modelRepositoryFactory.getRepositoryByModel(modelId, userContextForAttaching)
-        .attachFile(modelId, fc, userContextForAttaching,
+    modelRepositoryFactory.getRepositoryByModel(modelId, userContext)
+        .attachFileInElevatedSession(modelId, fc, userContext,
             GeneratedOutputAttachmentHandler.tagsForRequest(plugin, requestParams));
     return new GeneratedOutput(response.getContent(), filename, response.getSize());
-  }
-
-  private IUserContext getUserContextForCreatingAttachment(IUserContext userContext) {
-    if (userContext.isAnonymous()) {
-      return PrivilegedUserContextProvider.systemAdminContext();
-    }
-    return PrivilegedUserContextProvider.systemAdminContext(userContext.getUsername());
   }
 
   private String buildAttachmentFilename(ModelId modelId, String serviceKey,

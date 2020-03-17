@@ -734,70 +734,81 @@ public class ModelRepository extends AbstractRepositoryOperation
       Tag... tags) throws AttachmentException {
 
     attachmentValidator.validateAttachment(fileContent, modelId);
+    doInSession(session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags));
+  }
 
-    doInSession(session -> {
-      try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-        Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+  @Override
+  public void attachFileInElevatedSession(ModelId modelId, FileContent fileContent, IUserContext userContext,
+                                          Tag... tags) throws AttachmentException {
 
-        Node attachmentFolderNode;
-        if (!modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
-          attachmentFolderNode = modelFolderNode.addNode(ATTACHMENTS_NODE, NT_FOLDER);
-        } else {
-          attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
-        }
+    attachmentValidator.validateAttachment(fileContent, modelId);
+    doInElevatedSession(session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags), userContext);
+  }
 
-        String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
-                .toArray(new String[tags.length]);
 
-        // if the display image tag is present (we're uploading a new image for presentational
-        // purposes), removes the tag from all other attachments
-        if (Arrays.stream(tags).anyMatch(t -> t.equals(TAG_DISPLAY_IMAGE))) {
-          NodeIterator attachments = attachmentFolderNode.getNodes();
-          while (attachments.hasNext()) {
-            Node next = attachments.nextNode();
-            Property attachmentTags = next.getProperty(VORTO_TAGS);
-            Value[] attachmentTagsValuesFiltered = Arrays.stream(attachmentTags.getValues())
-                .filter(
-                    v -> {
-                       try {
-                         return !v.getString().equals(TAG_DISPLAY_IMAGE.getId());
-                         // swallowing here
-                       } catch (RepositoryException re) {
-                         return false;
-                       }
-                    }
-                )
-                .toArray(Value[]::new);
-            next.setProperty(VORTO_TAGS, attachmentTagsValuesFiltered);
-          }
-        }
 
-        Node contentNode;
-        if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
-          Node attachmentNode = attachmentFolderNode.getNode(fileContent.getFileName());
-          attachmentNode.addMixin(VORTO_META);
-          attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
-          contentNode = (Node) attachmentNode.getPrimaryItem();
-        } else {
-          Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), NT_FILE);
-          attachmentNode.addMixin(VORTO_META);
-          attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
-          contentNode = attachmentNode.addNode(JCR_CONTENT, NT_RESOURCE);
-        }
+  private boolean doAttachFileInSession(ModelId modelId, FileContent fileContent, IUserContext userContext, Session session, Tag[] tags) throws RepositoryException {
+    try {
+      ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+      Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
 
-        Binary binary = session.getValueFactory()
-            .createBinary(new ByteArrayInputStream(fileContent.getContent()));
-        contentNode.setProperty(JCR_DATA, binary);
-        session.save();
-
-        eventPublisher.publishEvent(
-            new AppEvent(this, getById(modelId), userContext, EventType.MODEL_UPDATED));
-        return null;
-      } catch (AccessDeniedException e) {
-        throw new NotAuthorizedException(modelId, e);
+      Node attachmentFolderNode;
+      if (!modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+        attachmentFolderNode = modelFolderNode.addNode(ATTACHMENTS_NODE, NT_FOLDER);
+      } else {
+        attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
       }
-    });
+
+      String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
+              .toArray(new String[tags.length]);
+
+      // if the display image tag is present (we're uploading a new image for presentational
+      // purposes), removes the tag from all other attachments
+      if (Arrays.asList(tags).contains(TAG_DISPLAY_IMAGE)) {
+        NodeIterator attachments = attachmentFolderNode.getNodes();
+        while (attachments.hasNext()) {
+          Node next = attachments.nextNode();
+          Property attachmentTags = next.getProperty(VORTO_TAGS);
+          Value[] attachmentTagsValuesFiltered = Arrays.stream(attachmentTags.getValues())
+              .filter(
+                  v -> {
+                     try {
+                       return !v.getString().equals(TAG_DISPLAY_IMAGE.getId());
+                       // swallowing here
+                     } catch (RepositoryException re) {
+                       return false;
+                     }
+                  }
+              )
+              .toArray(Value[]::new);
+          next.setProperty(VORTO_TAGS, attachmentTagsValuesFiltered);
+        }
+      }
+
+      Node contentNode;
+      if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
+        Node attachmentNode = attachmentFolderNode.getNode(fileContent.getFileName());
+        attachmentNode.addMixin(VORTO_META);
+        attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
+        contentNode = (Node) attachmentNode.getPrimaryItem();
+      } else {
+        Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), NT_FILE);
+        attachmentNode.addMixin(VORTO_META);
+        attachmentNode.setProperty(VORTO_TAGS, tagIds, PropertyType.STRING);
+        contentNode = attachmentNode.addNode(JCR_CONTENT, NT_RESOURCE);
+      }
+
+      Binary binary = session.getValueFactory()
+          .createBinary(new ByteArrayInputStream(fileContent.getContent()));
+      contentNode.setProperty(JCR_DATA, binary);
+      session.save();
+
+      eventPublisher.publishEvent(
+          new AppEvent(this, getById(modelId), userContext, EventType.MODEL_UPDATED));
+      return true;
+    } catch (AccessDeniedException e) {
+      throw new NotAuthorizedException(modelId, e);
+    }
   }
 
   @Override
