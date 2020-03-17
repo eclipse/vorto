@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.repositories;
 
 import java.util.Set;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NamespaceRolesRepository extends org.springframework.data.repository.Repository<NamespaceRole, Long> {
   @Query("select p from NamespaceRole p where p.name = :name")
-  NamespaceRole find(String name);
+  IRole find(String name);
   Set<NamespaceRole> findAll();
 }

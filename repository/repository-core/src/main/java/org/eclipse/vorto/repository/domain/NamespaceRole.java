@@ -26,7 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "namespace_roles")
-public class NamespaceRole implements Serializable {
+public class NamespaceRole implements Serializable, IRole {
 
   private static final long serialVersionUID = 760754614830691891L;
 
