@@ -210,6 +210,9 @@ public interface IModelRepository {
   void attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag... tags)
       throws AttachmentException;
 
+  void attachFileInElevatedSession(ModelId modelId, FileContent fileContent, IUserContext userContext,
+                                   Tag... tags) throws AttachmentException;
+
   /**
    * Gets a list of attachments for the model (without its content)
    *

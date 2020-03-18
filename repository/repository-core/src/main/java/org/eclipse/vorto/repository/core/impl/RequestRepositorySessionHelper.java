@@ -133,6 +133,14 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         this.repository = repository;
     }
 
+    public Repository getRepository() {
+        return repository;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
     public void setUser(Authentication user) {
         this.user = user;
     }
