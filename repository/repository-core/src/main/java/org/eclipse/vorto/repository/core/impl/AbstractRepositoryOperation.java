@@ -12,12 +12,6 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -25,6 +19,13 @@ import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AbstractRepositoryOperation {
   
@@ -68,6 +69,8 @@ public class AbstractRepositoryOperation {
       fn.apply(helper.getSession());
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Unexpected exception", e);
+    } finally {
+      helper.logoutSessionIfNotReusable(helper.getSession());
     }
   }
 
