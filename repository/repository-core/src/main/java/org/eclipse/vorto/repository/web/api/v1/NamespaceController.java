@@ -558,7 +558,7 @@ public class NamespaceController {
       Predicate<Tenant> filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
       return new ResponseEntity<>(
           tenantService.getTenants().stream().filter(filter)
-              .anyMatch((t) -> t.getDefaultNamespace().equals(namespace)),
+              .anyMatch(t -> namespace.startsWith(t.getDefaultNamespace())),
           HttpStatus.OK
       );
     }
