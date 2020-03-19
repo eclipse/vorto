@@ -237,6 +237,25 @@ public class WorkflowTest extends AbstractIntegrationTest {
     assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(fbModel.getId()).getById(fbModel.getId()).getState());
   }
 
+  @Test
+  public void testApproveWithNonApprovedDependencies() throws Exception {
+    ModelInfo typeModel = importModel("Color.type");
+    workflow.start(typeModel.getId(), createUserContext("alex", PLAYGROUND));
+
+    ModelInfo fbModel = importModel("Colorlight.fbmodel");
+    workflow.start(fbModel.getId(), createUserContext("alex", PLAYGROUND));
+
+    when(userRepository
+            .findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
+            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+    workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
+            SimpleWorkflowModel.ACTION_RELEASE.getName());
+    assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(typeModel.getId()).getById(typeModel.getId()).getState());
+    assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(fbModel.getId()).getById(fbModel.getId()).getState());
+    workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
+            SimpleWorkflowModel.ACTION_APPROVE.getName());
+  }
+
 
   @Test
   public void testStartReleaseModelWithReviewedDependencies() throws Exception {
