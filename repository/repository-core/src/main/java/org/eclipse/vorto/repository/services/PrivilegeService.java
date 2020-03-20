@@ -15,7 +15,7 @@ package org.eclipse.vorto.repository.services;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Privilege;
-import org.eclipse.vorto.repository.repositories.PrivilegesRepository;
+import org.eclipse.vorto.repository.repositories.PrivilegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +23,13 @@ import org.springframework.stereotype.Service;
  * Provides basic functionality with regards to privileges.
  */
 @Service
-public class PrivilegesService {
+public class PrivilegeService {
 
   @Autowired
-  private PrivilegesRepository privilegesRepository;
+  private PrivilegeRepository privilegeRepository;
 
   public Collection<Privilege> getPrivileges(long value) {
-    return privilegesRepository.findAll().stream().filter(p -> (value & p.getPrivilege()) == p.getPrivilege())
+    return privilegeRepository.findAll().stream().filter(p -> (value & p.getPrivilege()) == p.getPrivilege())
         .collect(Collectors.toSet());
   }
 

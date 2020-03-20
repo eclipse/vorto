@@ -18,6 +18,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserNamespaceRolesRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
+public interface UserNamespaceRoleRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
 
 }

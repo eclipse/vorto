@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.eclipse.vorto.repository.repositories.NamespaceRolesRepository;
-import org.eclipse.vorto.repository.repositories.RepositoryRolesRepository;
+import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +27,16 @@ import org.springframework.stereotype.Service;
  * and {@link org.eclipse.vorto.repository.domain.RepositoryRole}
  */
 @Service
-public class RolesService {
+public class RoleService {
 
   @Autowired
-  private PrivilegesService privilegesService;
+  private PrivilegeService privilegeService;
 
   @Autowired
   private NamespaceRolesRepository namespaceRolesRepository;
 
   @Autowired
-  private RepositoryRolesRepository repositoryRolesRepository;
+  private RepositoryRoleRepository repositoryRoleRepository;
 
   /**
    * Aggregates both known role repositories and returns the first {@link IRole} matching the given
@@ -48,7 +48,7 @@ public class RolesService {
   public Optional<IRole> findAnyByName(String name) {
     return Stream
         .of(Optional.ofNullable(namespaceRolesRepository.find(name)),
-            Optional.ofNullable(repositoryRolesRepository.find(name)))
+            Optional.ofNullable(repositoryRoleRepository.find(name)))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();
@@ -63,7 +63,7 @@ public class RolesService {
    * @return all {@link Privilege}s for the given {@link IRole} or none.
    */
   public Collection<Privilege> getPrivileges(IRole role) {
-    return privilegesService
+    return privilegeService
         .getPrivileges(Optional.ofNullable(role).map(IRole::getPrivileges).orElse(0l));
   }
 

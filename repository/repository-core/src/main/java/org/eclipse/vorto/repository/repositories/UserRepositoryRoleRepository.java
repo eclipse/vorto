@@ -23,6 +23,6 @@ import org.springframework.stereotype.Repository;
  * {@literal sysadmin} {@link RepositoryRole} as of now.
  */
 @Repository
-public interface UserRepositoryRolesRepository extends CrudRepository<UserRepositoryRoles, User> {
+public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, User> {
 
 }

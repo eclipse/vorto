@@ -13,14 +13,16 @@
 package org.eclipse.vorto.repository.repositories;
 
 import java.util.Set;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.Privilege;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Read-only repository for privileges.
+ */
 @Repository
-public interface RepositoryRolesRepository extends org.springframework.data.repository.Repository<RepositoryRole, Long> {
-  @Query("select p from RepositoryRole p where p.name = :name")
-  IRole find(String name);
-  Set<RepositoryRole> findAll();
+public interface PrivilegeRepository extends org.springframework.data.repository.Repository<Privilege, Long> {
+  @Query("select p from Privilege p where p.name = :name")
+  Privilege find(String name);
+  Set<Privilege> findAll();
 }
