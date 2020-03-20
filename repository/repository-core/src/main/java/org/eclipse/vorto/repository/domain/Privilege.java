@@ -38,8 +38,8 @@ import javax.persistence.Table;
     return privilege;
   }
 
-  public void setPrivilege(long permission) {
-    this.privilege = permission;
+  public void setPrivilege(long privilege) {
+    this.privilege = privilege;
   }
 
   public String getName() {
