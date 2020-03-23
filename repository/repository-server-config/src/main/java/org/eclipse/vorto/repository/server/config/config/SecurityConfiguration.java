@@ -12,6 +12,17 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.oauth.IOAuthFlowConfiguration;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.filter.BearerTokenFilter;
@@ -46,16 +57,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CompositeFilter;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -124,10 +125,40 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.cors().configurationSource(corsConfigurationSource());
   }
 
+  /**
+   * Provides a configuration bean to allow CORS for a specific set of origins, expressed in
+   * configuration resources as regular expressions. <br/>
+   * Overloads the logic in {@link CorsConfiguration} in order to allow evaluation of origins as
+   * regex in case standard ignore-case equality checks fail.
+   * @return
+   */
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+    CorsConfiguration configuration = new CorsConfiguration() {
+      @Override
+      public String checkOrigin(String requestOrigin) {
+        String result = super.checkOrigin(requestOrigin);
+        if (result != null) {
+          return result;
+        }
+        // if no luck with exact match, try a pattern-based approach
+        else {
+          for (String ao : super.getAllowedOrigins()) {
+            try {
+              if (Pattern.compile(ao).matcher(requestOrigin).find()) {
+                return ao;
+              }
+            }
+            // value cannot be interpreted as pattern - swallowing
+            catch (PatternSyntaxException pse) {
+              continue;
+            }
+          }
+        }
+        return null;
+      }
+    };
+    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",\\s*")));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
