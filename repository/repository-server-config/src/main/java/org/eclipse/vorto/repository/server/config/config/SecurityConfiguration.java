@@ -75,12 +75,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Value("${server.config.generatorPassword}")
   private String generatorUserPassword = "";
 
+  @Value("${server.config.cors.allowedOrigins}")
+  private String allowedOrigins;
+
   @Autowired
   private TenantVerificationFilter tenantVerificationFilter;
-  
+
   @Autowired
   private IOAuthProviderRegistry oauthProviderRegistry;
-  
+
   @Autowired
   private Environment env;
 
@@ -124,7 +127,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("localhost", ""));
+    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
