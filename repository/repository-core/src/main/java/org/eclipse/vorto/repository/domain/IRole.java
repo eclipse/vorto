@@ -5,6 +5,7 @@ package org.eclipse.vorto.repository.domain;
  * TODO rename to Role without hungarian notation once homonymous enum removed
  */
 public interface IRole {
+  long getRole();
   String getName();
   long getPrivileges();
 }

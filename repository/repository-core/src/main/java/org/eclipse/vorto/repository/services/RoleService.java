@@ -68,12 +68,13 @@ public class RoleService {
   }
 
   /**
+   * @see RoleService#getPrivileges(IRole)
    * @param roleName
    * @return all {@link Privilege}s for the given role name.
-   * @throws RoleDoesNotExistException if the role name does not match any known role.
    */
-  public Collection<Privilege> getPrivileges(String roleName) throws RoleDoesNotExistException {
+  public Collection<Privilege> getPrivileges(String roleName) {
     return getPrivileges(
-        findAnyByName(roleName).orElseThrow(() -> new RoleDoesNotExistException(roleName)));
+        findAnyByName(roleName).orElseThrow(
+            () -> new IllegalArgumentException(String.format("Role [%s] unknown", roleName))));
   }
 }

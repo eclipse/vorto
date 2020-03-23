@@ -12,23 +12,24 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Optional;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NamespaceService {
+public class UserRepositoryRoleService {
 
   @Autowired
-  private NamespaceRepository namespaceRepository;
+  private UserRepository userRepository;
 
-  public boolean exists(Namespace namespace) {
-    return namespaceRepository.exists(namespace.getId());
-  }
+  @Autowired
+  private RepositoryRoleRepository repositoryRoleRepository;
 
-  public boolean exists(String namespaceName) {
-    return Optional.ofNullable(namespaceRepository.findByName(namespaceName)).isPresent();
-  }
+  @Autowired
+  private UserRepositoryRoleRepository userRepositoryRoleRepository;
+
+
+
 }

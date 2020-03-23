@@ -257,12 +257,14 @@ public class DefaultUserAccountService
             .collect(Collectors.toList());
   }
 
+  @Deprecated
   @Override
   public boolean hasRole(String tenantId, Authentication authentication, String role) {
     PreConditions.notNull(authentication, "authentication should not be null");
     return hasRole(tenantId, authentication.getName(), role);
   }
 
+  @Deprecated
   @Override
   public boolean hasRole(String tenantId, String username, String role) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");

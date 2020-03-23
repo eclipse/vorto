@@ -26,6 +26,13 @@ public class UserNamespaceID implements Serializable {
   private User user;
   private Namespace namespace;
 
+  /**
+   * Required for JPA
+   */
+  public UserNamespaceID() {
+
+  }
+
   public UserNamespaceID(User user, Namespace namespace) {
     this.user = user;
     this.namespace = namespace;

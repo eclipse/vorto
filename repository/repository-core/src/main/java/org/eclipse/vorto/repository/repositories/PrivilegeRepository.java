@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.repositories;
 import java.util.Set;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,6 +24,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PrivilegeRepository extends org.springframework.data.repository.Repository<Privilege, Long> {
   @Query("select p from Privilege p where p.name = :name")
-  Privilege find(String name);
+  Privilege find(@Param("name") String name);
   Set<Privilege> findAll();
 }

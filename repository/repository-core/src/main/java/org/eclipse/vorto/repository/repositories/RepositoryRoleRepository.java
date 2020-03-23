@@ -16,11 +16,12 @@ import java.util.Set;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepositoryRoleRepository extends org.springframework.data.repository.Repository<RepositoryRole, Long> {
   @Query("select p from RepositoryRole p where p.name = :name")
-  IRole find(String name);
+  IRole find(@Param("name") String name);
   Set<RepositoryRole> findAll();
 }
