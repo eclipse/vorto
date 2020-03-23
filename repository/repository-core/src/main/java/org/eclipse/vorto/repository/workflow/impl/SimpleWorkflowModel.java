@@ -27,14 +27,7 @@ import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsLoggedIn;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
-import org.eclipse.vorto.repository.workflow.impl.functions.BulkReleaseFunction;
-import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
-import org.eclipse.vorto.repository.workflow.impl.functions.GrantCollaboratorAccessPolicy;
-import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
-import org.eclipse.vorto.repository.workflow.impl.functions.GrantRoleAccessPolicy;
-import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
-import org.eclipse.vorto.repository.workflow.impl.functions.RemoveModelReviewerPolicy;
-import org.eclipse.vorto.repository.workflow.impl.functions.RemoveRoleAccessPolicy;
+import org.eclipse.vorto.repository.workflow.impl.functions.*;
 import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
@@ -54,9 +47,9 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	
 	
 	private static final DefaultAction ACTION_INITAL = new DefaultAction("start");
-	public static final DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger a review process done by the model reviewers of the repository. Once approved, your model will be released.");
+	public static final DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger a review process done by the model reviewers of the repository. Once approved, your model will be released. This will trigger a review process for all references in 'draft' as well.");
 	public static final DefaultAction ACTION_CLAIM = new DefaultAction("Claim","Claiming the model makes you owner and responsible for the model having full access.");
-	public static final DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
+	public static final DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release and the release of all of its references which are in review.");
 	public static final DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
 	public static final DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
 	public static final DefaultAction ACTION_DEPRECATE = new DefaultAction("Deprecate","Marks the model as deprecated.");
@@ -78,7 +71,8 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, Role.MODEL_PROMOTER);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		final IWorkflowFunction bulkRelease = new BulkReleaseFunction(workflowService, repositoryFactory);
-		
+		final IWorkflowFunction bulkApprove = new BulkApproveFunction(workflowService, repositoryFactory);
+
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantCollaboratorAccessPolicy(repositoryFactory);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
 		final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(repositoryFactory, Role.MODEL_PUBLISHER);
@@ -100,9 +94,9 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
-		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		ACTION_APPROVE.setFunctions(grantPublisherModelAccess, removeModelReviewerPolicy);
-		
+		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
+		ACTION_APPROVE.setFunctions(bulkApprove,grantPublisherModelAccess, removeModelReviewerPolicy);
+
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));
 		
