@@ -260,7 +260,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       // testfix: attempting to circumvent the previous @PreAuthorize annotation here, by checking
       // roles on the appropriate "tenant" if existing
       Optional<Tenant> maybeTenant = tenantService.getTenants().stream()
-          .filter(t -> t.getDefaultNamespace().startsWith(modelID.getNamespace()))
+          .filter(t -> modelID.getNamespace().startsWith(t.getDefaultNamespace()))
           .filter(hasMemberWithRole(userContext.getUsername(), Role.MODEL_CREATOR)).findAny();
 
       // no tenant found where user has creator role on namespace and user is not sysadmin
@@ -549,21 +549,26 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
 
     Objects.requireNonNull(modelId, "model ID must not be null");
+    Authentication user = SecurityContextHolder.getContext().getAuthentication();
     try {
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
+      logger.info(String.format("Getting policies for model with ID [%s]", modelID));
       String tenantId = getTenant(modelId);
-      Authentication user = SecurityContextHolder.getContext().getAuthentication();
+
+      Collection<PolicyEntry> policies = getPolicyManager(tenantId).getPolicyEntries(modelID)
+          .stream()
+          .filter(userHasPolicyEntry(user, tenantId))
+          .collect(Collectors.toList());
+      logger.info(String.format("Found policies for user [%s] and model ID [%s]: %s", user.getName(), modelID, policies));
       return new ResponseEntity<>(
-          getPolicyManager(tenantId).getPolicyEntries(modelID)
-              .stream()
-              .filter(userHasPolicyEntry(user, tenantId))
-              .collect(Collectors.toList()),
-          HttpStatus.OK);
+          policies,
+          HttpStatus.OK
+      );
     } catch (FatalModelRepositoryException ex) {
       logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (NotAuthorizedException ex) {
-      logger.warn(ex);
+      logger.warn(String.format("User [%s] not authorized to retrieve policies", user.getName()), ex);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
@@ -577,6 +582,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Authentication user = SecurityContextHolder.getContext().getAuthentication();
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    logger.info(String.format("Getting policy for model with ID [%s]", modelID));
 
     String tenantId = getTenant(modelId);
 
@@ -585,7 +591,11 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
               .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
 
+      logger.info(String.format("Found policies for user [%s] and model ID [%s]: %s", user.getName(), modelID, policyEntries));
+
       Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
+
+      logger.info(String.format("Found best policy for user [%s] and model ID [%s]: %s", user.getName(), modelID, policyEntry.get()));
 
       if (policyEntry.isPresent()) {
         return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
@@ -593,6 +603,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
     } catch (NotAuthorizedException ex) {
+      logger.warn(String.format("User [%s] not authorized to retrieve policies", user.getName()), ex);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
