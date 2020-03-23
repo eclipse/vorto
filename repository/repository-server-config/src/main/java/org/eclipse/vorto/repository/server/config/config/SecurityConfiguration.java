@@ -12,14 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.oauth.IOAuthFlowConfiguration;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.filter.BearerTokenFilter;
@@ -50,7 +42,20 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CompositeFilter;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -107,16 +112,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class).csrf()
         .csrfTokenRepository(csrfTokenRepository()).and().csrf().disable().logout()
         .logoutUrl("/logout").logoutSuccessUrl("/").and().headers().frameOptions().sameOrigin();
-    
+
     if (isCloudProfile()) {
       http.requiresChannel().anyRequest().requiresSecure();
-  }
-    
+    }
+
     http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+    http.cors().configurationSource(corsConfigurationSource());
+  }
+
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("localhost", ""));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 
   private boolean isCloudProfile() {
-    return env.acceptsProfiles("prod", "int"); 
+    return env.acceptsProfiles("prod", "int");
   }
 
   @Autowired
