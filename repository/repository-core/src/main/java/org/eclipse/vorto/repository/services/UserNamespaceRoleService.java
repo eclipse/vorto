@@ -106,7 +106,7 @@ public class UserNamespaceRoleService {
    * @return all {@link IRole}s the given {@link User} has on the given {@link Namespace}.
    */
   public Collection<IRole> getRoles(User user, Namespace namespace) {
-    if (Stream.of(user, namespace).filter(Objects::isNull).findAny().isPresent()) {
+    if (Stream.of(user, namespace).anyMatch(Objects::isNull)) {
       throw new IllegalArgumentException("Cannot get roles - at least one argument is null");
     }
     LOGGER.info(String
