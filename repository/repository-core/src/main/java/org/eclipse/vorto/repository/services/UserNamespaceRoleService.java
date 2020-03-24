@@ -131,4 +131,50 @@ public class UserNamespaceRoleService {
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     return getRoles(user, namespace);
   }
+
+  /**
+   * Adds the given {@link IRole} to the given {@link User} on the given {@link Namespace}.
+   *
+   * @param user
+   * @param namespace
+   * @param role
+   * @return {@literal true} if the user did not have the role on the namespace prior to adding it, {@literal false} if they already had the role.
+   */
+  public boolean addRole(User user, Namespace namespace, IRole role) {
+    UserNamespaceRoles roles = userNamespaceRoleRepository
+        .getUserNamespaceRolesByUserAndNamespace(user, namespace);
+    // no association exists yet between given user and namespace
+    if (roles == null) {
+      roles = new UserNamespaceRoles();
+      roles.setUser(user);
+      roles.setNamespace(namespace);
+      roles.setRoles(roles.getRoles() + role.getRole());
+      return userNamespaceRoleRepository.save(roles) != null;
+    } else {
+      // user already has that role on that namespace
+      if ((roles.getRoles() & role.getRole()) == role.getRole()) {
+        return false;
+      } else {
+        roles.setRoles(roles.getRoles() + role.getRole());
+        return userNamespaceRoleRepository.save(roles) != null;
+      }
+    }
+  }
+
+  /**
+   * @see UserNamespaceRoleService#addRole(User, Namespace, IRole)
+   * @param username
+   * @param namespaceName
+   * @param roleName
+   * @return
+   */
+  public boolean addRole(String username, String namespaceName, String roleName) {
+    LOGGER.info(String
+        .format("Retrieving user [%s], namespace [%s] and role [%s]", username, namespaceName,
+            roleName));
+    User user = userRepository.findByUsername(username);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    IRole role = namespaceRolesRepository.find(roleName);
+    return addRole(user, namespace, role);
+  }
 }
