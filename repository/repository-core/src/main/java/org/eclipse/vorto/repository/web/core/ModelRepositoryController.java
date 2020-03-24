@@ -266,13 +266,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       // no tenant found where user has creator role on namespace and user is not sysadmin
       if (!userContext.isSysAdmin() && !maybeTenant.isPresent()) {
         logger.warn(String.format(
-            "User [%s] does not seem to have role [%s] on namespace [%s] (or sub-domains) - aborting save operation.",
-            userContext.getUsername(), Role.MODEL_CREATOR, modelID.getNamespace()));
+            "User does not seem to have role [%s] on namespace [%s] (or sub-domains) - aborting save operation.",
+            Role.MODEL_CREATOR, modelID.getNamespace()));
         // any other cases pass
       } else {
         logger.info(String.format(
-            "User [%s] found to have sufficient privileges to save on namespace [%s] and sub-domains. ",
-            userContext.getUsername(), modelID.getNamespace()));
+            "User found to have sufficient privileges to save on namespace [%s] and sub-domains. ",
+            modelID.getNamespace()));
       }
 
       ModelResource modelInfo = (ModelResource) modelParserFactory
@@ -430,7 +430,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       userModels.addAll(modelIds);
     }
 
-    logger.info("Exporting information models for " + user.getUsername() + " results: "
+    logger.info("Exporting information models for user - results: "
         + userModels.size());
 
     sendAsZipFile(response, user.getUsername() + "-models.zip",
@@ -559,7 +559,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           .stream()
           .filter(userHasPolicyEntry(user, tenantId))
           .collect(Collectors.toList());
-      logger.info(String.format("Found policies for user [%s] and model ID [%s]: %s", user.getName(), modelID, policies));
+      logger.info(String.format("Found policies for user and model ID [%s]: %s", modelID, policies));
       return new ResponseEntity<>(
           policies,
           HttpStatus.OK
@@ -568,7 +568,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (NotAuthorizedException ex) {
-      logger.warn(String.format("User [%s] not authorized to retrieve policies", user.getName()), ex);
+      logger.warn("User not authorized to retrieve policies", ex);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
@@ -591,19 +591,18 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
               .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
 
-      logger.info(String.format("Found policies for user [%s] and model ID [%s]: %s", user.getName(), modelID, policyEntries));
+      logger.info(String.format("Found policies for user and model ID [%s]: %s", modelID, policyEntries));
 
       Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
 
-      logger.info(String.format("Found best policy for user [%s] and model ID [%s]: %s", user.getName(), modelID, policyEntry.get()));
-
       if (policyEntry.isPresent()) {
+        logger.info(String.format("Found best policy for user and model ID [%s]: %s", modelID, policyEntry.get()));
         return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
     } catch (NotAuthorizedException ex) {
-      logger.warn(String.format("User [%s] not authorized to retrieve policies", user.getName()), ex);
+      logger.warn("User not authorized to retrieve policies", ex);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
