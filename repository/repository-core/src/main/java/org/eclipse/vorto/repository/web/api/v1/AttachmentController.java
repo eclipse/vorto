@@ -62,7 +62,8 @@ public class AttachmentController extends AbstractRepositoryController {
   private static final Predicate<Attachment> STATIC_TAG_FILTER = attachment -> attachment.getTags()
       .contains(Attachment.TAG_IMAGE)
       || attachment.getTags().contains(Attachment.TAG_DOCUMENTATION)
-      || attachment.getTags().contains(Attachment.TAG_IMPORTED);
+      || attachment.getTags().contains(Attachment.TAG_IMPORTED)
+      || attachment.getTags().isEmpty();
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
