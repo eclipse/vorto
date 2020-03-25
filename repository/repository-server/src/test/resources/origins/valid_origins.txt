@@ -1,0 +1,12 @@
+https://vorto.eclipse.org
+http://vorto.eclipse.org
+https://vorto.eclipse.org:8080
+http://vorto.eclipse.org:8888
+https://localhost
+http://localhost
+https://localhost:8080
+http://localhost:8888
+https://bosch-iot-suite.com
+http://test.bosch-iot-suite.com
+https://something.bosch-iot-cloud.com:8080
+http://test.bosch-iot-suite.com:8888

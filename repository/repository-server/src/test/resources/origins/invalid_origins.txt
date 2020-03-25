@@ -1,0 +1,3 @@
+http://pwned.com
+http://fakebosch-iot-suite.com:6666
+mySpoofedOrigin
