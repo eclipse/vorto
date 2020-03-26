@@ -10,3 +10,8 @@ https://bosch-iot-suite.com
 http://test.bosch-iot-suite.com
 https://something.bosch-iot-cloud.com:8080
 http://test.bosch-iot-suite.com:8888
+https://test.bosch-si.com
+http://ok.bosch-si.com:8800
+https://bosch-si.com
+https://bosch.io
+http://www.bosch.io

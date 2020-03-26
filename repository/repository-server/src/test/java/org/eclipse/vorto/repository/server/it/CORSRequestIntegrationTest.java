@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +66,28 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
     for (String origin : testInvalidOrigins) {
       repositoryServer.perform(
           get("/api/v1/models/" + testModel.prettyName)
+              .header("Origin", origin)
+              .with(userCreator))
+          .andExpect(status().isForbidden());
+    }
+  }
+
+  @Test
+  public void testOPTIONSRequestsValid() throws Exception {
+    for (String origin : testValidOrigins) {
+      repositoryServer.perform(
+          options("/api/v1/models/" + testModel.prettyName)
+              .header("Origin", origin)
+              .with(userCreator))
+          .andExpect(status().isOk());
+    }
+  }
+
+  @Test
+  public void testOPTIONSRequestsInvalid() throws Exception {
+    for (String origin : testInvalidOrigins) {
+      repositoryServer.perform(
+          options("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
               .with(userCreator))
           .andExpect(status().isForbidden());
