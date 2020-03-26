@@ -157,7 +157,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           for (String ao : super.getAllowedOrigins()) {
             try {
               if (Pattern.compile(ao).matcher(requestOrigin).find()) {
-                return ao;
+                return requestOrigin;
               }
             }
             // value cannot be interpreted as pattern - swallowing
