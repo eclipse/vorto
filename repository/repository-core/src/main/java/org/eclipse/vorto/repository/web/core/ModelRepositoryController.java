@@ -236,21 +236,21 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   // ToDo add Getter method
   @ApiOperation(value = "Saves a model to the repository.")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   @PutMapping(value = "/{modelId:.+}", produces = "application/json")
   public ResponseEntity<ValidationReport> saveModel(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @RequestBody ModelContent content) {
 
     try {
-
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
       IModelRepository modelRepository = getModelRepository(ModelId.fromPrettyFormat(modelId));
 
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
       if (modelRepository.getById(modelID) == null) {
-        logger.warn(String.format("Could not find model with ID [%s] in repository", modelID));
         return new ResponseEntity<>(ValidationReport.invalid(null, "Model was not found"),
             HttpStatus.NOT_FOUND);
       }
@@ -261,57 +261,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           .getParser("model" + ModelType.valueOf(content.getType()).getExtension())
           .parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
 
-      // authorization here: replaces the previous @PreAuthorize annotation
-      if (!userContext.isSysAdmin()) {
-
-        /**
-         * This maps all namespace string representations whose tenants lists the current user
-         * as having role "MODEL_CREATOR", then filters further by any namespace name where
-         * the impacted model's namespace starts with that tenant's namespace.
-         * If the optional is empty, the user does not have role MODEL_CREATOR in the parent
-         * namespace of the model they are trying to save.
-         */
-        Optional<String> maybeNamespace = tenantService.getTenants().stream()
-            .filter(hasMemberWithRole(userContext.getUsername(), Role.MODEL_CREATOR))
-            .flatMap(t -> t.getNamespaces().stream())
-            .map(Namespace::getName)
-            .filter(n -> modelID.getNamespace().startsWith(n)).findAny();
-
-        // no tenant found where user has creator role on namespace and user is not sysadmin
-        if (!maybeNamespace.isPresent()) {
-          logger.warn(String.format(
-              "User does not seem to have role [%s] on namespace [%s] (or sub-domains) - aborting save operation.",
-              Role.MODEL_CREATOR, modelID.getNamespace()));
-          return new ResponseEntity<>(ValidationReport.invalid(modelInfo,
-              "User not authorized to save this model"),
-              HttpStatus.UNAUTHORIZED);
-          // any other cases pass
-        } else {
-          logger.info(String.format(
-              "User found to have sufficient privileges to save on namespace [%s] and sub-domains. ",
-              modelID.getNamespace()));
-        }
-      }
-
-      logger.info(String.format("Built model info [%s]", modelInfo));
-
       if (!modelID.equals(modelInfo.getId())) {
         return new ResponseEntity<>(ValidationReport.invalid(modelInfo,
             "You may not change the model ID (name, namespace, version). For this please create a new model."),
             HttpStatus.BAD_REQUEST);
       }
 
-      ValidationReport validationReport = modelValidationHelper
-          .validateModelUpdate(modelInfo, userContext);
-
-      // TODO why do we have both boolean condition checker and an exception handler here
+      ValidationReport validationReport = modelValidationHelper.validateModelUpdate(modelInfo, userContext);
       if (validationReport.isValid()) {
-        logger.info("Model valid, saving...");
         modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
             modelInfo.getId().getName() + modelInfo.getType().getExtension(), userContext);
-      } else {
-        logger.warn(String
-            .format("Model found invalid, see: [%s]", validationReport.getMessage().toString()));
       }
       return new ResponseEntity<>(validationReport, HttpStatus.OK);
     } catch (ValidationException validationException) {
