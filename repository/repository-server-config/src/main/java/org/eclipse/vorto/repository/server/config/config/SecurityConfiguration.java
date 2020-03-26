@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.servlet.Filter;
@@ -63,6 +64,15 @@ import org.springframework.web.filter.CompositeFilter;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+  private static final Logger LOGGER = Logger.getLogger(SecurityConfiguration.class.getCanonicalName());
+  /**
+   * Regular expression defining Origin patterns that are too permissive for CORS.<br/>
+   * This is by no means exhaustive, as some patterns e.g. [a-zA-Z0-9.]+, or [\\w.]+, etc. are just
+   * as unsafe as the dot-based catch-all, but they are also very complex to represent. <br/>
+   * Repository administrator discretion advised.
+   */
+  private static final Pattern UNSAFE_CORS_PATTERNS = Pattern.compile("\\.([+?*]+|\\{.+?,\\})");
 
   @Autowired
   private List<IOAuthFlowConfiguration> oauthProviders;
@@ -129,7 +139,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    * Provides a configuration bean to allow CORS for a specific set of origins, expressed in
    * configuration resources as regular expressions. <br/>
    * Overloads the logic in {@link CorsConfiguration} in order to allow evaluation of origins as
-   * regex in case standard ignore-case equality checks fail.
+   * regex in case standard ignore-case equality checks fail.<br>
+   * Logs a warning if a regular expression is found to be too permissive.
    * @return
    */
   @Bean
@@ -158,7 +169,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return null;
       }
     };
-    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",\\s*")));
+    // verifies allowed origins configured for this repository are not too permissive, logs a
+    // warning if any found
+    List<String> allowedOriginsAsList = Arrays.asList(allowedOrigins.split(",\\s*"));
+    for (String origin: allowedOriginsAsList) {
+      // matches against the whole expression
+      if (UNSAFE_CORS_PATTERNS.matcher(origin).matches()) {
+        LOGGER.warning(String.format("Unsafe CORS allowed origin [%s] - the Vorto repository may be insecure.", origin));
+      }
+    }
+    configuration.setAllowedOrigins(allowedOriginsAsList);
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

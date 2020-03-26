@@ -14,13 +14,17 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.file.Files;
 import java.util.List;
+import org.eclipse.vorto.model.ModelType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 
 /**
  * Tests for CORS requests with regards to any allowed Origin headers
@@ -33,19 +37,21 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
 
   @BeforeClass
   public static void beforeClass() throws Exception {
-    testValidOrigins = Files.readAllLines(new ClassPathResource("origins/valid_origins.txt").getFile().toPath());
-    testInvalidOrigins = Files.readAllLines(new ClassPathResource("origins/invalid_origins.txt").getFile().toPath());
+    testValidOrigins = Files
+        .readAllLines(new ClassPathResource("origins/valid_origins.txt").getFile().toPath());
+    testInvalidOrigins = Files
+        .readAllLines(new ClassPathResource("origins/invalid_origins.txt").getFile().toPath());
   }
 
   @Override
   protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer,userCreator);
+    testModel.createModel(repositoryServer, userCreator);
   }
 
   @Test
   public void testGETRequestsValid() throws Exception {
-    for (String origin: testValidOrigins) {
+    for (String origin : testValidOrigins) {
       repositoryServer.perform(
           get("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
@@ -56,7 +62,7 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testGETRequestsInvalid() throws Exception {
-    for (String origin: testInvalidOrigins) {
+    for (String origin : testInvalidOrigins) {
       repositoryServer.perform(
           get("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
@@ -68,7 +74,7 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   @Test
   public void testDELETERequestsValid() throws Exception {
     TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
-    for (String origin: testValidOrigins) {
+    for (String origin : testValidOrigins) {
       newModel.createModel(repositoryServer, userCreator);
       repositoryServer.perform(
           delete("/rest/models/" + newModel.prettyName)
@@ -80,8 +86,8 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testDELETERequestsInvalid() throws Exception {
-    TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
-    for (String origin: testInvalidOrigins) {
+    for (String origin : testInvalidOrigins) {
+      TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
       newModel.createModel(repositoryServer, userCreator);
       repositoryServer.perform(
           delete("/rest/models/" + newModel.prettyName)
@@ -91,5 +97,76 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
     }
   }
 
+  @Test
+  public void testPOSTRequestsValid() throws Exception {
+    for (String origin : testValidOrigins) {
+      TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      repositoryServer.perform(
+          post("/rest/models/" + newModel.prettyName + "/InformationModel")
+              .header("Origin", origin)
+              .with(userCreator)
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isCreated());
+    }
+  }
 
+  @Test
+  public void testPOSTRequestsInvalid() throws Exception {
+    for (String origin : testInvalidOrigins) {
+      TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      repositoryServer.perform(
+          post("/rest/models/" + newModel.prettyName + "/InformationModel")
+              .header("Origin", origin)
+              .with(userCreator)
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(status().isForbidden());
+    }
+  }
+
+  @Test
+  public void testPUTRequestsValid() throws Exception {
+    String fileName = "Location.fbmodel";
+    String modelId = "com.test:Location:1.0.0";
+    repositoryServer.perform(
+        delete("/rest/models/" + modelId)
+            .with(userCreator));
+    repositoryServer
+        .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+    for (String origin : testValidOrigins) {
+      repositoryServer.perform(
+          put("/rest/models/" + modelId).with(userCreator)
+              .header("Origin", origin)
+              .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+          .andExpect(status().isOk());
+    }
+    // tries deleting the model once done
+    repositoryServer.perform(
+        delete("/rest/models/" + modelId)
+            .with(userCreator));
+  }
+
+  @Test
+  public void testPUTRequestsInvalid() throws Exception {
+    String fileName = "Location.fbmodel";
+    String modelId = "com.test:Location:1.0.0";
+    repositoryServer.perform(
+        delete("/rest/models/" + modelId)
+            .with(userCreator));
+    repositoryServer
+        .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+    for (String origin : testInvalidOrigins) {
+      repositoryServer.perform(
+          put("/rest/models/" + modelId).with(userCreator)
+              .header("Origin", origin)
+              .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+          .andExpect(status().isForbidden());
+    }
+    repositoryServer.perform(
+        delete("/rest/models/" + modelId)
+            .with(userCreator));
+  }
 }
