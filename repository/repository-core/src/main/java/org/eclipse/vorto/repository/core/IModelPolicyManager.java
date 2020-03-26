@@ -61,4 +61,9 @@ public interface IModelPolicyManager {
    * @param newModelId
    */
   void copyPolicyEntries(ModelId sourceModelId, ModelId targetModelId);
+
+  /**
+   * Restores all policy entries for all accessible models
+   */
+  void restorePolicyEntries();
 }

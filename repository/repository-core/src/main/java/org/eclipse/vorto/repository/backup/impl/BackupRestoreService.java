@@ -133,7 +133,7 @@ public class BackupRestoreService implements IBackupRestoreService {
             }
             
             repoMgr.restore(backup);
-            
+            this.modelRepositoryFactory.getPolicyManager(tenantId, SecurityContextHolder.getContext().getAuthentication()).restorePolicyEntries();
             tenantsRestored.add(tenant.get());
           } catch (Exception e) {
             logger.error("Error in restoration of '" + namespace + "'", e);
