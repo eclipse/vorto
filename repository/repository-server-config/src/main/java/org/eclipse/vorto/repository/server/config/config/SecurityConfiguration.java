@@ -65,7 +65,8 @@ import org.springframework.web.filter.CompositeFilter;
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-  private static final Logger LOGGER = Logger.getLogger(SecurityConfiguration.class.getCanonicalName());
+  private static final Logger LOGGER = Logger
+      .getLogger(SecurityConfiguration.class.getCanonicalName());
   /**
    * Regular expression defining Origin patterns that are too permissive for CORS.<br/>
    * This is by no means exhaustive, as some patterns e.g. [a-zA-Z0-9.]+, or [\\w.]+, etc. are just
@@ -102,15 +103,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Bean
   public OrderedHttpPutFormContentFilter httpPutFormContentFilter() {
-      return new OrderedHttpPutFormContentFilter() {
-          @Override
-          protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response,
-                  FilterChain filterChain) throws ServletException, IOException {
-              filterChain.doFilter(request, response);
-          }
-      };
+    return new OrderedHttpPutFormContentFilter() {
+      @Override
+      protected void doFilterInternal(final HttpServletRequest request,
+          HttpServletResponse response,
+          FilterChain filterChain) throws ServletException, IOException {
+        filterChain.doFilter(request, response);
+      }
+    };
   }
-  
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
@@ -141,6 +143,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    * Overloads the logic in {@link CorsConfiguration} in order to allow evaluation of origins as
    * regex in case standard ignore-case equality checks fail.<br>
    * Logs a warning if a regular expression is found to be too permissive.
+   *
    * @return
    */
   @Bean
@@ -172,14 +175,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // verifies allowed origins configured for this repository are not too permissive, logs a
     // warning if any found
     List<String> allowedOriginsAsList = Arrays.asList(allowedOrigins.split(",\\s*"));
-    for (String origin: allowedOriginsAsList) {
+    for (String origin : allowedOriginsAsList) {
       // matches against the whole expression
       if (UNSAFE_CORS_PATTERNS.matcher(origin).matches()) {
-        LOGGER.warning(String.format("Unsafe CORS allowed origin [%s] - the Vorto repository may be insecure.", origin));
+        LOGGER.warning(String
+            .format("Unsafe CORS allowed origin [%s] - the Vorto repository may be insecure.",
+                origin));
       }
     }
     configuration.setAllowedOrigins(allowedOriginsAsList);
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowCredentials(true);
+    configuration.setAllowedHeaders(Arrays
+        .asList("Access-Control-Request-Method", "Access-Control-Request-Headers", "authorization",
+            "content-type", "x-auth-token"));
+    configuration.setExposedHeaders(Arrays
+        .asList("Access-Control-Allow-Origin", "Access-Control-Allow-Methods",
+            "Access-Control-Max-Age", "x-auth-token"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
@@ -225,8 +237,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private Filter ssoFilter() {
     CompositeFilter filter = new CompositeFilter();
-    List<Filter> ssoFilters = new ArrayList<Filter>(this.oauthProviders.size());  
-    this.oauthProviders.forEach(provider -> ssoFilters.add(provider.createFilter()));   
+    List<Filter> ssoFilters = new ArrayList<Filter>(this.oauthProviders.size());
+    this.oauthProviders.forEach(provider -> ssoFilters.add(provider.createFilter()));
     filter.setFilters(ssoFilters);
     return filter;
   }
