@@ -144,15 +144,25 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   
   private boolean overTenantLimit(User owner, String restrictTenantConfig) {
     if (restrictTenantConfig != null) {
-      return getTenantCountOfUser(owner) >= Integer.parseInt(restrictTenantConfig);
+      return getPrivateTenantCountOfUser(owner) >= Integer.parseInt(restrictTenantConfig);
     }
     return false;
   }
 
-  private int getTenantCountOfUser(User owner) {
-    Collection<Tenant> tenants = getTenants();
-    return (int) tenants.stream()
+  /**
+   * Contrary to predecessor {@code getTenantCountOfUser}, this takes into account both ownership
+   * and private namespaces. <br/>
+   * The check is not perfect if regular users are added to private namespaces of other users as
+   * tenant admins, but it's better this way (so at least a user who has been added to a
+   * namespace from another user can still create their own private namespace).
+   * @param owner
+   * @return
+   */
+  private int getPrivateTenantCountOfUser(User owner) {
+    return
+    (int)getTenants().stream()
         .filter(tenant -> tenant.hasTenantAdmin(owner.getUsername()))
+        .filter(tenant -> tenant.getDefaultNamespace().startsWith("vorto.private"))
         .count();
   }
 
