@@ -21,5 +21,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserNamespaceRoleRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
-  UserNamespaceRoles getUserNamespaceRolesByUserAndNamespace(User user, Namespace namespace);
+  UserNamespaceRoles getByUserAndNamespace(User user, Namespace namespace);
 }

@@ -23,8 +23,12 @@ import org.springframework.stereotype.Repository;
  * Read-only repository for namespace roles.
  */
 @Repository
-public interface NamespaceRolesRepository extends org.springframework.data.repository.Repository<NamespaceRole, Long> {
-  @Query("select p from NamespaceRole p where p.name = :name")
+public interface NamespaceRoleRepository extends org.springframework.data.repository.Repository<NamespaceRole, Long> {
+  @Query("select n from NamespaceRole n where n.name = :name")
   IRole find(@Param("name") String name);
+
+  @Query("select case when count(n) > 0 then true else false end from NamespaceRole n where n.name = :role")
+  boolean exists(@Param("role") String roleName);
+
   Set<NamespaceRole> findAll();
 }

@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
@@ -30,6 +32,14 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
+  //
 
+  public boolean isSysadmin(User user) {
+    /*UserRepositoryRoles roles = new UserRepositoryRoles();
+    roles.setUser(user);
+    roles.setRoles(sysadmin.getRole());*/
+
+    return false;//userRepositoryRoleRepository.getByUserandRole(user, sysadmin) != null;
+  }
 
 }
