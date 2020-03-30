@@ -7,6 +7,11 @@ server:
     authenticatedSearchMode: false
     generatorUser: generator
     generatorPassword: 123
+    cors:
+      # expresses allowed origins as patterns (e.g. dot escaped)
+      # CorsConfiguration bean in SecurityConfiguration overloads origin verification mechanism to
+      # support regex if standard ignore-case equality checks fail
+      allowedOrigins: http[s]*://vorto\.eclipse\.org(:\d+)*, http[s]*://localhost(:\d+)*, http[s]*://(.+\.)*?bosch-iot-suite\.com(:\d+)*, http[s]*://(.+\.)*?bosch-iot-cloud\.com(:\d+)*, http[s]*://(.+\.)*?bosch-si.com(:\d+)*, http[s]*://(.+\.)*?bosch.io(:\d+)*
 
 spring:
   jackson.serialization.write-dates-as-timestamps: false
