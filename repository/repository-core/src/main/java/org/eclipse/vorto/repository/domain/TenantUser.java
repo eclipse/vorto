@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -30,7 +31,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tenant_user")
 @Deprecated
-public class TenantUser {
+public class TenantUser implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

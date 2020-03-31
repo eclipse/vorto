@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.services;
 
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
@@ -32,14 +33,25 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
-  //
-
   public boolean isSysadmin(User user) {
-    /*UserRepositoryRoles roles = new UserRepositoryRoles();
-    roles.setUser(user);
-    roles.setRoles(sysadmin.getRole());*/
+    IRole sysadmin = repositoryRoleRepository.find("sysadmin");
+    UserRepositoryRoles userRepositoryRoles = userRepositoryRoleRepository.findOne(user.getId());
+    // no explicit repository roles for this user - they are not sysadmin
+    if (userRepositoryRoles == null) {
+      return false;
+    }
+    if (sysadmin != null) {
+      return (userRepositoryRoles.getRoles() & sysadmin.getRole()) == sysadmin.getRole();
+    }
+    return false;
+  }
 
-    return false;//userRepositoryRoleRepository.getByUserandRole(user, sysadmin) != null;
+  public boolean isSysadmin(String username) {
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new IllegalArgumentException("User is null");
+    }
+    return isSysadmin(user);
   }
 
 }

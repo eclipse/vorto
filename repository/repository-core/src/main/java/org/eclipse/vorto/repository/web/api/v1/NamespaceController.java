@@ -24,11 +24,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.xml.ws.Response;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -36,6 +38,10 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
+import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
@@ -100,6 +106,23 @@ public class NamespaceController {
   @Autowired
   private IOAuthProviderRegistry providerRegistry;
 
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+  @Autowired
+  private RepositoryRoleRepository repositoryRoleRepository;
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
+  @RequestMapping(method = RequestMethod.GET, value = "/test")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public ResponseEntity<Boolean> test() {
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
+    return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
+        HttpStatus.OK);
+  }
+
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Collection<NamespaceDto>> getNamespaces(Principal user) {
@@ -119,6 +142,7 @@ public class NamespaceController {
    * Since there is no easy way to inject the given {@link Principal} from the front-end (let alone
    * that it is not designed an API parameter), the sibling endpoint seems rather useless in a REST
    * context.
+   *
    * @return all namespaces the logged on user has access to.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/all")
@@ -138,6 +162,7 @@ public class NamespaceController {
    * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#getUsersForTenant}. <br/>
    * Instead of returning a list of {@link TenantUserDto}, it returns {@link Collaborator}s.<br/>
    * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   *
    * @param namespace
    * @return
    */
@@ -170,6 +195,7 @@ public class NamespaceController {
   /**
    * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#createTechnicalUserForTenant}. <br/>
    * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   *
    * @param namespace
    * @param userId
    * @param user
@@ -268,6 +294,7 @@ public class NamespaceController {
    * Since the user itself is not and should not be persisted here, that's rather irrelevant.<br/>
    * <b>TL;DR</b>The only reason why this is not implemented with an empty body is that we need the roles from
    * the UI.
+   *
    * @param namespace
    * @param user
    * @return
@@ -387,6 +414,7 @@ public class NamespaceController {
    * {@link ITenantService}.<br/>
    * Everything "tenant" should be refactored and simplified further on, so the tenant service
    * should be gone and replaced with a namespace service eventually.
+   *
    * @param namespace
    * @return
    */
@@ -423,7 +451,6 @@ public class NamespaceController {
       lower-cased version thereof.
      */
     String lowercasedNamespace = namespace.toLowerCase();
-
 
     try {
       /*
@@ -483,6 +510,7 @@ public class NamespaceController {
    * Note also that for UI REST calls, we can privilege {@link NamespaceController#hasRoleOnNamespace},
    * since originally the UI would contain that logic but it can be more efficiently handled in
    * the back-end (see for instance the model details controller Javascript resource).
+   *
    * @param role
    * @return
    */
@@ -525,6 +553,7 @@ public class NamespaceController {
    * namespace. <br/>
    * As most endpoints here, we are still temporarily querying the tenant-based service (and
    * subsequently the tenant repository) behind the scenes.
+   *
    * @param role
    * @param namespace
    * @return
@@ -572,6 +601,7 @@ public class NamespaceController {
    * In turn, this is used in the "remove account" Angular controller, in order to verify whether the
    * user can delete their account, or they should delete any namespace / add a different administrator
    * first.
+   *
    * @return
    */
   @PreAuthorize("isAuthenticated()")
@@ -652,6 +682,7 @@ public class NamespaceController {
    * has that role for that given namespace (that is, assuming they are not sysadmin to start with). <br/>
    * The drawback for this is that a user who has been added to a namespace as non-admin cannot
    * remove themselves at this time.
+   *
    * @param namespace
    * @param userId
    * @return

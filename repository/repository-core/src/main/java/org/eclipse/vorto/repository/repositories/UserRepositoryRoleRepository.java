@@ -12,13 +12,9 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,7 +22,5 @@ import org.springframework.stereotype.Repository;
  * {@literal sysadmin} {@link RepositoryRole} as of now.
  */
 @Repository
-public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, User> {
-  @Query("select ur from UserRepositoryRoles ur where ur.user = :user and ur.roles = :role")
-  UserRepositoryRoles getByUserAndRole(@Param("user")User user, @Param("role")long role);
+public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, Long> {
 }

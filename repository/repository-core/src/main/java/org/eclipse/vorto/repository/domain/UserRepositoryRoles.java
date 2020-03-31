@@ -14,10 +14,12 @@ package org.eclipse.vorto.repository.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 /**
@@ -35,10 +37,12 @@ public class UserRepositoryRoles implements Serializable {
   private static final long serialVersionUID = -6226755293886720665L;
 
   @Id
-  private long id;
+  @Column(unique = true, nullable = false)
+  private Long id;
 
+  @MapsId
   @OneToOne
-  @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
+  @JoinColumn(name = "user_id")
   private User user;
 
   private long roles;
