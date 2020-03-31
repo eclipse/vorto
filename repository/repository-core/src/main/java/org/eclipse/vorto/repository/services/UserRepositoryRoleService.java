@@ -27,19 +27,27 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
 
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
+  private IRole sysadmin;
+
+  @Autowired
+  public UserRepositoryRoleService(RepositoryRoleRepository repositoryRoleRepository) {
+    this.repositoryRoleRepository = repositoryRoleRepository;
+    sysadmin = repositoryRoleRepository.find("sysadmin");
+  }
+
   public boolean isSysadmin(User user) {
-    IRole sysadmin = repositoryRoleRepository.find("sysadmin");
+
     UserRepositoryRoles userRepositoryRoles = userRepositoryRoleRepository.findOne(user.getId());
     // no explicit repository roles for this user - they are not sysadmin
     if (userRepositoryRoles == null) {
       return false;
     }
+    // should never happen until the table is broken
     if (sysadmin != null) {
       return (userRepositoryRoles.getRoles() & sysadmin.getRole()) == sysadmin.getRole();
     }
