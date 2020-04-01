@@ -40,6 +40,10 @@ public class UserRepositoryRoleService {
     sysadmin = repositoryRoleRepository.find("sysadmin");
   }
 
+  /**
+   * @param user
+   * @return whether the given {@link User} has the {@literal sysadmin} role.
+   */
   public boolean isSysadmin(User user) {
 
     UserRepositoryRoles userRepositoryRoles = userRepositoryRoleRepository.findOne(user.getId());
@@ -54,6 +58,11 @@ public class UserRepositoryRoleService {
     return false;
   }
 
+  /**
+   * @param username
+   * @return
+   * @see UserRepositoryRoleService#isSysadmin(User)
+   */
   public boolean isSysadmin(String username) {
     User user = userRepository.findByUsername(username);
     if (user == null) {

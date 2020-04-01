@@ -83,4 +83,5 @@ mail:
     password:
 
 config:
-  restrictTenant: 1
+  restrictTenant: 1 # deprecated
+  privateNamespaceQuota: 1

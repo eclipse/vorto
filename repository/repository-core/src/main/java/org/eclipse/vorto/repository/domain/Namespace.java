@@ -82,6 +82,14 @@ public class Namespace {
     this.name = name;
   }
 
+  public User getOwner() {
+    return owner;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }
+
   public Tenant getTenant() {
     return tenant;
   }

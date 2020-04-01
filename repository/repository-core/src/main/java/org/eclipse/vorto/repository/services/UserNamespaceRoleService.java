@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -55,25 +54,8 @@ public class UserNamespaceRoleService {
   @Autowired
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
-  /**
-   * Simple wrapper for boilerplate null validation of given arguments.<br/>
-   * Traverses collections and checks elements for null too.
-   *
-   * @param arguments
-   * @throws IllegalArgumentException
-   */
-  private static void validateNulls(Object... arguments) throws IllegalArgumentException {
-    // args
-    if (Stream.of(arguments).anyMatch(Objects::isNull)) {
-      throw new IllegalArgumentException("At least one argument is null");
-    }
-    // non-null args that are collections
-    Stream.of(arguments).filter(a -> a instanceof Collection).forEach(c -> {
-      if (((Collection) c).stream().anyMatch(Objects::isNull)) {
-        throw new IllegalArgumentException("At least one element is null");
-      }
-    });
-  }
+  @Autowired
+  private ServiceValidationUtil validator;
 
   /**
    * @param user
@@ -83,7 +65,7 @@ public class UserNamespaceRoleService {
    * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#hasRole(String, String, String)
    */
   public boolean hasRole(User user, Namespace namespace, IRole role) {
-    validateNulls(user, namespace, role);
+    validator.validateNulls(user, namespace, role);
     LOGGER.info(String
         .format("Verify whether user [%s] has role [%s] on namespace [%s]", user.getUsername(),
             role.getName(), namespace.getName()));
@@ -123,7 +105,7 @@ public class UserNamespaceRoleService {
    * @return all {@link IRole}s the given {@link User} has on the given {@link Namespace}.
    */
   public Collection<IRole> getRoles(User user, Namespace namespace) {
-    validateNulls(user, namespace);
+    validator.validateNulls(user, namespace);
     LOGGER.info(String
         .format("Retrieving roles for user [%s] on namespace [%s]", user.getUsername(),
             namespace.getName()));
@@ -156,7 +138,7 @@ public class UserNamespaceRoleService {
    * @return {@literal true} if the user did not have the role on the namespace prior to adding it, {@literal false} if they already had the role.
    */
   public boolean addRole(User user, Namespace namespace, IRole role) {
-    validateNulls(user, namespace, role);
+    validator.validateNulls(user, namespace, role);
     UserNamespaceRoles roles = userNamespaceRoleRepository
         .getByUserAndNamespace(user, namespace);
     // no association exists yet between given user and namespace
@@ -208,7 +190,7 @@ public class UserNamespaceRoleService {
    * @return {@literal true} if the operation succeeded, {@literal false} otherwise or if not applicable.
    */
   public boolean removeRole(User user, Namespace namespace, IRole role) {
-    validateNulls(user, namespace, role);
+    validator.validateNulls(user, namespace, role);
     UserNamespaceRoles roles = userNamespaceRoleRepository
         .getByUserAndNamespace(user, namespace);
     // no association exists between given user and namespace
@@ -254,7 +236,7 @@ public class UserNamespaceRoleService {
    * @see UserNamespaceRoleService#setRoles(User, Namespace, Set)
    */
   private boolean setRoles(User user, Namespace namespace, long rolesValue) {
-    validateNulls(user, namespace);
+    validator.validateNulls(user, namespace);
     UserNamespaceRoles roles = userNamespaceRoleRepository
         .getByUserAndNamespace(user, namespace);
     // no association exists yet between given user and namespace
@@ -286,7 +268,7 @@ public class UserNamespaceRoleService {
    * @see UserNamespaceRoleService#addRole(User, Namespace, IRole) to add a new role while preserving existing ones.
    */
   public boolean setRoles(User user, Namespace namespace, Set<IRole> roles) {
-    validateNulls(user, namespace, roles);
+    validator.validateNulls(user, namespace, roles);
     if (roles.stream().map(IRole::getName).anyMatch(s -> !namespaceRoleRepository.exists(s))) {
       throw new IllegalArgumentException("Unknown roles - cannot set.");
     }
@@ -295,11 +277,11 @@ public class UserNamespaceRoleService {
   }
 
   /**
-   * @see UserNamespaceRoleService#setRoles(User, Namespace, Set)
    * @param username
    * @param namespaceName
    * @param roleNames
    * @return
+   * @see UserNamespaceRoleService#setRoles(User, Namespace, Set)
    */
   public boolean setRoles(String username, String namespaceName, Set<String> roleNames) {
     LOGGER.info(String
@@ -307,9 +289,38 @@ public class UserNamespaceRoleService {
             roleNames));
     User user = userRepository.findByUsername(username);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    Set<IRole> roles = roleNames.stream().map(namespaceRoleRepository::find).collect(Collectors.toSet());
+    Set<IRole> roles = roleNames.stream().map(namespaceRoleRepository::find)
+        .collect(Collectors.toSet());
     return setRoles(user, namespace, roles);
   }
 
+  /**
+   * Sets all available roles to the given {@link User} on the given {@link Namespace}.<br/>
+   * Does not impact on namespace ownership.
+   *
+   * @param user
+   * @param namespace
+   * @return
+   */
+  public boolean setAllRoles(User user, Namespace namespace) {
+    validator.validateNulls(user, namespace);
+    return setRoles(user, namespace,
+        namespaceRoleRepository.findAll().stream().map(r -> (IRole) r).collect(
+            Collectors.toSet()));
+  }
+
+  /**
+   * @param username
+   * @param namespaceName
+   * @return
+   * @see UserNamespaceRoleService#setAllRoles(User, Namespace)
+   */
+  public boolean setAllRoles(String username, String namespaceName) {
+    LOGGER.info(String
+        .format("Retrieving user [%s] and namespace [%s]", username, namespaceName));
+    User user = userRepository.findByUsername(username);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    return setAllRoles(user, namespace);
+  }
 
 }
