@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.services;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -21,11 +20,10 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceeded;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -145,7 +143,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   @Transactional
   public Namespace create(User actor, User target, String namespaceName)
-      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceeded {
+      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException {
     // boilerplate null validation
     validator.validateNulls(actor, target, namespaceName);
     // lightweight validation of required properties
@@ -178,7 +176,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
       if (namespaceRepository.findByOwner(target).stream()
           .filter(n -> n.getName().startsWith(PRIVATE_NAMESPACE_PREFIX)).count()
           >= privateNamespaceQuota) {
-        throw new PrivateNamespaceQuotaExceeded(
+        throw new PrivateNamespaceQuotaExceededException(
             String.format(
                 "User already has reached quota [%d] of private namespaces - aborting namespace creation.",
                 privateNamespaceQuota)
@@ -195,7 +193,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     userNamespaceRoleService.setAllRoles(target, namespace);
 
     // application event handling
-    eventPublisher.publishEvent(new AppEvent(this, namespace, EventType.TENANT_ADDED));
+    eventPublisher.publishEvent(new AppEvent(this, target.getUsername(), EventType.TENANT_ADDED));
 
     return namespace;
   }
@@ -212,7 +210,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#create(User, User, String)
    */
   public Namespace create(String actorUserName, String targetUserName, String namespaceName)
-      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceeded {
+      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException {
     User actor = userRepository.findByUsername(actorUserName);
     User target = userRepository.findByUsername(targetUserName);
     return create(actor, target, namespaceName);

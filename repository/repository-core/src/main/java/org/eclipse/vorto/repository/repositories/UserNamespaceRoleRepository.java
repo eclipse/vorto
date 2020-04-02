@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.springframework.data.repository.CrudRepository;
@@ -21,5 +19,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserNamespaceRoleRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
-  UserNamespaceRoles getByUserAndNamespace(User user, Namespace namespace);
 }

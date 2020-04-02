@@ -17,9 +17,9 @@ package org.eclipse.vorto.repository.services.exceptions;
  * quota of private namespaces owned, as defined in {@code config.privateNamespaceQuota}
  * (formerly known as {@code config.restrictTenant}
  */
-public class PrivateNamespaceQuotaExceeded extends Exception {
+public class PrivateNamespaceQuotaExceededException extends Exception {
 
-  public PrivateNamespaceQuotaExceeded(String message) {
+  public PrivateNamespaceQuotaExceededException(String message) {
     super(message);
   }
 }

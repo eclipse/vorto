@@ -15,11 +15,10 @@ package org.eclipse.vorto.repository.domain;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
@@ -27,40 +26,45 @@ import javax.persistence.Table;
  * Represents the roles a user has on a namespace.
  */
 @Entity
-@IdClass(UserNamespaceID.class)
 @Table(name = "user_namespace_roles")
 public class UserNamespaceRoles implements Serializable {
 
   private static final long serialVersionUID = -5348119599452266874L;
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User user;
-
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "namespace_id", referencedColumnName = "id")
-  private Namespace namespace;
+  @EmbeddedId
+  private UserNamespaceID id;
 
   @Column(nullable = false)
   private long roles;
 
+  public void setID(UserNamespaceID id) {
+    this.id = id;
+  }
+
+  public UserNamespaceID getID() {
+    return this.id;
+  }
 
   public User getUser() {
-    return user;
+    return this.id.getUser();
   }
 
   public void setUser(User user) {
-    this.user = user;
+    if (this.id == null) {
+      this.id = new UserNamespaceID();
+    }
+    this.id.setUser(user);
   }
 
   public Namespace getNamespace() {
-    return namespace;
+    return this.id.getNamespace();
   }
 
   public void setNamespace(Namespace namespace) {
-    this.namespace = namespace;
+    if (this.id == null) {
+      this.id = new UserNamespaceID();
+    }
+    this.id.setNamespace(namespace);
   }
 
   public long getRoles() {
@@ -81,13 +85,11 @@ public class UserNamespaceRoles implements Serializable {
     }
     UserNamespaceRoles that = (UserNamespaceRoles) o;
     return roles == that.roles &&
-        Objects.equals(user, that.user) &&
-        Objects.equals(namespace, that.namespace);
+        id.equals(that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(user, namespace, roles);
+    return Objects.hash(id, roles);
   }
-
 }

@@ -14,16 +14,25 @@ package org.eclipse.vorto.repository.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  * Compound ID for user and namespace in the user_permissions table.<br/>
  * IDs are nullable in the unlikely case a query is run by only one of the criteria.
  */
+@Embeddable
 public class UserNamespaceID implements Serializable {
 
   private static final long serialVersionUID = -8417951819197969195L;
 
+  @OneToOne
+  @JoinColumn(name = "user_id")
   private User user;
+
+  @OneToOne
+  @JoinColumn(name = "namespace_id")
   private Namespace namespace;
 
   /**

@@ -16,16 +16,18 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -40,7 +42,7 @@ import org.springframework.stereotype.Service;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserNamespaceRoleService {
 
-  private static final Logger LOGGER = Logger.getLogger(UserNamespaceRoleService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserNamespaceRoleService.class);
 
   @Autowired
   private UserRepository userRepository;
@@ -73,7 +75,7 @@ public class UserNamespaceRoleService {
       throw new IllegalArgumentException(String.format("Role [%s] is unknown", role.getName()));
     }
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
-        .getByUserAndNamespace(user, namespace);
+        .findOne(new UserNamespaceID(user, namespace));
     if (Objects.isNull(userNamespaceRoles)) {
       return false;
     }
@@ -111,7 +113,7 @@ public class UserNamespaceRoleService {
             namespace.getName()));
     Set<NamespaceRole> allRoles = namespaceRoleRepository.findAll();
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
-        .getByUserAndNamespace(user, namespace);
+        .findOne(new UserNamespaceID(user, namespace));
     return allRoles.stream()
         .filter(r -> (userNamespaceRoles.getRoles() & r.getRole()) == r.getRole()).collect(
             Collectors.toSet());
@@ -140,12 +142,11 @@ public class UserNamespaceRoleService {
   public boolean addRole(User user, Namespace namespace, IRole role) {
     validator.validateNulls(user, namespace, role);
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .getByUserAndNamespace(user, namespace);
+        .findOne(new UserNamespaceID(user, namespace));
     // no association exists yet between given user and namespace
     if (roles == null) {
       roles = new UserNamespaceRoles();
-      roles.setUser(user);
-      roles.setNamespace(namespace);
+      roles.setID(new UserNamespaceID(user, namespace));
       roles.setRoles(roles.getRoles() + role.getRole());
       return userNamespaceRoleRepository.save(roles) != null;
     } else {
@@ -192,7 +193,7 @@ public class UserNamespaceRoleService {
   public boolean removeRole(User user, Namespace namespace, IRole role) {
     validator.validateNulls(user, namespace, role);
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .getByUserAndNamespace(user, namespace);
+        .findOne(new UserNamespaceID(user, namespace));
     // no association exists between given user and namespace
     if (roles == null) {
       return false;
@@ -238,13 +239,13 @@ public class UserNamespaceRoleService {
   private boolean setRoles(User user, Namespace namespace, long rolesValue) {
     validator.validateNulls(user, namespace);
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .getByUserAndNamespace(user, namespace);
+        .findOne(new UserNamespaceID(user, namespace));
     // no association exists yet between given user and namespace
     if (roles == null) {
       roles = new UserNamespaceRoles();
+      roles.setRoles(rolesValue);
       roles.setUser(user);
       roles.setNamespace(namespace);
-      roles.setRoles(rolesValue);
       return userNamespaceRoleRepository.save(roles) != null;
     } else {
       // user already has those roles on that namespace
