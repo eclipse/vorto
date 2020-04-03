@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
@@ -26,6 +27,8 @@ import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +37,12 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 /**
- * This service returns information on user roles on namespaces.<br/>
+ * This service reports information and manipulates user roles on namespaces.<br/>
  * It is session-scoped, as any user with administrative privileges on a namespace can change
  * other users' access to it by means of roles.
  */
+// TODO #2265: some validation operations could be reused by autowiring the NamespaceService, which may, however, introduce a Spring circular dependency
+// TODO #2265: should operations on namespace roles trigger new application events?
 @Service
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserNamespaceRoleService {
@@ -57,7 +62,44 @@ public class UserNamespaceRoleService {
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
   @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
+  @Autowired
   private ServiceValidationUtil validator;
+
+  private IRole namespaceAdmin;
+
+  public UserNamespaceRoleService() {
+    namespaceAdmin = namespaceRoleRepository.find("namespace_admin");
+  }
+
+  // utility methods
+
+  /**
+   * Verifies whether the given {@literal actor} {@link User} is either sysadmin, or has the
+   * {@literal namespace_admin} role on the given {@link Namespace}.<br/>
+   * Throws {@link OperationForbiddenException} if no condition above applies.
+   *
+   * @param actor
+   * @param namespace
+   * @throws OperationForbiddenException
+   */
+  public void authorizeActorOnNamespace(User actor, Namespace namespace)
+      throws OperationForbiddenException {
+    // authorizing actor
+    // not sysadmin
+    if (!userRepositoryRoleService.isSysadmin(actor)) {
+      // not namespace admin
+      if (!hasRole(actor, namespace, namespaceAdmin)) {
+        throw new OperationForbiddenException(
+            String.format(
+                "Acting user is not authorized to manipulate namespace roles for target user on namespace [%s] - aborting operation.",
+                namespace.getName()
+            )
+        );
+      }
+    }
+  }
 
   /**
    * @param user
@@ -132,21 +174,32 @@ public class UserNamespaceRoleService {
   }
 
   /**
-   * Adds the given {@link IRole} to the given {@link User} on the given {@link Namespace}.
+   * Adds the given {@link IRole} to the given {@link User} on the given {@link Namespace}, as
+   * acted by the {@literal actor} {@link User} if so authorized.<br/>
+   * The pre-condition for authorizing this operation is that the actor is either sysadmin, or has
+   * administrative privileges on the given {@link Namespace}.
    *
-   * @param user
+   * @param actor
+   * @param target
    * @param namespace
    * @param role
    * @return {@literal true} if the user did not have the role on the namespace prior to adding it, {@literal false} if they already had the role.
    */
-  public boolean addRole(User user, Namespace namespace, IRole role) {
-    validator.validateNulls(user, namespace, role);
+  public boolean addRole(User actor, User target, Namespace namespace, IRole role)
+      throws OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace, role);
+    validator.validateNulls(actor.getId(), target.getId());
+
+    // authorizing actor
+    authorizeActorOnNamespace(actor, namespace);
+
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .findOne(new UserNamespaceID(user, namespace));
+        .findOne(new UserNamespaceID(target, namespace));
     // no association exists yet between given user and namespace
     if (roles == null) {
       roles = new UserNamespaceRoles();
-      roles.setID(new UserNamespaceID(user, namespace));
+      roles.setID(new UserNamespaceID(target, namespace));
       roles.setRoles(roles.getRoles() + role.getRole());
       return userNamespaceRoleRepository.save(roles) != null;
     } else {
@@ -161,20 +214,23 @@ public class UserNamespaceRoleService {
   }
 
   /**
-   * @param username
+   * @param actorUsername
+   * @param targetUsername
    * @param namespaceName
    * @param roleName
    * @return
-   * @see UserNamespaceRoleService#addRole(User, Namespace, IRole)
+   * @see UserNamespaceRoleService#addRole(User, User, Namespace, IRole)
    */
-  public boolean addRole(String username, String namespaceName, String roleName) {
+  public boolean addRole(String actorUsername, String targetUsername, String namespaceName,
+      String roleName) throws OperationForbiddenException {
     LOGGER.info(String
-        .format("Retrieving user [%s], namespace [%s] and role [%s]", username, namespaceName,
+        .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
-    User user = userRepository.findByUsername(username);
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     IRole role = namespaceRoleRepository.find(roleName);
-    return addRole(user, namespace, role);
+    return addRole(actor, target, namespace, role);
   }
 
   /**
@@ -185,15 +241,23 @@ public class UserNamespaceRoleService {
    * exists, the user did not have that role on the namespace to start with, other failures at
    * repository-level...
    *
-   * @param user
+   * @param actor
+   * @param target
    * @param namespace
    * @param role
    * @return {@literal true} if the operation succeeded, {@literal false} otherwise or if not applicable.
    */
-  public boolean removeRole(User user, Namespace namespace, IRole role) {
-    validator.validateNulls(user, namespace, role);
+  public boolean removeRole(User actor, User target, Namespace namespace, IRole role)
+      throws OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace, role);
+    validator.validateNulls(actor.getId(), target.getId());
+
+    // authorizing actor on namespace
+    authorizeActorOnNamespace(actor, namespace);
+
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .findOne(new UserNamespaceID(user, namespace));
+        .findOne(new UserNamespaceID(target, namespace));
     // no association exists between given user and namespace
     if (roles == null) {
       return false;
@@ -209,20 +273,23 @@ public class UserNamespaceRoleService {
   }
 
   /**
-   * @param username
+   * @param actorUsername
+   * @param targetUsername
    * @param namespaceName
    * @param roleName
    * @return
-   * @see UserNamespaceRoleService#removeRole(User, Namespace, IRole)
+   * @see UserNamespaceRoleService#removeRole(User, User, Namespace, IRole)
    */
-  public boolean removeRole(String username, String namespaceName, String roleName) {
+  public boolean removeRole(String actorUsername, String targetUsername, String namespaceName,
+      String roleName) throws OperationForbiddenException {
     LOGGER.info(String
-        .format("Retrieving user [%s], namespace [%s] and role [%s]", username, namespaceName,
+        .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
-    User user = userRepository.findByUsername(username);
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     IRole role = namespaceRoleRepository.find(roleName);
-    return removeRole(user, namespace, role);
+    return removeRole(actor, target, namespace, role);
   }
 
   /**
@@ -230,21 +297,31 @@ public class UserNamespaceRoleService {
    * of {@literal 2}.<br/>
    * This method is private as the numeric value is not checked.
    *
-   * @param user
+   * @param actor
+   * @param target
    * @param namespace
    * @param rolesValue
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
-   * @see UserNamespaceRoleService#setRoles(User, Namespace, Set)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Set)
    */
-  private boolean setRoles(User user, Namespace namespace, long rolesValue) {
-    validator.validateNulls(user, namespace);
+  private boolean setRoles(User actor, User target, Namespace namespace, long rolesValue)
+      throws OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace);
+    validator.validateNulls(actor.getId(), target.getId());
+
+    // authorizing actor on namespace
+    authorizeActorOnNamespace(actor, namespace);
+
+    // retrieving existing roles
     UserNamespaceRoles roles = userNamespaceRoleRepository
-        .findOne(new UserNamespaceID(user, namespace));
+        .findOne(new UserNamespaceID(target, namespace));
+
     // no association exists yet between given user and namespace
     if (roles == null) {
       roles = new UserNamespaceRoles();
       roles.setRoles(rolesValue);
-      roles.setUser(user);
+      roles.setUser(target);
       roles.setNamespace(namespace);
       return userNamespaceRoleRepository.save(roles) != null;
     } else {
@@ -262,66 +339,170 @@ public class UserNamespaceRoleService {
    * Assigns the given {@link IRole}s to the given {@link User} on the given {@link Namespace}.<br/>
    * Overwrites existing roles if any.
    *
-   * @param user
+   * @param target
+   * @param actor
    * @param namespace
    * @param roles
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
-   * @see UserNamespaceRoleService#addRole(User, Namespace, IRole) to add a new role while preserving existing ones.
+   * @see UserNamespaceRoleService#addRole(User, User, Namespace, IRole) to add a new role while preserving existing ones.
    */
-  public boolean setRoles(User user, Namespace namespace, Set<IRole> roles) {
-    validator.validateNulls(user, namespace, roles);
+  public boolean setRoles(User actor, User target, Namespace namespace, Set<IRole> roles)
+      throws DoesNotExistException, OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace, roles);
+    validator.validateNulls(actor.getId(), target.getId(),
+        roles.stream().map(IRole::getName).collect(Collectors.toSet()));
+
     if (roles.stream().map(IRole::getName).anyMatch(s -> !namespaceRoleRepository.exists(s))) {
-      throw new IllegalArgumentException("Unknown roles - cannot set.");
+      throw new DoesNotExistException("Unknown role - aborting operation.");
     }
-    return setRoles(user, namespace,
+    return setRoles(actor, target, namespace,
         roles.stream().collect(Collectors.summingLong(IRole::getRole)));
   }
 
   /**
-   * @param username
+   * @param actorUsername
+   * @param targetUsername
    * @param namespaceName
    * @param roleNames
    * @return
-   * @see UserNamespaceRoleService#setRoles(User, Namespace, Set)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Set)
    */
-  public boolean setRoles(String username, String namespaceName, Set<String> roleNames) {
+  public boolean setRoles(String actorUsername, String targetUsername, String namespaceName,
+      Set<String> roleNames) throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String
-        .format("Retrieving user [%s], namespace [%s] and roles [%s]", username, namespaceName,
+        .format("Retrieving user, namespace [%s] and roles [%s]", namespaceName,
             roleNames));
-    User user = userRepository.findByUsername(username);
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     Set<IRole> roles = roleNames.stream().map(namespaceRoleRepository::find)
         .collect(Collectors.toSet());
-    return setRoles(user, namespace, roles);
+    return setRoles(actor, target, namespace, roles);
   }
 
   /**
    * Sets all available roles to the given {@link User} on the given {@link Namespace}.<br/>
    * Does not impact on namespace ownership.
    *
-   * @param user
+   * @param actor
+   * @param target
    * @param namespace
    * @return
    */
-  public boolean setAllRoles(User user, Namespace namespace) {
-    validator.validateNulls(user, namespace);
-    return setRoles(user, namespace,
+  public boolean setAllRoles(User actor, User target, Namespace namespace)
+      throws DoesNotExistException, OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace);
+    return setRoles(actor, target, namespace,
         namespaceRoleRepository.findAll().stream().map(r -> (IRole) r).collect(
             Collectors.toSet()));
   }
 
   /**
-   * @param username
+   * @param actorUsername
+   * @param targetUsername
    * @param namespaceName
    * @return
-   * @see UserNamespaceRoleService#setAllRoles(User, Namespace)
+   * @see UserNamespaceRoleService#setAllRoles(User, User, Namespace)
    */
-  public boolean setAllRoles(String username, String namespaceName) {
+  public boolean setAllRoles(String actorUsername, String targetUsername, String namespaceName)
+      throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String
-        .format("Retrieving user [%s] and namespace [%s]", username, namespaceName));
-    User user = userRepository.findByUsername(username);
+        .format("Retrieving user and namespace [%s]", namespaceName));
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    return setAllRoles(user, namespace);
+    return setAllRoles(actor, target, namespace);
   }
 
+  /**
+   * Deletes the {@link User} + {@link Namespace} role association for the given {@link User} and
+   * {@link Namespace} entirely. <br/>
+   * If the given {@link User} owns the {@link Namespace}, logs a warning to signify the namespace
+   * ownership will be "orphaned", and the namespace should either be deleted or its ownership
+   * transferred to another user.<br/>
+   * The operation is permitted only if the {@literal actor} {@link User} is either sysadmin, or
+   * the owner of the given {@link Namespace}.
+   *
+   * @param actor
+   * @param target
+   * @param namespace
+   * @return
+   * @throws DoesNotExistException
+   */
+  @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
+  public boolean deleteAllRoles(User actor, User target, Namespace namespace)
+      throws DoesNotExistException, OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target, namespace);
+    validator.validateNulls(actor.getId(), target.getId(), namespace.getId());
+
+    // namespace does not exist
+    if (!namespaceRepository.exists(namespace.getId())) {
+      throw new DoesNotExistException(
+          "Namespace [%s] does not exist - aborting deletion of user roles.");
+    }
+
+    // checking users
+    if (!userRepository.exists(actor.getId())) {
+      throw new DoesNotExistException("Acting user does not exist - aborting deletion of roles.");
+    }
+    if (!userRepository.exists(target.getId())) {
+      throw new DoesNotExistException("Target user does not exist - aborting deletion of roles.");
+    }
+
+    // checking actor privileges
+
+    // actor not sysadmin
+    if (!userRepositoryRoleService.isSysadmin(actor)) {
+      // actor not target, or target does not own the namespace
+      if (!actor.equals(target) || !target.equals(namespace.getOwner())) {
+        throw new OperationForbiddenException(
+            String.format("Acting user cannot delete user roles for namespace [%s].",
+                namespace.getName())
+        );
+      }
+    }
+
+    UserNamespaceRoles rolesToDelete = new UserNamespaceRoles();
+    rolesToDelete.setUser(target);
+    rolesToDelete.setNamespace(namespace);
+
+    // user-namespace role association does not exist
+    if (!userNamespaceRoleRepository.exists(rolesToDelete.getID())) {
+      LOGGER.warn("Attempting to delete non existing user namespace roles. Aborting.");
+      return false;
+    }
+
+    userNamespaceRoleRepository.delete(rolesToDelete.getID());
+    LOGGER.info("Deleted user-namespace role association.");
+
+    return true;
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @param namespaceName
+   * @return
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#deleteAllRoles(User, User, Namespace)
+   */
+  public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName)
+      throws DoesNotExistException, OperationForbiddenException {
+    LOGGER.info(String.format("Retrieving users and namespace [%s].", namespaceName));
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    return deleteAllRoles(actor, target, namespace);
+  }
+
+  public Collection<User> getCollaborators(User actor, Namespace namespace) {
+    // boilerplate null validation
+    validator.validateNulls(actor, namespace);
+    // TODO
+    return null;
+  }
 }

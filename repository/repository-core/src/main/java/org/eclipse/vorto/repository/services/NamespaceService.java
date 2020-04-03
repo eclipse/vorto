@@ -12,8 +12,10 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -23,6 +25,7 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +79,12 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
 
+  // utilities
+
   /**
+   * This infers whether a {@link Namespace} with the given name exists, without throwing
+   * {@link Exception} if it does not.
+   *
    * @param namespace
    * @return whether the given {@link Namespace} exists.
    */
@@ -93,6 +101,28 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     return Optional.ofNullable(namespaceRepository.findByName(namespaceName)).isPresent();
   }
 
+  /**
+   * Used internally to this service to infer whether a {@link Namespace} with the given name
+   * exists. <br/>
+   * The checked {@link DoesNotExistException} thrown in case it doesn't is designed to be
+   * propagated up to the controller, where appropriate error messages can be conveyed back to the
+   * end-user.
+   *
+   * @param namespaceName
+   * @throws DoesNotExistException
+   */
+  public Namespace validateNamespaceExists(String namespaceName) throws DoesNotExistException {
+    Namespace result = namespaceRepository.findByName(namespaceName);
+    // checks if namespace exists
+    if (result == null) {
+      throw new DoesNotExistException("Namespace does not exist - aborting change of ownership.");
+    }
+    return result;
+  }
+
+  /**
+   * @param applicationEventPublisher
+   */
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
@@ -144,9 +174,11 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws NameSyntaxException
    * @see NamespaceService#updateNamespaceOwnership(User, User, String) to change ownership of an existing namespace.
    */
-  @Transactional
+  @Transactional(rollbackFor = {DoesNotExistException.class, CollisionException.class,
+      NameSyntaxException.class, PrivateNamespaceQuotaExceededException.class,
+      OperationForbiddenException.class})
   public Namespace create(User actor, User target, String namespaceName)
-      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException {
+      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, target, namespaceName);
     // lightweight validation of required properties
@@ -193,7 +225,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     namespace.setOwner(target);
     namespaceRepository.save(namespace);
 
-    userNamespaceRoleService.setAllRoles(target, namespace);
+    userNamespaceRoleService.setAllRoles(actor, target, namespace);
 
     // application event handling
     eventPublisher
@@ -214,7 +246,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#create(User, User, String)
    */
   public Namespace create(String actorUsername, String targetUsername, String namespaceName)
-      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException {
+      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     return create(actor, target, namespaceName);
@@ -256,9 +288,10 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @return the {@link Namespace} with new ownership.
    * @throws DoesNotExistException if either user or the namespace do not exist.
    */
-  @Transactional
+  @Transactional(rollbackFor = {DoesNotExistException.class,
+      PrivateNamespaceQuotaExceededException.class, OperationForbiddenException.class})
   public Namespace updateNamespaceOwnership(User actor, User newOwner, String namespaceName)
-      throws DoesNotExistException, PrivateNamespaceQuotaExceededException {
+      throws DoesNotExistException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, newOwner, namespaceName);
 
@@ -271,11 +304,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
       throw new DoesNotExistException("New owner does not exist - aborting namespace creation.");
     }
 
-    Namespace currentNamespace = namespaceRepository.findByName(namespaceName);
-    // checks if namespace exists
-    if (currentNamespace == null) {
-      throw new DoesNotExistException("Namespace does not exist - aborting change of ownership.");
-    }
+    // will throw DoesNotExistException if none found
+    Namespace currentNamespace = validateNamespaceExists(namespaceName);
 
     // check quota
     // actor is not sysadmin - need to enforce quota validation
@@ -305,7 +335,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
 
     // Set all roles ot the new owner
-    userNamespaceRoleService.setAllRoles(newOwner, currentNamespace);
+    userNamespaceRoleService.setAllRoles(actor, newOwner, currentNamespace);
 
     // now changes ownership and persists
     currentNamespace.setOwner(newOwner);
@@ -330,10 +360,76 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#updateNamespaceOwnership(User, User, String)
    */
   public Namespace updateNamespaceOwnership(String actorUsername, String newOwnerUsername,
-      String namespaceName) throws DoesNotExistException, PrivateNamespaceQuotaExceededException {
+      String namespaceName)
+      throws DoesNotExistException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(newOwnerUsername);
     return updateNamespaceOwnership(actor, target, namespaceName);
+  }
+
+  /**
+   * Validates that the given {@link Namespace} exists and returns its owning {@link User}.
+   *
+   * @param namespace
+   * @return
+   * @throws DoesNotExistException
+   */
+  public User getOwner(Namespace namespace) throws DoesNotExistException {
+    // boilerplate null validation
+    validator.validateNulls(namespace);
+    validator.validateNulls(namespace.getName());
+    return validateNamespaceExists(namespace.getName()).getOwner();
+  }
+
+  /**
+   * Validates that the given {@link Namespace} exists and returns its owning {@link User}.
+   *
+   * @param namespaceName
+   * @return
+   * @throws DoesNotExistException
+   */
+  public User getOwner(String namespaceName) throws DoesNotExistException {
+    // boilerplate null validation
+    validator.validateNulls(namespaceName);
+    return validateNamespaceExists(namespaceName).getOwner();
+  }
+
+  /**
+   * Deletes all namespace roles from any user-namespace association for the given {@link Namespace},
+   * including its ownership, then deletes the actual {@link Namespace}.
+   *
+   * @param actor
+   * @param namespaceName
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   */
+  @Transactional(rollbackFor = {DoesNotExistException.class, OperationForbiddenException.class})
+  public void deleteNamespace(User actor, String namespaceName)
+      throws DoesNotExistException, OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, namespaceName);
+    validator.validateNulls(actor.getId());
+
+    // will throw DoesNotExistException if none found
+    // TODO this checks the repository twice for namespace exists
+    Namespace currentNamespace = validateNamespaceExists(namespaceName);
+    User owner = getOwner(namespaceName);
+
+    // deletes all collaborator associations
+    Collection<User> collaborators = userNamespaceRoleService
+        .getCollaborators(actor, currentNamespace);
+    for (User collaborator : collaborators) {
+      userNamespaceRoleService.deleteAllRoles(actor, collaborator, currentNamespace);
+    }
+
+    // delete all roles from owner
+    userNamespaceRoleService.deleteAllRoles(actor, owner, currentNamespace);
+
+    // finally deletes the actual namespace
+    namespaceRepository.delete(currentNamespace);
+
+    // TODO: TenantService#deleteTenant does not seem to anonymize all models - should consider whether to do that here or delegate to caller
+    // TODO app event
   }
 
 }

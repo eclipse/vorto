@@ -75,6 +75,11 @@ public class UserNamespaceRoles implements Serializable {
     this.roles = roles;
   }
 
+  /**
+   * Equality only inferred by ID ({@link User} + {@link Namespace}).
+   * @param o
+   * @return
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -84,12 +89,15 @@ public class UserNamespaceRoles implements Serializable {
       return false;
     }
     UserNamespaceRoles that = (UserNamespaceRoles) o;
-    return roles == that.roles &&
-        id.equals(that.id);
+    return id.equals(that.id);
   }
 
+  /**
+   * Hash only inferred by ID ({@link User} + {@link Namespace}).
+   * @return
+   */
   @Override
   public int hashCode() {
-    return Objects.hash(id, roles);
+    return Objects.hash(id);
   }
 }

@@ -32,7 +32,7 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
-  private IRole sysadmin;
+  private final IRole sysadmin;
 
   @Autowired
   public UserRepositoryRoleService(RepositoryRoleRepository repositoryRoleRepository) {
