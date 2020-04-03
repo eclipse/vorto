@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Mapping Editor IDE (Incubation)
-Bundle-Version: 0.13
+Bundle-Version: 0.13.0
 Bundle-SymbolicName: org.eclipse.vorto.editor.mapping.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

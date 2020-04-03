@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>generator-lambda</artifactId>
-		<version>0.13</version>
+		<version>0.13.0</version>
 	</parent>
 	<artifactId>generator-lambda-plugininfo</artifactId>
 	<packaging>jar</packaging>

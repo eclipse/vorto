@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Datatype Editor (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.13
+Bundle-Version: 0.13.0
 Bundle-SymbolicName: org.eclipse.vorto.editor.datatype;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.ide,
