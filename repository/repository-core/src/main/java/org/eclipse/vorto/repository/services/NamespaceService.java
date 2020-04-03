@@ -46,7 +46,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
-
   @Autowired
   private ServiceValidationUtil validator;
 
@@ -139,7 +138,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws DoesNotExistException
    * @throws CollisionException
    * @throws NameSyntaxException
-   * @see NamespaceService#updateNamespaceOwnership(Namespace, User) to change ownership of an existing namespace.
+   * @see NamespaceService#updateNamespaceOwnership(User, User, String) to change ownership of an existing namespace.
    */
   @Transactional
   public Namespace create(User actor, User target, String namespaceName)
@@ -199,8 +198,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   * @param actorUserName
-   * @param targetUserName
+   * @param actorUsername
+   * @param targetUsername
    * @param namespaceName
    * @return
    * @throws IllegalArgumentException
@@ -209,19 +208,68 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws NameSyntaxException
    * @see NamespaceService#create(User, User, String)
    */
-  public Namespace create(String actorUserName, String targetUserName, String namespaceName)
+  public Namespace create(String actorUsername, String targetUsername, String namespaceName)
       throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException {
-    User actor = userRepository.findByUsername(actorUserName);
-    User target = userRepository.findByUsername(targetUserName);
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
     return create(actor, target, namespaceName);
   }
 
-  // TODO
-  public Namespace updateNamespaceOwnership(Namespace namespace, User newOwner) {
+  /**
+   * Changes ownership of the {@link Namespace} with the given name, transferring it to the given
+   * {@literal newOwner} {@link User}, as executed by the {@literal actor} {@link User}.<br/>
+   * Adds all available {@link Namespace} roles to the {@literal newOwner} {@link User}, but <b>does
+   * not remove or modify any {@link Namespace} roles pertaining to the previous owner</b>.
+   *
+   * @param actor
+   * @param newOwner
+   * @param namespaceName
+   * @return the {@link Namespace} with new ownership.
+   * @throws DoesNotExistException if either user or the namespace do not exist.
+   */
+  public Namespace updateNamespaceOwnership(User actor, User newOwner, String namespaceName)
+      throws DoesNotExistException {
     // boilerplate null validation
-    validator.validateNulls(namespace, newOwner);
+    validator.validateNulls(actor, newOwner, namespaceName);
 
-    return null; // TODO
+    // user validation
+    if (userRepository.findOne(actor.getId()) == null) {
+      throw new DoesNotExistException(
+          "Acting user does not exist - aborting change of namespace ownership.");
+    }
+    if (userRepository.findOne(newOwner.getId()) == null) {
+      throw new DoesNotExistException("New owner does not exist - aborting namespace creation.");
+    }
+
+    Namespace currentNamespace = namespaceRepository.findByName(namespaceName);
+    // checks if namespace exists
+    if (currentNamespace == null) {
+      throw new DoesNotExistException("Namespace does not exist - aborting change of ownership.");
+    }
+
+    // Set all roles ot the new owner
+    userNamespaceRoleService.setAllRoles(newOwner, currentNamespace);
+
+    // now changes ownership and persists
+    currentNamespace.setOwner(newOwner);
+
+    return namespaceRepository.save(currentNamespace);
+
+  }
+
+  /**
+   * @param actorUsername
+   * @param newOwnerUsername
+   * @param namespaceName
+   * @return
+   * @throws DoesNotExistException
+   * @see NamespaceService#updateNamespaceOwnership(User, User, String)
+   */
+  public Namespace updateNamespaceOwnership(String actorUsername, String newOwnerUsername,
+      String namespaceName) throws DoesNotExistException {
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(newOwnerUsername);
+    return updateNamespaceOwnership(actor, target, namespaceName);
   }
 
 }
