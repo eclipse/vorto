@@ -24,6 +24,8 @@ import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -71,6 +73,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * Defines the prefix all private namespaces have
    */
   public static final String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
 
   /**
    * @param namespace
@@ -192,7 +196,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     userNamespaceRoleService.setAllRoles(target, namespace);
 
     // application event handling
-    eventPublisher.publishEvent(new AppEvent(this, target.getUsername(), EventType.TENANT_ADDED));
+    eventPublisher
+        .publishEvent(new AppEvent(this, target.getUsername(), EventType.NAMESPACE_ADDED));
 
     return namespace;
   }
@@ -219,7 +224,31 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * Changes ownership of the {@link Namespace} with the given name, transferring it to the given
    * {@literal newOwner} {@link User}, as executed by the {@literal actor} {@link User}.<br/>
    * Adds all available {@link Namespace} roles to the {@literal newOwner} {@link User}, but <b>does
-   * not remove or modify any {@link Namespace} roles pertaining to the previous owner</b>.
+   * not remove or modify any {@link Namespace} roles pertaining to the previous owner</b>.<br/>
+   * The authorization for this functionality works as follows:
+   * <ul>
+   *   <li>
+   *     If the acting user is sysadmin, then anything is permitted. However, this operation will
+   *     log a warning, should the new owner exceed the configured quota of private namespaces as
+   *     a result of this operation. The verification on whether the change of ownership concerns
+   *     a private namespace should be performed at controller level, in order to provide the
+   *     acting sysadmin user with adequate warnings / chances to abort.
+   *   </li>
+   *   <li>
+   *     If the acting user is not sysadmin, then this operation will succeed only in two cases:
+   *     <ol>
+   *       <li>
+   *         The namespace being transferred is private, but the target user has no private namespace
+   *         or has {@code quota - 1} private namespaces.
+   *       </li>
+   *       <li>
+   *         The namespace being transferred is not private.
+   *       </li>
+   *     </ol>
+   *     In both cases above, the operation is designed as part of the workflow subsequent to a user
+   *     deleting their account.
+   *   </li>
+   * </ul>
    *
    * @param actor
    * @param newOwner
@@ -227,8 +256,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @return the {@link Namespace} with new ownership.
    * @throws DoesNotExistException if either user or the namespace do not exist.
    */
+  @Transactional
   public Namespace updateNamespaceOwnership(User actor, User newOwner, String namespaceName)
-      throws DoesNotExistException {
+      throws DoesNotExistException, PrivateNamespaceQuotaExceededException {
     // boilerplate null validation
     validator.validateNulls(actor, newOwner, namespaceName);
 
@@ -247,14 +277,48 @@ public class NamespaceService implements ApplicationEventPublisherAware {
       throw new DoesNotExistException("Namespace does not exist - aborting change of ownership.");
     }
 
+    // check quota
+    // actor is not sysadmin - need to enforce quota validation
+
+    if (namespaceRepository.findByOwner(newOwner).stream()
+        .filter(n -> n.getName().startsWith(PRIVATE_NAMESPACE_PREFIX)).count()
+        >= privateNamespaceQuota && currentNamespace.getName()
+        .startsWith(PRIVATE_NAMESPACE_PREFIX)) {
+      // actor not sysadmin and quota would exceed - aborting
+      if (!userRepositoryRoleService.isSysadmin(actor)) {
+        throw new PrivateNamespaceQuotaExceededException(
+            String.format(
+                "User would exceed quota [%d] of private namespaces by acquiring ownership of namespace [%s] - aborting operation.",
+                privateNamespaceQuota, currentNamespace.getName()
+            )
+        );
+        // actor is sysadmin so only logging a warning
+      } else {
+        LOGGER.warn(
+            String.format(
+                "User will exceed quota [%d] of private namespaces by acquiring ownership of namespace [%s].",
+                privateNamespaceQuota, currentNamespace.getName()
+            )
+        );
+      }
+
+    }
+
     // Set all roles ot the new owner
     userNamespaceRoleService.setAllRoles(newOwner, currentNamespace);
 
     // now changes ownership and persists
     currentNamespace.setOwner(newOwner);
 
-    return namespaceRepository.save(currentNamespace);
+    Namespace saved = namespaceRepository.save(currentNamespace);
 
+    if (saved != null) {
+      // application event handling
+      eventPublisher
+          .publishEvent(new AppEvent(this, newOwner.getUsername(), EventType.NAMESPACE_UPDATED));
+      return saved;
+    }
+    return null;
   }
 
   /**
@@ -266,7 +330,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#updateNamespaceOwnership(User, User, String)
    */
   public Namespace updateNamespaceOwnership(String actorUsername, String newOwnerUsername,
-      String namespaceName) throws DoesNotExistException {
+      String namespaceName) throws DoesNotExistException, PrivateNamespaceQuotaExceededException {
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(newOwnerUsername);
     return updateNamespaceOwnership(actor, target, namespaceName);
