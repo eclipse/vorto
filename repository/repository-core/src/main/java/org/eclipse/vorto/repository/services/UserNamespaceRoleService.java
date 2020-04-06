@@ -67,16 +67,16 @@ public class UserNamespaceRoleService {
   @Autowired
   private ServiceValidationUtil validator;
 
-  /**
-   * The {@literal namespace_admin} role, used in many authorization checks.
-   */
-  public final IRole namespaceAdmin;
-
-  public UserNamespaceRoleService() {
-    namespaceAdmin = namespaceRoleRepository.find("namespace_admin");
-  }
-
   // utility methods
+
+  /**
+   * The {@literal namespace_admin} role used in many authorization scenarios.
+   *
+   * @return
+   */
+  public IRole namespaceAdminRole() {
+    return namespaceRoleRepository.find("namespace_admin");
+  }
 
   /**
    * Verifies whether the given {@literal actor} {@link User} is either sysadmin, or has the
@@ -87,13 +87,13 @@ public class UserNamespaceRoleService {
    * @param namespace
    * @throws OperationForbiddenException
    */
-  public void authorizeActorOnNamespace(User actor, Namespace namespace)
+  public void authorizeActorAsAdminOnNamespace(User actor, Namespace namespace)
       throws OperationForbiddenException {
     // authorizing actor
     // not sysadmin
     if (!userRepositoryRoleService.isSysadmin(actor)) {
       // not namespace admin
-      if (!hasRole(actor, namespace, namespaceAdmin)) {
+      if (!hasRole(actor, namespace, namespaceAdminRole())) {
         throw new OperationForbiddenException(
             String.format(
                 "Acting user is not authorized to manipulate namespace roles for target user on namespace [%s] - aborting operation.",
@@ -195,7 +195,7 @@ public class UserNamespaceRoleService {
     validator.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor
-    authorizeActorOnNamespace(actor, namespace);
+    authorizeActorAsAdminOnNamespace(actor, namespace);
 
     UserNamespaceRoles roles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(target, namespace));
@@ -257,7 +257,7 @@ public class UserNamespaceRoleService {
     validator.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor on namespace
-    authorizeActorOnNamespace(actor, namespace);
+    authorizeActorAsAdminOnNamespace(actor, namespace);
 
     UserNamespaceRoles roles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(target, namespace));
@@ -314,7 +314,7 @@ public class UserNamespaceRoleService {
     validator.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor on namespace
-    authorizeActorOnNamespace(actor, namespace);
+    authorizeActorAsAdminOnNamespace(actor, namespace);
 
     // retrieving existing roles
     UserNamespaceRoles roles = userNamespaceRoleRepository
@@ -502,10 +502,62 @@ public class UserNamespaceRoleService {
     return deleteAllRoles(actor, target, namespace);
   }
 
-  public Collection<User> getCollaborators(User actor, Namespace namespace) {
+  /**
+   * Verifies whether the given {@link User} can view the given {@link Namespace}, which always
+   * yields true if the user is {@literal sysadmin}.<br/>
+   *
+   * @param user
+   * @param namespace
+   * @throws OperationForbiddenException if the user has no view privilege on the namespace.
+   */
+  public void verifyCanView(User user, Namespace namespace) throws OperationForbiddenException {
+    if (!userRepositoryRoleService.isSysadmin(user)) {
+      UserNamespaceRoles actorRoles = userNamespaceRoleRepository
+          .findOne(new UserNamespaceID(user, namespace));
+      // acting user has no visibility on namespace
+      if (!namespace.getOwner().equals(user) || actorRoles == null) {
+        throw new OperationForbiddenException(
+            String.format("User has no visibility on namespace [%s].", namespace.getName())
+        );
+      }
+    }
+  }
+
+
+  /**
+   * Retrieves the {@link User}s who collaborate (i.e. have any {@link IRole}) on the given
+   * {@link Namespace}.<br/>
+   * The operation fails if the acting {@link User} is not authorited to perform it, i.e. they are
+   * neither {@literal sysadmin}, nor have any read privilege on the givne {@link Namespace}.
+   *
+   * @param actor
+   * @param namespace
+   * @return
+   * @throws OperationForbiddenException
+   */
+  public Collection<User> getCollaborators(User actor, Namespace namespace)
+      throws OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, namespace);
-    // TODO
-    return null;
+
+    // authorize actor
+    verifyCanView(actor, namespace);
+
+    return userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
+        .map(UserNamespaceRoles::getUser).collect(Collectors.toSet());
+  }
+
+  /**
+   * @param actorUsername
+   * @param namespaceName
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getCollaborators(User, Namespace)
+   */
+  public Collection<User> getCollaborators(String actorUsername, String namespaceName)
+      throws OperationForbiddenException {
+    User actor = userRepository.findByUsername(actorUsername);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    return getCollaborators(actor, namespace);
   }
 }

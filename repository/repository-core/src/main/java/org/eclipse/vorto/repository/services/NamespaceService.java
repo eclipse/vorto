@@ -14,11 +14,15 @@ package org.eclipse.vorto.repository.services;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
@@ -37,6 +41,11 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Performs all business logic on {@link Namespace}s.<br/>
+ * For operations on namespace collaborators, see {@link UserNamespaceRoleService}.
+ * TODO migrate TenantService#isInConflictWith if needed, once actual logic understood
+ */
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
 
@@ -139,7 +148,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     this.eventPublisher = applicationEventPublisher;
   }
 
-  // TODO isInConflictWith once actual logic understood
+  // namespace operations
 
   /**
    * This creates a new namespace with the given name, setting the given target {@link User} as
@@ -185,6 +194,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws CollisionException
    * @throws NameSyntaxException
    * @see NamespaceService#updateNamespaceOwnership(User, User, String) to change ownership of an existing namespace.
+   * @see org.eclipse.vorto.repository.tenant.TenantService#createOrUpdateTenant(String, String, Set, Optional, Optional, Optional, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class, CollisionException.class,
       NameSyntaxException.class, PrivateNamespaceQuotaExceededException.class,
@@ -299,6 +309,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @param namespaceName
    * @return the {@link Namespace} with new ownership.
    * @throws DoesNotExistException if either user or the namespace do not exist.
+   * @see org.eclipse.vorto.repository.tenant.TenantService#createOrUpdateTenant(String, String, Set, Optional, Optional, Optional, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class,
       PrivateNamespaceQuotaExceededException.class, OperationForbiddenException.class})
@@ -424,6 +435,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @param namespaceName
    * @throws DoesNotExistException
    * @throws OperationForbiddenException
+   * @see org.eclipse.vorto.repository.tenant.TenantService#deleteTenant(Tenant, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class, OperationForbiddenException.class})
   public void deleteNamespace(User actor, String namespaceName)
@@ -448,7 +460,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // authorizing acting user
     if (!userRepositoryRoleService.isSysadmin(actor) || !actor.equals(owner)
         || !userNamespaceRoleService
-        .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdmin)) {
+        .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdminRole())) {
       throw new OperationForbiddenException(String
           .format("Acting user is not authorized to delete namespace [%s] - aborting operation.",
               currentNamespace.getName()));

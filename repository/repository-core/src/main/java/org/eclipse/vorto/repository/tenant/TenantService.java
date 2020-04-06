@@ -86,6 +86,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
   }
 
   @Transactional
+  @Deprecated
   public Tenant createOrUpdateTenant(String tenantId, String defaultNamespace,
       Set<String> tenantAdmins, Optional<Set<String>> namespaces,
       Optional<String> authenticationProvider, Optional<String> authorizationProvider,

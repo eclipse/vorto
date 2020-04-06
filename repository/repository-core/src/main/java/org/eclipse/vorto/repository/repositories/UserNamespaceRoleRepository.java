@@ -12,11 +12,19 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
+import java.util.Collection;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserNamespaceRoleRepository extends CrudRepository<UserNamespaceRoles, UserNamespaceID> {
+public interface UserNamespaceRoleRepository extends
+    CrudRepository<UserNamespaceRoles, UserNamespaceID> {
+
+  @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace")
+  Collection<UserNamespaceRoles> findAllByNamespace(@Param("namespace") Namespace namespace);
 }
