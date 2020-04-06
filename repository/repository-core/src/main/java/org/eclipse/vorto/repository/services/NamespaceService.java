@@ -22,6 +22,7 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
@@ -54,6 +55,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   @Autowired
   private ServiceValidationUtil validator;
 
+  @Autowired
+  private ISearchService searchService;
+
   @Value("${config.privateNamespaceQuota}")
   private Integer privateNamespaceQuota;
 
@@ -76,6 +80,14 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * Defines the prefix all private namespaces have
    */
   public static final String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
+
+  /**
+   * Boilerplate format string representing a search expression for public models in a given namespace.
+   * <br/>
+   * This is used e.g. when attempting to delete a namespace, in order to infer whether the
+   * operation is possible.
+   */
+  public static final String SEARCH_FOR_PUBLIC_MODELS_FORMAT = "namespace:%s visibility:Public";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
 
@@ -396,7 +408,17 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   /**
    * Deletes all namespace roles from any user-namespace association for the given {@link Namespace},
-   * including its ownership, then deletes the actual {@link Namespace}.
+   * including its ownership, then deletes the actual {@link Namespace}.<br/>
+   * The operation will fail if:
+   * <ul>
+   *   <li>
+   *     The acting {@link User} is not {@literal sysadmin}, or does not own the namespace, or
+   *     does not have {@literal namespace_admin} role on the {@link Namespace}.
+   *   </li>
+   *   <li>
+   *     The {@link Namespace} contains public models.
+   *   </li>
+   * </ul>
    *
    * @param actor
    * @param namespaceName
@@ -411,9 +433,26 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     validator.validateNulls(actor.getId());
 
     // will throw DoesNotExistException if none found
-    // TODO this checks the repository twice for namespace exists
     Namespace currentNamespace = validateNamespaceExists(namespaceName);
-    User owner = getOwner(namespaceName);
+
+    // searches for public models and fails if any
+    if (!searchService
+        .search(String.format(SEARCH_FOR_PUBLIC_MODELS_FORMAT, currentNamespace.getName()))
+        .isEmpty()) {
+      throw new OperationForbiddenException(String
+          .format("Namespace [%s] has public models and cannot be deleted - aborting operation.",
+              currentNamespace.getName()));
+    }
+    User owner = currentNamespace.getOwner();
+
+    // authorizing acting user
+    if (!userRepositoryRoleService.isSysadmin(actor) || !actor.equals(owner)
+        || !userNamespaceRoleService
+        .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdmin)) {
+      throw new OperationForbiddenException(String
+          .format("Acting user is not authorized to delete namespace [%s] - aborting operation.",
+              currentNamespace.getName()));
+    }
 
     // deletes all collaborator associations
     Collection<User> collaborators = userNamespaceRoleService
@@ -428,8 +467,21 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);
 
-    // TODO: TenantService#deleteTenant does not seem to anonymize all models - should consider whether to do that here or delegate to caller
-    // TODO app event
+    eventPublisher
+        .publishEvent(new AppEvent(this, currentNamespace.getName(), EventType.NAMESPACE_DELETED));
+  }
+
+  /**
+   * @param actorUsername
+   * @param namespaceName
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   * @see NamespaceService#deleteNamespace(User, String)
+   */
+  public void deleteNamespace(String actorUsername, String namespaceName)
+      throws DoesNotExistException, OperationForbiddenException {
+    User actor = userRepository.findByUsername(actorUsername);
+    deleteNamespace(actor, namespaceName);
   }
 
 }

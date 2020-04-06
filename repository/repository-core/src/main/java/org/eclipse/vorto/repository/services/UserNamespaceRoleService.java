@@ -67,7 +67,10 @@ public class UserNamespaceRoleService {
   @Autowired
   private ServiceValidationUtil validator;
 
-  private IRole namespaceAdmin;
+  /**
+   * The {@literal namespace_admin} role, used in many authorization checks.
+   */
+  public final IRole namespaceAdmin;
 
   public UserNamespaceRoleService() {
     namespaceAdmin = namespaceRoleRepository.find("namespace_admin");
