@@ -32,15 +32,42 @@ public class RoleUtil {
   @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
 
+  /**
+   * Converts a sum of roles expressed as {@code long} to a set of {@link NamespaceRole}.
+   *
+   * @param roles
+   * @return
+   */
   public Collection<IRole> toNamespaceRoles(long roles) {
     return namespaceRoleRepository.findAll().stream()
         .filter(r -> (roles & r.getRole()) == r.getRole()).collect(
             Collectors.toSet());
   }
 
+  /**
+   * Converts a sum of roles expressed as {@code long} to a set of {@link RepositoryRole}.
+   *
+   * @param roles
+   * @return
+   */
   public Collection<IRole> toRepositoryRoles(long roles) {
     return repositoryRoleRepository.findAll().stream()
         .filter(r -> (roles & r.getRole()) == r.getRole()).collect(
             Collectors.toSet());
+  }
+
+  /**
+   * Converts a collection of whichever {@link IRole} to the sum of their value, expressed as a
+   * {@code long}.
+   *
+   * @param roles
+   * @return
+   */
+  public long toLong(Collection<IRole> roles) {
+    // boilerplate null validation
+    if (roles == null || roles.isEmpty()) {
+      return 0l;
+    }
+    return roles.stream().collect(Collectors.summingLong(IRole::getRole));
   }
 }

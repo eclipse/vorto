@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Read-only repository for namespace roles.
+ * TODO #2265 caching
  */
 @Repository
 public interface NamespaceRoleRepository extends org.springframework.data.repository.Repository<NamespaceRole, Long> {

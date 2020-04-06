@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
@@ -29,10 +30,14 @@ import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -45,8 +50,7 @@ import org.springframework.stereotype.Service;
 // TODO #2265: some validation operations could be reused by autowiring the NamespaceService, which may, however, introduce a Spring circular dependency
 // TODO #2265: should operations on namespace roles trigger new application events?
 @Service
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class UserNamespaceRoleService {
+public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserNamespaceRoleService.class);
 
@@ -70,6 +74,16 @@ public class UserNamespaceRoleService {
 
   @Autowired
   private RoleUtil roleUtil;
+
+  @Autowired
+  private UserUtil userUtil;
+
+  private ApplicationEventPublisher eventPublisher;
+
+  @Override
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.eventPublisher = applicationEventPublisher;
+  }
 
   // utility methods
 
@@ -188,6 +202,7 @@ public class UserNamespaceRoleService {
    * @param namespace
    * @param role
    * @return {@literal true} if the user did not have the role on the namespace prior to adding it, {@literal false} if they already had the role.
+   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#addUserToTenant(String, String, Role...)
    */
   public boolean addRole(User actor, User target, Namespace namespace, IRole role)
       throws OperationForbiddenException {
@@ -434,6 +449,7 @@ public class UserNamespaceRoleService {
    * @param namespace
    * @return
    * @throws DoesNotExistException
+   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#removeUserFromTenant(String, String)
    */
   @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
   public boolean deleteAllRoles(User actor, User target, Namespace namespace)
@@ -592,4 +608,70 @@ public class UserNamespaceRoleService {
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     return getRolesByCollaborator(actor, namespace);
   }
+
+  /**
+   * This functionality is slightly out of scope in every service. <br/>
+   * Its purpose is to create an ad-hoc "technical" user, and add it as collaborator to a given
+   * {@link Namespace} with the desired roles.<br/>
+   * Presently, there is no scenario where a technical user can be created without being also
+   * added as collaborator to a namespace, hence the mixed operation here.
+   *
+   * @param actor
+   * @param technicalUser
+   * @param namespace
+   * @param roles
+   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, ICollaborator, Role...)
+   */
+  @Transactional(rollbackOn = {OperationForbiddenException.class, InvalidUserException.class})
+  public void createTechnicalUserAndAddAsCollaborator(User actor, User technicalUser,
+      Namespace namespace, long roles) throws OperationForbiddenException, InvalidUserException {
+    // boilerplate null validation
+    validator.validateNulls(actor, technicalUser, namespace);
+
+    // validates technical user
+    userUtil.validateTechnicalUser(technicalUser);
+
+    // save the technical user
+    userRepository.save(technicalUser);
+
+    // setting the desired namespace-roles association - authorization on namespace is
+    // performed here, but failure will revert the transaction including saving the new user
+    setRoles(actor, technicalUser, namespace, roles);
+  }
+
+  /**
+   * @param actor
+   * @param technicalUser
+   * @param namespace
+   * @param roles
+   * @throws OperationForbiddenException
+   * @throws InvalidUserException
+   * @see UserNamespaceRoleService#createTechnicalUserAndAddAsCollaborator(User, User, Namespace, long)
+   */
+  public void createTechnicalUserAndAddAsCollaborator(User actor, User technicalUser,
+      Namespace namespace, Collection<IRole> roles)
+      throws OperationForbiddenException, InvalidUserException {
+    createTechnicalUserAndAddAsCollaborator(actor, technicalUser, namespace,
+        roleUtil.toLong(roles));
+  }
+
+  /**
+   * @param actorUsername
+   * @param technicalUser
+   * @param namespaceName
+   * @param roles
+   * @throws OperationForbiddenException
+   * @throws InvalidUserException
+   * @see UserNamespaceRoleService#createTechnicalUserAndAddAsCollaborator(User, User, Namespace, long)
+   */
+  public void createTechnicalUserAndAddAsCollaborator(String actorUsername, User technicalUser,
+      String namespaceName, Collection<String> roles)
+      throws OperationForbiddenException, InvalidUserException {
+    User actor = userRepository.findByUsername(actorUsername);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    Collection<IRole> actualRoles = roles.stream().map(namespaceRoleRepository::find)
+        .collect(Collectors.toSet());
+    createTechnicalUserAndAddAsCollaborator(actor, technicalUser, namespace, actualRoles);
+  }
+
 }

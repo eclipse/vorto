@@ -20,6 +20,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Holds all persisted namespaces.
+ * TODO #2265 caching
+ */
 @Repository
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
   

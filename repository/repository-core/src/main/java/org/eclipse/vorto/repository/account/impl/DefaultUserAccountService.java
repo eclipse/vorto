@@ -93,6 +93,7 @@ public class DefaultUserAccountService
    * @param userId the user to be removed
    * @return {@literal true} if the user was present, {@literal false} otherwise.
    */
+  @Deprecated
   public boolean removeUserFromTenant(String tenantId, String userId) {
     PreConditions.notNullOrEmpty(tenantId, "tenantId");
     PreConditions.notNullOrEmpty(userId, "userId");

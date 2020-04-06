@@ -19,7 +19,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Read-only repository for privileges.
+ * Read-only repository yielding all applicable privileges for roles.
+ * TODO #2265 caching
  */
 @Repository
 public interface PrivilegeRepository extends org.springframework.data.repository.Repository<Privilege, Long> {

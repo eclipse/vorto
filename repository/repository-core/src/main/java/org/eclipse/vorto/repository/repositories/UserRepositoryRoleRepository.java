@@ -18,8 +18,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository for user roles across the Vorto repository (only expresses users with the
- * {@literal sysadmin} {@link RepositoryRole} as of now.
+ * Yields all user-repository role associations, which is read-only at runtime and limited to
+ * expressing sysadmin users at this time.
+ * TODO #2265 caching
  */
 @Repository
 public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, Long> {

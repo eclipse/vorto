@@ -19,6 +19,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Yields all repository roles.
+ * TODO #2265 caching
+ */
 @Repository
 public interface RepositoryRoleRepository extends org.springframework.data.repository.Repository<RepositoryRole, Long> {
 

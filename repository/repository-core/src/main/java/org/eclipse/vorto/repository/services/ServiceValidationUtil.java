@@ -15,6 +15,8 @@ package org.eclipse.vorto.repository.services;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.validation.constraints.NotNull;
+import org.eclipse.xtext.formatting.IElementMatcherProvider.IAfterElement;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,8 +49,7 @@ public class ServiceValidationUtil {
   }
 
   /**
-   * Simple wrapper for boilerplate null validation of given arguments.<br/>
-   * Traverses collections and checks elements for null too.
+   * Traverses collections.
    *
    * @param arguments
    * @throws IllegalArgumentException
@@ -56,5 +57,40 @@ public class ServiceValidationUtil {
    */
   public void validateNulls(Object... arguments) throws IllegalArgumentException {
     validateNulls(true, arguments);
+  }
+
+  /**
+   * First validates arguments for {@code null}s, then validates that their {@link String}
+   * representation trimmed of whitespace is not empty.
+   *
+   * @param traverseCollections
+   * @param arguments
+   * @throws IllegalArgumentException
+   */
+  public void validateEmpties(boolean traverseCollections, Object... arguments)
+      throws IllegalArgumentException {
+    validateNulls(traverseCollections, arguments);
+    if (Stream.of(arguments).anyMatch(o -> o.toString().trim().isEmpty())) {
+      throw new IllegalArgumentException("At least one value is empty.");
+    }
+    if (traverseCollections) {
+      // non-null args that are collections
+      Stream.of(arguments).filter(a -> a instanceof Collection).forEach(c -> {
+        if (((Collection) c).stream().anyMatch(o -> o.toString().trim().isEmpty())) {
+          throw new IllegalArgumentException("At least one value is empty.");
+        }
+      });
+    }
+  }
+
+  /**
+   * Traverses collections.
+   *
+   * @param arguments
+   * @throws IllegalArgumentException
+   * @see ServiceValidationUtil#validateEmpties(boolean, Object...)
+   */
+  public void validateEmpties(Object... arguments) throws IllegalArgumentException {
+    validateEmpties(true, arguments);
   }
 }
