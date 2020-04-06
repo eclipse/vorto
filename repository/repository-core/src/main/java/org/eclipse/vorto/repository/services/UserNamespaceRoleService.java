@@ -13,13 +13,14 @@
 package org.eclipse.vorto.repository.services;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
@@ -66,6 +67,9 @@ public class UserNamespaceRoleService {
 
   @Autowired
   private ServiceValidationUtil validator;
+
+  @Autowired
+  private RoleUtil roleUtil;
 
   // utility methods
 
@@ -156,12 +160,9 @@ public class UserNamespaceRoleService {
     LOGGER.info(String
         .format("Retrieving roles for user [%s] on namespace [%s]", user.getUsername(),
             namespace.getName()));
-    Set<NamespaceRole> allRoles = namespaceRoleRepository.findAll();
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(user, namespace));
-    return allRoles.stream()
-        .filter(r -> (userNamespaceRoles.getRoles() & r.getRole()) == r.getRole()).collect(
-            Collectors.toSet());
+    return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
   }
 
   /**
@@ -559,5 +560,36 @@ public class UserNamespaceRoleService {
     User actor = userRepository.findByUsername(actorUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     return getCollaborators(actor, namespace);
+  }
+
+  /**
+   * Builds a {@link Map} of {@link User}s with their respective {@link IRole}s in the given
+   * {@link Namespace}, as performed by the acting {@link User}.<br/>
+   * The operation will fail if the acting {@link User} is not authorized, i.e. if they are neither
+   * {@literal sysadmin} or have no view privileges on the given {@link Namespace}.
+   *
+   * @param actor
+   * @param namespace
+   * @return
+   * @throws OperationForbiddenException
+   */
+  public Map<User, Collection<IRole>> getRolesByCollaborator(User actor, Namespace namespace)
+      throws OperationForbiddenException {
+    return getCollaborators(actor, namespace).stream()
+        .collect(Collectors.toMap(Function.identity(), u -> getRoles(u, namespace)));
+  }
+
+  /**
+   * @param actorUsername
+   * @param namespaceName
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getRolesByCollaborator(User, Namespace)
+   */
+  public Map<User, Collection<IRole>> getRolesByCollaborator(String actorUsername,
+      String namespaceName) throws OperationForbiddenException {
+    User actor = userRepository.findByUsername(actorUsername);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    return getRolesByCollaborator(actor, namespace);
   }
 }
