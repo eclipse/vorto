@@ -131,7 +131,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public void authorizeActorAsTargetOrSysadmin(User actor, User target)
       throws OperationForbiddenException {
-    if (!userRepositoryRoleService.isSysadmin(actor) || !actor.equals(target)) {
+    if (!userRepositoryRoleService.isSysadmin(actor) && !actor.equals(target)) {
       throw new OperationForbiddenException(
           "Acting user is neither target user nor sysadmin - aborting operation");
     }
