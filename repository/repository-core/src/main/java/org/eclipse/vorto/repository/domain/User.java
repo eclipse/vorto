@@ -73,11 +73,13 @@ public class User implements Serializable {
   private Timestamp lastUpdated;
 
   // TODO remove
+  @Deprecated
   @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
   private Set<TenantUser> tenantUsers = new HashSet<>();
 
   private String emailAddress;
 
+  @Deprecated
   @Column(nullable = false)
   private boolean sysadmin;
 

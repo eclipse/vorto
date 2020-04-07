@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.repositories;
 
 import java.util.Collection;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Holds user-namespace role associations.
- * TODO #2265 caching and eviction are ok-ish but the eviction is a bit drastic
+ * TODO #2265 caching and eviction are ok-ish but the eviction is a bit drastic - not easy to fine-tune due to queries ńot able to use same key
  */
 @Repository
 public interface UserNamespaceRoleRepository extends
@@ -38,6 +39,14 @@ public interface UserNamespaceRoleRepository extends
   @Cacheable(value = "userNamespaceRoles")
   @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace")
   Collection<UserNamespaceRoles> findAllByNamespace(@Param("namespace") Namespace namespace);
+
+  @Cacheable(value = "userNamespaceRoles")
+  @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user")
+  Collection<UserNamespaceRoles> findAllByUser(@Param("user") User user);
+
+  @Cacheable(value = "userNamespaceRoles")
+  @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user and unr.roles = :roles")
+  Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user, @Param("roles") long roles);
 
   @CacheEvict(value = "userNamespaceRoles", allEntries = true)
   @Override

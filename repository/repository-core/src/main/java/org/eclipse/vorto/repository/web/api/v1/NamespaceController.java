@@ -24,13 +24,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.xml.ws.Response;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -39,9 +37,14 @@ import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
-import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
@@ -114,11 +117,25 @@ public class NamespaceController {
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
 
+  @Autowired
+  private NamespaceService namespaceService;
+
   @RequestMapping(method = RequestMethod.GET, value = "/test")
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
+    try {
+      userNamespaceRoleService.addRole("mena-bosch", "menajrl", "menabosch", "model_viewer");
+      Collection<User> collabs = userNamespaceRoleService
+          .getCollaborators("mena-bosch", "menabosch");
+      collabs = null;
+      userNamespaceRoleService.deleteAllRoles("mena-bosch", "menajrl", "menabosch");
+      collabs = userNamespaceRoleService.getCollaborators("mena-bosch", "menabosch");
+      collabs = null;
+    } catch (DoesNotExistException | OperationForbiddenException e) {
+      return new ResponseEntity<>(false, HttpStatus.OK);
+    }
     return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
         HttpStatus.OK);
   }

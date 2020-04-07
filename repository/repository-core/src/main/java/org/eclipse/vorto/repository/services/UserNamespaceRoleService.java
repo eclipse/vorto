@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 /**
@@ -76,7 +74,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   private RoleUtil roleUtil;
 
   @Autowired
-  private UserUtil userUtil;
+  private UserService userService;
 
   private ApplicationEventPublisher eventPublisher;
 
@@ -119,6 +117,23 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
             )
         );
       }
+    }
+  }
+
+  /**
+   * Verifies whether the given acting {@link User} is the same user as the given target {@link User},
+   * or whether they have the repository {@literal sysadmin} role.<br/>
+   * Used when retrieving information about which {@link Namespace}s a {@link User} has visibility on.
+   *
+   * @param actor
+   * @param target
+   * @throws OperationForbiddenException if none of the conditions above applies.
+   */
+  public void authorizeActorAsTargetOrSysadmin(User actor, User target)
+      throws OperationForbiddenException {
+    if (!userRepositoryRoleService.isSysadmin(actor) || !actor.equals(target)) {
+      throw new OperationForbiddenException(
+          "Acting user is neither target user nor sysadmin - aborting operation");
     }
   }
 
@@ -628,13 +643,10 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // boilerplate null validation
     validator.validateNulls(actor, technicalUser, namespace);
 
-    // validates technical user
-    userUtil.validateTechnicalUser(technicalUser);
+    // delegates tech user creation and persistence to user service
+    userService.createTechnicalUser(technicalUser);
 
-    // save the technical user
-    userRepository.save(technicalUser);
-
-    // setting the desired namespace-roles association - authorization on namespace is
+    // sets the desired namespace-roles association - authorization on namespace is
     // performed here, but failure will revert the transaction including saving the new user
     setRoles(actor, technicalUser, namespace, roles);
   }
@@ -672,6 +684,91 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     Collection<IRole> actualRoles = roles.stream().map(namespaceRoleRepository::find)
         .collect(Collectors.toSet());
     createTechnicalUserAndAddAsCollaborator(actor, technicalUser, namespace, actualRoles);
+  }
+
+  /**
+   * Retrieves all {@link Namespace}s where the given target {@link User} is a collaborator, as
+   * acted by the given acting {@link User}.<br/>
+   * The {@code roleFilter} parameter can be {@code null} - in which case all {@link Namespace}s
+   * where the target {@link User} has any role are returned; otherwise only the {@link Namespace}s
+   * where the target {@link User} has the roles represented by the filter are returned.<br/>
+   * The operation can fail if the acting {@link User} is neither {@literal sysadmin} nor the same
+   * {@link User} as the target.
+   *
+   * @param actor
+   * @param target
+   * @param roleFilter
+   * @return
+   * @throws OperationForbiddenException
+   */
+  public Collection<Namespace> getNamespaces(User actor, User target, Long roleFilter)
+      throws OperationForbiddenException {
+    // boilerplate null validation - role filter can be null
+    validator.validateNulls(actor, target);
+
+    // authorizes actor
+    authorizeActorAsTargetOrSysadmin(actor, target);
+
+    // retrieves namespaces either filtered by role(s) or all namespaces
+    if (roleFilter == null) {
+      return userNamespaceRoleRepository.findAllByUser(target).stream()
+          .map(UserNamespaceRoles::getNamespace).collect(
+              Collectors.toSet());
+    } else {
+      return userNamespaceRoleRepository.findAllByUserAndRoles(target, roleFilter).stream()
+          .map(UserNamespaceRoles::getNamespace).collect(Collectors.toSet());
+    }
+  }
+
+  /**
+   * Retrieves all {@link Namespace}s where the given target {@link User} has any role, as acted by
+   * the given actor {@link User}.
+   *
+   * @param actor
+   * @param target
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
+   */
+  public Collection<Namespace> getNamespaces(User actor, User target)
+      throws OperationForbiddenException {
+    return getNamespaces(actor, target, null);
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @param roles
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
+   */
+  public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername,
+      Collection<String> roles) throws OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actorUsername, targetUsername);
+
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    Long actualRoles = null;
+    if (roles != null && !roles.isEmpty()) {
+      actualRoles = roleUtil.toLong(roles.stream().map(namespaceRoleRepository::find)
+          .collect(Collectors.toSet()));
+    }
+    return getNamespaces(actor, target, actualRoles);
+  }
+
+  /**
+   *
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
+   */
+  public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername)
+      throws OperationForbiddenException {
+    return getNamespaces(actorUsername, targetUsername, null);
   }
 
 }
