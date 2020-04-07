@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -74,6 +75,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   private RoleUtil roleUtil;
 
   @Autowired
+  private UserUtil userUtil;
+
+  @Autowired
   private UserService userService;
 
   private ApplicationEventPublisher eventPublisher;
@@ -117,23 +121,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
             )
         );
       }
-    }
-  }
-
-  /**
-   * Verifies whether the given acting {@link User} is the same user as the given target {@link User},
-   * or whether they have the repository {@literal sysadmin} role.<br/>
-   * Used when retrieving information about which {@link Namespace}s a {@link User} has visibility on.
-   *
-   * @param actor
-   * @param target
-   * @throws OperationForbiddenException if none of the conditions above applies.
-   */
-  public void authorizeActorAsTargetOrSysadmin(User actor, User target)
-      throws OperationForbiddenException {
-    if (!userRepositoryRoleService.isSysadmin(actor) && !actor.equals(target)) {
-      throw new OperationForbiddenException(
-          "Acting user is neither target user nor sysadmin - aborting operation");
     }
   }
 
@@ -555,19 +542,19 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     }
   }
 
-
   /**
    * Retrieves the {@link User}s who collaborate (i.e. have any {@link IRole}) on the given
-   * {@link Namespace}.<br/>
+   * {@link Namespace}, filtered optionally by the given roles, expressed as {@code long}.<br/>
    * The operation fails if the acting {@link User} is not authorited to perform it, i.e. they are
    * neither {@literal sysadmin}, nor have any read privilege on the givne {@link Namespace}.
    *
    * @param actor
    * @param namespace
+   * @param roles
    * @return
    * @throws OperationForbiddenException
    */
-  public Collection<User> getCollaborators(User actor, Namespace namespace)
+  public Collection<User> getCollaborators(User actor, Namespace namespace, Long roles)
       throws OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, namespace);
@@ -575,8 +562,26 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // authorize actor
     verifyCanView(actor, namespace);
 
-    return userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
-        .map(UserNamespaceRoles::getUser).collect(Collectors.toSet());
+    if (roles == null) {
+      return userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
+          .map(UserNamespaceRoles::getUser).collect(Collectors.toSet());
+    } else {
+      return userNamespaceRoleRepository.findAllByNamespaceAndRoles(namespace, roles).stream()
+          .map(UserNamespaceRoles::getUser).collect(Collectors.toSet());
+    }
+  }
+
+  /**
+   * @param actor
+   * @param namespace
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getCollaborators(User, Namespace, Long)
+   */
+  public Collection<User> getCollaborators(User actor, Namespace namespace)
+      throws OperationForbiddenException {
+    return getCollaborators(actor, namespace, null);
+
   }
 
   /**
@@ -644,7 +649,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     validator.validateNulls(actor, technicalUser, namespace);
 
     // delegates tech user creation and persistence to user service
-    userService.createTechnicalUser(technicalUser);
+    userService.createOrUpdateTechnicalUser(technicalUser);
 
     // sets the desired namespace-roles association - authorization on namespace is
     // performed here, but failure will revert the transaction including saving the new user
@@ -707,7 +712,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     validator.validateNulls(actor, target);
 
     // authorizes actor
-    authorizeActorAsTargetOrSysadmin(actor, target);
+    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
 
     // retrieves namespaces either filtered by role(s) or all namespaces
     if (roleFilter == null) {
@@ -732,7 +737,21 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<Namespace> getNamespaces(User actor, User target)
       throws OperationForbiddenException {
-    return getNamespaces(actor, target, null);
+    return getNamespaces(actor, target, (Long) null);
+  }
+
+  /**
+   * @param actor
+   * @param target
+   * @param roles
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
+   */
+  public Collection<Namespace> getNamespaces(User actor, User target, IRole... roles)
+      throws OperationForbiddenException {
+    return getNamespaces(actor, target,
+        roles != null ? roleUtil.toLong(Arrays.asList(roles)) : null);
   }
 
   /**
@@ -744,22 +763,33 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
    */
   public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername,
-      Collection<String> roles) throws OperationForbiddenException {
-    // boilerplate null validation
+      IRole... roles) throws OperationForbiddenException {
     validator.validateNulls(actorUsername, targetUsername);
-
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Long actualRoles = null;
-    if (roles != null && !roles.isEmpty()) {
-      actualRoles = roleUtil.toLong(roles.stream().map(namespaceRoleRepository::find)
-          .collect(Collectors.toSet()));
+    if (roles != null && roles.length > 0) {
+      actualRoles = roleUtil.toLong(Arrays.asList(roles));
     }
     return getNamespaces(actor, target, actualRoles);
   }
 
   /**
-   *
+   * @param actorUsername
+   * @param targetUsername
+   * @param roles
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespaces(User, User, Long)
+   */
+  public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername,
+      String... roles) throws OperationForbiddenException {
+    return getNamespaces(actorUsername, targetUsername,
+        roles != null ? Arrays.stream(roles).map(namespaceRoleRepository::find)
+            .toArray(IRole[]::new) : null);
+  }
+
+  /**
    * @param actorUsername
    * @param targetUsername
    * @return
@@ -768,7 +798,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername)
       throws OperationForbiddenException {
-    return getNamespaces(actorUsername, targetUsername, null);
+    return getNamespaces(actorUsername, targetUsername, (IRole[]) null);
   }
-
 }

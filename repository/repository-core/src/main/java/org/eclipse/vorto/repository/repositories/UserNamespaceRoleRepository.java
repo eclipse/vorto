@@ -48,6 +48,10 @@ public interface UserNamespaceRoleRepository extends
   @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user and unr.roles = :roles")
   Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user, @Param("roles") long roles);
 
+  @Cacheable(value = "userNamespaceRoles")
+  @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace and unr.roles = :roles")
+  Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace, @Param("roles") long roles);
+
   @CacheEvict(value = "userNamespaceRoles", allEntries = true)
   @Override
   void delete(UserNamespaceID userNamespaceID);

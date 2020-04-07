@@ -70,6 +70,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   @Autowired
   private ISearchService searchService;
 
+  @Autowired
+  private UserUtil userUtil;
+
   @Value("${config.privateNamespaceQuota}")
   private Integer privateNamespaceQuota;
 
@@ -499,4 +502,40 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     deleteNamespace(actor, namespaceName);
   }
 
+  /**
+   * Collects all {@link Namespace}s owned by the given target {@link User}, as acted by the given
+   * acting {@link User}.<br/>
+   * Operation will fail to authorize if the actor does not have the repository {@literal sysadmin}
+   * role, or if they are not the same {@link User} as the target.
+   *
+   * @param actor
+   * @param target
+   * @return
+   * @throws OperationForbiddenException
+   */
+  public Collection<Namespace> getByOwner(User actor, User target)
+      throws OperationForbiddenException {
+    // boilerplate null validation
+    validator.validateNulls(actor, target);
+
+    // authorizes actor to collect namespace info on target
+    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
+
+    return namespaceRepository.findByOwner(target);
+  }
+
+  /**
+   *
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws OperationForbiddenException
+   * @see NamespaceService#getByOwner(User, User)
+   */
+  public Collection<Namespace> getByOwner(String actorUsername, String targetUsername)
+      throws OperationForbiddenException {
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    return getByOwner(actor, target);
+  }
 }

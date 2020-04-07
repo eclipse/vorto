@@ -12,57 +12,59 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.text.normalizer.UBiDiProps;
 
 /**
  * Provides various utility functionalities including validation for {@link org.eclipse.vorto.repository.domain.User}
- * objects.
+ * objects.<br/>
+ * Validation is fail-fast, and occurs in setters throwing checked {@link InvalidUserException}.<br/>
+ * The intended usage is to wrap the creation of a {@link User} around a {@code try} / {@code catch}
+ * block intercepting that exception.
  * TODO #2655 merge utility methods from User and UserUtils classes
  */
 @Service
 public class UserUtil {
 
-  public static class UserBuilder {
+  /**
+   * Utility class to build {@link User} objects.<br/>
+   * Validates, but does not persist users on its own.
+   */
+  public class UserBuilder {
 
     private User user = new User();
-
-    public static UserBuilder newInstance() {
-      return new UserBuilder();
-    }
 
     public UserBuilder withID(long id) {
       user.setId(id);
       return this;
     }
 
-    public UserBuilder withName(String name) {
+    public UserBuilder withName(String name) throws InvalidUserException {
+      if (Objects.isNull(name) || name.trim().isEmpty()) {
+        throw new InvalidUserException("Username is empty.");
+      }
       user.setUsername(name);
       return this;
     }
 
-    public UserBuilder withAuthenticationProviderID(String authenticationProviderID) {
+    public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
+        throws InvalidUserException {
+      validateAuthenticationProviderID(authenticationProviderID);
       user.setAuthenticationProviderId(authenticationProviderID);
       return this;
     }
 
-    /**
-     * Validation wraps the checked exception {@link InvalidUserException} into a runtime exception
-     * here.
-     * @param subject
-     * @return
-     */
-    public UserBuilder withAuthenticationSubject(String subject) {
-      try {
-        validateSubject(subject);
-        user.setSubject(subject);
-      }
-      catch (InvalidUserException iue) {
-        throw new RuntimeException(iue);
-      }
+    public UserBuilder withAuthenticationSubject(String subject) throws InvalidUserException {
+      validateSubject(subject);
+      user.setSubject(subject);
       return this;
     }
 
@@ -80,6 +82,12 @@ public class UserUtil {
   @Autowired
   private ServiceValidationUtil validator;
 
+  @Autowired
+  private IOAuthProviderRegistry registry;
+
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
   /**
    * Defines the minimum validation requirement for a subject string. <br/>
    * Set arbitrarily to 4+ alphanumeric characters for now. <br/>
@@ -95,9 +103,27 @@ public class UserUtil {
    * @param subject
    * @throws InvalidUserException if the subject {@link String} is not matched by the pattern.
    */
-  public static void validateSubject(String subject) throws InvalidUserException {
+  public void validateSubject(String subject) throws InvalidUserException {
+    validator.validateEmpties(subject);
     if (!AUTHENTICATION_SUBJECT_VALIDATION_PATTERN.matches(subject)) {
-      throw new InvalidUserException("Invalid subject for technical user.");
+      throw new InvalidUserException("Invalid subject for user.");
+    }
+  }
+
+  /**
+   * Validates the given authentication provider ID by comparing it with the list of supported
+   * {@link IOAuthProvider}s' IDs.
+   *
+   * @param authenticationProviderID
+   * @throws InvalidUserException
+   */
+  public void validateAuthenticationProviderID(String authenticationProviderID)
+      throws InvalidUserException {
+    validator.validateEmpties(authenticationProviderID);
+    if (!registry.list().stream()
+        .map(
+            IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
+      throw new InvalidUserException("Invalid authentication provider ID for user.");
     }
   }
 
@@ -108,11 +134,29 @@ public class UserUtil {
    * @param user
    * @throws InvalidUserException
    */
-  public void validateTechnicalUser(User user) throws InvalidUserException {
+  public void validateUser(User user) throws InvalidUserException {
     // boilerplate null validation
     validator.validateNulls(user);
     validator.validateEmpties(user.getId(), user.getSubject(), user.getUsername(),
         user.getAuthenticationProviderId());
     validateSubject(user.getSubject());
+    validateAuthenticationProviderID(user.getAuthenticationProviderId());
+  }
+
+  /**
+   * Verifies whether the given acting {@link User} is the same user as the given target {@link User},
+   * or whether they have the repository {@literal sysadmin} role.<br/>
+   * Used when retrieving information about which {@link Namespace}s a {@link User} has visibility on.
+   *
+   * @param actor
+   * @param target
+   * @throws OperationForbiddenException if none of the conditions above applies.
+   */
+  public void authorizeActorAsTargetOrSysadmin(User actor, User target)
+      throws OperationForbiddenException {
+    if (!userRepositoryRoleService.isSysadmin(actor) && !actor.equals(target)) {
+      throw new OperationForbiddenException(
+          "Acting user is neither target user nor sysadmin - aborting operation");
+    }
   }
 }
