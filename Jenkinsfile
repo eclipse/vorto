@@ -39,7 +39,7 @@ pipeline {
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
-                  withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'TOKEN')]) {
+                  withCredentials([string(credentialsId: 'sonarcloud', variable: 'TOKEN')]) {
                     sh 'mvn -P coverage -Dsonar.projectKey=org.eclipse.vorto:parent -Dsonar.organization=vorto  -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.jacoco.reportPaths=target/jacoco.exec -Dsonar.language=java sonar:sonar -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development'
                   }
                 }
