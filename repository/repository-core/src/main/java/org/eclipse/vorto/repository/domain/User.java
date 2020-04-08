@@ -72,9 +72,9 @@ public class User implements Serializable {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
-  // TODO remove
+  // TODO remove - changed to eager as recent changes break lazy init when assigning sysadmins
   @Deprecated
-  @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
+  @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.EAGER)
   private Set<TenantUser> tenantUsers = new HashSet<>();
 
   private String emailAddress;

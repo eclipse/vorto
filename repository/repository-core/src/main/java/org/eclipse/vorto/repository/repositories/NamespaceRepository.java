@@ -15,20 +15,32 @@ package org.eclipse.vorto.repository.repositories;
 import java.util.Set;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import springfox.documentation.annotations.Cacheable;
 
 /**
  * Holds all persisted namespaces.
- * TODO #2265 caching
+ * TODO #2265 better caching key vs eviction
  */
 @Repository
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
-  
+
+  @Cacheable("namespaces")
   Namespace findByName(String name);
+
+  @Cacheable("namespaces")
   @Query("select n from Namespace n where n.owner = :owner")
   Set<Namespace> findByOwner(@Param("owner")User owner);
-  
+
+  @CacheEvict(value = "namespaces", allEntries = true)
+  @Override
+  <S extends Namespace> S save(S entity);
+
+  @CacheEvict(value = "namespaces", allEntries = true)
+  @Override
+  void delete(Namespace entity);
 }

@@ -14,17 +14,21 @@ package org.eclipse.vorto.repository.repositories;
 
 import java.util.Set;
 import org.eclipse.vorto.repository.domain.Privilege;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Read-only repository yielding all applicable privileges for roles.
- * TODO #2265 caching
+ * Read-only repository yielding all applicable privileges for roles.<br/>
+ * The repository is intended to be read-only at runtime, so no cache eviction strategy is used.
  */
 @Repository
+@Cacheable("privileges")
 public interface PrivilegeRepository extends org.springframework.data.repository.Repository<Privilege, Long> {
+
   @Query("select p from Privilege p where p.name = :name")
   Privilege find(@Param("name") String name);
+
   Set<Privilege> findAll();
 }

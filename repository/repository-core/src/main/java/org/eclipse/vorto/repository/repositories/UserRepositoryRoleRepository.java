@@ -14,14 +14,16 @@ package org.eclipse.vorto.repository.repositories;
 
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * Yields all user-repository role associations, which is read-only at runtime and limited to
- * expressing sysadmin users at this time.
- * TODO #2265 caching
+ * expressing sysadmin users at this time.<br/>
+ * The repository is intended to be read-only at runtime, so no cache eviction strategy is used.
  */
 @Repository
+@Cacheable("userRepositoryRoles")
 public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, Long> {
 }

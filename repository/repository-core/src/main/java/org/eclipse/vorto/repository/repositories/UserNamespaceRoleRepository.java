@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Holds user-namespace role associations.
- * TODO #2265 caching and eviction are ok-ish but the eviction is a bit drastic - not easy to fine-tune due to queries ńot able to use same key
+ * TODO #2265 better caching key vs eviction
  */
 @Repository
 public interface UserNamespaceRoleRepository extends

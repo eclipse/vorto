@@ -15,16 +15,21 @@ package org.eclipse.vorto.repository.repositories;
 import java.util.Set;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * Read-only repository for namespace roles.
- * TODO #2265 caching
+ * Read-only repository for namespace roles.<br/>
+ * Caching here is written for read-only access, as for now, namespace roles are pretty much
+ * constant and not intended to be modified at runtime. <br/>
+ * If this ever changes, then the caching strategy should adapt.
  */
 @Repository
+@Cacheable("namespaceRoles")
 public interface NamespaceRoleRepository extends org.springframework.data.repository.Repository<NamespaceRole, Long> {
+
   @Query("select n from NamespaceRole n where n.name = :name")
   IRole find(@Param("name") String name);
 

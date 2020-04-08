@@ -27,7 +27,17 @@ public class RepositoryCachingConfiguration {
   @Bean
   public CacheManager cacheManager() {
     SimpleCacheManager cacheManager = new SimpleCacheManager();
-    cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("userNamespaceRoles")));
+    cacheManager.setCaches(
+        Arrays.asList(
+            new ConcurrentMapCache("userNamespaceRoles"),
+            new ConcurrentMapCache("userRepositoryRoles"),
+            new ConcurrentMapCache("namespaceRoles"),
+            new ConcurrentMapCache("repositoryRoles"),
+            new ConcurrentMapCache("privileges"),
+            new ConcurrentMapCache("users"),
+            new ConcurrentMapCache("namespaces")
+        )
+    );
     return cacheManager;
   }
 }
