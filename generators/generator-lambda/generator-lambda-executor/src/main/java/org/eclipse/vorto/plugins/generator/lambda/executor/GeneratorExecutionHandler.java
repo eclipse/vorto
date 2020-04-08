@@ -22,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import org.eclipse.vorto.codegen.azure.AzureGenerator;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
@@ -51,7 +50,7 @@ public class GeneratorExecutionHandler implements RequestStreamHandler {
     generators.add(new BoschIoTSuiteGenerator());
     generators.add(new OpenAPIGenerator());
     generators.add(new JSONSchemaGenerator());
-    generators.add(new AzureGenerator());
+    //generators.add(new AzureGenerator());
   }
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
