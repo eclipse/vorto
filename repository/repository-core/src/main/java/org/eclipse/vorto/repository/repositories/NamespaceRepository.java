@@ -29,18 +29,10 @@ import springfox.documentation.annotations.Cacheable;
 @Repository
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
 
-  @Cacheable("namespaces")
   Namespace findByName(String name);
 
-  @Cacheable("namespaces")
   @Query("select n from Namespace n where n.owner = :owner")
   Set<Namespace> findByOwner(@Param("owner")User owner);
 
-  @CacheEvict(value = "namespaces", allEntries = true)
-  @Override
-  <S extends Namespace> S save(S entity);
 
-  @CacheEvict(value = "namespaces", allEntries = true)
-  @Override
-  void delete(Namespace entity);
 }

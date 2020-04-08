@@ -32,31 +32,16 @@ import org.springframework.stereotype.Repository;
 public interface UserNamespaceRoleRepository extends
     CrudRepository<UserNamespaceRoles, UserNamespaceID> {
 
-  @Cacheable("userNamespaceRoles")
-  @Override
-  Iterable<UserNamespaceRoles> findAll();
-
-  @Cacheable(value = "userNamespaceRoles")
   @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace")
   Collection<UserNamespaceRoles> findAllByNamespace(@Param("namespace") Namespace namespace);
 
-  @Cacheable(value = "userNamespaceRoles")
   @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user")
   Collection<UserNamespaceRoles> findAllByUser(@Param("user") User user);
 
-  @Cacheable(value = "userNamespaceRoles")
   @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user and unr.roles = :roles")
   Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user, @Param("roles") long roles);
 
-  @Cacheable(value = "userNamespaceRoles")
   @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace and unr.roles = :roles")
   Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace, @Param("roles") long roles);
 
-  @CacheEvict(value = "userNamespaceRoles", allEntries = true)
-  @Override
-  void delete(UserNamespaceID userNamespaceID);
-
-  @CacheEvict(value = "userNamespaceRoles", allEntries = true)
-  @Override
-  <S extends UserNamespaceRoles> S save(S entity);
 }
