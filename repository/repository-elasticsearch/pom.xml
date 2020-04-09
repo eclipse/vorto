@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <elasticsearch.version>6.7.2</elasticsearch.version>
+    <elasticsearch.version>6.8.8</elasticsearch.version>
   </properties>
 
   <dependencies>
@@ -69,7 +69,7 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>7.7.0</version>
+      <version>7.7.2</version>
       <scope>test</scope>
     </dependency>
 
