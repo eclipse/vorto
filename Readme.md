@@ -29,6 +29,7 @@ Check out more cool [Vorto Examples](https://www.github.com/eclipse/vorto-exampl
 ## Developer Guide
 
 - [Plugin SDK](plugin-sdk/Readme.md) that lets you extend Vorto with different plugin types
+- Compiling Vorto: Vorto currently only compiles with Java 8.
 
 ## Contact us
  - You want to chat with us? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -52,7 +53,7 @@ If you have suggestions on how and what news we should provide let us know in th
 
 When you create a Pull Request, make sure:
 
-1. You have a valid CLA signed with Eclipse
+1. You have a valid [ECA](https://www.eclipse.org/legal/ECA.php) signed with Eclipse
 2. All your commits are signed off (git commit -s)
 3. Your commit message contains "Fixes #`<Github issue no>`
 4. Target to merge your fix is development branch
