@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.generators.runner;
 
-import org.eclipse.vorto.codegen.azure.AzureGenerator;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
@@ -28,17 +27,15 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
 	@Override
 	protected void doSetup() {
 		addGenerator(Generator.create("/generators/bosch.properties",
-				new CodeGeneratorV1Adapter(new BoschIoTSuiteGenerator())));
+			new CodeGeneratorV1Adapter(new BoschIoTSuiteGenerator())));
 		addGenerator(Generator.create("/generators/ditto.properties",
-				new CodeGeneratorV1Adapter(new EclipseDittoGenerator())));
+			new CodeGeneratorV1Adapter(new EclipseDittoGenerator())));
 		addGenerator(Generator.create("/generators/hono.properties",
-				new CodeGeneratorV1Adapter(new EclipseHonoGenerator())));
+			new CodeGeneratorV1Adapter(new EclipseHonoGenerator())));
 		addGenerator(
-				Generator.create("/generators/openapi.properties", new CodeGeneratorV1Adapter(new OpenAPIGenerator())));
+			Generator.create("/generators/openapi.properties",
+				new CodeGeneratorV1Adapter(new OpenAPIGenerator())));
 		addGenerator(Generator.create("/generators/jsonschema.properties",
-				new CodeGeneratorV1Adapter(new JSONSchemaGenerator())));
-		addGenerator(Generator.create("/generators/azure.properties",
-				new CodeGeneratorV1Adapter(new AzureGenerator())));
+			new CodeGeneratorV1Adapter(new JSONSchemaGenerator())));
 	}
-
 }
