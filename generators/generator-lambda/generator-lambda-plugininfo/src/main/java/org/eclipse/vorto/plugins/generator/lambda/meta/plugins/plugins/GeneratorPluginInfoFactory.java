@@ -12,9 +12,10 @@
  */
 package org.eclipse.vorto.plugins.generator.lambda.meta.plugins.plugins;
 
+import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
 
 public class GeneratorPluginInfoFactory {
   
@@ -26,8 +27,7 @@ public class GeneratorPluginInfoFactory {
   private static final BoschIoTSuitePluginInfo boschiotsuitePlugin = new BoschIoTSuitePluginInfo();
   private static final OpenAPIPluginInfo openApiPlugin = new OpenAPIPluginInfo();
   private static final JsonSchemaPluginInfo jsonSchemaPlugin = new  JsonSchemaPluginInfo();
-  private static final AzureIoTPluginInfo AZURE_IOT_PLUGIN_INFO = new AzureIoTPluginInfo();
-  
+
   
   private final static Map<String, GeneratorPluginInfo> infos = new HashMap<String, GeneratorPluginInfo>();
   
@@ -37,7 +37,6 @@ public class GeneratorPluginInfoFactory {
     infos.put(boschiotsuitePlugin.getInfo().getKey(),boschiotsuitePlugin.getInfo());
     infos.put(openApiPlugin.getInfo().getKey(), openApiPlugin.getInfo());
     infos.put(jsonSchemaPlugin.getInfo().getKey(), jsonSchemaPlugin.getInfo());
-    infos.put(AZURE_IOT_PLUGIN_INFO.getInfo().getKey(), AZURE_IOT_PLUGIN_INFO.getInfo());
   }
   
   private GeneratorPluginInfoFactory() {
