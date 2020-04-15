@@ -66,7 +66,7 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<guava.version>18.0</guava.version>
 		<org.eclipse.emf.version>2.11.1</org.eclipse.emf.version>
-
+		<elasticsearch.version>6.8.8</elasticsearch.version>
 	</properties>
 
 	<dependencyManagement>

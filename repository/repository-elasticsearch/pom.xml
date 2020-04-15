@@ -10,10 +10,6 @@
   <artifactId>repository-elasticsearch</artifactId>
   <packaging>jar</packaging>
 
-  <properties>
-    <elasticsearch.version>6.8.8</elasticsearch.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.eclipse.vorto</groupId>
