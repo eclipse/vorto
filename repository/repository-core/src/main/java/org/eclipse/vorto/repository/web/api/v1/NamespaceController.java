@@ -15,13 +15,15 @@ package org.eclipse.vorto.repository.web.api.v1;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -57,6 +60,7 @@ import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,13 +123,17 @@ public class NamespaceController {
   @Autowired
   private NamespaceService namespaceService;
 
+  @Autowired
+  private EntityDTOConverter converter;
+
   @RequestMapping(method = RequestMethod.GET, value = "/test")
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     try {
-      userNamespaceRoleService.addRole(userContext.getUsername(), "menajrl", "menabosch", "model_viewer");
+      userNamespaceRoleService
+          .addRole(userContext.getUsername(), "menajrl", "menabosch", "model_viewer");
       Collection<User> collabs = userNamespaceRoleService
           .getCollaborators("mena-bosch", "menabosch");
       collabs = null;
@@ -168,12 +176,23 @@ public class NamespaceController {
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
+    Collection<NamespaceDto> namespacesTest = new TreeSet<>(
+        Comparator.comparing(NamespaceDto::getName));
+    try {
+      for (Map.Entry<Namespace, Map<User, Collection<IRole>>> entry : userNamespaceRoleService
+          .getNamespacesCollaboratorsAndRoles(userContext.getUsername(),
+              userContext.getUsername(), "namespace_admin").entrySet()) {
+        namespacesTest.add(converter.from(entry.getKey(), entry.getValue()));
+      }
+    } catch (OperationForbiddenException ofe) {
+      // TODO handle
+    }
+    /*Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
         .filter(
             tenant -> userContext.isSysAdmin() || tenant.hasTenantAdmin(userContext.getUsername()))
         .map(NamespaceDto::fromTenant)
-        .collect(Collectors.toList());
-    return new ResponseEntity<>(namespaces, HttpStatus.OK);
+        .collect(Collectors.toList());*/
+    return new ResponseEntity<>(namespacesTest, HttpStatus.OK);
   }
 
   /**

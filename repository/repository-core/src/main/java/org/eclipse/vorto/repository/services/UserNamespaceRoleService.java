@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.services;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -715,7 +716,15 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // authorizes actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
 
-    // retrieves namespaces either filtered by role(s) or all namespaces
+    // if target user is sysadmin, then retrieves all namespaces optionally filtered by role
+    if (userRepositoryRoleService.isSysadmin(target)) {
+        return userNamespaceRoleRepository.findAll().stream()
+            .filter(roleFilter != null ? unr -> ((unr.getRoles() & roleFilter) == roleFilter) : unr -> true)
+            .map(UserNamespaceRoles::getNamespace).collect(
+                Collectors.toSet());
+    }
+
+    // retrieves namespaces either filtered by role(s) or all namespaces where target has a role
     if (roleFilter == null) {
       return userNamespaceRoleRepository.findAllByUser(target).stream()
           .map(UserNamespaceRoles::getNamespace).collect(
@@ -801,4 +810,100 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       throws OperationForbiddenException {
     return getNamespaces(actorUsername, targetUsername, (IRole[]) null);
   }
+
+  /**
+   * Returns all {@link Namespace}s where the target {@link User} has the given roles, mapping by
+   * {@link Namespace}, then by collaborators ({@link User}s) and {@link IRole}s, as acted by the
+   * given actor {@link User}.<br/>
+   * The operation can fail to authorize if the acting {@link User} neither has the
+   * {@literal sysadmin} repository role, and they are not the target {@link User}.<br/>
+   * If no role filter is specified, will return the map of all {@link Namespace}s where the
+   * target {@link User} has any role.
+   *
+   * @param actor
+   * @param target
+   * @param roleFilter
+   * @return
+   */
+  public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(User actor,
+      User target, Long roleFilter) throws OperationForbiddenException {
+    // boilerplate null validation - role filter can be null
+    validator.validateNulls(actor, target);
+
+    // authorizes actor
+    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
+
+    Map<Namespace, Map<User, Collection<IRole>>> result = new HashMap<>();
+
+    Collection<Namespace> namespaces = getNamespaces(actor, target, roleFilter);
+    for (Namespace n : namespaces) {
+      result.putIfAbsent(n, getRolesByCollaborator(actor, n));
+    }
+    return result;
+  }
+
+  /**
+   * @param actor
+   * @param target
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespacesCollaboratorsAndRoles(User, User, Long)
+   */
+  public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(User actor,
+      User target) throws OperationForbiddenException {
+    return getNamespacesCollaboratorsAndRoles(actor, target, null);
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @param roles
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespacesCollaboratorsAndRoles(User, User, Long)
+   */
+  public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(
+      String actorUsername, String targetUsername, IRole... roles)
+      throws OperationForbiddenException {
+    // boilerplate null validation - role filter can be null
+    validator.validateNulls(actorUsername, targetUsername);
+
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    Long actualRoles = null;
+    if (roles != null && roles.length > 0) {
+      actualRoles = roleUtil.toLong(Arrays.asList(roles));
+    }
+
+    return getNamespacesCollaboratorsAndRoles(actor, target, actualRoles);
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @param roles
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespacesCollaboratorsAndRoles(User, User, Long)
+   */
+  public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(
+      String actorUsername, String targetUsername, String... roles)
+      throws OperationForbiddenException {
+    return getNamespacesCollaboratorsAndRoles(actorUsername, targetUsername,
+        roles != null ? Arrays.stream(roles).map(namespaceRoleRepository::find)
+            .toArray(IRole[]::new) : null);
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespacesCollaboratorsAndRoles(User, User, Long)
+   */
+  public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(
+      String actorUsername, String targetUsername) throws OperationForbiddenException {
+    return getNamespacesCollaboratorsAndRoles(actorUsername, targetUsername, (IRole[]) null);
+  }
+
 }

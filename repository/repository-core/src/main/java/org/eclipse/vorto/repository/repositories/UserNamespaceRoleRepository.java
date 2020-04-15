@@ -13,12 +13,11 @@
 package org.eclipse.vorto.repository.repositories;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -38,10 +37,13 @@ public interface UserNamespaceRoleRepository extends
   @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user")
   Collection<UserNamespaceRoles> findAllByUser(@Param("user") User user);
 
-  @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user and unr.roles = :roles")
-  Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user, @Param("roles") long roles);
+  @Query(nativeQuery = true, value = "select * from user_namespace_roles where user_id = :user and ((roles & :roles) = :roles)")
+  Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user,
+      @Param("roles") long roles);
 
   @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace and unr.roles = :roles")
-  Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace, @Param("roles") long roles);
+  Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace,
+      @Param("roles") long roles);
 
+  Set<UserNamespaceRoles> findAll();
 }
