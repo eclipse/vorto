@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.web.api.v1;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
@@ -40,11 +42,8 @@ import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
@@ -126,10 +125,12 @@ public class NamespaceController {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     try {
-      userNamespaceRoleService.addRole("mena-bosch", "menajrl", "menabosch", "model_viewer");
+      userNamespaceRoleService.addRole(userContext.getUsername(), "menajrl", "menabosch", "model_viewer");
       Collection<User> collabs = userNamespaceRoleService
           .getCollaborators("mena-bosch", "menabosch");
       collabs = null;
+      Collection<Namespace> menajrlsNamespaces = userNamespaceRoleService
+          .getNamespaces("menajrl", "menajrl", "model_viewer");
       userNamespaceRoleService.deleteAllRoles("mena-bosch", "menajrl", "menabosch");
       collabs = userNamespaceRoleService.getCollaborators("mena-bosch", "menabosch");
       collabs = null;

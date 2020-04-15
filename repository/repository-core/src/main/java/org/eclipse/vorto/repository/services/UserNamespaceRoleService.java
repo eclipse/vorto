@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
  */
 // TODO #2265: some validation operations could be reused by autowiring the NamespaceService, which may, however, introduce a Spring circular dependency
 // TODO #2265: should operations on namespace roles trigger new application events?
+// TODO #2265 not expose actor and take it from session
 @Service
 public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
 

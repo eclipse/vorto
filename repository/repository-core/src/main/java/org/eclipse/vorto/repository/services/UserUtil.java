@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -34,56 +32,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserUtil {
 
-  /**
-   * Utility class to build {@link User} objects.<br/>
-   * Validates, but does not persist users on its own.
-   */
-  public class UserBuilder {
-
-    private User user = new User();
-
-    public UserBuilder withID(long id) {
-      user.setId(id);
-      return this;
-    }
-
-    public UserBuilder withName(String name) throws InvalidUserException {
-      if (Objects.isNull(name) || name.trim().isEmpty()) {
-        throw new InvalidUserException("Username is empty.");
-      }
-      user.setUsername(name);
-      return this;
-    }
-
-    public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
-        throws InvalidUserException {
-      validateAuthenticationProviderID(authenticationProviderID);
-      user.setAuthenticationProviderId(authenticationProviderID);
-      return this;
-    }
-
-    public UserBuilder withAuthenticationSubject(String subject) throws InvalidUserException {
-      validateSubject(subject);
-      user.setSubject(subject);
-      return this;
-    }
-
-    public UserBuilder setTechnicalUser(boolean technicalUser) {
-      user.setTechnicalUser(technicalUser);
-      return this;
-    }
-
-    public User build() {
-      return user;
-    }
-
-  }
+  @Autowired
+  private IOAuthProviderRegistry registry;
 
   @Autowired
   private ServiceValidationUtil validator;
-
-  @Autowired
-  private IOAuthProviderRegistry registry;
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
@@ -120,11 +73,11 @@ public class UserUtil {
   public void validateAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
     validator.validateEmpties(authenticationProviderID);
-    if (!registry.list().stream()
+    /*if (!registry.list().stream()
         .map(
             IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
       throw new InvalidUserException("Invalid authentication provider ID for user.");
-    }
+    }*/
   }
 
   /**
@@ -158,5 +111,25 @@ public class UserUtil {
       throw new OperationForbiddenException(
           "Acting user is neither target user nor sysadmin - aborting operation");
     }
+  }
+
+  public UserBuilder getValidatingUserBuilder() {
+    return new UserBuilder(true) {
+      public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
+          throws InvalidUserException {
+        if (validate) {
+          validateAuthenticationProviderID(authenticationProviderID);
+        }
+        user.setAuthenticationProviderId(authenticationProviderID);
+        return this;
+      }
+      public UserBuilder withAuthenticationSubject(String subject) throws InvalidUserException {
+        if (validate) {
+          validateSubject(subject);
+        }
+        user.setSubject(subject);
+        return this;
+      }
+    };
   }
 }
