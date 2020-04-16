@@ -16,18 +16,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
-import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
@@ -473,10 +468,10 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
 
     // deletes all collaborator associations
-    Collection<User> collaborators = userNamespaceRoleService
-        .getCollaborators(actor, currentNamespace);
-    for (User collaborator : collaborators) {
-      userNamespaceRoleService.deleteAllRoles(actor, collaborator, currentNamespace);
+    Collection<User> users = userNamespaceRoleService
+        .getRolesByUser(actor, currentNamespace).keySet();
+    for (User user : users) {
+      userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace);
     }
 
     // delete all roles from owner
@@ -525,7 +520,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   *
    * @param actorUsername
    * @param targetUsername
    * @return

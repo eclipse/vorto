@@ -16,7 +16,6 @@ import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +35,6 @@ import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -45,7 +43,6 @@ import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
@@ -131,20 +128,10 @@ public class NamespaceController {
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    try {
-      userNamespaceRoleService
-          .addRole(userContext.getUsername(), "menajrl", "menabosch", "model_viewer");
-      Collection<User> collabs = userNamespaceRoleService
-          .getCollaborators("mena-bosch", "menabosch");
-      collabs = null;
-      Collection<Namespace> menajrlsNamespaces = userNamespaceRoleService
-          .getNamespaces("menajrl", "menajrl", "model_viewer");
-      userNamespaceRoleService.deleteAllRoles("mena-bosch", "menajrl", "menabosch");
-      collabs = userNamespaceRoleService.getCollaborators("mena-bosch", "menabosch");
-      collabs = null;
+    /*try {
     } catch (DoesNotExistException | OperationForbiddenException e) {
       return new ResponseEntity<>(false, HttpStatus.OK);
-    }
+    }*/
     return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
         HttpStatus.OK);
   }
@@ -176,23 +163,18 @@ public class NamespaceController {
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    Collection<NamespaceDto> namespacesTest = new TreeSet<>(
+    Collection<NamespaceDto> namespaces = new TreeSet<>(
         Comparator.comparing(NamespaceDto::getName));
     try {
       for (Map.Entry<Namespace, Map<User, Collection<IRole>>> entry : userNamespaceRoleService
           .getNamespacesCollaboratorsAndRoles(userContext.getUsername(),
               userContext.getUsername(), "namespace_admin").entrySet()) {
-        namespacesTest.add(converter.from(entry.getKey(), entry.getValue()));
+        namespaces.add(converter.from(entry.getKey(), entry.getValue()));
       }
     } catch (OperationForbiddenException ofe) {
-      // TODO handle
+      return new ResponseEntity<>(namespaces, HttpStatus.FORBIDDEN);
     }
-    /*Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
-        .filter(
-            tenant -> userContext.isSysAdmin() || tenant.hasTenantAdmin(userContext.getUsername()))
-        .map(NamespaceDto::fromTenant)
-        .collect(Collectors.toList());*/
-    return new ResponseEntity<>(namespacesTest, HttpStatus.OK);
+    return new ResponseEntity<>(namespaces, HttpStatus.OK);
   }
 
   /**
@@ -208,24 +190,19 @@ public class NamespaceController {
   public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
 
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
+    /*if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
       return new ResponseEntity<>(Collections.emptyList(), HttpStatus.PRECONDITION_FAILED);
-    }
-
+    }*/
+    Collection<Collaborator> collaborators = new HashSet<>();
     try {
-      Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
-      if (maybeTenant.isPresent()) {
-        Set<TenantUser> tenantUserSet = maybeTenant.get().getUsers();
-        Set<Collaborator> collaborators = tenantUserSet.stream().map(Collaborator::fromTenantUser)
-            .collect(
-                Collectors.toSet());
-        return new ResponseEntity<>(collaborators, HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      }
-    } catch (Exception e) {
-      LOGGER.error("Error in getUsersForNamespace()", e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      IUserContext userContext = UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication());
+      collaborators = converter.from(userNamespaceRoleService
+          .getRolesByUser(userContext.getUsername(), namespace));
+      return new ResponseEntity<>(collaborators, HttpStatus.OK);
+    } catch (OperationForbiddenException ofe) {
+      LOGGER.warn("Error in getUsersForNamespace()", ofe);
+      return new ResponseEntity<>(collaborators, HttpStatus.FORBIDDEN);
     }
   }
 

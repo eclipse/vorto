@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Role;
@@ -21,19 +20,20 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 
 public class Collaborator implements ICollaborator {
+
   private String userId;
-  private String authenticationProviderId;  
+  private String authenticationProviderId;
   private String subject;
   private boolean isTechnicalUser;
   private Collection<String> roles;
-  
+
   public static Collaborator fromTenantUser(TenantUser tenantUser) {
-    return new Collaborator(tenantUser.getUser().getUsername(), 
+    return new Collaborator(tenantUser.getUser().getUsername(),
         tenantUser.getUser().getAuthenticationProviderId(),
         tenantUser.getUser().getSubject(),
         tenantUser.getUser().isTechnicalUser(),
         tenantUser.getRoles().stream().map(role -> role.getRole().name())
-          .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
   }
 
   public static Collaborator fromUser(User user) {
@@ -51,13 +51,15 @@ public class Collaborator implements ICollaborator {
 
   }
 
-  public Collaborator() {}
-  
+  public Collaborator() {
+  }
+
   public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
     this(userId, providerId, subject, false, roles);
   }
-  
-  public Collaborator(String userId, String providerId, String subject, boolean isTechnicalUser, Collection<String> roles) {
+
+  public Collaborator(String userId, String providerId, String subject, boolean isTechnicalUser,
+      Collection<String> roles) {
     this.userId = userId;
     this.authenticationProviderId = providerId;
     this.roles = roles;
@@ -104,5 +106,5 @@ public class Collaborator implements ICollaborator {
   public void setTechnicalUser(boolean isTechnicalUser) {
     this.isTechnicalUser = isTechnicalUser;
   }
-  
+
 }

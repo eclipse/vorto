@@ -12,8 +12,8 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
@@ -69,5 +69,20 @@ public class RoleUtil {
       return 0l;
     }
     return roles.stream().collect(Collectors.summingLong(IRole::getRole));
+  }
+
+  /**
+   * Converts a collection of whichever {@link IRole} to the sum of their value, expressed as a
+   * {@code long}.
+   *
+   * @param roles
+   * @return
+   */
+  public long toLong(IRole... roles) {
+    // boilerplate null validation
+    if (roles == null || roles.length == 0) {
+      return 0l;
+    }
+    return Arrays.stream(roles).collect(Collectors.summingLong(IRole::getRole));
   }
 }

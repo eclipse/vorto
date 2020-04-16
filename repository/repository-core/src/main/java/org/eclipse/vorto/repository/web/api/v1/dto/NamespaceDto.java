@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.TenantHasNoNamespaceException;
 
 public class NamespaceDto {
+
   private String name;
   private Collection<Collaborator> collaborators;
   private Collection<Collaborator> admins;
@@ -28,27 +29,31 @@ public class NamespaceDto {
 
   /**
    * Converts the tenant admins user list to collaborators
+   *
    * @param tenant
    * @return
    */
   private static Collection<Collaborator> getAdmins(Tenant tenant) {
-    return tenant.getTenantAdmins().stream().map(Collaborator::fromUser).collect(Collectors.toList());
+    return tenant.getTenantAdmins().stream().map(Collaborator::fromUser)
+        .collect(Collectors.toList());
   }
 
   private static Collection<Collaborator> getCollaborators(Tenant tenant) {
-    return tenant.getUsers().stream().map(Collaborator::fromTenantUser).collect(Collectors.toList());
+    return tenant.getUsers().stream().map(Collaborator::fromTenantUser)
+        .collect(Collectors.toList());
   }
 
   private static String getNamespaceName(Tenant tenant) {
     if (tenant.getNamespaces().size() <= 0) {
       throw new TenantHasNoNamespaceException(tenant.getTenantId());
     }
-    
+
     // we are expected to only have 1 namespace per tenant
     return tenant.getNamespaces().iterator().next().getName();
   }
-  
-  public NamespaceDto(String name, Collection<Collaborator> collaborators, Collection<Collaborator> admins) {
+
+  public NamespaceDto(String name, Collection<Collaborator> collaborators,
+      Collection<Collaborator> admins) {
     this.name = name;
     this.collaborators = collaborators;
     this.admins = admins;

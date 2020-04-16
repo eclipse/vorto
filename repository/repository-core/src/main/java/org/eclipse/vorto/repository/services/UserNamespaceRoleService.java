@@ -14,11 +14,12 @@ package org.eclipse.vorto.repository.services;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.domain.IRole;
@@ -556,7 +557,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return
    * @throws OperationForbiddenException
    */
-  public Collection<User> getCollaborators(User actor, Namespace namespace, Long roles)
+  public Collection<User> getUsers(User actor, Namespace namespace, Long roles)
       throws OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, namespace);
@@ -578,11 +579,11 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespace
    * @return
    * @throws OperationForbiddenException
-   * @see UserNamespaceRoleService#getCollaborators(User, Namespace, Long)
+   * @see UserNamespaceRoleService#getUsers(User, Namespace, Long)
    */
-  public Collection<User> getCollaborators(User actor, Namespace namespace)
+  public Collection<User> getUsers(User actor, Namespace namespace)
       throws OperationForbiddenException {
-    return getCollaborators(actor, namespace, null);
+    return getUsers(actor, namespace, null);
 
   }
 
@@ -591,13 +592,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespaceName
    * @return
    * @throws OperationForbiddenException
-   * @see UserNamespaceRoleService#getCollaborators(User, Namespace)
+   * @see UserNamespaceRoleService#getUsers(User, Namespace)
    */
-  public Collection<User> getCollaborators(String actorUsername, String namespaceName)
+  public Collection<User> getUsers(String actorUsername, String namespaceName)
       throws OperationForbiddenException {
     User actor = userRepository.findByUsername(actorUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    return getCollaborators(actor, namespace);
+    return getUsers(actor, namespace);
   }
 
   /**
@@ -611,10 +612,20 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return
    * @throws OperationForbiddenException
    */
-  public Map<User, Collection<IRole>> getRolesByCollaborator(User actor, Namespace namespace)
+  public Map<User, Collection<IRole>> getRolesByUser(User actor, Namespace namespace)
       throws OperationForbiddenException {
-    return getCollaborators(actor, namespace).stream()
-        .collect(Collectors.toMap(Function.identity(), u -> getRoles(u, namespace)));
+
+    authorizeActorAsAdminOnNamespace(actor, namespace);
+
+    TreeMap<User, Collection<IRole>> result = new TreeMap<>(
+        Comparator.comparing(User::getUsername));
+    userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
+        .forEach(
+            unr -> {
+              result.put(unr.getUser(), roleUtil.toNamespaceRoles(unr.getRoles()));
+            }
+        );
+    return result;
   }
 
   /**
@@ -622,13 +633,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespaceName
    * @return
    * @throws OperationForbiddenException
-   * @see UserNamespaceRoleService#getRolesByCollaborator(User, Namespace)
+   * @see UserNamespaceRoleService#getRolesByUser(User, Namespace)
    */
-  public Map<User, Collection<IRole>> getRolesByCollaborator(String actorUsername,
+  public Map<User, Collection<IRole>> getRolesByUser(String actorUsername,
       String namespaceName) throws OperationForbiddenException {
     User actor = userRepository.findByUsername(actorUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    return getRolesByCollaborator(actor, namespace);
+    return getRolesByUser(actor, namespace);
   }
 
   /**
@@ -718,10 +729,11 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     // if target user is sysadmin, then retrieves all namespaces optionally filtered by role
     if (userRepositoryRoleService.isSysadmin(target)) {
-        return userNamespaceRoleRepository.findAll().stream()
-            .filter(roleFilter != null ? unr -> ((unr.getRoles() & roleFilter) == roleFilter) : unr -> true)
-            .map(UserNamespaceRoles::getNamespace).collect(
-                Collectors.toSet());
+      return userNamespaceRoleRepository.findAll().stream()
+          .filter(roleFilter != null ? unr -> ((unr.getRoles() & roleFilter) == roleFilter)
+              : unr -> true)
+          .map(UserNamespaceRoles::getNamespace).collect(
+              Collectors.toSet());
     }
 
     // retrieves namespaces either filtered by role(s) or all namespaces where target has a role
@@ -837,7 +849,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     Collection<Namespace> namespaces = getNamespaces(actor, target, roleFilter);
     for (Namespace n : namespaces) {
-      result.putIfAbsent(n, getRolesByCollaborator(actor, n));
+      result.putIfAbsent(n, getRolesByUser(actor, n));
     }
     return result;
   }

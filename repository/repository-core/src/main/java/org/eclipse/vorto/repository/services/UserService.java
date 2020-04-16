@@ -12,10 +12,11 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
@@ -163,19 +164,19 @@ public class UserService implements ApplicationEventPublisherAware {
     // authorizing actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
 
-    // retrieving namespaces where user is namespace_admin
-    Collection<Namespace> namespacesWhereTargetIsAdmin = userNamespaceRoleService
-        .getNamespaces(actor, target, userNamespaceRoleService.namespaceAdminRole());
+    // retrieving namespaces where user is namespace_admin, alongside users and roles
+    Map<Namespace, Map<User, Collection<IRole>>> namespacesWhereTargetIsAdmin = userNamespaceRoleService
+        .getNamespacesCollaboratorsAndRoles(actor, target,
+            roleUtil.toLong(userNamespaceRoleService.namespaceAdminRole()));
 
     // crawling namespaces and inferring whether target user is only admin for any
-    for (Namespace namespace : namespacesWhereTargetIsAdmin) {
-      if (userNamespaceRoleService.getCollaborators(actor, namespace,
-          roleUtil.toLong(Arrays.asList(userNamespaceRoleService.namespaceAdminRole()))).size()
-          == 1) {
+    for (Map.Entry<Namespace, Map<User, Collection<IRole>>> userRoles : namespacesWhereTargetIsAdmin
+        .entrySet()) {
+      if (userRoles.getValue().size() == 1) {
         throw new OperationForbiddenException(
             String.format(
                 "User is the only administrator of namespace [%s] - aborting delete operation.",
-                namespace.getName()
+                userRoles.getKey().getName()
             )
         );
       }

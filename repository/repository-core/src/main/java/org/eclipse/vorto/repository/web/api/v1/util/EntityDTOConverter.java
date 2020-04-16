@@ -41,24 +41,27 @@ public class EntityDTOConverter {
    * @return
    */
   public NamespaceDto from(Namespace namespace, Map<User, Collection<IRole>> usersAndRoles) {
-    Collection<Collaborator> collaborators = new TreeSet<>(
-        Comparator.comparing(Collaborator::getUserId));
-    usersAndRoles.forEach(
-        (u, c) -> {
-          Collaborator collaborator = new Collaborator();
-          collaborator.setUserId(u.getUsername());
-          collaborator.setRoles(c.stream().map(IRole::getName).collect(Collectors.toSet()));
-          collaborator.setSubject(u.getSubject());
-          collaborator.setTechnicalUser(u.isTechnicalUser());
-          collaborator.setAuthenticationProviderId(u.getAuthenticationProviderId());
-          collaborators.add(collaborator);
-        }
-    );
+    Collection<Collaborator> collaborators = from(usersAndRoles);
     Collection<Collaborator> admins = collaborators.stream()
         .filter(c -> c.getRoles().contains("namespace_admin")).collect(Collectors
             .toCollection(() -> new TreeSet<>(Comparator.comparing(Collaborator::getUserId))));
     return new NamespaceDto(namespace.getName(), collaborators, admins);
+  }
 
+  public Collection<Collaborator> from(Map<User, Collection<IRole>> usersAndRoles) {
+    Collection<Collaborator> result = new TreeSet<>(Comparator.comparing(Collaborator::getUserId));
+    usersAndRoles.forEach(
+        (u, c) -> {
+          Collaborator collaborator = new Collaborator();
+          collaborator.setAuthenticationProviderId(u.getAuthenticationProviderId());
+          collaborator.setRoles(c.stream().map(IRole::getName).collect(Collectors.toSet()));
+          collaborator.setSubject(u.getSubject());
+          collaborator.setTechnicalUser(u.isTechnicalUser());
+          collaborator.setUserId(u.getUsername());
+          result.add(collaborator);
+        }
+    );
+    return result;
   }
 
 }
