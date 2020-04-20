@@ -14,9 +14,9 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
-import java.security.Principal;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,30 +37,30 @@ import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.services.UserUtil;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
 import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.tenant.RestrictTenantPerOwnerException;
 import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
-import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
-import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
-import org.eclipse.vorto.repository.web.tenant.dto.CreateTenantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,10 +114,10 @@ public class NamespaceController {
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
-  private UserService userService;
+  private UserUtil userUtil;
 
   @Autowired
-  private UserUtil userUtil;
+  private UserRepository userRepository;
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
@@ -129,7 +129,7 @@ public class NamespaceController {
   private EntityDTOConverter converter;
 
   @RequestMapping(method = RequestMethod.GET, value = "/test")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
@@ -141,6 +141,7 @@ public class NamespaceController {
    * @return all namespaces the logged on user has access to.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/all")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
@@ -163,6 +164,7 @@ public class NamespaceController {
    * @return all users of a given namespace, if the user acting the call has either administrative rights on the namespace, or on the repository.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}/users")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
 
@@ -180,14 +182,18 @@ public class NamespaceController {
   }
 
   /**
+   * Creates a technical user with the given {@link Collaborator} and associates them to the given
+   * namespace, with the desired roles held by the collaborator.
+   *
    * @param namespace
    * @param collaborator
    * @return
    */
   @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Boolean> createTechnicalUserForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-      @RequestBody @ApiParam(value = "The user to be added to the namespace",
+      @RequestBody @ApiParam(value = "The user to be associated with the namespace",
           required = true) final Collaborator collaborator) {
 
     try {
@@ -206,37 +212,22 @@ public class NamespaceController {
   }
 
   /**
-   * This endpoint is temporary and adapted from
-   * {@link org.eclipse.vorto.repository.web.account.AccountController#addOrUpdateUsersForTenant(String, String, TenantUserDto)}. <br/>
-   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.<br/>
-   * The main difference with the same POST endpoint {@link NamespaceController#createTechnicalUserForNamespace(String, String, Collaborator)}
-   * is that we assume the user exists here, and will not be created.<br/>
-   * The bottomline is that creating a user on the spot to add to a namespace implies we are dealing
-   * with a technical user - otherwise one can only add an existing user (technical or not).<br/>
-   * Technical users also must have a subject.<br/>
-   * Note for debugging purposes: the {@link Collaborator} represented in the payload will default
-   * some properties, since they are not populated in the UI - because we are dealing with an existing
-   * user. <br/>
-   * Therefore, it is possible to see some incoherences between the payload and the actual user,
-   * since only the username/userId really matters here. <br/>
-   * For instance, when this endpoint is employed to add an <i>existing</i> technical user to a
-   * given namespace, the {@link Collaborator} payload will show {@code isTechnicalUser == false},
-   * since this property is not sent by the UI and will default. <br/>
-   * Since the user itself is not and should not be persisted here, that's rather irrelevant.<br/>
-   * <b>TL;DR</b>The only reason why this is not implemented with an empty body is that we need the roles from
-   * the UI.
+   * Sets the roles of the given user on the given namespace.
    *
    * @param namespace
    * @param collaborator
    * @return
    */
+  @PreAuthorize("isAuthenticated()")
   @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}/users")
   public ResponseEntity<Boolean> addOrUpdateUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-      @RequestBody @ApiParam(value = "The user to be added to the namespace",
+      @RequestBody @ApiParam(value = "The user to be associated with the namespace",
           required = true) final Collaborator collaborator) {
 
     try {
+      // does not validate user creation here as it is a conversion from a payload that may not
+      // contain all required data
       User user = converter.createUser(null, collaborator);
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
@@ -254,30 +245,11 @@ public class NamespaceController {
   }
 
 
-  @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public ResponseEntity<NamespaceDto> getNamespace(
-      @ApiParam(value = "The namespace you want to retrieve", required = true) final @PathVariable String namespace,
-      Principal user) {
-
-    Tenant tenant = tenantService.getTenantFromNamespace(ControllerUtils.sanitize(namespace))
-        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(namespace));
-
-    if (!tenant.hasUser(user.getName())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-
-    return new ResponseEntity<>(NamespaceDto.fromTenant(tenant), HttpStatus.OK);
-  }
-
   /**
-   * This is a temporary endpoint to create namespaces that will ultimately replace
-   * {@link TenantManagementController#createTenant(String, CreateTenantRequest)}. <br/>
-   * The endpoint takes an empty body and a namespace path variable, then tries to create it by
-   * associating the necessary user/tenant information before handing over to the autowired
-   * {@link ITenantService}.<br/>
-   * Everything "tenant" should be refactored and simplified further on, so the tenant service
-   * should be gone and replaced with a namespace service eventually.
+   * Creates a new namespace with the given name for the authenticated user. <br/>
+   * Automatically adds the user as owner and gives them all applicable roles on the namespace.<br/>
+   * Subject to restrictions in terms of number of private namespaces owned, and whether the user
+   * has the sufficient repository privileges to own a non-private namespace.
    *
    * @param namespace
    * @return
@@ -287,76 +259,27 @@ public class NamespaceController {
   public ResponseEntity<NamespaceOperationResult> createNamespace(
       @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace
   ) {
-    /*
-      This creates a fake "tenant ID" to feed the tenant service and pointlessly populate the
-      tenant table. Once everything "tenant-wise" is replaced with a simpler namespace-oriented
-      architecture, the UUID itself should be removed, i.e. a "namespace service" would not care
-      to use an additional unique ID since the namespace names are unique.
-      */
-    String fakeTenantId = UUID.randomUUID().toString().replace("-", "");
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication(), fakeTenantId);
-    // validating namespace notation and user-related (private vs public)
-    Optional<NamespaceOperationResult> validationError = NamespaceValidator
-        .validate(namespace, userContext);
-    if (validationError.isPresent()) {
-      return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
-    }
-
-    /*
-      Simple "sanitization" of namespace name to lower case.
-      The namespace always ended up being persisted lowercase by the "tenant"-based controller, but
-      this was dug deep within layers of boilerplate.
-      As a result, creating a namespace with capital letters was allowed by the lax patterns in the
-      UI, and lowercased behind the scenes.
-      This has been ignored initially while performing tenant -> namespace refactory (#2152), which
-      led to the edge case of a user creating a namespace with capital letters, but unable to
-      retrieve it when creating a model, because the tenant service would be made to look for the
-      lower-cased version thereof.
-     */
-    String lowercasedNamespace = namespace.toLowerCase();
 
     try {
-      /*
-      This wraps the only admin (i.e. the given user for this request) in a set, as the service
-      API allows multiple admins (but it makes no sense upon creation of a new namespace - only
-      one admin and that is the user who initiated the request).
-       */
-      Set<String> fakeAdmins = new HashSet<>();
-      fakeAdmins.add(userContext.getUsername());
-      /*
-      This wraps the only namespace in a set, according to service API .
-       */
-      Set<String> fakeNamespaces = new HashSet<>();
-      fakeNamespaces.add(namespace);
-      tenantService.createOrUpdateTenant(
-          fakeTenantId,
-          lowercasedNamespace,
-          fakeAdmins,
-          Optional.of(fakeNamespaces),
-          // no authentication or authorization provider necessary
-          Optional.ofNullable(null),
-          Optional.ofNullable(null),
-          userContext
-      );
+      IUserContext userContext = UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication());
+      namespaceService
+          .create(userContext.getUsername(), userContext.getUsername(), namespace);
+      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.CREATED);
 
-      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
-    } catch (NamespaceExistException e) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace already exist"),
-          HttpStatus.CONFLICT);
-    } catch (RestrictTenantPerOwnerException e) {
-      return new ResponseEntity<>(
-          NamespaceOperationResult.failure("Namespace Quota of 1 exceeded."),
-          HttpStatus.CONFLICT);
-    } catch (IllegalArgumentException | TenantAdminDoesntExistException | UpdateNotAllowedException
-        | NewNamespacesNotSupersetException | NewNamespaceNotPrivateException e) {
+    } catch (DoesNotExistException | NameSyntaxException e) {
       return new ResponseEntity<>(NamespaceOperationResult.failure(e.getMessage()),
           HttpStatus.BAD_REQUEST);
-    } catch (Exception e) {
-      LOGGER.error(e);
-      return new ResponseEntity<>(
-          NamespaceOperationResult.failure("Internal error. Consult the vorto administrators!"),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (PrivateNamespaceQuotaExceededException pnqee) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(pnqee.getMessage()),
+          HttpStatus.FORBIDDEN);
+    }
+    // omitting explicit collision message and just going with status here
+    catch (CollisionException ce) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(""), HttpStatus.CONFLICT);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(ofe.getMessage()),
+          HttpStatus.FORBIDDEN);
     }
   }
 

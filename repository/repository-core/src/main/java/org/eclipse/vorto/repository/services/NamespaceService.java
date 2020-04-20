@@ -532,4 +532,5 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     User target = userRepository.findByUsername(targetUsername);
     return getByOwner(actor, target);
   }
+
 }

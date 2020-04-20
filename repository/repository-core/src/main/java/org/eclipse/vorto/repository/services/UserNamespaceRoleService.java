@@ -101,6 +101,10 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     return namespaceRoleRepository.find("namespace_admin");
   }
 
+  public Collection<IRole> allRoles() {
+    return namespaceRoleRepository.findAll().stream().map(r -> (IRole)r).collect(Collectors.toSet());
+  }
+
   /**
    * Verifies whether the given {@literal actor} {@link User} is either sysadmin, or has the
    * {@literal namespace_admin} role on the given {@link Namespace}.<br/>
@@ -326,7 +330,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespace
    * @param rolesValue
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
-   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Set)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection)
    */
   private boolean setRoles(User actor, User target, Namespace namespace, long rolesValue)
       throws OperationForbiddenException {
@@ -392,7 +396,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespaceName
    * @param roleNames
    * @return
-   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Set)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection)
    */
   public boolean setRoles(String actorUsername, String targetUsername, String namespaceName,
       Collection<String> roleNames) throws DoesNotExistException, OperationForbiddenException {
