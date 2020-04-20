@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.services;
 
 import java.sql.Timestamp;
-import java.util.Objects;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 
@@ -23,16 +22,18 @@ import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
  * Can be initialized to not validate by using the appropriate constructor.
  */
 public class UserBuilder {
+
+  private UserUtil userUtil;
+
   protected User user = new User();
-  protected boolean validate = true;
 
   /**
-   * Use to override the default flag to validate relevant properties of the {@link User}.
+   * Provides a service to validate the {@link User} whilst building.
    *
-   * @param validate
+   * @param userUtil
    */
-  public UserBuilder(boolean validate) {
-    this.validate = validate;
+  public UserBuilder(UserUtil userUtil) {
+    this.userUtil = userUtil;
   }
 
   public UserBuilder() {
@@ -44,8 +45,8 @@ public class UserBuilder {
   }
 
   public UserBuilder withName(String name) throws InvalidUserException {
-    if (Objects.isNull(name) || name.trim().isEmpty()) {
-      throw new InvalidUserException("Username is empty.");
+    if (userUtil != null) {
+      userUtil.validateUsername(name);
     }
     user.setUsername(name);
     return this;
@@ -53,11 +54,17 @@ public class UserBuilder {
 
   public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
+    if (userUtil != null) {
+      userUtil.validateAuthenticationProviderID(authenticationProviderID);
+    }
     user.setAuthenticationProviderId(authenticationProviderID);
     return this;
   }
 
   public UserBuilder withAuthenticationSubject(String subject) throws InvalidUserException {
+    if (userUtil != null) {
+      userUtil.validateSubject(subject);
+    }
     user.setSubject(subject);
     return this;
   }

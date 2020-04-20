@@ -84,7 +84,8 @@ public class UserService implements ApplicationEventPublisherAware {
     User result = userRepository.save(technicalUser);
 
     if (result != null) {
-      eventPublisher.publishEvent(new AppEvent(this, technicalUser.getId(), EventType.USER_ADDED));
+      eventPublisher
+          .publishEvent(new AppEvent(this, technicalUser.getUsername(), EventType.USER_ADDED));
     }
 
     return result;

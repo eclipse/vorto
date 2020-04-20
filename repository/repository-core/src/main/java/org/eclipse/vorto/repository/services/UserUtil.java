@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -58,7 +60,7 @@ public class UserUtil {
    */
   public void validateSubject(String subject) throws InvalidUserException {
     validator.validateEmpties(subject);
-    if (!AUTHENTICATION_SUBJECT_VALIDATION_PATTERN.matches(subject)) {
+    if (!subject.matches(AUTHENTICATION_SUBJECT_VALIDATION_PATTERN)) {
       throw new InvalidUserException("Invalid subject for user.");
     }
   }
@@ -73,16 +75,17 @@ public class UserUtil {
   public void validateAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
     validator.validateEmpties(authenticationProviderID);
-    /*if (!registry.list().stream()
+    if (!registry.list().stream()
         .map(
             IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
       throw new InvalidUserException("Invalid authentication provider ID for user.");
-    }*/
+    }
   }
 
   /**
    * Validates the given {@link User} object to ensure all properties are fit to consider it a valid
-   * technical user representation.
+   * technical user representation.<br/>
+   * This does not validate the user's id field, as the user might require creating when invoked.
    *
    * @param user
    * @throws InvalidUserException
@@ -90,10 +93,16 @@ public class UserUtil {
   public void validateUser(User user) throws InvalidUserException {
     // boilerplate null validation
     validator.validateNulls(user);
-    validator.validateEmpties(user.getId(), user.getSubject(), user.getUsername(),
+    validator.validateEmpties(user.getSubject(), user.getUsername(),
         user.getAuthenticationProviderId());
     validateSubject(user.getSubject());
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
+  }
+
+  public void validateUsername(String username) throws InvalidUserException {
+    if (Objects.isNull(username) || username.trim().isEmpty()) {
+      throw new InvalidUserException("Username is empty.");
+    }
   }
 
   /**
@@ -113,23 +122,4 @@ public class UserUtil {
     }
   }
 
-  public UserBuilder getValidatingUserBuilder() {
-    return new UserBuilder(true) {
-      public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
-          throws InvalidUserException {
-        if (validate) {
-          validateAuthenticationProviderID(authenticationProviderID);
-        }
-        user.setAuthenticationProviderId(authenticationProviderID);
-        return this;
-      }
-      public UserBuilder withAuthenticationSubject(String subject) throws InvalidUserException {
-        if (validate) {
-          validateSubject(subject);
-        }
-        user.setSubject(subject);
-        return this;
-      }
-    };
-  }
 }

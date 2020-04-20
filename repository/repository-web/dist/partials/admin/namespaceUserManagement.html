@@ -36,12 +36,12 @@
 						<td>{{ namespaceUser.isTechnicalUser ? namespaceUser.subject : ''}}</td>
 						<td>{{ namespaceUser.authenticationProviderId}}</td>
 						<td>
-							<span class="label label-default" ng-show="hasUserRole('USER', namespaceUser.roles)">VIEW</span>
-							<span class="label label-primary" ng-show="hasUserRole('MODEL_CREATOR', namespaceUser.roles)">CREATE</span>
-							<span class="label label-success" ng-show="hasUserRole('MODEL_PROMOTER', namespaceUser.roles)">PROMOTE</span>
-							<span class="label label-info" ng-show="hasUserRole('MODEL_REVIEWER', namespaceUser.roles)">REVIEW</span>
-							<span class="label label-info" ng-show="hasUserRole('MODEL_PUBLISHER', namespaceUser.roles)">PUBLISH</span>
-							<span class="label label-danger" ng-show="hasUserRole('TENANT_ADMIN', namespaceUser.roles)">MANAGE</span>
+							<span class="label label-default" ng-show="hasUserRole('model_viewer', namespaceUser.roles)">VIEW</span>
+							<span class="label label-primary" ng-show="hasUserRole('model_creator', namespaceUser.roles)">CREATE</span>
+							<span class="label label-success" ng-show="hasUserRole('model_promoter', namespaceUser.roles)">PROMOTE</span>
+							<span class="label label-info" ng-show="hasUserRole('model_reviewer', namespaceUser.roles)">REVIEW</span>
+							<span class="label label-info" ng-show="hasUserRole('model_publisher', namespaceUser.roles)">PUBLISH</span>
+							<span class="label label-danger" ng-show="hasUserRole('namespace_admin', namespaceUser.roles)">MANAGE</span>
 						</td>
 						<td>
 							<div>

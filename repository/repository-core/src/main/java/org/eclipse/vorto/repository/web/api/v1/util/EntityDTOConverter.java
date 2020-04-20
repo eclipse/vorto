@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.UserUtil;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.springframework.stereotype.Service;
@@ -40,15 +43,16 @@ public class EntityDTOConverter {
    * @param usersAndRoles
    * @return
    */
-  public NamespaceDto from(Namespace namespace, Map<User, Collection<IRole>> usersAndRoles) {
-    Collection<Collaborator> collaborators = from(usersAndRoles);
+  public NamespaceDto createNamespaceDTO(Namespace namespace,
+      Map<User, Collection<IRole>> usersAndRoles) {
+    Collection<Collaborator> collaborators = createCollaborators(usersAndRoles);
     Collection<Collaborator> admins = collaborators.stream()
         .filter(c -> c.getRoles().contains("namespace_admin")).collect(Collectors
             .toCollection(() -> new TreeSet<>(Comparator.comparing(Collaborator::getUserId))));
     return new NamespaceDto(namespace.getName(), collaborators, admins);
   }
 
-  public Collection<Collaborator> from(Map<User, Collection<IRole>> usersAndRoles) {
+  public Collection<Collaborator> createCollaborators(Map<User, Collection<IRole>> usersAndRoles) {
     Collection<Collaborator> result = new TreeSet<>(Comparator.comparing(Collaborator::getUserId));
     usersAndRoles.forEach(
         (u, c) -> {
@@ -62,6 +66,15 @@ public class EntityDTOConverter {
         }
     );
     return result;
+  }
+
+  public User createUser(UserUtil userUtil, Collaborator collaborator) throws InvalidUserException {
+    return new UserBuilder(userUtil)
+        .withAuthenticationProviderID(collaborator.getAuthenticationProviderId())
+        .withAuthenticationSubject(collaborator.getSubject())
+        .withName(collaborator.getUserId())
+        .setTechnicalUser(collaborator.isTechnicalUser())
+        .build();
   }
 
 }

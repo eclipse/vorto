@@ -14,6 +14,9 @@ package org.eclipse.vorto.repository.services;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
@@ -25,6 +28,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoleUtil {
+
+  public static final String LEGACY_ROLE_PREFIX = "ROLE_";
+
+  public static final Map<String, String> LEGACY_ROLE_CONVERSION = new HashMap<>();
+
+  static {
+    LEGACY_ROLE_CONVERSION.put("ROLE_USER", "model_viewer");
+    LEGACY_ROLE_CONVERSION.put("TENANT_ADMIN", "namespace_admin");
+  }
 
   @Autowired
   private NamespaceRoleRepository namespaceRoleRepository;
@@ -84,5 +96,25 @@ public class RoleUtil {
       return 0l;
     }
     return Arrays.stream(roles).collect(Collectors.summingLong(IRole::getRole));
+  }
+
+  public Collection<IRole> toNamespaceRoles(String... roles) {
+    Collection<IRole> result = new HashSet<>();
+    if (roles == null) {
+      return result;
+    }
+    return Arrays.stream(roles).map(this::normalize).map(namespaceRoleRepository::find)
+        .collect(Collectors.toSet());
+  }
+
+  public String normalize(String role) {
+    if (null == role || role.trim().isEmpty()) {
+      return "";
+    }
+    String conversion = LEGACY_ROLE_CONVERSION.get(role);
+    if (conversion == null) {
+      conversion = role;
+    }
+    return conversion.replace(LEGACY_ROLE_PREFIX, "").toLowerCase();
   }
 }

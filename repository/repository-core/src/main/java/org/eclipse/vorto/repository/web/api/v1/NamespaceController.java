@@ -39,10 +39,12 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
-import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.UserService;
+import org.eclipse.vorto.repository.services.UserUtil;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.NamespaceExistException;
@@ -109,11 +111,15 @@ public class NamespaceController {
   @Autowired
   private IOAuthProviderRegistry providerRegistry;
 
-
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
+
   @Autowired
-  private RepositoryRoleRepository repositoryRoleRepository;
+  private UserService userService;
+
+  @Autowired
+  private UserUtil userUtil;
+
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
 
@@ -128,38 +134,14 @@ public class NamespaceController {
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    /*try {
-    } catch (DoesNotExistException | OperationForbiddenException e) {
-      return new ResponseEntity<>(false, HttpStatus.OK);
-    }*/
     return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
         HttpStatus.OK);
   }
 
-  @RequestMapping(method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public ResponseEntity<Collection<NamespaceDto>> getNamespaces(Principal user) {
-    Collection<NamespaceDto> namespaces = tenantService.getTenants().stream()
-        .filter(tenant -> tenant.hasUser(user.getName()))
-        .map(NamespaceDto::fromTenant)
-        .collect(Collectors.toList());
-
-    return new ResponseEntity<>(namespaces, HttpStatus.OK);
-  }
-
   /**
-   * This endpoint is supposed to replace {@link NamespaceController#getNamespaces(Principal)} in
-   * the long run, if we agree that injecting a principal is not required, i.e. there is no need
-   * to retrieve namespaces for a given user programmatically, and the body of the method can
-   * infer the logged on user instead. <br/>
-   * Since there is no easy way to inject the given {@link Principal} from the front-end (let alone
-   * that it is not designed an API parameter), the sibling endpoint seems rather useless in a REST
-   * context.
-   *
    * @return all namespaces the logged on user has access to.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/all")
-  @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Collection<NamespaceDto>> getAllNamespacesForLoggedUser() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
@@ -169,7 +151,7 @@ public class NamespaceController {
       for (Map.Entry<Namespace, Map<User, Collection<IRole>>> entry : userNamespaceRoleService
           .getNamespacesCollaboratorsAndRoles(userContext.getUsername(),
               userContext.getUsername(), "namespace_admin").entrySet()) {
-        namespaces.add(converter.from(entry.getKey(), entry.getValue()));
+        namespaces.add(converter.createNamespaceDTO(entry.getKey(), entry.getValue()));
       }
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(namespaces, HttpStatus.FORBIDDEN);
@@ -178,26 +160,18 @@ public class NamespaceController {
   }
 
   /**
-   * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#getUsersForTenant}. <br/>
-   * Instead of returning a list of {@link TenantUserDto}, it returns {@link Collaborator}s.<br/>
-   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
-   *
    * @param namespace
-   * @return
+   * @return all users of a given namespace, if the user acting the call has either administrative rights on the namespace, or on the repository.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}/users")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
 
-    /*if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.PRECONDITION_FAILED);
-    }*/
     Collection<Collaborator> collaborators = new HashSet<>();
     try {
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
-      collaborators = converter.from(userNamespaceRoleService
+      collaborators = converter.createCollaborators(userNamespaceRoleService
           .getRolesByUser(userContext.getUsername(), namespace));
       return new ResponseEntity<>(collaborators, HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
@@ -207,84 +181,29 @@ public class NamespaceController {
   }
 
   /**
-   * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#createTechnicalUserForTenant}. <br/>
-   * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
-   *
    * @param namespace
    * @param userId
    * @param user
    * @return
    */
   @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> createTechnicalUserForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @RequestBody @ApiParam(value = "The user to be added to the namespace",
-          required = true) final Collaborator user) {
-
-    String userId = user.getUserId();
-
-    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    Optional<Tenant> maybeTenant = tenantService.getTenantFromNamespace(namespace);
-    if (!maybeTenant.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    // validates authentication provider as required for tech user
-    if (Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    // also needs to validate authentication provider as a known one
-    if (providerRegistry.list().stream().map(IOAuthProvider::getId)
-        .noneMatch(p -> p.equals(user.getAuthenticationProviderId()))) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(user.getSubject()).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (user.getRoles().stream()
-        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+          required = true) final Collaborator collaborator) {
 
     try {
-
-      LOGGER.info(
-          String.format(
-              "Creating technical user [%s] and adding to namespace [%s] with role(s) [%s]",
-              userId,
-              namespace,
-              user.getRoles()
-          )
-      );
-
-      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
-
-      return new ResponseEntity<>(
-          accountService.createTechnicalUserAndAddToTenant(
-              maybeTenant.get().getTenantId(), userId, user, roles
-          ),
-          HttpStatus.OK
-      );
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    } catch (Exception e) {
-      LOGGER.error("error at addOrUpdateUsersForTenant()", e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      IUserContext userContext = UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication());
+      User user = converter.createUser(userUtil, collaborator);
+      userNamespaceRoleService
+          .createTechnicalUserAndAddAsCollaborator(userContext.getUsername(), user, namespace,
+              collaborator.getRoles());
+      return new ResponseEntity<>(true, HttpStatus.CREATED);
+    } catch (InvalidUserException ie) {
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
   }
 

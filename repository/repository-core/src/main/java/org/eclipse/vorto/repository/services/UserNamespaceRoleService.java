@@ -615,6 +615,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Map<User, Collection<IRole>> getRolesByUser(User actor, Namespace namespace)
       throws OperationForbiddenException {
 
+    validator.validateNulls(actor, namespace);
+
     authorizeActorAsAdminOnNamespace(actor, namespace);
 
     TreeMap<User, Collection<IRole>> result = new TreeMap<>(
@@ -699,8 +701,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       throws OperationForbiddenException, InvalidUserException {
     User actor = userRepository.findByUsername(actorUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    Collection<IRole> actualRoles = roles.stream().map(namespaceRoleRepository::find)
-        .collect(Collectors.toSet());
+    Collection<IRole> actualRoles = roleUtil
+        .toNamespaceRoles(roles.toArray(new String[roles.size()]));
     createTechnicalUserAndAddAsCollaborator(actor, technicalUser, namespace, actualRoles);
   }
 
