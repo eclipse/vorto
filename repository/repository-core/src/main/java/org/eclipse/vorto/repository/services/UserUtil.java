@@ -84,19 +84,33 @@ public class UserUtil {
 
   /**
    * Validates the given {@link User} object to ensure all properties are fit to consider it a valid
-   * technical user representation.<br/>
-   * This does not validate the user's id field, as the user might require creating when invoked.
+   * user representation.<br/>
+   * Invoking this method implies the user is new and requires creating, therefore its id is not
+   * validated.
    *
    * @param user
    * @throws InvalidUserException
    */
-  public void validateUser(User user) throws InvalidUserException {
+  public void validateNewUser(User user) throws InvalidUserException {
     // boilerplate null validation
     validator.validateNulls(user);
     validator.validateEmpties(user.getSubject(), user.getUsername(),
         user.getAuthenticationProviderId());
     validateSubject(user.getSubject());
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
+  }
+
+  /**
+   * Validates the given {@link User} object to ensure all properties are fit to consider it a valid
+   * user representation.<br/>
+   * Invoking this method implies the user exists already, therefore its id is also  validated.
+   *
+   * @param user
+   * @throws InvalidUserException
+   */
+  public void validateExistingUser(User user) throws InvalidUserException {
+    validateNewUser(user);
+    validator.validateEmpties(user.getId());
   }
 
   public void validateUsername(String username) throws InvalidUserException {

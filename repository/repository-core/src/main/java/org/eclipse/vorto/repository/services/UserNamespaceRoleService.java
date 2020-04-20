@@ -370,15 +370,17 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
    * @see UserNamespaceRoleService#addRole(User, User, Namespace, IRole) to add a new role while preserving existing ones.
    */
-  public boolean setRoles(User actor, User target, Namespace namespace, Set<IRole> roles)
+  public boolean setRoles(User actor, User target, Namespace namespace, Collection<IRole> roles)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     validator.validateNulls(actor, target, namespace, roles);
     validator.validateNulls(actor.getId(), target.getId(),
         roles.stream().map(IRole::getName).collect(Collectors.toSet()));
 
-    if (roles.stream().map(IRole::getName).anyMatch(s -> !namespaceRoleRepository.exists(s))) {
-      throw new DoesNotExistException("Unknown role - aborting operation.");
+    for (IRole role : roles) {
+      if (namespaceRoleRepository.find(role.getName()) == null) {
+        throw new DoesNotExistException("Unknown role - aborting operation.");
+      }
     }
     return setRoles(actor, target, namespace,
         roles.stream().collect(Collectors.summingLong(IRole::getRole)));
@@ -393,15 +395,14 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Set)
    */
   public boolean setRoles(String actorUsername, String targetUsername, String namespaceName,
-      Set<String> roleNames) throws DoesNotExistException, OperationForbiddenException {
+      Collection<String> roleNames) throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String
         .format("Retrieving user, namespace [%s] and roles [%s]", namespaceName,
             roleNames));
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    Set<IRole> roles = roleNames.stream().map(namespaceRoleRepository::find)
-        .collect(Collectors.toSet());
+    Collection<IRole> roles = roleUtil.toNamespaceRoles(roleNames);
     return setRoles(actor, target, namespace, roles);
   }
 

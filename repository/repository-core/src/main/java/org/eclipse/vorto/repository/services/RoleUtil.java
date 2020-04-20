@@ -107,6 +107,10 @@ public class RoleUtil {
         .collect(Collectors.toSet());
   }
 
+  public Collection<IRole> toNamespaceRoles(Collection<String> roles) {
+    return toNamespaceRoles(roles.toArray(new String[roles.size()]));
+  }
+
   public String normalize(String role) {
     if (null == role || role.trim().isEmpty()) {
       return "";

@@ -36,14 +36,13 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
-import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.services.UserUtil;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -182,8 +181,7 @@ public class NamespaceController {
 
   /**
    * @param namespace
-   * @param userId
-   * @param user
+   * @param collaborator
    * @return
    */
   @RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/users")
@@ -229,97 +227,30 @@ public class NamespaceController {
    * the UI.
    *
    * @param namespace
-   * @param user
+   * @param collaborator
    * @return
    */
   @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}/users")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
   public ResponseEntity<Boolean> addOrUpdateUsersForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @RequestBody @ApiParam(value = "The user to be added to the namespace",
-          required = true) final Collaborator user) {
-
-    if (Strings.nullToEmpty(user.getUserId()).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    // validates authentication provider only if not empty. empty providers are ok since the user
-    // might exist already
-    // validation implies checking whether the authentication provider ID is a known one
-    if (
-        !Strings.nullToEmpty(user.getAuthenticationProviderId()).trim().isEmpty() &&
-            providerRegistry.list().stream().map(IOAuthProvider::getId)
-                .noneMatch(p -> p.equals(user.getAuthenticationProviderId()))
-    ) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (user.getRoles().stream()
-        .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    // gets tenant for namespace
-    Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
-    if (tenant == null) {
-      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-    }
-
-    // gets logged on user context
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication());
-
-    if (user.getUserId().equals(userContext.getUsername())) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    /*
-    The @PreAuthorize annotation checks whether user is sysadmin or "tenant admin".
-    The latter would return true regardless of the given namespace, as long as the user logged on
-    has that role anywhere.
-    However, we need to check if the user actually has admin rights on >> this << namespace.
-    That does not apply to sysadmins.
-    */
-    if (!userContext.isSysAdmin()) {
-      if (tenant.getTenantAdmins().stream().map(User::getUsername)
-          .noneMatch(a -> a.equals(userContext.getUsername()))) {
-        LOGGER.warn(
-            String.format(
-                "User [%s] not authorized to remove user [%s] from namespace [%s].",
-                userContext.getUsername(), user.getUserId(), namespace
-            )
-        );
-        return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-      }
-    }
+          required = true) final Collaborator collaborator) {
 
     try {
-
-      LOGGER.info(
-          String.format(
-              "Adding user [%s] to namespace [%s] with role(s) [%s]",
-              user.getUserId(),
-              namespace,
-              user.getRoles()
-          )
-      );
-
-      Role[] roles = user.getRoles().stream().map(Role::of).toArray(Role[]::new);
-
+      User user = converter.createUser(null, collaborator);
+      IUserContext userContext = UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication());
       return new ResponseEntity<>(
-          accountService.addUserToTenant(tenant.getTenantId(), user.getUserId(), roles),
-          HttpStatus.OK
-      );
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    } catch (Exception e) {
-      LOGGER.error("error at addOrUpdateUsersForTenant()", e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+          userNamespaceRoleService.setRoles(
+              userContext.getUsername(), user.getUsername(), namespace, collaborator.getRoles()
+          ),
+          HttpStatus.OK);
+    } catch (InvalidUserException | DoesNotExistException e) {
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
+
   }
 
 

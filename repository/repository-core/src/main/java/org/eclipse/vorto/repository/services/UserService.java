@@ -78,7 +78,7 @@ public class UserService implements ApplicationEventPublisherAware {
     validator.validateNulls(technicalUser);
 
     // validates technical user
-    userUtil.validateUser(technicalUser);
+    userUtil.validateNewUser(technicalUser);
 
     // save the technical user
     User result = userRepository.save(technicalUser);
@@ -108,7 +108,7 @@ public class UserService implements ApplicationEventPublisherAware {
     validator.validateNulls(actor, target);
 
     // validates technical user
-    userUtil.validateUser(target);
+    userUtil.validateNewUser(target);
 
     if (!userRepositoryRoleService.isSysadmin(actor)) {
       throw new OperationForbiddenException(
