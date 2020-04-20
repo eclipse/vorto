@@ -15,15 +15,12 @@ package org.eclipse.vorto.repository.web.api.v1;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
@@ -49,18 +46,11 @@ import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.tenant.NamespaceExistException;
-import org.eclipse.vorto.repository.tenant.NewNamespaceNotPrivateException;
-import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
-import org.eclipse.vorto.repository.tenant.RestrictTenantPerOwnerException;
-import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
-import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
-import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -284,19 +274,8 @@ public class NamespaceController {
   }
 
   /**
-   * This is a port of {@link TenantManagementController#getTenants} and was used in the UI by the
-   * TenantService (now deleted), to return a list of namespaces where the user had a specific role,
-   * e.g. for model details, a list of namespaces where the user is creator (the list was then
-   * filtered again in the front-end to match the namespace of the specific model).<br/>
-   * This still uses the {@link ITenantService} behind the scenes for now. <br/>
-   * Due to current usage, the role is always passed as one argument, so it does not seem useful to
-   * allow a collection of roles at this time - therefore, the parameter has been modified to be a
-   * path variable. <br/>
-   * It is, however, still optional: if absent, the response will contain all namespaces where this
-   * user has any permission.<br/>
-   * Note also that for UI REST calls, we can privilege {@link NamespaceController#hasRoleOnNamespace},
-   * since originally the UI would contain that logic but it can be more efficiently handled in
-   * the back-end (see for instance the model details controller Javascript resource).
+   * Returns a collection of namespaces where the logged on user has the given role, or any role if
+   * the optional parameter is omitted.
    *
    * @param role
    * @return
@@ -309,28 +288,24 @@ public class NamespaceController {
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-
-    // user is sysadmin, return all namespaces and ignore role
-    if (userContext.isSysAdmin()) {
-      return new ResponseEntity(
-          tenantService.getTenants().stream().map(NamespaceDto::fromTenant)
-              .collect(Collectors.toList()),
+    try {
+      // NamespaceDTO represents both namespaces and users with roles associated, so the full map
+      // is necessary here
+      Map<Namespace, Map<User, Collection<IRole>>> namespaces = userNamespaceRoleService
+          .getNamespacesCollaboratorsAndRoles(userContext.getUsername(), userContext.getUsername(),
+              role);
+      return new ResponseEntity<>(
+          namespaces.entrySet().stream()
+              .map(e -> converter.createNamespaceDTO(e.getKey(), e.getValue()))
+              .collect(Collectors.toSet()),
           HttpStatus.OK
       );
-    } else {
-      Predicate<Tenant> filter = isOwner(userContext.getUsername());
-      if (role != null) {
-        Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
-        filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
-      }
-      List<NamespaceDto> test = tenantService.getTenants().stream().filter(filter)
-          .map(NamespaceDto::fromTenant).collect(Collectors.toList());
+    } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(
-          tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant)
-              .collect(Collectors.toList()),
-          HttpStatus.OK
+          Collections.emptyList(), HttpStatus.FORBIDDEN
       );
     }
+
   }
 
   /**
