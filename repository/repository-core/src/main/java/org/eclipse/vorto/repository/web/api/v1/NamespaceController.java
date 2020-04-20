@@ -324,35 +324,13 @@ public class NamespaceController {
   @GetMapping(value = "/{role}/{namespace:.+}", produces = "application/json")
   public ResponseEntity<Boolean> hasRoleOnNamespace(
       @ApiParam(value = "The role to verify", required = true) final @PathVariable(value = "role") String role,
-      @ApiParam(value = "The target namespace", required = true) final @PathVariable(value = "namespace", required = true) String namespace
+      @ApiParam(value = "The target namespace", required = true) final @PathVariable(value = "namespace") String namespace
   ) {
-
-    if (Strings.nullToEmpty(role).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-
-    // user is sysadmin, the answer is yes regardless
-    if (userContext.isSysAdmin()) {
-      return new ResponseEntity(
-          true,
-          HttpStatus.OK
-      );
-    } else {
-      Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
-      Predicate<Tenant> filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
-      return new ResponseEntity<>(
-          tenantService.getTenants().stream().filter(filter)
-              .anyMatch(t -> namespace.startsWith(t.getDefaultNamespace())),
-          HttpStatus.OK
-      );
-    }
+    return new ResponseEntity<>(userNamespaceRoleService
+        .hasRole(userContext.getUsername(), namespace, role), HttpStatus.OK);
   }
 
   /**
