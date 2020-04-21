@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -102,7 +101,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   public Collection<IRole> allRoles() {
-    return namespaceRoleRepository.findAll().stream().map(r -> (IRole)r).collect(Collectors.toSet());
+    return namespaceRoleRepository.findAll().stream().map(r -> (IRole) r)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -141,7 +141,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean hasRole(User user, Namespace namespace, IRole role) {
     validator.validateNulls(user, namespace, role);
     LOGGER.info(String
-        .format("Verify whether user [%s] has role [%s] on namespace [%s]", user.getUsername(),
+        .format("Verify whether user has role [%s] on namespace [%s]",
             role.getName(), namespace.getName()));
     if (!namespaceRoleRepository.findAll().contains(role)) {
       throw new IllegalArgumentException(String.format("Role [%s] is unknown", role.getName()));
@@ -163,7 +163,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean hasRole(String username, String namespaceName, String roleName) {
     LOGGER.info(String
-        .format("Retrieving user [%s], namespace [%s] and role [%s]", username, namespaceName,
+        .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User user = userRepository.findByUsername(username);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
@@ -181,8 +181,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Collection<IRole> getRoles(User user, Namespace namespace) {
     validator.validateNulls(user, namespace);
     LOGGER.info(String
-        .format("Retrieving roles for user [%s] on namespace [%s]", user.getUsername(),
-            namespace.getName()));
+        .format("Retrieving roles for user and namespace [%s]", namespace.getName()));
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(user, namespace));
     return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
@@ -924,5 +923,57 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       String actorUsername, String targetUsername) throws OperationForbiddenException {
     return getNamespacesCollaboratorsAndRoles(actorUsername, targetUsername, (IRole[]) null);
   }
+
+  /**
+   * Verifies whether the target {@link User} is the only user yielding the namespace_admin role
+   * in any namespace this user is associated to. <br/>
+   * The operation can fail if the acting {@link User} is not authorized to perform the operation.
+   *
+   * @param actor
+   * @param target
+   * @return
+   * @throws OperationForbiddenException
+   */
+  public boolean isOnlyAdminInAnyNamespace(User actor, User target)
+      throws OperationForbiddenException {
+    // authorizing actor
+    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
+
+    // retrieving namespaces where user is namespace_admin, alongside users and roles
+    Map<Namespace, Map<User, Collection<IRole>>> namespacesWhereTargetIsAdmin = getNamespacesCollaboratorsAndRoles(
+        actor, target,
+        roleUtil.toLong(namespaceAdminRole()));
+
+    // crawling namespaces and inferring whether target user is only admin for any
+    for (Map.Entry<Namespace, Map<User, Collection<IRole>>> userRoles : namespacesWhereTargetIsAdmin
+        .entrySet()) {
+      if (userRoles.getValue().size() == 1) {
+        LOGGER.debug(
+            String.format(
+                "User is the only administrator of at least one namespace : [%s].",
+                userRoles.getKey().getName()
+            )
+        );
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#isOnlyAdminInAnyNamespace(User, User)
+   */
+  public boolean isOnlyAdminInAnyNamespace(String actorUsername, String targetUsername)
+      throws OperationForbiddenException {
+    validator.validateNulls(actorUsername, targetUsername);
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    return isOnlyAdminInAnyNamespace(actor, target);
+  }
+
 
 }

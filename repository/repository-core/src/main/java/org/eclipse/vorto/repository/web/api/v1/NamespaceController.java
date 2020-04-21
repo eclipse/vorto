@@ -350,16 +350,16 @@ public class NamespaceController {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
 
-    return new ResponseEntity<>(
-        tenantService
-            .getTenants()
-            .stream()
-            // filter "tenants" where user has the "tenant admin" role
-            .filter(hasMemberWithRole(userContext.getUsername(), Role.TENANT_ADMIN))
-            // verifies there is no more than one user with the TENANT_ADMIN role for that "tenant"
-            .anyMatch((n) -> n.getTenantAdmins().size() == 1),
-        HttpStatus.OK
-    );
+    try {
+      return new ResponseEntity<>(
+          userNamespaceRoleService
+              .isOnlyAdminInAnyNamespace(userContext.getUsername(), userContext.getUsername()),
+          HttpStatus.OK
+      );
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    }
+
   }
 
   @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")

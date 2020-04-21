@@ -165,22 +165,11 @@ public class UserService implements ApplicationEventPublisherAware {
     // authorizing actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
 
-    // retrieving namespaces where user is namespace_admin, alongside users and roles
-    Map<Namespace, Map<User, Collection<IRole>>> namespacesWhereTargetIsAdmin = userNamespaceRoleService
-        .getNamespacesCollaboratorsAndRoles(actor, target,
-            roleUtil.toLong(userNamespaceRoleService.namespaceAdminRole()));
-
-    // crawling namespaces and inferring whether target user is only admin for any
-    for (Map.Entry<Namespace, Map<User, Collection<IRole>>> userRoles : namespacesWhereTargetIsAdmin
-        .entrySet()) {
-      if (userRoles.getValue().size() == 1) {
+    // checking if only admin in any namespace
+    if (userNamespaceRoleService.isOnlyAdminInAnyNamespace(actor, target)) {
         throw new OperationForbiddenException(
-            String.format(
-                "User is the only administrator of namespace [%s] - aborting delete operation.",
-                userRoles.getKey().getName()
-            )
+          "User is the only administrator of at least one namespace - aborting delete operation."
         );
-      }
     }
 
     // retrieving namespaces target owns
