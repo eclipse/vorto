@@ -456,6 +456,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
           .format("Namespace [%s] has public models and cannot be deleted - aborting operation.",
               currentNamespace.getName()));
     }
+
     User owner = currentNamespace.getOwner();
 
     // authorizing acting user

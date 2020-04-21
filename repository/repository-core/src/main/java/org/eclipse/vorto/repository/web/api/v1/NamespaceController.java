@@ -12,32 +12,24 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
-import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeSet;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.services.UserUtil;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
@@ -45,8 +37,6 @@ import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
-import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
@@ -65,25 +55,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This controller gathers all controller functionality initially designed to work with tenant
- * objects (namely through passing a tenant id), from the following controllers:
- * <ul>
- *   <li>{@link org.eclipse.vorto.repository.web.account.AccountController}</li>
- *   <li>{@link org.eclipse.vorto.repository.web.tenant.TenantManagementController}</li>
- *   <li>{@link org.eclipse.vorto.repository.web.backup.BackupController}</li>
- * </ul>
- * The ultimate goal is full deprecation of "tenant"-based notations, model and DB table design
- * in favor of a simplified namespace-based architecture that is already partially in place.<br/>
- * In the meantime, this controller can act as a proxy for the UI, tests and servlet filters, while
- * delegating its core functionality to the existing controllers until the full replacement is in
- * place.<br/>
- * <b>Note</b>: while this controller is conveniently placed in the API v.1 package, the endpoints
- * stay with {@literal /rest/...} for now, until we are ready to release them as official API with
- * the relevant documentation.<br/>
- * Note on path variable validation: in order to avoid Spring's default config truncating the
- * dot-separated last part of a namespace, all "validation" is set with a loose regular expression
- * in the path variables. <br/>
- * When so required, namespace names are validated programmatically, i.e. before creation.
+ * Performs a number of operations on namespaces and collaborators.
  */
 @RestController
 @RequestMapping(value = "/rest/namespaces")
@@ -92,22 +64,10 @@ public class NamespaceController {
   private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
 
   @Autowired
-  private ITenantService tenantService;
-
-  @Autowired
-  private IUserAccountService accountService;
-
-  @Autowired
-  private IOAuthProviderRegistry providerRegistry;
-
-  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
   private UserUtil userUtil;
-
-  @Autowired
-  private UserRepository userRepository;
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
@@ -334,13 +294,12 @@ public class NamespaceController {
   }
 
   /**
-   * This endpoint replaces a specific function of the functionalities used by the  former
-   * TenantService Angular service. <br/>
-   * Namely, it verifies whether the given user has any namespace where they are the only
+   * Verifies whether the given user has any namespace where they are the only
    * administrator. <br/>
-   * In turn, this is used in the "remove account" Angular controller, in order to verify whether the
-   * user can delete their account, or they should delete any namespace / add a different administrator
-   * first.
+   * This was used as a separate REST call when attempting to delete one's account, to verify whether
+   * the namespace ownership required transferring first. <br/>
+   * It is now likely obsolete, as the same check is performed behind the scenes by
+   * {@link UserService#delete(User, User)}.
    *
    * @return
    */
@@ -362,150 +321,60 @@ public class NamespaceController {
 
   }
 
+  /**
+   * Deletes the given namespace.<br/>
+   * This can fail if the acting user is not authorized (has no ownership or admin roles on the
+   * impacted resource), or if the namespace has public models.
+   *
+   * @param namespace
+   * @return
+   */
   @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> deleteNamespace(
       @ApiParam(value = "The name of the namespace to be deleted", required = true) final @PathVariable String namespace
   ) {
-    // validates given namespace
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Empty namespace"),
-          HttpStatus.BAD_REQUEST);
-    }
-
-    // gets tenant for namespace
-    Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
-    if (tenant == null) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace does not exist"),
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
+    try {
+      namespaceService.deleteNamespace(userContext.getUsername(), namespace);
+      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.NO_CONTENT);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(ofe.getMessage()),
+          HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(dnee.getMessage()),
           HttpStatus.NOT_FOUND);
     }
-
-    // gets user (tenant ID required here, otherwise the service will fail to delete even with the given tenant)
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication(), tenant.getTenantId());
-
-    // validates user permissions on this namespace
-    if (!(userContext.isSysAdmin() || isOwner(userContext.getUsername()).test(tenant))) {
-      return new ResponseEntity<>(
-          NamespaceOperationResult.failure("Operation forbidden for this user"),
-          HttpStatus.FORBIDDEN);
-    }
-
-    boolean success = false;
-    String message = "Operation failed for unknown reasons";
-    try {
-      success = tenantService.deleteTenant(tenant, userContext);
-    } catch (TenantNotFoundException e) {
-      message = e.getMessage();
-      LOGGER.warn(String.format("Could not delete namespace %s", namespace), e);
-    }
-    return new ResponseEntity<>(
-        NamespaceOperationResult.generate(
-            success,
-            Optional.of(message)
-        ),
-        success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
-    );
   }
 
   /**
-   * Another temporary endpoint to accommodate the transition between tenant-based and namespace-based
-   * taxonomy. <br/>
-   * Uses the {@link IUserAccountService} behind the scenes to remove the given user from the given
-   * namespace.<br/>
-   * The permissions for this are checked twice differently. <br/>
-   * In the pre-authorization, we chek whether the logged on user is either sys admin, or has
-   * a "tenant admin" role. <br/>
-   * However, the latter is not sufficient, because they could have that role in another namespace
-   * unrelated to the given one. <br/>
-   * Therefore, another check is performed within the method's body to ensure the logged on user
-   * has that role for that given namespace (that is, assuming they are not sysadmin to start with). <br/>
-   * The drawback for this is that a user who has been added to a namespace as non-admin cannot
-   * remove themselves at this time.
+   * Deletes a user-namespace association by means of removing all roles. <br/>
+   * This can fail if the acting user is the same user as the target (cannot delete yourself), or
+   * the acting user has no ownership or admin rights to the given namespace, or the
+   * namespace or target user do not exist.
    *
    * @param namespace
    * @param userId
    * @return
    */
   @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace:.+}/users/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_TENANT_ADMIN')")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Boolean> removeUserFromNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @ApiParam(value = "userId", required = true) @PathVariable String userId) {
 
-    if (Strings.nullToEmpty(userId).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    // gets tenant for namespace
-    Tenant tenant = tenantService.getTenantFromNamespace(namespace).orElse(null);
-    if (tenant == null) {
-      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-    }
-
-    // You cannot delete yourself if you are tenant admin of the same namespace
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    if (userContext.getUsername().equals(userId)) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    }
-
-    /*
-    The @PreAuthorize annotation checks whether user is sysadmin or "tenant admin".
-    The latter would return true regardless of the given namespace, as long as the user logged on
-    has that role anywhere.
-    However, we need to check if the user actually has admin rights on >> this << namespace.
-    That does not apply to sysadmins.
-    */
-    if (!userContext.isSysAdmin()) {
-      if (tenant.getTenantAdmins().stream().map(User::getUsername)
-          .noneMatch(a -> a.equals(userContext.getUsername()))) {
-        LOGGER.warn(String
-            .format("User [%s] not authorized to remove user [%s] from namespace [%s].",
-                userContext.getUsername(), userId, namespace));
-        return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-      }
-    }
 
     try {
-
-      LOGGER.info(
-          String.format(
-              "Removing user [%s] from namespace [%s]",
-              ControllerUtils.sanitize(userId),
-              ControllerUtils.sanitize(namespace)
-          )
-      );
-      return new ResponseEntity<>(
-          accountService.removeUserFromTenant(tenant.getTenantId(), userId),
-          HttpStatus.OK
-      );
-
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-    } catch (Exception e) {
-      LOGGER.error("Error in deleteUserFromNamespace()", e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace);
+      return new ResponseEntity<>(true, HttpStatus.GONE);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
   }
 
-  private static Role[] toRoles(Collection<String> rolesStr) {
-    Collection<Role> roles = rolesStr.stream().map(roleStr -> Role.of(roleStr))
-        .collect(Collectors.toList());
-    return roles.toArray(new Role[roles.size()]);
-  }
-
-  private static Predicate<Tenant> isOwner(String username) {
-    return tenant -> tenant.hasTenantAdmin(username);
-  }
-
-  private static Predicate<Tenant> hasMemberWithRole(String username, Role role) {
-    return tenant -> tenant.getUsers().stream()
-        .anyMatch(user -> user.getUser().getUsername().equals(username)
-            && !user.getRoles().isEmpty() && user.hasRole(role));
-  }
 }

@@ -485,13 +485,21 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     // actor not sysadmin
     if (!userRepositoryRoleService.isSysadmin(actor)) {
-      // actor not target, or target does not own the namespace
-      if (!actor.equals(target) || !target.equals(namespace.getOwner())) {
+      // actor has no admin role on, or does not own namespace
+      if (!hasRole(actor, namespace, namespaceAdminRole()) && !actor.equals(namespace.getOwner())) {
         throw new OperationForbiddenException(
             String.format("Acting user cannot delete user roles for namespace [%s].",
                 namespace.getName())
         );
       }
+    }
+
+    // actor is same user as target - legacy business rule: cannot delete yourself from namespace
+    if (actor.equals(target)) {
+      throw new OperationForbiddenException(
+          String.format("User cannot remove themselves from namespace [%s].",
+              namespace.getName())
+      );
     }
 
     UserNamespaceRoles rolesToDelete = new UserNamespaceRoles();
