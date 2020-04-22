@@ -377,7 +377,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public ModelInfo getById(ModelId modelId) {
-    final ModelId finalModelId = getLatestModelVersionId(modelId);
+    final ModelId finalModelId = getLatestModelVersionIfLatestTagIsSet(modelId);
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(finalModelId);
@@ -392,7 +392,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public ModelId getLatestModelVersionId(ModelId modelId) {
+  public ModelId getLatestModelVersionIfLatestTagIsSet(ModelId modelId) {
     if (!"latest".equalsIgnoreCase(modelId.getVersion())) {
       return modelId;
     }
@@ -970,7 +970,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public boolean exists(ModelId modelId) {
-    ModelId latestModelId = getLatestModelVersionId(modelId);
+    ModelId latestModelId = getLatestModelVersionIfLatestTagIsSet(modelId);
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(latestModelId);
