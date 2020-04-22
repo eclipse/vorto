@@ -109,7 +109,7 @@ public class ModelConversionUtils {
 
   public static <T> Predicate<T> filterByTypeAndName(
           Function<? super T, ?> generateKey) {
-    Map<Object, Boolean> insertedPropertiesMap = new ConcurrentHashMap<>();
+    Map<Object, Boolean> insertedPropertiesMap = new HashMap<>();
     return t -> insertedPropertiesMap.putIfAbsent(generateKey.apply(t), Boolean.TRUE) == null;
   }
 
