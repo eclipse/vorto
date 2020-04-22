@@ -66,9 +66,4 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
     assertFalse(getVerifier().verify(requestModel("vorto.private.erle:Datatype1:1.0.0"), JwtToken.instance(expiredToken).get()));
   }
   
-  @Test
-  public void verifyInvalidResourceAccess() {
-    assertFalse(getVerifier().verify(requestModel("vorto.private.someoneelse:Datatype1:1.0.0"), JwtToken.instance(jwtToken).get()));
-  }
-  
 }
