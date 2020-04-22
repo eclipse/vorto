@@ -377,7 +377,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public ModelInfo getById(ModelId modelId) {
-    final ModelId finalModelId = ifLatestTagSetUpdateModelId(modelId);
+    final ModelId finalModelId = getLatestModelVersionId(modelId);
     return doInSession(session -> {
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(finalModelId);
@@ -393,6 +393,9 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public ModelId getLatestModelVersionId(ModelId modelId) {
+    if (!"latest".equalsIgnoreCase(modelId.getVersion())) {
+      return modelId;
+    }
     return getModelVersions(modelId).stream()
             .filter(m -> ModelState.Released.getName().equals(m.getState()))
             .max(Comparator.comparing(VERSION_COMPARATOR))
@@ -419,13 +422,6 @@ public class ModelRepository extends AbstractRepositoryOperation
         throw new NotAuthorizedException(modelId, e);
       }
     });
-  }
-
-  private ModelId ifLatestTagSetUpdateModelId(final ModelId modelId) {
-    if ("latest".equalsIgnoreCase(modelId.getVersion())) {
-      return getLatestModelVersionId(modelId);
-    }
-    return modelId;
   }
 
   private ModelInfo getModelResource(ModelId modelId, Node folderNode) throws RepositoryException {
@@ -974,9 +970,10 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @Override
   public boolean exists(ModelId modelId) {
+    ModelId latestModelId = getLatestModelVersionId(modelId);
     return doInSession(session -> {
       try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        ModelIdHelper modelIdHelper = new ModelIdHelper(latestModelId);
         return session.itemExists(modelIdHelper.getFullPath());
       } catch (NullPointerException e) {
         return false;
