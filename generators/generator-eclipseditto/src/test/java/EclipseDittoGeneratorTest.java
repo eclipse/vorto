@@ -259,7 +259,8 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
 
   @Test
   public void testNonInheritanceFunctionBlock() throws GeneratorException, JSONException {
-
+    Map<String, String> params = new HashMap<>();
+    params.put("target", "thingJson");
     BuilderUtils.EnumBuilder enumBuilder = BuilderUtils.newEnum(new ModelId(org.eclipse.vorto.core.api.model.model.ModelType.Datatype, "Units", "org.eclipse.vorto.types", "1.0.0"));
     enumBuilder.withLiterals("F", "C");
 
@@ -270,7 +271,7 @@ public class EclipseDittoGeneratorTest extends AbstractGeneratorTest {
             new ModelId(org.eclipse.vorto.core.api.model.model.ModelType.InformationModel, "RPi", "org.eclipse.vorto", "1.0.0"));
     informationModelBuilder.withFunctionBlock(fbm, "cpuTemperature", null, false);
 
-    IGenerationResult generationResult = eclipseDittoGenerator.generate(informationModelBuilder.build(), InvocationContext.simpleInvocationContext());
+    IGenerationResult generationResult = eclipseDittoGenerator.generate(informationModelBuilder.build(), InvocationContext.simpleInvocationContext(params));
 
     String expectedResult = "{\n" +
             "  \"definition\": \"org.eclipse.vorto:RPi:1.0.0\",\n" +
