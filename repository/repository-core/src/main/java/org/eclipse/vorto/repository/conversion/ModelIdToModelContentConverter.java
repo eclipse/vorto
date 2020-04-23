@@ -50,9 +50,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
   @Override
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
-    if ("latest".equalsIgnoreCase(modelId.getVersion())) {
-      modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace()).getLatestModelVersionId(modelId);
-    }
+    modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace()).getLatestModelVersionIfLatestTagIsSet(modelId);
     if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
       throw new ModelNotFoundException("Model does not exist", null);
     }
