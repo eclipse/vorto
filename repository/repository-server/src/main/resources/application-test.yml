@@ -1,0 +1,34 @@
+repo:
+  configFile: vorto-repository-config-h2-test.json
+
+config:
+  restrictTenant: 2
+
+# doesn't work
+#hibernate:
+#  hbm2ddl:
+#    import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+
+spring:
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    # not sure which one to use so added both jus tin case
+    initialization-mode: always
+    initialize: true
+    platform: h2
+    # not working, using alternative with @Sql annotation
+    # data:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    continue-on-error: false
+

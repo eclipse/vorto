@@ -21,7 +21,8 @@ import org.springframework.stereotype.Repository;
 /**
  * Yields all user-repository role associations, which is read-only at runtime and limited to
  * expressing sysadmin users at this time.<br/>
- * The repository is intended to be read-only at runtime, so no cache eviction strategy is used.
+ * The repository is intended to be read-only at runtime after initialization, so no cache eviction
+ * strategy is used.
  */
 @Repository
 @Cacheable("userRepositoryRoles")

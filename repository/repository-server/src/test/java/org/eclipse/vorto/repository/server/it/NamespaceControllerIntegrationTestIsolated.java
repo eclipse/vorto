@@ -12,10 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.eclipse.vorto.repository.domain.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
-import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
-import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
 import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
 import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.junit.Assert.fail;
@@ -30,13 +26,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
+import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
@@ -48,14 +55,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -68,34 +90,36 @@ import org.springframework.web.context.WebApplicationContext;
  * Therefore, it is excessively challenging to add new tests without failing tests in the same class
  * or worse, in other test classes in the module.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles( profiles={"local-test"})
-@ContextConfiguration
-@SpringBootTest(classes = VortoRepository.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"repo.configFile = vorto-repository-config-h2.json"})
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
 public class NamespaceControllerIntegrationTestIsolated {
 
-  @Configuration
-  public static class TestConfig {
 
-    public TestConfig() {}
+  @Configuration
+  @Profile("test")
+  public static class TestConfig {
+    public TestConfig() {
+    }
 
     @Autowired
-    private IUserAccountService accountService;
+    private RepositoryRoleRepository repositoryRoleRepository;
 
-    @PostConstruct
-    public void createUsers() {
-      accountService.createOrUpdate(USER_SYSADMIN_NAME, "GITHUB", null,
-          "playground", USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
-      accountService.createOrUpdate(USER_MODEL_CREATOR_NAME, "GITHUB", null,
-          "playground", USER, MODEL_CREATOR);
-      accountService.createOrUpdate(USER_MODEL_CREATOR_2_NAME, "GITHUB", null,
-          "playground", USER, MODEL_CREATOR);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer properties(){
+      return new PropertySourcesPlaceholderConfigurer();
     }
+
   }
 
   protected MockMvc repositoryServer;
+
   @Autowired
   protected WebApplicationContext wac;
 
@@ -128,20 +152,37 @@ public class NamespaceControllerIntegrationTestIsolated {
   public static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
   public static final String USER_MODEL_CREATOR_2_NAME = "userModelCreator2";
 
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  private RepositoryRoleRepository repositoryRoleRepository;
+
+  @Autowired
+  private NamespaceRoleRepository namespaceRoleRepository;
+
   @Before
   public void startUpServer() throws Exception {
+    List<String> test0 = jdbcTemplate.queryForList("select name from repository_roles", String.class);
+    List<String> test1 = jdbcTemplate.queryForList("select username from user", String.class);
+    Set<NamespaceRole> test2 = namespaceRoleRepository.findAll();
+    Iterable<RepositoryRole> test = repositoryRoleRepository.findAll();
+    IRole foo = repositoryRoleRepository.find("sysadmin");
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userSysadmin = user(USER_SYSADMIN_NAME).password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
-    userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, MODEL_CREATOR)));
-    userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, MODEL_CREATOR)));
-    //accountService = context.getBean(IUserAccountService.class);
+    userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
+    //    .authorities(AuthorityUtils
+    //        .createAuthorityList("model_viewer", "model_creator", "model_promoter", "model_reviewer", "namespace_admin"));
+    userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
+    //    .authorities(AuthorityUtils
+     //       .createAuthorityList("model_viewer", "model_creator"));
+    userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass");
+    //    .authorities(AuthorityUtils
+    //       .createAuthorityList("model_viewer", "model_creator"));*/
   }
 
   /**
    * Cleaning up namespaces for the users involved in tests, as this is not done by the parent class.
+   *
    * @throws Exception
    */
   @After
@@ -152,10 +193,12 @@ public class NamespaceControllerIntegrationTestIsolated {
             get("/rest/namespaces/all").with(userModelCreator)
         )
         .andDo(result -> {
-          NamespaceDto[] namespaces = (gson.fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n: namespaces) {
+          NamespaceDto[] namespaces = (gson
+              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
+          for (NamespaceDto n : namespaces) {
             repositoryServer
-                .perform(delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
+                .perform(
+                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
           }
         });
     repositoryServer
@@ -163,10 +206,12 @@ public class NamespaceControllerIntegrationTestIsolated {
             get("/rest/namespaces/all").with(userModelCreator2)
         )
         .andDo(result -> {
-          NamespaceDto[] namespaces = (gson.fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n: namespaces) {
+          NamespaceDto[] namespaces = (gson
+              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
+          for (NamespaceDto n : namespaces) {
             repositoryServer
-                .perform(delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
+                .perform(
+                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
           }
         });
     repositoryServer
@@ -174,16 +219,19 @@ public class NamespaceControllerIntegrationTestIsolated {
             get("/rest/namespaces/all").with(userSysadmin)
         )
         .andDo(result -> {
-          NamespaceDto[] namespaces = (gson.fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n: namespaces) {
+          NamespaceDto[] namespaces = (gson
+              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
+          for (NamespaceDto n : namespaces) {
             repositoryServer
-                .perform(delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
+                .perform(
+                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
           }
         });
   }
 
   /**
    * Uses a non-compliant namespace notation
+   *
    * @throws Exception
    */
   @Test
@@ -203,6 +251,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Uses an empty namespace name after trimming
+   *
    * @throws Exception
    */
   @Test
@@ -222,6 +271,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Only sysadmins can create namespaces that don't start with {@literal vorto.private.}
+   *
    * @throws Exception
    */
   @Test
@@ -234,13 +284,15 @@ public class NamespaceControllerIntegrationTestIsolated {
         .andExpect(status().isBadRequest())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.failure("User can only register a private namespace."))
+                gson.toJson(
+                    NamespaceOperationResult.failure("User can only register a private namespace."))
             )
         );
   }
 
   /**
    * Simply tests that creating a namespace with the proper prefix for non-sysadmin users works.
+   *
    * @throws Exception
    */
   @Test
@@ -260,6 +312,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Simply tests that creating a namespace with no prefix for sysadmin users works.
+   *
    * @throws Exception
    */
   @Test
@@ -282,6 +335,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    * <br/>
    * Note that {@literal config.restrictTenant} is set to {@literal 1} in the production profile,
    * but {@literal 2} in test for some reason.
+   *
    * @throws Exception
    */
   @Test
@@ -289,8 +343,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     int maxNamespaces = -1;
     try {
       maxNamespaces = Integer.valueOf(restrictTenantConfig);
-    }
-    catch (NumberFormatException | NullPointerException e) {
+    } catch (NumberFormatException | NullPointerException e) {
       fail("restrictTenant configuration value not available within context.");
     }
 
@@ -326,6 +379,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   /**
    * Tests that creating {@literal x} namespaces for sysadmin users succeeds even when
    * {@literal x > config.restrictTenant}.
+   *
    * @throws Exception
    */
   @Test
@@ -333,8 +387,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     int maxNamespaces = -1;
     try {
       maxNamespaces = Integer.valueOf(restrictTenantConfig);
-    }
-    catch (NumberFormatException | NullPointerException e) {
+    } catch (NumberFormatException | NullPointerException e) {
       fail("restrictTenant configuration value not available within context.");
     }
 
@@ -367,6 +420,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Simply tests that adding an existing user to a namespace with a basic role works as intended.
+   *
    * @throws Exception
    */
   @Test
@@ -410,6 +464,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Tests that adding an non-existing user to a namespace fails
+   *
    * @throws Exception
    */
   @Test
@@ -453,6 +508,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   /**
    * Tests that removing an existing user from a namespace works if the user has been added previously
    * and the user removing it has the rights to do so.
+   *
    * @throws Exception
    */
   @Test
@@ -495,7 +551,8 @@ public class NamespaceControllerIntegrationTestIsolated {
     // now removes the user
     repositoryServer
         .perform(
-            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete(String
+                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -509,6 +566,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   /**
    * Tests that removing a non-existing user from a namespace fails.<br/>
    * Note that the response will just return "false" if no user has been removed here.
+   *
    * @throws Exception
    */
   @Test
@@ -528,7 +586,8 @@ public class NamespaceControllerIntegrationTestIsolated {
     // now removes a user that has not been added
     repositoryServer
         .perform(
-            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete(String
+                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -548,6 +607,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    * from a namespace they have been added to, regardless of their role in that namespace. <br/>
    * See {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController#removeUserFromNamespace(String, String)}
    * for specifications on how authorization is enforced.
+   *
    * @throws Exception
    */
   @Test
@@ -598,7 +658,8 @@ public class NamespaceControllerIntegrationTestIsolated {
     // "somewhere else", which fails due to lack of tenant admin role on that given namespace
     repositoryServer
         .perform(
-            delete(String.format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete(String
+                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
                 .with(thirdUser)
         )
         .andExpect(status().isPreconditionFailed());
@@ -607,6 +668,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   /**
    * Tests that changing roles on a namespace works for an existing user who has been previously
    * added to that namespace.
+   *
    * @throws Exception
    */
   @Test
@@ -666,6 +728,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   /**
    * Tests that changing a user's roles on a namespace from a user who's tenant admin, but not on
    * that namespace, fails.
+   *
    * @throws Exception
    */
   @Test
@@ -729,6 +792,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    * expected.<br/>
    * The endpoint is a simplification of the former TenantService.js all deferred to the back-end,
    * and is used contextually to verifying whether a user can modify a model.
+   *
    * @throws Exception
    */
   @Test
@@ -797,6 +861,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    * returns as expected. <br/>
    * The endpoint is a simplification of the former TenantService.js all deferred to the back-end,
    * and is used contextually to a user trying to delete their account.
+   *
    * @throws Exception
    */
   @Test
@@ -873,6 +938,7 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   /**
    * Verifies the list of namespaces where the logged on user has a given role is correct.
+   *
    * @throws Exception
    */
   @Test
@@ -969,7 +1035,8 @@ public class NamespaceControllerIntegrationTestIsolated {
     userModelCreatorNSUsers.add(userModelCreatorCollaboratorAsuserSysadmin);
 
     // creating namespace for userModelCreator
-    NamespaceDto userModelCreatorNS = new NamespaceDto("vorto.private.myNamespace", userModelCreatorNSUsers, userModelCreatorNSAdmins);
+    NamespaceDto userModelCreatorNS = new NamespaceDto("vorto.private.myNamespace",
+        userModelCreatorNSUsers, userModelCreatorNSAdmins);
 
     // creating userModelCreator2 as a Collaborator object
     Collaborator userModelCreator2CollaboratorAsAdmin = new Collaborator();
@@ -990,7 +1057,8 @@ public class NamespaceControllerIntegrationTestIsolated {
     userModelCreator2NSUsers.add(userModelCreatorCollaborator);
 
     // creating ns for userModelCreator2
-    NamespaceDto userModelCreator2NS = new NamespaceDto("vorto.private.myNamespace2", userModelCreator2NSUsers, userModelCreator2NSAdmins);
+    NamespaceDto userModelCreator2NS = new NamespaceDto("vorto.private.myNamespace2",
+        userModelCreator2NSUsers, userModelCreator2NSAdmins);
 
     // adding both ns to expected collection
     expectedNamespaces.add(userModelCreatorNS);

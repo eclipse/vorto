@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.services;
 
 import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
@@ -27,18 +28,18 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
 
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
-  private final IRole sysadmin;
-
-  @Autowired
-  public UserRepositoryRoleService(RepositoryRoleRepository repositoryRoleRepository) {
-    this.repositoryRoleRepository = repositoryRoleRepository;
-    sysadmin = repositoryRoleRepository.find("sysadmin");
+  public IRole sysadmin() {
+    Iterable<RepositoryRole> test = repositoryRoleRepository.findAll();
+    IRole foo = repositoryRoleRepository.find("sysadmin");
+    return repositoryRoleRepository.find("sysadmin");
   }
+
 
   /**
    * @param user
@@ -52,10 +53,7 @@ public class UserRepositoryRoleService {
       return false;
     }
     // should never happen until the table is broken
-    if (sysadmin != null) {
-      return (userRepositoryRoles.getRoles() & sysadmin.getRole()) == sysadmin.getRole();
-    }
-    return false;
+    return (userRepositoryRoles.getRoles() & sysadmin().getRole()) == sysadmin().getRole();
   }
 
   /**
@@ -71,4 +69,20 @@ public class UserRepositoryRoleService {
     return isSysadmin(user);
   }
 
+  /**
+   * Sets a user as sysadmin.
+   *
+   * @param username
+   * @return
+   */
+  public void setSysadmin(String username) {
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new IllegalArgumentException("User is null");
+    }
+    UserRepositoryRoles roles = new UserRepositoryRoles();
+    roles.setRoles(sysadmin().getRole());
+    roles.setUser(user);
+    userRepositoryRoleRepository.save(roles);
+  }
 }

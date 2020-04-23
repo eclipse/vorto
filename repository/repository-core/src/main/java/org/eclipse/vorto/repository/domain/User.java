@@ -79,10 +79,6 @@ public class User implements Serializable {
 
   private String emailAddress;
 
-  @Deprecated
-  @Column(nullable = false)
-  private boolean sysadmin;
-
   public static User create(String username, String provider, String subject) {
     return create(username, provider, subject, false);
   }
@@ -233,10 +229,6 @@ public class User implements Serializable {
     }
   }
 
-  public boolean isSysadmin() {
-    return sysadmin;
-  }
-  
   public Long getId() {
     return id;
   }

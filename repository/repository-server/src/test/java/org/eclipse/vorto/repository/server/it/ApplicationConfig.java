@@ -27,10 +27,12 @@ import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import com.google.common.collect.Sets;
 
+@Profile("local-test")
 @Configuration
 public class ApplicationConfig {
 

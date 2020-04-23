@@ -83,6 +83,7 @@ public class NamespaceController {
   public ResponseEntity<Boolean> test() {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
+    userRepositoryRoleService.setSysadmin(userContext.getUsername());
     return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
         HttpStatus.OK);
   }
@@ -269,12 +270,7 @@ public class NamespaceController {
   }
 
   /**
-   * This new endpoint aims at replacing the functionality of both the front-end TenantService and
-   * {@link TenantManagementController#getTenants}. <br/>
-   * The goal is to return whether the authenticated user has the specified role on the specified
-   * namespace. <br/>
-   * As most endpoints here, we are still temporarily querying the tenant-based service (and
-   * subsequently the tenant repository) behind the scenes.
+   * Checks whether the logged on user has the given role on the given namespace.
    *
    * @param role
    * @param namespace
