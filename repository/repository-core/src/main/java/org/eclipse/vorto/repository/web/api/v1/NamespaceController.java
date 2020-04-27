@@ -118,7 +118,7 @@ public class NamespaceController {
    */
   @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}/users")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Collection<Collaborator>> getUsersForNamespace(
+  public ResponseEntity<Collection<Collaborator>> getCollaboratorsByNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
 
     Collection<Collaborator> collaborators = new HashSet<>();

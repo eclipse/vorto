@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -21,10 +23,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
@@ -46,6 +53,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
@@ -906,7 +914,6 @@ public class NamespaceControllerIntegrationTestIsolated {
     userModelCreatorCollaborator.setAuthenticationProviderId("GITHUB");
     userModelCreatorCollaborator.setSubject("none");
     Set<String> roles = new HashSet<>();
-    roles.add("none");
     roles.add("model_viewer");
     roles.add("model_creator");
     userModelCreatorCollaborator.setRoles(roles);
@@ -939,7 +946,6 @@ public class NamespaceControllerIntegrationTestIsolated {
     Creating set of namespace owner roles
     */
     Set<String> ownerRoles = new HashSet<>();
-    ownerRoles.add("none");
     ownerRoles.add("model_viewer");
     ownerRoles.add("model_creator");
     ownerRoles.add("namespace_admin");
@@ -1010,4 +1016,85 @@ public class NamespaceControllerIntegrationTestIsolated {
 
   }
 
+  // --- tests below adapted from former NamespaceControllerIntegrationTest ---
+
+  @Test
+  public void getNamespaces() throws Exception {
+    repositoryServer.perform(get("/rest/namespaces").with(userSysadmin)).andExpect(status().isOk());
+  }
+
+  @Test
+  public void getNamespace() throws Exception {
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/com.mycompany")
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isCreated())
+        .andExpect(
+            content().json(
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
+            )
+        );
+    repositoryServer.perform(get("/rest/namespaces/com.mycompany").with(userSysadmin))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void updateCollaborator() throws Exception {
+    // creates a namespace for the sysadmin user
+    repositoryServer
+        .perform(
+            put("/rest/namespaces/com.mycompany")
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isCreated())
+        .andExpect(
+            content().json(
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
+            )
+        );
+    // creates and adds a collaborator
+    Collaborator collaborator = new Collaborator(USER_MODEL_CREATOR_NAME, "GITHUB", "none",
+        Lists.newArrayList("model_viewer", "model_creator"));
+    repositoryServer.perform(
+        put("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+
+    // checks the collaborator's roles are returned correctly
+    checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_NAME, "model_viewer", "model_creator");
+
+    // creates and adds another collaborator with different roles
+    collaborator = new Collaborator(USER_MODEL_CREATOR_2_NAME, "GITHUB", "none",
+        Lists.newArrayList("model_viewer"));
+    repositoryServer.perform(
+        put("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+
+    // checks the collaborator's roles are returned correctly
+    checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_2_NAME, "model_viewer");
+  }
+
+  // --- utility methods below ---
+  private void checkCollaboratorRoles(String namespaceName, String collaboratorName, String ... roles) throws Exception {
+    repositoryServer.perform(
+        get(String.format("/rest/namespaces/%s/users", namespaceName))
+        .with(userSysadmin)
+    )
+    .andDo(handler -> {
+      Collection<Collaborator> collaborators = objectMapper.readValue(handler.getResponse().getContentAsString(), new TypeReference<Collection<Collaborator>>(){});
+      Optional<Collaborator> maybeTarget = collaborators.stream().filter(c -> c.getUserId().equals(collaboratorName)).findAny();
+      assertTrue(maybeTarget.isPresent());
+      if (maybeTarget.isPresent()) {
+        Collaborator target = maybeTarget.get();
+        assertEquals(target.getRoles(), Arrays.asList(roles));
+      }
+    });
+  }
 }
