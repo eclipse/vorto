@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
-import static org.eclipse.vorto.repository.domain.Role.USER;
 import static org.junit.Assert.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -23,60 +21,37 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.NamespaceRole;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
-import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -102,6 +77,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Configuration
   @Profile("test")
   public static class TestConfig {
+
     public TestConfig() {
     }
 
@@ -112,7 +88,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     private JdbcTemplate jdbcTemplate;
 
     @Bean
-    public static PropertySourcesPlaceholderConfigurer properties(){
+    public static PropertySourcesPlaceholderConfigurer properties() {
       return new PropertySourcesPlaceholderConfigurer();
     }
 
@@ -139,94 +115,28 @@ public class NamespaceControllerIntegrationTestIsolated {
     System.setProperty("line.separator", "\n");
   }
 
-  protected Gson gson = new Gson();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   /**
    * Since this is set to 2 in test profile for reasons unclear, taking value directly from config
    * to test cases where users create an excessive number of namespaces.
    */
-  @Value("${config.restrictTenant}")
-  private String restrictTenantConfig;
+  @Value("${config.privateNamespaceQuota}")
+  private String privateNamespaceQuota;
 
   public static final String USER_SYSADMIN_NAME = "userSysadmin";
   public static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
   public static final String USER_MODEL_CREATOR_2_NAME = "userModelCreator2";
 
   @Autowired
-  private JdbcTemplate jdbcTemplate;
-
-  @Autowired
-  private RepositoryRoleRepository repositoryRoleRepository;
-
-  @Autowired
-  private NamespaceRoleRepository namespaceRoleRepository;
+  private UserRepository userRepository;
 
   @Before
   public void startUpServer() throws Exception {
-    List<String> test0 = jdbcTemplate.queryForList("select name from repository_roles", String.class);
-    List<String> test1 = jdbcTemplate.queryForList("select username from user", String.class);
-    Set<NamespaceRole> test2 = namespaceRoleRepository.findAll();
-    Iterable<RepositoryRole> test = repositoryRoleRepository.findAll();
-    IRole foo = repositoryRoleRepository.find("sysadmin");
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
-    //    .authorities(AuthorityUtils
-    //        .createAuthorityList("model_viewer", "model_creator", "model_promoter", "model_reviewer", "namespace_admin"));
     userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
-    //    .authorities(AuthorityUtils
-     //       .createAuthorityList("model_viewer", "model_creator"));
     userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass");
-    //    .authorities(AuthorityUtils
-    //       .createAuthorityList("model_viewer", "model_creator"));*/
-  }
-
-  /**
-   * Cleaning up namespaces for the users involved in tests, as this is not done by the parent class.
-   *
-   * @throws Exception
-   */
-  @After
-  public void afterEach() throws Exception {
-    // only 3 users used
-    repositoryServer
-        .perform(
-            get("/rest/namespaces/all").with(userModelCreator)
-        )
-        .andDo(result -> {
-          NamespaceDto[] namespaces = (gson
-              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n : namespaces) {
-            repositoryServer
-                .perform(
-                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
-          }
-        });
-    repositoryServer
-        .perform(
-            get("/rest/namespaces/all").with(userModelCreator2)
-        )
-        .andDo(result -> {
-          NamespaceDto[] namespaces = (gson
-              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n : namespaces) {
-            repositoryServer
-                .perform(
-                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
-          }
-        });
-    repositoryServer
-        .perform(
-            get("/rest/namespaces/all").with(userSysadmin)
-        )
-        .andDo(result -> {
-          NamespaceDto[] namespaces = (gson
-              .fromJson(result.getResponse().getContentAsString(), NamespaceDto[].class));
-          for (NamespaceDto n : namespaces) {
-            repositoryServer
-                .perform(
-                    delete(String.format("/rest/namespaces/%s", n.getName())).with(userSysadmin));
-          }
-        });
   }
 
   /**
@@ -236,15 +146,20 @@ public class NamespaceControllerIntegrationTestIsolated {
    */
   @Test
   public void testNamespaceCreationWithInvalidNotation() throws Exception {
+    String badNamespaceName = "badNamespace==name!";
     repositoryServer
         .perform(
-            put("/rest/namespaces/badNamespace==name!")
+            put(String.format("/rest/namespaces/%s", badNamespaceName))
                 .contentType("application/json").with(userModelCreator)
         )
         .andExpect(status().isBadRequest())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.failure("Invalid namespace notation."))
+                objectMapper.writeValueAsString(
+                    NamespaceOperationResult.failure(String
+                        .format("[%s] is not a valid namespace name - aborting namespace creation.",
+                            badNamespaceName))
+                )
             )
         );
   }
@@ -264,7 +179,8 @@ public class NamespaceControllerIntegrationTestIsolated {
         .andExpect(status().isBadRequest())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.failure("Empty namespace"))
+                objectMapper.writeValueAsString(NamespaceOperationResult
+                    .failure("Namespace name is empty - aborting namespace creation."))
             )
         );
   }
@@ -276,16 +192,19 @@ public class NamespaceControllerIntegrationTestIsolated {
    */
   @Test
   public void testNamespaceCreationWithoutPrivatePrefixAsNonSysadmin() throws Exception {
+    String namespaceName = "myNamespace";
     repositoryServer
         .perform(
-            put("/rest/namespaces/myNamespace")
+            put(String.format("/rest/namespaces/%s", namespaceName))
                 .contentType("application/json").with(userModelCreator)
         )
         .andExpect(status().isBadRequest())
         .andExpect(
             content().json(
-                gson.toJson(
-                    NamespaceOperationResult.failure("User can only register a private namespace."))
+                objectMapper.writeValueAsString(
+                    NamespaceOperationResult.failure(String.format(
+                        "[%s] is an invalid name for a private namespace - aborting namespace creation.",
+                        namespaceName)))
             )
         );
   }
@@ -302,10 +221,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/vorto.private.myNamespace")
                 .contentType("application/json").with(userModelCreator)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
   }
@@ -322,10 +241,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
   }
@@ -342,7 +261,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   public void testMultipleNamespaceCreationAsNonSysadmin() throws Exception {
     int maxNamespaces = -1;
     try {
-      maxNamespaces = Integer.valueOf(restrictTenantConfig);
+      maxNamespaces = Integer.valueOf(privateNamespaceQuota);
     } catch (NumberFormatException | NullPointerException e) {
       fail("restrictTenant configuration value not available within context.");
     }
@@ -353,10 +272,10 @@ public class NamespaceControllerIntegrationTestIsolated {
               put("/rest/namespaces/vorto.private.myNamespace" + i)
                   .contentType("application/json").with(userModelCreator)
           )
-          .andExpect(status().isOk())
+          .andExpect(status().isCreated())
           .andExpect(
               content().json(
-                  gson.toJson(NamespaceOperationResult.success())
+                  objectMapper.writeValueAsString(NamespaceOperationResult.success())
               )
           );
     }
@@ -366,12 +285,19 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/vorto.private.myNamespace" + maxNamespaces)
                 .contentType("application/json").with(userModelCreator)
         )
-        .andExpect(status().isConflict())
+        .andExpect(status().isForbidden())
         .andExpect(
             content().json(
                 // hard-coded error message due to production profile limiting to 1 namespace for
                 // non-sysadmins
-                gson.toJson(NamespaceOperationResult.failure("Namespace Quota of 1 exceeded."))
+                objectMapper.writeValueAsString(
+                    NamespaceOperationResult.failure(
+                        String.format(
+                            "User already has reached quota [%d] of private namespaces - aborting namespace creation.",
+                            maxNamespaces
+                        )
+                    )
+                )
             )
         );
   }
@@ -386,7 +312,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   public void testMultipleNamespaceCreationAsSysadmin() throws Exception {
     int maxNamespaces = -1;
     try {
-      maxNamespaces = Integer.valueOf(restrictTenantConfig);
+      maxNamespaces = Integer.valueOf(privateNamespaceQuota);
     } catch (NumberFormatException | NullPointerException e) {
       fail("restrictTenant configuration value not available within context.");
     }
@@ -397,10 +323,10 @@ public class NamespaceControllerIntegrationTestIsolated {
               put("/rest/namespaces/myNamespace" + i)
                   .contentType("application/json").with(userSysadmin)
           )
-          .andExpect(status().isOk())
+          .andExpect(status().isCreated())
           .andExpect(
               content().json(
-                  gson.toJson(NamespaceOperationResult.success())
+                  objectMapper.writeValueAsString(NamespaceOperationResult.success())
               )
           );
     }
@@ -410,10 +336,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myNamespace" + maxNamespaces)
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
   }
@@ -431,10 +357,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -444,13 +370,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     // the way it has been mapped to in the parent class is "user3" instead
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -475,10 +401,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -486,16 +412,16 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collaborator nonExistingCollaborator = new Collaborator();
     nonExistingCollaborator.setUserId("toto");
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     nonExistingCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(nonExistingCollaborator))
+                .content(objectMapper.writeValueAsString(nonExistingCollaborator))
                 .with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isNotFound())
         // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
         .andExpect(
             content().string(
@@ -519,10 +445,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -532,13 +458,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     // the way it has been mapped to in the parent class is "user3" instead
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -570,17 +496,17 @@ public class NamespaceControllerIntegrationTestIsolated {
    * @throws Exception
    */
   @Test
-  public void testRemoveNonExistingUserFromNamespace() throws Exception {
+  public void testRemoveUserFromNamespaceWhereUserIsNotACollaborator() throws Exception {
     // first, creates the namespace for the admin user
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
     // now removes a user that has not been added
@@ -618,25 +544,25 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
 
-    // adds the collaborator with "USER" roles to the namespace
+    // adds the collaborator with "model_viewer" roles to the namespace
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -649,10 +575,12 @@ public class NamespaceControllerIntegrationTestIsolated {
 
     // creates a user with tenant admin privileges but no access to the namespace in question
     SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor thirdUser = user("thirdPartyUser")
-        .password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(
-            Sets.newHashSet(USER, TENANT_ADMIN))
-        );
+        .password("pass");
+    userRepository.save(
+        new UserBuilder()
+            .withAuthenticationProviderID("GITHUB")
+            .withName("thirdPartyUser").build()
+    );
 
     // finally removes the user from the namespace but with the "thirdPartyUser" who is tenant admin
     // "somewhere else", which fails due to lack of tenant admin role on that given namespace
@@ -662,7 +590,7 @@ public class NamespaceControllerIntegrationTestIsolated {
                 .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
                 .with(thirdUser)
         )
-        .andExpect(status().isPreconditionFailed());
+        .andExpect(status().isForbidden());
   }
 
   /**
@@ -679,10 +607,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -690,13 +618,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -713,7 +641,7 @@ public class NamespaceControllerIntegrationTestIsolated {
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -739,10 +667,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -750,13 +678,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -769,22 +697,23 @@ public class NamespaceControllerIntegrationTestIsolated {
 
     // creates a user with tenant admin privileges but no access to the namespace in question
     SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor thirdUser = user("thirdPartyUser")
-        .password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(
-            Sets.newHashSet(USER, TENANT_ADMIN))
-        );
-
+        .password("pass");
+    userRepository.save(
+        new UserBuilder()
+            .withAuthenticationProviderID("GITHUB")
+            .withName("thirdPartyUser").build()
+    );
     // finally, change the user roles on the DTO and PUT again
-    roles.add("MODEL_CREATOR");
+    roles.add("model_creator");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(thirdUser)
         )
-        .andExpect(status().isPreconditionFailed());
+        .andExpect(status().isForbidden());
   }
 
   /**
@@ -803,10 +732,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/myAdminNamespace")
                 .contentType("application/json").with(userSysadmin)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -814,13 +743,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
+    roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/myAdminNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -830,10 +759,10 @@ public class NamespaceControllerIntegrationTestIsolated {
                 "true"
             )
         );
-    // now checks whether the user has USER role
+    // now checks whether the user has model_viewer role
     repositoryServer
         .perform(
-            get("/rest/namespaces/USER/myAdminNamespace")
+            get("/rest/namespaces/model_viewer/myAdminNamespace")
                 .with(userModelCreator)
         )
         .andExpect(status().isOk())
@@ -842,10 +771,10 @@ public class NamespaceControllerIntegrationTestIsolated {
                 "true"
             )
         );
-    // finally, checks whether the user has MODEL_CREATOR role, which they haven't
+    // finally, checks whether the user has model_creator role, which they haven't
     repositoryServer
         .perform(
-            get("/rest/namespaces/MODEL_CREATOR/myAdminNamespace")
+            get("/rest/namespaces/model_creator/myAdminNamespace")
                 .with(userModelCreator)
         )
         .andExpect(status().isOk())
@@ -872,10 +801,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/vorto.private.myNamespace")
                 .contentType("application/json").with(userModelCreator)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -904,14 +833,14 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_2_NAME);
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
-    roles.add("TENANT_ADMIN");
+    roles.add("model_viewer");
+    roles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/vorto.private.myNamespace/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -949,10 +878,10 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/vorto.private.myNamespace")
                 .contentType("application/json").with(userModelCreator)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
 
@@ -962,32 +891,30 @@ public class NamespaceControllerIntegrationTestIsolated {
             put("/rest/namespaces/vorto.private.myNamespace2")
                 .contentType("application/json").with(userModelCreator2)
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                gson.toJson(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
             )
         );
     //
     /*
     Now adds userModelCreator to userModelCreator2's namespace as model creator
-    Note: this is done with the admin user here, because of the pre-authorization checks in the
-    controller, that verify if a user has the Spring role at all.
-    Since those users are mocked and their roles cannot be changed during tests, the userModelCreator
-    user would fail to add a collaborator at this point (but not in real life, since they would be
-    made tenant admin of the namespace they just created).
     */
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaborator.setSubject("none");
     Set<String> roles = new HashSet<>();
-    roles.add("USER");
-    roles.add("MODEL_CREATOR");
+    roles.add("none");
+    roles.add("model_viewer");
+    roles.add("model_creator");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
             put("/rest/namespaces/vorto.private.myNamespace2/users")
                 .contentType("application/json")
-                .content(gson.toJson(userModelCreatorCollaborator))
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -998,7 +925,7 @@ public class NamespaceControllerIntegrationTestIsolated {
             )
         );
 
-    // finally, lists all namespaces where userModelCreator has the MODEL_CREATOR role, that is, their own
+    // finally, lists all namespaces where userModelCreator has the model_creator role, that is, their own
     // and userModelCreator2's namespace
 
     // expected namespaces
@@ -1009,30 +936,32 @@ public class NamespaceControllerIntegrationTestIsolated {
     Collection<Collaborator> userModelCreatorNSUsers = new ArrayList<>();
 
     /*
-    Creating set of namespace owner roles - note: those reflect the admin's role but
-    namespace admin Collaborators seem to not have any role by design (arguably because they
-    implicitly have all roles) - so basically the roles below reflect userModelCreator as user of
-    their namespace, but not as admin.
+    Creating set of namespace owner roles
     */
     Set<String> ownerRoles = new HashSet<>();
-    ownerRoles.add("USER");
-    ownerRoles.add("MODEL_CREATOR");
-    ownerRoles.add("TENANT_ADMIN");
-    ownerRoles.add("MODEL_PROMOTER");
-    ownerRoles.add("MODEL_REVIEWER");
-
-    // for some WEIRD reason, the publisher role is not granted automatically to namespace owners...
+    ownerRoles.add("none");
+    ownerRoles.add("model_viewer");
+    ownerRoles.add("model_creator");
+    ownerRoles.add("namespace_admin");
+    ownerRoles.add("model_promoter");
+    ownerRoles.add("model_reviewer");
+    ownerRoles.add("model_publisher");
 
     // creating Collaborator for userModelCreator as admin in their own namespace
     Collaborator userModelCreatorCollaboratorAsAdmin = new Collaborator();
     userModelCreatorCollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaboratorAsAdmin.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaboratorAsAdmin.setSubject("none");
+    userModelCreatorCollaboratorAsAdmin.setRoles(ownerRoles);
     userModelCreatorNSAdmins.add(userModelCreatorCollaboratorAsAdmin);
 
-    // creating Collaborator for userModelCreator as user in their own namespace - all roles but sysadmin
-    Collaborator userModelCreatorCollaboratorAsuserSysadmin = new Collaborator();
-    userModelCreatorCollaboratorAsuserSysadmin.setUserId(USER_MODEL_CREATOR_NAME);
-    userModelCreatorCollaboratorAsuserSysadmin.setRoles(ownerRoles);
-    userModelCreatorNSUsers.add(userModelCreatorCollaboratorAsuserSysadmin);
+    // creating Collaborator for userModelCreator as user in their own namespace
+    Collaborator userModelCreatorCollaboratorAsUserSysadmin = new Collaborator();
+    userModelCreatorCollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaboratorAsUserSysadmin.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaboratorAsUserSysadmin.setSubject("none");
+    userModelCreatorCollaboratorAsUserSysadmin.setRoles(ownerRoles);
+    userModelCreatorNSUsers.add(userModelCreatorCollaboratorAsUserSysadmin);
 
     // creating namespace for userModelCreator
     NamespaceDto userModelCreatorNS = new NamespaceDto("vorto.private.myNamespace",
@@ -1041,10 +970,15 @@ public class NamespaceControllerIntegrationTestIsolated {
     // creating userModelCreator2 as a Collaborator object
     Collaborator userModelCreator2CollaboratorAsAdmin = new Collaborator();
     userModelCreator2CollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_2_NAME);
+    userModelCreator2CollaboratorAsAdmin.setAuthenticationProviderId("GITHUB");
+    userModelCreator2CollaboratorAsAdmin.setSubject("none");
+    userModelCreator2CollaboratorAsAdmin.setRoles(ownerRoles);
 
-    Collaborator userModelCreator2CollaboratorAsuserSysadmin = new Collaborator();
-    userModelCreator2CollaboratorAsuserSysadmin.setUserId(USER_MODEL_CREATOR_2_NAME);
-    userModelCreator2CollaboratorAsuserSysadmin.setRoles(ownerRoles);
+    Collaborator userModelCreator2CollaboratorAsUserSysadmin = new Collaborator();
+    userModelCreator2CollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_2_NAME);
+    userModelCreator2CollaboratorAsUserSysadmin.setAuthenticationProviderId("GITHUB");
+    userModelCreator2CollaboratorAsUserSysadmin.setSubject("none");
+    userModelCreator2CollaboratorAsUserSysadmin.setRoles(ownerRoles);
 
     // adding to userModelCreator2 namespace admins
     Collection<Collaborator> userModelCreator2NSAdmins = new ArrayList<>();
@@ -1053,7 +987,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     // adding both userModelCreator2 collaborator and userModelCreator (the non-admin collaborator from up above)
     // to the userModelCreator2 namespace users
     Collection<Collaborator> userModelCreator2NSUsers = new ArrayList<>();
-    userModelCreator2NSUsers.add(userModelCreator2CollaboratorAsuserSysadmin);
+    userModelCreator2NSUsers.add(userModelCreator2CollaboratorAsUserSysadmin);
     userModelCreator2NSUsers.add(userModelCreatorCollaborator);
 
     // creating ns for userModelCreator2
@@ -1066,12 +1000,12 @@ public class NamespaceControllerIntegrationTestIsolated {
 
     repositoryServer
         .perform(
-            get("/rest/namespaces/role/ROLE_MODEL_CREATOR")
+            get("/rest/namespaces/role/model_creator")
                 .with(userModelCreator)
         )
         .andExpect(status().isOk())
         .andExpect(
-            content().json(gson.toJson(expectedNamespaces))
+            content().json(objectMapper.writeValueAsString(expectedNamespaces))
         );
 
   }

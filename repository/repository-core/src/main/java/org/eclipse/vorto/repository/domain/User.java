@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import com.google.common.collect.Sets;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,11 +33,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
-
 import org.eclipse.vorto.repository.account.UserUtils;
 import org.hibernate.annotations.NaturalId;
-
-import com.google.common.collect.Sets;
 
 @Entity
 @Table(name = "user")
@@ -53,13 +50,13 @@ public class User implements Serializable {
   @Column(name = "username")
   @NaturalId
   private String username;
-  
+
   @Column(name = "authentication_provider_id")
   private String authenticationProviderId;
 
   @Column(name = "subject")
   private String subject;
-  
+
   @Column(name = "is_technical_user")
   private boolean isTechnicalUser;
 
@@ -83,7 +80,8 @@ public class User implements Serializable {
     return create(username, provider, subject, false);
   }
 
-  public static User create(String username, String provider, String subject, boolean isTechnicalUser) {
+  public static User create(String username, String provider, String subject,
+      boolean isTechnicalUser) {
     User user = new User();
     user.setUsername(username);
     user.setAuthenticationProviderId(provider);
@@ -99,12 +97,14 @@ public class User implements Serializable {
   // TODO remove  ops and move to user service
 
   // TODO remove
-  public static User create(String username, String provider, String subject, Tenant tenant, Role... roles) {
+  public static User create(String username, String provider, String subject, Tenant tenant,
+      Role... roles) {
     return create(username, provider, subject, false, tenant, roles);
   }
 
   // TODO remove
-  public static User create(String username, String provider, String subject, boolean isTechnicalUser, Tenant tenant, Role... roles) {
+  public static User create(String username, String provider, String subject,
+      boolean isTechnicalUser, Tenant tenant, Role... roles) {
     User user = create(username, provider, subject, isTechnicalUser);
 
     TenantUser tenantUser = new TenantUser();
@@ -221,7 +221,7 @@ public class User implements Serializable {
   @PreRemove
   private void removeTenantUserAndOwnedTenants() {
     Iterator<TenantUser> itTenantUsers = tenantUsers.iterator();
-    while(itTenantUsers.hasNext()) {
+    while (itTenantUsers.hasNext()) {
       TenantUser tenantUser = itTenantUsers.next();
       itTenantUsers.remove();
       tenantUser.setTenant(null);
@@ -241,10 +241,14 @@ public class User implements Serializable {
     return username;
   }
 
+  public String getName() {
+    return username;
+  }
+
   public void setUsername(String username) {
     this.username = username;
   }
-  
+
   public String getAuthenticationProviderId() {
     return authenticationProviderId;
   }
@@ -288,7 +292,7 @@ public class User implements Serializable {
   public boolean hasEmailAddress() {
     return this.emailAddress != null && !"".equals(this.emailAddress);
   }
-  
+
   public String getSubject() {
     return subject;
   }
@@ -333,18 +337,23 @@ public class User implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     User other = (User) obj;
     if (username == null) {
-      if (other.username != null)
+      if (other.username != null) {
         return false;
-    } else if (!username.equals(other.username))
+      }
+    } else if (!username.equals(other.username)) {
       return false;
+    }
     return true;
   }
 }

@@ -203,7 +203,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public Namespace create(User actor, User target, String namespaceName)
       throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateNulls(actor, target, namespaceName);
+    validator.validate(actor, target);
+    validator.validateNulls(namespaceName);
     // lightweight validation of required properties
     validator.validateNulls(actor.getId(), target.getId());
 
@@ -213,6 +214,12 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
     if (userRepository.findOne(target.getId()) == null) {
       throw new DoesNotExistException("Target user does not exist - aborting namespace creation.");
+    }
+
+    if (namespaceName.trim().isEmpty()) {
+      throw new NameSyntaxException(String
+          .format("Namespace name is empty - aborting namespace creation.",
+              namespaceName));
     }
 
     // pattern-based namespace name validation
@@ -229,8 +236,18 @@ public class NamespaceService implements ApplicationEventPublisherAware {
               namespaceName));
     }
 
-    // actor is not sysadmin - need to enforce quota validation
+    // actor is not sysadmin - need to enforce quota validation and private namespace notation
     if (!userRepositoryRoleService.isSysadmin(actor)) {
+
+      if (!namespaceName.startsWith(PRIVATE_NAMESPACE_PREFIX)) {
+        throw new NameSyntaxException(
+            String.format(
+                "[%s] is an invalid name for a private namespace - aborting namespace creation.",
+                namespaceName
+            )
+        );
+      }
+
       if (namespaceRepository.findByOwner(target).stream()
           .filter(n -> n.getName().startsWith(PRIVATE_NAMESPACE_PREFIX)).count()
           >= privateNamespaceQuota) {
@@ -317,7 +334,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public Namespace updateNamespaceOwnership(User actor, User newOwner, String namespaceName)
       throws DoesNotExistException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateNulls(actor, newOwner, namespaceName);
+    validator.validate(actor, newOwner);
+    validator.validateNulls(namespaceName);
 
     // user validation
     if (userRepository.findOne(actor.getId()) == null) {
@@ -400,7 +418,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   public User getOwner(Namespace namespace) throws DoesNotExistException {
     // boilerplate null validation
-    validator.validateNulls(namespace);
+    validator.validateNamespace(namespace);
     validator.validateNulls(namespace.getName());
     return validateNamespaceExists(namespace.getName()).getOwner();
   }
@@ -442,8 +460,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public void deleteNamespace(User actor, String namespaceName)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateNulls(actor, namespaceName);
-    validator.validateNulls(actor.getId());
+    validator.validateUser(actor);
+    validator.validateNulls(namespaceName, actor.getId());
 
     // will throw DoesNotExistException if none found
     Namespace currentNamespace = validateNamespaceExists(namespaceName);
@@ -510,9 +528,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws OperationForbiddenException
    */
   public Collection<Namespace> getByOwner(User actor, User target)
-      throws OperationForbiddenException {
+      throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validateNulls(actor, target);
+    validator.validate(actor, target);
 
     // authorizes actor to collect namespace info on target
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
@@ -528,7 +546,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#getByOwner(User, User)
    */
   public Collection<Namespace> getByOwner(String actorUsername, String targetUsername)
-      throws OperationForbiddenException {
+      throws OperationForbiddenException, DoesNotExistException {
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     return getByOwner(actor, target);

@@ -37,10 +37,6 @@ public interface UserNamespaceRoleRepository extends
   @Query("select unr from UserNamespaceRoles unr where unr.id.user = :user")
   Collection<UserNamespaceRoles> findAllByUser(@Param("user") User user);
 
-  @Query(nativeQuery = true, value = "select * from user_namespace_roles where user_id = :user and ((roles & :roles) = :roles)")
-  Collection<UserNamespaceRoles> findAllByUserAndRoles(@Param("user") User user,
-      @Param("roles") long roles);
-
   @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace and unr.roles = :roles")
   Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace,
       @Param("roles") long roles);

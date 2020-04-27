@@ -15,8 +15,10 @@ package org.eclipse.vorto.repository.services;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.validation.constraints.NotNull;
-import org.eclipse.xtext.formatting.IElementMatcherProvider.IAfterElement;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -92,5 +94,121 @@ public class ServiceValidationUtil {
    */
   public void validateEmpties(Object... arguments) throws IllegalArgumentException {
     validateEmpties(true, arguments);
+  }
+
+  /**
+   * Convenience utility to throw {@link DoesNotExistException} with a specific message if a
+   * user does not exist. <br/>
+   * The usage implication is that the user has been retrieved by name through a repository
+   * call.
+   *
+   * @param user
+   * @throws DoesNotExistException
+   */
+  public void validateUser(User user) throws DoesNotExistException {
+    if (Objects.isNull(user)) {
+      throw new DoesNotExistException("User does not exist");
+    }
+  }
+
+  /**
+   * Convenience utility to throw {@link DoesNotExistException} with a specific message if a
+   * namespace does not exist. <br/>
+   * The usage implication is that the namespace has been retrieved by name through a repository
+   * call.
+   *
+   * @param namespace
+   * @throws DoesNotExistException
+   */
+  public void validateNamespace(Namespace namespace) throws DoesNotExistException {
+    if (Objects.isNull(namespace)) {
+      throw new DoesNotExistException("Namespace does not exist.");
+    }
+  }
+
+  /**
+   * Convenience utility to throw {@link DoesNotExistException} with a specific message if a
+   * role does not exist. <br/>
+   * The usage implication is that the role has been retrieved by name through a repository
+   * call.
+   *
+   * @param role
+   * @throws DoesNotExistException
+   */
+  public void validateRole(IRole role) throws DoesNotExistException {
+    if (Objects.isNull(role)) {
+      throw new DoesNotExistException("Role does not exist.");
+    }
+  }
+
+  /**
+   * @param user
+   * @param namespace
+   * @throws DoesNotExistException
+   * @see ServiceValidationUtil#validateUser(User)
+   * @see ServiceValidationUtil#validateNamespace(Namespace)
+   */
+  public void validate(User user, Namespace namespace) throws DoesNotExistException {
+    validateUser(user);
+    validateNamespace(namespace);
+  }
+
+  /**
+   * @param actor
+   * @param target
+   * @param namespace
+   * @throws DoesNotExistException
+   * @see ServiceValidationUtil#validateUser(User)
+   * @see ServiceValidationUtil#validateNamespace(Namespace)
+   */
+  public void validate(User actor, User target, Namespace namespace) throws DoesNotExistException {
+    validateUser(actor);
+    validateUser(target);
+    validateNamespace(namespace);
+  }
+
+  /**
+   * @param user
+   * @param namespace
+   * @param role
+   * @throws DoesNotExistException
+   * @see ServiceValidationUtil#validateUser(User)
+   * @see ServiceValidationUtil#validateNamespace(Namespace)
+   * @see ServiceValidationUtil#validateRole(IRole)
+   */
+  public void validate(User user, Namespace namespace, IRole role) throws DoesNotExistException {
+    validateUser(user);
+    validateNamespace(namespace);
+    validateRole(role);
+  }
+
+  /**
+   * @param actor
+   * @param target
+   * @param namespace
+   * @param role
+   * @throws DoesNotExistException
+   * @see ServiceValidationUtil#validateUser(User)
+   * @see ServiceValidationUtil#validateNamespace(Namespace)
+   * @see ServiceValidationUtil#validateRole(IRole)
+   */
+  public void validate(User actor, User target, Namespace namespace, IRole role)
+      throws DoesNotExistException {
+    validate(actor, target);
+    validateNamespace(namespace);
+    validateRole(role);
+  }
+
+  /**
+   * @param users
+   * @throws DoesNotExistException
+   * @see ServiceValidationUtil#validateUser(User)
+   */
+  public void validate(User... users) throws DoesNotExistException {
+    if (users != null && users.length > 0) {
+      for (User user : users) {
+        validateUser(user);
+      }
+    }
   }
 }

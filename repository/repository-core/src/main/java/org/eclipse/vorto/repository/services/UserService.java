@@ -13,10 +13,8 @@
 package org.eclipse.vorto.repository.services;
 
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
@@ -167,9 +165,9 @@ public class UserService implements ApplicationEventPublisherAware {
 
     // checking if only admin in any namespace
     if (userNamespaceRoleService.isOnlyAdminInAnyNamespace(actor, target)) {
-        throw new OperationForbiddenException(
+      throw new OperationForbiddenException(
           "User is the only administrator of at least one namespace - aborting delete operation."
-        );
+      );
     }
 
     // retrieving namespaces target owns

@@ -106,6 +106,8 @@ public class NamespaceController {
       }
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(namespaces, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(namespaces, HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
   }
@@ -127,8 +129,9 @@ public class NamespaceController {
           .getRolesByUser(userContext.getUsername(), namespace));
       return new ResponseEntity<>(collaborators, HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
-      LOGGER.warn("Error in getUsersForNamespace()", ofe);
       return new ResponseEntity<>(collaborators, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(collaborators, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -159,6 +162,8 @@ public class NamespaceController {
       return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -187,10 +192,12 @@ public class NamespaceController {
               userContext.getUsername(), user.getUsername(), namespace, collaborator.getRoles()
           ),
           HttpStatus.OK);
-    } catch (InvalidUserException | DoesNotExistException e) {
+    } catch (InvalidUserException iue) {
       return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
   }
@@ -265,6 +272,10 @@ public class NamespaceController {
       return new ResponseEntity<>(
           Collections.emptyList(), HttpStatus.FORBIDDEN
       );
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(
+          Collections.emptyList(), HttpStatus.NOT_FOUND
+      );
     }
 
   }
@@ -285,8 +296,12 @@ public class NamespaceController {
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
-    return new ResponseEntity<>(userNamespaceRoleService
-        .hasRole(userContext.getUsername(), namespace, role), HttpStatus.OK);
+    try {
+      return new ResponseEntity<>(userNamespaceRoleService
+          .hasRole(userContext.getUsername(), namespace, role), HttpStatus.OK);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
   }
 
   /**
@@ -313,6 +328,8 @@ public class NamespaceController {
       );
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
   }
@@ -364,8 +381,9 @@ public class NamespaceController {
         .user(SecurityContextHolder.getContext().getAuthentication());
 
     try {
-      userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace);
-      return new ResponseEntity<>(true, HttpStatus.GONE);
+      return new ResponseEntity<>(
+          userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace),
+          HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     } catch (DoesNotExistException dnee) {
