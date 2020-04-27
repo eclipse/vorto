@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace vortotest
+version 1.0.0
+displayname "TestFb"
+description "Functionblock for TestFb"
+using vortotest.ParentFbToBeExtended;1.0.0
+
+functionblock TestFb extends ParentFbToBeExtended {
+    configuration {
+      optional temperatureTest as float <MIN 0, MAX 35> "writable temperature with a range constraint"
+    }
+	status {
+	  mandatory myFloatInTestFb as float
+	}
+}

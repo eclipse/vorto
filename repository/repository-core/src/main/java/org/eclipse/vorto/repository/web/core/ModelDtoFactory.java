@@ -214,6 +214,8 @@ public class ModelDtoFactory {
     resource.setReferences(model.getReferences().stream().map(reference -> createModelId(reference))
         .collect(Collectors.toList()));
     resource.setCategory(model.getCategory());
+    if(model.getSuperType() != null)
+      resource.setSuperType(new ModelId(model.getSuperType().getName(), model.getSuperType().getNamespace(), model.getSuperType().getVersion()));
 
     if (model.getFunctionblock().getConfiguration() != null) {
       resource
@@ -517,7 +519,8 @@ public class ModelDtoFactory {
     resource.setProperties(model.getProperties().stream().map(p -> createProperty(p, mappingModel))
         .collect(Collectors.toList()));
     resource.setCategory(model.getCategory());
-
+    if(model.getSuperType() != null)
+      resource.setSuperType(new ModelId(model.getSuperType().getName(), model.getSuperType().getNamespace(), model.getSuperType().getVersion()));
     if (mappingModel.isPresent()) {
       resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
       for (MappingRule rule : getEntityRule(mappingModel.get().getRules())) {

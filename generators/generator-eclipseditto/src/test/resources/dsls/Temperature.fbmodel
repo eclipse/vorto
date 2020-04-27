@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "Temperature"
+description "Functionblock for Temperature"
+category sensors
+using org.eclipse.vorto.types.SensorValue ; 1.0.0
+
+functionblock Temperature {
+	status {
+		value as SensorValue
+	}
+
+}

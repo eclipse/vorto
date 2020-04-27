@@ -12,11 +12,12 @@
  */
 package org.eclipse.vorto.core.api.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -74,8 +75,6 @@ public class ModelConversionUtils {
     allProperties.addAll(configproperties);
     allProperties.addAll(statusProperties);
 
-
-
     // remove super type reference
     if (fbm.getSuperType() != null) {
       removeSuperTypeModelReference(fbm);
@@ -85,15 +84,13 @@ public class ModelConversionUtils {
 
     // set status properties
     Status status = FunctionblockFactory.eINSTANCE.createStatus();
-    status.getProperties().addAll(statusProperties);
+    status.getProperties().addAll(removeDuplicates(statusProperties));
     fb.setStatus(status);
 
     // set configuration properties
     Configuration configuration = FunctionblockFactory.eINSTANCE.createConfiguration();
-    configuration.getProperties().addAll(configproperties);
+    configuration.getProperties().addAll(removeDuplicates(configproperties));
     fb.setConfiguration(configuration);
-
-
 
     // Consolidate all operations
     List<Operation> operations = getFlatOperations(fbm);
@@ -102,6 +99,18 @@ public class ModelConversionUtils {
 
 
     return fbm;
+  }
+
+  private static List<Property> removeDuplicates(List<Property> allProperties) {
+    return allProperties.stream()
+            .filter(filterByTypeAndName(p -> p.getName() + "_" + p.getType().getClass().getName()))
+            .collect(Collectors.toList());
+  }
+
+  public static <T> Predicate<T> filterByTypeAndName(
+          Function<? super T, ?> generateKey) {
+    Map<Object, Boolean> insertedPropertiesMap = new HashMap<>();
+    return t -> insertedPropertiesMap.putIfAbsent(generateKey.apply(t), Boolean.TRUE) == null;
   }
 
   private static void removeSuperTypeModelReference(FunctionblockModel fbm) {

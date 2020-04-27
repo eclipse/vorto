@@ -251,6 +251,8 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     builder.withDescription(model.getDescription());
     builder.withDisplayName(model.getDisplayName());
     builder.withVortolang(model.getVortolang());
+    if(model.getSuperType() != null)
+      builder.withSuperType(convertSupertype(model.getSuperType(), model, context));
 
     for (ModelProperty sourceProperty : model.getStatusProperties()) {
       Property property = createProperty(sourceProperty, builder, context);
@@ -281,6 +283,11 @@ public class ModelContentToEcoreConverter implements IModelConverter<ModelConten
     }
 
     return builder.build();
+  }
+
+  private org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel convertSupertype(org.eclipse.vorto.model.ModelId superType, FunctionblockModel model, ModelContent context) {
+    IModel superTypeModel = context.getModels().get(superType);
+    return (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) this.convert(superTypeModel, context, Optional.empty());
   }
 
 
