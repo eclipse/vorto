@@ -68,12 +68,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * This class augments the test coverage on the NamespaceController, but in isolation. <br/>
- * The reason for this is that the existing tests are highly dependent on test data, part of which
- * is initialized in a common configuration class, and some of which seems to be mutated by
- * the very tests.<br/>
- * Therefore, it is excessively challenging to add new tests without failing tests in the same class
- * or worse, in other test classes in the module.
+ * This class augments the test coverage on the NamespaceController. <br/>
+ * The tests cover simple operations on namespaces, as well as collaborators, with a few edge
+ * cases.
  */
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = {"test"})
