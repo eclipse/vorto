@@ -12,20 +12,11 @@
  */
 package org.eclipse.vorto.repository.conversion;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.EntityMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.EnumMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.*;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelContent;
@@ -40,6 +31,12 @@ import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId,ModelContent>{
 
   private IModelRepositoryFactory repositoryFactory;
@@ -52,7 +49,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
     modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace()).getLatestModelVersionIfLatestTagIsSet(modelId);
     if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
-      throw new ModelNotFoundException("Model does not exist", null);
+      throw new ModelNotFoundException(
+          String.format("Model [%s] does not exist", modelId.getPrettyFormat()), null);
     }
 
     ModelWorkspaceReader workspaceReader = getWorkspaceForModel(modelId);
