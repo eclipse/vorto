@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.services;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -552,4 +553,20 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     return getByOwner(actor, target);
   }
 
+  /**
+   * Simple wrapper about {@link NamespaceRepository#findByName(String)}, throwing a checked
+   * exception if not found.
+   *
+   * @param namespaceName
+   * @return
+   * @throws DoesNotExistException
+   */
+  public Namespace getByName(String namespaceName) throws DoesNotExistException {
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    if (Objects.isNull(namespace)) {
+      throw new DoesNotExistException(
+          String.format("Namespace [%s] does not exist.", namespaceName));
+    }
+    return namespace;
+  }
 }

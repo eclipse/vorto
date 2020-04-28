@@ -54,12 +54,15 @@ public class UserUtil {
   /**
    * Validates a {@link User}'s authentication subject by pattern
    * {@link UserUtil#AUTHENTICATION_SUBJECT_VALIDATION_PATTERN}.<br/>
+   * A subject can be null or empty, but if not, it has to be valid.
    *
    * @param subject
    * @throws InvalidUserException if the subject {@link String} is not matched by the pattern.
    */
   public void validateSubject(String subject) throws InvalidUserException {
-    validator.validateEmpties(subject);
+    if (null == subject || subject.trim().isEmpty()) {
+      return;
+    }
     if (!subject.matches(AUTHENTICATION_SUBJECT_VALIDATION_PATTERN)) {
       throw new InvalidUserException("Invalid subject for user.");
     }

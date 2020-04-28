@@ -176,14 +176,13 @@ public class NamespaceController {
    */
   @PreAuthorize("isAuthenticated()")
   @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}/users")
-  public ResponseEntity<Boolean> addOrUpdateUsersForNamespace(
+  public ResponseEntity<Boolean> addOrUpdateCollaboratorForNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
       @RequestBody @ApiParam(value = "The user to be associated with the namespace",
           required = true) final Collaborator collaborator) {
 
     try {
-      // does not validate user creation here as it is a conversion from a payload that may not
-      // contain all required data
+      // no validation here save for essentials: we are pointing to an existing user
       User user = converter.createUser(null, collaborator);
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
@@ -391,4 +390,32 @@ public class NamespaceController {
     }
   }
 
+  /**
+   * Returns a {@link NamespaceDto} corresponding to the given namespace name. <br/>
+   * Fails if not found or user not authorized to access that namespace.
+   *
+   * @param namespace
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.GET, value = "/{namespace:.+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<NamespaceDto> getNamespace(
+      @ApiParam(value = "namespace", required = true) @PathVariable String namespace) {
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
+    try {
+      Namespace entity = namespaceService.getByName(namespace);
+      return new ResponseEntity<>(
+          converter.createNamespaceDTO(
+              entity,
+              userNamespaceRoleService.getRolesByUser(userContext.getUsername(), entity.getName())
+          ),
+          HttpStatus.OK
+      );
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException d) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+  }
 }

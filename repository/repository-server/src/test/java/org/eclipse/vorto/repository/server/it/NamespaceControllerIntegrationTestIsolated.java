@@ -13,12 +13,14 @@
 package org.eclipse.vorto.repository.server.it;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,16 +28,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
@@ -54,8 +56,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -88,12 +90,6 @@ public class NamespaceControllerIntegrationTestIsolated {
 
     public TestConfig() {
     }
-
-    @Autowired
-    private RepositoryRoleRepository repositoryRoleRepository;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
@@ -135,9 +131,14 @@ public class NamespaceControllerIntegrationTestIsolated {
   public static final String USER_SYSADMIN_NAME = "userSysadmin";
   public static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
   public static final String USER_MODEL_CREATOR_2_NAME = "userModelCreator2";
+  private static final String BOSCH_IOT_SUITE_AUTH = "BOSCH-IOT-SUITE-AUTH";
+  private static final String GITHUB = "GITHUB";
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private UserService userService;
 
   @Before
   public void startUpServer() throws Exception {
@@ -224,17 +225,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    */
   @Test
   public void testNamespaceCreationWithPrivatePrefixAsNonSysadmin() throws Exception {
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/vorto.private.myNamespace")
-                .contentType("application/json").with(userModelCreator)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("vorto.private.myNamespace", userModelCreator);
   }
 
   /**
@@ -244,17 +235,7 @@ public class NamespaceControllerIntegrationTestIsolated {
    */
   @Test
   public void testNamespaceCreationWithNoPrefixAsSysadmin() throws Exception {
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
   }
 
   /**
@@ -275,22 +256,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     }
 
     for (int i = 0; i < maxNamespaces; i++) {
-      repositoryServer
-          .perform(
-              put("/rest/namespaces/vorto.private.myNamespace" + i)
-                  .contentType("application/json").with(userModelCreator)
-          )
-          .andExpect(status().isCreated())
-          .andExpect(
-              content().json(
-                  objectMapper.writeValueAsString(NamespaceOperationResult.success())
-              )
-          );
+      createNamespaceSuccessfully(String.format("vorto.private.myNamespace%d", i),
+          userModelCreator);
     }
 
     repositoryServer
         .perform(
-            put("/rest/namespaces/vorto.private.myNamespace" + maxNamespaces)
+            put(String.format("/rest/namespaces/vorto.private.myNamespace%d", maxNamespaces))
                 .contentType("application/json").with(userModelCreator)
         )
         .andExpect(status().isForbidden())
@@ -326,30 +298,10 @@ public class NamespaceControllerIntegrationTestIsolated {
     }
 
     for (int i = 0; i < maxNamespaces; i++) {
-      repositoryServer
-          .perform(
-              put("/rest/namespaces/myNamespace" + i)
-                  .contentType("application/json").with(userSysadmin)
-          )
-          .andExpect(status().isCreated())
-          .andExpect(
-              content().json(
-                  objectMapper.writeValueAsString(NamespaceOperationResult.success())
-              )
-          );
+      createNamespaceSuccessfully(String.format("myNamespace%d", i), userSysadmin);
     }
 
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myNamespace" + maxNamespaces)
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully(String.format("myNamespace%d", maxNamespaces), userSysadmin);
   }
 
   /**
@@ -360,17 +312,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testAddNamespaceUserWithOneRole() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
@@ -404,17 +346,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testAddNamespaceNonExistingUser() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the non-existing user
     Collaborator nonExistingCollaborator = new Collaborator();
@@ -448,17 +380,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testRemoveExistingUserFromNamespace() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
@@ -506,17 +428,8 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testRemoveUserFromNamespaceWhereUserIsNotACollaborator() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
+
     // now removes a user that has not been added
     repositoryServer
         .perform(
@@ -547,17 +460,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testRemoveExistingUserFromNamespaceWithNoPrivileges() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
@@ -586,7 +489,7 @@ public class NamespaceControllerIntegrationTestIsolated {
         .password("pass");
     userRepository.save(
         new UserBuilder()
-            .withAuthenticationProviderID("GITHUB")
+            .withAuthenticationProviderID(GITHUB)
             .withName("thirdPartyUser").build()
     );
 
@@ -610,17 +513,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testChangeUserRolesOnNamespaceUser() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
@@ -643,7 +536,7 @@ public class NamespaceControllerIntegrationTestIsolated {
             )
         );
     // finally, change the user roles on the DTO and PUT again
-    roles.add("MODEL_CREATOR");
+    roles.add("model_creator");
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
@@ -670,17 +563,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testChangeUserRolesOnNamespaceUserWithExtraneousUser() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
@@ -708,7 +591,7 @@ public class NamespaceControllerIntegrationTestIsolated {
         .password("pass");
     userRepository.save(
         new UserBuilder()
-            .withAuthenticationProviderID("GITHUB")
+            .withAuthenticationProviderID(GITHUB)
             .withName("thirdPartyUser").build()
     );
     // finally, change the user roles on the DTO and PUT again
@@ -735,17 +618,7 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testHasRoleOnNamespace() throws Exception {
     // first, creates the namespace for the admin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/myAdminNamespace")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("myAdminNamespace", userSysadmin);
 
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
@@ -803,25 +676,16 @@ public class NamespaceControllerIntegrationTestIsolated {
    */
   @Test
   public void testIsOnlyAdminOnAnyNamespace() throws Exception {
+    String namespaceName = "myAdminNamespace";
     // first, creates the namespace
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/vorto.private.myNamespace")
-                .contentType("application/json").with(userModelCreator)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
 
     // now checks whether the creator user is the only admin user of any namespace - since they
     // only have one, this will return true
     repositoryServer
         .perform(
             get("/rest/namespaces/userIsOnlyAdmin")
-                .with(userModelCreator)
+                .with(userSysadmin)
         )
         .andExpect(status().isOk())
         .andExpect(
@@ -846,7 +710,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     userModelCreatorCollaborator.setRoles(roles);
     repositoryServer
         .perform(
-            put("/rest/namespaces/vorto.private.myNamespace/users")
+            put(String.format("/rest/namespaces/%s/users", namespaceName))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
                 .with(userSysadmin)
@@ -881,37 +745,15 @@ public class NamespaceControllerIntegrationTestIsolated {
   @Test
   public void testAccessibleNamespacesWithRole() throws Exception {
     // first, creates a namespace for the userModelCreator user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/vorto.private.myNamespace")
-                .contentType("application/json").with(userModelCreator)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("vorto.private.myNamespace", userModelCreator);
 
     // now, creates a namespace for the userModelCreator2 user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/vorto.private.myNamespace2")
-                .contentType("application/json").with(userModelCreator2)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
-    //
-    /*
-    Now adds userModelCreator to userModelCreator2's namespace as model creator
-    */
+    createNamespaceSuccessfully("vorto.private.myNamespace2", userModelCreator2);
+
+    // Now adds userModelCreator to userModelCreator2's namespace as model creator
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
-    userModelCreatorCollaborator.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaborator.setSubject("none");
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
@@ -956,7 +798,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     // creating Collaborator for userModelCreator as admin in their own namespace
     Collaborator userModelCreatorCollaboratorAsAdmin = new Collaborator();
     userModelCreatorCollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_NAME);
-    userModelCreatorCollaboratorAsAdmin.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaboratorAsAdmin.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaboratorAsAdmin.setSubject("none");
     userModelCreatorCollaboratorAsAdmin.setRoles(ownerRoles);
     userModelCreatorNSAdmins.add(userModelCreatorCollaboratorAsAdmin);
@@ -964,7 +806,7 @@ public class NamespaceControllerIntegrationTestIsolated {
     // creating Collaborator for userModelCreator as user in their own namespace
     Collaborator userModelCreatorCollaboratorAsUserSysadmin = new Collaborator();
     userModelCreatorCollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_NAME);
-    userModelCreatorCollaboratorAsUserSysadmin.setAuthenticationProviderId("GITHUB");
+    userModelCreatorCollaboratorAsUserSysadmin.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaboratorAsUserSysadmin.setSubject("none");
     userModelCreatorCollaboratorAsUserSysadmin.setRoles(ownerRoles);
     userModelCreatorNSUsers.add(userModelCreatorCollaboratorAsUserSysadmin);
@@ -976,13 +818,13 @@ public class NamespaceControllerIntegrationTestIsolated {
     // creating userModelCreator2 as a Collaborator object
     Collaborator userModelCreator2CollaboratorAsAdmin = new Collaborator();
     userModelCreator2CollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_2_NAME);
-    userModelCreator2CollaboratorAsAdmin.setAuthenticationProviderId("GITHUB");
+    userModelCreator2CollaboratorAsAdmin.setAuthenticationProviderId(GITHUB);
     userModelCreator2CollaboratorAsAdmin.setSubject("none");
     userModelCreator2CollaboratorAsAdmin.setRoles(ownerRoles);
 
     Collaborator userModelCreator2CollaboratorAsUserSysadmin = new Collaborator();
     userModelCreator2CollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_2_NAME);
-    userModelCreator2CollaboratorAsUserSysadmin.setAuthenticationProviderId("GITHUB");
+    userModelCreator2CollaboratorAsUserSysadmin.setAuthenticationProviderId(GITHUB);
     userModelCreator2CollaboratorAsUserSysadmin.setSubject("none");
     userModelCreator2CollaboratorAsUserSysadmin.setRoles(ownerRoles);
 
@@ -1019,43 +861,37 @@ public class NamespaceControllerIntegrationTestIsolated {
   // --- tests below adapted from former NamespaceControllerIntegrationTest ---
 
   @Test
-  public void getNamespaces() throws Exception {
-    repositoryServer.perform(get("/rest/namespaces").with(userSysadmin)).andExpect(status().isOk());
+  public void getNamespacesNoneFound() throws Exception {
+    repositoryServer.perform(get("/rest/namespaces").with(userSysadmin))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void getNamespacesFound() throws Exception {
+    createNamespaceSuccessfully("myNamespace", userSysadmin);
+    repositoryServer.perform(get("/rest/namespaces/all").with(userSysadmin))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void getNamespaceNotAuthorized() throws Exception {
+    createNamespaceSuccessfully("myNamespace", userSysadmin);
+    repositoryServer.perform(get("/rest/namespaces/myNamespace").with(userModelCreator))
+        .andExpect(status().isForbidden());
   }
 
   @Test
   public void getNamespace() throws Exception {
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/com.mycompany")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("com.mycompany", userSysadmin);
     repositoryServer.perform(get("/rest/namespaces/com.mycompany").with(userSysadmin))
         .andExpect(status().isOk());
   }
 
   @Test
   public void updateCollaborator() throws Exception {
-    // creates a namespace for the sysadmin user
-    repositoryServer
-        .perform(
-            put("/rest/namespaces/com.mycompany")
-                .contentType("application/json").with(userSysadmin)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
+    createNamespaceSuccessfully("com.mycompany", userSysadmin);
     // creates and adds a collaborator
-    Collaborator collaborator = new Collaborator(USER_MODEL_CREATOR_NAME, "GITHUB", "none",
+    Collaborator collaborator = new Collaborator(USER_MODEL_CREATOR_NAME, GITHUB, "none",
         Lists.newArrayList("model_viewer", "model_creator"));
     repositoryServer.perform(
         put("/rest/namespaces/com.mycompany/users")
@@ -1065,10 +901,11 @@ public class NamespaceControllerIntegrationTestIsolated {
         .andExpect(status().isOk());
 
     // checks the collaborator's roles are returned correctly
-    checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_NAME, "model_viewer", "model_creator");
+    checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_NAME, "model_viewer",
+        "model_creator");
 
     // creates and adds another collaborator with different roles
-    collaborator = new Collaborator(USER_MODEL_CREATOR_2_NAME, "GITHUB", "none",
+    collaborator = new Collaborator(USER_MODEL_CREATOR_2_NAME, GITHUB, "none",
         Lists.newArrayList("model_viewer"));
     repositoryServer.perform(
         put("/rest/namespaces/com.mycompany/users")
@@ -1081,20 +918,197 @@ public class NamespaceControllerIntegrationTestIsolated {
     checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_2_NAME, "model_viewer");
   }
 
+  @Test
+  public void updateCollaboratorAddTechnicalUser() throws Exception {
+
+    String namespaceName = "com.mycompany";
+
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+
+    Collaborator collaborator = new Collaborator("my-technical-user", GITHUB, "ProjectX",
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+    createTechnicalUserAndAddToNamespace(namespaceName, collaborator);
+
+    assertTrue(userService.exists("my-technical-user"));
+    User technicalUser = userRepository.findByUsername("my-technical-user");
+    assertNotNull(technicalUser);
+    assertTrue(technicalUser.isTechnicalUser());
+
+    checkCollaboratorRoles(namespaceName, "my-technical-user", "model_viewer", "model_creator");
+
+    collaborator = new Collaborator("my-technical-user", GITHUB, "ProjectX",
+        Lists.newArrayList("model_viewer"));
+
+    // cannot re-create tech user so adding as collaborator since it already exists now
+    addCollaboratorToNamespace(namespaceName, collaborator);
+
+    checkCollaboratorRoles(namespaceName, "my-technical-user", "model_viewer");
+  }
+
+  @Test
+  public void updateCollaboratorWithoutPermissions() throws Exception {
+    String namespaceName = "com.mycompany";
+    // creates the namespace
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+    // creates user and collaborator to add
+    String otherUser = "userstandard2";
+    Collaborator collaborator = new Collaborator(otherUser, GITHUB, null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    userRepository
+        .save(new UserBuilder().withName(otherUser).withAuthenticationProviderID(GITHUB).build());
+    // tries to add other user as yet another user, who has no rights to that namespace
+    repositoryServer.perform(
+        put(String.format("/rest/namespaces/%s/users", namespaceName))
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userModelCreator2))
+        .andExpect(status().isForbidden());
+  }
+
+  /**
+   * The difference between POST and PUT operations on collaborators essentially boils down to:
+   * <ul>
+   *   <li>
+   *     POST ops mean creating a new technical user, and therefore validate the whole collaborator
+   *     payload but assume the user does not exist.
+   *   </li>
+   *   <li>
+   *     PUT ops mean adding an existing user to the namespace, and therefore only perform minimal
+   *     validation (i.e. the user name), yet assume the user exists and fail otherwise.
+   *   </li>
+   * </ul>
+   *
+   * @throws Exception
+   */
+  @Test
+  public void updateCollaboratorUnknownProvider() throws Exception {
+    String namespaceName = "com.mycompany";
+    // creates the namespace
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+    // creates the collaborator payload and the existing user
+    String otherUser = "userstandard2";
+    Collaborator collaborator = new Collaborator(otherUser, "unknownProvider", null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    userRepository
+        .save(new UserBuilder().withName(otherUser).withAuthenticationProviderID(GITHUB).build());
+    repositoryServer.perform(
+        put("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void createTechnicalCollaboratorUnknownProvider() throws Exception {
+    String namespaceName = "com.mycompany";
+    // creates the namespace
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+    // creates the collaborator payload and the existing user
+    String otherUser = "userstandard2";
+    Collaborator collaborator = new Collaborator(otherUser, "unknownProvider", null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+
+    repositoryServer.perform(
+        post("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void updateCollaboratorNoSubject() throws Exception {
+    String namespaceName = "com.mycompany";
+    // creates the namespace
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+    // creates the collaborator payload and the existing user
+    String otherUser = "userstandard2";
+    Collaborator collaborator = new Collaborator(otherUser, GITHUB, null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    userRepository
+        .save(new UserBuilder().withName(otherUser).withAuthenticationProviderID(GITHUB).build());
+    repositoryServer.perform(
+        put("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void createTechnicalCollaboratorNoSubject() throws Exception {
+    createNamespaceSuccessfully("com.mycompany", userSysadmin);
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+
+    repositoryServer.perform(
+        post("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isBadRequest());
+  }
+
   // --- utility methods below ---
-  private void checkCollaboratorRoles(String namespaceName, String collaboratorName, String ... roles) throws Exception {
+  private void checkCollaboratorRoles(String namespaceName, String collaboratorName,
+      String... roles) throws Exception {
     repositoryServer.perform(
         get(String.format("/rest/namespaces/%s/users", namespaceName))
-        .with(userSysadmin)
+            .with(userSysadmin)
     )
-    .andDo(handler -> {
-      Collection<Collaborator> collaborators = objectMapper.readValue(handler.getResponse().getContentAsString(), new TypeReference<Collection<Collaborator>>(){});
-      Optional<Collaborator> maybeTarget = collaborators.stream().filter(c -> c.getUserId().equals(collaboratorName)).findAny();
-      assertTrue(maybeTarget.isPresent());
-      if (maybeTarget.isPresent()) {
-        Collaborator target = maybeTarget.get();
-        assertEquals(target.getRoles(), Arrays.asList(roles));
-      }
-    });
+        .andDo(handler -> {
+          Collection<Collaborator> collaborators = objectMapper
+              .readValue(handler.getResponse().getContentAsString(),
+                  new TypeReference<Collection<Collaborator>>() {
+                  });
+          Optional<Collaborator> maybeTarget = collaborators.stream()
+              .filter(c -> c.getUserId().equals(collaboratorName)).findAny();
+          assertTrue(maybeTarget.isPresent());
+          if (maybeTarget.isPresent()) {
+            Collaborator target = maybeTarget.get();
+            assertEquals(target.getRoles(), Arrays.asList(roles));
+          }
+        });
+  }
+
+  private void createTechnicalUserAndAddToNamespace(String namespace, Collaborator technicalUser)
+      throws Exception {
+    repositoryServer.perform(
+        post(String.format("/rest/namespaces/%s/users", namespace))
+            .content(objectMapper.writeValueAsString(technicalUser))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isCreated());
+  }
+
+
+  private void addCollaboratorToNamespace(String namespace, Collaborator collaborator)
+      throws Exception {
+    repositoryServer.perform(
+        put(String.format("/rest/namespaces/%s/users", namespace))
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+  }
+
+  private void createNamespaceSuccessfully(String namespaceName,
+      UserRequestPostProcessor actingUser) throws Exception {
+    // creates namespace first
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s", namespaceName))
+                .contentType("application/json").with(actingUser)
+        )
+        .andExpect(status().isCreated())
+        .andExpect(
+            content().json(
+                objectMapper.writeValueAsString(NamespaceOperationResult.success())
+            )
+        );
   }
 }

@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.services;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -214,6 +215,10 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         .format("Retrieving roles for user and namespace [%s]", namespace.getName()));
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(user, namespace));
+    // no roles found
+    if (Objects.isNull(userNamespaceRoles)) {
+      return Collections.emptyList();
+    }
     return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
   }
 

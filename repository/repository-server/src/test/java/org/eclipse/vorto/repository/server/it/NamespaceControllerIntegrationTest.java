@@ -171,6 +171,7 @@ public class NamespaceControllerIntegrationTest extends AbstractIntegrationTest 
       .andExpect(status().isPreconditionFailed());
   }
 
+  // TODO continue merge from here into new test class
   @Test
   public void updateCollaboratorUserDoesntExist() throws Exception {
     Collaborator collaborator = new Collaborator("unknownUser", GITHUB, null,

@@ -197,6 +197,14 @@ public class UserService implements ApplicationEventPublisherAware {
 
   }
 
+  /**
+   * @param userName
+   * @return whether the given user name pertains to an existing user.
+   */
+  public boolean exists(String userName) {
+    return userRepository.findByUsername(userName) != null;
+  }
+
   @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
