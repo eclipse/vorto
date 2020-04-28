@@ -489,17 +489,22 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * ownership will be "orphaned", and the namespace should either be deleted or its ownership
    * transferred to another user.<br/>
    * The operation is permitted only if the {@literal actor} {@link User} is either sysadmin, or
-   * the owner of the given {@link Namespace}.
+   * the owner of the given {@link Namespace}.<br/>
+   * The operation is not permitted if the acting user is the same as the target user, when not
+   * deleting the namespace. In other words, one cannot remove all their privileges from a namespace,
+   * except when they intend to delete the actual namespace. <br/>
+   * Also worth noting but not handled here, a namespace cannot be deleted if it has public models.
    *
    * @param actor
    * @param target
    * @param namespace
+   * @param deleteNamespace
    * @return
    * @throws DoesNotExistException
    * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#removeUserFromTenant(String, String)
    */
   @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
-  public boolean deleteAllRoles(User actor, User target, Namespace namespace)
+  public boolean deleteAllRoles(User actor, User target, Namespace namespace, boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     validator.validate(actor, target, namespace);
@@ -533,7 +538,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     }
 
     // actor is same user as target - legacy business rule: cannot delete yourself from namespace
-    if (actor.equals(target)) {
+    // this only applies when not trying to delete the namespace
+    if (!deleteNamespace && actor.equals(target)) {
       throw new OperationForbiddenException(
           String.format("User cannot remove themselves from namespace [%s].",
               namespace.getName())
@@ -560,18 +566,19 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param actorUsername
    * @param targetUsername
    * @param namespaceName
+   * @param deleteNamespace
    * @return
    * @throws DoesNotExistException
    * @throws OperationForbiddenException
-   * @see UserNamespaceRoleService#deleteAllRoles(User, User, Namespace)
+   * @see UserNamespaceRoleService#deleteAllRoles(User, User, Namespace, boolean)
    */
-  public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName)
+  public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName, boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String.format("Retrieving users and namespace [%s].", namespaceName));
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    return deleteAllRoles(actor, target, namespace);
+    return deleteAllRoles(actor, target, namespace, deleteNamespace);
   }
 
   /**

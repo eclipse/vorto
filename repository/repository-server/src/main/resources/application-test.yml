@@ -20,7 +20,7 @@ spring:
       ddl-auto: create-drop
 
   datasource:
-    # not sure which one to use so added both jus tin case
+    # not sure which one to use so added both just in case
     initialization-mode: always
     initialize: true
     platform: h2

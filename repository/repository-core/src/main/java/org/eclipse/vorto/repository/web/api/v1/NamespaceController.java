@@ -381,7 +381,7 @@ public class NamespaceController {
 
     try {
       return new ResponseEntity<>(
-          userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace),
+          userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace, false),
           HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);

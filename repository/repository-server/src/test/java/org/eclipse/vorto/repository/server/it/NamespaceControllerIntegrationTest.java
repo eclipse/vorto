@@ -1075,6 +1075,42 @@ public class NamespaceControllerIntegrationTest {
         .andExpect(status().isNotFound());
   }
 
+  @Test
+  public void deleteExistingNamespace() throws Exception {
+    String namespaceName = "vorto.private.mynamespace";
+    createNamespaceSuccessfully(namespaceName, userModelCreator);
+
+
+    // deletes
+    repositoryServer.perform(
+        delete(String.format("/rest/namespaces/%s", namespaceName))
+            .with(userModelCreator)
+    )
+
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void deleteNonExistingNamespace() throws Exception {
+    repositoryServer.perform(
+        delete("/rest/namespaces/nonExistingNamespace")
+            .with(userSysadmin)
+    )
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void deleteExistingNamespaceNotAuthorized() throws Exception {
+    String namespaceName = "myNamespace";
+    createNamespaceSuccessfully(namespaceName, userSysadmin);
+    repositoryServer.perform(
+        delete(String.format("/rest/namespaces/%s", namespaceName))
+            .with(userModelCreator)
+    )
+
+        .andExpect(status().isForbidden());
+  }
+
   // --- utility methods below ---
   private void checkCollaboratorRoles(String namespaceName, String collaboratorName,
       String... roles) throws Exception {
@@ -1133,4 +1169,5 @@ public class NamespaceControllerIntegrationTest {
             )
         );
   }
+
 }

@@ -479,8 +479,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     User owner = currentNamespace.getOwner();
 
     // authorizing acting user
-    if (!userRepositoryRoleService.isSysadmin(actor) || !actor.equals(owner)
-        || !userNamespaceRoleService
+    if (!userRepositoryRoleService.isSysadmin(actor) && !actor.equals(owner)
+        && !userNamespaceRoleService
         .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdminRole())) {
       throw new OperationForbiddenException(String
           .format("Acting user is not authorized to delete namespace [%s] - aborting operation.",
@@ -491,11 +491,11 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     Collection<User> users = userNamespaceRoleService
         .getRolesByUser(actor, currentNamespace).keySet();
     for (User user : users) {
-      userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace);
+      userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace, true);
     }
 
     // delete all roles from owner
-    userNamespaceRoleService.deleteAllRoles(actor, owner, currentNamespace);
+    userNamespaceRoleService.deleteAllRoles(actor, owner, currentNamespace, true);
 
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);

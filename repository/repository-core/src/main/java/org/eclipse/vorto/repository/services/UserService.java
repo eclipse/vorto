@@ -186,7 +186,7 @@ public class UserService implements ApplicationEventPublisherAware {
 
     // removing association for all namespaces
     for (Namespace namespace : namespacesWhereTargetHasAnyRole) {
-      userNamespaceRoleService.deleteAllRoles(actor, target, namespace);
+      userNamespaceRoleService.deleteAllRoles(actor, target, namespace, false);
     }
 
     // deleting target user
