@@ -70,7 +70,7 @@ public class AbstractRepositoryOperation {
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Unexpected exception", e);
     } finally {
-      helper.logoutSessionIfNotReusable(helper.getSession());
+      helper.getSession().logout();
     }
   }
 

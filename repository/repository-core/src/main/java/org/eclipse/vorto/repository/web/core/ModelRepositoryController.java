@@ -60,6 +60,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
@@ -113,10 +114,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @Autowired
   private IWorkflowService workflowService;
-  
+
   @Autowired
   private IBulkOperationsService modelService;
-  
+
   @Autowired
   private ModelValidationHelper modelValidationHelper;
 
@@ -194,38 +195,43 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     if (!attachmentValidator.validateAttachmentSize(file.getSize())) {
       return new ResponseEntity<>(
           AttachResult.fail(
-            actualModelID,
-            file.getOriginalFilename(),
-            String.format(
-              "The attachment is too large. Maximum size allowed is %dMB",
-              attachmentValidator.getMaxFileSizeSetting()
-            )
+              actualModelID,
+              file.getOriginalFilename(),
+              String.format(
+                  "The attachment is too large. Maximum size allowed is %dMB",
+                  attachmentValidator.getMaxFileSizeSetting()
+              )
           ),
           HttpStatus.PAYLOAD_TOO_LARGE
       );
     }
 
-
     try {
       IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
           getTenant(modelId));
 
-
       getModelRepository(actualModelID)
-        .attachFile(actualModelID,
-          new FileContent(
-            file.getOriginalFilename(), file.getBytes()
-          ),
-          user,
-          Attachment.TAG_IMAGE,
-          Attachment.TAG_DISPLAY_IMAGE
-        );
+          .attachFile(actualModelID,
+              new FileContent(
+                  file.getOriginalFilename(), file.getBytes()
+              ),
+              user,
+              Attachment.TAG_IMAGE,
+              Attachment.TAG_DISPLAY_IMAGE
+          );
 
     } catch (IOException e) {
       throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
           e);
     }
-    return new ResponseEntity<>(AttachResult.success(actualModelID, file.getOriginalFilename()), HttpStatus.CREATED);
+    return new ResponseEntity<>(AttachResult.success(actualModelID, file.getOriginalFilename()),
+        HttpStatus.CREATED);
+  }
+
+  private static Predicate<Tenant> hasMemberWithRole(String username, Role role) {
+    return tenant -> tenant.getUsers().stream()
+        .anyMatch(user -> user.getUser().getUsername().equals(username)
+            && !user.getRoles().isEmpty() && user.hasRole(role));
   }
 
   // ToDo add Getter method
@@ -274,34 +280,39 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
 
   }
-  
+
   @PutMapping(value = "/refactorings/{oldId:.+}/{newId:.+}", produces = "application/json")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#oldId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
-  public ResponseEntity<ModelInfo> refactorModelId(@PathVariable String oldId, @PathVariable String newId) {
+  public ResponseEntity<ModelInfo> refactorModelId(@PathVariable String oldId,
+      @PathVariable String newId) {
     final ModelId oldModelId = ModelId.fromPrettyFormat(oldId);
     final ModelId newModelId = ModelId.fromPrettyFormat(newId);
-     
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(oldId));
-    
-    ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId).rename(oldModelId, newModelId, userContext);
-    
+
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication(), getTenant(oldId));
+
+    ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId)
+        .rename(oldModelId, newModelId, userContext);
+
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
-  
-  
+
+
   @GetMapping(value = "/refactorings/{modelId:.+}", produces = "application/json")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
-  public ResponseEntity<Map<String,String>> newRefactoring(@PathVariable String modelId) {
-    Tenant tenant = this.tenantService.getTenant(this.modelRepositoryFactory.getRepositoryByModel(ModelId.fromPrettyFormat(modelId)).getTenantId()).get();
-    Map<String,String> response = new HashMap<>();
+  public ResponseEntity<Map<String, String>> newRefactoring(@PathVariable String modelId) {
+    Tenant tenant = this.tenantService.getTenant(
+        this.modelRepositoryFactory.getRepositoryByModel(ModelId.fromPrettyFormat(modelId))
+            .getTenantId()).get();
+    Map<String, String> response = new HashMap<>();
     response.put("namespace", tenant.getDefaultNamespace());
-    return new ResponseEntity<>(response,HttpStatus.OK);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
-  
+
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
   @PostMapping(value = "/{modelId:.+}/{modelType}", produces = "application/json")
   public ResponseEntity<ModelInfo> createModel(
@@ -392,7 +403,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       userModels.addAll(modelIds);
     }
 
-    logger.info("Exporting information models for " + user.getUsername() + " results: "
+    logger.info("Exporting information models for user - results: "
         + userModels.size());
 
     sendAsZipFile(response, user.getUsername() + "-models.zip",
@@ -517,15 +528,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       Authentication user = SecurityContextHolder.getContext().getAuthentication();
       return new ResponseEntity<>(
           getPolicyManager(tenantId).getPolicyEntries(modelID)
-          .stream()
-          .filter(userHasPolicyEntry(user, tenantId))
-          .collect(Collectors.toList()),
+              .stream()
+              .filter(userHasPolicyEntry(user, tenantId))
+              .collect(Collectors.toList()),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       logger.error(ex);
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    catch (NotAuthorizedException ex) {
+    } catch (NotAuthorizedException ex) {
       logger.warn(ex);
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
@@ -542,7 +552,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     String tenantId = getTenant(modelId);
-    
+
     try {
       List<PolicyEntry> policyEntries =
           getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
@@ -603,35 +613,39 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     getPolicyManager(getTenant(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
         entry);
   }
-  
+
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_USER')")
   @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
   public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
-    
-    IUserContext user = 
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), 
+
+    IUserContext user =
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
             getTenant(ControllerUtils.sanitize(modelId)));
-    
-    if (!user.isSysAdmin() && 
-        !accountService.hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
-      return new ResponseEntity<>(Status.fail("Only users with Publisher roles are allowed to make models public"), 
+
+    if (!user.isSysAdmin() &&
+        !accountService
+            .hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
+      return new ResponseEntity<>(
+          Status.fail("Only users with Publisher roles are allowed to make models public"),
           HttpStatus.UNAUTHORIZED);
     }
-    
+
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
+
     if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
-      return new ResponseEntity<>(Status.fail("Only models with official namespace can be made public"), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(
+          Status.fail("Only models with official namespace can be made public"),
+          HttpStatus.FORBIDDEN);
     }
-    
+
     try {
       logger.info("Making the model '" + ControllerUtils.sanitize(modelId) + "' public.");
       modelService.makeModelPublic(ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
-    } catch(ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
+    } catch (ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
       return new ResponseEntity<>(Status.fail(e.getMessage()), HttpStatus.FORBIDDEN);
     }
-    
-    return new ResponseEntity<>(Status.success(), HttpStatus.OK); 
+
+    return new ResponseEntity<>(Status.success(), HttpStatus.OK);
   }
 
   private String getTenant(String modelId) {
@@ -662,7 +676,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     return (p) -> (p.getPrincipalType() == PrincipalType.User
         && p.getPrincipalId().equals(user.getName()))
         || (p.getPrincipalType() == PrincipalType.Role
-            && accountService.hasRole(tenantId, user, p.getPrincipalId()));
+        && accountService.hasRole(tenantId, user, p.getPrincipalId()));
   }
 
   private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {
