@@ -75,7 +75,7 @@ oauth2:
       publicKeyUri: https://access.bosch-iot-suite.com/auth/realms/iot-suite/protocol/openid-connect/certs
     hydra:
       issuer: https://access.bosch-iot-suite.com/v2/
-      publicKeyUri: https://identity.bosch.com/.well-known/jwks
+      publicKeyUri: https://access.bosch-iot-suite.com/v2/.well-known/jwks.json
       
 mail:
   smtp:

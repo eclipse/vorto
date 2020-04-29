@@ -77,13 +77,6 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    logger.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
-
-    if (!getModelRepository(modelID).exists(modelID)) {
-      logger.warn(String.format("Could not find model with ID [%s] in repository", modelID));
-      throw new ModelNotFoundException("Model does not exist", null);
-    }
-    
     ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     
     return converter.convert(modelID, Optional.empty());

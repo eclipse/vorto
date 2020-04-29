@@ -25,6 +25,7 @@ public class FunctionblockModel extends AbstractModel implements IReferenceType 
   private List<ModelEvent> events = new ArrayList<>();
 
   private List<Operation> operations = new ArrayList<>();
+  private ModelId superType = null;
 
   public FunctionblockModel(ModelId modelId) {
     super(modelId, ModelType.Functionblock);
@@ -60,6 +61,14 @@ public class FunctionblockModel extends AbstractModel implements IReferenceType 
 
   public Optional<ModelProperty> getFaultProperty(String propertyName) {
     return faultProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+  }
+
+  public ModelId getSuperType() {
+    return superType;
+  }
+
+  public void setSuperType(ModelId superType) {
+    this.superType = superType;
   }
 
   public void setStatusProperties(List<ModelProperty> statusProperties) {
@@ -135,6 +144,11 @@ public class FunctionblockModel extends AbstractModel implements IReferenceType 
     
     public FunctionblockModelBuilder operation(Operation operation) {
       this.model.getOperations().add(operation);
+      return this;
+    }
+
+    public FunctionblockModelBuilder superType(ModelId superTypeId) {
+      this.model.setSuperType(superTypeId);
       return this;
     }
   }

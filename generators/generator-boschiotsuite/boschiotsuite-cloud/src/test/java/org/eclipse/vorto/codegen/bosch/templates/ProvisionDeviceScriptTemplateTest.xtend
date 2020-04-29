@@ -36,7 +36,6 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(TestUtils.normalizeEOL(generated));
 		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate1), TestUtils.normalizeEOL(generated));
 	}
 
@@ -60,7 +59,6 @@ class ProvisionDeviceScriptTemplateTest {
 		im.withFunctionBlock(fbm, "outdoorTemperature", null, false)
 
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(TestUtils.normalizeEOL(generated));
 		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate2), TestUtils.normalizeEOL(generated));
 	}
 
@@ -92,7 +90,6 @@ class ProvisionDeviceScriptTemplateTest {
 			new ModelId(ModelType.InformationModel, "RPi", "org.eclipse.vorto", "1.0.0"))
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
 		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate3), TestUtils.normalizeEOL(generated));
 
 	}
@@ -168,7 +165,6 @@ class ProvisionDeviceScriptTemplateTest {
 			new ModelId(ModelType.InformationModel, "RPi", "org.eclipse.vorto", "1.0.0"))
 		im.withFunctionBlock(fbm, "cpuTemperature", null, false);
 		var generated = template.getContent(im.build, InvocationContext.simpleInvocationContext());
-		System.out.println(generated);
 		Assert.assertEquals(TestUtils.normalizeEOL(expectedTemplate4), TestUtils.normalizeEOL(generated));
 
 	}

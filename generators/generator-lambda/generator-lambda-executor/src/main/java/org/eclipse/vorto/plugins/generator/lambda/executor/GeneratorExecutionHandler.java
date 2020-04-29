@@ -15,14 +15,6 @@ package org.eclipse.vorto.plugins.generator.lambda.executor;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import org.eclipse.vorto.codegen.azure.AzureGenerator;
 import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
@@ -40,6 +32,14 @@ import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.plugin.utils.ApiGatewayRequest;
 import org.eclipse.vorto.plugin.utils.ApiGatewayResponse;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 public class GeneratorExecutionHandler implements RequestStreamHandler {
 
   private static final String PLUGINKEY = "pluginkey";
@@ -51,7 +51,6 @@ public class GeneratorExecutionHandler implements RequestStreamHandler {
     generators.add(new BoschIoTSuiteGenerator());
     generators.add(new OpenAPIGenerator());
     generators.add(new JSONSchemaGenerator());
-    generators.add(new AzureGenerator());
   }
 
   private static final ObjectMapper objectMapper = new ObjectMapper();

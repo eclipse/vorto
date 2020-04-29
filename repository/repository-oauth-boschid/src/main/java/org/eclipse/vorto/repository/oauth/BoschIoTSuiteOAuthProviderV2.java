@@ -110,10 +110,9 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
       return false;
     }
 
-    User technicalUser = getTechnicalUser(jwtToken)
+    return getTechnicalUser(jwtToken)
+            .map(user -> true)
             .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
-
-    return allowAccess(resource(httpRequest), technicalUser);
   }
 
   private Optional<User> getTechnicalUser(JwtToken jwtToken) {
@@ -124,10 +123,6 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
 
   private boolean verifyAlgorithm(JwtToken jwtToken) {
     return jwtToken.getHeaderMap().get("alg").equals(RS256_ALG);
-  }
-
-  private boolean allowAccess(Optional<Resource> resource, User user) {
-    return !resource.isPresent() || namespaceApplicableToResource(user, resource.get()).isPresent();
   }
 
   private Optional<Namespace> namespaceApplicableToResource(User user, Resource resource) {

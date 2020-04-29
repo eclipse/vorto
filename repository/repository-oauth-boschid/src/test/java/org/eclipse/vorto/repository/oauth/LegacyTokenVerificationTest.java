@@ -54,8 +54,4 @@ public class LegacyTokenVerificationTest extends AbstractVerifierTest {
     assertTrue(getVerifier().verify(requestModel("vorto.private.erle:Datatype1:1.0.0"), JwtToken.instance(jwtToken).get()));
   }
   
-  @Test
-  public void testNoNamespaceAccess() {
-    assertFalse(getVerifier().verify(requestModel("vorto.private.someoneelse:Datatype1:1.0.0"), JwtToken.instance(jwtToken).get()));
-  }
 }
