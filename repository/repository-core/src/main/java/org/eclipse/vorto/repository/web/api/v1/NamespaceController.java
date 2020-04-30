@@ -188,7 +188,8 @@ public class NamespaceController {
           .user(SecurityContextHolder.getContext().getAuthentication());
       return new ResponseEntity<>(
           userNamespaceRoleService.setRoles(
-              userContext.getUsername(), user.getUsername(), namespace, collaborator.getRoles()
+              userContext.getUsername(), user.getUsername(), namespace, collaborator.getRoles(),
+              false
           ),
           HttpStatus.OK);
     } catch (InvalidUserException iue) {
@@ -381,7 +382,8 @@ public class NamespaceController {
 
     try {
       return new ResponseEntity<>(
-          userNamespaceRoleService.deleteAllRoles(userContext.getUsername(), userId, namespace, false),
+          userNamespaceRoleService
+              .deleteAllRoles(userContext.getUsername(), userId, namespace, false),
           HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);

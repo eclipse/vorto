@@ -13,6 +13,8 @@
 package org.eclipse.vorto.repository.services;
 
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -171,12 +173,15 @@ public class UserService implements ApplicationEventPublisherAware {
     }
 
     // retrieving namespaces target owns
-    Collection<Namespace> namespacesOwnedByTarget = namespaceService.getByOwner(actor, target);
+    Collection<Namespace> namespacesOwnedByTarget = userNamespaceRoleService
+        .getNamespacesAndRolesByUser(actor, target).entrySet().stream()
+        .filter(e -> e.getValue().contains(userNamespaceRoleService.namespaceAdminRole())).map(
+            Entry::getKey).collect(Collectors.toSet());
 
     // target owns at least one namespace - failing
     if (!namespacesOwnedByTarget.isEmpty()) {
       throw new OperationForbiddenException(
-          "User owns at least one namespace. Ownership must change before user can be deleted. Aborting operation."
+          "User is administrator in at least one namespace. Ownership must change before user can be deleted. Aborting operation."
       );
     }
 

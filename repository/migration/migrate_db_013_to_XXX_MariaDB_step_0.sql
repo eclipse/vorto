@@ -3,18 +3,14 @@
 
  It performs the following operations:
 
-    1) refactor_namespace_ownership_reference
-    Modifies the namespace table by replacing the tenant foreign key with a foreign
-    key owner_user_id pointing directly to the user who owns the namespace.
-
-    2) create_privileges
+    1) create_privileges
     Creates a new table where typical read/write/admin privileges are represented as constants,
     with a unique ID expressed as a 64 bit unsigned integer suitable for bitwise operations,
     and the name of the privilege as varchar for readability.
 
     Privileges will be used both by namespace-related roles, and repository-related roles.
 
-    3) create_namespace_roles
+    2) create_namespace_roles
     Creates a new table where user roles related to namespaces are represented as constants,
     with a unique ID expressed as a 64 bit unsigned integer suitable for bitwise operations,
     a privileges field representing the sum of permissions this role allows, and the name of the
@@ -22,7 +18,7 @@
     These roles match all of the previously designed roles (plus "none"), save for sysadmin -
     as the latter is not bound to a specific namespace but to the repository (see next step).
 
-    4) create_repository_roles
+    3) create_repository_roles
     Creates a new table where user roles related to the repository in general are represented as
     constants, with a unique ID expressed as a 64 bit unsigned integer suitable for bitwise
     operations, a privileges field representing the sum of permissions this role allows,
@@ -30,16 +26,16 @@
     There are only three repository roles available at the time of writing: "none" (e.g. for
     anonymous users), user and sysadmin.
 
-    5) create_user_namespace_roles
+    4) create_user_namespace_roles
     Creates a table expressing the relationship between users and namespaces, by composite
     user-namespace id, and a role field expressing the sum of roles a given user has on a given
     namespace. The available roles reference the namespace_roles table.
 
-    6) pre_populate_user_namespace_roles
+    5) pre_populate_user_namespace_roles
     Pre-populates the table by filling in the user-namespace ids for each user-namespace association
     present in the user_role table.
 
-    7) populate_user_namespace_roles
+    6) populate_user_namespace_roles
     Populates the actual roles by iterating over the user_role table and computing the role number
     for each user-namespace association.
     This is, by far, the most complex operation as the user_role table expresses the roles in
@@ -51,7 +47,7 @@
     The debug table itself is populated on-demand only, and serves no othe purpose than verifying
     data consistency after running the procedure.
 
-    8) create_user_repository_roles
+    7) create_user_repository_roles
     Creates a table expressing the roles users have on the repository. The standard user role is
     implied at this time, and does not require a record (so this table will NOT be populated with
     a row per every repository user).
@@ -65,68 +61,16 @@
 
     Notes:
 
-        a) There will still be some redundancy between the namespace.owner_user_id field, which denotes
-            ownership and therefore implies the role formerly known as TENANT_ADMIN (now namespace_admin),
-            and the actual namespace_admin role for that user in the namespace_user_roles table.
-        b) When deleting a user account where the user's namespace(s) has other users with the
-            namespace_admin role (which is the pre-condition to delete the account), the ownership of
-            the namespace will be "orphaned", as the application may not be able to choose a next
-            administrator among users with the appropriate permission.
-            However, since the ownership does not differ practically from having the namespace_admin
-            role (and there could be multiple other users with that role on the orphaned
-            namespace), this should pose no issue.
-        c) Some role names will change for harmonization, e.g. the TENANT_ADMIN role becomes
+        a) Some role names will change for harmonization, e.g. the TENANT_ADMIN role becomes
             namespace_admin, etc.
  */
 
-# 1) refactor_namespace_ownership_reference
-drop procedure if exists refactor_namespace_ownership_reference;
-
-create procedure refactor_namespace_ownership_reference()
-begin
-    declare user_in_namespace_count tinyint;
-    # Checks if the namespace table already has a owner_user_id field
-    set user_in_namespace_count = (
-        select count(*)
-        from information_schema.COLUMNS
-        where TABLE_NAME = 'namespace'
-          and COLUMN_NAME = 'owner_user_id'
-    );
-    /*
-        Assuming the namespace table does not already have a user field, this does two things:
-
-            1) Creates a user field in the namespace table with reference to the primary key in the user table
-            2) Updates the values of user in namespace to match the user id referenced in tenant_user,
-            through a nested inner join
-
-        Note:
-            The owner_id of the tenant table is unfortunately missing data, so it is not usable
-            hence, the nexted inner join). Likely the historical reason is that the owner_id field
-            has been abandoned back then, in favor of the intermediary table tenant_user, which we are
-            ultimately going to remove again.
-     */
-    if (user_in_namespace_count = 0) then
-        alter table namespace
-            ADD COLUMN owner_user_id bigint;
-        alter table namespace
-            add constraint user foreign key (owner_user_id) references user (id);
-        update namespace n
-            inner join tenant t on t.id = n.tenant_id
-            inner join tenant_user tu on t.id = tu.tenant_id
-        set n.owner_user_id = tu.user_id;
-
-    end if;
-end;
-
-call refactor_namespace_ownership_reference();
-
-# 2) create_privileges
+# 1) create_privileges
 drop procedure if exists create_privileges;
 
 create procedure create_privileges()
 begin
     declare privileges tinyint;
-    # Checks if the namespace table already has a owner_user_id field
     set privileges = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'privileges'
     );
@@ -148,13 +92,12 @@ end;
 
 call create_privileges();
 
-# 3) create_namespace_roles
+# 2) create_namespace_roles
 drop procedure if exists create_namespace_roles;
 
 create procedure create_namespace_roles()
 begin
     declare namespace_roles tinyint;
-    # Checks if the user_permissions table already has a owner_user_id field
     set namespace_roles = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'namespace_roles'
     );
@@ -182,13 +125,12 @@ end;
 
 call create_namespace_roles();
 
-# 4) create_repository_roles
+# 3) create_repository_roles
 drop procedure if exists create_repository_roles;
 
 create procedure create_repository_roles()
 begin
     declare repository_roles tinyint;
-    # Checks if the user_permissions table already has a owner_user_id field
     set repository_roles = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'repository_roles'
     );
@@ -212,13 +154,12 @@ end;
 
 call create_repository_roles();
 
-# 5) create_user_namespace_roles
+# 4) create_user_namespace_roles
 drop procedure if exists create_user_namespace_roles;
 
 create procedure create_user_namespace_roles()
 begin
     declare user_namespace_roles tinyint;
-    # Checks if the user_permissions table already has a owner_user_id field
     set user_namespace_roles = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'user_namespace_roles'
     );
@@ -238,7 +179,7 @@ end;
 
 call create_user_namespace_roles();
 
-# 6) pre_populate_user_namespace_roles
+# 5) pre_populate_user_namespace_roles
 drop procedure if exists pre_populate_user_namespace_roles;
 
 create procedure pre_populate_user_namespace_roles()
@@ -263,7 +204,7 @@ end;
 
 call pre_populate_user_namespace_roles();
 
-# 7) populate_user_namespace_roles - optionally, run the debug_user_namespace_roles script after
+# 6) populate_user_namespace_roles - optionally, run the debug_user_namespace_roles script after
 # this one, in order to verify the data has been populated correctly
 drop procedure if exists populate_user_namespace_roles;
 
@@ -346,14 +287,13 @@ end;
 
 call populate_user_namespace_roles();
 
-# 8) create_user_repository_roles
+# 7) create_user_repository_roles
 drop procedure if exists create_user_repository_roles;
 
 create procedure create_user_repository_roles()
 begin
     declare user_repository_roles tinyint;
     declare sysadmin_role int;
-    # Checks if the namespace table already has a owner_user_id field
     set user_repository_roles = (
         select count(*) from information_schema.TABLES where TABLE_NAME = 'user_repository_roles'
     );

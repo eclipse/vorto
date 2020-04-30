@@ -122,7 +122,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // not sysadmin
     if (!userRepositoryRoleService.isSysadmin(actor)) {
       // not namespace admin
-      if (!hasRole(actor, namespace, namespaceAdminRole()) && !namespace.getOwner().equals(actor)) {
+      if (!hasRole(actor, namespace, namespaceAdminRole())) {
         throw new OperationForbiddenException(
             String.format(
                 "Acting user is not authorized to manipulate namespace roles for target user on namespace [%s] - aborting operation.",
@@ -149,7 +149,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // not sysadmin
     if (!userRepositoryRoleService.isSysadmin(actor)) {
       // not namespace admin
-      if (getRoles(actor, namespace).isEmpty() && !namespace.getOwner().equals(actor)) {
+      if (getRoles(actor, namespace).isEmpty()) {
         throw new OperationForbiddenException(
             String.format(
                 "Acting user is not authorized to manipulate namespace roles for target user on namespace [%s] - aborting operation.",
@@ -365,23 +365,35 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   /**
    * Sets the roles of the given {@link User} on the given {@link Namespace} with a value as a power
    * of {@literal 2}.<br/>
-   * This method is private as the numeric value is not checked.
+   * This method is private as the numeric value is not checked.<br/>
+   * This can fail for a number of reasons:
+   * <ul>
+   *   <li>Either the actor user, target user or namespace do not exist</li>
+   *   <li>
+   *     Or, if not parametrized for a new namespace, if the acting user does not have the
+   *     {@literal namespace_admin} role on that namespace.
+   *   </li>
+   * </ul>
    *
    * @param actor
    * @param target
    * @param namespace
    * @param rolesValue
+   * @param newNamespace
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
-   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection, boolean)
    */
-  private boolean setRoles(User actor, User target, Namespace namespace, long rolesValue)
+  private boolean setRoles(User actor, User target, Namespace namespace, long rolesValue,
+      boolean newNamespace)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
     validator.validate(actor, target, namespace);
     validator.validateNulls(actor.getId(), target.getId());
 
-    // authorizing actor on namespace
-    authorizeActorAsAdminOrOwnerOnNamespace(actor, namespace);
+    // authorizing actor on namespace, only if the namespace is not being created for the first time
+    if (!newNamespace) {
+      authorizeActorAsAdminOrOwnerOnNamespace(actor, namespace);
+    }
 
     // retrieving existing roles
     UserNamespaceRoles roles = userNamespaceRoleRepository
@@ -416,7 +428,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
    * @see UserNamespaceRoleService#addRole(User, User, Namespace, IRole) to add a new role while preserving existing ones.
    */
-  public boolean setRoles(User actor, User target, Namespace namespace, Collection<IRole> roles)
+  public boolean setRoles(User actor, User target, Namespace namespace, Collection<IRole> roles,
+      boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     validator.validate(actor, target, namespace);
@@ -424,7 +437,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     validator.validateNulls(actor.getId(), target.getId());
 
     return setRoles(actor, target, namespace,
-        roles.stream().collect(Collectors.summingLong(IRole::getRole)));
+        roles.stream().collect(Collectors.summingLong(IRole::getRole)), newNamespace);
   }
 
   /**
@@ -433,10 +446,11 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespaceName
    * @param roleNames
    * @return
-   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection)
+   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection, boolean)
    */
   public boolean setRoles(String actorUsername, String targetUsername, String namespaceName,
-      Collection<String> roleNames) throws DoesNotExistException, OperationForbiddenException {
+      Collection<String> roleNames, boolean newNamespace)
+      throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String
         .format("Retrieving user, namespace [%s] and roles [%s]", namespaceName,
             roleNames));
@@ -444,7 +458,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     Collection<IRole> roles = roleUtil.toNamespaceRoles(roleNames);
-    return setRoles(actor, target, namespace, roles);
+    return setRoles(actor, target, namespace, roles, newNamespace);
   }
 
   /**
@@ -456,13 +470,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespace
    * @return
    */
-  public boolean setAllRoles(User actor, User target, Namespace namespace)
+  public boolean setAllRoles(User actor, User target, Namespace namespace, boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     validator.validate(actor, target, namespace);
     return setRoles(actor, target, namespace,
         namespaceRoleRepository.findAll().stream().map(r -> (IRole) r).collect(
-            Collectors.toSet()));
+            Collectors.toSet()), newNamespace);
   }
 
   /**
@@ -470,16 +484,17 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param targetUsername
    * @param namespaceName
    * @return
-   * @see UserNamespaceRoleService#setAllRoles(User, User, Namespace)
+   * @see UserNamespaceRoleService#setAllRoles(User, User, Namespace, boolean)
    */
-  public boolean setAllRoles(String actorUsername, String targetUsername, String namespaceName)
+  public boolean setAllRoles(String actorUsername, String targetUsername, String namespaceName,
+      boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String
         .format("Retrieving user and namespace [%s]", namespaceName));
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    return setAllRoles(actor, target, namespace);
+    return setAllRoles(actor, target, namespace, newNamespace);
   }
 
   /**
@@ -504,7 +519,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#removeUserFromTenant(String, String)
    */
   @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
-  public boolean deleteAllRoles(User actor, User target, Namespace namespace, boolean deleteNamespace)
+  public boolean deleteAllRoles(User actor, User target, Namespace namespace,
+      boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     validator.validate(actor, target, namespace);
@@ -529,7 +545,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // actor not sysadmin
     if (!userRepositoryRoleService.isSysadmin(actor)) {
       // actor has no admin role on, or does not own namespace
-      if (!hasRole(actor, namespace, namespaceAdminRole()) && !actor.equals(namespace.getOwner())) {
+      if (!hasRole(actor, namespace, namespaceAdminRole())) {
         throw new OperationForbiddenException(
             String.format("Acting user cannot delete user roles for namespace [%s].",
                 namespace.getName())
@@ -572,7 +588,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @throws OperationForbiddenException
    * @see UserNamespaceRoleService#deleteAllRoles(User, User, Namespace, boolean)
    */
-  public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName, boolean deleteNamespace)
+  public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName,
+      boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     LOGGER.info(String.format("Retrieving users and namespace [%s].", namespaceName));
     User actor = userRepository.findByUsername(actorUsername);
@@ -583,7 +600,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   /**
    * Verifies whether the given {@link User} can view the given {@link Namespace}, which always
-   * yields true if the user is {@literal sysadmin}.<br/>
+   * yields true if the user is {@literal sysadmin}, or if the user has any role on the
+   * namespace.<br/>
    *
    * @param user
    * @param namespace
@@ -594,7 +612,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       UserNamespaceRoles actorRoles = userNamespaceRoleRepository
           .findOne(new UserNamespaceID(user, namespace));
       // acting user has no visibility on namespace
-      if (!namespace.getOwner().equals(user) || actorRoles == null) {
+      if (actorRoles == null) {
         throw new OperationForbiddenException(
             String.format("User has no visibility on namespace [%s].", namespace.getName())
         );
@@ -690,6 +708,54 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   /**
+   * Builds a map of all {@link IRole}s by {@link Namespace} where the given target {@link User} has
+   * any role, as acted by the acting {@link User}.<br/>
+   * Can return an empty map if none found. <br/>
+   * Can fail if either the actor or the target do not exist.<br/>
+   * Can fail to authorize if the actor is not the same user as the target, or the actor does not
+   * have the {@literal sysadmin} repository role.
+   *
+   * @param actor
+   * @param target
+   * @return
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   */
+  public Map<Namespace, Collection<IRole>> getNamespacesAndRolesByUser(User actor, User target)
+      throws DoesNotExistException, OperationForbiddenException {
+    validator.validate(actor, target);
+    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
+    Collection<UserNamespaceRoles> unr = userNamespaceRoleRepository.findAllByUser(target);
+    if (Objects.isNull(unr) || unr.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    Map<Namespace, Collection<IRole>> result = new TreeMap(
+        Comparator.comparing(Namespace::getName));
+    unr.stream().forEach(
+        r -> {
+          result.put(r.getNamespace(), roleUtil.toNamespaceRoles(r.getRoles()));
+        }
+    );
+    return result;
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   * @see UserNamespaceRoleService#getNamespacesAndRolesByUser(User, User)
+   */
+  public Map<Namespace, Collection<IRole>> getNamespacesAndRolesByUser(String actorUsername,
+      String targetUsername)
+      throws DoesNotExistException, OperationForbiddenException {
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    return getNamespacesAndRolesByUser(actor, target);
+  }
+
+  /**
    * @param actorUsername
    * @param namespaceName
    * @return
@@ -730,7 +796,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     // sets the desired namespace-roles association - authorization on namespace is
     // performed here, but failure will revert the transaction including saving the new user
-    setRoles(actor, technicalUser, namespace, roles);
+    setRoles(actor, technicalUser, namespace, roles, false);
   }
 
   /**

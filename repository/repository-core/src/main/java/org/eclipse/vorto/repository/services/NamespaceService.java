@@ -195,7 +195,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws DoesNotExistException
    * @throws CollisionException
    * @throws NameSyntaxException
-   * @see NamespaceService#updateNamespaceOwnership(User, User, String) to change ownership of an existing namespace.
    * @see org.eclipse.vorto.repository.tenant.TenantService#createOrUpdateTenant(String, String, Set, Optional, Optional, Optional, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class, CollisionException.class,
@@ -208,14 +207,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     validator.validateNulls(namespaceName);
     // lightweight validation of required properties
     validator.validateNulls(actor.getId(), target.getId());
-
-    // user validation
-    if (userRepository.findOne(actor.getId()) == null) {
-      throw new DoesNotExistException("Acting user does not exist - aborting namespace creation.");
-    }
-    if (userRepository.findOne(target.getId()) == null) {
-      throw new DoesNotExistException("Target user does not exist - aborting namespace creation.");
-    }
 
     if (namespaceName.trim().isEmpty()) {
       throw new NameSyntaxException(String
@@ -248,25 +239,15 @@ public class NamespaceService implements ApplicationEventPublisherAware {
             )
         );
       }
-
-      if (namespaceRepository.findByOwner(target).stream()
-          .filter(n -> n.getName().startsWith(PRIVATE_NAMESPACE_PREFIX)).count()
-          >= privateNamespaceQuota) {
-        throw new PrivateNamespaceQuotaExceededException(
-            String.format(
-                "User already has reached quota [%d] of private namespaces - aborting namespace creation.",
-                privateNamespaceQuota)
-        );
-      }
+      verifyPrivateNamespaceQuota(actor, target);
     }
 
     // persists the new namespace
     Namespace namespace = new Namespace();
     namespace.setName(namespaceName);
-    namespace.setOwner(target);
     namespaceRepository.save(namespace);
 
-    userNamespaceRoleService.setAllRoles(actor, target, namespace);
+    userNamespaceRoleService.setAllRoles(actor, target, namespace, true);
 
     // application event handling
     eventPublisher
@@ -291,150 +272,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     return create(actor, target, namespaceName);
-  }
-
-  /**
-   * Changes ownership of the {@link Namespace} with the given name, transferring it to the given
-   * {@literal newOwner} {@link User}, as executed by the {@literal actor} {@link User}.<br/>
-   * Adds all available {@link Namespace} roles to the {@literal newOwner} {@link User}, but <b>does
-   * not remove or modify any {@link Namespace} roles pertaining to the previous owner</b>.<br/>
-   * The authorization for this functionality works as follows:
-   * <ul>
-   *   <li>
-   *     If the acting user is sysadmin, then anything is permitted. However, this operation will
-   *     log a warning, should the new owner exceed the configured quota of private namespaces as
-   *     a result of this operation. The verification on whether the change of ownership concerns
-   *     a private namespace should be performed at controller level, in order to provide the
-   *     acting sysadmin user with adequate warnings / chances to abort.
-   *   </li>
-   *   <li>
-   *     If the acting user is not sysadmin, then this operation will succeed only in two cases:
-   *     <ol>
-   *       <li>
-   *         The namespace being transferred is private, but the target user has no private namespace
-   *         or has {@code quota - 1} private namespaces.
-   *       </li>
-   *       <li>
-   *         The namespace being transferred is not private.
-   *       </li>
-   *     </ol>
-   *     In both cases above, the operation is designed as part of the workflow subsequent to a user
-   *     deleting their account.
-   *   </li>
-   * </ul>
-   *
-   * @param actor
-   * @param newOwner
-   * @param namespaceName
-   * @return the {@link Namespace} with new ownership.
-   * @throws DoesNotExistException if either user or the namespace do not exist.
-   * @see org.eclipse.vorto.repository.tenant.TenantService#createOrUpdateTenant(String, String, Set, Optional, Optional, Optional, IUserContext)
-   */
-  @Transactional(rollbackFor = {DoesNotExistException.class,
-      PrivateNamespaceQuotaExceededException.class, OperationForbiddenException.class})
-  public Namespace updateNamespaceOwnership(User actor, User newOwner, String namespaceName)
-      throws DoesNotExistException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
-    // boilerplate null validation
-    validator.validate(actor, newOwner);
-    validator.validateNulls(namespaceName);
-
-    // user validation
-    if (userRepository.findOne(actor.getId()) == null) {
-      throw new DoesNotExistException(
-          "Acting user does not exist - aborting change of namespace ownership.");
-    }
-    if (userRepository.findOne(newOwner.getId()) == null) {
-      throw new DoesNotExistException("New owner does not exist - aborting namespace creation.");
-    }
-
-    // will throw DoesNotExistException if none found
-    Namespace currentNamespace = validateNamespaceExists(namespaceName);
-
-    // check quota
-    // actor is not sysadmin - need to enforce quota validation
-
-    if (namespaceRepository.findByOwner(newOwner).stream()
-        .filter(n -> n.getName().startsWith(PRIVATE_NAMESPACE_PREFIX)).count()
-        >= privateNamespaceQuota && currentNamespace.getName()
-        .startsWith(PRIVATE_NAMESPACE_PREFIX)) {
-      // actor not sysadmin and quota would exceed - aborting
-      if (!userRepositoryRoleService.isSysadmin(actor)) {
-        throw new PrivateNamespaceQuotaExceededException(
-            String.format(
-                "User would exceed quota [%d] of private namespaces by acquiring ownership of namespace [%s] - aborting operation.",
-                privateNamespaceQuota, currentNamespace.getName()
-            )
-        );
-        // actor is sysadmin so only logging a warning
-      } else {
-        LOGGER.warn(
-            String.format(
-                "User will exceed quota [%d] of private namespaces by acquiring ownership of namespace [%s].",
-                privateNamespaceQuota, currentNamespace.getName()
-            )
-        );
-      }
-
-    }
-
-    // Set all roles ot the new owner
-    userNamespaceRoleService.setAllRoles(actor, newOwner, currentNamespace);
-
-    // now changes ownership and persists
-    currentNamespace.setOwner(newOwner);
-
-    Namespace saved = namespaceRepository.save(currentNamespace);
-
-    if (saved != null) {
-      // application event handling
-      eventPublisher
-          .publishEvent(new AppEvent(this, newOwner.getUsername(), EventType.NAMESPACE_UPDATED));
-      return saved;
-    }
-    return null;
-  }
-
-  /**
-   * @param actorUsername
-   * @param newOwnerUsername
-   * @param namespaceName
-   * @return
-   * @throws DoesNotExistException
-   * @see NamespaceService#updateNamespaceOwnership(User, User, String)
-   */
-  public Namespace updateNamespaceOwnership(String actorUsername, String newOwnerUsername,
-      String namespaceName)
-      throws DoesNotExistException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
-    User actor = userRepository.findByUsername(actorUsername);
-    User target = userRepository.findByUsername(newOwnerUsername);
-    return updateNamespaceOwnership(actor, target, namespaceName);
-  }
-
-  /**
-   * Validates that the given {@link Namespace} exists and returns its owning {@link User}.
-   *
-   * @param namespace
-   * @return
-   * @throws DoesNotExistException
-   */
-  public User getOwner(Namespace namespace) throws DoesNotExistException {
-    // boilerplate null validation
-    validator.validateNamespace(namespace);
-    validator.validateNulls(namespace.getName());
-    return validateNamespaceExists(namespace.getName()).getOwner();
-  }
-
-  /**
-   * Validates that the given {@link Namespace} exists and returns its owning {@link User}.
-   *
-   * @param namespaceName
-   * @return
-   * @throws DoesNotExistException
-   */
-  public User getOwner(String namespaceName) throws DoesNotExistException {
-    // boilerplate null validation
-    validator.validateNulls(namespaceName);
-    return validateNamespaceExists(namespaceName).getOwner();
   }
 
   /**
@@ -476,10 +313,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
               currentNamespace.getName()));
     }
 
-    User owner = currentNamespace.getOwner();
-
     // authorizing acting user
-    if (!userRepositoryRoleService.isSysadmin(actor) && !actor.equals(owner)
+    if (!userRepositoryRoleService.isSysadmin(actor)
         && !userNamespaceRoleService
         .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdminRole())) {
       throw new OperationForbiddenException(String
@@ -493,9 +328,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     for (User user : users) {
       userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace, true);
     }
-
-    // delete all roles from owner
-    userNamespaceRoleService.deleteAllRoles(actor, owner, currentNamespace, true);
 
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);
@@ -518,42 +350,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   * Collects all {@link Namespace}s owned by the given target {@link User}, as acted by the given
-   * acting {@link User}.<br/>
-   * Operation will fail to authorize if the actor does not have the repository {@literal sysadmin}
-   * role, or if they are not the same {@link User} as the target.
-   *
-   * @param actor
-   * @param target
-   * @return
-   * @throws OperationForbiddenException
-   */
-  public Collection<Namespace> getByOwner(User actor, User target)
-      throws OperationForbiddenException, DoesNotExistException {
-    // boilerplate null validation
-    validator.validate(actor, target);
-
-    // authorizes actor to collect namespace info on target
-    userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
-
-    return namespaceRepository.findByOwner(target);
-  }
-
-  /**
-   * @param actorUsername
-   * @param targetUsername
-   * @return
-   * @throws OperationForbiddenException
-   * @see NamespaceService#getByOwner(User, User)
-   */
-  public Collection<Namespace> getByOwner(String actorUsername, String targetUsername)
-      throws OperationForbiddenException, DoesNotExistException {
-    User actor = userRepository.findByUsername(actorUsername);
-    User target = userRepository.findByUsername(targetUsername);
-    return getByOwner(actor, target);
-  }
-
-  /**
    * Simple wrapper about {@link NamespaceRepository#findByName(String)}, throwing a checked
    * exception if not found.
    *
@@ -568,5 +364,33 @@ public class NamespaceService implements ApplicationEventPublisherAware {
           String.format("Namespace [%s] does not exist.", namespaceName));
     }
     return namespace;
+  }
+
+  /**
+   * This searches all namespaces where the target user has any role, and filters by private
+   * namespaces only, and whether the target user has the {@literal namespace_admin} role.<br/>
+   * If the target user is {@literal namespace_admin} in more private namespaces than the quota
+   * allows, {@link PrivateNamespaceQuotaExceededException} is thrown. <br/>
+   * This verification can also fail if the acting user is not the same user as the target or does
+   * not have the {@literal sysadmin} repository role, or if either actor or target do not exist.
+   *
+   * @param actor
+   * @param target
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   * @throws PrivateNamespaceQuotaExceededException
+   */
+  public void verifyPrivateNamespaceQuota(User actor, User target)
+      throws DoesNotExistException, OperationForbiddenException, PrivateNamespaceQuotaExceededException {
+    if (userNamespaceRoleService.getNamespacesAndRolesByUser(actor, target).entrySet().stream()
+        .filter(e -> e.getKey().getName().startsWith(PRIVATE_NAMESPACE_PREFIX) && e.getValue()
+            .contains(userNamespaceRoleService.namespaceAdminRole())).count()
+        >= privateNamespaceQuota) {
+      throw new PrivateNamespaceQuotaExceededException(
+          String.format(
+              "User already has reached quota [%d] of private namespaces - aborting namespace creation.",
+              privateNamespaceQuota)
+      );
+    }
   }
 }

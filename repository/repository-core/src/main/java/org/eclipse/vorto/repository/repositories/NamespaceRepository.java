@@ -31,8 +31,4 @@ public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
 
   Namespace findByName(String name);
 
-  @Query("select n from Namespace n where n.owner = :owner")
-  Set<Namespace> findByOwner(@Param("owner")User owner);
-
-
 }
