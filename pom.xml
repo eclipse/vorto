@@ -172,6 +172,7 @@
 		<module>mapping-engine</module>
 		<module>repository</module>
 		<module>utilities</module>
+		<module>jacoco-coverage</module>
 	</modules>
 
 	<build>
@@ -413,22 +414,12 @@
 					<plugin>
 						<version>0.8.2</version>
 						<groupId>org.jacoco</groupId>
-						<configuration>
-							<destFile>${sonar.jacoco.reportPath}</destFile>
-							<append>true</append>
-						</configuration>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<executions>
 							<execution>
+								<id>prepare-agent</id>
 								<goals>
 									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>report</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>report</goal>
 								</goals>
 							</execution>
 						</executions>
