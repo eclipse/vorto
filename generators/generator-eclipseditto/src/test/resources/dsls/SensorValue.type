@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.types
+version 1.0.0
+displayname "SensorValue"
+description "A float-based data type representing a sensor's current, minimum and maximum measured output"
+
+entity SensorValue {
+  mandatory currentMeasured as float
+	optional minMeasured     as float
+	optional maxMeasured     as float
+}

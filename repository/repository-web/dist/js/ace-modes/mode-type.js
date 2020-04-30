@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], function(oop, mText, mTextHighlightRules) {
 	var HighlightRules = function() {
 		var keywords = "DEFAULT|MAX|MIMETYPE|MIN|NULLABLE|REGEX|SCALING|STRLEN|as|base64Binary|boolean|breakable|byte|category|configuration|dateTime|description|dictionary|displayname|double|entity|enum|eventable|events|extends|extension|false|fault|float|functionblock|functionblocks|infomodel|int|long|mandatory|measurementUnit|multiple|namespace|operations|optional|readable|short|status|string|true|using|version|vortolang|with|writable";

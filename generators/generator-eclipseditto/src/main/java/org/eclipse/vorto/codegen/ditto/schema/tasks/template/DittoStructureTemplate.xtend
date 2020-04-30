@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,14 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.ditto.schema.tasks.template
-
+import org.eclipse.vorto.codegen.ditto.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.IFileTemplate
 
@@ -42,7 +43,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
  	«FOR fbProperty : model.properties SEPARATOR ","»
  	"«fbProperty.name»" : {
  	"definition": [
- 		"«fbProperty.type.namespace»:«fbProperty.type.name»:«fbProperty.type.version»"
+ 		«getReferencesJson(fbProperty.type)»
  	],
  	"properties": {
  		«IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
@@ -122,4 +123,11 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 		}
 	}
 
+    def getReferencesJson(FunctionblockModel model) {
+        '''
+        «FOR fb : Utils.getFunctionBlockHierarchy(model) SEPARATOR ","»
+        "«fb.namespace»:«fb.name»:«fb.version»"
+        «ENDFOR»
+        '''
+	}
 }

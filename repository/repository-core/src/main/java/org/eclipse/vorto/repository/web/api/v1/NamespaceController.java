@@ -508,8 +508,6 @@ public class NamespaceController {
         Role roleFilter = Role.valueOf(role.replace(Role.rolePrefix, ""));
         filter = hasMemberWithRole(userContext.getUsername(), roleFilter);
       }
-      List<NamespaceDto> test = tenantService.getTenants().stream().filter(filter)
-          .map(NamespaceDto::fromTenant).collect(Collectors.toList());
       return new ResponseEntity<>(
           tenantService.getTenants().stream().filter(filter).map(NamespaceDto::fromTenant)
               .collect(Collectors.toList()),

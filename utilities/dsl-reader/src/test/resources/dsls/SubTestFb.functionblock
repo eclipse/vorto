@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace vortotest
+version 1.0.0
+displayname "SubTestFb"
+description "Functionblock for SubTestFb"
+using vortotest.TestFb;1.0.0
+
+functionblock SubTestFb extends TestFb {
+    configuration {
+      optional temperatureSub as float <MIN 0, MAX 35> "writable temperature with a range constraint"
+    }
+	status {
+	  mandatory myFloatInSubTestFb as float
+	}
+}

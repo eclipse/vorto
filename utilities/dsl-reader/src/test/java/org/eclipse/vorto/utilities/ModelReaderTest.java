@@ -12,26 +12,31 @@
  */
 package org.eclipse.vorto.utilities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.zip.ZipInputStream;
+
+import static org.junit.Assert.*;
 
 public class ModelReaderTest {
 
@@ -207,6 +212,53 @@ public class ModelReaderTest {
     assertEquals(1, infomodel.getProperties().get(0).getType().getReferences().size());
     assertEquals("iot.ColorLight",
         infomodel.getProperties().get(0).getType().getReferences().get(0).getImportedNamespace());
+  }
+
+  /**
+   * Tests the flattening mechanism for multi level inheritance in function blocks
+   */
+  @Test
+  public void testFlatInheritanceFBMultiLevel() {
+    IModelWorkspace workspace = IModelWorkspace.newReader()
+            .addFile(getClass().getClassLoader().getResourceAsStream("dsls/ParentFbToBeExtended.functionblock"),
+                    ModelType.Functionblock)
+            .addFile(getClass().getClassLoader().getResourceAsStream("dsls/TestFb.functionblock"),
+                    ModelType.Functionblock)
+            .addFile(getClass().getClassLoader().getResourceAsStream("dsls/SubTestFb.functionblock"),
+                    ModelType.Functionblock).read();
+    List<Model> modelList = new ArrayList<>();
+    workspace.get().forEach(model -> {
+      modelList.add(ModelConversionUtils.convertToFlatHierarchy(model));
+    });
+
+    FunctionblockModel fbm = (FunctionblockModel) modelList.get(2);
+
+    assertEquals("SubTestFb", fbm.getName());
+    // check status props
+    Status statusProps = fbm.getFunctionblock().getStatus();
+    assertEquals(4, statusProps.getProperties().size());
+
+    Optional<Property> propFound = statusProps.getProperties().stream().filter(p -> p.getName().equals("myFloatInSubTestFb")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = statusProps.getProperties().stream().filter(p -> p.getName().equals("myFloatInTestFb")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = statusProps.getProperties().stream().filter(p -> p.getName().equals("ParentFloat")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = statusProps.getProperties().stream().filter(p -> p.getName().equals("Parent2ndFloat")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+
+    // check config props
+    Configuration config = fbm.getFunctionblock().getConfiguration();
+    assertEquals(4, config.getProperties().size());
+
+    propFound = config.getProperties().stream().filter(p -> p.getName().equals("temperatureSub")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = config.getProperties().stream().filter(p -> p.getName().equals("temperatureTest")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = config.getProperties().stream().filter(p -> p.getName().equals("temperatureParent")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
+    propFound = config.getProperties().stream().filter(p -> p.getName().equals("temperatureParent2")).findFirst();
+    Assert.assertTrue(propFound.isPresent());
   }
 
   /*

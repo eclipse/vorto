@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.tutorials
+version 1.0.0
+displayname "RaspberryPi"
+description "RaspberryPi used by Eclipse Vorto tutorials"
+
+using org.eclipse.vorto.Location; 1.0.0
+using org.eclipse.vorto.Battery; 1.0.0
+using org.eclipse.vorto.Temperature; 1.0.0
+	
+infomodel RaspberryPi {
+
+	functionblocks {
+		location as Location
+		battery as Battery
+		cpuTemperature as Temperature
+	}
+}
