@@ -52,7 +52,6 @@ public class RoleUtil {
    */
   public Collection<IRole> toNamespaceRoles(long roles) {
     return namespaceRoleRepository.findAll().stream()
-        .filter(r -> !r.getName().equals("none"))
         .filter(r -> (roles & r.getRole()) == r.getRole()).collect(
             Collectors.toSet());
   }

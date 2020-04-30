@@ -15,7 +15,7 @@
     with a unique ID expressed as a 64 bit unsigned integer suitable for bitwise operations,
     a privileges field representing the sum of permissions this role allows, and the name of the
     namespace role as varchar for readability.
-    These roles match all of the previously designed roles (plus "none"), save for sysadmin -
+    These roles match all of the previously designed roles, save for sysadmin -
     as the latter is not bound to a specific namespace but to the repository (see next step).
 
     3) create_repository_roles
@@ -23,8 +23,7 @@
     constants, with a unique ID expressed as a 64 bit unsigned integer suitable for bitwise
     operations, a privileges field representing the sum of permissions this role allows,
     and the name of the repository role as varchar for readability.
-    There are only three repository roles available at the time of writing: "none" (e.g. for
-    anonymous users), user and sysadmin.
+    There are only two repository roles available at the time of writing: user and sysadmin.
 
     4) create_user_namespace_roles
     Creates a table expressing the relationship between users and namespaces, by composite
@@ -78,12 +77,11 @@ begin
         # creates the table
         create table privileges
         (
-            # privilege value is a power of 2 or 0 for none
+            # privilege value is a power of 2
             privilege bigint      not null primary key unique check ( privilege & (privilege - 1) = 0 ),
             name      varchar(64) not null unique
         );
         # populates with "harmonized" values
-        insert into privileges values (0, 'none');
         insert into privileges values (1, 'read');
         insert into privileges values (2, 'write');
         insert into privileges values (4, 'admin');
@@ -110,7 +108,6 @@ begin
             privileges bigint      not null default 0
         );
         # populates with "harmonized" values
-        insert into namespace_roles values (0, 'none', 0);
         # model_view has read privilege
         insert into namespace_roles values (1, 'model_viewer', 1);
         # model_write etc. have read/write privileges, aka 1 + 2 == 3
