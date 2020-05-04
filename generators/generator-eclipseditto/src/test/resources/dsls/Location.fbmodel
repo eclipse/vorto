@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "Location"
+description "Functionblock for Location"
+category location
+
+functionblock Location {
+	status {
+		mandatory latitude as float
+	  mandatory longitude as float
+	}
+
+}

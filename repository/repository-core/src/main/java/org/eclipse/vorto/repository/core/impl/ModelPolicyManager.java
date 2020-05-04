@@ -12,15 +12,11 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
@@ -30,14 +26,21 @@ import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+import org.eclipse.vorto.repository.workflow.ModelState;
+import org.eclipse.vorto.repository.workflow.impl.functions.GrantCollaboratorAccessPolicy;
+import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
+import org.eclipse.vorto.repository.workflow.impl.functions.GrantRoleAccessPolicy;
+import org.eclipse.vorto.repository.workflow.impl.functions.RemoveRoleAccessPolicy;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ModelPolicyManager extends AbstractRepositoryOperation implements IModelPolicyManager {
 
@@ -45,8 +48,11 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
 
   private IUserAccountService userAccountService;
 
-  public ModelPolicyManager(@Autowired IUserAccountService userAccountService) {
+  private IModelRepositoryFactory modelRepositoryFactory;
+
+  public ModelPolicyManager(@Autowired IUserAccountService userAccountService, @Autowired IModelRepositoryFactory iModelRepositoryFactory) {
     this.userAccountService = userAccountService;
+    this.modelRepositoryFactory = iModelRepositoryFactory;
   }
 
   @Override
@@ -225,4 +231,68 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
    Collection<PolicyEntry> entries = getPolicyEntries(sourceModelId);
    addPolicyEntry(targetModelId,entries.toArray(new PolicyEntry[entries.size()]));
   }
+
+  @Override
+  public void restorePolicyEntries() {
+    doInSession(session -> {
+      restorePolicyEntriesInternal(session);
+      return null;
+    });
+  }
+
+  /**
+   * Restores the access policies. (https://github.com/eclipse/vorto/issues/2350)
+   *
+   * @param session
+   * @throws RepositoryException
+   */
+  private void restorePolicyEntriesInternal(Session session) {
+    logger.info("restorePolicyEntries");
+    if (this.modelRepositoryFactory == null)
+      return;
+    IModelRepository repo = this.modelRepositoryFactory.getRepository(session.getWorkspace().getName());
+    List<ModelInfo> modelList = repo.search("");
+
+    Map<String, IWorkflowFunction[]> stateToFunctionsMap = createStateToFunctionsMap();
+
+    for (ModelInfo model : modelList) {
+      applyWorkflowFunctions(model, session, stateToFunctionsMap);
+      setVisibility(model);
+    }
+  }
+
+  private Map<String, IWorkflowFunction[]> createStateToFunctionsMap() {
+    logger.debug("createStateToFunctionsMap");
+    Map<String, IWorkflowFunction[]> stateToFunctionsMap = new HashMap<>();
+
+    final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(this.modelRepositoryFactory);
+    final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(this.modelRepositoryFactory, Role.MODEL_PROMOTER);
+    final GrantCollaboratorAccessPolicy grantCollaboratorAccessPolicy = new GrantCollaboratorAccessPolicy(this.modelRepositoryFactory);
+    final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(this.modelRepositoryFactory, Role.MODEL_PUBLISHER);
+
+    stateToFunctionsMap.put(ModelState.Draft.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy});
+    stateToFunctionsMap.put(ModelState.InReview.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, grantReviewerModelAccess, removeModelPromoterPolicy});
+    stateToFunctionsMap.put(ModelState.Released.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy, grantPublisherModelAccess});
+    stateToFunctionsMap.put(ModelState.Deprecated.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy, grantPublisherModelAccess});
+    return stateToFunctionsMap;
+  }
+
+  private void applyWorkflowFunctions(ModelInfo model, Session session, Map<String, IWorkflowFunction[]> stateToFunctionsMap) {
+    logger.debug("applyWorkflowFunctions on Model: " + model.getFileName());
+    IWorkflowFunction[] functions = stateToFunctionsMap.get(model.getState());
+    if (functions == null) {
+      logger.warn("applyWorkflowFunctions: no functions defined for state: " + model.getState() + " of model: " + model.getFileName());
+      return;
+    }
+    Arrays.stream(stateToFunctionsMap.get(model.getState())).forEach(func -> func.execute(model, UserContext.user(SecurityContextHolder.getContext().getAuthentication(), session.getWorkspace().getName()), null));
+  }
+
+  private void setVisibility(ModelInfo model) {
+    if (IModelRepository.VISIBILITY_PUBLIC.equals(model.getVisibility())) {
+      addPolicyEntry(model.getId(), PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY,
+              PolicyEntry.PrincipalType.User, PolicyEntry.Permission.READ));
+    }
+  }
+
+
 }

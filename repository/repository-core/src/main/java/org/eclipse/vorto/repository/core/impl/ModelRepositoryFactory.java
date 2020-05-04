@@ -175,10 +175,10 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     repoManager.setDefaultSessionSupplier(defaultWorkspaceSessionSupplier(user));
     return repoManager;
   }
-  
+
   @Override
   public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
-    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService);
+    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService, this);
     policyManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
     return policyManager;
   }
