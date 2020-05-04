@@ -36,9 +36,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               if (!$scope.namespaces || $scope.namespaces.length <= 1) {
                 document.getElementById("namespaceSearch").disabled = true;
               }
-              else {
-                $scope.filterNamespaces();
-              }
+              $scope.filterNamespaces();
             },
             function (reason) {
               $scope.isRetrievingNamespaces = false;
