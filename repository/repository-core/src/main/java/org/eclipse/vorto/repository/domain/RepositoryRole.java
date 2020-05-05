@@ -32,6 +32,15 @@ public class RepositoryRole implements Serializable, IRole {
 
   private static final long serialVersionUID = -6221938330735374556L;
 
+  public RepositoryRole() {
+  }
+
+  public RepositoryRole(long role, String name, long privileges) {
+    this.role = role;
+    this.name = name;
+    this.privileges = privileges;
+  }
+
   @Id
   private long role;
 

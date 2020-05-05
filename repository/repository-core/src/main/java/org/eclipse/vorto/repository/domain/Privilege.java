@@ -28,6 +28,13 @@ import javax.persistence.Table;
 
   private static final long serialVersionUID = -5897575755499074106L;
 
+  public Privilege() {}
+
+  public Privilege(long privilege, String name) {
+    this.privilege = privilege;
+    this.name = name;
+  }
+
   @Id
   private long privilege;
 

@@ -30,6 +30,14 @@ public class NamespaceRole implements Serializable, IRole {
 
   private static final long serialVersionUID = 760754614830691891L;
 
+  public NamespaceRole() {}
+
+  public NamespaceRole(long role, String name, long privileges) {
+    this.role = role;
+    this.name = name;
+    this.privileges = privileges;
+  }
+
   @Id
   private long role;
 
