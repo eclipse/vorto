@@ -315,3 +315,5 @@ begin
     alter table namespace add column workspace_id varchar(255) not null default 'undefined';
     update namespace set workspace_id = (select tenant_id from tenant where id = namespace.tenant_id);
 end;
+call add_workspace_id_and_populate();
+drop procedure add_workspace_id_and_populate;
