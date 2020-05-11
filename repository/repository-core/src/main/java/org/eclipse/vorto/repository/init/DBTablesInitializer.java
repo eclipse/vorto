@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
  * Typically, this would occur when starting a Vorto repository for the first time.
  */
 @Service
+@Profile("!test")
 public class DBTablesInitializer implements ApplicationRunner {
 
   public static final Privilege[] DEFAULT_PRIVILEGES;
