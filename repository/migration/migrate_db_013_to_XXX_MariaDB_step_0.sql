@@ -62,6 +62,10 @@
 
         a) Some role names will change for harmonization, e.g. the TENANT_ADMIN role becomes
             namespace_admin, etc.
+    8) add_workspace_id_and_populate
+    Adds a new column "workspace_id" to the namespace table and populates it with the former tenant_id from the
+    tenant table.
+
  */
 
 # 1) create_privileges
@@ -310,6 +314,7 @@ begin
     end if;
 end;
 
+# 8) add_workspace_id_and_populate
 create procedure add_workspace_id_and_populate()
 begin
     alter table namespace add column workspace_id varchar(255) not null default 'undefined';
