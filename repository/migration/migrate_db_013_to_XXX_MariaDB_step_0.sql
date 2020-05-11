@@ -309,3 +309,9 @@ begin
         where role = 'SYS_ADMIN';
     end if;
 end;
+
+create procedure add_workspace_id_and_populate()
+begin
+    alter table namespace add column workspace_id varchar(255) not null default 'undefined';
+    update namespace set workspace_id = (select tenant_id from tenant where id = namespace.tenant_id);
+end;
