@@ -384,11 +384,11 @@ public final class SearchTestInfrastructure {
       }
 
       @Override
-      public IModelRepository getRepository(String tenant, Authentication user) {
+      public IModelRepository getRepository(String workspaceId, Authentication user) {
         if (user == null) {
-          return getRepository(tenant);
+          return getRepository(workspaceId);
         }
-        return super.getRepository(tenant, user);
+        return super.getRepository(workspaceId, user);
       }
     };
 

@@ -182,10 +182,10 @@ public abstract class AbstractIntegrationTest {
       }
 
       @Override
-      public IModelRepository getRepository(String tenant, Authentication user) {
+      public IModelRepository getRepository(String workspaceId, Authentication user) {
         if (user == null)
-          return getRepository(tenant);
-        return super.getRepository(tenant, user);
+          return getRepository(workspaceId);
+        return super.getRepository(workspaceId, user);
       }
     };
     repositoryFactory.setApplicationEventPublisher(eventPublisher);

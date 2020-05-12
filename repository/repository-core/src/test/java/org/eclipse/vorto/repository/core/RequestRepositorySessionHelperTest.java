@@ -34,7 +34,7 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
         // create a session helper with autowiring (live http request)
         RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper();
         helper.afterPropertiesSet();
-        helper.setTenantId(TEST_TENANT_ID);
+        helper.setWorkspaceId(TEST_TENANT_ID);
         helper.setRepository(createMockRepository());
         Session mySession = helper.getSession();
         Assert.assertNotNull(mySession);
@@ -54,7 +54,7 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
     public void testInternalSessionSupplierNonWired() throws RepositoryException {
         // create a session helper without autowiring (no http request)
         RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false);
-        helper.setTenantId(TEST_TENANT_ID);
+        helper.setWorkspaceId(TEST_TENANT_ID);
         helper.setRepository(createMockRepository());
         Session mySession = helper.getSession();
         Assert.assertNotNull(mySession);

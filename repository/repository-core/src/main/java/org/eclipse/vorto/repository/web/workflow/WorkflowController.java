@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.workflow.dto.WorkflowResponse;
 import org.eclipse.vorto.repository.web.workflow.dto.WorkflowState;
@@ -42,13 +43,16 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/rest/workflows")
 public class WorkflowController {
 
-  @Autowired
   private IWorkflowService workflowService;
-  
- 
-  
-  @Autowired
-  private ITenantService tenantService;
+
+  private NamespaceService namespaceService;
+
+  public WorkflowController(
+		  @Autowired IWorkflowService workflowService,
+		  @Autowired NamespaceService namespaceService) {
+  	this.workflowService = workflowService;
+  	this.namespaceService = namespaceService;
+  }
 
   @ApiOperation(value = "Returns the list of possible actions for a the specific model state")
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/actions",
@@ -57,7 +61,7 @@ public class WorkflowController {
   public List<String> getPossibleActions(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
 	  return workflowService.getPossibleActions(ModelId.fromPrettyFormat(modelId),
-		        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId)));  
+		        UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getWorkspaceId(modelId)));
   }
 
   @ApiOperation(value = "Transitions the model state to the next for the provided action.")
@@ -69,7 +73,7 @@ public class WorkflowController {
       @ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
 	  try {
 	      ModelInfo model = workflowService.doAction(ModelId.fromPrettyFormat(modelId),
-	          UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId)),
+	          UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getWorkspaceId(modelId)),
 	          actionName);
 	      return WorkflowResponse.create(model);
 	    } catch (WorkflowException e) {
@@ -83,20 +87,14 @@ public class WorkflowController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public WorkflowState getState(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
-	  IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getTenant(modelId));
+	  IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(), getWorkspaceId(modelId));
 	    
 	    return new WorkflowState(
 	        this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId), user).get());
 	  }
-  
-  
-  private String getTenant(String modelId) {
-	    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
-	        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
-	  }
 
-private Optional<String> getTenant(ModelId modelId) {
-	    return tenantService.getTenantFromNamespace(modelId.getNamespace())
-	        .map(tenant -> tenant.getTenantId());
-	  }
+
+  private String getWorkspaceId(String namespace) {
+  	return namespaceService.resolveWorkspaceIdForNamespace(namespace);
+  }
 }

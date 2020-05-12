@@ -37,7 +37,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     private static final Logger myLogger = Logger.getLogger(RequestRepositorySessionHelper.class);
 
     private Map<String, Session> repositorySessionMap;
-    private String tenantId;
+    private String workspaceId;
     private Authentication user;
     private Repository repository;
     private Set<Role> roleSet;
@@ -52,23 +52,23 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         if(isAutowired) {
             internalSessionSupplier = () -> {
                 try {
-                    return getSessionInternal(tenantId, user);
+                    return getSessionInternal(workspaceId, user);
                 } catch (LoginException e) {
                     throw new UserLoginException(user.getName(), e);
                 } catch (NoSuchWorkspaceException e) {
-                    throw new TenantNotFoundException(tenantId, e);
+                    throw new TenantNotFoundException(workspaceId, e);
                 } catch (RepositoryException e) {
                     throw new FatalModelRepositoryException("Error while getting repository given tenant ["
-                            + tenantId + "] and user [" + user.getName() + "]", e);
+                            + workspaceId + "] and user [" + user.getName() + "]", e);
                 }
             };
         } else {
             internalSessionSupplier = () -> {
                 try {
-                    return login(tenantId, user);
+                    return login(workspaceId, user);
                 } catch (RepositoryException e) {
                     throw new FatalModelRepositoryException("Error while getting repository given tenant ["
-                            + tenantId + "] and user [" + user.getName() + "]", e);
+                            + workspaceId + "] and user [" + user.getName() + "]", e);
                 }
             };
         }
@@ -120,13 +120,13 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     public void logoutSessionIfNotReusable(Session session) {
         // if the session is in the session map - do not logout the session. It will be logged out
         //  after the request is finished.
-        if (this.repositorySessionMap != null && this.repositorySessionMap.get(tenantId) != null)
+        if (this.repositorySessionMap != null && this.repositorySessionMap.get(workspaceId) != null)
             return;
         session.logout();
     }
 
-    public void setTenantId(String tenant) {
-        this.tenantId = tenant;
+    public void setWorkspaceId(String tenant) {
+        this.workspaceId = tenant;
     }
 
     public void setRepository(Repository repository) {
@@ -137,8 +137,8 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         return repository;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getWorkspaceId() {
+        return workspaceId;
     }
 
     public void setUser(Authentication user) {

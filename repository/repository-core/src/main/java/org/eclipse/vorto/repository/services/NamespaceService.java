@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -392,5 +392,21 @@ public class NamespaceService implements ApplicationEventPublisherAware {
               privateNamespaceQuota)
       );
     }
+  }
+
+  public String resolveWorkspaceIdForNamespace(String namespace) {
+    return Optional.ofNullable(namespaceRepository.findByName(namespace)).map(Namespace::getWorkspaceId)
+            .orElseGet(() -> filterAllNamespacesByName(namespace).map(Namespace::getWorkspaceId)
+              .orElseThrow(() -> new IllegalStateException("No namespace found for " + namespace)));
+
+  }
+
+  public List<String> findAllWorkspaceIds() {
+    return Lists.newArrayList(namespaceRepository.findAll()).stream().map(Namespace::getWorkspaceId)
+            .collect(Collectors.toList());
+  }
+
+  private Optional<Namespace> filterAllNamespacesByName(String namespace) {
+    return Lists.newArrayList(namespaceRepository.findAll()).stream().filter(ns -> ns.owns(namespace)).findAny();
   }
 }

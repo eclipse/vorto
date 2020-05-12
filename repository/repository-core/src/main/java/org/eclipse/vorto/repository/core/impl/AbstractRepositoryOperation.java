@@ -65,7 +65,7 @@ public class AbstractRepositoryOperation {
       helper.setUser(elevatedUserContext.getAuthentication());
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
       helper.setRolesInTenant(Stream.of(Role.SYS_ADMIN).collect(Collectors.toSet()));
-      helper.setTenantId(repositorySessionHelperSupplier.get().getTenantId());
+      helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());
       fn.apply(helper.getSession());
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Unexpected exception", e);
