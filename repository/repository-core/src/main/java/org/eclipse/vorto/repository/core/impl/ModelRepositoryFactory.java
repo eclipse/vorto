@@ -51,22 +51,31 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
+  @Autowired
   private IUserAccountService userAccountService;
 
+  @Autowired
   private ModelSearchUtil modelSearchUtil;
 
+  @Autowired
   private AttachmentValidator attachmentValidator;
 
+  @Autowired
   private ModelParserFactory modelParserFactory;
 
+  @Autowired
   private RepositoryDiagnostics repoDiagnostics;
 
+  @Autowired
   private RepositoryConfiguration repositoryConfiguration;
 
+  @Autowired
   private RequestRepositorySessionHelper sessionHelper;
 
+  @Autowired
   private NamespaceService namespaceService;
 
+  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
   private ApplicationEventPublisher eventPublisher = null;
@@ -78,16 +87,16 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   private final Supplier<Collection<String>> workspaceIdSupplier = () -> namespaceService.findAllWorkspaceIds();
 
   public ModelRepositoryFactory() {}
-  
-  public ModelRepositoryFactory(@Autowired IUserAccountService userAccountService,
-      @Autowired ModelSearchUtil modelSearchUtil,
-      @Autowired AttachmentValidator attachmentValidator,
-      @Autowired ModelParserFactory modelParserFactory,
-      @Autowired RepositoryDiagnostics repoDiagnostics,
-      @Autowired RepositoryConfiguration repoConfig,
-      @Autowired RequestRepositorySessionHelper sessionHelper,
-      @Autowired NamespaceService namespaceService,
-      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+
+  public ModelRepositoryFactory(IUserAccountService userAccountService,
+      ModelSearchUtil modelSearchUtil,
+      AttachmentValidator attachmentValidator,
+      ModelParserFactory modelParserFactory,
+      RepositoryDiagnostics repoDiagnostics,
+      RepositoryConfiguration repoConfig,
+      RequestRepositorySessionHelper sessionHelper,
+      NamespaceService namespaceService,
+      UserNamespaceRoleService userNamespaceRoleService) {
     this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;

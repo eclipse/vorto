@@ -62,9 +62,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   @Autowired
   private ISearchService searchService;
 
-  @Autowired
-  private UserUtil userUtil;
-
   @Value("${config.privateNamespaceQuota}")
   private Integer privateNamespaceQuota;
 

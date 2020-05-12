@@ -12,17 +12,10 @@
  */
 package org.eclipse.vorto.repository.core.search;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -36,16 +29,13 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
@@ -56,11 +46,7 @@ import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -68,8 +54,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -267,7 +257,7 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
-        attachmentValidator, modelParserFactory, null, config, tenantService) {
+        attachmentValidator, modelParserFactory, null, config, null, null, null) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {

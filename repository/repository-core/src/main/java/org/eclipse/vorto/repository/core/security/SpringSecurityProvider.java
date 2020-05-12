@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 
 import javax.jcr.Credentials;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,10 +35,10 @@ public class SpringSecurityProvider implements AuthenticationProvider {
 		if (credentials instanceof SpringSecurityCredentials) {
 			SpringSecurityCredentials creds = (SpringSecurityCredentials) credentials;
 			Authentication auth = creds.getAuthentication();
-			Set<IRole> rolesInTenant = creds.getRolesInTenant();
+			Set<IRole> rolesInTenant = creds.getRolesInTenant();//TODO 2265
 			if (auth != null) {
 				logger.debug("[{}] Successfully authenticated.", auth.getName());
-				return repositoryContext.with(new SpringSecurityContext(auth, rolesInTenant));
+				return repositoryContext.with(new SpringSecurityContext(auth, Collections.emptySet()));
 			}
 		}
 		return null;
