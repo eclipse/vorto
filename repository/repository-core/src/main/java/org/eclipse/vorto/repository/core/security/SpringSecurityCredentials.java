@@ -12,10 +12,11 @@
  */
 package org.eclipse.vorto.repository.core.security;
 
-import java.util.Set;
-import javax.jcr.Credentials;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.springframework.security.core.Authentication;
+
+import javax.jcr.Credentials;
+import java.util.Set;
 
 public class SpringSecurityCredentials implements Credentials {
 
@@ -23,9 +24,9 @@ public class SpringSecurityCredentials implements Credentials {
 
   private Authentication authentication;
 
-  private Set<Role> rolesInTenant;
+  private Set<IRole> rolesInTenant;
 
-  public SpringSecurityCredentials(Authentication authentication, Set<Role> rolesInTenant) {
+  public SpringSecurityCredentials(Authentication authentication, Set<IRole> rolesInTenant) {
     this.authentication = authentication;
     this.rolesInTenant = rolesInTenant;
   }
@@ -34,7 +35,7 @@ public class SpringSecurityCredentials implements Credentials {
     return authentication;
   }
 
-  public Set<Role> getRolesInTenant() {
+  public Set<IRole> getRolesInTenant() {
     return rolesInTenant;
   }
 }

@@ -12,15 +12,9 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import java.util.Set;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.User;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import springfox.documentation.annotations.Cacheable;
 
 /**
  * Holds all persisted namespaces.
@@ -30,5 +24,7 @@ import springfox.documentation.annotations.Cacheable;
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
 
   Namespace findByName(String name);
+
+  Namespace findByWorkspaceId(String workspaceId);
 
 }

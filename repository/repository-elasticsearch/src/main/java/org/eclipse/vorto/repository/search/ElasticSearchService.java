@@ -363,7 +363,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         BulkRequest bulkRequest = new BulkRequest();
 
         modelsToIndex.forEach(model -> {
-          bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
+          bulkRequest.add(createIndexRequest(model, repo.getWorkspaceId()));
         });
 
         try {
@@ -374,12 +374,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
           logger.info(
             String.format(
               "Received %d replies for tenant '%s' with %d models",
-              bulkResponse.getItems().length, repo.getTenantId(), modelsToIndex.size()
+              bulkResponse.getItems().length, repo.getWorkspaceId(), modelsToIndex.size()
             )
           );
         } catch (IOException e) {
           throw new IndexingException(
-            String.format("Error trying to index all models in '%s' tenant.", repo.getTenantId()), e);
+            String.format("Error trying to index all models in '%s' tenant.", repo.getWorkspaceId()), e);
         }
       }
     });

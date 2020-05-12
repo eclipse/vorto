@@ -12,10 +12,6 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
@@ -26,11 +22,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.CollisionException;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.eclipse.vorto.repository.services.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +31,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
@@ -146,6 +142,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   /**
    * @param applicationEventPublisher
    */
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
@@ -394,19 +391,33 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
   }
 
-  public String resolveWorkspaceIdForNamespace(String namespace) {
-    return Optional.ofNullable(namespaceRepository.findByName(namespace)).map(Namespace::getWorkspaceId)
-            .orElseGet(() -> filterAllNamespacesByName(namespace).map(Namespace::getWorkspaceId)
-              .orElseThrow(() -> new IllegalStateException("No namespace found for " + namespace)));
-
+  /**
+   * Resolves workspace ID for the given namespace. Tries to lookup the namespace by name and returns
+   * the result, if there is one. Otherwise it filters all namespaces for ownership of the given
+   * namespace to identify the main workspace for subdomains.
+   * @param namespace - the given namespace
+   * @return Optional of the workspace ID or empty Optional, if no namespace was found.
+   */
+  public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
+    Optional<String> foundByFullNamespaceName = Optional.ofNullable(namespaceRepository.findByName(namespace))
+            .map(Namespace::getWorkspaceId);
+    if (foundByFullNamespaceName.isPresent()) {
+      return foundByFullNamespaceName;
+    }
+    return filterAllNamespacesByName(namespace).map(Namespace::getWorkspaceId);
   }
 
   public List<String> findAllWorkspaceIds() {
     return Lists.newArrayList(namespaceRepository.findAll()).stream().map(Namespace::getWorkspaceId)
-            .collect(Collectors.toList());
+        .collect(Collectors.toList());
+  }
+
+  public Namespace findNamespaceByWorkspaceId(String workspaceId) {
+    return namespaceRepository.findByWorkspaceId(workspaceId);
   }
 
   private Optional<Namespace> filterAllNamespacesByName(String namespace) {
-    return Lists.newArrayList(namespaceRepository.findAll()).stream().filter(ns -> ns.owns(namespace)).findAny();
+    return Lists.newArrayList(namespaceRepository.findAll()).stream()
+        .filter(ns -> ns.owns(namespace)).findAny();
   }
 }

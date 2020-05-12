@@ -12,24 +12,13 @@
  */
 package org.eclipse.vorto.repository.search;
 
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -42,16 +31,13 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -61,11 +47,7 @@ import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -76,6 +58,17 @@ import org.springframework.security.core.Authentication;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -261,7 +254,8 @@ public final class SearchTestInfrastructure {
     int getTCPEndPort() {
       return tcpStart + 1;
     }
-    private ESRandomizer(){};
+    private ESRandomizer(){}
+
     static ESRandomizer newInstance() {
       int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
       return new ESRandomizer()
@@ -379,8 +373,8 @@ public final class SearchTestInfrastructure {
       }
 
       @Override
-      public IModelRepository getRepository(String tenantId) {
-        return super.getRepository(createUserContext("admin", tenantId));
+      public IModelRepository getRepository(String workspaceId) {
+        return super.getRepository(createUserContext("admin", workspaceId));
       }
 
       @Override

@@ -12,44 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import static org.eclipse.vorto.repository.core.Attachment.TAG_DISPLAY_IMAGE;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_DOCUMENTATION;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_IMAGE;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_IMPORTED;
-
 import com.google.common.collect.Lists;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Binary;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -57,24 +20,9 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.AttachmentException;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
-import org.eclipse.vorto.repository.core.ModelFileContent;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.core.ModelResource;
-import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -83,8 +31,8 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
@@ -93,6 +41,17 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import javax.jcr.*;
+import javax.jcr.query.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static org.eclipse.vorto.repository.core.Attachment.*;
 
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
@@ -157,21 +116,20 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private ModelRepositoryFactory repositoryFactory;
 
-  private ITenantService tenantService;
+  private NamespaceService namespaceService;
 
   private IModelPolicyManager policyManager;
 
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
-      ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
-      IModelPolicyManager policyManager, ErrorMessageProvider errorMessageProvider) {
+      ModelRepositoryFactory repositoryFactory, IModelPolicyManager policyManager, NamespaceService namespaceService) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.modelRetrievalService = modelRetrievalService;
     this.repositoryFactory = repositoryFactory;
-    this.tenantService = tenantService;
+    this.namespaceService = namespaceService;
     this.policyManager = policyManager;
   }
 
@@ -186,7 +144,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       String queryExpression = Optional.ofNullable(expression).orElse("");
 
       List<ModelInfo> modelResources = new ArrayList<>();
-      Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
+      Query query = ModelSearchUtil.createQueryFromExpression(session, queryExpression);
 
       logger.debug("Searching repository with expression " + query.getStatement());
       QueryResult result = query.execute();
@@ -319,7 +277,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
       logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
-          + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/" + getTenantId());
+          + " in Workspace: " + session.getWorkspace().getName() + "/" + getWorkspaceId());
 
       try {
         Node folderNode = createNodeForModelId(session, modelInfo.getId());
@@ -556,7 +514,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             .getMappingModelsForTargetPlatform(referencedModelId, targetPlatform, version));
       }
     }
-    return new ArrayList<ModelInfo>(mappingResources);
+    return new ArrayList<>(mappingResources);
   }
 
   @Override
@@ -984,36 +942,29 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public String getTenantId() {
-    return doInSession(session -> {
-      return session.getWorkspace().getName();
-    });
+  public String getWorkspaceId() {
+    return doInSession(session -> session.getWorkspace().getName());
   }
 
   @Override
   public ModelInfo rename(ModelId oldModelId, ModelId newModelId, IUserContext user) {
-    final Tenant tenant = this.tenantService.getTenant(getTenantId()).get();
+    Namespace namespace = namespaceService.findNamespaceByWorkspaceId(getWorkspaceId());
 
     if (getById(newModelId) != null) {
       throw new ModelAlreadyExistsException();
-    } else if (!newModelId.getNamespace().startsWith(tenant.getDefaultNamespace())) {
+    } else if (!newModelId.getNamespace().startsWith(namespace.getName())) {
       throw new NewNamespacesNotSupersetException();
     }
 
     ModelInfo oldModel = getById(oldModelId);
-
     ChangeSet changeSet = refactorModelWithNewId(oldModel, newModelId);
-
     saveChangeSetIntoRepository(changeSet, user);
 
     ModelInfo newModel = getById(newModelId);
-
     newModel = copy(oldModel, newModel, user);
-
     removeModel(oldModel.getId());
 
     return newModel;
-
   }
 
   /**

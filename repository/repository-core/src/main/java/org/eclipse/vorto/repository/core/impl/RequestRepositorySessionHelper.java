@@ -17,7 +17,7 @@ import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
 import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.Authentication;
@@ -40,7 +40,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     private String workspaceId;
     private Authentication user;
     private Repository repository;
-    private Set<Role> roleSet;
+    private Set<IRole> roleSet;
     private Supplier<Session> internalSessionSupplier;
 
     public RequestRepositorySessionHelper() {
@@ -58,7 +58,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
                 } catch (NoSuchWorkspaceException e) {
                     throw new TenantNotFoundException(workspaceId, e);
                 } catch (RepositoryException e) {
-                    throw new FatalModelRepositoryException("Error while getting repository given tenant ["
+                    throw new FatalModelRepositoryException("Error while getting repository given workspace ID ["
                             + workspaceId + "] and user [" + user.getName() + "]", e);
                 }
             };
@@ -67,7 +67,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
                 try {
                     return login(workspaceId, user);
                 } catch (RepositoryException e) {
-                    throw new FatalModelRepositoryException("Error while getting repository given tenant ["
+                    throw new FatalModelRepositoryException("Error while getting repository given workspace ID ["
                             + workspaceId + "] and user [" + user.getName() + "]", e);
                 }
             };
@@ -101,20 +101,18 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         return internalSessionSupplier.get();
     }
 
-    private synchronized Session getSessionInternal(String tenant, Authentication user) throws RepositoryException {
+    private synchronized Session getSessionInternal(String workspaceId, Authentication user) throws RepositoryException {
         Session mySession;
-        mySession = this.repositorySessionMap.get(tenant);
+        mySession = this.repositorySessionMap.get(workspaceId);
         if (mySession == null || !mySession.isLive()) {
-            mySession = login(tenant, user);
-            this.repositorySessionMap.put(tenant, mySession);
+            mySession = login(workspaceId, user);
+            this.repositorySessionMap.put(workspaceId, mySession);
         }
         return mySession;
     }
 
-    private Session login(String tenant, Authentication user) throws RepositoryException {
-        return repository.login(
-                new SpringSecurityCredentials(user, roleSet),
-                tenant);
+    private Session login(String workspaceId, Authentication user) throws RepositoryException {
+        return repository.login(new SpringSecurityCredentials(user, roleSet), workspaceId);
     }
 
     public void logoutSessionIfNotReusable(Session session) {
@@ -125,8 +123,8 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         session.logout();
     }
 
-    public void setWorkspaceId(String tenant) {
-        this.workspaceId = tenant;
+    public void setWorkspaceId(String workspaceId) {
+        this.workspaceId = workspaceId;
     }
 
     public void setRepository(Repository repository) {
@@ -145,7 +143,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         this.user = user;
     }
 
-    public void setRolesInTenant(Set<Role> userRolesInTenant) {
-        this.roleSet = userRolesInTenant;
+    public void setRolesInNamespace(Set<IRole> userRolesInNamespace) {
+        this.roleSet = userRolesInNamespace;
     }
 }

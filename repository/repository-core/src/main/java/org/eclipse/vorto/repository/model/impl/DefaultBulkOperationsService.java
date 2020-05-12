@@ -87,7 +87,7 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
 
       // Add corresponding policy to model
       IModelPolicyManager policyMgr = this.repositoryFactory
-          .getPolicyManager(repository.getTenantId(), getAuthenticationToken());
+          .getPolicyManager(repository.getWorkspaceId(), getAuthenticationToken());
       policyMgr.addPolicyEntry(modelId, PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY,
           PrincipalType.User, Permission.READ));
 
@@ -112,7 +112,7 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
 
     for (ModelId modelId : accumulator) {
       IModelRepository repo = this.repositoryFactory.getRepositoryByModel(modelId);
-      String tenantId = repo.getTenantId();
+      String tenantId = repo.getWorkspaceId();
 
       // changed back visibility property
       repo.updateVisibility(modelId, IModelRepository.VISIBILITY_PRIVATE);

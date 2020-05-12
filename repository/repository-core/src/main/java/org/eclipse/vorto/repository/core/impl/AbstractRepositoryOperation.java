@@ -17,7 +17,7 @@ import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 import javax.jcr.PathNotFoundException;
@@ -64,7 +64,7 @@ public class AbstractRepositoryOperation {
     try {
       helper.setUser(elevatedUserContext.getAuthentication());
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
-      helper.setRolesInTenant(Stream.of(Role.SYS_ADMIN).collect(Collectors.toSet()));
+      helper.setRolesInNamespace(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
       helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());
       fn.apply(helper.getSession());
     } catch (Exception e) {

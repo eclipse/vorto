@@ -177,8 +177,8 @@ public abstract class AbstractIntegrationTest {
       }
 
       @Override
-      public IModelRepository getRepository(String tenantId) {
-        return super.getRepository(createUserContext("admin", tenantId));
+      public IModelRepository getRepository(String workspaceId) {
+        return super.getRepository(createUserContext("admin", workspaceId));
       }
 
       @Override
