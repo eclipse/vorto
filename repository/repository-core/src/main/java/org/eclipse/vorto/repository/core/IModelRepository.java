@@ -269,10 +269,6 @@ public interface IModelRepository {
    */
   boolean exists(ModelId modelId);
 
-  /**
-   *
-   * @return
-   */
   String getWorkspaceId();
 
 }

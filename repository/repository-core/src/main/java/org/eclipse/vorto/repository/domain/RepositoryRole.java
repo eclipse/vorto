@@ -32,9 +32,9 @@ public class RepositoryRole implements Serializable, IRole {
 
   private static final long serialVersionUID = -6221938330735374556L;
 
-  public static final RepositoryRole[] DEFAULT_REPOSITORY_ROLES;
-
   public static final RepositoryRole SYS_ADMIN = new RepositoryRole(1, "sysadmin", 7);
+
+  public static final RepositoryRole[] DEFAULT_REPOSITORY_ROLES;
 
   static {
     DEFAULT_REPOSITORY_ROLES = new RepositoryRole[]{

@@ -12,20 +12,23 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Utility class with boilerplate validation code for services.
  */
-@Service
 public class ServiceValidationUtil {
+
+  private ServiceValidationUtil() {
+    // this class contains only static methods/
+  }
 
   /**
    * Simple wrapper for boilerplate null validation of given arguments.<br/>
@@ -34,7 +37,7 @@ public class ServiceValidationUtil {
    * @param arguments
    * @throws IllegalArgumentException
    */
-  public void validateNulls(boolean traverseCollections, Object... arguments)
+  public static void validateNulls(boolean traverseCollections, Object... arguments)
       throws IllegalArgumentException {
     // args
     if (Stream.of(arguments).anyMatch(Objects::isNull)) {
@@ -57,7 +60,7 @@ public class ServiceValidationUtil {
    * @throws IllegalArgumentException
    * @see ServiceValidationUtil#validateNulls(boolean, Object...)
    */
-  public void validateNulls(Object... arguments) throws IllegalArgumentException {
+  public static void validateNulls(Object... arguments) throws IllegalArgumentException {
     validateNulls(true, arguments);
   }
 
@@ -69,7 +72,7 @@ public class ServiceValidationUtil {
    * @param arguments
    * @throws IllegalArgumentException
    */
-  public void validateEmpties(boolean traverseCollections, Object... arguments)
+  public static void validateEmpties(boolean traverseCollections, Object... arguments)
       throws IllegalArgumentException {
     validateNulls(traverseCollections, arguments);
     if (Stream.of(arguments).anyMatch(o -> o.toString().trim().isEmpty())) {
@@ -92,7 +95,7 @@ public class ServiceValidationUtil {
    * @throws IllegalArgumentException
    * @see ServiceValidationUtil#validateEmpties(boolean, Object...)
    */
-  public void validateEmpties(Object... arguments) throws IllegalArgumentException {
+  public static void validateEmpties(Object... arguments) throws IllegalArgumentException {
     validateEmpties(true, arguments);
   }
 
@@ -105,7 +108,7 @@ public class ServiceValidationUtil {
    * @param user
    * @throws DoesNotExistException
    */
-  public void validateUser(User user) throws DoesNotExistException {
+  public static void validateUser(User user) throws DoesNotExistException {
     if (Objects.isNull(user)) {
       throw new DoesNotExistException("User does not exist");
     }
@@ -120,7 +123,7 @@ public class ServiceValidationUtil {
    * @param namespace
    * @throws DoesNotExistException
    */
-  public void validateNamespace(Namespace namespace) throws DoesNotExistException {
+  public static void validateNamespace(Namespace namespace) throws DoesNotExistException {
     if (Objects.isNull(namespace)) {
       throw new DoesNotExistException("Namespace does not exist.");
     }
@@ -135,7 +138,7 @@ public class ServiceValidationUtil {
    * @param role
    * @throws DoesNotExistException
    */
-  public void validateRole(IRole role) throws DoesNotExistException {
+  public static void validateRole(IRole role) throws DoesNotExistException {
     if (Objects.isNull(role)) {
       throw new DoesNotExistException("Role does not exist.");
     }
@@ -148,7 +151,7 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateUser(User)
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    */
-  public void validate(User user, Namespace namespace) throws DoesNotExistException {
+  public static void validate(User user, Namespace namespace) throws DoesNotExistException {
     validateUser(user);
     validateNamespace(namespace);
   }
@@ -161,7 +164,7 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateUser(User)
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    */
-  public void validate(User actor, User target, Namespace namespace) throws DoesNotExistException {
+  public static void validate(User actor, User target, Namespace namespace) throws DoesNotExistException {
     validateUser(actor);
     validateUser(target);
     validateNamespace(namespace);
@@ -176,7 +179,7 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    * @see ServiceValidationUtil#validateRole(IRole)
    */
-  public void validate(User user, Namespace namespace, IRole role) throws DoesNotExistException {
+  public static void validate(User user, Namespace namespace, IRole role) throws DoesNotExistException {
     validateUser(user);
     validateNamespace(namespace);
     validateRole(role);
@@ -192,7 +195,7 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    * @see ServiceValidationUtil#validateRole(IRole)
    */
-  public void validate(User actor, User target, Namespace namespace, IRole role)
+  public static void validate(User actor, User target, Namespace namespace, IRole role)
       throws DoesNotExistException {
     validate(actor, target);
     validateNamespace(namespace);
@@ -204,7 +207,7 @@ public class ServiceValidationUtil {
    * @throws DoesNotExistException
    * @see ServiceValidationUtil#validateUser(User)
    */
-  public void validate(User... users) throws DoesNotExistException {
+  public static void validate(User... users) throws DoesNotExistException {
     if (users != null && users.length > 0) {
       for (User user : users) {
         validateUser(user);

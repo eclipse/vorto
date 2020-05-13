@@ -96,7 +96,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
       RepositoryConfiguration repoConfig,
       RequestRepositorySessionHelper sessionHelper,
       NamespaceService namespaceService,
-      UserNamespaceRoleService userNamespaceRoleService) {
+      UserNamespaceRoleService userNamespaceRoleService
+  ) {
     this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -243,7 +244,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     if(UserContext.isAnonymous(username))
       return new HashSet<>();
 
-    String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
+   String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
     try {
       return new HashSet<>(userNamespaceRoleService.getRoles(username, namespace));
     } catch (DoesNotExistException e) {

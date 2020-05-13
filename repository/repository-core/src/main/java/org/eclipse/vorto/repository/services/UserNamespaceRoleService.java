@@ -12,22 +12,7 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserNamespaceID;
-import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
@@ -42,6 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This service reports information and manipulates user roles on namespaces.<br/>
@@ -70,9 +59,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
-
-  @Autowired
-  private ServiceValidationUtil validator;
 
   @Autowired
   private RoleUtil roleUtil;
@@ -168,7 +154,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#hasRole(String, String, String)
    */
   public boolean hasRole(User user, Namespace namespace, IRole role) throws DoesNotExistException {
-    validator.validate(user, namespace, role);
+    ServiceValidationUtil.validate(user, namespace, role);
     LOGGER.info(String
         .format("Verify whether user has role [%s] on namespace [%s]",
             role.getName(), namespace.getName()));
@@ -210,7 +196,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return all {@link IRole}s the given {@link User} has on the given {@link Namespace}.
    */
   public Collection<IRole> getRoles(User user, Namespace namespace) throws DoesNotExistException {
-    validator.validate(user, namespace);
+    ServiceValidationUtil.validate(user, namespace);
     LOGGER.info(String
         .format("Retrieving roles for user and namespace [%s]", namespace.getName()));
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
@@ -254,8 +240,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean addRole(User actor, User target, Namespace namespace, IRole role)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace, role);
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validate(actor, target, namespace, role);
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor
     authorizeActorAsAdminOrOwnerOnNamespace(actor, namespace);
@@ -318,8 +304,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean removeRole(User actor, User target, Namespace namespace, IRole role)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace, role);
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validate(actor, target, namespace, role);
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor on namespace
     authorizeActorAsAdminOrOwnerOnNamespace(actor, namespace);
@@ -387,8 +373,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       boolean newNamespace)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace);
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validate(actor, target, namespace);
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     // authorizing actor on namespace, only if the namespace is not being created for the first time
     if (!newNamespace) {
@@ -432,9 +418,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace);
-    validator.validateNulls(roles);
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validate(actor, target, namespace);
+    ServiceValidationUtil.validateNulls(roles);
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     return setRoles(actor, target, namespace,
         roles.stream().collect(Collectors.summingLong(IRole::getRole)), newNamespace);
@@ -473,7 +459,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean setAllRoles(User actor, User target, Namespace namespace, boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace);
+    ServiceValidationUtil.validate(actor, target, namespace);
     return setRoles(actor, target, namespace,
         namespaceRoleRepository.findAll().stream().map(r -> (IRole) r).collect(
             Collectors.toSet()), newNamespace);
@@ -523,8 +509,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validate(actor, target, namespace);
-    validator.validateNulls(actor.getId(), target.getId(), namespace.getId());
+    ServiceValidationUtil.validate(actor, target, namespace);
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId(), namespace.getId());
 
     // namespace does not exist
     if (!namespaceRepository.exists(namespace.getId())) {
@@ -635,7 +621,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Collection<User> getUsers(User actor, Namespace namespace, Long roles)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validate(actor, namespace);
+    ServiceValidationUtil.validate(actor, namespace);
 
     // authorize actor
     verifyCanView(actor, namespace);
@@ -692,13 +678,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Map<User, Collection<IRole>> getRolesByUser(User actor, Namespace namespace)
       throws OperationForbiddenException, DoesNotExistException {
 
-    validator.validate(actor, namespace);
+    ServiceValidationUtil.validate(actor, namespace);
 
     authorizeActorAsCollaboratorOnNamespace(actor, namespace);
 
     TreeMap<User, Collection<IRole>> result = new TreeMap<>(
         Comparator.comparing(User::getUsername));
-    userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
+    userNamespaceRoleRepository.findAllByNamespace(namespace)
         .forEach(
             unr -> {
               result.put(unr.getUser(), roleUtil.toNamespaceRoles(unr.getRoles()));
@@ -723,7 +709,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Map<Namespace, Collection<IRole>> getNamespacesAndRolesByUser(User actor, User target)
       throws DoesNotExistException, OperationForbiddenException {
-    validator.validate(actor, target);
+    ServiceValidationUtil.validate(actor, target);
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
     Collection<UserNamespaceRoles> unr = userNamespaceRoleRepository.findAllByUser(target);
     if (Objects.isNull(unr) || unr.isEmpty()) {
@@ -731,11 +717,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     }
     Map<Namespace, Collection<IRole>> result = new TreeMap(
         Comparator.comparing(Namespace::getName));
-    unr.stream().forEach(
-        r -> {
-          result.put(r.getNamespace(), roleUtil.toNamespaceRoles(r.getRoles()));
-        }
-    );
+    unr.forEach(
+        r ->
+          result.put(r.getNamespace(), roleUtil.toNamespaceRoles(r.getRoles())));
     return result;
   }
 
@@ -788,8 +772,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       Namespace namespace, long roles)
       throws OperationForbiddenException, InvalidUserException, DoesNotExistException {
     // boilerplate null validation
-    validator.validate(actor, namespace);
-    validator.validateNulls(technicalUser);
+    ServiceValidationUtil.validate(actor, namespace);
+    ServiceValidationUtil.validateNulls(technicalUser);
 
     // delegates tech user creation and persistence to user service
     userService.createOrUpdateTechnicalUser(technicalUser);
@@ -854,7 +838,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Collection<Namespace> getNamespaces(User actor, User target, Long roleFilter)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation - role filter can be null
-    validator.validate(actor, target);
+    ServiceValidationUtil.validate(actor, target);
 
     // authorizes actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
@@ -923,7 +907,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<Namespace> getNamespaces(String actorUsername, String targetUsername,
       IRole... roles) throws OperationForbiddenException, DoesNotExistException {
-    validator.validateNulls(actorUsername, targetUsername);
+    ServiceValidationUtil.validateNulls(actorUsername, targetUsername);
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Long actualRoles = null;
@@ -979,7 +963,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Map<Namespace, Map<User, Collection<IRole>>> getNamespacesCollaboratorsAndRoles(User actor,
       User target, Long roleFilter) throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation - role filter can be null
-    validator.validate(actor, target);
+    ServiceValidationUtil.validate(actor, target);
 
     // authorizes actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
@@ -1018,7 +1002,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       String actorUsername, String targetUsername, IRole... roles)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation - role filter can be null
-    validator.validateNulls(actorUsername, targetUsername);
+    ServiceValidationUtil.validateNulls(actorUsername, targetUsername);
 
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
@@ -1074,7 +1058,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean isOnlyAdminInAnyNamespace(User actor, User target)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate validatoin
-    validator.validate(actor, target);
+    ServiceValidationUtil.validate(actor, target);
     // authorizing actor
     userUtil.authorizeActorAsTargetOrSysadmin(actor, target);
 
@@ -1109,7 +1093,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean isOnlyAdminInAnyNamespace(String actorUsername, String targetUsername)
       throws OperationForbiddenException, DoesNotExistException {
-    validator.validateNulls(actorUsername, targetUsername);
+    ServiceValidationUtil.validateNulls(actorUsername, targetUsername);
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     return isOnlyAdminInAnyNamespace(actor, target);

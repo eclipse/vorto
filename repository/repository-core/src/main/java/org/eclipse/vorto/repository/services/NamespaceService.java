@@ -57,9 +57,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
-  private ServiceValidationUtil validator;
-
-  @Autowired
   private ISearchService searchService;
 
   @Value("${config.privateNamespaceQuota}")
@@ -197,10 +194,10 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public Namespace create(User actor, User target, String namespaceName)
       throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validate(actor, target);
-    validator.validateNulls(namespaceName);
+    ServiceValidationUtil.validate(actor, target);
+    ServiceValidationUtil.validateNulls(namespaceName);
     // lightweight validation of required properties
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     if (namespaceName.trim().isEmpty()) {
       throw new NameSyntaxException(String
@@ -292,8 +289,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public void deleteNamespace(User actor, String namespaceName)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateUser(actor);
-    validator.validateNulls(namespaceName, actor.getId());
+    ServiceValidationUtil.validateUser(actor);
+    ServiceValidationUtil.validateNulls(namespaceName, actor.getId());
 
     // will throw DoesNotExistException if none found
     Namespace currentNamespace = validateNamespaceExists(namespaceName);
