@@ -26,9 +26,9 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.focusOnFilter = function() {
             // html auto-focus doesn't work, likely due to loading overlay div
-            let namespaceSearchElement = document.getElementById("namespaceSearch");
-            if (namespaceSearchElement) {
-              namespaceSearchElement.focus();
+            let element = document.getElementById("namespaceFilter");
+            if (element) {
+              element.focus();
             }
           }
 
@@ -44,7 +44,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               // disabling filter here if 0 or 1 namespaces (typical user)
               // cannot use ng-disabled as it is executed before retrieving the namespaces
               if (!$scope.namespaces || $scope.namespaces.length <= 1) {
-                document.getElementById("namespaceSearch").disabled = true;
+                document.getElementById("namespaceFilter").disabled = true;
               }
               $scope.filterNamespaces();
             },
@@ -318,6 +318,63 @@ define(["../../init/appController"], function (repositoryControllers) {
         "dialogConfirm", "$http",
         function ($rootScope, $scope, $uibModal, $uibModalInstance,
             dialogConfirm, $http) {
+
+          $scope.namespaces = [];
+          $scope.selectedNamespace = {};
+          $scope.namespacePartial = "";
+
+          $scope.focusOnNamespaceSearch = function() {
+            let element = document.getElementById("namespaceSearch");
+            if (element) {
+              element.focus();
+            }
+          }
+          $scope.focusOnNamespaceSearch();
+
+          $scope.highlightNamespace = function(namespace) {
+            let element = document.getElementById(namespace.name);
+            if (element) {
+              element.style.backgroundColor = '#7fc6e7';
+              element.style.color = '#ffffff'
+            }
+          }
+
+          $scope.unhighlightNamespace = function(namespace) {
+            let element = document.getElementById(namespace.name);
+            if (element) {
+              element.style.backgroundColor = 'initial';
+              element.style.color = 'initial';
+            }
+          }
+
+          $scope.selectNamespace = function(namespace) {
+            if (namespace) {
+              $scope.selectedNamespace = namespace;
+              document.getElementById('namespaceSearch').value = $scope.selectedNamespace.name;
+            }
+            $scope.namespaces = [];
+          }
+
+          $scope.findNamespaces = function() {
+            // only initiates user search if partial name is larger >= 4 characters
+            // this is to prevent unmanageably large drop-downs
+            if ($scope.namespacePartial && $scope.namespacePartial.length >= 4) {
+              $http.get("./rest/namespaces/search/" + $scope.namespacePartial)
+              .then(function (result) {
+                if (result.data) {
+                  $scope.namespaces = result.data;
+                } else {
+                  $scope.namespaces = [];
+                  $scope.selectedNamespace = {};
+                }
+              });
+            }
+            else {
+              $scope.namespaces = [];
+              $scope.selectedNamespace = {};
+            }
+          }
+
           $scope.cancel = function () {
             $uibModalInstance.dismiss("Canceled.");
           };

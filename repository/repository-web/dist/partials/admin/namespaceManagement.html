@@ -3,7 +3,7 @@
     <div class="input-group">
       <input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search"
              class="search-box-query-filter form-control search-input"
-             id="namespaceSearch" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
+             id="namespaceFilter" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
              ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
       >
       <span class="input-group-btn">
@@ -47,7 +47,7 @@
 <div class="overlay" ng-show="isRetrievingNamespaces">
   <div style="display: table-cell;vertical-align: middle;">
     <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
-    <span style="font-size: xx-large">&nbsp;Fetching namespaces...</span>
+    <span style="font-size: xx-large">&nbsp;Loading namespaces...</span>
   </div>
 </div>
 
@@ -55,9 +55,9 @@
   {{namespaces.length}} total namespaces found, {{filteredNamespaces.length}} in filter
 </p>
 <div ng-if="filteredNamespaces.length > 0" class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-12" >
     <table class="table table-bordered table-striped table-condensed">
-      <thead>
+      <thead style="display:block;">
       <tr>
         <th class="col-md-7">Namespace</th>
         <th class="col-md-2">Owners</th>

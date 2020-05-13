@@ -1941,7 +1941,8 @@ input[type=file]::-webkit-file-upload-button {
 .dropDownUL {
   list-style-type:none;
   margin:0;
-  padding:0;
+  padding-left:0px;
+  padding-right:0px;
   min-height:40px;
   max-height:160px;
   overflow:auto;

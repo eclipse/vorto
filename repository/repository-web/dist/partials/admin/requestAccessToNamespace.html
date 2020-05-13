@@ -5,10 +5,10 @@
 <div class="modal-body">
   <div class="form-group">
     <div class="row">
-      <label for="namespace" class="col-sm-2 control-label">Namespace:</label>
+      <label for="namespaceSearch" class="col-sm-2 control-label">Namespace:</label>
       <div class="input-group col-sm-10">
         <input autofocus type="search" class="search-box-query-filter form-control search-input"
-               id="namespace" placeholder="Search for namespaces..." ng-model="namespace"
+               id="namespaceSearch" placeholder="Search for namespaces (at least 4 characters)..." ng-model="namespacePartial"
                ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"/>
         <span class="input-group-btn">
           <button type="button" class="btn btn-primary" ng-click="findNamespaces()">
@@ -18,12 +18,12 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-offset-2 col-sm-10">
-        <ul class="dropDownUL" ng-show="retrievedUsers.length > 0" ng->
-          <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
-              ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
-              ng-mouseleave="unhighlightUser(user)">
-            {{user.userId}}
+      <div class="col-sm-offset-2 col-sm-10" style="padding-left:0px;padding-right:0px">
+        <ul class="dropDownUL" ng-show="namespaces.length > 0" >
+          <li id="{{namespace.name}}" ng-repeat="namespace in namespaces track by namespace.name"
+              ng-model="selectedNamespace" ng-click="selectNamespace(namespace)" ng-mouseover="highlightNamespace(namespace)"
+              ng-mouseleave="unhighlightNamespace(namespace)">
+            {{namespace.name}}
           </li>
         </ul>
       </div>
