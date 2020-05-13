@@ -24,7 +24,11 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
           $scope.namespaceSearchTerm = "";
           // html auto-focus doesn't work, likely due to loading overlay div
-          document.getElementById("namespaceSearch").focus();
+          let namespaceSearchElement = document.getElementById("namespaceSearch");
+          if (namespaceSearchElement) {
+            namespaceSearchElement.focus();
+          }
+
 
           $scope.getNamespaces = function () {
             $scope.isRetrievingNamespaces = true;
@@ -99,6 +103,24 @@ define(["../../init/appController"], function (repositoryControllers) {
               // of sanitized user ID
               return sanitizedUserID;
             }
+          }
+
+          $scope.openRequestAccessToNamespace = function() {
+            var modalInstance = $uibModal.open(
+                {
+                  animation: true,
+                  title: "Request access to a namespace",
+                  label: "Request access to a namespace",
+                  templateUrl: "webjars/repository-web/dist/partials/admin/requestAccessToNamespace.html",
+                  controller: "requestAccessToNamespaceController",
+                  resolve: {
+                  },
+                  backdrop: 'static'
+                }
+            );
+            modalInstance.result.finally(function (result) {
+              $scope.getNamespaces();
+            });
           }
 
           $scope.createNamespace = function (namespace, namespaces) {
@@ -285,6 +307,17 @@ define(["../../init/appController"], function (repositoryControllers) {
       templateUrl: "webjars/repository-web/dist/partials/admin/namespaceManagement.html"
     };
   });
+
+  repositoryControllers.controller("requestAccessToNamespaceController",
+      ["$rootScope", "$scope", "$uibModal", "$uibModalInstance",
+        "dialogConfirm", "$http",
+        function ($rootScope, $scope, $uibModal, $uibModalInstance,
+            dialogConfirm, $http) {
+          $scope.cancel = function () {
+            $uibModalInstance.dismiss("Canceled.");
+          };
+        }
+      ]);
 
   repositoryControllers.controller("createNamespaceController",
       ["$rootScope", "$scope", "$uibModal", "$uibModalInstance",

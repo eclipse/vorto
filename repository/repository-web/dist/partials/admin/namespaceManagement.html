@@ -15,11 +15,18 @@
 </style>
 <div class="row justify-content-around">
   <div class="col-sm-4">
-    <input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search"
-           class="search-box-query-filter form-control search-input"
-           id="namespaceSearch" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
-           ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
-    >
+    <div class="input-group">
+      <input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search"
+             class="search-box-query-filter form-control search-input"
+             id="namespaceSearch" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
+             ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
+      >
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-primary" ng-click="filterNamespaces()">
+          <span class="glyphicon glyphicon-filter" aria-hidden="true"/>
+        </button>
+      </span>
+    </div>
   </div>
 
   <div class="col-sm-2">
@@ -29,7 +36,7 @@
     </button>
   </div>
   <div class="col-sm-3">
-    <button type="button" class="btn btn-primary  ">
+    <button type="button" class="btn btn-primary" ng-click="openRequestAccessToNamespace()">
       <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"/>&nbsp;Request access to a
       namespace
     </button>
