@@ -23,6 +23,8 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.errorMessage = "";
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
           $scope.namespaceSearchTerm = "";
+          // html auto-focus doesn't work, likely due to loading overlay div
+          document.getElementById("namespaceSearch").focus();
 
           $scope.getNamespaces = function () {
             $scope.isRetrievingNamespaces = true;
