@@ -3,4 +3,30 @@
   <h4 class="modal-title">Request access to a namespace</h4>
 </div>
 <div class="modal-body">
+  <div class="form-group">
+    <div class="row">
+      <label for="namespace" class="col-sm-2 control-label">Namespace:</label>
+      <div class="input-group col-sm-10">
+        <input autofocus type="search" class="search-box-query-filter form-control search-input"
+               id="namespace" placeholder="Search for namespaces..." ng-model="namespace"
+               ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"/>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-primary" ng-click="findNamespaces()">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-10">
+        <ul class="dropDownUL" ng-show="retrievedUsers.length > 0" ng->
+          <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
+              ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
+              ng-mouseleave="unhighlightUser(user)">
+            {{user.userId}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

@@ -23,12 +23,16 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.errorMessage = "";
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
           $scope.namespaceSearchTerm = "";
-          // html auto-focus doesn't work, likely due to loading overlay div
-          let namespaceSearchElement = document.getElementById("namespaceSearch");
-          if (namespaceSearchElement) {
-            namespaceSearchElement.focus();
+
+          $scope.focusOnFilter = function() {
+            // html auto-focus doesn't work, likely due to loading overlay div
+            let namespaceSearchElement = document.getElementById("namespaceSearch");
+            if (namespaceSearchElement) {
+              namespaceSearchElement.focus();
+            }
           }
 
+          $scope.focusOnFilter();
 
           $scope.getNamespaces = function () {
             $scope.isRetrievingNamespaces = true;
@@ -48,6 +52,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.isRetrievingNamespaces = false;
               // TODO : handling of failures
             });
+            $scope.focusOnFilter();
           }
 
           $scope.getNamespaces();
