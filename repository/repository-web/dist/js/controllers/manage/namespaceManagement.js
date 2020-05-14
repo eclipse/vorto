@@ -332,6 +332,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.selectedUser = null;
           $scope.retrievedUsers = [];
           $scope.userRadio = "myself";
+          $scope.desiredRoles = [];
 
           $scope.focusOnNamespaceSearch = function () {
             let element = document.getElementById("namespaceSearch");
@@ -388,7 +389,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.selectUser = function (user) {
             if (user) {
-              $scope.selectedUser = user;
+              $scope.selectedUser = user.userId;
               document.getElementById(
                   'userId').value = $scope.selectedUser.userId;
             }
@@ -428,19 +429,62 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.retrievedUsers = [];
               $scope.selectedUser = null;
             }
-            $scope.toggleSubmitButton();
           };
 
+          /**
+           * This does two things:
+           * 1) toggles between user search box enabled/disabled based on radio
+           * 2) sets the selected user according to radio (can be undefined)
+           */
           $scope.toggleSearchEnabled = function(value) {
             let element = document.getElementById("userId");
             if (element) {
-              element.disabled = (value == "myself");
+              if (value == "myself") {
+                element.disabled = true;
+                $scope.selectedUser = $scope.username;
+              }
+              else {
+                element.disabled = false;
+                // no need to assign $scope.selectedUser here, this is taken
+                // care of in selectUser()
+              }
+
             }
           };
 
           angular.element(document).ready(function (){
             $scope.toggleSearchEnabled('myself');
           });
+
+          // ugly
+          $scope.disableAndCheckOtherCheckBoxes = function() {
+            let toggle = $scope.desiredRoles[5];
+            let element = document.getElementById("roleView");
+            if (element) {
+              element.checked = toggle;
+              element.disabled = toggle;
+            }
+            element = document.getElementById("roleCreate");
+            if (element) {
+              element.checked = toggle;
+              element.disabled = toggle;
+            }
+            element = document.getElementById("roleRelease");
+            if (element) {
+              element.checked = toggle;
+              element.disabled = toggle;
+            }
+            element = document.getElementById("roleReview");
+            if (element) {
+              element.checked = toggle;
+              element.disabled = toggle;
+            }
+            element = document.getElementById("rolePublish");
+            if (element) {
+              element.checked = toggle;
+              element.disabled = toggle;
+            }
+          }
 
           $scope.cancel = function () {
             $uibModalInstance.dismiss("Canceled.");
