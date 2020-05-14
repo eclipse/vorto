@@ -2,6 +2,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb310438f9684fd0b133eb8bebf14ee1)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
+[![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/eclipsevorto/)
 
 [Eclipse Vorto](http://www.eclipse.org/vorto) provides a language for describing models and interfaces for IoT Digital Twins. Digital twins are models of entities in the physical world such as a (multi) sensor device, smart power plant, and other entities that participate in IoT solutions. Modeling enables IoT solutions and IoT platforms to provision, use, and configure IoT devices and logical entities from multiple sources in a single solution. Using the vortolang and describing the entities's capabilities, IoT platforms and IoT solutions can leverage the semantics of these IoT entities.
 
@@ -58,6 +59,7 @@ When you create a Pull Request, make sure:
 4. Target to merge your fix is development branch
 5. Your code fits the code style guidelines
 
+The [sourcespy dashboard](https://sourcespy.com/github/eclipsevorto/) provides a high level overview of the repository including [module dependencies](https://sourcespy.com/github/eclipsevorto/xx-omodulesc-.html), [module hierarchy](https://sourcespy.com/github/eclipsevorto/xx-omodules-.html), [external libraries](https://sourcespy.com/github/eclipsevorto/xx-ojavalibs-.html), and other components of the system.
 
 #### Attribution
 The code style guidlines are taken from https://github.com/google/styleguide.
