@@ -24,7 +24,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
           $scope.namespaceSearchTerm = "";
 
-          $scope.focusOnFilter = function() {
+          $scope.focusOnFilter = function () {
             // html auto-focus doesn't work, likely due to loading overlay div
             let element = document.getElementById("namespaceFilter");
             if (element) {
@@ -39,31 +39,31 @@ define(["../../init/appController"], function (repositoryControllers) {
             $http
             .get("./rest/namespaces/all")
             .then(function (result) {
-              $scope.isRetrievingNamespaces = false;
-              $scope.namespaces = result.data;
-              // disabling filter here if 0 or 1 namespaces (typical user)
-              // cannot use ng-disabled as it is executed before retrieving the namespaces
-              if (!$scope.namespaces || $scope.namespaces.length <= 1) {
-                document.getElementById("namespaceFilter").disabled = true;
-              }
-              $scope.filterNamespaces();
-            },
-            function (reason) {
-              $scope.isRetrievingNamespaces = false;
-              // TODO : handling of failures
-            });
+                  $scope.isRetrievingNamespaces = false;
+                  $scope.namespaces = result.data;
+                  // disabling filter here if 0 or 1 namespaces (typical user)
+                  // cannot use ng-disabled as it is executed before retrieving the namespaces
+                  if (!$scope.namespaces || $scope.namespaces.length <= 1) {
+                    document.getElementById("namespaceFilter").disabled = true;
+                  }
+                  $scope.filterNamespaces();
+                },
+                function (reason) {
+                  $scope.isRetrievingNamespaces = false;
+                  // TODO : handling of failures
+                });
             $scope.focusOnFilter();
           }
 
           $scope.getNamespaces();
 
-          $scope.filterNamespaces = function() {
+          $scope.filterNamespaces = function () {
             if (!$scope.namespaceSearchTerm) {
               $scope.filteredNamespaces = $scope.namespaces;
-            }
-            else {
+            } else {
               $scope.filteredNamespaces = $scope.namespaces.filter(
-                namespace => namespace.name.toLowerCase().includes($scope.namespaceSearchTerm.toLowerCase())
+                  namespace => namespace.name.toLowerCase().includes(
+                      $scope.namespaceSearchTerm.toLowerCase())
               );
             }
           }
@@ -81,15 +81,15 @@ define(["../../init/appController"], function (repositoryControllers) {
             return namespace;
           };
 
-          $scope.suggestNamespaceName = function() {
+          $scope.suggestNamespaceName = function () {
             // sanitizes user ID by only leaving namespace-compatible characters
             let sanitizedUserID = $rootScope.user.replace(/[^a-zA-Z0-9_]/g, "");
-            let namespaceNames = $scope.namespaces.map( n => n.name );
+            let namespaceNames = $scope.namespaces.map(n => n.name);
             // sanitized user ID not present in available namespace names
             if (!namespaceNames.includes(sanitizedUserID)) {
               return sanitizedUserID;
             }
-            // namespace already exists with sanitized user ID - suggesting
+                // namespace already exists with sanitized user ID - suggesting
             // name prepended with integer
             else {
               let index = 0;
@@ -99,8 +99,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                 let appended = sanitizedUserID + index;
                 if (!namespaceNames.includes(appended)) {
                   return appended;
-                }
-                else {
+                } else {
                   index++;
                 }
               }
@@ -110,7 +109,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
           }
 
-          $scope.openRequestAccessToNamespace = function() {
+          $scope.openRequestAccessToNamespace = function () {
             var modalInstance = $uibModal.open(
                 {
                   animation: true,
@@ -118,7 +117,11 @@ define(["../../init/appController"], function (repositoryControllers) {
                   label: "Request access to a namespace",
                   templateUrl: "webjars/repository-web/dist/partials/admin/requestAccessToNamespace.html",
                   controller: "requestAccessToNamespaceController",
+                  size: "lg",
                   resolve: {
+                    username: function () {
+                      return $rootScope.displayName;
+                    }
                   },
                   backdrop: 'static'
                 }
@@ -142,7 +145,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                   namespace.label = "Please specify a namespace";
                   namespace.title = "Create Namespace";
                   namespace.createNameSpaceId = $rootScope.displayName;
-                  namespace.sysAdmin = $rootScope.hasAuthority("ROLE_SYS_ADMIN");
+                  namespace.sysAdmin = $rootScope.hasAuthority(
+                      "ROLE_SYS_ADMIN");
                   // suggests namespace name based on user ID, sanitized
                   namespace.name = $scope.suggestNamespaceName();
                   return namespace;
@@ -188,7 +192,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                     var fd = new FormData();
                     fd.append('file', element.files[0]);
                     $http.post(
-                        './rest/namespaces/' + $scope.namespaceName + '/restore',
+                        './rest/namespaces/' + $scope.namespaceName
+                        + '/restore',
                         fd, {
                           transformRequest: angular.identity,
                           headers: {
@@ -197,10 +202,10 @@ define(["../../init/appController"], function (repositoryControllers) {
                         })
                     .success(function (result) {
                       var updatedNamespaces = result;
-                      if (updatedNamespaces && updatedNamespaces.length && updatedNamespaces.length < 1) {
+                      if (updatedNamespaces && updatedNamespaces.length
+                          && updatedNamespaces.length < 1) {
                         $scope.errorMessage = "No namespaces were restored. Maybe you used the wrong backup file?";
-                      }
-                      else {
+                      } else {
                         $scope.errorMessage = null;
                         modalInstance.dismiss();
                       }
@@ -255,15 +260,15 @@ define(["../../init/appController"], function (repositoryControllers) {
                   $http
                   .delete("./rest/namespaces/" + namespace.name)
                   .then(function (result) {
-                    modalInstance.close();
-                  },
-                  function (reason) {
-                    if (reason.data) {
-                      $scope.errorMessage = reason.data.errorMessage;
-                    }
-                    $scope.isCreatingOrUpdating = false;
-                    modalInstance.close();
-                  });
+                        modalInstance.close();
+                      },
+                      function (reason) {
+                        if (reason.data) {
+                          $scope.errorMessage = reason.data.errorMessage;
+                        }
+                        $scope.isCreatingOrUpdating = false;
+                        modalInstance.close();
+                      });
                 };
 
                 $scope.getPublicModelsForNamespace = function () {
@@ -276,7 +281,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                       function (data, status, headers, config) {
                         $scope.hasPublicModels = data.length > 0;
                       }
-                    )
+                  )
                   .error(
                       function (data, status, headers, config) {
                         console.log("Problem getting data from repository");
@@ -315,15 +320,20 @@ define(["../../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
       ["$rootScope", "$scope", "$uibModal", "$uibModalInstance",
-        "dialogConfirm", "$http",
+        "dialogConfirm", "$http", "username",
         function ($rootScope, $scope, $uibModal, $uibModalInstance,
-            dialogConfirm, $http) {
+            dialogConfirm, $http, username) {
 
           $scope.namespaces = [];
           $scope.selectedNamespace = {};
           $scope.namespacePartial = "";
+          $scope.username = username;
+          $scope.userPartial = "";
+          $scope.selectedUser = null;
+          $scope.retrievedUsers = [];
+          $scope.userRadio = "myself";
 
-          $scope.focusOnNamespaceSearch = function() {
+          $scope.focusOnNamespaceSearch = function () {
             let element = document.getElementById("namespaceSearch");
             if (element) {
               element.focus();
@@ -331,7 +341,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
           $scope.focusOnNamespaceSearch();
 
-          $scope.highlightNamespace = function(namespace) {
+          $scope.highlightNamespace = function (namespace) {
             let element = document.getElementById(namespace.name);
             if (element) {
               element.style.backgroundColor = '#7fc6e7';
@@ -339,7 +349,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
           }
 
-          $scope.unhighlightNamespace = function(namespace) {
+          $scope.unhighlightNamespace = function (namespace) {
             let element = document.getElementById(namespace.name);
             if (element) {
               element.style.backgroundColor = 'initial';
@@ -347,18 +357,20 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
           }
 
-          $scope.selectNamespace = function(namespace) {
+          $scope.selectNamespace = function (namespace) {
             if (namespace) {
               $scope.selectedNamespace = namespace;
-              document.getElementById('namespaceSearch').value = $scope.selectedNamespace.name;
+              document.getElementById(
+                  'namespaceSearch').value = $scope.selectedNamespace.name;
             }
             $scope.namespaces = [];
           }
 
-          $scope.findNamespaces = function() {
+          $scope.findNamespaces = function () {
             // only initiates user search if partial name is larger >= 4 characters
             // this is to prevent unmanageably large drop-downs
-            if ($scope.namespacePartial && $scope.namespacePartial.length >= 4) {
+            if ($scope.namespacePartial && $scope.namespacePartial.length
+                >= 4) {
               $http.get("./rest/namespaces/search/" + $scope.namespacePartial)
               .then(function (result) {
                 if (result.data) {
@@ -368,12 +380,67 @@ define(["../../init/appController"], function (repositoryControllers) {
                   $scope.selectedNamespace = {};
                 }
               });
-            }
-            else {
+            } else {
               $scope.namespaces = [];
               $scope.selectedNamespace = {};
             }
           }
+
+          $scope.selectUser = function (user) {
+            if (user) {
+              $scope.selectedUser = user;
+              document.getElementById(
+                  'userId').value = $scope.selectedUser.userId;
+            }
+            $scope.retrievedUsers = [];
+          }
+
+          $scope.highlightUser = function (user) {
+            let element = document.getElementById(user.userId);
+            if (element) {
+              element.style.backgroundColor = '#7fc6e7';
+              element.style.color = '#ffffff'
+            }
+          }
+
+          $scope.unhighlightUser = function (user) {
+            let element = document.getElementById(user.userId);
+            if (element) {
+              element.style.backgroundColor = 'initial';
+              element.style.color = 'initial';
+            }
+          }
+
+          $scope.findUsers = function () {
+            // only initiates user search if partial name is larger >= 4 characters
+            // this is to prevent unmanageably large drop-downs
+            if ($scope.userPartial && $scope.userPartial.length >= 4) {
+              $http.get("./rest/accounts/search/" + $scope.userPartial)
+              .then(function (result) {
+                if (result.data) {
+                  $scope.retrievedUsers = result.data;
+                } else {
+                  $scope.retrievedUsers = [];
+                  $scope.selectedUser = null;
+                }
+              });
+            } else {
+              $scope.retrievedUsers = [];
+              $scope.selectedUser = null;
+            }
+            $scope.toggleSubmitButton();
+          };
+
+          $scope.toggleSearchEnabled = function(value) {
+            let element = document.getElementById("userId");
+            if (element) {
+              element.disabled = (value == "myself");
+            }
+          };
+
+          angular.element(document).ready(function (){
+            $scope.toggleSearchEnabled('myself');
+          });
 
           $scope.cancel = function () {
             $uibModalInstance.dismiss("Canceled.");
@@ -432,7 +499,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                   // add user as admin
                   $scope.namespace.admins.push($rootScope.user);
                   // adds to known namespaces list
-                  indexOfNewNamespace = $scope.namespaces.push($scope.namespace) - 1;
+                  indexOfNewNamespace = $scope.namespaces.push($scope.namespace)
+                      - 1;
                   $scope.isCreatingOrUpdating = false;
                   $uibModalInstance.close($scope.namespace);
                 },
@@ -462,7 +530,9 @@ define(["../../init/appController"], function (repositoryControllers) {
                 ["Yes, Delete", "Cancel"]);
 
             dialog.setCallback("Yes, Delete", function () {
-              $scope.namespaces = $scope.namespaces.filter((e) => {return e != namespace});
+              $scope.namespaces = $scope.namespaces.filter((e) => {
+                return e != namespace
+              });
             });
             dialog.run();
           }
