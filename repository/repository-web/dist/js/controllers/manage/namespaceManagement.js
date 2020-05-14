@@ -325,7 +325,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             dialogConfirm, $http, username) {
 
           $scope.namespaces = [];
-          $scope.selectedNamespace = {};
+          $scope.selectedNamespace = null;
           $scope.namespacePartial = "";
           $scope.username = username;
           $scope.userPartial = "";
@@ -334,13 +334,19 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.userRadio = "myself";
           $scope.desiredRoles = [];
 
+          $scope.computeSubmitAvailability = function() {
+            let element = document.getElementById("submit");
+            if (element) {
+              element.disabled = !$scope.selectedNamespace || !$scope.selectedUser;
+            }
+          }
+
           $scope.focusOnNamespaceSearch = function () {
             let element = document.getElementById("namespaceSearch");
             if (element) {
               element.focus();
             }
           }
-          $scope.focusOnNamespaceSearch();
 
           $scope.highlightNamespace = function (namespace) {
             let element = document.getElementById(namespace.name);
@@ -365,6 +371,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                   'namespaceSearch').value = $scope.selectedNamespace.name;
             }
             $scope.namespaces = [];
+            $scope.computeSubmitAvailability();
           }
 
           $scope.findNamespaces = function () {
@@ -383,8 +390,9 @@ define(["../../init/appController"], function (repositoryControllers) {
               });
             } else {
               $scope.namespaces = [];
-              $scope.selectedNamespace = {};
+              $scope.selectedNamespace = null;
             }
+            $scope.computeSubmitAvailability();
           }
 
           $scope.selectUser = function (user) {
@@ -394,6 +402,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                   'userId').value = $scope.selectedUser;
             }
             $scope.retrievedUsers = [];
+            $scope.computeSubmitAvailability();
           }
 
           $scope.highlightUser = function (user) {
@@ -429,6 +438,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.retrievedUsers = [];
               $scope.selectedUser = null;
             }
+            $scope.computeSubmitAvailability();
           };
 
           /**
@@ -436,7 +446,7 @@ define(["../../init/appController"], function (repositoryControllers) {
            * 1) toggles between user search box enabled/disabled based on radio
            * 2) sets the selected user according to radio (can be undefined)
            */
-          $scope.toggleSearchEnabled = function(value) {
+          $scope.toggleUserSearchEnabled = function(value) {
             let element = document.getElementById("userId");
             if (element) {
               if (value == "myself") {
@@ -445,15 +455,17 @@ define(["../../init/appController"], function (repositoryControllers) {
               }
               else {
                 element.disabled = false;
-                // no need to assign $scope.selectedUser here, this is taken
-                // care of in selectUser()
+                $scope.userPartial = "";
+                $scope.selectedUser = null;
               }
-
             }
+            $scope.computeSubmitAvailability();
           };
 
-          angular.element(document).ready(function (){
-            $scope.toggleSearchEnabled('myself');
+          angular.element(document).ready(function () {
+            $scope.focusOnNamespaceSearch();
+            $scope.computeSubmitAvailability();
+            $scope.toggleUserSearchEnabled('myself');
           });
 
           // ugly
@@ -484,6 +496,10 @@ define(["../../init/appController"], function (repositoryControllers) {
               element.checked = toggle;
               element.disabled = toggle;
             }
+          }
+
+          $scope.submit = function() {
+            // TODO
           }
 
           $scope.cancel = function () {

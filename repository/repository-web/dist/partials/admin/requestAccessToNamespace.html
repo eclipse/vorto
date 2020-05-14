@@ -54,13 +54,13 @@
       <div class="col-sm-3">
         <input type="radio" name="requestTargetUser" id="myself" value="{{username}}"
                ng-model="userRadio" checked ng-checked="true"
-               ng-change="toggleSearchEnabled('myself')"/>
+               ng-change="toggleUserSearchEnabled('myself')"/>
         <label for="myself">myself ({{username}})</label>
       </div>
       <div class="col-sm-2">
         <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
                value="anotherUser"
-               ng-change="toggleSearchEnabled('otherUser')"/>
+               ng-change="toggleUserSearchEnabled('otherUser')"/>
         <label for="anotherUser">Another user:</label>
       </div>
       <div class="input-group col-sm-7">
@@ -70,7 +70,6 @@
                    id="userId" placeholder="Search for users (at least 4 characters)..."
                    ng-model="userPartial"
                    ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
-                   ng-focus="toggleSubmitButton()" checked
                    style="height:32px">
           </div>
           <div class="col-sm-2" style="padding-left:0px">
@@ -121,6 +120,18 @@
       </div>
       <div class="row col-sm-offset-1">
         <input id="roleManage" type="checkbox" ng-model="desiredRoles[5]" ng-change="disableAndCheckOtherCheckBoxes()"> manage the namespace</input>
+      </div>
+    </div>
+    <div class="row">
+      <hr/>
+    </div>
+    <div class="row">
+      <br/>
+    </div>
+    <div class="row">
+      <div class="col-sm-offset-10">
+        <button id="cancel" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button id="submit" class="btn btn-primary" ng-click="submit()">Send</button>
       </div>
     </div>
   </div>
