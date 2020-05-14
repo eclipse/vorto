@@ -44,10 +44,12 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     private Repository repository;
     private Set<IRole> roleSet;
     private Supplier<Session> internalSessionSupplier;
+
+    @Autowired
     private PrivilegeService privilegeService;
 
-    public RequestRepositorySessionHelper(@Autowired PrivilegeService privilegeService) {
-        this(true, privilegeService);
+    public RequestRepositorySessionHelper() {
+        this(true, null);
     }
 
     public RequestRepositorySessionHelper(boolean isAutowired, PrivilegeService privilegeService) {

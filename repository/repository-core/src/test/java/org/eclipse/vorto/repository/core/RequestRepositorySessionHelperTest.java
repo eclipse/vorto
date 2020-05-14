@@ -33,7 +33,7 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
     @Test
     public void testInternalSessionSupplierWired() throws RepositoryException {
         // create a session helper with autowiring (live http request)
-        RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(null);
+        RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper();
         helper.afterPropertiesSet();
         helper.setWorkspaceId(TEST_TENANT_ID);
         helper.setRepository(createMockRepository());
