@@ -391,7 +391,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             if (user) {
               $scope.selectedUser = user.userId;
               document.getElementById(
-                  'userId').value = $scope.selectedUser.userId;
+                  'userId').value = $scope.selectedUser;
             }
             $scope.retrievedUsers = [];
           }
