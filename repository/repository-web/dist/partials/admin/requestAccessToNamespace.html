@@ -5,29 +5,39 @@
 <div class="modal-body">
   <div class="form-group">
     <div class="row">
-      <label for="namespaceSearch" class="col-sm-3">Namespace:</label>
-      <div class="input-group col-sm-9">
-        <input autofocus type="search" class="search-box-query-filter form-control search-input"
-               id="namespaceSearch" placeholder="Search for namespaces (at least 4 characters)..."
-               ng-model="namespacePartial"
-               ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"/>
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-primary" ng-click="findNamespaces()">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"/>
-          </button>
-        </span>
+      <div class="col-sm-2">
+        <label for="namespaceSearch">Namespace:</label>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-offset-3 col-sm-9" style="padding-left:0px;padding-right:0px">
-        <ul class="dropDownUL" ng-show="namespaces.length > 0">
-          <li id="{{namespace.name}}" ng-repeat="namespace in namespaces track by namespace.name"
-              ng-model="selectedNamespace" ng-click="selectNamespace(namespace)"
-              ng-mouseover="highlightNamespace(namespace)"
-              ng-mouseleave="unhighlightNamespace(namespace)">
-            {{namespace.name}}
-          </li>
-        </ul>
+      <div class="input-group col-sm-offset-5 col-sm-7">
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <input autofocus type="search" class="search-box-query-filter form-control search-input"
+                   id="namespaceSearch"
+                   placeholder="Search for namespaces (at least 4 characters)..."
+                   ng-model="namespacePartial"
+                   ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"
+                   style="height:32px"/>
+          </div>
+          <div class="col-sm-2" style="padding-left:0px">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-primary" ng-click="findNamespaces()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <ul class="dropDownUL" ng-show="namespaces.length > 0">
+              <li id="{{namespace.name}}" ng-repeat="namespace in namespaces track by namespace.name"
+                  ng-model="selectedNamespace" ng-click="selectNamespace(namespace)"
+                  ng-mouseover="highlightNamespace(namespace)"
+                  ng-mouseleave="unhighlightNamespace(namespace)">
+                {{namespace.name}}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -46,21 +56,40 @@
                ng-change="toggleSearchEnabled('myself')"/>
         <label for="myself">myself ({{username}})</label>
       </div>
-      <div class="col-sm-9">
+      <div class="col-sm-2">
         <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
                ng-change="toggleSearchEnabled('otherUser')"/>
         <label for="anotherUser">Another user:</label>
-        <input type="search" class="search-box-query-filter form-control search-input"
-               id="userId" placeholder="userId" ng-model="userPartial"
-               ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
-               ng-focus="toggleSubmitButton()">
-        <ul class="dropDownUL" ng-show="retrievedUsers.length > 0">
-          <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
-              ng-model="selectedUser" ng-click="selectUser(user)" ng-mouseover="highlightUser(user)"
-              ng-mouseleave="unhighlightUser(user)">
-            {{user.userId}}
-          </li>
-        </ul>
+      </div>
+      <div class="input-group col-sm-7">
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <input type="search" class="search-box-query-filter form-control search-input"
+                   id="userId" placeholder="userId" ng-model="userPartial"
+                   ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
+                   ng-focus="toggleSubmitButton()" checked
+                   style="height:32px">
+          </div>
+          <div class="col-sm-2" style="padding-left:0px">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-primary" ng-click="findUsers()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <ul class="dropDownUL" ng-show="retrievedUsers.length > 0">
+              <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
+                  ng-model="selectedUser" ng-click="selectUser(user)"
+                  ng-mouseover="highlightUser(user)"
+                  ng-mouseleave="unhighlightUser(user)">
+                {{user.userId}}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
