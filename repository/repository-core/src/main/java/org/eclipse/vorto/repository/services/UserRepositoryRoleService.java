@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.services;
 
 import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
@@ -35,11 +34,8 @@ public class UserRepositoryRoleService {
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
   public IRole sysadmin() {
-    Iterable<RepositoryRole> test = repositoryRoleRepository.findAll();
-    IRole foo = repositoryRoleRepository.find("sysadmin");
     return repositoryRoleRepository.find("sysadmin");
   }
-
 
   /**
    * @param user

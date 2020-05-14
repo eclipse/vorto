@@ -33,6 +33,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
@@ -120,10 +121,13 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private IModelPolicyManager policyManager;
 
+  private PrivilegeService privilegeService;
+
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
-      ModelRepositoryFactory repositoryFactory, IModelPolicyManager policyManager, NamespaceService namespaceService) {
+      ModelRepositoryFactory repositoryFactory, IModelPolicyManager policyManager,
+      NamespaceService namespaceService, PrivilegeService privilegeService) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
@@ -131,6 +135,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     this.repositoryFactory = repositoryFactory;
     this.namespaceService = namespaceService;
     this.policyManager = policyManager;
+    this.privilegeService = privilegeService;
   }
 
   @Override
@@ -696,7 +701,7 @@ public class ModelRepository extends AbstractRepositoryOperation
                                           Tag... tags) throws AttachmentException {
 
     attachmentValidator.validateAttachment(fileContent, modelId);
-    doInElevatedSession(session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags), userContext);
+    doInElevatedSession(session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags), userContext, privilegeService);
   }
 
 

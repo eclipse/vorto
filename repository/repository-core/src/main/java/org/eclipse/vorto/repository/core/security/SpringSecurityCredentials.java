@@ -13,10 +13,14 @@
 package org.eclipse.vorto.repository.core.security;
 
 import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.springframework.security.core.Authentication;
 
 import javax.jcr.Credentials;
+import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class SpringSecurityCredentials implements Credentials {
 
@@ -24,18 +28,38 @@ public class SpringSecurityCredentials implements Credentials {
 
   private Authentication authentication;
 
-  private Set<IRole> rolesInTenant;
+  private Set<IRole> rolesInNamespace;
 
-  public SpringSecurityCredentials(Authentication authentication, Set<IRole> rolesInTenant) {
+  private PrivilegeService privilegeService;
+
+  private final Predicate<String> hasPrivilege = privilegeName -> rolesInNamespace.stream()
+          .map(IRole::getPrivileges)
+          .map(privilegeService::getPrivileges)
+          .flatMap(Collection::stream)
+          .map(Privilege::getName)
+          .anyMatch(privilegeName::equalsIgnoreCase);
+
+  public SpringSecurityCredentials(Authentication authentication, Set<IRole> rolesInNamespace, PrivilegeService privilegeService) {
     this.authentication = authentication;
-    this.rolesInTenant = rolesInTenant;
+    this.rolesInNamespace = rolesInNamespace;
+    this.privilegeService = privilegeService;
   }
 
   public Authentication getAuthentication() {
     return authentication;
   }
 
-  public Set<IRole> getRolesInTenant() {
-    return rolesInTenant;
+  public Set<IRole> getRolesInNamespace() {
+    return rolesInNamespace;
+  }
+
+  public boolean hasPrivilege(String privilege) {
+    return hasPrivilege.test(privilege);
+  }
+
+  public boolean isSysAdmin() {
+    return rolesInNamespace.stream().filter(role -> "sysadmin".equalsIgnoreCase(role.getName()))
+        .map(role -> "sysadmin")
+        .anyMatch(hasPrivilege);
   }
 }

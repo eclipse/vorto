@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 import javax.jcr.PathNotFoundException;
@@ -58,8 +59,8 @@ public class AbstractRepositoryOperation {
     }
   }
 
-  public <T> void doInElevatedSession(SessionFunction<T> fn, IUserContext userContext) {
-    RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false);
+  public <T> void doInElevatedSession(SessionFunction<T> fn, IUserContext userContext, PrivilegeService privilegeService) {
+    RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false, privilegeService);
     IUserContext elevatedUserContext = getUserContextForCreatingAttachment(userContext);
     try {
       helper.setUser(elevatedUserContext.getAuthentication());

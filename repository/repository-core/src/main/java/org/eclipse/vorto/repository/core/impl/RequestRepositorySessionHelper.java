@@ -18,8 +18,10 @@ import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
 import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
 import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -42,13 +44,14 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     private Repository repository;
     private Set<IRole> roleSet;
     private Supplier<Session> internalSessionSupplier;
+    private PrivilegeService privilegeService;
 
-    public RequestRepositorySessionHelper() {
-        this(true);
+    public RequestRepositorySessionHelper(@Autowired PrivilegeService privilegeService) {
+        this(true, privilegeService);
     }
 
-
-    public RequestRepositorySessionHelper(boolean isAutowired) {
+    public RequestRepositorySessionHelper(boolean isAutowired, PrivilegeService privilegeService) {
+        this.privilegeService = privilegeService;
         if(isAutowired) {
             internalSessionSupplier = () -> {
                 try {
@@ -112,7 +115,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     }
 
     private Session login(String workspaceId, Authentication user) throws RepositoryException {
-        return repository.login(new SpringSecurityCredentials(user, roleSet), workspaceId);
+        return repository.login(new SpringSecurityCredentials(user, roleSet, privilegeService), workspaceId);
     }
 
     public void logoutSessionIfNotReusable(Session session) {

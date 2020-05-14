@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
@@ -77,6 +78,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private PrivilegeService privilegeService;
 
   private ApplicationEventPublisher eventPublisher = null;
 
@@ -183,7 +187,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
         getModelRetrievalService(user),
         this,
         getPolicyManager(workspaceId, user),
-        namespaceService);
+        namespaceService,
+        privilegeService);
 
     modelRepository.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);
@@ -218,7 +223,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   private Supplier<RequestRepositorySessionHelper> namedWorkspaceSessionSupplier(String workspaceId, Authentication user) {
     return () -> {
       if(sessionHelper == null)
-        sessionHelper = new RequestRepositorySessionHelper(false);
+        sessionHelper = new RequestRepositorySessionHelper(false, privilegeService);
       sessionHelper.setRepository(repository);
       sessionHelper.setWorkspaceId(workspaceId);
       sessionHelper.setRolesInNamespace(getUserRolesInNamespace(workspaceId, user.getName()));
