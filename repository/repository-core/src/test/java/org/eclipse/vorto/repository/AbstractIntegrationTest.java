@@ -65,8 +65,7 @@ import org.springframework.security.core.Authentication;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractIntegrationTest {
@@ -224,6 +223,7 @@ public abstract class AbstractIntegrationTest {
     Set<IRole> roles = new HashSet<>();
     roles.add(role);
     when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
   }
