@@ -12,27 +12,10 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
@@ -46,6 +29,12 @@ import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Extend this class for Implementation of a special importer for Vorto
@@ -93,7 +82,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
       return new UploadModelResult(null, Arrays.asList(ValidationReport.invalid(null,
           "File type is invalid. Must be " + this.supportedFileExtensions)));
     }
-    List<ValidationReport> reports = new ArrayList<ValidationReport>();
+    List<ValidationReport> reports = new ArrayList<>();
     if (handleZipUploads() && isZipFile(fileUpload)) {
       getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
           .forEach(extractedFile -> {
@@ -138,7 +127,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   protected Collection<FileUpload> getUploadedFilesFromZip(byte[] uploadedFile) {
-    Collection<FileUpload> fileUploads = new ArrayList<FileUpload>();
+    Collection<FileUpload> fileUploads = new ArrayList<>();
 
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(uploadedFile));
     ZipEntry entry = null;
@@ -161,7 +150,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
    * Checks if the uploaded models already exist in the repository.
    * 
    * @param reports reports from the specific importer implementation
-   * @param user currently performing the upload
    */
   protected void postValidate(List<ValidationReport> reports, Context context) {
     reports.forEach(report -> {
@@ -242,13 +230,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
       FileUpload extractedFile, Context context) {
     final IUserContext user = context.getUser();
     
-    List<ModelInfo> savedModels = new ArrayList<ModelInfo>();
+    List<ModelInfo> savedModels = new ArrayList<>();
     DependencyManager dm = new DependencyManager();
     for (ModelResource resource : resources) {
       dm.addResource(resource);
     }
 
-    dm.getSorted().stream().forEach(resource -> {
+    dm.getSorted().forEach(resource -> {
       try {
         IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(resource.getId());
           ModelInfo importedModel = modelRepository.save((ModelResource)resource, user);
@@ -307,21 +295,12 @@ public abstract class AbstractModelImporter implements IModelImporter {
     importedModel.setImported(true);
   }
 
-  /**
-   * validates the given fileUpload content
-   * 
-   * @param content
-   * @param fileName
-   * @param user
-   * @return
-   */
   protected abstract List<ValidationReport> validate(FileUpload fileUpload, Context context);
 
   /**
    * converts the given file upload content to Vorto DSL content
    * 
    * @param fileUpload
-   * @param user
    * @return Vorto DSL content
    */
   protected abstract List<ModelResource> convert(FileUpload fileUpload, Context context);

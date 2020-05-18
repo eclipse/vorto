@@ -40,6 +40,9 @@ import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -59,6 +62,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -146,6 +151,12 @@ public final class SearchTestInfrastructure {
   protected INotificationService notificationService = Mockito
       .mock(INotificationService.class);
 
+  NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
+
+  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+
+  PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
+
   protected DefaultUserAccountService accountService = null;
 
   protected VortoModelImporter importer = null;
@@ -206,6 +217,20 @@ public final class SearchTestInfrastructure {
   }
 
   protected SearchTestInfrastructure() throws Exception {
+    Namespace namespace = new Namespace();
+    namespace.setWorkspaceId("playground");
+    namespace.setName("org.eclipse.vorto");
+    namespace.setId(1L);
+    when(namespaceService.resolveWorkspaceIdForNamespace(any())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(any())).thenReturn(namespace);
+    NamespaceRole role = new NamespaceRole();
+    role.setPrivileges(7);
+    role.setRole(32);
+    role.setName("namespace_admin");
+    Set<IRole> roles = new HashSet<>();
+    roles.add(role);
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+
     when(tenantService.getTenantFromNamespace(Matchers.anyString()))
         .thenReturn(Optional.of(playgroundTenant));
 
@@ -257,7 +282,7 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
-        attachmentValidator, modelParserFactory, null, config, null, null, null, null) {
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {

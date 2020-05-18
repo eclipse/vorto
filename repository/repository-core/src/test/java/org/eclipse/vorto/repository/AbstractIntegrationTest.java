@@ -216,6 +216,9 @@ public abstract class AbstractIntegrationTest {
   private void setupNamespaceMocking() throws DoesNotExistException {
     when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
     NamespaceRole role = new NamespaceRole();
     role.setName("namespace_admin");
     role.setPrivileges(7);

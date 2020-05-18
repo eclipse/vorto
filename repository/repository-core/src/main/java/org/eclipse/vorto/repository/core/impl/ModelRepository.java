@@ -282,7 +282,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
       logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
-          + " in Workspace: " + session.getWorkspace().getName() + "/" + getWorkspaceId());
+          + " in Workspace: " + session.getWorkspace().getName());
 
       try {
         Node folderNode = createNodeForModelId(session, modelInfo.getId());
