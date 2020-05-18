@@ -33,6 +33,10 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.notification.IMessage;
+import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
+import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
+import org.eclipse.vorto.repository.notification.message.RequestAccessToNamespaceMessage;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -46,6 +50,7 @@ import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
@@ -58,6 +63,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -98,6 +104,9 @@ public class NamespaceController {
 
   @Autowired
   private IOAuthProviderRegistry providerRegistry;
+
+  @Autowired
+  private EmailNotificationService emailNotificationService;
 
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
@@ -143,7 +152,7 @@ public class NamespaceController {
   @RequestMapping(method = RequestMethod.GET, value = "/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<NamespaceDto>> findAllNonPrivateNamespacesByPartial(
-      @ApiParam(value = "partial", required = true) @PathVariable String partial
+      @ApiParam(value = "The partial name of the namespaces to be searched with", required = true) @PathVariable String partial
   ) {
     // TODO the returned NamespaceDdo's should be stripped off sensitive data such as users and
     // admins - not worth doing here now due to incoming refactory
@@ -156,6 +165,65 @@ public class NamespaceController {
         .filter(n -> n.getName().toLowerCase().contains(partial.toLowerCase()))
         .collect(Collectors.toList());
     return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  @PostMapping("/requestAccess")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<NamespaceOperationResult> requestAccessToNamespace(
+      @RequestBody @ApiParam(
+          value = "The request body specifying who initiates the request, the namespace, whom the request is intended for, and an optional collection of suggested roles", required = true)
+          NamespaceAccessRequestDTO request) {
+    Optional<NamespaceOperationResult> validationError = NamespaceValidator
+        .validateAccessRequest(request);
+    if (validationError.isPresent()) {
+      return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
+    }
+    // checks namespace exists
+    Optional<Tenant> maybeTarget = tenantService
+        .getTenantFromNamespace(request.getNamespaceName());
+    // should only occur if namespace was deleted after user search, but before sending request
+    if (!maybeTarget.isPresent()) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found"),
+          HttpStatus.NOT_FOUND);
+    }
+    Tenant target = maybeTarget.get();
+    // checks any admin with an e-mail address set
+    Set<User> adminsWithEmail = target.getTenantAdmins().stream()
+        .filter(u -> !Strings.nullToEmpty(u.getEmailAddress()).trim().isEmpty())
+        .collect(Collectors.toSet());
+    if (adminsWithEmail.isEmpty()) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(String.format(
+          "None of the users administrating namespace %s has set their own e-mail. Please contact them directly. ",
+          request.getNamespaceName())), HttpStatus.NOT_FOUND);
+    }
+    int successCount = adminsWithEmail.size();
+    // attempts to send the e-mails
+    // ugly exception handling here, due to the way this was designed in the service
+    Collection<IMessage> messages = adminsWithEmail.stream()
+        .map(u -> new RequestAccessToNamespaceMessage(request, u)).collect(Collectors.toList());
+    for (IMessage message : messages) {
+      try {
+        emailNotificationService.sendNotification(message);
+      } catch (NotificationProblem np) {
+        successCount--;
+      }
+    }
+    // worked for all recipients
+    if (successCount == adminsWithEmail.size()) {
+      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
+    }
+    // worked for some recipients
+    else if (successCount > 0) {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .failure("The message could not be sent to all administrators."),
+          HttpStatus.SERVICE_UNAVAILABLE);
+    }
+    // did not work for any recipient
+    else {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .failure("The message could not be sent to any administrator."),
+          HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 
   /**
@@ -197,7 +265,6 @@ public class NamespaceController {
    * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
    *
    * @param namespace
-   * @param userId
    * @param user
    * @return
    */

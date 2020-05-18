@@ -333,11 +333,12 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.retrievedUsers = [];
           $scope.userRadio = "myself";
           $scope.desiredRoles = [];
+          $scope.ack = false;
 
           $scope.computeSubmitAvailability = function() {
             let element = document.getElementById("submit");
             if (element) {
-              element.disabled = !$scope.selectedNamespace || !$scope.selectedUser;
+              element.disabled = !$scope.selectedNamespace || !$scope.selectedUser || !$scope.ack;
             }
           }
 
