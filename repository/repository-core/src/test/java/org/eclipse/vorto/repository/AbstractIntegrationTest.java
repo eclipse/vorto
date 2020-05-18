@@ -39,6 +39,10 @@ import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -58,12 +62,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractIntegrationTest {
@@ -79,6 +82,12 @@ public abstract class AbstractIntegrationTest {
 
   @Mock
   protected INotificationService notificationService = Mockito.mock(INotificationService.class);
+
+  NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
+
+  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+
+  PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
   protected DefaultUserAccountService accountService = null;
 
@@ -110,6 +119,8 @@ public abstract class AbstractIntegrationTest {
   
   @Before
   public void beforeEach() throws Exception {
+    setupNamespaceMocking();
+
     when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
     
     when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
@@ -158,7 +169,7 @@ public abstract class AbstractIntegrationTest {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
-        attachmentValidator, modelParserFactory, null, config, null, null, null) {
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -201,6 +212,28 @@ public abstract class AbstractIntegrationTest {
         new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
 
     MockitoAnnotations.initMocks(this);
+  }
+
+  private void setupNamespaceMocking() throws DoesNotExistException {
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    NamespaceRole role = new NamespaceRole();
+    role.setName("namespace_admin");
+    role.setPrivileges(7);
+    role.setRole(32);
+    Set<IRole> roles = new HashSet<>();
+    roles.add(role);
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
+    when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
+  }
+
+  private Namespace mockNamespace() {
+    Namespace namespace = new Namespace();
+    namespace.setName("org.eclipse.vorto");
+    namespace.setId(1L);
+    namespace.setWorkspaceId("playground");
+    return namespace;
   }
 
   @After

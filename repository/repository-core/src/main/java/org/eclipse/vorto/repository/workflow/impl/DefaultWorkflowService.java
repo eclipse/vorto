@@ -12,12 +12,6 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -29,16 +23,14 @@ import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
-import org.eclipse.vorto.repository.workflow.model.IAction;
-import org.eclipse.vorto.repository.workflow.model.IState;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;
+import org.eclipse.vorto.repository.workflow.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultWorkflowService implements IWorkflowService {
@@ -64,7 +56,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 			modelInfo.setState(newState.getName());
 			
 			ModelInfo updatedInfo = getModelRepository(user).updateMeta(modelInfo);
-			Map<String,Object> ctx = new HashMap<String, Object>();
+			Map<String,Object> ctx = new HashMap<>();
 			action.get().getFunctions().stream().forEach(a -> executeFunction(a,modelInfo,user,ctx));
 			
 			return updatedInfo;
@@ -112,7 +104,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 	@Override
 	public ModelId start(ModelId modelId, IUserContext user) {
 		IAction initial = SIMPLE_WORKFLOW.getInitialAction();
-		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user, Collections.emptyMap()));
+		initial.getFunctions().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user, Collections.emptyMap()));
 
 		IState nextState = initial.getTo();
 		return getModelRepository(user).updateState(modelId, nextState.getName());

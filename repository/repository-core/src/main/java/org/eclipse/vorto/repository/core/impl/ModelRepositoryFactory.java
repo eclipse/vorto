@@ -100,7 +100,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
       RepositoryConfiguration repoConfig,
       RequestRepositorySessionHelper sessionHelper,
       NamespaceService namespaceService,
-      UserNamespaceRoleService userNamespaceRoleService
+      UserNamespaceRoleService userNamespaceRoleService,
+      PrivilegeService privilegeService
   ) {
     this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
@@ -111,6 +112,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     this.namespaceService = namespaceService;
     this.sessionHelper = sessionHelper;
     this.userNamespaceRoleService = userNamespaceRoleService;
+    this.privilegeService = privilegeService;
   }
 
   @PostConstruct

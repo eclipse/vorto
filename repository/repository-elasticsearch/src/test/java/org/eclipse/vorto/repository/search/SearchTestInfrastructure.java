@@ -365,7 +365,7 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, null,
-        attachmentValidator, modelParserFactory, null, config, null, null, null) {
+        attachmentValidator, modelParserFactory, null, config, null, null, null, null) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
