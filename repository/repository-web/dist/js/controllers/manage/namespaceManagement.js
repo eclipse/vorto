@@ -334,6 +334,10 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.userRadio = "myself";
           $scope.desiredRoles = [];
           $scope.ack = false;
+          $scope.isSendingRequest = false;
+          $scope.errorMessage = null;
+          $scope.error = false;
+          $scope.success = false;
 
           $scope.computeSubmitAvailability = function() {
             let element = document.getElementById("submit");
@@ -501,11 +505,86 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.submit = function() {
             // TODO
+
+            // roles to convey if any
+            const allRoles = ['USER', 'MODEL_CREATOR', 'MODEL_PROMOTER', 'MODEL_REVIEWER', 'MODEL_PUBLISHER', 'TENANT_ADMIN'];
+            let rolesToConvey = [];
+            // TENANT_ADMIN implies all roles
+            if($scope.desiredRoles[5]) {
+              rolesToConvey = allRoles;
+            }
+            else {
+              let i = 0;
+              for (i = 0; i < allRoles.length; i++) {
+                if ($scope.desiredRoles[i]) {
+                  rolesToConvey.push(allRoles[i]);
+                }
+              }
+            }
+
+            let payload = {
+              'requestingUsername' : $scope.username,
+              'targetUsername' : $scope.selectedUser,
+              'namespaceName' : $scope.selectedNamespace.name,
+              'suggestedRoles' : rolesToConvey,
+              'conditionsAcknowledged' : $scope.ack
+            };
+            $scope.isSendingRequest = true;
+
+            $http
+            .post("./rest/namespaces/requestAccess", payload)
+            .then(function (result) {
+                  $scope.isSendingRequest = false;
+                  $scope.success = true;
+                  $scope.disableCancelButton();
+                  $scope.disableSendButton();
+                },
+                function (data, status, headers, config) {
+                  $scope.isSendingRequest = false;
+                  $scope.error = true;
+                  if (data) {
+                    $scope.errorMessage = data.errorMessage;
+                  }
+                  else {
+                    $scope.errorMessage = 'Request failed for unknown reason';
+                  }
+                  switch (status) {
+                    // no e-mails present among admins - preventing user from sending again
+                    case 412: {
+                      $scope.disableSendButton();
+                      break;
+                    }
+                    // e-mail could not be sent - preventing user from sending again right away
+                    case 503: {
+                      $scope.disableSendButton();
+                      break;
+                    }
+                  }
+                }
+            );
+          };
+
+          $scope.disableCancelButton = function() {
+            let cancelButton = document.getElementById("cancel");
+            if (cancelButton) {
+              cancelButton.disabled = true;
+            }
           }
 
-          $scope.cancel = function () {
+          $scope.disableSendButton = function() {
+            let sendButton = document.getElementById("submit");
+            if (sendButton) {
+              sendButton.disabled = true;
+            }
+          }
+
+          $scope.cancel = function() {
             $uibModalInstance.dismiss("Canceled.");
           };
+
+          $scope.close = function() {
+            $uibModalInstance.dismiss("Closed.");
+          }
         }
       ]);
 

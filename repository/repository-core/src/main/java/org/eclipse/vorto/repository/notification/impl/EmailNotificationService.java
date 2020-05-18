@@ -69,7 +69,7 @@ public class EmailNotificationService implements INotificationService {
         transport.connect();
       } catch (Exception connectEx) {
         logger.error("Problem connecting to Email server", connectEx);
-        return;
+        throw new NotificationProblem("Problem sending email", connectEx);
       }
       SMTPMessage smtpMessage = new SMTPMessage(emailSession);
       smtpMessage.setFrom(new InternetAddress(this.mailFrom));

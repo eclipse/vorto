@@ -23,45 +23,50 @@ import java.util.Optional;
  */
 public class NamespaceOperationResult {
 
-    private boolean success;
-    private String errorMessage;
+  private boolean success;
+  private String errorMessage;
 
   /**
    * Generates an empty success {@link NamespaceOperationResult} if the given flag is {@code true}
    * (typically the outcome of a service operation), or a failure result with the given optional
    * message otherwise.
+   *
    * @param success
    * @param errorMessageIfFailure
    * @return
    */
-    public static NamespaceOperationResult generate(boolean success, Optional<String> errorMessageIfFailure) {
-      if (success) {
-        return success();
-      }
-      else {
-        return failure(errorMessageIfFailure.orElse(null));
-      }
+  public static NamespaceOperationResult generate(boolean success,
+      Optional<String> errorMessageIfFailure) {
+    if (success) {
+      return success();
+    } else {
+      return failure(errorMessageIfFailure.orElse(null));
     }
+  }
 
-    public static NamespaceOperationResult success() {
-      return new NamespaceOperationResult(true, null);
-    }
+  public static NamespaceOperationResult success() {
+    return new NamespaceOperationResult(true, null);
+  }
 
-    public static NamespaceOperationResult failure(String msg) {
-      return new NamespaceOperationResult(false, msg);
-    }
+  public static NamespaceOperationResult success(String message) {
+    return new NamespaceOperationResult(true, message);
+  }
 
-    private NamespaceOperationResult(boolean success, String errorMessage) {
-      this.success = success;
-      this.errorMessage = errorMessage;
-    }
+  public static NamespaceOperationResult failure(String msg) {
+    return new NamespaceOperationResult(false, msg);
+  }
 
-    public boolean isSuccess() {
-      return success;
-    }
+  private NamespaceOperationResult(boolean success, String errorMessage) {
+    this.success = success;
+    this.errorMessage = errorMessage;
+  }
 
-    public String getErrorMessage() {
-      return errorMessage;
-    }
+  public boolean isSuccess() {
+    return success;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
 
 }

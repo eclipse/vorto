@@ -183,7 +183,7 @@ public class NamespaceController {
         .getTenantFromNamespace(request.getNamespaceName());
     // should only occur if namespace was deleted after user search, but before sending request
     if (!maybeTarget.isPresent()) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found"),
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found."),
           HttpStatus.NOT_FOUND);
     }
     Tenant target = maybeTarget.get();
@@ -194,7 +194,7 @@ public class NamespaceController {
     if (adminsWithEmail.isEmpty()) {
       return new ResponseEntity<>(NamespaceOperationResult.failure(String.format(
           "None of the users administrating namespace %s has set their own e-mail. Please contact them directly. ",
-          request.getNamespaceName())), HttpStatus.NOT_FOUND);
+          request.getNamespaceName())), HttpStatus.PRECONDITION_FAILED);
     }
     int successCount = adminsWithEmail.size();
     // attempts to send the e-mails
@@ -215,8 +215,8 @@ public class NamespaceController {
     // worked for some recipients
     else if (successCount > 0) {
       return new ResponseEntity<>(NamespaceOperationResult
-          .failure("The message could not be sent to all administrators."),
-          HttpStatus.SERVICE_UNAVAILABLE);
+          .success("The message could not be sent to all administrators."),
+          HttpStatus.OK);
     }
     // did not work for any recipient
     else {
