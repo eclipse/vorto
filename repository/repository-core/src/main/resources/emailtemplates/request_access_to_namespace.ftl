@@ -1,9 +1,15 @@
 <html>
-<head></head>
+<head>
+  <style>
+    th,td {
+      border: 1px solid black;
+    }
+  </style>
+</head>
 <body>
 Dear ${recipient},
 <br/><br>
-a Vorto user has requested access to a namespace you manage:
+a Vorto user has requested access to a namespace you manage:<br/><br/>
 <table>
   <caption>Details</caption>
   <tr>
@@ -14,7 +20,7 @@ a Vorto user has requested access to a namespace you manage:
   </tr>
   <tr>
     <td>${namespace}</td>
-    <td>${targetUser}</td>
+    <td><b>${targetUser}</b></td>
     <td>
       <ul>
           <#list suggestedRoles as r>
@@ -25,9 +31,11 @@ a Vorto user has requested access to a namespace you manage:
     <td>${requestingUser}</td>
   </tr>
 </table>
+<br/>
 <hr/>
-Your username and e-mail address have <b>not</b> been shared with requesting user ${requestingUser}.<br/>
-You can safely disregard this request if you do not know the users involved. <br/>
+<br/>
+Your username and e-mail address have <b>not</b> been shared with requesting user ${requestingUser}.<br/><br/>
+You can safely disregard this request if you do not know the users involved. <br/><br/>
 If you believe this request constitutes a form of abuse, or wish to convey any issue with it, you
 can:
 <ul>
@@ -41,6 +49,8 @@ can:
     notifications from Vorto.
   </li>
 </ul>
+<br/>
+<hr/>
 <br/>
 Thanks for using Vorto!
 <br/><br/>
