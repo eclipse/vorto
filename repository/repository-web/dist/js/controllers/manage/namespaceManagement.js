@@ -119,8 +119,11 @@ define(["../../init/appController"], function (repositoryControllers) {
                   controller: "requestAccessToNamespaceController",
                   size: "lg",
                   resolve: {
-                    username: function () {
+                    username: function() {
                       return $rootScope.displayName;
+                    },
+                    subject: function() {
+                      return $rootScope.userInfo.subject;
                     }
                   },
                   backdrop: 'static'
@@ -320,14 +323,16 @@ define(["../../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
       ["$rootScope", "$scope", "$uibModal", "$uibModalInstance",
-        "dialogConfirm", "$http", "username",
+        "dialogConfirm", "$http", "username", "subject",
         function ($rootScope, $scope, $uibModal, $uibModalInstance,
-            dialogConfirm, $http, username) {
+            dialogConfirm, $http, username, subject) {
 
           $scope.namespaces = [];
           $scope.selectedNamespace = null;
           $scope.namespacePartial = "";
           $scope.username = username;
+          $scope.loggedInUserSubject = subject;
+          $scope.selectedSubject = subject;
           $scope.userPartial = "";
           $scope.selectedUser = null;
           $scope.retrievedUsers = [];
@@ -403,6 +408,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.selectUser = function (user) {
             if (user) {
               $scope.selectedUser = user.userId;
+              $scope.selectedSubject = user.subject;
               document.getElementById(
                   'userId').value = $scope.selectedUser;
             }
@@ -457,11 +463,13 @@ define(["../../init/appController"], function (repositoryControllers) {
               if (value == "myself") {
                 element.disabled = true;
                 $scope.selectedUser = $scope.username;
+                $scope.selectedSubject = $scope.loggedInUserSubject;
               }
               else {
                 element.disabled = false;
                 $scope.userPartial = "";
                 $scope.selectedUser = null;
+                $scope.selectedSubject = null;
               }
             }
             $scope.computeSubmitAvailability();
@@ -504,8 +512,6 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.submit = function() {
-            // TODO
-
             // roles to convey if any
             const allRoles = ['USER', 'MODEL_CREATOR', 'MODEL_PROMOTER', 'MODEL_REVIEWER', 'MODEL_PUBLISHER', 'TENANT_ADMIN'];
             let rolesToConvey = [];
@@ -527,7 +533,8 @@ define(["../../init/appController"], function (repositoryControllers) {
               'targetUsername' : $scope.selectedUser,
               'namespaceName' : $scope.selectedNamespace.name,
               'suggestedRoles' : rolesToConvey,
-              'conditionsAcknowledged' : $scope.ack
+              'conditionsAcknowledged' : $scope.ack,
+              'targetSubject' : $scope.selectedSubject
             };
             $scope.isSendingRequest = true;
 

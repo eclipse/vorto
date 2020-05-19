@@ -15,12 +15,14 @@ a Vorto user has requested access to a namespace you manage:<br/><br/>
   <tr>
     <th>Namespace</th>
     <th>User to add</th>
+    <th>Subject</th>
     <th>Suggested roles (if any)</th>
     <th>User who initiated the request</th>
   </tr>
   <tr>
     <td>${namespace}</td>
     <td><b>${targetUser}</b></td>
+    <td>${subject}</td>
     <td>
       <ul>
           <#list suggestedRoles as r>
