@@ -39,6 +39,7 @@ import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -99,6 +100,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @Autowired
   private AttachmentValidator attachmentValidator;
 
+  @Autowired
+  private NamespaceService namespaceService;
+
   private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
   @ApiOperation(value = "Returns the image of a vorto model")
@@ -154,7 +158,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PostMapping(value = "/{modelId:.+}/images")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<AttachResult> uploadModelImage(
@@ -211,7 +215,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   // ToDo add Getter method
   @ApiOperation(value = "Saves a model to the repository.")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   @PutMapping(value = "/{modelId:.+}", produces = "application/json")
@@ -257,7 +261,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PutMapping(value = "/refactorings/{oldId:.+}/{newId:.+}", produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#oldId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<ModelInfo> refactorModelId(@PathVariable String oldId,
@@ -276,7 +280,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 
   @GetMapping(value = "/refactorings/{modelId:.+}", produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Map<String, String>> newRefactoring(@PathVariable String modelId) {
@@ -299,7 +303,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    IUserContext userContext = UserContext.user(authentication, getTenant(modelId));
+    IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
 
     IModelRepository modelRepo = getModelRepository(modelID);
 
@@ -322,7 +326,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Creates a new version for the given model in the specified version")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or (hasRole('ROLE_MODEL_CREATOR') and "
+  @PreAuthorize("hasAuthority('sysadmin') or (hasAuthority('model_creator') and "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).READ))")
   @PostMapping(value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
@@ -343,7 +347,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @DeleteMapping(value = "/{modelId:.+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   public ResponseEntity<Boolean> deleteModelResource(final @PathVariable String modelId) {
@@ -439,7 +443,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Getting all mapping resources for the given model")
-  @PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
   @GetMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}")
   public ResponseEntity<Boolean> downloadMappingsForPlatform(
       @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
@@ -477,7 +481,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
   @GetMapping(value = "/{modelId:.+}/diagnostics")
   public ResponseEntity<Collection<Diagnostic>> runDiagnostics(final @PathVariable String modelId) {
 
@@ -492,7 +496,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
   @GetMapping(value = "/{modelId:.+}/policies")
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
 
@@ -516,7 +520,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
   @GetMapping(value = "/{modelId:.+}/policy")
   public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
 
@@ -545,7 +549,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @PutMapping(value = "/{modelId:.+}/policies")
@@ -570,7 +574,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         .equals(entry.getPrincipalId());
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+  @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @DeleteMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}")
@@ -589,7 +593,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         entry);
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasRole('ROLE_USER')")
+  @PreAuthorize("hasAuthority('sysadmin') or hasAnyAuthority('ROLE_USER','model_viewer')")
   @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
   public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
 
@@ -621,6 +625,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
 
     return new ResponseEntity<>(Status.success(), HttpStatus.OK);
+  }
+
+  private String getWorkspaceId(String modelId) {
+    String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
+    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
+        .orElseThrow(() -> new IllegalStateException("Namespace " + namespace + " could not be found."));
   }
 
   private String getTenant(String modelId) {

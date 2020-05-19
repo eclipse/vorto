@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
@@ -65,6 +66,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   @Autowired
   private UserUtil userUtil;
+
+  @Autowired
+  private RoleService roleService;
 
   @Autowired
   private UserService userService;
@@ -206,6 +210,30 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       return Collections.emptyList();
     }
     return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
+  }
+
+  public Set<IRole> getRolesOnAllNamespaces(User user) {
+    LOGGER.debug(String
+        .format("Retrieving all roles for user [%s]", user.getUsername()));
+    Collection<UserNamespaceRoles> userNamespaceRoles = userNamespaceRoleRepository.findAllByUser(user);
+
+    if (Objects.isNull(userNamespaceRoles)) {
+      return Sets.newHashSet(getUserRole());
+    }
+
+    Set<IRole> allRoles = userNamespaceRoles.stream()
+        .map(UserNamespaceRoles::getRoles)
+        .map(roleUtil::toNamespaceRoles)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+    if (allRoles.isEmpty()) {
+      allRoles.add(getUserRole());
+    }
+    return allRoles;
+  }
+
+  private IRole getUserRole() {
+    return roleService.findAnyByName("model_viewer").orElseThrow(() -> new IllegalStateException("Role 'model_viewer' is not present."));
   }
 
   /**

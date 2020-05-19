@@ -236,6 +236,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // persists the new namespace
     Namespace namespace = new Namespace();
     namespace.setName(namespaceName);
+    // TODO 2265 add workspace id here / verify implementation
+    namespace.setWorkspaceId(UUID.randomUUID().toString().replace("-", ""));
     namespaceRepository.save(namespace);
 
     userNamespaceRoleService.setAllRoles(actor, target, namespace, true);

@@ -68,8 +68,8 @@ window.cookieconsent.initialise({
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li ng-show="!context.authenticatedSearchMode || hasAuthority('ROLE_USER')"><a href="./#/" st-reset>Explore</a></li>
-					<li ng-show="hasAuthority('ROLE_MODEL_CREATOR')"><a href="./#/import">Import</a></li>
+					<li ng-show="!context.authenticatedSearchMode || hasAuthority('model_viewer')"><a href="./#/" st-reset>Explore</a></li>
+					<li ng-show="hasAuthority('model_creator')"><a href="./#/import">Import</a></li>
 					<li ng-show="authenticated"><a href="./#/manage">Manage</a></li>
 					<li><a href="./#/generators">Plugins</a></li>
 					<li><a href="https://www.eclipse.org/vorto/swagger">HTTP API</a></li>

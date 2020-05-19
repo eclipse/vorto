@@ -19,10 +19,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.events.AppEvent;
-import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
-import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
-import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.*;
 import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
@@ -67,6 +64,7 @@ import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 public abstract class AbstractIntegrationTest {
 
@@ -84,7 +82,9 @@ public abstract class AbstractIntegrationTest {
 
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
-  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class, withSettings().verboseLogging());
+
+  RequestRepositorySessionHelper requestRepositorySessionHelper = Mockito.mock(RequestRepositorySessionHelper.class);
 
   PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
@@ -119,21 +119,22 @@ public abstract class AbstractIntegrationTest {
   @Before
   public void beforeEach() throws Exception {
     setupNamespaceMocking();
+    mockUsers();
 
     when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
     
-    when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
+//    when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
 
-    when(userRepository.findByUsername("erle")).thenReturn(getUser("erle", playgroundTenant));
-
-    when(userRepository.findByUsername("admin")).thenReturn(getUser("admin", playgroundTenant));
-
-    when(userRepository.findByUsername("creator")).thenReturn(getUser("creator", playgroundTenant));
-    
-    when(userRepository.findByUsername("promoter")).thenReturn(getUser("promoter", playgroundTenant));
-
-    when(userRepository.findByUsername("reviewer"))
-        .thenReturn(getUser("reviewer", playgroundTenant));
+//    when(userRepository.findByUsername("erle")).thenReturn(getUser("erle", playgroundTenant));
+//
+//    when(userRepository.findByUsername("admin")).thenReturn(getUser("admin", playgroundTenant));
+//
+//    when(userRepository.findByUsername("creator")).thenReturn(getUser("creator", playgroundTenant));
+//
+//    when(userRepository.findByUsername("promoter")).thenReturn(getUser("promoter", playgroundTenant));
+//
+//    when(userRepository.findByUsername("reviewer"))
+//        .thenReturn(getUser("reviewer", playgroundTenant));
 
     when(userRepository.findAll()).thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant),
         getUser("erle", playgroundTenant), getUser("alex", playgroundTenant),
@@ -166,6 +167,7 @@ public abstract class AbstractIntegrationTest {
 
     RepositoryConfiguration config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
+
 
     repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
@@ -214,8 +216,10 @@ public abstract class AbstractIntegrationTest {
   }
 
   private void setupNamespaceMocking() throws DoesNotExistException {
+    //when(requestRepositorySessionHelper.()).thenReturn()
     when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
     List<String> workspaceIds = new ArrayList<>();
     workspaceIds.add("playground");
     when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
@@ -237,6 +241,36 @@ public abstract class AbstractIntegrationTest {
     namespace.setId(1L);
     namespace.setWorkspaceId("playground");
     return namespace;
+  }
+
+  private void mockUsers() {
+    User alex = User.create("alex", "GITHUB", null);
+    User erle = User.create("erle", "GITHUB", null);
+    User admin = User.create("admin", "GITHUB", null);
+    User creator = User.create("creator", "GITHUB", null);
+    User promoter = User.create("promoter", "GITHUB", null);
+    User reviewer = User.create("reviewer", "GITHUB", null);
+    User publisher = User.create("publisher", "GITHUB", null);
+
+    when(userRepository.findByUsername("alex")).thenReturn(alex);
+    when(userRepository.findByUsername("erle")).thenReturn(erle);
+    when(userRepository.findByUsername("admin")).thenReturn(admin);
+    when(userRepository.findByUsername("creator")).thenReturn(creator);
+    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
+    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
+    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findAll()).thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
+
+//    playground.addUser(createTenantUser("alex",
+//        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
+//    playground.addUser(createTenantUser("erle",
+//        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
+//    playground.addUser(createTenantUser("admin",
+//        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
+//    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
+//    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
+//    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
+//    playground.addUser(createTenantUser("publisher", Sets.newHashSet(roleUser, rolePublisher)));
   }
 
   @After

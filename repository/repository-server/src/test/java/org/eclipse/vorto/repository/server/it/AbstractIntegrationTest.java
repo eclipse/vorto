@@ -12,27 +12,9 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.eclipse.vorto.repository.domain.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
-import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
-import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
-import static org.eclipse.vorto.repository.domain.Role.TENANT_ADMIN;
-import static org.eclipse.vorto.repository.domain.Role.USER;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -63,6 +45,13 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.*;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles( profiles={"local-test"})
@@ -130,31 +119,31 @@ public abstract class AbstractIntegrationTest {
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     userAdmin = user(ApplicationConfig.USER_ADMIN).password("pass").authorities(SpringUserUtils.toAuthorityList(
-        Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
+        Sets.newHashSet(NamespaceRoleConstants.USER, NamespaceRoleConstants.SYS_ADMIN, NamespaceRoleConstants.NAMESPACE_ADMIN, NamespaceRoleConstants.MODEL_CREATOR, NamespaceRoleConstants.MODEL_PROMOTER, NamespaceRoleConstants.MODEL_REVIEWER, NamespaceRoleConstants.MODEL_PUBLISHER)));
     userStandard = user(ApplicationConfig.USER_STANDARD).password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard2 = user(ApplicationConfig.USER_STANDARD2).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard3 = user(ApplicationConfig.USER_STANDARD3).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard4 = user(ApplicationConfig.USER_STANDARD4).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard5 = user(ApplicationConfig.USER_STANDARD5).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard6 = user(ApplicationConfig.USER_STANDARD6).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard7 = user(ApplicationConfig.USER_STANDARD7).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userStandard8 = user(ApplicationConfig.USER_STANDARD8).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER)));
     userCreator = user(ApplicationConfig.USER_CREATOR).password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER, NamespaceRoleConstants.MODEL_CREATOR)));
     userCreator2 = user(ApplicationConfig.USER_CREATOR2).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER, NamespaceRoleConstants.MODEL_CREATOR)));
     userCreator3 = user(ApplicationConfig.USER_CREATOR3).password("pass")
-            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+            .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER, NamespaceRoleConstants.MODEL_CREATOR)));
     nonTenantUser = user(ApplicationConfig.NON_TENANT_USER).password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(NamespaceRoleConstants.USER, NamespaceRoleConstants.MODEL_CREATOR)));
     
     setUpTest();
   }

@@ -12,10 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.comment;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -28,12 +25,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -50,7 +47,7 @@ public class CommentController {
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
   public List<Comment> getCommentsforModelId(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
@@ -61,7 +58,7 @@ public class CommentController {
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
   public ResponseEntity<Void> addCommentToModel(@RequestBody @Valid Comment comment)
       throws Exception {
     commentService.createComment(comment);

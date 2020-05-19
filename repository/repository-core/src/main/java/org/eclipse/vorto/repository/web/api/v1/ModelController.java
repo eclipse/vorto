@@ -12,13 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.zip.ZipOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelContent;
@@ -30,13 +24,15 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -47,8 +43,8 @@ public class ModelController extends AbstractRepositoryController {
 
   private static Logger logger = Logger.getLogger(ModelController.class);
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
+  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
+  @GetMapping(value = "/{modelId:.+}")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
@@ -68,7 +64,7 @@ public class ModelController extends AbstractRepositoryController {
     return ModelDtoFactory.createDto(resource);
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
   @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContent(
@@ -82,7 +78,7 @@ public class ModelController extends AbstractRepositoryController {
     return converter.convert(modelID, Optional.empty());
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
   @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContentForTargetPlatform(
@@ -98,7 +94,7 @@ public class ModelController extends AbstractRepositoryController {
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
   @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
   @CrossOrigin(origins = "https://www.eclipse.org")
   public void downloadModelById(

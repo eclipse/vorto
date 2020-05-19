@@ -12,32 +12,29 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import java.security.PublicKey;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.MalformedElement;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.eclipse.vorto.repository.oauth.internal.Resource;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.PublicKey;
+import java.util.*;
+import java.util.function.Supplier;
 
 @Component
 public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
@@ -52,14 +49,15 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   public BoschIoTSuiteOAuthProviderV2(
           @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
           @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
-          @Autowired IUserAccountService userAccountService) {
-    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService);
+          @Autowired IUserAccountService userAccountService,
+          @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService, userNamespaceRoleService);
     this.hydraJwtIssuer = hydraJwtIssuer;
   }
   
   public BoschIoTSuiteOAuthProviderV2(Supplier<Map<String, PublicKey>> publicKeySupplier, 
-      IUserAccountService userAccountService) {
-    super(publicKeySupplier, userAccountService);
+      IUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
+    super(publicKeySupplier, userAccountService, userNamespaceRoleService);
   }
   
   @Override
@@ -85,15 +83,19 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
             .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
   }
 
-  private Set<Role> getRolesForRequest(User user, HttpServletRequest httpRequest) {
+  private Set<IRole> getRolesForRequest(User user, HttpServletRequest httpRequest) {
     Optional<Resource> resource = resource(httpRequest);
     if (resource.isPresent()) {
       Optional<Namespace> ns = namespaceApplicableToResource(user, resource.get());
       if (ns.isPresent()) {
-        return userAccountService.getRoles(user, ns.get().getTenant().getTenantId());
-      } 
+        try {
+          return new HashSet<>(userNamespaceRoleService.getRoles(user, ns.get()));
+        } catch (DoesNotExistException e) {
+          // ignore this exception and continue
+        }
+      }
     }
-    return userAccountService.getAllRoles(user);
+    return userNamespaceRoleService.getRolesOnAllNamespaces(user);
   }
   
   @Override

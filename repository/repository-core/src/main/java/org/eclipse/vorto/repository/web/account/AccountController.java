@@ -14,25 +14,13 @@ package org.eclipse.vorto.repository.web.account;
 
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -51,11 +39,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class AccountController {
@@ -73,6 +61,12 @@ public class AccountController {
   
   @Autowired
   private IOAuthProviderRegistry oauthProviderRegistry;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private RoleService roleService;
 
   @RequestMapping(method = RequestMethod.PUT, value = "/rest/tenants/{tenantId}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
@@ -265,7 +259,7 @@ public class AccountController {
 
     User user = accountService.removeUserRole(userName, tenantId, roles);
 
-    return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
+    return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
   // TODO : check if we really need this and if so, make this correct. This should return all the 
@@ -280,7 +274,7 @@ public class AccountController {
       throw new UsernameNotFoundException("User Not Found: " + userName);
     }
     
-    return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
+    return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/{username:.+}")
@@ -323,7 +317,7 @@ public class AccountController {
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
     User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
-    SpringUserUtils.refreshSpringSecurityUser(createdUser);
+    SpringUserUtils.refreshSpringSecurityUser(createdUser, userNamespaceRoleService);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
@@ -340,12 +334,12 @@ public class AccountController {
 
     User userAccount = accountService.getUser(username);
     if (userAccount == null) {
-      return new ResponseEntity<Boolean>(true, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(true, HttpStatus.NOT_FOUND);
     }
 
     updateService.installUserUpgrade(userAccount, () -> user);
 
-    return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+    return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
 
   @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.PUT)
@@ -354,12 +348,12 @@ public class AccountController {
       HttpEntity<String> httpEntity) {
     User account = accountService.getUser(username);
     if (account == null) {
-      return new ResponseEntity<UserDto>((UserDto) null, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>((UserDto) null, HttpStatus.NOT_FOUND);
     }
     account.setEmailAddress(httpEntity.getBody());
     accountService.saveUser(account);
 
-    return new ResponseEntity<UserDto>(UserDto.fromUser(account), HttpStatus.OK);
+    return new ResponseEntity<>(UserDto.fromUser(account), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.DELETE)

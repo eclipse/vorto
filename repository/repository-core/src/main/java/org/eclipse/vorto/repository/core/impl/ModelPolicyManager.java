@@ -12,17 +12,6 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.*;
-import java.util.function.Predicate;
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.security.AccessControlEntry;
-import javax.jcr.security.AccessControlList;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.AccessControlPolicyIterator;
-import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -42,6 +31,14 @@ import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.security.*;
+import java.util.*;
+import java.util.function.Predicate;
+
 public class ModelPolicyManager extends AbstractRepositoryOperation implements IModelPolicyManager {
 
   private static Logger logger = Logger.getLogger(ModelPolicyManager.class);
@@ -58,7 +55,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
   @Override
   public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
     return doInSession(session -> {
-      List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
+      List<PolicyEntry> policyEntries = new ArrayList<>();
 
       try {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -112,7 +109,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         // put all existing ACE that are in newEntries to existingEntries
         List<AccessControlEntry> existingEntries = new ArrayList<>();
         for (AccessControlEntry ace : acl.getAccessControlEntries()) {
-          Arrays.asList(newEntries).stream().forEach(entry -> {
+          Arrays.asList(newEntries).forEach(entry -> {
             if (entry.isSame(ace)) {
               existingEntries.add(ace);
             }
@@ -121,7 +118,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
 
         // remove all existingEntries, entries that are in newEntries
         if (!existingEntries.isEmpty()) {
-          existingEntries.stream().forEach(ace -> {
+          existingEntries.forEach(ace -> {
             try {
               _acl.removeAccessControlEntry(ace);
             } catch (Exception e) {

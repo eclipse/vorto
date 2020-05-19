@@ -12,13 +12,14 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.eclipse.vorto.repository.domain.Role;
+
+import javax.jcr.security.AccessControlEntry;
+import javax.jcr.security.Privilege;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.jcr.security.AccessControlEntry;
-import javax.jcr.security.Privilege;
-import org.eclipse.vorto.repository.domain.Role;
 
 public class PolicyEntry {
 
@@ -111,11 +112,7 @@ public class PolicyEntry {
   }
 
   public boolean isSame(AccessControlEntry entry) {
-    if (this.principalType == PrincipalType.Role) {
-      return entry.getPrincipal().getName().equals("ROLE_" + this.principalId);
-    } else {
-      return entry.getPrincipal().getName().equals(this.principalId);
-    }
+    return entry.getPrincipal().getName().equals(this.principalId);
   }
 
   @Override
@@ -125,11 +122,7 @@ public class PolicyEntry {
   }
 
   public String toACEPrincipal() {
-    if (this.principalType == PrincipalType.Role) {
-      return "ROLE_" + this.principalId;
-    } else {
-      return this.principalId;
-    }
+    return this.principalId;
   }
 
   public boolean isAdminPolicy() {
