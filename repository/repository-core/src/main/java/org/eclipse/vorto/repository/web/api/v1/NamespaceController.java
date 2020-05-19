@@ -18,7 +18,6 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -34,6 +33,10 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.notification.IMessage;
+import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
+import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
+import org.eclipse.vorto.repository.notification.message.RequestAccessToNamespaceMessage;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -47,6 +50,7 @@ import org.eclipse.vorto.repository.tenant.UpdateNotAllowedException;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.account.dto.TenantUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
@@ -59,6 +63,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -100,6 +105,9 @@ public class NamespaceController {
   @Autowired
   private IOAuthProviderRegistry providerRegistry;
 
+  @Autowired
+  private EmailNotificationService emailNotificationService;
+
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<Collection<NamespaceDto>> getNamespaces(Principal user) {
@@ -119,6 +127,7 @@ public class NamespaceController {
    * Since there is no easy way to inject the given {@link Principal} from the front-end (let alone
    * that it is not designed an API parameter), the sibling endpoint seems rather useless in a REST
    * context.
+   *
    * @return all namespaces the logged on user has access to.
    */
   @RequestMapping(method = RequestMethod.GET, value = "/all")
@@ -135,9 +144,93 @@ public class NamespaceController {
   }
 
   /**
+   * Finds all non-private namespaces regardless of logged-on user access by a partial string.
+   *
+   * @param partial
+   * @return
+   */
+  @RequestMapping(method = RequestMethod.GET, value = "/search/{partial:.+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Collection<NamespaceDto>> findAllNonPrivateNamespacesByPartial(
+      @ApiParam(value = "The partial name of the namespaces to be searched with", required = true) @PathVariable String partial
+  ) {
+    // TODO the returned NamespaceDdo's should be stripped off sensitive data such as users and
+    // admins - not worth doing here now due to incoming refactory
+    if (Strings.nullToEmpty(partial).trim().isEmpty()) {
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
+    }
+    Collection<NamespaceDto> result = tenantService.getTenants().stream()
+        .map(NamespaceDto::fromTenant)
+        .filter(n -> !n.getName().startsWith("vorto.private"))
+        .filter(n -> n.getName().toLowerCase().contains(partial.toLowerCase()))
+        .collect(Collectors.toList());
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  @PostMapping("/requestAccess")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<NamespaceOperationResult> requestAccessToNamespace(
+      @RequestBody @ApiParam(
+          value = "The request body specifying who initiates the request, the namespace, whom the request is intended for, and an optional collection of suggested roles", required = true)
+          NamespaceAccessRequestDTO request) {
+    Optional<NamespaceOperationResult> validationError = NamespaceValidator
+        .validateAccessRequest(request);
+    if (validationError.isPresent()) {
+      return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
+    }
+    // checks namespace exists
+    Optional<Tenant> maybeTarget = tenantService
+        .getTenantFromNamespace(request.getNamespaceName());
+    // should only occur if namespace was deleted after user search, but before sending request
+    if (!maybeTarget.isPresent()) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found."),
+          HttpStatus.NOT_FOUND);
+    }
+    Tenant target = maybeTarget.get();
+    // checks any admin with an e-mail address set
+    Set<User> adminsWithEmail = target.getTenantAdmins().stream()
+        .filter(u -> !Strings.nullToEmpty(u.getEmailAddress()).trim().isEmpty())
+        .collect(Collectors.toSet());
+    if (adminsWithEmail.isEmpty()) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(String.format(
+          "None of the users administrating namespace %s has set their own e-mail. Please contact them directly. ",
+          request.getNamespaceName())), HttpStatus.PRECONDITION_FAILED);
+    }
+    int successCount = adminsWithEmail.size();
+    // attempts to send the e-mails
+    // ugly exception handling here, due to the way this was designed in the service
+    Collection<IMessage> messages = adminsWithEmail.stream()
+        .map(u -> new RequestAccessToNamespaceMessage(request, u)).collect(Collectors.toList());
+    for (IMessage message : messages) {
+      try {
+        emailNotificationService.sendNotification(message);
+      } catch (NotificationProblem np) {
+        successCount--;
+      }
+    }
+    // worked for all recipients
+    if (successCount == adminsWithEmail.size()) {
+      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
+    }
+    // worked for some recipients
+    else if (successCount > 0) {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .success("The message could not be sent to all administrators."),
+          HttpStatus.OK);
+    }
+    // did not work for any recipient
+    else {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .failure("The message could not be sent to any administrator."),
+          HttpStatus.SERVICE_UNAVAILABLE);
+    }
+  }
+
+  /**
    * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#getUsersForTenant}. <br/>
    * Instead of returning a list of {@link TenantUserDto}, it returns {@link Collaborator}s.<br/>
    * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   *
    * @param namespace
    * @return
    */
@@ -170,8 +263,8 @@ public class NamespaceController {
   /**
    * This endpoint is temporary and adapted from {@link org.eclipse.vorto.repository.web.account.AccountController#createTechnicalUserForTenant}. <br/>
    * It still uses the {@link ITenantService} behind the scenes, until that can be refactored/removed.
+   *
    * @param namespace
-   * @param userId
    * @param user
    * @return
    */
@@ -268,6 +361,7 @@ public class NamespaceController {
    * Since the user itself is not and should not be persisted here, that's rather irrelevant.<br/>
    * <b>TL;DR</b>The only reason why this is not implemented with an empty body is that we need the roles from
    * the UI.
+   *
    * @param namespace
    * @param user
    * @return
@@ -387,6 +481,7 @@ public class NamespaceController {
    * {@link ITenantService}.<br/>
    * Everything "tenant" should be refactored and simplified further on, so the tenant service
    * should be gone and replaced with a namespace service eventually.
+   *
    * @param namespace
    * @return
    */
@@ -423,7 +518,6 @@ public class NamespaceController {
       lower-cased version thereof.
      */
     String lowercasedNamespace = namespace.toLowerCase();
-
 
     try {
       /*
@@ -483,6 +577,7 @@ public class NamespaceController {
    * Note also that for UI REST calls, we can privilege {@link NamespaceController#hasRoleOnNamespace},
    * since originally the UI would contain that logic but it can be more efficiently handled in
    * the back-end (see for instance the model details controller Javascript resource).
+   *
    * @param role
    * @return
    */
@@ -523,6 +618,7 @@ public class NamespaceController {
    * namespace. <br/>
    * As most endpoints here, we are still temporarily querying the tenant-based service (and
    * subsequently the tenant repository) behind the scenes.
+   *
    * @param role
    * @param namespace
    * @return
@@ -570,6 +666,7 @@ public class NamespaceController {
    * In turn, this is used in the "remove account" Angular controller, in order to verify whether the
    * user can delete their account, or they should delete any namespace / add a different administrator
    * first.
+   *
    * @return
    */
   @PreAuthorize("isAuthenticated()")
@@ -650,6 +747,7 @@ public class NamespaceController {
    * has that role for that given namespace (that is, assuming they are not sysadmin to start with). <br/>
    * The drawback for this is that a user who has been added to a namespace as non-admin cannot
    * remove themselves at this time.
+   *
    * @param namespace
    * @param userId
    * @return

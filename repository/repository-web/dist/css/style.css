@@ -1934,3 +1934,36 @@ input[type=file]::-webkit-file-upload-button {
   opacity: 75%;
   background-color: grey;
 }
+
+/*
+  Auto-completing drop-down style for text search input
+ */
+.dropDownUL {
+  list-style-type:none;
+  margin:0;
+  padding-left:0px;
+  padding-right:0px;
+  min-height:40px;
+  max-height:160px;
+  overflow:auto;
+  width:auto;
+  border:1px solid #7fc6e7;
+  z-index: 99;
+}
+
+/*
+  Overlay modal style for "progress" indicators
+ */
+.overlay {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgba(218, 218, 218, 0.9);
+  color: black;
+  overflow-x: hidden;
+  display: table;
+  text-align: center;
+}
