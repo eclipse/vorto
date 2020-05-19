@@ -539,27 +539,30 @@ define(["../../init/appController"], function (repositoryControllers) {
                   $scope.disableCancelButton();
                   $scope.disableSendButton();
                 },
-                function (data, status, headers, config) {
+                function (reason) {
                   $scope.isSendingRequest = false;
                   $scope.error = true;
-                  if (data) {
-                    $scope.errorMessage = data.errorMessage;
+                  if (reason) {
+                    $scope.errorMessage = reason.data.errorMessage;
+                    switch (reason.status) {
+                        // no e-mails present among admins - preventing user from sending again
+                      case 412: {
+                        $scope.disableSendButton();
+                        break;
+                      }
+                        // e-mail could not be sent - preventing user from sending again right away
+                      case 503: {
+                        $scope.disableSendButton();
+                        break;
+                      }
+                    }
                   }
                   else {
-                    $scope.errorMessage = 'Request failed for unknown reason';
+                    $scope.errorMessage = 'Request failed for unknown reason. Please try again later.';
+                    $scope.disableCancelButton();
+                    $scope.disableSendButton();
                   }
-                  switch (status) {
-                    // no e-mails present among admins - preventing user from sending again
-                    case 412: {
-                      $scope.disableSendButton();
-                      break;
-                    }
-                    // e-mail could not be sent - preventing user from sending again right away
-                    case 503: {
-                      $scope.disableSendButton();
-                      break;
-                    }
-                  }
+
                 }
             );
           };
