@@ -22,6 +22,7 @@ public class NamespaceAccessRequestDTO {
 
   private String requestingUsername;
   private String targetUsername;
+  private String targetSubject = "n/a";
   private String namespaceName;
   private Collection<String> suggestedRoles;
   private boolean conditionsAcknowledged;
@@ -64,5 +65,13 @@ public class NamespaceAccessRequestDTO {
 
   public void setConditionsAcknowledged(boolean conditionsAcknowledged) {
     this.conditionsAcknowledged = conditionsAcknowledged;
+  }
+
+  public String getTargetSubject() {
+    return targetSubject;
+  }
+
+  public void setTargetSubject(String targetSubject) {
+    this.targetSubject = targetSubject;
   }
 }

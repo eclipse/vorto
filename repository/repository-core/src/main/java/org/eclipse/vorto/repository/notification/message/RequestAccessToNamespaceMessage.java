@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.notification.message;
 
+import com.google.common.base.Strings;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,8 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
     map.put("targetUser", request.getTargetUsername());
     map.put("suggestedRoles", request.getSuggestedRoles());
     map.put("recipient", recipient.getUsername());
+    String subject = Strings.nullToEmpty(request.getTargetSubject()).trim().isEmpty() ? "n/a" : request.getTargetSubject();
+    map.put("subject", subject);
     try {
       return renderer.render(map);
     } catch (Exception e) {
