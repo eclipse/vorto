@@ -1028,6 +1028,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       throws OperationForbiddenException, DoesNotExistException {
     return getNamespacesCollaboratorsAndRoles(actorUsername, targetUsername,
         roles != null ? Arrays.stream(roles).map(namespaceRoleRepository::find)
+            .filter(Objects::nonNull)
             .toArray(IRole[]::new) : null);
   }
 
