@@ -155,9 +155,9 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.findUsers = function() {
-            // only initiates user search if partial name is larger >= 4 characters
+            // only initiates user search if partial name is larger >= 3 characters
             // this is to prevent unmanageably large drop-downs
-            if ($scope.userPartial && $scope.userPartial.length >= 4) {
+            if ($scope.userPartial && $scope.userPartial.length >= 3) {
                 $http.get("./rest/accounts/search/" + $scope.userPartial)
                 .then(function (result) {
                     if (result.data) {

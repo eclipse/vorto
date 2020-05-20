@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
@@ -55,6 +56,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -70,7 +72,7 @@ public class AccountController {
 
   @Autowired
   private ITenantService tenantService;
-  
+
   @Autowired
   private IOAuthProviderRegistry oauthProviderRegistry;
 
@@ -89,14 +91,15 @@ public class AccountController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
-    
+
     if (user.getRoles().stream()
         .anyMatch(role -> role.equals(UserRole.ROLE_SYS_ADMIN))) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
 
     try {
-      LOGGER.info("Adding user [" + userId + "] to tenant [" + tenantId + "] with Role [" + Arrays.toString(user.getRoles().toArray()) + "]");
+      LOGGER.info("Adding user [" + userId + "] to tenant [" + tenantId + "] with Role [" + Arrays
+          .toString(user.getRoles().toArray()) + "]");
       if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
@@ -141,19 +144,19 @@ public class AccountController {
 
     try {
       LOGGER.info(
-        String.format(
-          "Creating technical user [%s] and adding to tenant [%s] with role(s) [%s]",
-          userId,
-          tenantId,
-          user.getRoles()
-        )
+          String.format(
+              "Creating technical user [%s] and adding to tenant [%s] with role(s) [%s]",
+              userId,
+              tenantId,
+              user.getRoles()
+          )
       );
       if (userId.equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
       return new ResponseEntity<>(
-        accountService.createTechnicalUserAndAddToTenant(tenantId, userId, user, toRoles(user)),
-        HttpStatus.OK
+          accountService.createTechnicalUserAndAddToTenant(tenantId, userId, user, toRoles(user)),
+          HttpStatus.OK
       );
     } catch (IllegalArgumentException e) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
@@ -166,7 +169,8 @@ public class AccountController {
   private Role[] toRoles(TenantUserDto user) {
     Set<Role> roles = user.getRoles().stream()
         .filter(role -> !(role.equals(UserRole.ROLE_SYS_ADMIN)))
-        .map(strRole -> Role.valueOf(strRole.replace(Role.rolePrefix, ""))).collect(Collectors.toSet());
+        .map(strRole -> Role.valueOf(strRole.replace(Role.rolePrefix, "")))
+        .collect(Collectors.toSet());
     return roles.toArray(new Role[roles.size()]);
   }
 
@@ -183,7 +187,7 @@ public class AccountController {
     if (Strings.nullToEmpty(tenantId).trim().isEmpty()) {
       return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
     }
-    
+
     // You cannot delete yourself if you are tenant admin
     Authentication user = SecurityContextHolder.getContext().getAuthentication();
     if (user.getName().equals(userId)) {
@@ -192,7 +196,9 @@ public class AccountController {
 
     try {
 
-      LOGGER.info("Removing user [" + ControllerUtils.sanitize(userId) + "] from tenant [" + ControllerUtils.sanitize(tenantId) + "]");
+      LOGGER.info(
+          "Removing user [" + ControllerUtils.sanitize(userId) + "] from tenant [" + ControllerUtils
+              .sanitize(tenantId) + "]");
       return new ResponseEntity<>(accountService.removeUserFromTenant(tenantId, userId),
           HttpStatus.OK);
 
@@ -217,13 +223,13 @@ public class AccountController {
     try {
       Optional<Tenant> maybeTenant = tenantService.getTenant(tenantId);
       if (maybeTenant.isPresent()) {
-    	  Set<TenantUser> tenantUserSet= maybeTenant.get().getUsers();
-    	  Set<TenantUserDto> tenantUserDtoSet = new HashSet<>();
-    	  for(TenantUser tenantUser : tenantUserSet) {
-    	    TenantUserDto tenantUserDto = TenantUserDto.fromTenantUser(tenantUser);
-    	    tenantUserDtoSet.add(tenantUserDto);
-    	  }
-    	  return new ResponseEntity<>(tenantUserDtoSet,HttpStatus.OK);
+        Set<TenantUser> tenantUserSet = maybeTenant.get().getUsers();
+        Set<TenantUserDto> tenantUserDtoSet = new HashSet<>();
+        for (TenantUser tenantUser : tenantUserSet) {
+          TenantUserDto tenantUserDto = TenantUserDto.fromTenantUser(tenantUser);
+          tenantUserDtoSet.add(tenantUserDto);
+        }
+        return new ResponseEntity<>(tenantUserDtoSet, HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
@@ -232,30 +238,30 @@ public class AccountController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
+
   @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/{tenantId}/users/{userId}")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
   public ResponseEntity<TenantUserDto> getUserForTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
       @ApiParam(value = "userId", required = true) @PathVariable String userId) {
-    
+
     try {
       Optional<Tenant> maybeTenant = tenantService.getTenant(tenantId);
       if (maybeTenant.isPresent()) {
-        for(TenantUser tenantUser : maybeTenant.get().getUsers()) {
+        for (TenantUser tenantUser : maybeTenant.get().getUsers()) {
           if (tenantUser.getUser().getUsername().equals(userId)) {
             return new ResponseEntity<>(TenantUserDto.fromTenantUser(tenantUser), HttpStatus.OK);
           }
         }
       }
-      
+
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       LOGGER.error("Error in getUsersForTenant()", e);
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
+
   @RequestMapping(value = "/rest/tenants/{tenantId}/users/{username}/roles", method = RequestMethod.DELETE)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> removeUserRole(@PathVariable("username") final String userName,
@@ -273,13 +279,13 @@ public class AccountController {
   @RequestMapping(value = "/rest/tenants/{tenantId}/users/{username}/roles", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public ResponseEntity<UserDto> getUserRoles(@PathVariable("username") final String userName) {
-    
+
     User user = accountService.getUser(ControllerUtils.sanitize(userName));
 
     if (Objects.isNull(user)) {
       throw new UsernameNotFoundException("User Not Found: " + userName);
     }
-    
+
     return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
@@ -287,12 +293,11 @@ public class AccountController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
-    
+
     User user = accountService.getUser(ControllerUtils.sanitize(username));
     if (user != null) {
       return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
-    }
-    else {
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -300,13 +305,17 @@ public class AccountController {
   @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<Collaborator>> findUsers(
-      @ApiParam(value = "Username", required = true) @PathVariable String partial) {
+      @ApiParam(value = "Username", required = true) @PathVariable String partial,
+      @ApiParam(value = "Filter technical users only", required = false) @RequestParam("onlyTechnicalUsers") boolean onlyTechnicalUsers) {
 
-    Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
+    Collection<User> users = accountService
+        .findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
     if (users != null) {
-      return new ResponseEntity<>(users.stream().map(Collaborator::fromUser).collect(Collectors.toList()), HttpStatus.OK);
-    }
-    else {
+      Predicate<User> filter = onlyTechnicalUsers ? User::isTechnicalUser : u -> true;
+      return new ResponseEntity<>(
+          users.stream().filter(filter).map(Collaborator::fromUser).collect(Collectors.toList()),
+          HttpStatus.OK);
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -322,7 +331,8 @@ public class AccountController {
     }
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-    User createdUser = accountService.create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
+    User createdUser = accountService
+        .create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
     SpringUserUtils.refreshSpringSecurityUser(createdUser);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -368,7 +378,7 @@ public class AccountController {
     try {
       accountService.delete(username);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } catch(AccountDeletionNotAllowed e) {
+    } catch (AccountDeletionNotAllowed e) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
   }
