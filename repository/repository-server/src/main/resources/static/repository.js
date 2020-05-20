@@ -126,112 +126,109 @@ define("repository", [
                 + $rootScope.displayName;
           });
         }
-      }
 
-      $rootScope.authenticated = true;
-      $rootScope.authority = user.roles;
+        $rootScope.authenticated = true;
+        $rootScope.authority = user.roles;
 
-    }
-  else
-    {
-      $rootScope.userInfo = null;
-      $rootScope.user = null;
-      $rootScope.displayName = null;
-      $rootScope.authenticated = false;
-      $rootScope.authority = null;
-    }
-  };
-
-  $rootScope.watchLocationChanges = function () {
-    $rootScope.$on("$locationChangeStart", function (event, next, current) {
-      $rootScope.error = false;
-      if ($rootScope.needAuthentication() && $rootScope.authenticated
-          === false) {
-        $location.path("/login");
-      }
-    });
-  };
-
-  $rootScope.needAuthentication = function () {
-    var split = $location.path().split("/");
-    return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf(
-        "/" + split[1]) === -1);
-  };
-
-  $rootScope.hasAuthority = function (role) {
-    var flag = false;
-    if ($rootScope.authority != undefined) {
-      for (var element of $rootScope.authority) {
-        if (element === role) {
-          flag = true;
-          break;
-        } else {
-          flag = false;
-        }
-      }
-    }
-    return flag;
-  }
-
-  $rootScope.init = function () {
-    var getContextSucceeded = function (result) {
-      $rootScope.context = result.data;
-      if (!$rootScope.context.authenticatedSearchMode) {
-        $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api",
-          "/generators", "/payloadmapping", "/privacy"];
       } else {
-        $rootScope.unrestrictedUrls = ["/login", "/api", "/generators",
-          "/privacy"];
+        $rootScope.userInfo = null;
+        $rootScope.user = null;
+        $rootScope.displayName = null;
+        $rootScope.authenticated = false;
+        $rootScope.authority = null;
       }
-      return result;
     };
 
-    var getContextFailed = function (reason) {
-      return null;
-    };
-
-    var getUser = function () {
-      return $http.get("./user");
-    };
-
-    var getUserSucceeded = function (result) {
-      $rootScope.setUser(result.data);
-      $rootScope.$broadcast("USER_CONTEXT_UPDATED", result.data);
-      return result.data;
-    };
-
-    var getUserFailed = function (reason) {
-      $rootScope.setUser(null);
-      return null;
-    };
-
-    var userResultAction = function (user) {
-      if (user != null) {
-        if (user.isRegistered === "false") {
-          $location.path("/signup");
-        } else if (user.needUpdate === "true") {
-          $location.path("/update");
-        }
-      } else {
-        if ($rootScope.needAuthentication()) {
+    $rootScope.watchLocationChanges = function () {
+      $rootScope.$on("$locationChangeStart", function (event, next, current) {
+        $rootScope.error = false;
+        if ($rootScope.needAuthentication() && $rootScope.authenticated
+            === false) {
           $location.path("/login");
         }
-      }
-      return user;
+      });
     };
 
-    $http.get("./context")
-    .then(getContextSucceeded, getContextFailed)
-    .then(getUser)
-    .then(getUserSucceeded, getUserFailed)
-    .then(userResultAction)
-    .finally($rootScope.watchLocationChanges);
-  };
+    $rootScope.needAuthentication = function () {
+      var split = $location.path().split("/");
+      return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf(
+          "/" + split[1]) === -1);
+    };
 
-  $rootScope.init();
-});
+    $rootScope.hasAuthority = function (role) {
+      var flag = false;
+      if ($rootScope.authority != undefined) {
+        for (var element of $rootScope.authority) {
+          if (element === role) {
+            flag = true;
+            break;
+          } else {
+            flag = false;
+          }
+        }
+      }
+      return flag;
+    }
 
-return repository;
+    $rootScope.init = function () {
+      var getContextSucceeded = function (result) {
+        $rootScope.context = result.data;
+        if (!$rootScope.context.authenticatedSearchMode) {
+          $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api",
+            "/generators", "/payloadmapping", "/privacy"];
+        } else {
+          $rootScope.unrestrictedUrls = ["/login", "/api", "/generators",
+            "/privacy"];
+        }
+        return result;
+      };
+
+      var getContextFailed = function (reason) {
+        return null;
+      };
+
+      var getUser = function () {
+        return $http.get("./user");
+      };
+
+      var getUserSucceeded = function (result) {
+        $rootScope.setUser(result.data);
+        $rootScope.$broadcast("USER_CONTEXT_UPDATED", result.data);
+        return result.data;
+      };
+
+      var getUserFailed = function (reason) {
+        $rootScope.setUser(null);
+        return null;
+      };
+
+      var userResultAction = function (user) {
+        if (user != null) {
+          if (user.isRegistered === "false") {
+            $location.path("/signup");
+          } else if (user.needUpdate === "true") {
+            $location.path("/update");
+          }
+        } else {
+          if ($rootScope.needAuthentication()) {
+            $location.path("/login");
+          }
+        }
+        return user;
+      };
+
+      $http.get("./context")
+      .then(getContextSucceeded, getContextFailed)
+      .then(getUser)
+      .then(getUserSucceeded, getUserFailed)
+      .then(userResultAction)
+      .finally($rootScope.watchLocationChanges);
+    };
+
+    $rootScope.init();
+  });
+
+  return repository;
 
 })
 ;
