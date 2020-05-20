@@ -1967,3 +1967,9 @@ input[type=file]::-webkit-file-upload-button {
   display: table;
   text-align: center;
 }
+/*
+  Overrides width for large modals (used in request access to namespace)
+ */
+.modal-lg {
+  width: 1000px;
+}

@@ -67,13 +67,13 @@
         <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
                value="anotherUser"
                ng-change="toggleUserSearchEnabled('otherUser')"/>
-        <label for="anotherUser">Another user:</label>
+        <label for="anotherUser">A technical user:</label>
       </div>
       <div class="input-group col-sm-7">
         <div class="row">
           <div class="col-sm-10" style="padding-right:0px">
             <input type="search" class="search-box-query-filter form-control search-input"
-                   id="userId" placeholder="Search for users (at least 4 characters)..."
+                   id="userId" placeholder="Search for technical users (at least 3 characters)..."
                    ng-model="userPartial"
                    ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
                    style="height:32px">

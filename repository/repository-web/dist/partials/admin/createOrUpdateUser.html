@@ -17,7 +17,7 @@
 				<label for="userId" class="col-sm-2 control-label">User ID</label>
 				<div class="col-sm-10">
 					<input ng-if="!user.edit" autofocus type="search" class="search-box-query-filter form-control search-input"
-					 id="userId" placeholder="userId" ng-model="$parent.userPartial"
+					 id="userId" placeholder="Search for users (at least 3 characters)..." ng-model="$parent.userPartial"
 					 ng-model-options="{ debounce: 200 }" ng-change="findUsers()" ng-focus="toggleSubmitButton()">
 					<input ng-if="user.edit" autofocus type="text" class="form-control" id="userIdEdit"
 					 placeholder="userId" ng-model="user.userId" ng-readonly="true">
