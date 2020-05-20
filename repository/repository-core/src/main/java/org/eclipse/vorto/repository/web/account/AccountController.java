@@ -306,7 +306,7 @@ public class AccountController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<Collaborator>> findUsers(
       @ApiParam(value = "Username", required = true) @PathVariable String partial,
-      @ApiParam(value = "Filter technical users only", required = false) @RequestParam("onlyTechnicalUsers") boolean onlyTechnicalUsers) {
+      @ApiParam(value = "Filter technical users only", required = false) @RequestParam(value = "onlyTechnicalUsers", required = false) boolean onlyTechnicalUsers) {
 
     Collection<User> users = accountService
         .findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
