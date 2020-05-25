@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
@@ -81,6 +82,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Autowired
   private PrivilegeService privilegeService;
+
+  @Autowired
+  private RoleService roleService;
 
   private ApplicationEventPublisher eventPublisher = null;
 
@@ -171,7 +175,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Override
   public IModelPolicyManager getPolicyManager(String workspaceId, Authentication user) {
-    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService, this);
+    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService, this, roleService);
     policyManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     return policyManager;
   }

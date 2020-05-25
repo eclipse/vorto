@@ -16,35 +16,43 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 
 public class UserHasAccessToNamespaceValidation implements IModelValidator {
 
   private IUserAccountService userRepository;
-  private ITenantService tenantService;
-  
-  public UserHasAccessToNamespaceValidation(IUserAccountService userRepository, 
-      ITenantService tenantService) {
+  private UserRepositoryRoleService userRepositoryRoleService;
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  public UserHasAccessToNamespaceValidation(IUserAccountService userRepository,
+      UserRepositoryRoleService userRepositoryRoleService,
+      UserNamespaceRoleService userNamespaceRoleService) {
+    
     this.userRepository = userRepository;
-    this.tenantService = tenantService;
+    this.userRepositoryRoleService = userRepositoryRoleService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
-    
-    if (context.getUserContext().isSysAdmin()) {
-      if (!tenantService.getTenantFromNamespace(modelResource.getId().getNamespace()).isPresent()) {
-        throw new ValidationException("The target namespace '" + 
-            modelResource.getId().getNamespace() + "' is currently not owned by anybody.", modelResource);
-      }
+
+    if (userRepositoryRoleService.isSysadmin(userRepository.getUser(context.getUserContext().getUsername()))) {
       return;
     }
     
     User user = userRepository.getUser(context.getUserContext().getUsername());
-    if (user.getTenants().stream().noneMatch(tenant -> tenant.owns(modelResource.getId()))) {
-      throw new ValidationException("You do not own the target namespace '" + 
-          modelResource.getId().getNamespace() + "'.", modelResource);
+    try {
+      if (userNamespaceRoleService.getNamespaces(user, user).stream().noneMatch(namespace -> namespace.owns(modelResource.getId()))) {
+        throw new ValidationException("User " + user.getUsername() + " does not have access to target namespace "
+            + modelResource.getId().getNamespace(), modelResource);
+      }
+    } catch (OperationForbiddenException | DoesNotExistException e) {
+      throw new ValidationException("User " + user.getUsername() + " does not have access to target namespace "
+          + modelResource.getId().getNamespace(), modelResource, e);
     }
   }
 

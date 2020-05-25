@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
+import java.util.Objects;
+
 public class SpringSecurityContext implements SecurityContext {
 
   private static final Logger logger = LoggerFactory.getLogger(SpringSecurityContext.class);
@@ -42,6 +44,9 @@ public class SpringSecurityContext implements SecurityContext {
 
   @Override
   public boolean hasRole(String principalName) {
+    if (Objects.nonNull(principalName) && principalName.startsWith("ROLE_")) {
+      principalName = principalName.replace("ROLE_", "");
+    }
     // grant named model owners access to their models
     if (principalName.equals(credentials.getAuthentication().getName())
         || principalName.equals(UserContext.getHash(credentials.getAuthentication().getName()))) {

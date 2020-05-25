@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,11 @@ public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
         PolicyEntry.of("model_viewer", PrincipalType.Role, Permission.READ),
         PolicyEntry.of("model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
         PolicyEntry.of("model_promoter", PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of("sysadmin", PrincipalType.Role, Permission.FULL_ACCESS));
+        PolicyEntry.of(RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS),
+        PolicyEntry.of("ROLE_USER", PrincipalType.Role, Permission.READ),
+        PolicyEntry.of("ROLE_model_viewer", PrincipalType.Role, Permission.READ),
+        PolicyEntry.of("ROLE_model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
+        PolicyEntry.of("ROLE_model_promoter", PrincipalType.Role, Permission.FULL_ACCESS),
+        PolicyEntry.of("ROLE_" + RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS));
   }
 }

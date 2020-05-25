@@ -103,7 +103,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private static final Function<ModelInfo, String> VERSION_COMPARATOR = m -> m.getId().getVersion();
 
-  private static Logger logger = Logger.getLogger(ModelRepository.class);
+  private static final Logger LOGGER = Logger.getLogger(ModelRepository.class);
 
   private IModelRetrievalService modelRetrievalService;
 
@@ -151,7 +151,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       List<ModelInfo> modelResources = new ArrayList<>();
       Query query = ModelSearchUtil.createQueryFromExpression(session, queryExpression);
 
-      logger.debug("Searching repository with expression " + query.getStatement());
+      LOGGER.debug("Searching repository with expression " + query.getStatement());
       QueryResult result = query.execute();
       RowIterator rowIterator = result.getRows();
       while (rowIterator.hasNext()) {
@@ -161,7 +161,7 @@ public class ModelRepository extends AbstractRepositoryOperation
           try {
             modelResources.add(createMinimalModelInfo(currentNode));
           } catch (Exception ex) {
-            logger.debug("Error while converting node to a ModelInfo", ex);
+            LOGGER.debug("Error while converting node to a ModelInfo", ex);
           }
         }
       }
@@ -281,7 +281,7 @@ public class ModelRepository extends AbstractRepositoryOperation
     return doInSession(jcrSession -> {
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
-      logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
+      LOGGER.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
           + " in Workspace: " + session.getWorkspace().getName());
 
       try {
@@ -323,7 +323,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         }
 
         session.save();
-        logger.info("Model was saved successful");
+        LOGGER.info("Model was saved successful");
 
         ModelInfo createdModel = getById(modelInfo.getId());
 
@@ -332,7 +332,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
         return createdModel;
       } catch (Exception e) {
-        logger.error("Error checking in model", e);
+        LOGGER.error("Error checking in model", e);
         throw new FatalModelRepositoryException("Problem saving model " + modelInfo.getId(), e);
       }
     });
@@ -419,10 +419,10 @@ public class ModelRepository extends AbstractRepositoryOperation
             try {
               model.addPlatformMapping(modelInfo.getTargetPlatformKey(),modelInfo.getId());
             } catch (ValidationException e) {
-              logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
+              LOGGER.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
                   e);
             } catch (Exception e) {
-              logger.warn("Error while getting a platform mapping", e);
+              LOGGER.warn("Error while getting a platform mapping", e);
             }
           }
         }
@@ -481,7 +481,7 @@ public class ModelRepository extends AbstractRepositoryOperation
           referencingModels
               .add(createMinimalModelInfo(currentNode.getNodes(FILE_NODES).nextNode()));
         } catch (Exception ex) {
-          logger.error("Error while converting node to a ModelId", ex);
+          LOGGER.error("Error while converting node to a ModelId", ex);
         }
       }
 
@@ -492,7 +492,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,
       Optional<String> version) {
-    logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
+    LOGGER.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
     Set<ModelInfo> mappingResources = new HashSet<>();
     ModelInfo modelResource = getBasicInfo(modelId);
@@ -529,7 +529,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
         if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          logger.warn("Folder Node :" + folderNode
+          LOGGER.warn("Folder Node :" + folderNode
               + " does not have any files as children. Cannot load EMF Model.");
           return null;
         }
@@ -819,7 +819,7 @@ public class ModelRepository extends AbstractRepositoryOperation
       tagValue = value.getString();
     }
     catch (RepositoryException re) {
-      logger.warn("Could not retrieve tag value from JCR node.");
+      LOGGER.warn("Could not retrieve tag value from JCR node.");
       return null;
     }
     return TAGS.stream()
@@ -1007,26 +1007,17 @@ public class ModelRepository extends AbstractRepositoryOperation
    */
   private void saveChangeSetIntoRepository(ChangeSet changeSet, IUserContext user) {
     DependencyManager dm = new DependencyManager();
-
-    changeSet.getChanges().stream().forEach(model -> {
-      dm.addResource(new ModelResource(model));
-    });
-
-    dm.getSorted().forEach(sortedModel -> {
-      save((ModelResource) sortedModel, user);
-    });
-
+    changeSet.getChanges().forEach(model -> dm.addResource(new ModelResource(model)));
+    dm.getSorted().forEach(sortedModel -> save((ModelResource) sortedModel, user));
   }
 
   private ChangeSet refactorModelWithNewId(ModelInfo oldModel, ModelId newModelId) {
     IModelWorkspace workspace = createWorkspaceFromModelAndReferences(oldModel.getId());
 
-    ChangeSet changeSet = RefactoringTask.from(workspace)
+    return RefactoringTask.from(workspace)
         .toModelId(ModelUtils.toEMFModelId(oldModel.getId(), oldModel.getType()),
             ModelUtils.toEMFModelId(newModelId, oldModel.getType()))
         .execute();
-
-    return changeSet;
   }
 
   private IModelWorkspace createWorkspaceFromModelAndReferences(ModelId modelId) {

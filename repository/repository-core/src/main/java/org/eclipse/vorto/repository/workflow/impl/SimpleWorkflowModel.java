@@ -12,28 +12,23 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
+import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.ModelState;
+import org.eclipse.vorto.repository.workflow.impl.conditions.*;
+import org.eclipse.vorto.repository.workflow.impl.functions.*;
+import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
+import org.eclipse.vorto.repository.workflow.model.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.workflow.IWorkflowService;
-import org.eclipse.vorto.repository.workflow.ModelState;
-import org.eclipse.vorto.repository.workflow.impl.conditions.HasRoleCondition;
-import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
-import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
-import org.eclipse.vorto.repository.workflow.impl.conditions.IsLoggedIn;
-import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
-import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
-import org.eclipse.vorto.repository.workflow.impl.functions.*;
-import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
-import org.eclipse.vorto.repository.workflow.model.IAction;
-import org.eclipse.vorto.repository.workflow.model.IState;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
 
 /**
  * Defines a simple workflow with the following states:
@@ -64,21 +59,28 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 	private static final List<IState> ALL_STATES = Arrays.asList(STATE_DRAFT,STATE_IN_REVIEW,STATE_RELEASED, STATE_DEPRECATED);
 	
-	public SimpleWorkflowModel(IUserAccountService userRepository, IModelRepositoryFactory repositoryFactory, INotificationService notificationService, IWorkflowService workflowService) {
+	public SimpleWorkflowModel(
+		IUserAccountService userRepository,
+		IModelRepositoryFactory repositoryFactory,
+		INotificationService notificationService,
+		IWorkflowService workflowService,
+		RoleService roleService,
+		NamespaceService namespaceService,
+		UserNamespaceRoleService userNamespaceRoleService) {
 		
 		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
-		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
-		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, Role.MODEL_PROMOTER);
+		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository, namespaceService, userNamespaceRoleService, roleService);
+		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, getRole("model_promoter", roleService), namespaceService, userNamespaceRoleService);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		final IWorkflowFunction bulkRelease = new BulkReleaseFunction(workflowService, repositoryFactory);
 		final IWorkflowFunction bulkApprove = new BulkApproveFunction(workflowService, repositoryFactory);
 
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantCollaboratorAccessPolicy(repositoryFactory);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
-		final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(repositoryFactory, Role.MODEL_PUBLISHER);
+		final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(repositoryFactory, getRole("model_publisher", roleService));
 		final IWorkflowFunction claimOwnership = new ClaimOwnership(repositoryFactory);
 		final IWorkflowFunction removeModelReviewerPolicy = new RemoveModelReviewerPolicy(repositoryFactory);
-		final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(repositoryFactory, Role.MODEL_PROMOTER);
+		final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(repositoryFactory, getRole("model_promoter", roleService));
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
@@ -129,5 +131,9 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	@Override
 	public Optional<IState> getState(String name) {
 		return ALL_STATES.stream().filter(state -> state.getName().equals(name)).findFirst();
+	}
+
+	private IRole getRole(String roleName, RoleService roleService) {
+		return roleService.findAnyByName(roleName).orElseThrow(() -> new IllegalStateException("The role '" + roleName + "' was not found."));
 	}
 }

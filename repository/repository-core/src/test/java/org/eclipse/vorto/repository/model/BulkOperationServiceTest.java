@@ -12,11 +12,6 @@
  */
 package org.eclipse.vorto.repository.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -27,10 +22,14 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 public class BulkOperationServiceTest extends AbstractIntegrationTest {
 
   private IBulkOperationsService getModelService(final String username) {
-    return new DefaultBulkOperationsService(repositoryFactory, tenantService) {
+    return new DefaultBulkOperationsService(repositoryFactory) {
       @Override
       protected Authentication getAuthenticationToken() {
         return createAuthenticationToken(username);

@@ -40,9 +40,8 @@ import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -62,8 +61,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -155,7 +153,11 @@ public final class SearchTestInfrastructure {
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
 
+  UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+
   PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
+
+  RoleService roleService = Mockito.mock(RoleService.class);
 
   protected DefaultUserAccountService accountService = null;
 
@@ -216,20 +218,116 @@ public final class SearchTestInfrastructure {
     return user;
   }
 
-  protected SearchTestInfrastructure() throws Exception {
+  private void setupNamespaceMocking() throws DoesNotExistException {
+    //when(requestRepositorySessionHelper.()).thenReturn()
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
+    NamespaceRole namespace_admin = new NamespaceRole();
+    namespace_admin.setName("namespace_admin");
+    namespace_admin.setPrivileges(7);
+    namespace_admin.setRole(32);
+
+    NamespaceRole model_viewer = new NamespaceRole();
+    model_viewer.setName("model_viewer");
+    model_viewer.setPrivileges(1);
+    model_viewer.setRole(1);
+
+    NamespaceRole model_creator = new NamespaceRole();
+    model_creator.setName("model_creator");
+    model_creator.setPrivileges(3);
+    model_creator.setRole(2);
+
+    NamespaceRole model_promoter = new NamespaceRole();
+    model_promoter.setName("model_promoter");
+    model_promoter.setPrivileges(3);
+    model_promoter.setRole(4);
+
+    NamespaceRole model_publisher = new NamespaceRole();
+    model_publisher.setName("model_publisher");
+    model_publisher.setPrivileges(3);
+    model_publisher.setRole(4);
+
+    NamespaceRole model_reviewer = new NamespaceRole();
+    model_reviewer.setName("model_reviewer");
+    model_reviewer.setPrivileges(3);
+    model_reviewer.setRole(8);
+
+    Set<IRole> roles = new HashSet<>();
+    roles.add(namespace_admin);
+    roles.add(model_viewer);
+    roles.add(model_creator);
+    roles.add(model_promoter);
+    roles.add(model_publisher);
+    roles.add(model_reviewer);
+
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
+    Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
+    when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
+
+    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
+    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
+    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
+    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
+    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
+    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+    when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
+
+    User alex = User.create("alex", "GITHUB", null);
+    User erle = User.create("erle", "GITHUB", null);
+    User admin = User.create("admin", "GITHUB", null);
+    User creator = User.create("creator", "GITHUB", null);
+    User promoter = User.create("promoter", "GITHUB", null);
+    User reviewer = User.create("reviewer", "GITHUB", null);
+    User publisher = User.create("publisher", "GITHUB", null);
+
+    when(userRepository.findByUsername("alex")).thenReturn(alex);
+    when(userRepository.findByUsername("erle")).thenReturn(erle);
+    when(userRepository.findByUsername("admin")).thenReturn(admin);
+    when(userRepository.findByUsername("creator")).thenReturn(creator);
+    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
+    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
+    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findAll()).thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
+
+    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_reviewer))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_reviewer))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(namespace_admin))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_reviewer))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(namespace_admin))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(creator), any(), eq(model_creator))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(promoter), any(), eq(model_promoter))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(reviewer), any(), eq(model_reviewer))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(publisher), any(), eq(model_publisher))).thenReturn(true);
+  }
+
+  private Namespace mockNamespace() {
     Namespace namespace = new Namespace();
-    namespace.setWorkspaceId("playground");
     namespace.setName("org.eclipse.vorto");
     namespace.setId(1L);
-    when(namespaceService.resolveWorkspaceIdForNamespace(any())).thenReturn(Optional.of("playground"));
-    when(namespaceService.findNamespaceByWorkspaceId(any())).thenReturn(namespace);
-    NamespaceRole role = new NamespaceRole();
-    role.setPrivileges(7);
-    role.setRole(32);
-    role.setName("namespace_admin");
-    Set<IRole> roles = new HashSet<>();
-    roles.add(role);
-    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    namespace.setWorkspaceId("playground");
+    return namespace;
+  }
+
+  protected SearchTestInfrastructure() throws Exception {
+    setupNamespaceMocking();
 
     when(tenantService.getTenantFromNamespace(Matchers.anyString()))
         .thenReturn(Optional.of(playgroundTenant));
@@ -314,7 +412,7 @@ public final class SearchTestInfrastructure {
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
-        tenantService);
+        userRepositoryRoleService, userNamespaceRoleService);
 
     importer = new VortoModelImporter();
     importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -324,7 +422,7 @@ public final class SearchTestInfrastructure {
     importer.setModelValidationHelper(modelValidationHelper);
 
     workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
+        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
   }

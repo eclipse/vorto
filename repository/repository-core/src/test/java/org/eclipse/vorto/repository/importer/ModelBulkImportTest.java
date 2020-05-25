@@ -12,13 +12,6 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
@@ -29,6 +22,12 @@ import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
+
 public class ModelBulkImportTest extends AbstractIntegrationTest {
 
   private BulkUploadHelper bulkUploadHelper;
@@ -37,7 +36,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   public void beforeEach() throws Exception {
     super.beforeEach();
     bulkUploadHelper =
-        new BulkUploadHelper(repositoryFactory, this.accountService, this.tenantService,errorMessageProvider);
+        new BulkUploadHelper(repositoryFactory, this.accountService, userNamespaceRoleService, userRepositoryRoleService);
   }
 
   @Test

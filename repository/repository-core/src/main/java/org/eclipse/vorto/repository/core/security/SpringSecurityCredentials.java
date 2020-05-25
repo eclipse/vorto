@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.core.security;
 
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.springframework.security.core.Authentication;
 
@@ -58,8 +59,9 @@ public class SpringSecurityCredentials implements Credentials {
   }
 
   public boolean isSysAdmin() {
-    return rolesInNamespace.stream().filter(role -> "sysadmin".equalsIgnoreCase(role.getName()))
-        .map(role -> "sysadmin")
+    return rolesInNamespace.stream().filter(role -> RepositoryRole.SYS_ADMIN.getName()
+        .equalsIgnoreCase(role.getName()))
+        .map(role -> RepositoryRole.SYS_ADMIN.getName())
         .anyMatch(hasPrivilege);
   }
 }

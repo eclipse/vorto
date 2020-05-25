@@ -25,6 +25,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
@@ -63,6 +64,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
   
   @Autowired
   protected ErrorMessageProvider errorMessageProvider;
+
+  @Autowired
+  protected UserRepositoryRoleService userRepositoryRoleService;
 
   private Set<String> supportedFileExtensions = new HashSet<>();
 
@@ -186,7 +190,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   private boolean isAdmin(IUserContext userContext) {
     User user = getUserRepository().getUser(userContext.getUsername());
-    return user != null && (user.isSysAdmin(userContext.getTenant()));
+    return Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user);
   }
 
   private String createUploadHandle(FileUpload fileUpload) {

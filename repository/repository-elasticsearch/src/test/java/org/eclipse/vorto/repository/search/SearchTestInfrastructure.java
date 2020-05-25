@@ -38,6 +38,8 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -60,14 +62,12 @@ import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -199,6 +199,16 @@ public final class SearchTestInfrastructure {
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
   private Tenant playgroundTenant = playgroundTenant();
+
+  NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
+
+  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+
+  UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+
+  RoleService roleService = Mockito.mock(RoleService.class);
+
+  PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
   @InjectMocks
   protected ISearchService searchService = null;
@@ -357,6 +367,15 @@ public final class SearchTestInfrastructure {
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
     when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
 
+    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
+    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
+    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
+    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
+    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
+    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+
+    setupNamespaceMocking();
+
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.init();
 
@@ -365,7 +384,7 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, null,
-        attachmentValidator, modelParserFactory, null, config, null, null, null, null) {
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -425,7 +444,7 @@ public final class SearchTestInfrastructure {
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
-        tenantService);
+        userRepositoryRoleService, userNamespaceRoleService);
 
     importer = new VortoModelImporter();
     importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -435,7 +454,7 @@ public final class SearchTestInfrastructure {
     importer.setModelValidationHelper(modelValidationHelper);
 
     workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
+        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
 
@@ -554,5 +573,33 @@ public final class SearchTestInfrastructure {
 
   public ModelRepositoryFactory getRepositoryFactory() {
     return repositoryFactory;
+  }
+
+  private void setupNamespaceMocking() throws DoesNotExistException {
+    //when(requestRepositorySessionHelper.()).thenReturn()
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
+    NamespaceRole role = new NamespaceRole();
+    role.setName("namespace_admin");
+    role.setPrivileges(7);
+    role.setRole(32);
+    Set<IRole> roles = new HashSet<>();
+    roles.add(role);
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
+    Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
+    when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
+  }
+
+  private Namespace mockNamespace() {
+    Namespace namespace = new Namespace();
+    namespace.setName("org.eclipse.vorto");
+    namespace.setId(1L);
+    namespace.setWorkspaceId("playground");
+    return namespace;
   }
 }

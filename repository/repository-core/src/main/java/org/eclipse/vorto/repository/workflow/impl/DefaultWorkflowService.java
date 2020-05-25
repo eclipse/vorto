@@ -20,6 +20,9 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -41,9 +44,15 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWorkflowService.class);
 
-	public DefaultWorkflowService(@Autowired IModelRepositoryFactory modelRepositoryFactory, @Autowired IUserAccountService userRepository, @Autowired INotificationService notificationService) {
+	public DefaultWorkflowService(
+		@Autowired IModelRepositoryFactory modelRepositoryFactory,
+		@Autowired IUserAccountService userRepository,
+		@Autowired INotificationService notificationService,
+		@Autowired NamespaceService namespaceService,
+		@Autowired UserNamespaceRoleService userNamespaceRoleService,
+		@Autowired RoleService roleService) {
 		this.modelRepositoryFactory = modelRepositoryFactory;
-		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService,this);
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService,this, roleService, namespaceService, userNamespaceRoleService);
 	}
 
 	@Override
@@ -84,7 +93,11 @@ public class DefaultWorkflowService implements IWorkflowService {
 	public List<String> getPossibleActions(ModelId model, IUserContext user) {
 		ModelInfo modelInfo = getModelRepository(user).getById(model);
 		Optional<IState> state = SIMPLE_WORKFLOW.getState(modelInfo.getState());
-		return state.get().getActions().stream().filter(action -> passesConditions(action.getConditions(),modelInfo, user)).map(t -> t.getName()).collect(Collectors.toList());
+		return state.get().getActions()
+			.stream()
+			.filter(action -> passesConditions(action.getConditions(),modelInfo, user))
+			.map(IWorkflowElement::getName)
+			.collect(Collectors.toList());
 	}
 	
 	private boolean passesConditions(List<IWorkflowCondition> conditions,ModelInfo model, IUserContext user) {

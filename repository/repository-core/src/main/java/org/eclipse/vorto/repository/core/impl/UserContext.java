@@ -12,14 +12,15 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.domain.UserRole;
+import org.springframework.security.core.Authentication;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.domain.UserRole;
-import org.springframework.security.core.Authentication;
 
 public class UserContext implements IUserContext {
 
@@ -54,18 +55,22 @@ public class UserContext implements IUserContext {
     this.tenant = tenant;
   }
 
+  @Override
   public String getUsername() {
     return username;
   }
 
+  @Override
   public String getHashedUsername() {
     return getHash(username);
   }
 
+  @Override
   public String getTenant() {
     return tenant;
   }
 
+  @Override
   public Authentication getAuthentication() {
     return authentication;
   }

@@ -12,23 +12,19 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
-import java.util.Collection;
-import java.util.Map;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.PolicyEntry;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class RemoveModelReviewerPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(RemoveModelReviewerPolicy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RemoveModelReviewerPolicy.class);
 
 
   public RemoveModelReviewerPolicy(IModelRepositoryFactory repositoryFactory) {
@@ -40,10 +36,10 @@ public class RemoveModelReviewerPolicy implements IWorkflowFunction {
     IModelPolicyManager policyManager =
         repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
     
-    logger.info("Removing full access of model to ROLE_MODEL_REVIEWER for " + model.getId());
+    LOGGER.info("Removing full access of model to ROLE_MODEL_REVIEWER for " + model.getId());
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
     for (PolicyEntry policy : policies) {
-      if (policy.getPrincipalId().equals(Role.MODEL_REVIEWER.name())) {
+      if (policy.getPrincipalId().equals("model_reviewer")) {
         policyManager.removePolicyEntry(model.getId(), policy);
         break;
       }

@@ -25,6 +25,8 @@ public class SpringSecurityProvider implements AuthenticationProvider {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityProvider.class);
 
+	private String name;
+
 	@Override
 	public ExecutionContext authenticate(Credentials credentials, String repositoryName, String workspaceName,
 		ExecutionContext repositoryContext, Map<String, Object> sessionAttributes) {

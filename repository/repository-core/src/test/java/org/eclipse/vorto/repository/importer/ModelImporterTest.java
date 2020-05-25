@@ -12,15 +12,6 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
@@ -30,6 +21,13 @@ import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class ModelImporterTest extends AbstractIntegrationTest {
 
@@ -43,7 +41,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
                 .toByteArray(new ClassPathResource("sample_models/models.zip").getInputStream())),
         Context.create(alex,Optional.of("org.eclipse.vorto")));
     
-    assertEquals(true,uploadResult.isValid());
+    assertEquals(true, uploadResult.isValid());
   }
   
   @Test
@@ -95,7 +93,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     assertEquals(false,uploadResult.isValid());
     assertEquals(MessageSeverity.ERROR,uploadResult.getReport().get(0).getMessage().getSeverity());
 
-    assertEquals("1) You do not own the target namespace 'vorto.private.alex'.",uploadResult.getReport().get(0).getMessage().getMessage());
+    assertEquals("1) User alex does not have access to target namespace vorto.private.alex",uploadResult.getReport().get(0).getMessage().getMessage());
   }
   
   @Test
@@ -234,7 +232,6 @@ public class ModelImporterTest extends AbstractIntegrationTest {
     assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS,
         uploadResult.getReport().get(0).getMessage());
 
-    ;
   }
 
   @Test

@@ -15,16 +15,20 @@ package org.eclipse.vorto.repository.workflow.impl.conditions;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 
-public class HasRoleCondition implements IWorkflowCondition {
+import java.util.Objects;
+
+public class HasRoleCondition extends AbstractWorkflowCondition {
 
   private IUserAccountService userRepository;
-  private Role role;
+  private IRole role;
 
-  public HasRoleCondition(IUserAccountService userRepository, Role role) {
+  public HasRoleCondition(IUserAccountService userRepository, IRole role, NamespaceService namespaceService, UserNamespaceRoleService userNamespaceRoleService) {
+    super(namespaceService, userNamespaceRoleService);
     this.userRepository = userRepository;
     this.role = role;
   }
@@ -32,6 +36,8 @@ public class HasRoleCondition implements IWorkflowCondition {
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
     User foundUser = userRepository.getUser(user.getUsername());
-    return foundUser != null ? foundUser.hasRole(user.getTenant(), role) : false;
+    return Objects.nonNull(foundUser) && hasRole(user, foundUser, role);
   }
+
+
 }

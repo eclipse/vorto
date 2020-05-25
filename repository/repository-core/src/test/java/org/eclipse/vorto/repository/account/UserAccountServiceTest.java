@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.repository.account;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
@@ -27,13 +24,16 @@ import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 public class UserAccountServiceTest extends AbstractIntegrationTest {
 
   private IWorkflowService workflow = null;
 
   @Before
   public void setUp() {
-    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
+    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
 
   }
 
