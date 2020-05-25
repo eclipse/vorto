@@ -16,8 +16,16 @@ define(["../init/appController"], function (repositoryControllers) {
       ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
         function ($location, $rootScope, $scope, $http, $uibModal, $timeout) {
 
-          let email = "";
-          let username = "";
+          $scope.email = "";
+          $scope.username = "";
+
+          // HTML autofocus does not work well with angularJS it seems
+          angular.element(document).ready(function () {
+            let element = document.getElementById("email");
+            if (element) {
+              element.focus();
+            }
+          });
 
           /*
             Retrieves username from root scope initially, in order to fetch
