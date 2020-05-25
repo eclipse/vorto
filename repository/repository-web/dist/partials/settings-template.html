@@ -1,81 +1,113 @@
 <section class="content">
 
-  <div id="settings" >
+  <div id="settings">
     <h2 class="modelHeader ng-binding">Account Settings</h2>
     <hr>
-	<br/>
-	<div>
-    	<div ng-show="success">
-		  	<p>
-		  		<div class="alert alert-success" role="alert">
-		  			<i class="glyphicon glyphicon-ok-sign"></i>
-		  			<span class="sr-only">Success:</span>
-				  	Account Settings have been updated.
-		  		</div>
-		  	</p>
-	  	</div>	
-		<div ng-show="errorMessage">
-		  	<p>
-		  		<div class="alert alert-danger" role="alert">
-				  	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				  	<span class="sr-only">Error:</span>
-				  	Error during Update.
-				</div>
-		  	</p>
-		</div>
-	</div>
-	
-	<br/>
-	<br/>
-	
-	<form name="settings">
-		<div class="form-group">
-			<label>User name</label>
-			<input readonly type="text" name="username" id="username" class="form-control" value="{{username}}" />
-		</div>
-	  	<div class="form-group">
-			<label>E-mail address</label>
-			<input autofocus type="email" name="email" id="email" class="form-control" placeholder="Enter your Email" ng-model="email" value="{{email}}" autocomplete="off" ng-change="toggleSaveButtonAvailability(true)"/>
-			<div class="input-description">Optional: Get notifications for workflow approvals and model discussions.</div>
-		</div>  
- 	<br/>
-  
-    <br />
-    <div class="row">
-      <div class="col-md-12">
-        <button class="btn btn-danger" type="submit" ng-click="openRemoveAccount()"><i class="fa fa-trash-o"></i>Delete Account</button>
-        <button id="submit" class="btn btn-primary pull-right" ng-disabled="form.$invalid || vm.dataLoading" type="submit" ng-click="saveSettings()"><i class="fa fa-fw fa-save"></i>Save Settings</button>
-      	<a class="btn btn-default" ng-href="rest/models/mine/download" role="button"><i class="fa fa-fw fa-download"></i>Export Data</a>
+    <br/>
+    <div>
+      <div ng-show="success">
+        <p>
+        <div class="alert alert-success" role="alert">
+          <i class="glyphicon glyphicon-ok-sign"></i>
+          <span class="sr-only">Success:</span>
+          Account Settings have been updated.
+        </div>
+        </p>
+      </div>
+      <div ng-show="errorMessage">
+        <p>
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          Error during Update.
+        </div>
+        </p>
       </div>
     </div>
-  </div>
-	</form>
 
-  
-	
-  <script type="text/ng-template" id="deleteAccount.html">
-	<div class="modal-header">
-			<button type="button" class="close" ng-click="cancel()">&times;</button>
-  		<h3 class="modal-title" id="modal-title-deleteAccount">Delete Account</h3>
-	</div>
-  <div class="modal-body" id="modal-body-deleteAccount">
+    <br/>
+    <br/>
+
+    <form name="settings">
+      <div class="form-group">
+        <label>User name</label>
+        <input readonly type="text" name="username" id="username" class="form-control"
+               value="{{username}}"/>
+      </div>
+      <div class="form-group">
+        <label>E-mail address</label>
+        <input autofocus type="email" name="email" id="email" class="form-control"
+               placeholder="Enter your e-mail address here..." ng-model="email" value="{{email}}"
+               autocomplete="off"
+               ng-change="toggleSaveButtonAvailability(true);toggleCancelButtonAvailability(true);"
+               ng-pattern="/^.+?@.+?\..+$/"
+        />
+        <div class="invalid-input" ng-show="settings.$error.pattern">Please enter a valid e-mail
+          address or leave the field empty.
+        </div>
+        <div class="input-description">Optional: get notifications from Vorto, e.g. when someone
+          wishes to access a namespace you manage.
+        </div>
+      </div>
+      <br/>
+
+      <br/>
       <div class="row">
-      	<div class="col-md-12">
-        	Are you sure you want to delete your account?
-      	</div>
-	  </div>
-	  <hr>
-	  <div class="row">
-		<div class="col-md-12">
-        	<div ng-hide="soleNamespaceAdmin" class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: <ol> <li>Your user profile will be permanently removed from the database.</li> <li>Your models will be anonymized.</li> <ol> </div>
-      		<div ng-show="soleNamespaceAdmin" class="alert alert-warning" role="alert">You cannot delete your account just yet, because you are still the only manager of at least one namespace. Please go to <b>Manage</b> and delete the namespace(s) where you are the only manager, or give another user the <i>manage</i> permission.</div>
-      	</div>
-     </div>
-	</div>
-	<div class="modal-footer">
-      <button class="btn btn-danger" ng-disabled="soleNamespaceAdmin" type="button" ng-click="deleteAccount()">Delete account</button>
-      <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+        <div class="col-md-12">
+          <button class="btn btn-danger" type="submit" ng-click="openRemoveAccount()"><i
+              class="fa fa-trash-o"></i>Delete Account
+          </button>
+          <a class="btn btn-default" ng-href="rest/models/mine/download" role="button"><i
+              class="fa fa-fw fa-download"></i>Export Data</a>
+          <div class="pull-right">
+            <button id="cancel" class="btn btn-default" ng-click="reload()"
+            >Cancel</button>&nbsp;
+            <button id="submit" class="btn btn-primary"
+                    ng-disabled="settings.$invalid || vm.dataLoading" type="submit"
+                    ng-click="saveSettings()"><i class="fa fa-fw fa-save"></i> Save settings
+            </button>
+          </div>
+        </div>
+      </div>
   </div>
-	</script>
+  </form>
+
+
+  <script type="text/ng-template" id="deleteAccount.html">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="cancel()">&times;</button>
+      <h3 class="modal-title" id="modal-title-deleteAccount">Delete Account</h3>
+    </div>
+    <div class="modal-body" id="modal-body-deleteAccount">
+      <div class="row">
+        <div class="col-md-12">
+          Are you sure you want to delete your account?
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <div ng-hide="soleNamespaceAdmin" class="alert alert-warning" role="alert">Note: If you
+            delete your account, the following steps will be taken:
+            <ol>
+              <li>Your user profile will be permanently removed from the database.</li>
+              <li>Your models will be anonymized.</li>
+              <ol>
+          </div>
+          <div ng-show="soleNamespaceAdmin" class="alert alert-warning" role="alert">You cannot
+            delete your account just yet, because you are still the only manager of at least one
+            namespace. Please go to <b>Manage</b> and delete the namespace(s) where you are the only
+            manager, or give another user the <i>manage</i> permission.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" ng-disabled="soleNamespaceAdmin" type="button"
+              ng-click="deleteAccount()">Delete account
+      </button>
+      <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
 
 </section>

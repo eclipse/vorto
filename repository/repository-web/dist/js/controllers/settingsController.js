@@ -13,8 +13,8 @@
 define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller('SettingsController',
-      ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
-        function ($location, $rootScope, $scope, $http, $uibModal, $timeout) {
+      ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', '$window',
+        function ($location, $rootScope, $scope, $http, $uibModal, $timeout, $window) {
 
           $scope.email = "";
           $scope.username = "";
@@ -26,6 +26,10 @@ define(["../init/appController"], function (repositoryControllers) {
               element.focus();
             }
           });
+
+          $scope.reload = function() {
+            $window.location.reload();
+          }
 
           /*
             Retrieves username from root scope initially, in order to fetch
@@ -48,6 +52,13 @@ define(["../init/appController"], function (repositoryControllers) {
             }
           }
 
+          $scope.toggleCancelButtonAvailability = function (value) {
+            let cancelButton = document.getElementById("cancel");
+            if (cancelButton) {
+              cancelButton.disabled = !value;
+            }
+          }
+
           $scope.saveSettings = function () {
             $http.put("./rest/accounts/" + $scope.username, $scope.email)
             .success(
@@ -58,6 +69,7 @@ define(["../init/appController"], function (repositoryControllers) {
                     sessionStorage.username = JSON.stringify($scope.username);
                   }
                   $scope.toggleSaveButtonAvailability(false);
+                  $scope.toggleCancelButtonAvailability(false);
                 }
             )
             .error(
@@ -65,6 +77,7 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.success = false;
                   $scope.errorMessage = data.msg;
                   $scope.toggleSaveButtonAvailability(true);
+                  $scope.toggleCancelButtonAvailability(false);
                   $timeout(
                       function () {
                         $scope.errorMessage = "Saving the settings timed out. Please try again.";
@@ -84,9 +97,6 @@ define(["../init/appController"], function (repositoryControllers) {
                   if (sessionStorage) {
                     sessionStorage.username = JSON.stringify($scope.username);
                   }
-                  // will likely fail as DOM not loaded but that's ok, it's
-                  // enabled by default
-                  $scope.toggleSaveButtonAvailability(true);
                 }
             )
             .error(
