@@ -85,8 +85,6 @@ define("repository", [
 
     $rootScope.authenticated = false;
 
-    $rootScope.user = null;
-
     $rootScope.domReady = false;
 
     angular.element(document).ready(function () {
