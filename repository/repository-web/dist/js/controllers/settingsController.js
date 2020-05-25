@@ -10,55 +10,122 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-define(["../init/appController"],function(repositoryControllers) {
+define(["../init/appController"], function (repositoryControllers) {
 
-repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
-	function ($location, $rootScope, $scope, $http, $uibModal, $timeout) {
+  repositoryControllers.controller('SettingsController',
+      ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', '$window',
+        function ($location, $rootScope, $scope, $http, $uibModal, $timeout, $window) {
 
-  $scope.userId = $rootScope.user;
+          $scope.email = "";
+          $scope.username = "";
 
-	$scope.saveSettings = function() {
-		 $http.put("./rest/accounts/" + $rootScope.user, $scope.user.email).success(
-                function(data, status, headers, config) {
-                    $scope.success = true;
-                    $timeout(function() {
-                        $scope.success = false;
-                    },2000);
-                }).error(function(data, status, headers, config) {
-                    $scope.errorMessage = data.msg;
-                    $timeout(function() {
-                        $scope.errorMessage = null;
-                    },2000);
+          // HTML autofocus does not work well with angularJS it seems
+          angular.element(document).ready(function () {
+            let element = document.getElementById("email");
+            if (element) {
+              element.focus();
+            }
+          });
 
+          $scope.reload = function() {
+            $window.location.reload();
+          }
+
+          /*
+            Retrieves username from root scope initially, in order to fetch
+            settings (so far only e-mail) from back-end.
+            Persists username to session storage.
+           */
+          if ($rootScope.user) {
+            $scope.username = $rootScope.user;
+            if (sessionStorage) {
+              sessionStorage.username = JSON.stringify($scope.username);
+            }
+          } else if (sessionStorage && sessionStorage.username) {
+            $scope.username = JSON.parse(sessionStorage.username);
+          }
+
+          $scope.toggleSaveButtonAvailability = function (value) {
+            let saveButton = document.getElementById("submit");
+            if (saveButton) {
+              saveButton.disabled = !value;
+            }
+          }
+
+          $scope.toggleCancelButtonAvailability = function (value) {
+            let cancelButton = document.getElementById("cancel");
+            if (cancelButton) {
+              cancelButton.disabled = !value;
+            }
+          }
+
+          $scope.saveSettings = function () {
+            $http.put("./rest/accounts/" + $scope.username, $scope.email)
+            .success(
+                function (result) {
+                  $scope.success = true;
+                  $scope.errorMessage = null;
+                  if (sessionStorage) {
+                    sessionStorage.username = JSON.stringify($scope.username);
+                  }
+                  $scope.toggleSaveButtonAvailability(false);
+                  $scope.toggleCancelButtonAvailability(false);
+                }
+            )
+            .error(
+                function (data, status, headers, config) {
+                  $scope.success = false;
+                  $scope.errorMessage = data.msg;
+                  $scope.toggleSaveButtonAvailability(true);
+                  $scope.toggleCancelButtonAvailability(false);
+                  $timeout(
+                      function () {
+                        $scope.errorMessage = "Saving the settings timed out. Please try again.";
+                      },
+                      2000
+                  );
                 });
-	};
+          };
 
-	$scope.getSettings = function() {
-		$http.get("./rest/accounts/" + $rootScope.user).success(
-                function(data, status, headers, config) {
-                    $scope.user = data;
-                }).error(function(data, status, headers, config) {
-                   // problem getting user info
+          $scope.getSettings = function () {
+            $http.get("./rest/accounts/" + $scope.username)
+            .success(
+                function (data, status, headers, config) {
+                  $scope.errorMessage = null;
+                  $scope.username = data.username;
+                  $scope.email = data.email;
+                  if (sessionStorage) {
+                    sessionStorage.username = JSON.stringify($scope.username);
+                  }
+                }
+            )
+            .error(
+                function (reason) {
+                  $scope.success = false;
+                  $scope.errorMessage = "There was an issue while retrieving user data. Please reload this page and try again.";
+                  angular.element(document).ready(function () {
+                    $scope.toggleSaveButtonAvailability(false);
+                  });
                 });
-	};
-	
-	$scope.getSettings();
+          };
 
-	$scope.openRemoveAccount = function() {
-    var modalInstance = $uibModal.open({
-      animation: true,
-      controller: "RemoveAccountModalController",
-      templateUrl: "deleteAccount.html",
-      size: "medium"
-    });
-      
-    modalInstance.result.then(
-      function () {
-        $location.path("/login");
-      }
-    );
-  };
-    
-}]);
+          $scope.getSettings();
+
+          $scope.openRemoveAccount = function () {
+            var modalInstance = $uibModal.open({
+              animation: true,
+              controller: "RemoveAccountModalController",
+              templateUrl: "deleteAccount.html",
+              size: "medium"
+            });
+
+            modalInstance.result.then(
+                function () {
+                  $location.path("/login");
+                }
+            );
+          };
+
+        }]);
 
 });
