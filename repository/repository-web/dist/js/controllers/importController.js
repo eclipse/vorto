@@ -89,7 +89,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                 .then(
                     function (result) {
                         $scope.isLoading = false;
-                        $scope.uploadResult = result;
+                        $scope.uploadResult = result.data;
                         $scope.showResultBox = true;
                         $scope.showCheckin = true;
                         $scope.stateArr = [];

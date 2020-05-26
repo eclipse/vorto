@@ -52,7 +52,7 @@ repository.factory('openCreateModelDialog',
                         $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto type:Functionblock')
                         .then(
                             function(response) {
-                                $scope.functionblocks = data;
+                                $scope.functionblocks = response.data;
                                 $scope.isLoading = false;
                             },
                             function(error) {
@@ -156,7 +156,7 @@ repository.factory('openCreateModelDialog',
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
                                 } else {
                                     modalInstance.close({
-                                        model: response
+                                        model: response.data
                                     });
                                 }
                             },
@@ -184,7 +184,7 @@ repository.factory('openCreateModelDialog',
               });
               
               modalInstance.result.then(function(result) {
-				  $location.path("/details/" + result.model.id.prettyFormat);
+                $location.path("/details/" + result.model.id.prettyFormat);
               });
         };
     }

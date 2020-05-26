@@ -186,8 +186,8 @@ repositoryControllers.controller('DetailsController',
 					if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
 						$http.get("./api/v1/attachments/" + model.id.prettyFormat)
 						.then(
-								function (attachments) {
-									$scope.attachments = attachments;
+								function (result) {
+									$scope.attachments = result.attachments;
 								},
 								function (error) {
 								}
@@ -195,8 +195,8 @@ repositoryControllers.controller('DetailsController',
 					} else {
 						$http.get("./api/v1/attachments/static/" + model.id.prettyFormat)
 						.then(
-								function (attachments) {
-									$scope.attachments = attachments;
+								function (result) {
+									$scope.attachments = result.attachments;
 								},
 								function (error) {
 								}
@@ -240,9 +240,9 @@ repositoryControllers.controller('DetailsController',
 						.then(
 								function (result) {
 									$scope.modelReferences[tmpIdx] = {
-										"modelId": result.id.prettyFormat,
-										"state": result.state,
-										"type": result.type,
+										"modelId": result.data.id.prettyFormat,
+										"state": result.data.state,
+										"type": result.data.type,
 										"hasAccess": true
 									};
 									$scope.modelReferences.show = true;
@@ -299,14 +299,14 @@ repositoryControllers.controller('DetailsController',
 					$http.get("./api/v1/models/" + modelId)
 					.then(
 							function (result) {
-								$scope.model = result;
+								$scope.model = result.data;
 								if ($scope.model.author.length === 64) {
 									$scope.model.author = 'other user';
 								}
 								$scope.getMappings();
 								$scope.getReferences();
 								$scope.getReferencedBy();
-								$scope.getAttachments(result);
+								$scope.getAttachments(result.data);
 
 								$scope.canCreateModels = false;
 
@@ -333,7 +333,7 @@ repositoryControllers.controller('DetailsController',
 
 								$scope.modelIsLoading = false;
 
-								defer.resolve(result);
+								defer.resolve(result.data);
 
 							},
 							function (error) {
@@ -372,8 +372,8 @@ repositoryControllers.controller('DetailsController',
 					.then(
 							function (result) {
 								$scope.isLoadingGenerators = false;
-								var productionGenerators = $scope.filterByTag(result, "production");
-								var demoGenerators = $scope.filterByTag(result, "demo");
+								var productionGenerators = $scope.filterByTag(result.data, "production");
+								var demoGenerators = $scope.filterByTag(result.data, "demo");
 								$scope.platformGeneratorMatrix = $scope.listToMatrix(
 										productionGenerators, 2);
 								$scope.platformDemoGeneratorMatrix = $scope.listToMatrix(
@@ -715,9 +715,9 @@ repositoryControllers.controller('DetailsController',
 										function (result) {
 											$scope.defaultNamespace = result.data.namespace;
 											if ($scope.model.id.namespace.length
-													> result.namespace.length) {
+													> result.data.namespace.length) {
 												$scope.newNamespaceSuffix = $scope.model.id.namespace.substring(
-														result.namespace.length + 1);
+														result.data.namespace.length + 1);
 											}
 										},
 										function (error) {
@@ -983,7 +983,11 @@ repositoryControllers.controller('DetailsController',
 					$http.get('./rest/models/' + $scope.modelId + '/policies')
 						.then(
 								function(result) {
-									$scope.canPublishModel = result.some(function(e, i, a) {return e.principalId && e.principalId == "MODEL_PUBLISHER";});
+									$scope.canPublishModel = result.data.some(
+											function(e, i, a) {
+												return e.principalId && e.principalId == "MODEL_PUBLISHER";
+											}
+									);
 								},
 								function(error) {
 									$scope.permission = "READ";
