@@ -13,8 +13,10 @@
 define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller('SettingsController',
-      ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout', '$window',
-        function ($location, $rootScope, $scope, $http, $uibModal, $timeout, $window) {
+      ['$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
+        '$window',
+        function ($location, $rootScope, $scope, $http, $uibModal, $timeout,
+            $window) {
 
           $scope.email = "";
           $scope.username = "";
@@ -27,7 +29,7 @@ define(["../init/appController"], function (repositoryControllers) {
             }
           });
 
-          $scope.reload = function() {
+          $scope.reload = function () {
             $window.location.reload();
           }
 
@@ -61,7 +63,7 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.saveSettings = function () {
             $http.put("./rest/accounts/" + $scope.username, $scope.email)
-            .success(
+            .then(
                 function (result) {
                   $scope.success = true;
                   $scope.errorMessage = null;
@@ -70,12 +72,10 @@ define(["../init/appController"], function (repositoryControllers) {
                   }
                   $scope.toggleSaveButtonAvailability(false);
                   $scope.toggleCancelButtonAvailability(false);
-                }
-            )
-            .error(
-                function (data, status, headers, config) {
+                },
+                function (error) {
                   $scope.success = false;
-                  $scope.errorMessage = data.msg;
+                  $scope.errorMessage = error.data.msg;
                   $scope.toggleSaveButtonAvailability(true);
                   $scope.toggleCancelButtonAvailability(false);
                   $timeout(
@@ -84,29 +84,29 @@ define(["../init/appController"], function (repositoryControllers) {
                       },
                       2000
                   );
-                });
+                }
+            );
           };
 
           $scope.getSettings = function () {
             $http.get("./rest/accounts/" + $scope.username)
-            .success(
-                function (data, status, headers, config) {
+            .then(
+                function (result) {
                   $scope.errorMessage = null;
-                  $scope.username = data.username;
-                  $scope.email = data.email;
+                  $scope.username = result.data.username;
+                  $scope.email = result.data.email;
                   if (sessionStorage) {
                     sessionStorage.username = JSON.stringify($scope.username);
                   }
-                }
-            )
-            .error(
-                function (reason) {
+                },
+                function(error) {
                   $scope.success = false;
                   $scope.errorMessage = "There was an issue while retrieving user data. Please reload this page and try again.";
                   angular.element(document).ready(function () {
                     $scope.toggleSaveButtonAvailability(false);
                   });
-                });
+                }
+            );
           };
 
           $scope.getSettings();

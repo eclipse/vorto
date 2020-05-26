@@ -49,15 +49,18 @@ repository.factory('openCreateModelDialog',
                     
                     $scope.loadFunctionblocks = function() {
 
-                        $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto type:Functionblock').success(
-                            function(data, status, headers, config) {
+                        $http.get('./api/v1/search/models?expression=state:Released namespace:org.eclipse.vorto type:Functionblock')
+                        .then(
+                            function(response) {
                                 $scope.functionblocks = data;
                                 $scope.isLoading = false;
-                            }).error(function(data, status, headers, config) {
-                            $scope.functionblocks = [];
-                            $scope.errorMessage  = "No Functionblocks found!";
-                            $scope.isLoading = false;
-                        });
+                            },
+                            function(error) {
+                                $scope.functionblocks = [];
+                                $scope.errorMessage  = "No Functionblocks found!";
+                                $scope.isLoading = false;
+                            }
+                        );
 
                     };
                      
@@ -65,10 +68,11 @@ repository.factory('openCreateModelDialog',
 
                     $scope.getNamespaces = function() {
                         $scope.userNamespaces = [];
-                        $http.get("./rest/namespaces/role/ROLE_MODEL_CREATOR")
-                        .then(function(result) {
-                                if (result.data) {
-                                    $scope.userNamespaces = result.data;
+                        $http.get('./rest/namespaces/role/ROLE_MODEL_CREATOR')
+                        .then(
+                            function(response) {
+                                if (response.data) {
+                                    $scope.userNamespaces = response.data;
                                     if ($scope.userNamespaces.length > 0) {
                                         $scope.userNamespaces.sort(function (a, b) {
                                             return a.name.localeCompare(b.name);
@@ -76,9 +80,10 @@ repository.factory('openCreateModelDialog',
                                     }
                                 }
                             },
-                            function(reason) {
+                            function(error) {
                                 // TODO : handling of failures
-                            });
+                            }
+                        );
                     };
                     
                     $scope.getNamespaces();
@@ -143,22 +148,25 @@ repository.factory('openCreateModelDialog',
 
                     $scope.create = function(namespaceRoot, modelType, modelNamespace, modelName, modelVersion) {
                         $scope.isLoading = true;
-						            $http.post('./rest/models/'+$rootScope.modelId(modelNamespace,modelName,modelVersion)+'/'+modelType, $scope.selected.properties)
-						            .success(function(result){
+						            $http.post('./rest/models/' + $rootScope.modelId(modelNamespace,modelName,modelVersion) + '/' + modelType, $scope.selected.properties)
+						            .then(
+						                function(response) {
                                 $scope.isLoading = false;
-                                if (result.status === 409) {
+                                if (response.status === 409) {
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
                                 } else {
                                     modalInstance.close({
-                                        model: result
+                                        model: response
                                     });
                                 }
-                            }).error(function(data, status, header, config) {
+                            },
+                            function(error) {
                                 $scope.isLoading = false;
                                 if (status === 409) {
                                     $scope.errorMessage = "Model with this name and namespace already exists.";
                                 }
-                            });
+                            }
+                        );
                     };
                         
                     $scope.cancel = function() {

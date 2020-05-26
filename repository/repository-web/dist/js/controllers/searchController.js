@@ -64,17 +64,20 @@ define(["../init/appController"],function(repositoryControllers) {
         	}
         }
 
-        $http.get('./api/v1/search/models?expression=' + filter).success(
-            function(data, status, headers, config) {
-            	$scope.models = data;
-            	$scope.modelsTotal = data.length;
-                $scope.isLoading = false;
-                filterModels();
-            }).error(function(data, status, headers, config) {
+        $http.get('./api/v1/search/models?expression=' + filter)
+        .then(
+            function(result) {
+            	$scope.models = result.data;
+            	$scope.modelsTotal = result.data.length;
+              $scope.isLoading = false;
+              filterModels();
+            },
+            function(error) {
                 $scope.models = [];
                 $scope.filteredModels = [];
                 $scope.isLoading = false;
-            });
+            }
+        );
     };
 
     $scope.search();
