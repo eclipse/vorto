@@ -59,7 +59,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
@@ -117,7 +116,7 @@ public abstract class AbstractIntegrationTest {
   private Tenant playgroundTenant = playgroundTenant();
 
   protected ISearchService searchService = null;
-  
+
   @Before
   public void beforeEach() throws Exception {
     setupNamespaceMocking();
@@ -157,6 +156,40 @@ public abstract class AbstractIntegrationTest {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
 
+    ModelRepositoryFactory modelRepositoryFactory =
+        mockModelRepositoryFactory(eventPublisher, config);
+
+    mockServices(supervisor, modelRepositoryFactory);
+  }
+
+  protected void mockServices(ModelRepositoryEventListener supervisor, ModelRepositoryFactory modelRepositoryFactory) {
+    supervisor.setRepositoryFactory(modelRepositoryFactory);
+    modelParserFactory.setModelRepositoryFactory(modelRepositoryFactory);
+
+    tenantUserService = new TenantUserService(tenantService, accountService);
+
+    searchService = new SimpleSearchService(tenantService, modelRepositoryFactory);
+    supervisor.setSearchService(searchService);
+
+    this.modelValidationHelper = new ModelValidationHelper(modelRepositoryFactory, this.accountService, userRepositoryRoleService, userNamespaceRoleService);
+
+    this.importer = new VortoModelImporter();
+    this.importer.setUploadStorage(new InMemoryTemporaryStorage());
+    this.importer.setUserRepository(this.accountService);
+    this.importer.setModelParserFactory(modelParserFactory);
+    this.importer.setModelRepoFactory(modelRepositoryFactory);
+    this.importer.setModelValidationHelper(modelValidationHelper);
+    this.importer.setUserNamespaceRoleService(userNamespaceRoleService);
+    this.importer.setUserRepositoryRoleService(userRepositoryRoleService);
+
+    this.workflow =
+        new DefaultWorkflowService(modelRepositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
+
+    MockitoAnnotations.initMocks(this);
+  }
+
+  protected ModelRepositoryFactory mockModelRepositoryFactory(ApplicationEventPublisher eventPublisher,
+      RepositoryConfiguration config) throws Exception {
     repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
 
@@ -179,35 +212,12 @@ public abstract class AbstractIntegrationTest {
     };
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();
-
-    supervisor.setRepositoryFactory(repositoryFactory);
-    modelParserFactory.setModelRepositoryFactory(repositoryFactory);
-    
-    tenantUserService = new TenantUserService(tenantService, accountService);
-    
-    searchService = new SimpleSearchService(tenantService, repositoryFactory);
-    supervisor.setSearchService(searchService);
-    
-    this.modelValidationHelper = new ModelValidationHelper(repositoryFactory, this.accountService, userRepositoryRoleService, userNamespaceRoleService);
-
-    this.importer = new VortoModelImporter();
-    this.importer.setUploadStorage(new InMemoryTemporaryStorage());
-    this.importer.setUserRepository(this.accountService);
-    this.importer.setModelParserFactory(modelParserFactory);
-    this.importer.setModelRepoFactory(repositoryFactory);
-    this.importer.setModelValidationHelper(modelValidationHelper);
-    this.importer.setUserNamespaceRoleService(userNamespaceRoleService);
-    this.importer.setUserRepositoryRoleService(userRepositoryRoleService);
-
-    this.workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
-
-    MockitoAnnotations.initMocks(this);
+    return repositoryFactory;
   }
 
   private void setupNamespaceMocking() throws DoesNotExistException, OperationForbiddenException {
     when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
-    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockEclipseNamespace());
 
     List<String> workspaceIds = new ArrayList<>();
     workspaceIds.add("playground");
@@ -237,10 +247,7 @@ public abstract class AbstractIntegrationTest {
     model_publisher.setPrivileges(3);
     model_publisher.setRole(4);
 
-    NamespaceRole model_reviewer = new NamespaceRole();
-    model_reviewer.setName("model_reviewer");
-    model_reviewer.setPrivileges(3);
-    model_reviewer.setRole(8);
+    NamespaceRole model_reviewer = modelReviewer();
 
     Set<IRole> roles = new HashSet<>();
     roles.add(namespace_admin);
@@ -250,7 +257,27 @@ public abstract class AbstractIntegrationTest {
     roles.add(model_publisher);
     roles.add(model_reviewer);
 
-    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenAnswer(inv -> {
+      if (inv.getArguments()[0].equals("namespace_admin"))
+        return Sets.newHashSet(namespace_admin);
+
+      if (inv.getArguments()[0].equals("model_viewer"))
+        return Sets.newHashSet(model_viewer);
+
+      if (inv.getArguments()[0].equals("model_creator"))
+        return Sets.newHashSet(model_creator);
+
+      if (inv.getArguments()[0].equals("model_promoter"))
+        return Sets.newHashSet(model_promoter);
+
+      if (inv.getArguments()[0].equals("model_publisher"))
+        return Sets.newHashSet(model_publisher);
+
+      if (inv.getArguments()[0].equals("model_reviewer"))
+        return Sets.newHashSet(model_reviewer);
+
+      return Sets.newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher, model_reviewer);
+    });
     when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
@@ -305,13 +332,30 @@ public abstract class AbstractIntegrationTest {
 
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
 
-    when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class))).thenReturn(Sets.newHashSet(mockNamespace()));
+    when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class))).thenReturn(Sets.newHashSet(
+        mockEclipseNamespace(), mockComNamespace()));
   }
 
-  private Namespace mockNamespace() {
+  private NamespaceRole modelReviewer() {
+    NamespaceRole model_reviewer = new NamespaceRole();
+    model_reviewer.setName("model_reviewer");
+    model_reviewer.setPrivileges(3);
+    model_reviewer.setRole(8);
+    return model_reviewer;
+  }
+
+  private Namespace mockEclipseNamespace() {
     Namespace namespace = new Namespace();
     namespace.setName("org.eclipse.vorto");
     namespace.setId(1L);
+    namespace.setWorkspaceId("playground");
+    return namespace;
+  }
+
+  private Namespace mockComNamespace() {
+    Namespace namespace = new Namespace();
+    namespace.setName("com");
+    namespace.setId(2L);
     namespace.setWorkspaceId("playground");
     return namespace;
   }
@@ -388,13 +432,17 @@ public abstract class AbstractIntegrationTest {
   }
   
   protected Authentication createAuthenticationToken(String username) {
-    Set<String> userRoles = getTenantUser(username, playgroundTenant).getRoles().stream()
-        .map(uRole -> Role.rolePrefix + uRole.getRole().name()).collect(Collectors.toSet());
+    if (username.equalsIgnoreCase("admin")) {
+      return new TestingAuthenticationToken(username, username, RepositoryRole.SYS_ADMIN.getName());
+    }
+    Collection<IRole> roles;
+    try {
+      roles = userNamespaceRoleService.getRoles(username, "");
+    } catch (DoesNotExistException e) {
+      roles = Sets.newHashSet(modelReviewer());
+    }
 
-    Authentication auth = new TestingAuthenticationToken(username, username,
-        userRoles.toArray(new String[userRoles.size()]));
-    
-    return auth;
+    return new TestingAuthenticationToken(username, username, roles.stream().map(IRole::getName).toArray(String[]::new));
   }
 
   protected IUserContext createUserContext(String username, String tenantId) {
