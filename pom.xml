@@ -80,7 +80,8 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<guava.version>18.0</guava.version>
 		<org.eclipse.emf.version>2.11.1</org.eclipse.emf.version>
-
+		<testcontainers.version>1.14.1</testcontainers.version>
+		<selenium.version>3.141.59</selenium.version>
 	</properties>
 
 	<dependencyManagement>
