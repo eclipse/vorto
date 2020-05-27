@@ -39,13 +39,16 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.deleteAccount = function () {
             $http.delete('./rest/accounts/' + $rootScope.user)
-            .then(function (response) {
-              $scope.user = response.data;
-              if (response.status === 204) {
-                $rootScope.logout();
-                $uibModalInstance.dismiss("cancel");
-              }
-            });
+            .then(
+                function (response) {
+                  $scope.user = response.data;
+                  if (response.status === 204) {
+                    $rootScope.logout();
+                    $uibModalInstance.dismiss("cancel");
+                  }
+                },
+                function(error){}
+            );
           };
 
           $scope.cancel = function () {

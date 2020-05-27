@@ -38,7 +38,8 @@ define(["../../init/appController"], function (repositoryControllers) {
             $scope.isRetrievingNamespaces = true;
             $http
             .get("./rest/namespaces/all")
-            .then(function (result) {
+            .then(
+                function (result) {
                   $scope.isRetrievingNamespaces = false;
                   $scope.namespaces = result.data;
                   // disabling filter here if 0 or 1 namespaces (typical user)
@@ -51,7 +52,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                 function (reason) {
                   $scope.isRetrievingNamespaces = false;
                   // TODO : handling of failures
-                });
+                }
+            );
             $scope.focusOnFilter();
           }
 
@@ -203,20 +205,22 @@ define(["../../init/appController"], function (repositoryControllers) {
                             'Content-Type': undefined
                           }
                         })
-                    .success(function (result) {
-                      var updatedNamespaces = result;
-                      if (updatedNamespaces && updatedNamespaces.length
-                          && updatedNamespaces.length < 1) {
-                        $scope.errorMessage = "No namespaces were restored. Maybe you used the wrong backup file?";
-                      } else {
-                        $scope.errorMessage = null;
-                        modalInstance.dismiss();
-                      }
-                    })
-                    .error(function (result) {
-                      // TODO : better error message
-                      $scope.errorMessage = "Unkown server error.";
-                    });
+                    .then(
+                        function (result) {
+                          var updatedNamespaces = result;
+                          if (updatedNamespaces && updatedNamespaces.length
+                              && updatedNamespaces.length < 1) {
+                            $scope.errorMessage = "No namespaces were restored. Maybe you used the wrong backup file?";
+                          } else {
+                            $scope.errorMessage = null;
+                            modalInstance.dismiss();
+                          }
+                        },
+                        function (error) {
+                          // TODO : better error message
+                          $scope.errorMessage = "Unkown server error.";
+                        }
+                    );
                   }
                 };
 
@@ -262,7 +266,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                 $scope.delete = function () {
                   $http
                   .delete("./rest/namespaces/" + namespace.name)
-                  .then(function (result) {
+                  .then(
+                      function (result) {
                         modalInstance.close();
                       },
                       function (reason) {
@@ -271,7 +276,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                         }
                         $scope.isCreatingOrUpdating = false;
                         modalInstance.close();
-                      });
+                      }
+                  );
                 };
 
                 $scope.getPublicModelsForNamespace = function () {
@@ -280,13 +286,11 @@ define(["../../init/appController"], function (repositoryControllers) {
                       './api/v1/search/models?expression=namespace:'
                       + namespace.name + ' visibility:Public'
                   )
-                  .success(
-                      function (data, status, headers, config) {
-                        $scope.hasPublicModels = data.length > 0;
-                      }
-                  )
-                  .error(
-                      function (data, status, headers, config) {
+                  .then(
+                      function (result) {
+                        $scope.hasPublicModels = result.data.length > 0;
+                      },
+                      function (error) {
                         console.log("Problem getting data from repository");
                       }
                   );
@@ -390,14 +394,17 @@ define(["../../init/appController"], function (repositoryControllers) {
             if ($scope.namespacePartial && $scope.namespacePartial.length
                 >= 4) {
               $http.get("./rest/namespaces/search/" + $scope.namespacePartial)
-              .then(function (result) {
-                if (result.data) {
-                  $scope.namespaces = result.data;
-                } else {
-                  $scope.namespaces = [];
-                  $scope.selectedNamespace = {};
-                }
-              });
+              .then(
+                  function (result) {
+                    if (result.data) {
+                      $scope.namespaces = result.data;
+                    } else {
+                      $scope.namespaces = [];
+                      $scope.selectedNamespace = {};
+                    }
+                  },
+                  function(error) {}
+              );
             } else {
               $scope.namespaces = [];
               $scope.selectedNamespace = null;
@@ -437,14 +444,17 @@ define(["../../init/appController"], function (repositoryControllers) {
             // this is to prevent unmanageably large drop-downs
             if ($scope.userPartial && $scope.userPartial.length >= 3) {
               $http.get("./rest/accounts/search/" + $scope.userPartial + "?onlyTechnicalUsers=true")
-              .then(function (result) {
-                if (result.data) {
-                  $scope.retrievedUsers = result.data;
-                } else {
-                  $scope.retrievedUsers = [];
-                  $scope.selectedUser = null;
-                }
-              });
+              .then(
+                  function (result) {
+                    if (result.data) {
+                      $scope.retrievedUsers = result.data;
+                    } else {
+                      $scope.retrievedUsers = [];
+                      $scope.selectedUser = null;
+                    }
+                  },
+                  function(error) {}
+              );
             } else {
               $scope.retrievedUsers = [];
               $scope.selectedUser = null;
@@ -540,7 +550,8 @@ define(["../../init/appController"], function (repositoryControllers) {
 
             $http
             .post("./rest/namespaces/requestAccess", payload)
-            .then(function (result) {
+            .then(
+                function (result) {
                   $scope.isSendingRequest = false;
                   $scope.success = true;
                   $scope.disableCancelButton();
@@ -569,7 +580,6 @@ define(["../../init/appController"], function (repositoryControllers) {
                     $scope.disableCancelButton();
                     $scope.disableSendButton();
                   }
-
                 }
             );
           };
@@ -645,7 +655,8 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
             $http
             .put("./rest/namespaces/" + $scope.namespace.name, {})
-            .then(function (result) {
+            .then(
+                function (result) {
                   // add user as admin
                   $scope.namespace.admins.push($rootScope.user);
                   // adds to known namespaces list
@@ -658,7 +669,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                   $scope.errorMessage = reason.data.errorMessage;
                   $scope.isCreatingOrUpdating = false;
                   $scope.namespaces.splice(indexOfNewNamespace, 1);
-                });
+                }
+            );
           };
 
           $scope.isInvalid = function () {
@@ -706,21 +718,24 @@ define(["../../init/appController"], function (repositoryControllers) {
                 }
 
                 $http.get("./rest/namespaces/" + prefix + value + "/valid")
-                .then(function (result) {
-                  if (result.data) {
-                    resultFn({valid: true});
-                  } else {
-                    resultFn({
-                      valid: false,
-                      errorMessage: "This namespace has been taken up already."
-                    });
-                  }
-                }, function (reason) {
-                  resultFn({
-                    valid: false,
-                    errorMessage: "Error while accessing the server."
-                  });
-                });
+                .then(
+                    function (result) {
+                      if (result.data) {
+                        resultFn({valid: true});
+                      } else {
+                        resultFn({
+                          valid: false,
+                          errorMessage: "This namespace has been taken up already."
+                        });
+                      }
+                    },
+                    function (reason) {
+                      resultFn({
+                        valid: false,
+                        errorMessage: "Error while accessing the server."
+                      });
+                    }
+                );
               },
               successFn: function (value) {
                 $scope.namespace.namespaces.push(prefix + value);
