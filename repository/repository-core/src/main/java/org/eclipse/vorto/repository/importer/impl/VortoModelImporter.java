@@ -57,9 +57,6 @@ public class VortoModelImporter extends AbstractModelImporter {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  @Autowired
-  private UserRepositoryRoleService userRepositoryRoleService;
-  
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
 

@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.domain.User;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 public class ModelImporterTest extends AbstractIntegrationTest {
 
@@ -210,6 +213,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 
   @Test
   public void testUploadSameModelByAdminDraftState() throws Exception {
+    when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(true);
     IUserContext alex = createUserContext("alex", "playground");
     ModelInfo info = importModel("Color.type", alex);
     this.workflow.start(info.getId(), alex);

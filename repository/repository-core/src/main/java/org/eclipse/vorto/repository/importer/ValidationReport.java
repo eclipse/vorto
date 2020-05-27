@@ -12,14 +12,15 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.parser.ValidationIssue;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ValidationReport {
 
@@ -38,8 +39,8 @@ public class ValidationReport {
   private ModelInfo model = null;
   private boolean valid = false;
   private StatusMessage message = null;
-  private Collection<ModelId> unresolvedReferences = new ArrayList<ModelId>();
-  private Collection<ValidationIssue> validationIssues = new ArrayList<ValidationIssue>();
+  private Collection<ModelId> unresolvedReferences = new ArrayList<>();
+  private Collection<ValidationIssue> validationIssues = new ArrayList<>();
 
   public ValidationReport(ModelInfo model, boolean valid, StatusMessage message,
       Collection<ModelId> missingReferences) {
