@@ -69,7 +69,7 @@ require.config({
 		}
 	}
 });
-require(['jquery'], function($) {
+define(['jquery'], function($) {
 	$(document).ready(function() {
 		require(['repository'],function(app) {
 			app.bootstrap();
