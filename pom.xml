@@ -82,6 +82,7 @@
 		<org.eclipse.emf.version>2.11.1</org.eclipse.emf.version>
 		<angular.version>1.7.9</angular.version>
 
+		<elasticsearch.version>6.8.8</elasticsearch.version>
 	</properties>
 
 	<dependencyManagement>
