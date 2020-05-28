@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 define(["../init/appController"],function(repositoryControllers) {
   
   repositoryControllers.controller('SearchController', 
@@ -52,17 +64,20 @@ define(["../init/appController"],function(repositoryControllers) {
         	}
         }
 
-        $http.get('./api/v1/search/models?expression=' + filter).success(
-            function(data, status, headers, config) {
-            	$scope.models = data;
-            	$scope.modelsTotal = data.length;
-                $scope.isLoading = false;
-                filterModels();
-            }).error(function(data, status, headers, config) {
+        $http.get('./api/v1/search/models?expression=' + filter)
+        .then(
+            function(result) {
+            	$scope.models = result.data;
+            	$scope.modelsTotal = result.data.length;
+              $scope.isLoading = false;
+              filterModels();
+            },
+            function(error) {
                 $scope.models = [];
                 $scope.filteredModels = [];
                 $scope.isLoading = false;
-            });
+            }
+        );
     };
 
     $scope.search();

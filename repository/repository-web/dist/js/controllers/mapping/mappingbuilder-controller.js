@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 define(["../../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uibModal", "$routeParams", "$scope", "$location","$http", "$sce","$timeout", "SessionTimeoutService",
@@ -8,11 +20,11 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.testInProgress = false;
     $scope.mappedOutput = null;
 
-	$scope.testResponse = {
-		report : {
-			valid : true
-		}
-	};
+    $scope.testResponse = {
+        report : {
+          valid : true
+        }
+    };
 
     $scope.isLoading = false;
 
@@ -89,19 +101,21 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                 contentType : $scope.contentType             
         };
         
-        $http.put("./rest/mappings/specifications/test",testRequest).success(
-                function(data, status, headers, config) {
+        $http
+            .put("./rest/mappings/specifications/test",testRequest)
+            .then(
+                function(result) {
                     $scope.testInProgress = false;
-                    
-                    $scope.canonical = JSON.parse(data.canonical);
-                    $scope.ditto = JSON.parse(data.ditto);
-                    $scope.awsiot = JSON.parse(data.awsiot);
-                    
-                    $scope.testResponse = data;
-                }).error(function(data, status, headers, config) {
+                    $scope.canonical = JSON.parse(result.data.canonical);
+                    $scope.ditto = JSON.parse(result.data.ditto);
+                    $scope.awsiot = JSON.parse(result.data.awsiot);
+                    $scope.testResponse = result.data;
+                },
+                function(error) {
                     $scope.testInProgress = false;
-                    $scope.errorMessage = data.message;
-                });			
+                    $scope.errorMessage = error.data.message;
+                }
+            );
     };
 
 
@@ -218,17 +232,21 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
     $scope.loadMappingSpec = function() {
         $scope.isLoading = true;
-        $http.get("./rest/mappings/specifications/"+$scope.modelId).success(
-                function(data, status, headers, config) {
-                    $scope.infomodel = data.infoModel;
+        $http
+            .get("./rest/mappings/specifications/"+$scope.modelId)
+            .then(
+                function(result) {
+                    $scope.infomodel = result.data.infoModel;
                     $scope.state = "Draft";
                     $scope.loadCustomFunctions();
                     $scope.loadFbConditions();
                     $scope.isLoading = false;
-                }).error(function(data, status, headers, config) {
-                    $scope.validationError = data;
+                },
+                function(error) {
+                    $scope.validationError = error.data;
                     $scope.isLoading = false;
-                });		
+                }
+            );
     };
     
     $scope.loadFbConditions = function() {
@@ -286,37 +304,48 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.save = function() {
     	$scope.isSaving = true;
         var specification = {"infoModel":$scope.infomodel};
-        $http.put("./rest/mappings/specifications/" + $scope.modelId,specification).success(
-                function(data, status, headers, config) {
+        $http
+            .put("./rest/mappings/specifications/" + $scope.modelId,specification)
+            .then(
+                function(result) {
                     $scope.success = true;
-					$scope.isSaving = false;
-					if ($scope.mappingId == null) {
-						$scope.getMappingId();
-					}
-					
-                    $timeout(function() {
-                        $scope.success = false;
-                    },2000);
-                }).error(function(data, status, headers, config) {
-                    $scope.errorMessage = data.msg;
+					          $scope.isSaving = false;
+					          if ($scope.mappingId == null) {
+                        $scope.getMappingId();
+                    }
+                    $timeout(
+                        function() {
+                            $scope.success = false;
+                        },
+                    2000);
+                },
+                function(error) {
+                    $scope.errorMessage = error.data.msg;
                     $scope.isSaving = false;
-                    $timeout(function() {
-                        $scope.errorMessage = null;
-                    },2000);
-
-                });
+                    $timeout(
+                        function() {
+                            $scope.errorMessage = null;
+                        },
+                        2000
+                    );
+                }
+            );
     };
 
     $scope.loadMappingSpec();
     
     
     $scope.getMappingId = function() {
-    	$http.get("./rest/mappings/specifications/"+$scope.modelId+"/mappingId").success(
-                function(data, status, headers, config) {
-                    $scope.mappingId = data.mappingId;
-                }).error(function(data, status, headers, config) {
-                    $scope.mappingId = null;
-                });		
+    	$http
+        .get("./rest/mappings/specifications/"+$scope.modelId+"/mappingId")
+        .then(
+            function(result) {
+                $scope.mappingId = result.data.mappingId;
+            },
+            function(error) {
+                $scope.mappingId = null;
+            }
+        );
     };
     
     $scope.getMappingId();

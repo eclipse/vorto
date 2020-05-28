@@ -1,0 +1,17 @@
+vortolang 1.0
+namespace vortotest
+version 1.0.0
+displayname "ParentFbToBeExtended"
+description "Functionblock for ParentFbToBeExtended"
+
+functionblock ParentFbToBeExtended {
+    configuration {
+      optional temperatureParent as float <MIN 0, MAX 35> "writable temperature with a range constraint"
+      optional temperatureParent2 as float <MIN 0, MAX 35> "writable temperature with a range constraint"
+    }
+
+	status {
+	  mandatory ParentFloat as float
+	  mandatory Parent2ndFloat as float
+	}
+}

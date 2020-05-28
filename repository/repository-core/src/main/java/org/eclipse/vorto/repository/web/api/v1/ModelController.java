@@ -56,12 +56,13 @@ public class ModelController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    
-    logger.info("getModelInfo: [" + modelID.getPrettyFormat() + "]");
+
+    logger.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
 
     ModelInfo resource = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
 
     if (resource == null) {
+      logger.warn(String.format("Could not find model with ID [%s] in repository", modelID));
       throw new ModelNotFoundException("Model does not exist", null);
     }
     return ModelDtoFactory.createDto(resource);
@@ -76,10 +77,6 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    if (!getModelRepository(modelID).exists(modelID)) {
-      throw new ModelNotFoundException("Model does not exist", null);
-    }
-    
     ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
     
     return converter.convert(modelID, Optional.empty());

@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 define(["../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope','$http', 
@@ -9,18 +21,22 @@ repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope'
 
     $scope.listGenerators = function() {
     	$scope.isLoading = true;
-        $http.get('./api/v1/generators').success(
-            function(data, status, headers, config) {
+        $http.get('./api/v1/generators').then(
+            function(result) {
             	$scope.isLoading = false;
-                $scope.generators = data;
-            });
+							$scope.generators = result.data;
+            },
+						function(error){}
+				);
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/generators/rankings/3').success(
-            function(data, status, headers, config) {
-                $scope.mostUsedGenerators = data;
-            });
+        $http.get('./rest/generators/rankings/3').then(
+            function(result) {
+                $scope.mostUsedGenerators = result.data;
+            },
+						function(error){}
+				);
     };
 
     $scope.isFilled = function(rating, value) {
@@ -57,20 +73,22 @@ repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$
 	
 	$scope.loadConfiguration = function() {
 		$http.get('./api/v1/generators/'+$scope.generator.key)
-			.success(function(result) {
-				$scope.generator = result;
-				
-				if ($scope.generator.configKeys && $scope.generator.configTemplate) {
-					for (var i = 0;i < $scope.generator.configKeys.length;i++) {
-						var key = result.configKeys[i];
-						$scope.configParams[key] = "";
-					}
-					$scope.configTemplate = $scope.generator.configTemplate;
-				} else {
-					$scope.configTemplate = "";
-				}
+			.then(
+					function(result) {
+						$scope.generator = result.data;
 
-		});
+						if ($scope.generator.configKeys && $scope.generator.configTemplate) {
+							for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+								var key = result.data.configKeys[i];
+								$scope.configParams[key] = "";
+							}
+							$scope.configTemplate = $scope.generator.configTemplate;
+						} else {
+							$scope.configTemplate = "";
+						}
+					},
+					function(error){}
+			);
 	};
 	
 	$scope.loadConfiguration();

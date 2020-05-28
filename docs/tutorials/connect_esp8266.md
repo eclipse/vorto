@@ -2,7 +2,7 @@
 
 This tutorial explains how to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.   
 Your device should already be created as a thing from an Information Model at this point.   
-We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
+We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
 
 <img src="../images/tutorials/connect_esp8266/cover.png"/>
 
@@ -71,7 +71,7 @@ The ESP3266 Development board's ports will not be recognized by the Arduino IDE	
 
 ## Download the generated integration script
 
-**5.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**5.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 
 <img src="../images/tutorials/create_thing/code_generators.png" />
 

@@ -1,5 +1,10 @@
 {
   "Description": "Executes Vorto Code Generators",
+  "Globals": {
+    "Api" : {
+      "BinaryMediaTypes" : ["*~1*"]
+    }
+  },
   "Resources": {
     "VortoGeneratorsExecutor": {
       "Type": "AWS::Serverless::Function",

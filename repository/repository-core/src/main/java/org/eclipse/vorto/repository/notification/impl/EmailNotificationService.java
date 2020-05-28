@@ -15,16 +15,15 @@ package org.eclipse.vorto.repository.notification.impl;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.notification.IMessage;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.sun.mail.smtp.SMTPMessage;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -44,7 +43,7 @@ public class EmailNotificationService implements INotificationService {
   private String smtpPort;
 
   @Value("${mail.smtp.auth}")
-  private String needsAuth = "false";
+  private String needsAuth = "true";
 
   @Value("${mail.login.username}")
   private String mailUser;
@@ -61,31 +60,36 @@ public class EmailNotificationService implements INotificationService {
     if (!message.getRecipient().hasEmailAddress()) {
       return;
     }
-
+    Transport transport = null;
     try {
       final Session emailSession = newSession();
-      Transport transport = emailSession.getTransport("smtp");
-      try {
+      transport = emailSession.getTransport();
+      if (Boolean.valueOf(needsAuth)) {
+        transport.connect(smtpHost, mailUser, mailPassword);
+      } else {
         transport.connect();
-      } catch (Exception connectEx) {
-        logger.error("Problem connecting to Email server", connectEx);
-        return;
       }
-      SMTPMessage smtpMessage = new SMTPMessage(emailSession);
-      smtpMessage.setFrom(new InternetAddress(this.mailFrom));
-      smtpMessage.setRecipients(Message.RecipientType.TO,
+      MimeMessage mimeMessage = new MimeMessage(emailSession);
+      mimeMessage.setFrom(new InternetAddress(this.mailFrom));
+      mimeMessage.setRecipients(Message.RecipientType.TO,
           InternetAddress.parse(message.getRecipient().getEmailAddress()));
-      smtpMessage.setHeader("Content-Type", "text/html");
-      smtpMessage.setSubject(message.getSubject());
-      smtpMessage.setContent(message.getContent(), "text/html");
-      smtpMessage.setNotifyOptions(SMTPMessage.NOTIFY_SUCCESS);
-      smtpMessage.setReturnOption(1);
-      transport.sendMessage(smtpMessage,
+      mimeMessage.setHeader("Content-Type", "text/html");
+      mimeMessage.setSubject(message.getSubject());
+      mimeMessage.setContent(message.getContent(), "text/html");
+      transport.sendMessage(mimeMessage,
           InternetAddress.parse(message.getRecipient().getEmailAddress()));
       transport.close();
     } catch (MessagingException me) {
       logger.error(me.getMessage(), me);
       throw new NotificationProblem("Problem sending email", me);
+    } finally {
+      if (transport != null) {
+        try {
+          transport.close();
+        } catch (MessagingException mme) {
+          logger.error(mme.getMessage(), mme);
+        }
+      }
     }
 
   }
@@ -94,48 +98,13 @@ public class EmailNotificationService implements INotificationService {
     Properties props = new Properties();
     props.setProperty("mail.smtp.host", this.smtpHost);
     props.setProperty("mail.smtp.port", this.smtpPort);
-    final String mailUser = this.mailUser;
-    final String mailPassword = this.mailPassword;
+    props.setProperty("mail.transport.protocol", "smtp");
+    if (Boolean.valueOf(needsAuth)) {
+      props.setProperty("mail.smtp.starttls.enable", "true");
+    }
+    props.setProperty("mail.smtp.auth", this.needsAuth);
 
-    return Session.getDefaultInstance(props,
-        this.needsAuth.equalsIgnoreCase("false") ? null : new javax.mail.Authenticator() {
-          @Override
-          protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(mailUser, mailPassword);
-          }
-        });
-  }
-
-  public String getMailFrom() {
-    return mailFrom;
-  }
-
-  public void setMailFrom(String mailFrom) {
-    this.mailFrom = mailFrom;
-  }
-
-  public String getSmtpHost() {
-    return smtpHost;
-  }
-
-  public void setSmtpHost(String smtpHost) {
-    this.smtpHost = smtpHost;
-  }
-
-  public String getSmtpPort() {
-    return smtpPort;
-  }
-
-  public void setSmtpPort(String smtpPort) {
-    this.smtpPort = smtpPort;
-  }
-
-  public String getNeedsAuth() {
-    return needsAuth;
-  }
-
-  public void setNeedsAuth(String needsAuth) {
-    this.needsAuth = needsAuth;
+    return Session.getDefaultInstance(props);
   }
 
 }

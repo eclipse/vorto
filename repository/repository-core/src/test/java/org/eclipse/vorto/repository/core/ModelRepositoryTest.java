@@ -317,7 +317,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     setReleaseState(color);
     setReleaseState(color6);
     ModelId id = this.repositoryFactory.getRepository(createUserContext("admin"))
-        .getLatestModelVersionId(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+        .getLatestModelVersionIfLatestTagIsSet(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "latest"));
     assertEquals("org.eclipse.vorto.examples.type:Color:1.0.1", id.getPrettyFormat());
   }
 
@@ -327,7 +327,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
     importModel("Color6.type");
     importModel("sample.mapping");
     ModelId id = this.repositoryFactory.getRepository(createUserContext("admin"))
-            .getLatestModelVersionId(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+            .getLatestModelVersionIfLatestTagIsSet(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "latest"));
     assertNull(id);
   }
 

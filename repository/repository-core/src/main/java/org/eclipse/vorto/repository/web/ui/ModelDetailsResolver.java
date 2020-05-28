@@ -43,7 +43,7 @@ public class ModelDetailsResolver {
         resolver.resolve(new ResolveQuery(serviceKey, attributeId, attributeValue, stereoType));
 
     if (resolvedId != null) {
-      return "redirect:/#/details/" + resolvedId.getPrettyFormat();
+      return "redirect:/#!/details/" + resolvedId.getPrettyFormat();
     } else {
       throw new ModelNotFoundException("No Model found");
     }

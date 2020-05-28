@@ -50,7 +50,7 @@ public interface IModelRepository {
    * @param modelId - the ID of the model, version can be blank - it will be ignored
    * @return the model ID with the latest version number
    */
-  ModelId getLatestModelVersionId(ModelId modelId);
+  ModelId getLatestModelVersionIfLatestTagIsSet(ModelId modelId);
 
   /**
    * Convenience method that loads an entire model and resolves all mappings that are used by this model

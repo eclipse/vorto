@@ -1,0 +1,53 @@
+#
+# Copyright (c) 2020 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License 2.0 which is available at
+# https://www.eclipse.org/legal/epl-2.0
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+repo:
+  configFile: vorto-repository-config-mysql.json
+spring:
+  datasource:
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    wait_timeout: 180
+    validationInterval: 60
+    validationQuery: SELECT 1
+
+  # The following Spring datasource properties should be set as environmental variables, i.e. not here:
+  # spring.datasource.driver-class-name (e.g. org.mariadb.jdbc.Driver)
+  # spring.datasource.url (e.g. jdbc:mysql://localhost:3306/[your DB name]
+  # spring.datasource.username
+  # spring.datasource.password
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+  hibernate:
+    ddl-auto: validate
+
+
+server:
+  port: 8080
+  contextPath: /
+  use-forward-headers: true
+  admin: aedelmann,erlemantos,kolotu,mena-bosch,t-gauss
+
+eidp_clientid: 123
+eidp_secret: 123
+
+plugins : "W3sia2V5IiA6ICJib3NjaGlvdHN1aXRlIiwgInBsdWdpblR5cGUiOiAiZ2VuZXJhdG9yIiwgImFwaVZlcnNpb24iIDogIjIiICwgImVuZHBvaW50IiA6ICJodHRwczovL2l5bm8zbXp4MWguZXhlY3V0ZS1hcGkuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb20vRGV2ZWxvcG1lbnQifSwKCQkJeyJrZXkiIDogImVjbGlwc2VkaXR0byIsICJwbHVnaW5UeXBlIjogImdlbmVyYXRvciIsICJhcGlWZXJzaW9uIiA6ICIyIiAsICJlbmRwb2ludCIgOiAiaHR0cHM6Ly9peW5vM216eDFoLmV4ZWN1dGUtYXBpLmV1LWNlbnRyYWwtMS5hbWF6b25hd3MuY29tL0RldmVsb3BtZW50In0sCgkJICAgIHsia2V5IiA6ICJlY2xpcHNlaG9ubyIsICJwbHVnaW5UeXBlIjogImdlbmVyYXRvciIsICJhcGlWZXJzaW9uIiA6ICIyIiAsICJlbmRwb2ludCIgOiAiaHR0cHM6Ly9peW5vM216eDFoLmV4ZWN1dGUtYXBpLmV1LWNlbnRyYWwtMS5hbWF6b25hd3MuY29tL0RldmVsb3BtZW50In0sCgkJICAgIHsia2V5IiA6ICJwcm90b2J1ZiIsICJwbHVnaW5UeXBlIjogImdlbmVyYXRvciIsICJhcGlWZXJzaW9uIiA6ICIyIiAsICJlbmRwb2ludCIgOiAiaHR0cHM6Ly9peW5vM216eDFoLmV4ZWN1dGUtYXBpLmV1LWNlbnRyYWwtMS5hbWF6b25hd3MuY29tL0RldmVsb3BtZW50IiwidGFnIiA6ICJkZW1vIn0sCgkJICAgIHsia2V5IiA6ICJqc29uc2NoZW1hIiwgInBsdWdpblR5cGUiOiAiZ2VuZXJhdG9yIiwgImFwaVZlcnNpb24iIDogIjIiICwgImVuZHBvaW50IiA6ICJodHRwczovL2l5bm8zbXp4MWguZXhlY3V0ZS1hcGkuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb20vRGV2ZWxvcG1lbnQiLCJ0YWciIDogImRlbW8ifSwKCQkgICAgeyJrZXkiIDogImF6dXJlIiwgInBsdWdpblR5cGUiOiAiZ2VuZXJhdG9yIiwgImFwaVZlcnNpb24iIDogIjIiICwgImVuZHBvaW50IiA6ICJodHRwczovL2l5bm8zbXp4MWguZXhlY3V0ZS1hcGkuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb20vRGV2ZWxvcG1lbnQiLCJ0YWciIDogImRlbW8ifSwKIHsia2V5IiA6ICJvcGVuYXBpIiwgInBsdWdpblR5cGUiOiAiZ2VuZXJhdG9yIiwgImFwaVZlcnNpb24iIDogIjIiICwgImVuZHBvaW50IiA6ICJodHRwczovL2l5bm8zbXp4MWguZXhlY3V0ZS1hcGkuZXUtY2VudHJhbC0xLmFtYXpvbmF3cy5jb20vRGV2ZWxvcG1lbnQifSwKCQkgICAgeyJrZXkiIDogImx3bTJtIiwgInBsdWdpblR5cGUiOiAiaW1wb3J0ZXIiLCAibmFtZSIgOiAiTHdNMk0iICwgImZpbGVUeXBlIiA6ICIueG1sIiwgImRlc2NyaXB0aW9uIiA6ICJDb252ZXJ0cyBMd00yTSBkZXNjcmlwdGlvbnMgdG8gVm9ydG8iLCAiZW5kcG9pbnQiIDogImh0dHBzOi8vaXlubzNtengxaC5leGVjdXRlLWFwaS5ldS1jZW50cmFsLTEuYW1hem9uYXdzLmNvbS9EZXZlbG9wbWVudCJ9XQ=="
+
+mail:
+  smtp:
+    host: localhost
+    port: 25
+    auth: false
+  from: vorto-dev@eclipse.org

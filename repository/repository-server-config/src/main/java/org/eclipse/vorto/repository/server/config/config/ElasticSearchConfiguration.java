@@ -48,7 +48,7 @@ import com.google.common.base.Strings;
  *
  */
 @Configuration
-@Profile(value = {"prod", "int", "local-docker", "local-dev"})
+@Profile(value = {"prod", "int", "local-docker", "local-dev", "local-dev-mysql"})
 public class ElasticSearchConfiguration {
   
   @Value("${server.config.skipSslVerification:false}")
@@ -88,13 +88,13 @@ public class ElasticSearchConfiguration {
   private ITenantService tenantService;
   
   @Bean
-  @Profile(value = { "prod", "int", "local-docker", "local-dev" })
+  @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql" })
   public ElasticSearchService elasticSearch() {
     return new ElasticSearchService(client,repositoryFactory,tenantService);
   }
   
   @Bean
-  @Profile({ "local-docker", "local-dev" })
+  @Profile({ "local-docker", "local-dev", "local-dev-mysql" })
   public RestHighLevelClient indexingClient() {
     RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("localhost", 9200, "http"),
         new HttpHost("localhost", 9201, "http"));

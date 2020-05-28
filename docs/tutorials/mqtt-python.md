@@ -1,7 +1,7 @@
 # Integrating a device with Python into the Bosch IoT Hub using Vorto
 
 This tutorial explains how to integrate a device with the Bosch IoT Suite using MQTT. Your device should already be created as a thing from an Information Model at this point.   
-We will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) again.
+We will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) again.
 
 <img src="../images/tutorials/connect_grovepi/cover.png"/>
 
@@ -40,7 +40,7 @@ You can either use a display, keyboard, and mouse to directly work on the Raspbe
 
 ## Download the generated integration script
 
-**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 <img src="../images/tutorials/create_thing/code_generators.png" />
 
 **2.** We want to integrate a device using Python. Click the `Source Code` button to download the generated python script.
@@ -122,7 +122,7 @@ infomodel.cpuTemperature.value = {
     
 
     
-The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) is a [Temperature Function Block](https://vorto.eclipse.org/#/details/org.eclipse.vorto:Temperature:1.0.0). 
+The `cpuTemperature` in our [Raspbi IM](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0) is a [Temperature Function Block](https://vorto.eclipse.org/#!/details/org.eclipse.vorto:Temperature:1.0.0). 
 ```js
 infomodel RaspberryPi {
 	functionblocks {
@@ -140,7 +140,7 @@ functionblock Temperature {
     }
 }
 ```
-As we can see, it has a `value` which is a [SensorValue Data Type](https://vorto.eclipse.org/#/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
+As we can see, it has a `value` which is a [SensorValue Data Type](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.types:SensorValue:1.0.0). This DT has one mandatory value, `currentMeasured` and two optional ones.   
 Since the nesting ends with this DT, we know that the path to our `currentMeasured` and optional values is:   
 ```js
 cpuTemperature -> value -> currentMeasured, minMeasured, ...

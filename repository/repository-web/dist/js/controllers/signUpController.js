@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 define(["../init/appController"],function(repositoryControllers) {
 
 repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', "$uibModal", 
@@ -21,14 +33,17 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
     		        $http.post('./rest/accounts', {
     		            headers: {'Content-Type': "application/json"}
     		        })
-    		        .success( function(data, status, headers, config) {
-    		        	$scope.isAcceptingTermsAndCondition = false;
-    		            $rootScope.init();
-    		            $location.path('/');
-    		            modalInstance.dismiss();
-    		        }).error(function(data, status, headers, config) {
-    		        	$scope.isAcceptingTermsAndCondition = false;
-    		        });
+    		        .then(
+    		        		function(result) {
+    		        			$scope.isAcceptingTermsAndCondition = false;
+    		            	$rootScope.init();
+    		            	$location.path('/');
+    		            	modalInstance.dismiss();
+    		        		},
+										function(error) {
+    		        			$scope.isAcceptingTermsAndCondition = false;
+    		        		}
+								);
     		    };
     		    
     		    $scope.showPrivacyPolicy =  function() {

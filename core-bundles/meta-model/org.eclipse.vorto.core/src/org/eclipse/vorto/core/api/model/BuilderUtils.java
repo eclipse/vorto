@@ -370,6 +370,11 @@ public abstract class BuilderUtils {
       this.fb.getEvents().add(event);
       return this;
     }
+
+    public FunctionblockBuilder withSuperType(FunctionblockModel functionblockModel) {
+      this.model.setSuperType(functionblockModel);
+      return this;
+    }
     
     public FunctionblockBuilder withOperation(String operationName, ReturnType returnType, String description, boolean breakable, Param... params) {
       Operation operation = FunctionblockFactory.eINSTANCE.createOperation();

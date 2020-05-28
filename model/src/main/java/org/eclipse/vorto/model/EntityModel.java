@@ -19,6 +19,8 @@ public class EntityModel extends AbstractModel implements IReferenceType {
 
   private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 
+  private ModelId superType;
+
   public EntityModel(ModelId modelId) {
     super(modelId, ModelType.Datatype);
   }
@@ -44,6 +46,14 @@ public class EntityModel extends AbstractModel implements IReferenceType {
     return "EntityModelDto [properties=" + properties + "]";
   }
 
+  public ModelId getSuperType() {
+    return superType;
+  }
+
+  public void setSuperType(ModelId superType) {
+    this.superType = superType;
+  }
+
 
   public static class EntityBuilder extends Builder<EntityModel> {
     
@@ -53,6 +63,11 @@ public class EntityModel extends AbstractModel implements IReferenceType {
     
     public EntityBuilder property(ModelProperty property) {
       this.model.properties.add(property);
+      return this;
+    }
+
+    public EntityBuilder superType(ModelId modelId) {
+      this.model.setSuperType(modelId);
       return this;
     }
   }

@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto
+version 1.0.0
+displayname "Battery"
+description "Functionblock for Battery"
+category peripheral
+using org.eclipse.vorto.types.Percentage ; 1.0.0
+using org.eclipse.vorto.Voltage ; 1.0.0
+
+functionblock Battery extends org.eclipse.vorto.Voltage {
+	configuration {
+		optional remainingCapacityAmpHour as float
+	}
+
+	status {
+	  mandatory remainingCapacity as Percentage
+	}
+
+}
