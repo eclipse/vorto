@@ -38,12 +38,6 @@
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-core</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		
 		
@@ -91,13 +85,6 @@
 			<artifactId>spring-data-commons</artifactId>
 			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>

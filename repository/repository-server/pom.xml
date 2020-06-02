@@ -32,12 +32,6 @@
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-core</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -110,12 +104,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>angular-swagger-ui</artifactId>
@@ -202,8 +190,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.web </artifactId>
-			<version>${xtext.version}</version>
+			<artifactId>org.eclipse.xtext.web</artifactId>
 		</dependency>
 		
 		<dependency>
