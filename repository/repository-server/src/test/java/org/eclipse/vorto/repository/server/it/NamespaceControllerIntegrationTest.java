@@ -12,60 +12,35 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * This class augments the test coverage on the NamespaceController. <br/>
@@ -78,69 +53,7 @@ import org.springframework.web.context.WebApplicationContext;
 @TestPropertySource(locations = {"classpath:application-test.yml"})
 @ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
 @Sql("classpath:prepare_tables.sql")
-public class NamespaceControllerIntegrationTest {
-
-
-  @Configuration
-  @Profile("test")
-  public static class TestConfig {
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-      return new PropertySourcesPlaceholderConfigurer();
-    }
-
-  }
-
-  protected MockMvc repositoryServer;
-
-  @Autowired
-  protected WebApplicationContext wac;
-
-  @LocalServerPort
-  protected int port;
-
-  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userSysadmin;
-  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator;
-  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator2;
-
-  @BeforeClass
-  public static void configureOAuthConfiguration() {
-    System.setProperty("github_clientid", "foo");
-    System.setProperty("github_clientSecret", "foo");
-    System.setProperty("eidp_clientid", "foo");
-    System.setProperty("eidp_clientSecret", "foo");
-    System.setProperty("line.separator", "\n");
-  }
-
-  private ObjectMapper objectMapper = new ObjectMapper();
-
-  /**
-   * Since this is set to 2 in test profile for reasons unclear, taking value directly from config
-   * to test cases where users create an excessive number of namespaces.
-   */
-  @Value("${config.privateNamespaceQuota}")
-  private String privateNamespaceQuota;
-
-  private static final String USER_SYSADMIN_NAME = "userSysadmin";
-  private static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
-  private static final String USER_MODEL_CREATOR_2_NAME = "userModelCreator2";
-  private static final String BOSCH_IOT_SUITE_AUTH = "BOSCH-IOT-SUITE-AUTH";
-  private static final String GITHUB = "GITHUB";
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private UserService userService;
-
-  @Before
-  public void startUpServer() throws Exception {
-    repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
-    userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
-    userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass");
-  }
+public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   /**
    * Uses a non-compliant namespace notation
@@ -1109,65 +1022,6 @@ public class NamespaceControllerIntegrationTest {
     )
 
         .andExpect(status().isForbidden());
-  }
-
-  // --- utility methods below ---
-  private void checkCollaboratorRoles(String namespaceName, String collaboratorName,
-      String... roles) throws Exception {
-    repositoryServer.perform(
-        get(String.format("/rest/namespaces/%s/users", namespaceName))
-            .with(userSysadmin)
-    )
-        .andDo(handler -> {
-          Collection<Collaborator> collaborators = objectMapper
-              .readValue(handler.getResponse().getContentAsString(),
-                  new TypeReference<Collection<Collaborator>>() {
-                  });
-          Optional<Collaborator> maybeTarget = collaborators.stream()
-              .filter(c -> c.getUserId().equals(collaboratorName)).findAny();
-          assertTrue(maybeTarget.isPresent());
-          if (maybeTarget.isPresent()) {
-            Collaborator target = maybeTarget.get();
-            assertEquals(target.getRoles(), Arrays.asList(roles));
-          }
-        });
-  }
-
-  private void createTechnicalUserAndAddToNamespace(String namespace, Collaborator technicalUser)
-      throws Exception {
-    repositoryServer.perform(
-        post(String.format("/rest/namespaces/%s/users", namespace))
-            .content(objectMapper.writeValueAsString(technicalUser))
-            .contentType(MediaType.APPLICATION_JSON)
-            .with(userSysadmin))
-        .andExpect(status().isCreated());
-  }
-
-
-  private void addCollaboratorToNamespace(String namespace, Collaborator collaborator)
-      throws Exception {
-    repositoryServer.perform(
-        put(String.format("/rest/namespaces/%s/users", namespace))
-            .content(objectMapper.writeValueAsString(collaborator))
-            .contentType(MediaType.APPLICATION_JSON)
-            .with(userSysadmin))
-        .andExpect(status().isOk());
-  }
-
-  private void createNamespaceSuccessfully(String namespaceName,
-      UserRequestPostProcessor actingUser) throws Exception {
-    // creates namespace first
-    repositoryServer
-        .perform(
-            put(String.format("/rest/namespaces/%s", namespaceName))
-                .contentType("application/json").with(actingUser)
-        )
-        .andExpect(status().isCreated())
-        .andExpect(
-            content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
-            )
-        );
   }
 
 }

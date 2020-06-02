@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class RemoveRoleAccessPolicy implements IWorkflowFunction {
 
@@ -28,11 +29,11 @@ public class RemoveRoleAccessPolicy implements IWorkflowFunction {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RemoveRoleAccessPolicy.class);
   
-  private IRole roleToRemove;
+  private Supplier<IRole> roleToRemove;
 
-  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, IRole roleToRemove) {
+  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Supplier<IRole> role) {
     this.repositoryFactory = repositoryFactory;
-    this.roleToRemove = roleToRemove;
+    this.roleToRemove = role;
   }
 
   @Override
@@ -40,10 +41,10 @@ public class RemoveRoleAccessPolicy implements IWorkflowFunction {
     IModelPolicyManager policyManager =
         repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
     
-    LOGGER.info("Removing full access of model to " + roleToRemove.getName() + " for " + model.getId());
+    LOGGER.info("Removing full access of model to " + roleToRemove.get().getName() + " for " + model.getId());
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
     for (PolicyEntry policy : policies) {
-      if (policy.getPrincipalId().equals(roleToRemove.getName()) &&
+      if (policy.getPrincipalId().equals(roleToRemove.get().getName()) &&
           policy.getPrincipalType() == PrincipalType.Role) {
         policyManager.removePolicyEntry(model.getId(), policy);
         break;

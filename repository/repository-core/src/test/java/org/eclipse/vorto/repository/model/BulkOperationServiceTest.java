@@ -72,7 +72,6 @@ public class BulkOperationServiceTest extends AbstractIntegrationTest {
     }
        
     IBulkOperationsService modelService = getModelService("reviewer");
-    
     modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
     fail("Making a model public if done by non-publisher should have thrown an error!");

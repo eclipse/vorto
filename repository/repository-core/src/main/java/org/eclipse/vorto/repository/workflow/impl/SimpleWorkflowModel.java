@@ -70,17 +70,17 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		final IWorkflowCondition isAdminCondition = new IsAdminCondition();
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository, namespaceService, userNamespaceRoleService, roleService);
-		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, getRole("model_promoter", roleService), namespaceService, userNamespaceRoleService);
+		final IWorkflowCondition isPromoterCondition = new HasRoleCondition(userRepository, () -> getRole("model_promoter", roleService), namespaceService, userNamespaceRoleService);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		final IWorkflowFunction bulkRelease = new BulkReleaseFunction(workflowService, repositoryFactory);
 		final IWorkflowFunction bulkApprove = new BulkApproveFunction(workflowService, repositoryFactory);
 
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantCollaboratorAccessPolicy(repositoryFactory);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(repositoryFactory);
-		final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(repositoryFactory, getRole("model_publisher", roleService));
+		final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(repositoryFactory, () -> getRole("model_publisher", roleService));
 		final IWorkflowFunction claimOwnership = new ClaimOwnership(repositoryFactory);
 		final IWorkflowFunction removeModelReviewerPolicy = new RemoveModelReviewerPolicy(repositoryFactory);
-		final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(repositoryFactory, getRole("model_promoter", roleService));
+		final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(repositoryFactory, () -> getRole("model_promoter", roleService));
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
@@ -91,7 +91,6 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
 		ACTION_RELEASE.setConditions(new OrCondition(isPromoterCondition, isAdminCondition));
-//		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repositoryFactory,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		ACTION_RELEASE.setFunctions(bulkRelease,pendingWorkItemNotification, grantReviewerModelAccess, removeModelPromoterPolicy);
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);

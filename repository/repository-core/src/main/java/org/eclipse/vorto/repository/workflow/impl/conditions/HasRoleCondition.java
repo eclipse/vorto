@@ -21,22 +21,23 @@ import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class HasRoleCondition extends AbstractWorkflowCondition {
 
   private IUserAccountService userRepository;
-  private IRole role;
+  private Supplier<IRole> roleSupplier;
 
-  public HasRoleCondition(IUserAccountService userRepository, IRole role, NamespaceService namespaceService, UserNamespaceRoleService userNamespaceRoleService) {
+  public HasRoleCondition(IUserAccountService userRepository, Supplier<IRole> roleSupplier, NamespaceService namespaceService, UserNamespaceRoleService userNamespaceRoleService) {
     super(namespaceService, userNamespaceRoleService);
     this.userRepository = userRepository;
-    this.role = role;
+    this.roleSupplier = roleSupplier;
   }
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
     User foundUser = userRepository.getUser(user.getUsername());
-    return Objects.nonNull(foundUser) && hasRole(user, foundUser, role);
+    return Objects.nonNull(foundUser) && hasRole(user, foundUser, roleSupplier.get());
   }
 
 

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class GrantRoleAccessPolicy implements IWorkflowFunction {
 
@@ -31,19 +32,19 @@ public class GrantRoleAccessPolicy implements IWorkflowFunction {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GrantRoleAccessPolicy.class);
 
-  private IRole roleToGiveAccess;
+  private Supplier<IRole> roleToGiveAccess;
 
-  public GrantRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, IRole role) {
+  public GrantRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Supplier<IRole> role) {
     this.repositoryFactory = repositoryFactory;
     this.roleToGiveAccess = role;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
-    LOGGER.info("Granting permission of model " + model.getId() + " to " + roleToGiveAccess.getName() + " role");
+    LOGGER.info("Granting permission of model " + model.getId() + " to " + roleToGiveAccess.get().getName() + " role");
     repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication()).addPolicyEntry(
         model.getId(),
-        PolicyEntry.of(roleToGiveAccess.getName(), PrincipalType.Role, Permission.FULL_ACCESS));
+        PolicyEntry.of(roleToGiveAccess.get().getName(), PrincipalType.Role, Permission.FULL_ACCESS));
 
   }
 }

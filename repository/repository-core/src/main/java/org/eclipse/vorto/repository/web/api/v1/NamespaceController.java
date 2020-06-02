@@ -187,7 +187,7 @@ public class NamespaceController {
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}", produces = "application/json")
+  @PutMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
       @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace

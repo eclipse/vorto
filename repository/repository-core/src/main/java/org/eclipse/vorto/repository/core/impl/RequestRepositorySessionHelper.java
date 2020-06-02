@@ -14,8 +14,8 @@ package org.eclipse.vorto.repository.core.impl;
 
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
+import org.eclipse.vorto.repository.core.WorkspaceNotFoundException;
 import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.services.PrivilegeService;
@@ -61,7 +61,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
                 } catch (LoginException e) {
                     throw new UserLoginException(user.getName(), e);
                 } catch (NoSuchWorkspaceException e) {
-                    throw new TenantNotFoundException(workspaceId, e);
+                    throw new WorkspaceNotFoundException(workspaceId, e);
                 } catch (RepositoryException e) {
                     throw new FatalModelRepositoryException("Error while getting repository given workspace ID ["
                             + workspaceId + "] and user [" + user.getName() + "]", e);

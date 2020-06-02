@@ -261,19 +261,19 @@ public abstract class AbstractIntegrationTest {
       if (inv.getArguments()[0].equals("namespace_admin"))
         return Sets.newHashSet(namespace_admin);
 
-      if (inv.getArguments()[0].equals("model_viewer"))
+      if (inv.getArguments()[0].equals("viewer"))
         return Sets.newHashSet(model_viewer);
 
-      if (inv.getArguments()[0].equals("model_creator"))
+      if (inv.getArguments()[0].equals("creator"))
         return Sets.newHashSet(model_creator);
 
-      if (inv.getArguments()[0].equals("model_promoter"))
+      if (inv.getArguments()[0].equals("promoter"))
         return Sets.newHashSet(model_promoter);
 
-      if (inv.getArguments()[0].equals("model_publisher"))
+      if (inv.getArguments()[0].equals("publisher"))
         return Sets.newHashSet(model_publisher);
 
-      if (inv.getArguments()[0].equals("model_reviewer"))
+      if (inv.getArguments()[0].equals("reviewer"))
         return Sets.newHashSet(model_reviewer);
 
       return Sets.newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher, model_reviewer);

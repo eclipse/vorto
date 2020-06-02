@@ -12,19 +12,19 @@
  */
 package org.eclipse.vorto.repository.core;
 
-public class TenantNotFoundException extends ModelRepositoryException {
+public class WorkspaceNotFoundException extends ModelRepositoryException {
 
   /**
    * 
    */
   private static final long serialVersionUID = 6204999779117905073L;
 
-  public TenantNotFoundException(String tenantId, Throwable cause) {
-    super("No tenant '" + tenantId + "'", cause);
+  public WorkspaceNotFoundException(String tenantId, Throwable cause) {
+    super("No workspace '" + tenantId + "'", cause);
   }
   
-  public TenantNotFoundException(String namespace) {
-    super("Tenant not found for namespace '" + namespace + "'");
+  public WorkspaceNotFoundException(String namespace) {
+    super("Workspace not found for namespace '" + namespace + "'");
   }
 
 }

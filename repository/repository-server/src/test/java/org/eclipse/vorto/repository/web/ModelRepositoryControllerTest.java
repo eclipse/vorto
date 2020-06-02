@@ -12,36 +12,71 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.google.common.collect.Sets;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.server.it.IntegrationTestBase;
 import org.eclipse.vorto.repository.server.it.TestModel;
-import org.junit.Ignore;
+import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
+public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
   @Autowired
   protected AttachmentValidator attachmentValidator;
 
-  @Override
-  protected void setUpTest() throws Exception {
-    // accountService = context.getBean(IUserAccountService.class);
+  TestModel testModel;
+
+
+  @Before
+  public void setUpTest() throws Exception {
+    repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+    userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
+    userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
+    userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass"); //TODO nonTenantUser
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer, userCreator);
+    createNamespaceSuccessfully(testModel.namespace, userSysadmin);
+    Collaborator collaborator = new Collaborator();
+    collaborator.setRoles(Sets.newHashSet("model_creator"));
+    collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    collaborator.setTechnicalUser(false);
+    addCollaboratorToNamespace(testModel.namespace, collaborator);
+    testModel.createModel(repositoryServer, userSysadmin);
+  }
+  private String createContent(String arg) {
+    return null;
+  }
+
+  private String createModel(Object o, String arg0, String arg) {
+    return null;
   }
 
   private ResultActions createImage(String filename, String modelId,
@@ -74,11 +109,12 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
 
   @Test
   public void getModelImage() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin)
+        .andDo(e -> e.getResponse())
         .andExpect(status().isCreated());
 
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isOk());
   }
 
@@ -88,7 +124,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
   @Test
   public void getModelImageWithEmptyAttachments() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -106,14 +142,14 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
    */
   @Test
   public void uploadModelImage() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin)
         .andExpect(status().isCreated());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isOk());
-    createImage("model_image.png", testModel.prettyName, userAdmin).andExpect(status().isCreated());
+    createImage("model_image.png", testModel.prettyName, userSysadmin).andExpect(status().isCreated());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isOk());
   }
 
@@ -125,93 +161,45 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
    */
   @Test
   public void uploadModelImageSizeTooLarge() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin, (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin, (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
         .andExpect(status().isPayloadTooLarge());
   }
 
   @Test
   public void uploadModelImageSizeReasonable() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userAdmin, (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin, (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
         .andExpect(status().isCreated());
-  }
-
-
-  @Ignore
-  @Test
-  public void saveModel() throws Exception {
-    // Test normal save
-    String testModelId = "com.test:TrackingDevice:1.0.0";
-    String locationModelId = "com.test:Location:1.0.0";
-
-    // making sure the model is not there
-    try {
-      repositoryServer.perform(delete("/rest/models/" + testModelId).with(userAdmin));
-      repositoryServer.perform(delete("/rest/models/" + locationModelId).with(userAdmin));
-    } catch (Exception e) {
-      // expected if the user isn't there
-    }
-
-    this.createModel(userCreator, "Location.fbmodel", locationModelId);
-    this.createModel(userCreator, "TrackingDevice.infomodel", testModelId);
-    String json = createContent("TrackingDevice.infomodel");
-
-    this.repositoryServer.perform(put("/rest/models/" + testModelId)
-        .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-        .andExpect(status().isOk());
-    this.repositoryServer.perform(put("/rest/models/" + testModelId)
-        .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
-        .andExpect(status().isOk());
-    // test with existing Model but user has no read permission
-    this.repositoryServer.perform(put("/rest/models/" + testModelId)
-        .contentType(MediaType.APPLICATION_JSON).content(json).with(userStandard))
-        .andExpect(status().isUnauthorized());
-    // test save with non existitng modelid
-    this.repositoryServer
-        .perform(put("/rest/models/com.test1:TrackinDevice:0.0.1")
-            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
-        .andExpect(status().isNotFound());
-    // test save with broken model
-    this.repositoryServer
-        .perform(put("/rest/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-            .content(json.replace("infomodel", "tinfomodel")).with(userAdmin))
-        .andExpect(status().isBadRequest());
-    // test save with changed model id
-    this.repositoryServer
-        .perform(put("/rest/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-            .content(json.replace("TrackingDevice", "RackingDevice")).with(userAdmin))
-        .andExpect(status().isBadRequest());
-    repositoryServer.perform(delete("/rest/models/" + testModelId).with(userAdmin));
-    repositoryServer.perform(delete("/rest/models/" + locationModelId).with(userAdmin));
   }
 
   @Test
   public void createModelWithAPI() throws Exception {
     String modelId = "com.test.Location:1.0.0";
     String fileName = "Location.fbmodel";
+    createNamespaceSuccessfully("com.test", userSysadmin);
     repositoryServer
         .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
     repositoryServer
         .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isConflict());
-    repositoryServer.perform(delete("/rest/models/" + modelId).with(userAdmin));
+    repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin));
 
-    
+
   }
 
   @Test
   public void createVersionOfModel() throws Exception {
     TestModel testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer, userAdmin);
+    testModel.createModel(repositoryServer, userSysadmin);
     repositoryServer.perform(post("/rest/models/" + testModel.prettyName + "/versions/1.0.1")
-        .with(userAdmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
     repositoryServer.perform(post("/rest/models/com.test1:Location:1.0.0/versions/1.0.1")
-        .with(userAdmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
-    repositoryServer.perform(delete("/rest/models/" + testModel.prettyName).with(userAdmin));
+        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+    repositoryServer.perform(delete("/rest/models/" + testModel.prettyName).with(userSysadmin));
 
-    
+
   }
 
   @Test
@@ -221,83 +209,83 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     String json = createContent("Location.fbmodel");
 
     // making sure the model is not there
-    repositoryServer.perform(delete("/rest/models/" + modelId).with(userAdmin))
+    repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    this.createModel(userCreator, fileName, modelId);
-    repositoryServer.perform(delete("/rest/models/" + modelId).with(userAdmin))
+    this.createModel(userModelCreator, fileName, modelId);
+    repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer.perform(put("/rest/models/" + modelId)
-        .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+        .contentType(MediaType.APPLICATION_JSON).content(json).with(userSysadmin))
         .andExpect(status().isNotFound());
 
     // delete non existent model
-    repositoryServer.perform(delete("/rest/models/com.test:ASDASD:0.0.1").with(userAdmin))
+    repositoryServer.perform(delete("/rest/models/com.test:ASDASD:0.0.1").with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    
+
   }
 
   @Test
   public void getUserModels() throws Exception {
-    this.repositoryServer.perform(get("/rest/models/mine/download").with(userAdmin))
+    this.repositoryServer.perform(get("/rest/models/mine/download").with(userSysadmin))
         .andExpect(status().isOk());
 
-    
+
   }
 
   @Test
   public void downloadMappingsForPlatform() throws Exception {
     this.repositoryServer
         .perform(
-            get("/rest/models/" + testModel.prettyName + "/download/mappings/test").with(userAdmin))
+            get("/rest/models/" + testModel.prettyName + "/download/mappings/test").with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
-        .perform(get("/rest/models/com.test:Test1:1.0.0/download/mappings/test").with(userAdmin))
+        .perform(get("/rest/models/com.test:Test1:1.0.0/download/mappings/test").with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    
+
   }
 
   @Test
   public void runDiagnostics() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/diagnostics").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/diagnostics").with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
-        .perform(get("/rest/models/test:Test123:1.0.0/diagnostics").with(userAdmin))
+        .perform(get("/rest/models/test:Test123:1.0.0/diagnostics").with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    
+
   }
 
   @Test
   public void getPolicies() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policies").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policies").with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policies").with(userCreator))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policies").with(userModelCreator))
         .andExpect(status().isOk());
-    this.repositoryServer.perform(get("/rest/models/test:Test123:1.0.0/policies").with(userAdmin))
+    this.repositoryServer.perform(get("/rest/models/test:Test123:1.0.0/policies").with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    
+
   }
 
   @Test
   public void getUserPolicy() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(nonTenantUser))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator2))
         .andExpect(status().isUnauthorized());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userAdmin))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userCreator))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator))
         .andExpect(status().isOk());
 
-    
+
   }
 
   @Test
@@ -307,27 +295,27 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
-            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userCreator))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator))
         .andExpect(result -> result.getResponse().getContentAsString().contains(
             "{\"principalId\":\"user3\",\"principalType\":\"User\",\"permission\":\"READ\",\"adminPolicy\":false}"));
 
-    
+
   }
 
   @Test
   public void editOwnPolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Try changing current user policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
-            .contentType(MediaType.APPLICATION_JSON).content(json).with(userCreator))
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userModelCreator))
         .andExpect(status().isBadRequest());
 
-    
+
   }
 
   @Test
@@ -337,10 +325,10 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     // Try changing current user policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
-            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userSysadmin))
         .andExpect(status().isBadRequest());
 
-    
+
   }
 
   @Test
@@ -350,14 +338,14 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
-            .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
+            .contentType(MediaType.APPLICATION_JSON).content(json).with(userSysadmin))
         .andExpect(status().isOk());
     repositoryServer
         .perform(
-            delete("/rest/models/" + testModel.prettyName + "/policies/user2/User").with(userAdmin))
+            delete("/rest/models/" + testModel.prettyName + "/policies/user2/User").with(userSysadmin))
         .andExpect(status().isOk());
 
-    
+
   }
 
   /*
@@ -366,9 +354,9 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
   @Test
   public void makeModelPublicNotReleased() throws Exception {
     this.repositoryServer
-        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userAdmin))
+        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userSysadmin))
         .andExpect(status().isForbidden());
-    
+
   }
 
   /*
@@ -378,14 +366,9 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
   @Test
   public void makeModelPublicNonSysAdmin() throws Exception {
     this.repositoryServer
-        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(nonTenantUser))
+        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userModelCreator2))
         .andExpect(status().isUnauthorized());
-    
+
   }
 
-  
-  
-  /*
-   * public void setTenant(String tenant) { this.tenant = tenant; }
-   */
 }

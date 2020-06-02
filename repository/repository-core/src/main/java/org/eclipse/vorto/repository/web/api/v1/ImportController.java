@@ -12,22 +12,15 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
+import org.eclipse.vorto.repository.core.WorkspaceNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.importer.Context;
-import org.eclipse.vorto.repository.importer.FileUpload;
-import org.eclipse.vorto.repository.importer.IModelImportService;
-import org.eclipse.vorto.repository.importer.IModelImporter;
-import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.importer.*;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -42,15 +35,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -105,9 +97,11 @@ public class ImportController extends AbstractRepositoryController {
           result.setMessage(String.format(UPLOAD_VALID, file.getOriginalFilename()));
         }
       }
-       return new ResponseEntity<UploadModelResult>(result,HttpStatus.OK);
+       return new ResponseEntity<>(result, HttpStatus.OK);
     } catch (IOException e) {
-      return new ResponseEntity<UploadModelResult>(new UploadModelResult(null, e.getMessage(), Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          new UploadModelResult(null, e.getMessage(), Collections.emptyList()),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -128,7 +122,7 @@ public class ImportController extends AbstractRepositoryController {
         workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
       }
 
-      return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);
+      return new ResponseEntity<>(importedModels, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.error("Error Importing model. " + handleId, e);
       throw new IllegalArgumentException("Could not import with handle ID "+handleId, e);
@@ -140,7 +134,7 @@ public class ImportController extends AbstractRepositoryController {
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public List<ImporterInfo> getImporters() {
-    List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
+    List<ImporterInfo> importers = new ArrayList<>();
     this.importerService.getImporters().stream().forEach(importer -> {
       importers.add(new ImporterInfo(importer.getKey(), importer.getSupportedFileExtensions(),
           importer.getShortDescription()));
@@ -154,7 +148,7 @@ public class ImportController extends AbstractRepositoryController {
     if (tenant.isPresent()) {
       return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),tenant.get().getTenantId());
     } else {
-      throw new TenantNotFoundException(namespace);
+      throw new WorkspaceNotFoundException(namespace);
     }
   }
   

@@ -267,9 +267,9 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
     Map<String, IWorkflowFunction[]> stateToFunctionsMap = new HashMap<>();
 
     final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(this.modelRepositoryFactory);
-    final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(this.modelRepositoryFactory, getRole("model_promoter"));
+    final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(this.modelRepositoryFactory, () -> getRole("model_promoter"));
     final GrantCollaboratorAccessPolicy grantCollaboratorAccessPolicy = new GrantCollaboratorAccessPolicy(this.modelRepositoryFactory);
-    final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(this.modelRepositoryFactory, getRole("model_publisher"));
+    final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(this.modelRepositoryFactory, () -> getRole("model_publisher"));
 
     stateToFunctionsMap.put(ModelState.Draft.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy});
     stateToFunctionsMap.put(ModelState.InReview.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, grantReviewerModelAccess, removeModelPromoterPolicy});

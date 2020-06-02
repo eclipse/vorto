@@ -159,7 +159,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean hasRole(User user, Namespace namespace, IRole role) throws DoesNotExistException {
     ServiceValidationUtil.validate(user, namespace, role);
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Verify whether user has role [%s] on namespace [%s]",
             role.getName(), namespace.getName()));
     if (!namespaceRoleRepository.findAll().contains(role)) {
@@ -183,7 +183,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean hasRole(String username, String namespaceName, String roleName)
       throws DoesNotExistException {
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User user = userRepository.findByUsername(username);
@@ -201,7 +201,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<IRole> getRoles(User user, Namespace namespace) throws DoesNotExistException {
     ServiceValidationUtil.validate(user, namespace);
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving roles for user and namespace [%s]", namespace.getName()));
     UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
         .findOne(new UserNamespaceID(user, namespace));
@@ -305,7 +305,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean addRole(String actorUsername, String targetUsername, String namespaceName,
       String roleName) throws OperationForbiddenException, DoesNotExistException {
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User actor = userRepository.findByUsername(actorUsername);
@@ -366,7 +366,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public boolean removeRole(String actorUsername, String targetUsername, String namespaceName,
       String roleName) throws OperationForbiddenException, DoesNotExistException {
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User actor = userRepository.findByUsername(actorUsername);
@@ -465,7 +465,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean setRoles(String actorUsername, String targetUsername, String namespaceName,
       Collection<String> roleNames, boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving user, namespace [%s] and roles [%s]", namespaceName,
             roleNames));
     User actor = userRepository.findByUsername(actorUsername);
@@ -503,7 +503,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean setAllRoles(String actorUsername, String targetUsername, String namespaceName,
       boolean newNamespace)
       throws DoesNotExistException, OperationForbiddenException {
-    LOGGER.info(String
+    LOGGER.debug(String
         .format("Retrieving user and namespace [%s]", namespaceName));
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
@@ -605,7 +605,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public boolean deleteAllRoles(String actorUsername, String targetUsername, String namespaceName,
       boolean deleteNamespace)
       throws DoesNotExistException, OperationForbiddenException {
-    LOGGER.info(String.format("Retrieving users and namespace [%s].", namespaceName));
+    LOGGER.debug(String.format("Retrieving users and namespace [%s].", namespaceName));
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);

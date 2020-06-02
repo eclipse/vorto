@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -244,7 +245,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
     // application event handling
     eventPublisher
-        .publishEvent(new AppEvent(this, target.getUsername(), EventType.NAMESPACE_ADDED));
+        .publishEvent(new AppEvent(this, target.getUsername(), UserContext.user(target.getUsername(), namespace.getWorkspaceId()), EventType.NAMESPACE_ADDED));
 
     return namespace;
   }

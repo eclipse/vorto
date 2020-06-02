@@ -27,7 +27,7 @@ public class IsReviewerCondition extends AbstractWorkflowCondition {
 
   private IUserAccountService userRepository;
 
-  private final IRole role;
+  private RoleService roleService;
 
   public IsReviewerCondition(
       IUserAccountService userRepository,
@@ -37,12 +37,13 @@ public class IsReviewerCondition extends AbstractWorkflowCondition {
 
     super(namespaceService, userNamespaceRoleService);
     this.userRepository = userRepository;
-    role = roleService.findAnyByName("model_reviewer")
-        .orElseThrow(() -> new IllegalStateException("model_reviewer role not found."));
+    this.roleService = roleService;
   }
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
+    IRole role = roleService.findAnyByName("model_reviewer")
+        .orElseThrow(() -> new IllegalStateException("model_reviewer role not found."));
     User foundUser = userRepository.getUser(user.getUsername());
     return Objects.nonNull(foundUser)  && hasRole(user, foundUser, role);
   }

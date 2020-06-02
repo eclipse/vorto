@@ -12,26 +12,14 @@
  */
 package org.eclipse.vorto.repository.tenant;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
+import org.eclipse.vorto.repository.core.WorkspaceNotFoundException;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.AuthorizationProvider;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.utils.PreConditions;
@@ -43,8 +31,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class TenantService implements ITenantService, ApplicationEventPublisherAware {
@@ -72,19 +63,23 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     this.userAccountService = accountService;
   }
 
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
 
+  @Override
   public boolean tenantExist(String tenantId) {
     return tenantRepo.findByTenantId(tenantId) != null;
   }
 
+  @Override
   public boolean conflictsWithExistingNamespace(String namespace) {
     List<Namespace> namespaces = Lists.newArrayList(namespaceRepo.findAll());
     return namespaces.stream().anyMatch(ns -> ns.isInConflictWith(namespace));
   }
 
+  @Override
   @Transactional
   @Deprecated
   public Tenant createOrUpdateTenant(String tenantId, String defaultNamespace,
@@ -167,6 +162,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
         .count();
   }
 
+  @Override
   public Tenant changeTenantAdmins(Tenant tenant, Set<String> newTenantAdmins) {
     updateTenantAdmins(tenant, newTenantAdmins);
     return tenantRepo.save(tenant);
@@ -226,6 +222,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return tenantAdminUsers;
   }
 
+  @Override
   public Optional<Tenant> getTenant(String tenantId) {
     if (tenantId == null) {
       throw new IllegalArgumentException("tenantId should not be null");
@@ -234,16 +231,19 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return Optional.ofNullable(tenantRepo.findByTenantId(tenantId));
   }
 
+  @Override
   public Optional<Tenant> getTenantFromNamespace(String namespace) {
     PreConditions.notNullOrEmpty(namespace, "namespace");
     return getTenants().stream().filter(tn -> tn.owns(namespace)).findFirst();
   }
 
+  @Override
   @Transactional
   public Collection<Tenant> getTenants() {
     return Lists.newArrayList(tenantRepo.findAll(new Sort(Sort.Direction.ASC, "defaultNamespace")));
   }
 
+  @Override
   public boolean updateTenantNamespaces(String tenantId, Set<String> namespaces, IUserContext userContext) {
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNullOrEmpty(namespaces, "namespaces");
@@ -285,6 +285,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     newNamespaces.forEach(ns -> tenant.addNamespace(Namespace.newNamespace(ns)));
   }
 
+  @Override
   public boolean addNamespacesToTenant(String tenantId, Set<String> namespaces) {
     PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
     PreConditions.notNullOrEmpty(namespaces, "namespaces");
@@ -308,7 +309,9 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
     return false;
   }
 
-  public boolean deleteTenant(Tenant tenant, IUserContext userContext) throws TenantNotFoundException {
+  @Override
+  public boolean deleteTenant(Tenant tenant, IUserContext userContext) throws
+      WorkspaceNotFoundException {
     PreConditions.notNull(tenant, "Tenant should not be null");
         
     eventPublisher.publishEvent(new AppEvent(this, tenant, userContext, EventType.TENANT_DELETED));
