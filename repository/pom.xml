@@ -192,11 +192,6 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.eclipse.core</groupId>
-				<artifactId>org.eclipse.core.runtime</artifactId>
-				<version>3.7.0</version>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.6</version>

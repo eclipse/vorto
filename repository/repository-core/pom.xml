@@ -53,11 +53,6 @@
 			<artifactId>dsl-reader</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-		</dependency>
-
 		<!-- Vorto DSL Dependencies -->
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -96,10 +91,6 @@
 			<artifactId>org.eclipse.xtext</artifactId>
 			<exclusions>
 				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>log4j</groupId>
 					<artifactId>log4j</artifactId>
 				</exclusion>
@@ -112,10 +103,6 @@
 				<exclusion>
 					<artifactId>asm</artifactId>
 					<groupId>org.ow2.asm</groupId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
