@@ -57,7 +57,8 @@ For a more in depth introduction into the concepts, feel free to **[read the blo
 
 <br />
 
-If you want to see the full process of creating, integrating and visualizing sensor data for a new device, feel free to watch the webcast [IoT Demo Day Part I: Vorto for Asset Communication Package](https://youtu.be/UA66fJpzNEM). (33min)
+If you want to see the full process of creating, integrating and visualizing sensor data for a new device, feel free to watch the webcast [IoT Demo Day Part I: Vorto for Asset Communication Package](https://youtu.be/UA66fJpzNEM) (33min).
+A Webinar with an introduction into Vorto and a simple use case can be watched here [Webinar: Semantic Modelling in Action - Eclipse Vorto](https://www.youtube.com/watch?v=Ybk10IaqZgY) (55min).
 
 ---
 
@@ -99,6 +100,11 @@ If you want to see the full process of creating, integrating and visualizing sen
 - Map arbitrary device payload to Vorto compliant data structures
   * [Mapping Engine for Java](../mapping-engine/Readme.md)
   * [Decouple IoT solution from connected sensors](tutorials/create_mapping_pipeline.md)
+  
+### Videos
+
+- A. Edelmann, T. Grossmann: [IoT Demo Day Part I: Vorto for Asset Communication Package](https://youtu.be/UA66fJpzNEM) (33min)
+- J. Feinauer, K. Olotu: [Webinar: Semantic Modelling in Action - Eclipse Vorto](https://www.youtube.com/watch?v=Ybk10IaqZgY) (55min)
 
 
 ---
