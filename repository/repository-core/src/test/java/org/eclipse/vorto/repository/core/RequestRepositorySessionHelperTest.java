@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.RequestRepositorySessionHelper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest {
+public class RequestRepositorySessionHelperTest extends UnitTestBase {
 
     private static String TEST_TENANT_ID = "TEST_TENANT_ID";
 

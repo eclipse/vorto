@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.importer;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
@@ -28,7 +28,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class ModelBulkImportTest extends AbstractIntegrationTest {
+public class ModelBulkImportTest extends UnitTestBase {
 
   private BulkUploadHelper bulkUploadHelper;
 

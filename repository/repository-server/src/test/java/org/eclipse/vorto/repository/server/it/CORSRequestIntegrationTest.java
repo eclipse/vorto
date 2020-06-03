@@ -12,26 +12,38 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.web.VortoRepository;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.file.Files;
 import java.util.List;
-import org.eclipse.vorto.model.ModelType;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.MediaType;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Tests for CORS requests with regards to any allowed Origin headers
  * (see application yml configuration).
  */
-public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
+public class CORSRequestIntegrationTest extends IntegrationTestBase {
 
   private static List<String> testValidOrigins;
   private static List<String> testInvalidOrigins;
@@ -44,19 +56,13 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
         .readAllLines(new ClassPathResource("origins/invalid_origins.txt").getFile().toPath());
   }
 
-  @Override
-  protected void setUpTest() throws Exception {
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer, userCreator);
-  }
-
   @Test
   public void testGETRequestsValid() throws Exception {
     for (String origin : testValidOrigins) {
       repositoryServer.perform(
           get("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isOk());
     }
   }
@@ -67,7 +73,7 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
       repositoryServer.perform(
           get("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isForbidden());
     }
   }
@@ -78,7 +84,7 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
       repositoryServer.perform(
           options("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isOk());
     }
   }
@@ -89,7 +95,7 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
       repositoryServer.perform(
           options("/api/v1/models/" + testModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isForbidden());
     }
   }
@@ -98,11 +104,11 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   public void testDELETERequestsValid() throws Exception {
     TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
     for (String origin : testValidOrigins) {
-      newModel.createModel(repositoryServer, userCreator);
+      newModel.createModel(repositoryServer, userModelCreator);
       repositoryServer.perform(
           delete("/rest/models/" + newModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isOk());
     }
   }
@@ -110,12 +116,10 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   @Test
   public void testDELETERequestsInvalid() throws Exception {
     for (String origin : testInvalidOrigins) {
-      TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
-      newModel.createModel(repositoryServer, userCreator);
       repositoryServer.perform(
-          delete("/rest/models/" + newModel.prettyName)
+          delete("/rest/models/" + testModel.prettyName)
               .header("Origin", origin)
-              .with(userCreator))
+              .with(userModelCreator))
           .andExpect(status().isForbidden());
     }
   }
@@ -124,10 +128,11 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   public void testPOSTRequestsValid() throws Exception {
     for (String origin : testValidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(
           post("/rest/models/" + newModel.prettyName + "/InformationModel")
               .header("Origin", origin)
-              .with(userCreator)
+              .with(userModelCreator)
               .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isCreated());
     }
@@ -137,10 +142,11 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   public void testPOSTRequestsInvalid() throws Exception {
     for (String origin : testInvalidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(
           post("/rest/models/" + newModel.prettyName + "/InformationModel")
               .header("Origin", origin)
-              .with(userCreator)
+              .with(userModelCreator)
               .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isForbidden());
     }
@@ -150,16 +156,18 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
   public void testPUTRequestsValid() throws Exception {
     String fileName = "Location.fbmodel";
     String modelId = "com.test:Location:1.0.0";
+    createNamespaceSuccessfully("com.test", userSysadmin);
+    addCollaboratorToNamespace("com.test", userModelCreatorCollaborator());
     repositoryServer.perform(
         delete("/rest/models/" + modelId)
-            .with(userCreator));
+            .with(userModelCreator));
     repositoryServer
         .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
     for (String origin : testValidOrigins) {
       repositoryServer.perform(
-          put("/rest/models/" + modelId).with(userCreator)
+          put("/rest/models/" + modelId).with(userModelCreator)
               .header("Origin", origin)
               .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
           .andExpect(status().isOk());
@@ -167,29 +175,31 @@ public class CORSRequestIntegrationTest extends AbstractIntegrationTest {
     // tries deleting the model once done
     repositoryServer.perform(
         delete("/rest/models/" + modelId)
-            .with(userCreator));
+            .with(userModelCreator));
   }
 
   @Test
   public void testPUTRequestsInvalid() throws Exception {
     String fileName = "Location.fbmodel";
     String modelId = "com.test:Location:1.0.0";
+    createNamespaceSuccessfully("com.test", userSysadmin);
+    addCollaboratorToNamespace("com.test", userModelCreatorCollaborator());
     repositoryServer.perform(
         delete("/rest/models/" + modelId)
-            .with(userCreator));
+            .with(userModelCreator));
     repositoryServer
         .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
-            .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
     for (String origin : testInvalidOrigins) {
       repositoryServer.perform(
-          put("/rest/models/" + modelId).with(userCreator)
+          put("/rest/models/" + modelId).with(userModelCreator)
               .header("Origin", origin)
               .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
           .andExpect(status().isForbidden());
     }
     repositoryServer.perform(
         delete("/rest/models/" + modelId)
-            .with(userCreator));
+            .with(userModelCreator));
   }
 }

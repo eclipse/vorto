@@ -16,7 +16,7 @@ import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.ModelState;
@@ -25,11 +25,9 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class ModelIdToModelContentConverterTest extends AbstractIntegrationTest {
+public class ModelIdToModelContentConverterTest extends UnitTestBase {
 
   @Test
   public void testConvertFbWithMultipleProperty() {

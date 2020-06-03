@@ -1,7 +1,23 @@
+/**
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.server.it;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -19,19 +35,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -61,6 +80,8 @@ public abstract class IntegrationTestBase {
 
     protected MockMvc repositoryServer;
 
+    protected TestModel testModel;
+
     @Autowired
     protected WebApplicationContext wac;
 
@@ -78,6 +99,18 @@ public abstract class IntegrationTestBase {
         System.setProperty("eidp_clientid", "foo");
         System.setProperty("eidp_clientSecret", "foo");
         System.setProperty("line.separator", "\n");
+    }
+
+    @Before
+    public void setUpTest() throws Exception {
+        repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+        userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
+        userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass").roles("model_creator", "model_viewer");
+        userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass"); //TODO nonTenantUser
+        testModel = TestModel.TestModelBuilder.aTestModel().build();
+        createNamespaceSuccessfully(testModel.namespace, userSysadmin);
+        addCollaboratorToNamespace(testModel.namespace, userModelCreatorCollaborator());
+        testModel.createModel(repositoryServer, userSysadmin);
     }
 
     protected ObjectMapper objectMapper = new ObjectMapper();
@@ -101,12 +134,13 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected UserService userService;
 
-    @Before
-    public void startUpServer() {
-        repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-        userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
-        userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
-        userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass");
+    protected Collaborator userModelCreatorCollaborator() {
+        Collaborator collaborator = new Collaborator();
+        collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+        collaborator.setRoles(Sets.newHashSet("model_creator", "model_viewer"));
+        collaborator.setAuthenticationProviderId("GITHUB");
+        collaborator.setTechnicalUser(false);
+        return collaborator;
     }
 
     protected void checkCollaboratorRoles(String namespaceName, String collaboratorName,
@@ -159,11 +193,80 @@ public abstract class IntegrationTestBase {
                 put(String.format("/rest/namespaces/%s", namespaceName))
                    .with(actingUser)
             )
+            .andDo(e -> e.getResponse())
             .andExpect(status().isCreated())
             .andExpect(
                 content().json(
                     objectMapper.writeValueAsString(NamespaceOperationResult.success())
                 )
             );
+    }
+
+    protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
+        String fileName, String modelId) throws Exception {
+
+        repositoryServer
+            .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+                .with(user).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+
+        repositoryServer
+            .perform(put("/rest/models/" + modelId).with(user)
+                .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+            .andExpect(status().isOk());
+    }
+
+    protected String createContent(String fileName) throws Exception {
+        String dslContent =
+            IOUtils.toString(new ClassPathResource("models/" + fileName).getInputStream());
+
+        Map<String, Object> content = new HashMap<>();
+        content.put("contentDsl", dslContent);
+        content.put("type", ModelType.fromFileName(fileName));
+
+        return new GsonBuilder().create().toJson(content);
+    }
+
+    protected ResultActions addAttachment(String modelId,
+        SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
+        MediaType mediaType, Integer size) throws Exception {
+        MockMultipartFile file =
+            new MockMultipartFile("file", fileName, mediaType.toString(), size == null ? "{\"test\":123}".getBytes() : new byte[size]);
+        MockMultipartHttpServletRequestBuilder builder =
+            MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
+        return repositoryServer.perform(builder.file(file).with(request -> {
+            request.setMethod("PUT");
+            return request;
+        }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+    }
+
+    protected ResultActions addAttachment(String modelId,
+        SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
+        MediaType mediaType) throws Exception {
+        return addAttachment(modelId, user, fileName, mediaType, null);
+    }
+
+    protected ResultActions createImage(String filename, String modelId,
+        SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, Integer size) throws Exception {
+        MockMultipartFile file = null;
+        if (size == null) {
+            file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
+                getClass().getClassLoader().getResourceAsStream("models/" + filename));
+        }
+        else {
+            file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE, new byte[size]);
+        }
+
+        MockMultipartHttpServletRequestBuilder builder =
+            MockMvcRequestBuilders.fileUpload("/rest/models/" + modelId + "/images");
+        return repositoryServer.perform(builder.file(file).with(request -> {
+            request.setMethod("POST");
+            return request;
+        }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+    }
+
+    protected ResultActions createImage(String filename, String modelId,
+        SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
+        return createImage(filename, modelId, user, null);
     }
 }

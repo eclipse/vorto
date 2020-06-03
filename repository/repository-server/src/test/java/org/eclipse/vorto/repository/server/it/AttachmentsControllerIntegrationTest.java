@@ -12,58 +12,67 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.web.VortoRepository;
+import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-
-public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTest {
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
+public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
 
   @Autowired
   private AttachmentValidator attachmentValidator;
 
-  @Override
-  protected void setUpTest() throws Exception {
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer,userCreator);
-  }
-  
+  private Gson gson = new GsonBuilder().serializeNulls().create();
+
   @Test
   public void testRandomModelAttachmentController() throws Exception {
     String nonExistingNamespace = TestUtils.createRandomString(10).toLowerCase();
     repositoryServer.perform(get(
-        "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userCreator))
+        "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userModelCreator))
         .andExpect(status().isNotFound());
     
   }
 
   @Test
   public void testAttachmentUpload() throws Exception {
-    TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(repositoryServer, userCreator);
-    addAttachment(test.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON)
+    addAttachment(testModel.prettyName, userSysadmin, "test.json", MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
-    
   }
 
   @Test
   public void testLargeAttachmentUpload() throws Exception {
-    TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(repositoryServer, userCreator);
-
     // we set the "fake" size of the attachment as a 1MB more than the configured maximum file size
     // setting for the profile, to ensure uploading fails
     addAttachment(
-        test.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON,
+        testModel.prettyName, userSysadmin, "test.json", MediaType.APPLICATION_JSON,
         (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
         // unfortunately the v1 controller returns ok even when in error and it cannot be changed
         .andExpect(status().isOk())
@@ -71,7 +80,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
           content().json(
             gson.toJson(
               AttachResult.fail(
-                test.getId(),
+                testModel.getId(),
                 "test.json",
                 String.format(
                   "The attachment is too large. Maximum size allowed is %dMB",
@@ -86,12 +95,17 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Test
   public void testReasonableSizeAttachmentUpload() throws Exception {
     TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(repositoryServer, userCreator);
+    createNamespaceSuccessfully(test.namespace, userSysadmin);
+    Collaborator collaborator = new Collaborator();
+    collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    collaborator.setRoles(Sets.newHashSet("model_creator"));
+    addCollaboratorToNamespace(test.namespace, collaborator);
+    test.createModel(repositoryServer, userModelCreator);
 
     // we set the "fake" size of the attachment as a 1MB less than the configured maximum file size
     // setting for the profile, to ensure uploading fails
     addAttachment(
-        test.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON,
+        test.prettyName, userSysadmin, "test.json", MediaType.APPLICATION_JSON,
         (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
         // unfortunately the v1 controller returns ok even when in error and it cannot be changed
         .andExpect(status().isOk())
@@ -99,7 +113,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
             content().json(
                 gson.toJson(
                     AttachResult.success(
-                        new SerializableModelId(ModelId.fromPrettyFormat(test.prettyName)),
+                        new AbstractIntegrationTest.SerializableModelId(ModelId.fromPrettyFormat(test.prettyName)),
                         "test.json"
                     )
                 )
@@ -110,9 +124,9 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Test
   public void testInvalidAttachmentFileTypeUpload() throws Exception {
     TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(repositoryServer, userAdmin);
+    test.createModel(repositoryServer, userSysadmin);
 
-    addAttachment(test.prettyName, userAdmin, "test.bin", MediaType.APPLICATION_JSON)
+    addAttachment(test.prettyName, userSysadmin, "test.bin", MediaType.APPLICATION_JSON)
         .andExpect(result -> {
           JsonParser jsonParser = new JsonParser();
           JsonElement tree = jsonParser.parse(result.getResponse().getContentAsString());
@@ -128,15 +142,15 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     String fileName = "test.json";
     TestModel deleteModel = TestModel.TestModelBuilder.aTestModel().build();
     // Create Model with extra user
-    deleteModel.createModel(repositoryServer, userAdmin);
+    deleteModel.createModel(repositoryServer, userSysadmin);
 
     // Add Attachment to Model
-    addAttachment(deleteModel.prettyName, userAdmin, fileName, MediaType.APPLICATION_JSON)
+    addAttachment(deleteModel.prettyName, userSysadmin, fileName, MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
 
     // Delete Attachment from model
     repositoryServer.perform(
-        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userAdmin))
+        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userSysadmin))
         .andExpect(status().isOk());
     
     
@@ -147,13 +161,13 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     String fileName = "test.json";
     TestModel deleteModel = TestModel.TestModelBuilder.aTestModel().build();
     // Create Model with extra user
-    deleteModel.createModel(repositoryServer, userCreator);
+    deleteModel.createModel(repositoryServer, userModelCreator);
 
     // Add Attachment to Model
 
     // Try to delete model
     repositoryServer.perform(
-        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userStandard))
+        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userModelCreator2))
         .andExpect(status().isForbidden());
     
     
@@ -161,21 +175,10 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
 
   @Test
   public void testAttachmentGetWithPermissions() throws Exception {
-    repositoryServer.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userAdmin))
+    repositoryServer.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userSysadmin))
         .andExpect(status().isOk());
     
     
   }
-  
-//  @Test
-//  public void testAttachmentNoPermissions() throws Exception {
-//	  addAttachment(testModel.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON)
-//      .andExpect(status().isOk());
-//    repositoryServer.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userStandard))
-//        .andExpect(status().isForbidden());
-//    
-//    
-//  }
-
 
 }

@@ -12,19 +12,10 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -32,7 +23,15 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class MappingTest extends AbstractIntegrationTest {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
+public class MappingTest extends UnitTestBase {
 
 
   @Test
@@ -71,7 +70,7 @@ public class MappingTest extends AbstractIntegrationTest {
     User user = new User();
     user.setUsername("alex");
 
-    Collection<User> users = new ArrayList<User>();
+    Collection<User> users = new ArrayList<>();
     users.add(user);
 
     when(userRepository.findAll()).thenReturn(users);

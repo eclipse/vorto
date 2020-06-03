@@ -187,7 +187,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     try {
       IUserContext user = UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-          getTenant(modelId));
+          getWorkspaceId(modelId));
 
       getModelRepository(actualModelID)
           .attachFile(actualModelID,
@@ -234,7 +234,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
             HttpStatus.NOT_FOUND);
       }
 
-      IUserContext userContext = UserContext.user(authentication, getTenant(modelId));
+      IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
 
       ModelResource modelInfo = (ModelResource) modelParserFactory
           .getParser("model" + ModelType.valueOf(content.getType()).getExtension())
@@ -270,7 +270,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     final ModelId newModelId = ModelId.fromPrettyFormat(newId);
 
     IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication(), getTenant(oldId));
+        .user(SecurityContextHolder.getContext().getAuthentication(), getWorkspaceId(oldId));
 
     ModelInfo result = this.modelRepositoryFactory.getRepositoryByModel(oldModelId)
         .rename(oldModelId, newModelId, userContext);
@@ -338,7 +338,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    IUserContext userContext = UserContext.user(authentication, getTenant(modelId));
+    IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
 
     ModelResource resource = getModelRepository(modelID)
         .createVersion(modelID, modelVersion, userContext);
@@ -489,7 +489,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     try {
       return new ResponseEntity<>(
-          getDiagnosticService(getTenant(modelId)).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
+          getDiagnosticService(getWorkspaceId(modelId)).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -503,12 +503,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "model ID must not be null");
     try {
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
-      String tenantId = getTenant(modelId);
+      String workspaceId = getWorkspaceId(modelId);
       Authentication user = SecurityContextHolder.getContext().getAuthentication();
       return new ResponseEntity<>(
-          getPolicyManager(tenantId).getPolicyEntries(modelID)
+          getPolicyManager(workspaceId).getPolicyEntries(modelID)
               .stream()
-              .filter(userHasPolicyEntry(user, tenantId))
+              .filter(userHasPolicyEntry(user, workspaceId))
               .collect(Collectors.toList()),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
@@ -520,7 +520,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
+  @PreAuthorize("hasAnyAuthority('USER','model_viewer')")
   @GetMapping(value = "/{modelId:.+}/policy")
   public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
 
@@ -530,7 +530,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    String tenantId = getTenant(modelId);
+    String tenantId = getWorkspaceId(modelId);
 
     try {
       List<PolicyEntry> policyEntries =
@@ -566,7 +566,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 
-    getPolicyManager(getTenant(modelId)).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
+    getPolicyManager(getWorkspaceId(modelId)).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
   }
 
   private boolean attemptChangePolicyOfCurrentUser(PolicyEntry entry) {
@@ -589,7 +589,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     if (attemptChangePolicyOfCurrentUser(entry)) {
       throw new IllegalArgumentException("Cannot change policy of current user");
     }
-    getPolicyManager(getTenant(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
+    getPolicyManager(getWorkspaceId(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
         entry);
   }
 
@@ -599,7 +599,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     IUserContext user =
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-            getTenant(ControllerUtils.sanitize(modelId)));
+            getWorkspaceId(ControllerUtils.sanitize(modelId)));
 
     if (!user.isSysAdmin() &&
         !accountService
@@ -630,17 +630,11 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   private String getWorkspaceId(String modelId) {
     String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
     return namespaceService.resolveWorkspaceIdForNamespace(namespace)
-        .orElseThrow(() -> new IllegalStateException("Namespace " + namespace + " could not be found."));
+        .orElseThrow(() -> new FatalModelRepositoryException("Namespace " + namespace + " could not be found.", null));
   }
 
-  private String getTenant(String modelId) {
-    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
-        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
-  }
-
-  private Optional<String> getTenant(ModelId modelId) {
-    return tenantService.getTenantFromNamespace(modelId.getNamespace())
-        .map(tenant -> tenant.getTenantId());
+  private Optional<String> getWorkspaceId(ModelId modelId) {
+    return namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace());
   }
 
   private IDiagnostics getDiagnosticService(final String tenantId) {

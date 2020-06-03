@@ -63,7 +63,7 @@ import java.util.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractIntegrationTest {
+public abstract class UnitTestBase {
 
   @InjectMocks
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();

@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.model;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.model.impl.DefaultBulkOperationsService;
@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class BulkOperationServiceTest extends AbstractIntegrationTest {
+public class BulkOperationServiceTest extends UnitTestBase {
 
   private IBulkOperationsService getModelService(final String username) {
     return new DefaultBulkOperationsService(repositoryFactory) {

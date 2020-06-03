@@ -12,26 +12,18 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
@@ -43,6 +35,10 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -68,6 +64,15 @@ public class DefaultUserAccountService
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ITenantUserRepo tenantUserRepo;
+
+  @Autowired
+  private RoleService roleService;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private NamespaceService namespaceService;
 
   private ApplicationEventPublisher eventPublisher = null;
 
@@ -267,25 +272,25 @@ public class DefaultUserAccountService
 
   @Deprecated
   @Override
-  public boolean hasRole(String tenantId, String username, String role) {
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+  public boolean hasRole(String workspaceId, String username, String role) {
+    PreConditions.notNullOrEmpty(workspaceId, "workspaceId");
     PreConditions.notNullOrEmpty(role, "role");
     PreConditions.notNullOrEmpty(username, "username");
 
-    if (!Role.exist(role)) {
-      throw new IllegalArgumentException("role must be in Role enum");
+    String roleWithoutPrefix = role.replace(Role.rolePrefix, "");
+    if (!roleService.findAnyByName(roleWithoutPrefix).isPresent()) {
+      return false;
     }
+    String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
 
-    Tenant tenant = tenantRepo.findByTenantId(tenantId);
-    PreConditions.notNull(tenant, "Tenant with tenantId " + tenantId + " doesnt exists");
-
-    Optional<TenantUser> user = tenant.getUser(username);
-    if (user.isPresent()) {
-      TenantUser tenantUser = user.get();
-      return tenantUser.hasRole(Role.valueOf(role.replace(Role.rolePrefix, "")));
+    try {
+      return userNamespaceRoleService.getRoles(username, namespace)
+          .stream()
+          .map(IRole::getName)
+          .anyMatch(roleWithoutPrefix::equals);
+    } catch (DoesNotExistException e) {
+      throw new IllegalStateException("Error retrieving roles.", e);
     }
-
-    return false;
   }
 
   @Override

@@ -12,42 +12,35 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
-import org.eclipse.vorto.repository.web.account.dto.UserDto;
+import org.eclipse.vorto.repository.server.it.IntegrationTestBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AccountControllerTest extends AbstractIntegrationTest {
+
+public class AccountControllerTest extends IntegrationTestBase {
 
 
   private static final String GITHUB = "GITHUB";
 
+  @Autowired
   private IUserAccountService accountService;
 
   @Autowired
   private ApplicationContext context;
 
-  @Override
-  protected void setUpTest() throws Exception {
-    accountService = context.getBean(IUserAccountService.class);
-  }
+//  @Override
+//  protected void setUpTest() throws Exception {
+//    accountService = context.getBean(IUserAccountService.class);
+//  }
 
   private String testUser = "testUser";
   private String testUser2 = "testUser2";
@@ -58,9 +51,9 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     if (accountService.getUser(testUser) == null) {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
-    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userSysadmin))
         .andExpect(status().isOk());
-    this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -69,7 +62,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     if (accountService.getUser(testUser) == null) {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
-    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/test").with(userAdmin))
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/test").with(userSysadmin))
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
@@ -82,7 +75,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     if (accountService.getUser(testUser) == null) {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
-    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/stuse").with(userAdmin))
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/stuse").with(userSysadmin))
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
@@ -96,7 +89,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     if (accountService.getUser(testUser) == null) {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
-    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/blah").with(userAdmin))
+    MvcResult result = this.repositoryServer.perform(get("/rest/accounts/search/blah").with(userSysadmin))
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
@@ -109,9 +102,9 @@ public class AccountControllerTest extends AbstractIntegrationTest {
     if (accountService.getUser(testUser) == null) {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
-    this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userAdmin))
+    this.repositoryServer.perform(post("/rest/accounts/testUser/updateTask").with(userSysadmin))
         .andExpect(status().isCreated());
-    this.repositoryServer.perform(post("/rest/accounts/doesnotexist/updateTask").with(userAdmin))
+    this.repositoryServer.perform(post("/rest/accounts/doesnotexist/updateTask").with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -121,11 +114,11 @@ public class AccountControllerTest extends AbstractIntegrationTest {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
     this.repositoryServer
-        .perform(put("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .perform(put("/rest/accounts/" + testUser).content(testMail).with(userSysadmin))
         .andExpect(status().isOk());
     assert (this.accountService.getUser(testUser).getEmailAddress().equals(testMail));
     this.repositoryServer
-        .perform(put("/rest/accounts/doesnotexist").content(testMail).with(userAdmin))
+        .perform(put("/rest/accounts/doesnotexist").content(testMail).with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -135,14 +128,14 @@ public class AccountControllerTest extends AbstractIntegrationTest {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
-    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userSysadmin))
         .andExpect(status().isOk());
 
     this.repositoryServer
-        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userSysadmin))
         .andExpect(status().isNoContent());
 
-    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -155,14 +148,14 @@ public class AccountControllerTest extends AbstractIntegrationTest {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.SYS_ADMIN);
     }
 
-    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userSysadmin))
         .andExpect(status().isOk());
 
     this.repositoryServer
-        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userAdmin))
+        .perform(delete("/rest/accounts/" + testUser).content(testMail).with(userSysadmin))
         .andExpect(status().isNoContent());
 
-    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/accounts/" + testUser).with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -172,15 +165,15 @@ public class AccountControllerTest extends AbstractIntegrationTest {
       accountService.createOrUpdate(testUser, GITHUB, null, "playground", Role.USER);
     }
 
-    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userSysadmin))
         .andExpect(status().isOk());
 
     this.repositoryServer
         .perform(
-            delete("/rest/tenants/playground/users/" + testUser).content(testMail).with(userAdmin))
+            delete("/rest/tenants/playground/users/" + testUser).content(testMail).with(userSysadmin))
         .andExpect(status().isOk());
 
-    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userAdmin))
+    this.repositoryServer.perform(get("/rest/tenants/playground/users/" + testUser).with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 

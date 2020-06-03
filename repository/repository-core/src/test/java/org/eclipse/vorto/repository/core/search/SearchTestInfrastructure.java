@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.search;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
@@ -66,7 +67,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
- * It bears notable resemblance to {@link org.eclipse.vorto.repository.AbstractIntegrationTest} for
+ * It bears notable resemblance to {@link UnitTestBase} for
  * good reason: it has been ported from there. <br/> The main difference in the code is that the
  * {@link org.junit.Before} and {@link org.junit.After} annotations are gone. <br/> This is because
  * this class is not intended to be used in an inheritance mechanism (i.e. actual test class

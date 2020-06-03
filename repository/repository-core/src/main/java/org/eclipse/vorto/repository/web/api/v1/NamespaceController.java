@@ -190,8 +190,7 @@ public class NamespaceController {
   @PutMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
-      @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace
-  ) {
+      @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace) {
 
     try {
       IUserContext userContext = UserContext

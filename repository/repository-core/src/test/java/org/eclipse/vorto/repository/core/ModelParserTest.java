@@ -12,14 +12,8 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
@@ -28,9 +22,15 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.springframework.core.io.ClassPathResource;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class ModelParserTest extends AbstractIntegrationTest {
+public class ModelParserTest extends UnitTestBase {
 
   @Test
   public void testModelParsing() {

@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.account;
 
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -27,7 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class UserAccountServiceTest extends AbstractIntegrationTest {
+public class UserAccountServiceTest extends UnitTestBase {
 
   private IWorkflowService workflow = null;
 

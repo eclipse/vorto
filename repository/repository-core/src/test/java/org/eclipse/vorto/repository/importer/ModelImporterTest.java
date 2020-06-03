@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.importer;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelFileContent;
@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-public class ModelImporterTest extends AbstractIntegrationTest {
+public class ModelImporterTest extends UnitTestBase {
 
   @Test
   public void testUploadZipFile() throws Exception {

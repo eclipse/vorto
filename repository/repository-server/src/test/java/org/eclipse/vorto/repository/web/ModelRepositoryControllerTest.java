@@ -18,27 +18,18 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.server.it.IntegrationTestBase;
 import org.eclipse.vorto.repository.server.it.TestModel;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,60 +43,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
   @Autowired
   protected AttachmentValidator attachmentValidator;
-
-  TestModel testModel;
-
-
-  @Before
-  public void setUpTest() throws Exception {
-    repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
-    userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass");
-    userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass"); //TODO nonTenantUser
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    createNamespaceSuccessfully(testModel.namespace, userSysadmin);
-    Collaborator collaborator = new Collaborator();
-    collaborator.setRoles(Sets.newHashSet("model_creator"));
-    collaborator.setUserId(USER_MODEL_CREATOR_NAME);
-    collaborator.setTechnicalUser(false);
-    addCollaboratorToNamespace(testModel.namespace, collaborator);
-    testModel.createModel(repositoryServer, userSysadmin);
-  }
-  private String createContent(String arg) {
-    return null;
-  }
-
-  private String createModel(Object o, String arg0, String arg) {
-    return null;
-  }
-
-  private ResultActions createImage(String filename, String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, Integer size) throws Exception {
-    MockMultipartFile file = null;
-    if (size == null) {
-      file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE,
-          getClass().getClassLoader().getResourceAsStream("models/" + filename));
-    }
-    else {
-      file = new MockMultipartFile("file", filename, MediaType.IMAGE_PNG_VALUE, new byte[size]);
-    }
-
-    /*
-     * MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.fileUpload("/rest" +
-     * tenant + "/models/" + modelId + "/images");
-     */
-    MockMultipartHttpServletRequestBuilder builder =
-        MockMvcRequestBuilders.fileUpload("/rest/models/" + modelId + "/images");
-    return repositoryServer.perform(builder.file(file).with(request -> {
-      request.setMethod("POST");
-      return request;
-    }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
-  }
-
-  private ResultActions createImage(String filename, String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
-    return createImage(filename, modelId, user, null);
-  }
 
   @Test
   public void getModelImage() throws Exception {
@@ -212,7 +149,13 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin))
         .andExpect(status().isNotFound());
 
-    this.createModel(userModelCreator, fileName, modelId);
+    createNamespaceSuccessfully("com.test", userSysadmin);
+    Collaborator collaborator = new Collaborator();
+    collaborator.setTechnicalUser(false);
+    collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    collaborator.setRoles(Sets.newHashSet("model_creator"));
+    addCollaboratorToNamespace("com.test", collaborator);
+    createModel(userModelCreator, fileName, modelId);
     repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer.perform(put("/rest/models/" + modelId)
@@ -314,8 +257,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userModelCreator))
         .andExpect(status().isBadRequest());
-
-
   }
 
   @Test
@@ -327,8 +268,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userSysadmin))
         .andExpect(status().isBadRequest());
-
-
   }
 
   @Test

@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow;
 
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.domain.Role;
@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class WorkflowTest extends AbstractIntegrationTest {
+public class WorkflowTest extends UnitTestBase {
 
   private static final String ADMIN = "admin";
   private static final String PLAYGROUND = "playground";

@@ -12,16 +12,17 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class ModelRefactoringTest extends AbstractIntegrationTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+public class ModelRefactoringTest extends UnitTestBase {
 
   
   @Test

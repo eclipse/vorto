@@ -12,17 +12,16 @@
  */
 package org.eclipse.vorto.repository.backup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import static org.junit.Assert.*;
 
-public class RepositoryAdminTest extends AbstractIntegrationTest {
+
+public class RepositoryAdminTest extends UnitTestBase {
 
   @Test
   public void testBackupFilesNoImages() throws Exception {

@@ -12,24 +12,27 @@
  */
 package org.eclipse.vorto.repository.mapping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.mapping.impl.DefaultPayloadMappingService;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class PayloadMappingSpecificationTest extends UnitTestBase {
 
   private DefaultPayloadMappingService mappingService;
   
+  @Override
   @Before
   public void beforeEach() throws Exception {
     super.beforeEach();
@@ -99,7 +102,7 @@ public class PayloadMappingSpecificationTest extends AbstractIntegrationTest {
   }
   
   private Map<String, String> createXpathRule(String rule) {
-    Map<String,String> attributes = new HashMap<String, String>();
+    Map<String,String> attributes = new HashMap<>();
     attributes.put(Stereotype.XPATH_ATT,rule);
     return attributes;
   }

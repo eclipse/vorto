@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -326,8 +327,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);
 
+
     eventPublisher
-        .publishEvent(new AppEvent(this, currentNamespace.getName(), EventType.NAMESPACE_DELETED));
+        .publishEvent(new AppEvent(this, actor.getUsername(), UserContext.user(SecurityContextHolder.getContext().getAuthentication(), currentNamespace.getWorkspaceId()), EventType.NAMESPACE_DELETED));
   }
 
   /**
