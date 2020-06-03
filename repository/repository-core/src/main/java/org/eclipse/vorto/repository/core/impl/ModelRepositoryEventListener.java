@@ -53,7 +53,6 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
     } else if (event.getEventType() == EventType.NAMESPACE_DELETED) {
       deleteWorkspaceForTenant(event);
     }
-    // TODO #2265 implement actions for non-deprecated event types replacing TENANT_...
   }
 
   private void deleteWorkspaceForTenant(AppEvent event) {

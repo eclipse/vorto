@@ -12,23 +12,32 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import org.eclipse.vorto.repository.web.VortoRepository;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.junit.Test;
 
-public class ModelSearchControllerIntegrationTest extends AbstractIntegrationTest {
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
+public class ModelSearchControllerIntegrationTest extends IntegrationTestBase {
   
-  private TestModel testModel;
-
-  public void setUpTest() throws Exception {
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer,userCreator);
-  }
-
   @Test
   public void testModelSearch() throws Exception {
-    repositoryServer.perform(get("/api/v1/search/models?expression=").with(userCreator)).andExpect(status().isOk());
+    repositoryServer.perform(get("/api/v1/search/models?expression=").with(userModelCreator)).andExpect(status().isOk());
     assertTrue(true);
   }
 }

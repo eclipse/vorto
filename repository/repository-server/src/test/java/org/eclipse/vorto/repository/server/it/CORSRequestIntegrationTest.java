@@ -103,6 +103,8 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   @Test
   public void testDELETERequestsValid() throws Exception {
     TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+    createNamespaceSuccessfully(newModel.namespace, userSysadmin);
+    addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
     for (String origin : testValidOrigins) {
       newModel.createModel(repositoryServer, userModelCreator);
       repositoryServer.perform(
@@ -128,6 +130,7 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   public void testPOSTRequestsValid() throws Exception {
     for (String origin : testValidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      createNamespaceSuccessfully(newModel.namespace, userSysadmin);
       addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(
           post("/rest/models/" + newModel.prettyName + "/InformationModel")
@@ -142,6 +145,7 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   public void testPOSTRequestsInvalid() throws Exception {
     for (String origin : testInvalidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      createNamespaceSuccessfully(newModel.namespace, userSysadmin);
       addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(
           post("/rest/models/" + newModel.prettyName + "/InformationModel")

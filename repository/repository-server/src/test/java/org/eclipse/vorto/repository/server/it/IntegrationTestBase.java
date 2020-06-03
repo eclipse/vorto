@@ -15,9 +15,12 @@ package org.eclipse.vorto.repository.server.it;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -268,5 +271,17 @@ public abstract class IntegrationTestBase {
     protected ResultActions createImage(String filename, String modelId,
         SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user) throws Exception {
         return createImage(filename, modelId, user, null);
+    }
+
+    protected void setPublic(String modelId) throws Exception {
+        PolicyEntry publicPolicyEntry = new PolicyEntry();
+        publicPolicyEntry.setPrincipalId(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY);
+        publicPolicyEntry.setPermission(PolicyEntry.Permission.READ);
+        publicPolicyEntry.setPrincipalType(PolicyEntry.PrincipalType.User);
+
+        String publicPolicyEntryStr = new Gson().toJson(publicPolicyEntry);
+
+        repositoryServer.perform(put("/rest/models/" + modelId + "/policies")
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON).content(publicPolicyEntryStr));
     }
 }

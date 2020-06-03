@@ -12,32 +12,45 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.Optional;
-import org.eclipse.vorto.model.DictionaryType;
-import org.eclipse.vorto.model.EntityModel;
-import org.eclipse.vorto.model.EnumAttributeProperty;
-import org.eclipse.vorto.model.EnumModel;
-import org.eclipse.vorto.model.FunctionblockModel;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.*;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
+import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
 
-public class RepositoryJavaClientTest extends AbstractIntegrationTest {
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+@RunWith(SpringRunner.class)
+@ActiveProfiles(profiles = {"test"})
+@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = {"classpath:application-test.yml"})
+@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
+public class RepositoryJavaClientTest extends IntegrationTestBase {
 
   private IRepositoryClient repositoryClient = null;
 
   @Override
-  protected void setUpTest() throws Exception {
-    createModel("Zone.type", "com.test:Zone:1.0.0");
+  public void setUpTest() throws Exception {
+    super.setUpTest();
+    createNamespaceSuccessfully("com.test", userSysadmin);
+    createModel(userSysadmin, "Zone.type", "com.test:Zone:1.0.0");
     setPublic("com.test:Zone:1.0.0");
-    createModel("Color2.type", "com.test:Color:1.0.0");
+    createModel(userSysadmin,"Color2.type", "com.test:Color:1.0.0");
     setPublic("com.test:Color:1.0.0");
-    createModel("Fb_withDictionary.fbmodel", "com.test:InstalledSoftware:1.0.0");
+    createModel(userSysadmin,"Fb_withDictionary.fbmodel", "com.test:InstalledSoftware:1.0.0");
     setPublic("com.test:InstalledSoftware:1.0.0");
 
     this.repositoryClient = IRepositoryClient.newBuilder()
@@ -79,7 +92,7 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetAttachmentsOfModel() throws Exception {
-    addAttachment("com.test:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
+    addAttachment("com.test:Color:1.0.0", userSysadmin, "test.json", MediaType.APPLICATION_JSON);
     assertEquals(1,
         repositoryClient.getAttachments(ModelId.fromPrettyFormat("com.test:Color:1.0.0")).size());
     assertEquals("test.json", repositoryClient
@@ -88,7 +101,7 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest {
 
   @Test
   public void testDownloadAttachmentsOfModel() throws Exception {
-    addAttachment("com.test:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
+    addAttachment("com.test:Color:1.0.0", userSysadmin, "test.json", MediaType.APPLICATION_JSON);
     assertTrue(
         repositoryClient.downloadAttachment((ModelId.fromPrettyFormat("com.test:Color:1.0.0")),
             "test.json").length > 0);
