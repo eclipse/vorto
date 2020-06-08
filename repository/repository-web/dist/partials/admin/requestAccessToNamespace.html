@@ -22,7 +22,9 @@
                    placeholder="Search for namespaces (at least 4 characters)..."
                    ng-model="namespacePartial"
                    ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"
-                   style="height:32px"/>
+                   style="height:32px"
+                   ng-keyup="selectOtherNamespace($event, lastHighlightedNamespace)"
+            />
           </div>
           <div class="col-sm-2" style="padding-left:0px">
             <span class="input-group-btn">
@@ -34,12 +36,16 @@
         </div>
         <div class="row">
           <div class="col-sm-10" style="padding-right:0px">
-            <ul class="dropDownUL" ng-show="namespaces.length > 0">
+            <ul id="namespaceDropdown" class="dropDownUL" ng-show="namespaces.length > 0"
+                ng-keyup="selectOtherNamespace($event, lastHighlightedNamespace)"
+            >
               <li id="{{namespace.name}}"
                   ng-repeat="namespace in namespaces track by namespace.name"
                   ng-model="selectedNamespace" ng-click="selectNamespace(namespace)"
                   ng-mouseover="highlightNamespace(namespace)"
-                  ng-mouseleave="unhighlightNamespace(namespace)">
+                  ng-mouseleave="unhighlightNamespace(namespace)"
+                  ng-keyup="selectOtherNamespace($event, lastHighlightedNamespace)"
+              >
                 {{namespace.name}}
               </li>
             </ul>
@@ -155,7 +161,8 @@
     <div class="row">
       <br/>
     </div>
-    <div ng-if="error" class="row alert alert-danger table-cell" style="text-align:center">{{ errorMessage }}<br/></div>
+    <div ng-if="error" class="row alert alert-danger table-cell" style="text-align:center">{{
+      errorMessage }}<br/></div>
     <div ng-if="success" class="row alert alert-success table-cell " style="text-align:center">
       Your request was sent successfully.&nbsp;&nbsp;
       <button class="btn btn-primary" ng-click="close()">Close</button>

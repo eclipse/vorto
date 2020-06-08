@@ -333,6 +333,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.namespaces = [];
           $scope.selectedNamespace = null;
+          $scope.lastHighlightedNamespace = null;
           $scope.namespacePartial = "";
           $scope.username = username;
           $scope.loggedInUserSubject = subject;
@@ -363,10 +364,13 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.highlightNamespace = function (namespace) {
+            let list = document.getElementById("namespaceDropdown");
             let element = document.getElementById(namespace.name);
-            if (element) {
+            if (list && element) {
               element.style.backgroundColor = '#7fc6e7';
-              element.style.color = '#ffffff'
+              element.style.color = '#ffffff';
+              list.scrollTop = element.offsetTop - element.clientHeight;
+              $scope.lastHighlightedNamespace = namespace;
             }
           }
 
@@ -386,6 +390,49 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
             $scope.namespaces = [];
             $scope.computeSubmitAvailability();
+          }
+
+          $scope.selectOtherNamespace = function(event, selected) {
+            let length = $scope.namespaces.length;
+            let key = event.key;
+            let nextOrPrevious = null;
+            if (key === 'ArrowUp') {
+              nextOrPrevious = false;
+            }
+            else if (key === 'ArrowDown') {
+              nextOrPrevious = true;
+            }
+            else if (key === 'Enter') {
+              if ($scope.lastHighlightedNamespace) {
+                $scope.selectNamespace($scope.lastHighlightedNamespace);
+                return;
+              }
+            }
+            if ($scope.namespaces && nextOrPrevious !== null) {
+              // if this is invoked from the input text, no namespace is selected
+              let nextIndex = nextOrPrevious ? 0 : length - 1;
+              if (selected) {
+                let selectedIndex = $scope.namespaces.indexOf(selected);
+                // increment/decrement
+                nextIndex = nextOrPrevious ? selectedIndex + 1
+                    : selectedIndex - 1;
+                // handle rotation
+                if (nextIndex >= length) {
+                  nextIndex = 0;
+                } else if (nextIndex < 0) {
+                  nextIndex = length - 1;
+                }
+              }
+              // highlighting target list element
+              $scope.highlightNamespace($scope.namespaces[nextIndex]);
+              // unhighlighting previously highlighted element - forward
+              if (nextOrPrevious) {
+                $scope.unhighlightNamespace($scope.namespaces[nextIndex > 0 ? nextIndex - 1 : length - 1]);
+              }
+              else {
+                $scope.unhighlightNamespace($scope.namespaces[nextIndex < length - 1 ? nextIndex + 1 : 0]);
+              }
+            }
           }
 
           $scope.findNamespaces = function () {
