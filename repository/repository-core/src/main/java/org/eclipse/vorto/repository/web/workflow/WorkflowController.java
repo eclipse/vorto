@@ -52,7 +52,7 @@ public class WorkflowController {
 
     @ApiOperation(value = "Returns the list of possible actions for a the specific model state")
     @GetMapping(value = "/{modelId:.+}/actions", produces = "application/json")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
+    @PreAuthorize("isAuthenticated()")
     public List<String> getPossibleActions(
         @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
 
@@ -62,7 +62,7 @@ public class WorkflowController {
 
     @ApiOperation(value = "Transitions the model state to the next for the provided action.")
     @PutMapping(value = "/{modelId:.+}/actions/{actionName}", produces = "application/json")
-    @PreAuthorize("hasAuthority('model_promoter') || hasRole('model_reviewer')")
+    @PreAuthorize("hasAnyAuthority('model_promoter', 'sysadmin', 'model_reviewer')")
     public WorkflowResponse executeAction(
         @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
         @ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
@@ -79,7 +79,7 @@ public class WorkflowController {
 
     @ApiOperation(value = "Gets the model of the current workflow state")
     @GetMapping(value = "/{modelId:.+}", produces = "application/json")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')") public WorkflowState getState(
+    @PreAuthorize("isAuthenticated()") public WorkflowState getState(
         @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
 
         IUserContext user = UserContext
@@ -89,8 +89,9 @@ public class WorkflowController {
                 .orElseThrow(() -> new IllegalStateException("No state model found for " + modelId)));
     }
 
-    private String getWorkspaceId(String namespace) {
+    private String getWorkspaceId(String modelId) {
+        String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
         return namespaceService.resolveWorkspaceIdForNamespace(namespace).orElseThrow(
-            () -> new ModelNotFoundException("Namespace '" + namespace + "' could not be found."));
+            () -> new ModelNotFoundException("Namespace '" + modelId + "' could not be found."));
     }
 }
