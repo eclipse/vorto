@@ -12,20 +12,6 @@
  */
 package org.eclipse.vorto.repository.importer.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
@@ -41,12 +27,21 @@ import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Imports (a bulk of) Vorto DSL Files to the Vorto Repository
@@ -58,7 +53,10 @@ public class VortoModelImporter extends AbstractModelImporter {
   
   @Autowired
   private ITenantService tenantService;
-  
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
   public VortoModelImporter() {
     super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
 
@@ -74,6 +72,7 @@ public class VortoModelImporter extends AbstractModelImporter {
     return "Imports Vorto Information Models, defined with the Vortolang.";
   }
 
+  @Override
   protected boolean handleZipUploads() {
     return false;
   }
@@ -145,7 +144,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), getTenantService(),errorMessageProvider);
+          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), userNamespaceRoleService, userRepositoryRoleService);
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           context.getUser());
     } else {
@@ -160,7 +159,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 
   @Override
   protected List<ModelResource> convert(FileUpload fileUpload, Context context) {
-    List<ModelResource> result = new ArrayList<ModelResource>();
+    List<ModelResource> result = new ArrayList<>();
 
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       Collection<FileContent> fileContents = getFileContents(fileUpload);
@@ -176,7 +175,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   }
 
   private Collection<FileContent> getFileContents(FileUpload fileUpload) {
-    Collection<FileContent> fileContents = new ArrayList<FileContent>();
+    Collection<FileContent> fileContents = new ArrayList<>();
 
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
     ZipEntry entry = null;
@@ -261,6 +260,14 @@ public class VortoModelImporter extends AbstractModelImporter {
   public void setTenantService(ITenantService tenantService) {
     this.tenantService = tenantService;
   }
-  
-  
+
+  public void setUserNamespaceRoleService(
+      UserNamespaceRoleService userNamespaceRoleService) {
+    this.userNamespaceRoleService = userNamespaceRoleService;
+  }
+
+  public void setUserRepositoryRoleService(
+      UserRepositoryRoleService userRepositoryRoleService) {
+    this.userRepositoryRoleService = userRepositoryRoleService;
+  }
 }

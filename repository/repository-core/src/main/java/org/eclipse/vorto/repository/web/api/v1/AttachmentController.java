@@ -13,27 +13,12 @@
 package org.eclipse.vorto.repository.web.api.v1;
 
 import io.swagger.annotations.ApiParam;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.AttachmentException;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.slf4j.Logger;
@@ -43,14 +28,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/attachments")
@@ -65,17 +55,16 @@ public class AttachmentController extends AbstractRepositoryController {
       || attachment.getTags().contains(Attachment.TAG_IMPORTED)
       || attachment.getTags().isEmpty();
 
-  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-
-  @Autowired
-  private ITenantService tenantService;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentController.class);
 
   @Autowired
   private AttachmentValidator attachmentValidator;
 
-  @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
-      produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @Autowired
+  private NamespaceService namespaceService;
+
+  @PutMapping(value = "/{modelId:.+}", produces = "application/json")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public AttachResult attach(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -97,14 +86,14 @@ public class AttachmentController extends AbstractRepositoryController {
       );
     }
 
-    final String tenantId = getTenant(modelID).orElseThrow(
-        () -> new ModelNotFoundException("Tenant for model '" + modelId + "' doesn't exist", null));
+    final String workspaceId = getWorkspaceId(modelID).orElseThrow(
+        () -> new ModelNotFoundException("Namespace for model '" + modelId + "' doesn't exist", null));
 
     try {
       String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
 
       getModelRepository(modelID).attachFile(modelID,
-          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(tenantId),
+          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(workspaceId),
           guessTagsFromFileExtension(fileName));
 
       return AttachResult.success(modelID, fileName);
@@ -152,7 +141,7 @@ public class AttachmentController extends AbstractRepositoryController {
         .collect(Collectors.toList());
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
+  @GetMapping("/{modelId:.+}/files/{filename:.+}")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public void getAttachment(
       @ApiParam(
@@ -184,8 +173,8 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:owner')")
+  @DeleteMapping("/{modelId:.+}/files/{filename:.+}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:owner')")
   public ResponseEntity<Void> deleteAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -208,9 +197,8 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  private Optional<String> getTenant(ModelId modelId) {
-    return tenantService.getTenantFromNamespace(modelId.getNamespace())
-        .map(tenant -> tenant.getTenantId());
+  private Optional<String> getWorkspaceId(ModelId modelId) {
+    return namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace());
   }
 
   private UserContext getUserContext(String tenantId) {

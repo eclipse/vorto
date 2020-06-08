@@ -12,23 +12,17 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.junit.Test;
 
-public class ModelSearchControllerIntegrationTest extends AbstractIntegrationTest {
+public class ModelSearchControllerIntegrationTest extends IntegrationTestBase {
   
-  private TestModel testModel;
-
-  public void setUpTest() throws Exception {
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer,userCreator);
-  }
-
   @Test
   public void testModelSearch() throws Exception {
-    repositoryServer.perform(get("/api/v1/search/models?expression=").with(userCreator)).andExpect(status().isOk());
+    repositoryServer.perform(get("/api/v1/search/models?expression=").with(userModelCreator)).andExpect(status().isOk());
     assertTrue(true);
   }
 }

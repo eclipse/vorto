@@ -86,7 +86,7 @@ public class VortolangUpgradeTask extends AbstractUpgradeTask implements IUpgrad
           contentBuilder.append(currentModelContent);
           logger.info("Upgrading " + modelInfo.toString() + " for vortolang attribute....");
           modelRepository.save(modelInfo.getId(), contentBuilder.toString().getBytes(),
-              modelInfo.getFileName(), UserContext.user(modelInfo.getAuthor(), modelRepository.getTenantId()), false);
+              modelInfo.getFileName(), UserContext.user(modelInfo.getAuthor(), modelRepository.getWorkspaceId()), false);
           logger.info("Upgrade of " + modelInfo.toString() + " successful.");
         } catch (Throwable e) {
           logger.warn("Could not set vortolang field for model "

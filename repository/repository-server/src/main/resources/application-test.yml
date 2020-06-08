@@ -24,7 +24,6 @@ config:
 
 spring:
   jpa:
-    show-sql: true
     generate-ddl: true
     properties:
       hibernate:

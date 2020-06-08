@@ -12,10 +12,16 @@
  */
 package org.eclipse.vorto.repository.core.security;
 
-import java.util.Set;
-import javax.jcr.Credentials;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.springframework.security.core.Authentication;
+
+import javax.jcr.Credentials;
+import java.util.Collection;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class SpringSecurityCredentials implements Credentials {
 
@@ -23,18 +29,40 @@ public class SpringSecurityCredentials implements Credentials {
 
   private Authentication authentication;
 
-  private Set<Role> rolesInTenant;
+  private Set<IRole> roles;
 
-  public SpringSecurityCredentials(Authentication authentication, Set<Role> rolesInTenant) {
+  private PrivilegeService privilegeService;
+
+  private final Predicate<String> hasPrivilege = privilegeName -> roles.stream()
+          .map(IRole::getPrivileges)
+          .map(privilegeService::getPrivileges)
+          .flatMap(Collection::stream)
+          .map(Privilege::getName)
+          .anyMatch(privilegeName::equalsIgnoreCase);
+
+  public SpringSecurityCredentials(Authentication authentication, Set<IRole> roles, PrivilegeService privilegeService) {
     this.authentication = authentication;
-    this.rolesInTenant = rolesInTenant;
+    this.roles = roles;
+    this.privilegeService = privilegeService;
   }
 
   public Authentication getAuthentication() {
     return authentication;
   }
 
-  public Set<Role> getRolesInTenant() {
-    return rolesInTenant;
+  public Set<IRole> getRolesInNamespace() {
+    return roles;
   }
+
+  public boolean hasPrivilege(String privilege) {
+    return hasPrivilege.test(privilege);
+  }
+
+  public boolean isSysAdmin() {
+    return roles.stream().filter(role -> RepositoryRole.SYS_ADMIN.getName()
+        .equalsIgnoreCase(role.getName()))
+        .map(role -> RepositoryRole.SYS_ADMIN.getName())
+        .anyMatch(hasPrivilege);
+  }
+
 }

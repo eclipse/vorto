@@ -12,12 +12,6 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -26,19 +20,20 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
-import org.eclipse.vorto.repository.workflow.model.IAction;
-import org.eclipse.vorto.repository.workflow.model.IState;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;
+import org.eclipse.vorto.repository.workflow.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultWorkflowService implements IWorkflowService {
@@ -49,9 +44,15 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWorkflowService.class);
 
-	public DefaultWorkflowService(@Autowired IModelRepositoryFactory modelRepositoryFactory, @Autowired IUserAccountService userRepository, @Autowired INotificationService notificationService) {
+	public DefaultWorkflowService(
+		@Autowired IModelRepositoryFactory modelRepositoryFactory,
+		@Autowired IUserAccountService userRepository,
+		@Autowired INotificationService notificationService,
+		@Autowired NamespaceService namespaceService,
+		@Autowired UserNamespaceRoleService userNamespaceRoleService,
+		@Autowired RoleService roleService) {
 		this.modelRepositoryFactory = modelRepositoryFactory;
-		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService,this);
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository, modelRepositoryFactory, notificationService,this, roleService, namespaceService, userNamespaceRoleService);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 			modelInfo.setState(newState.getName());
 			
 			ModelInfo updatedInfo = getModelRepository(user).updateMeta(modelInfo);
-			Map<String,Object> ctx = new HashMap<String, Object>();
+			Map<String,Object> ctx = new HashMap<>();
 			action.get().getFunctions().stream().forEach(a -> executeFunction(a,modelInfo,user,ctx));
 			
 			return updatedInfo;
@@ -92,7 +93,11 @@ public class DefaultWorkflowService implements IWorkflowService {
 	public List<String> getPossibleActions(ModelId model, IUserContext user) {
 		ModelInfo modelInfo = getModelRepository(user).getById(model);
 		Optional<IState> state = SIMPLE_WORKFLOW.getState(modelInfo.getState());
-		return state.get().getActions().stream().filter(action -> passesConditions(action.getConditions(),modelInfo, user)).map(t -> t.getName()).collect(Collectors.toList());
+		return state.get().getActions()
+			.stream()
+			.filter(action -> passesConditions(action.getConditions(),modelInfo, user))
+			.map(IWorkflowElement::getName)
+			.collect(Collectors.toList());
 	}
 	
 	private boolean passesConditions(List<IWorkflowCondition> conditions,ModelInfo model, IUserContext user) {
@@ -112,7 +117,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 	@Override
 	public ModelId start(ModelId modelId, IUserContext user) {
 		IAction initial = SIMPLE_WORKFLOW.getInitialAction();
-		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user, Collections.emptyMap()));
+		initial.getFunctions().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user, Collections.emptyMap()));
 
 		IState nextState = initial.getTo();
 		return getModelRepository(user).updateState(modelId, nextState.getName());
@@ -131,7 +136,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 	}
 	
 	private IModelRepository getModelRepository(IUserContext context) {
-	  return modelRepositoryFactory.getRepository(context.getTenant(), context.getAuthentication());
+	  return modelRepositoryFactory.getRepository(context.getWorkspaceId(), context.getAuthentication());
 	}
 
 }

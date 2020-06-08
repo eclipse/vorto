@@ -113,7 +113,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                   namespace.label = "Please specify a namespace";
                   namespace.title = "Create Namespace";
                   namespace.createNameSpaceId = $rootScope.displayName;
-                  namespace.sysAdmin = $rootScope.hasAuthority("ROLE_SYS_ADMIN");
+                  namespace.sysAdmin = $rootScope.hasAuthority("sysadmin");
                   // suggests namespace name based on user ID, sanitized
                   namespace.name = $scope.suggestNamespaceName();
                   return namespace;
@@ -324,7 +324,7 @@ define(["../../init/appController"], function (repositoryControllers) {
               // based on user privileges. This will also be checked in the
               // back-end.
               var defaultValue = 'vorto.private.';
-              if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+              if ($rootScope.hasAuthority("sysadmin")) {
                 defaultValue = "";
               }
               $scope.namespace.name = defaultValue + $scope.namespace.name;
@@ -372,7 +372,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.addNamespace = function () {
             var prefix = $rootScope.privateNamespacePrefix;
-            if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+            if ($rootScope.hasAuthority("sysadmin")) {
               var prefix = "";
             }
             $scope.addItem({

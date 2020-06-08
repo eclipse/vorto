@@ -12,16 +12,17 @@
  */
 package org.eclipse.vorto.repository.upgrade;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
 
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
@@ -32,6 +33,7 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
     this.modelSearchService = modelSearchService;
   }
 
+  @Override
   public Optional<IUpgradeTaskCondition> condition() {
     return Optional.empty();
   }
@@ -64,7 +66,8 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
       @Override
       public Collection<? extends GrantedAuthority> getAuthorities() {
-        return SpringUserUtils.toAuthorityList(new HashSet<>(Arrays.asList(Role.SYS_ADMIN)));
+        return SpringUserUtils.toAuthorityList(new HashSet<>(
+            Collections.singletonList(RepositoryRole.SYS_ADMIN)));
       }
 
       @Override

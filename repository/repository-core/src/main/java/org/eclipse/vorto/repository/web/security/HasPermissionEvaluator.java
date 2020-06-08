@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.web.security;
 
-import java.io.Serializable;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -21,13 +19,17 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 @Component
 public class HasPermissionEvaluator implements PermissionEvaluator {
@@ -36,13 +38,19 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   
   private IUserAccountService accountService;
 
-  private ITenantService tenantService;
+  private NamespaceService namespaceService;
 
-  public HasPermissionEvaluator(@Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired ITenantService tenantService, @Autowired IUserAccountService userAccountService) {
+  private TenantService tenantService;
+
+  public HasPermissionEvaluator(
+      @Autowired IModelRepositoryFactory repositoryFactory,
+      @Autowired TenantService tenantService,
+      @Autowired IUserAccountService userAccountService,
+      @Autowired NamespaceService namespaceService) {
     this.repositoryFactory = repositoryFactory;
-    this.tenantService = tenantService;
+    this.namespaceService = namespaceService;
     this.accountService = userAccountService;
+    this.tenantService = tenantService;
   }
 
   @Override
@@ -54,22 +62,21 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
       if (targetPermission instanceof String) {
         try {
           ModelId modelId = (ModelId) targetDomainObject;
-          
-          String tenant = tenantService.getTenantFromNamespace(modelId.getNamespace())
-              .map(_tenant -> _tenant.getTenantId())
-              .orElseThrow(() -> new ModelNotFoundException("Model '" + modelId.getPrettyFormat() + " can't be found in any tenant"));
-              
+
+          String workspaceId = namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace())
+              .orElseThrow(() -> new ModelNotFoundException("Model '" + modelId.getPrettyFormat() + "' can't be found in any workspace."));
+
           String permission = (String) targetPermission;
-          ModelInfo modelInfo = repositoryFactory.getRepository(tenant, authentication)
+          ModelInfo modelInfo = repositoryFactory.getRepository(workspaceId, authentication)
               .getById(modelId);
           if (modelInfo != null) {
-            if ("model:delete".equalsIgnoreCase((String) permission)) {
+            if ("model:delete".equalsIgnoreCase(permission)) {
               return modelInfo.getAuthor().equalsIgnoreCase(username);
-            } else if ("model:get".equalsIgnoreCase((String) permission)) {
+            } else if ("model:get".equalsIgnoreCase(permission)) {
               return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName())
                   || modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName())
                   || modelInfo.getAuthor().equals(username);
-            } else if ("model:owner".equalsIgnoreCase((String) permission)) {
+            } else if ("model:owner".equalsIgnoreCase(permission)) {
               return modelInfo.getAuthor().equals(username);
             }
           }
@@ -79,11 +86,10 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
       } else if (targetPermission instanceof Permission) {
         ModelId modelId = (ModelId) targetDomainObject;
         Permission permission = (Permission) targetPermission;
+        String workspaceId = namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace())
+            .orElseThrow(() -> new ModelNotFoundException("The workspace for '" + modelId.getPrettyFormat() + "' could not be found."));
         
-        Tenant tenant = tenantService.getTenantFromNamespace(modelId.getNamespace()).orElseThrow(
-            () -> new ModelNotFoundException("The tenant for '" + modelId.getPrettyFormat() + "' could not be found."));
-        
-        return repositoryFactory.getPolicyManager(tenant.getTenantId(), authentication)
+        return repositoryFactory.getPolicyManager(workspaceId, authentication)
             .hasPermission(modelId, permission);
       }
     } else if (targetDomainObject instanceof String) {

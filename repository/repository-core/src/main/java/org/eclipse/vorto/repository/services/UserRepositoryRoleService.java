@@ -35,11 +35,8 @@ public class UserRepositoryRoleService {
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
   public IRole sysadmin() {
-    Iterable<RepositoryRole> test = repositoryRoleRepository.findAll();
-    IRole foo = repositoryRoleRepository.find("sysadmin");
-    return repositoryRoleRepository.find("sysadmin");
+    return repositoryRoleRepository.find(RepositoryRole.SYS_ADMIN.getName());
   }
-
 
   /**
    * @param user

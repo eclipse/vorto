@@ -12,41 +12,39 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
-import java.util.Collection;
-import java.util.Map;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class RemoveRoleAccessPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(RemoveRoleAccessPolicy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RemoveRoleAccessPolicy.class);
   
-  private Role roleToRemove;
+  private Supplier<IRole> roleToRemove;
 
-  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Role roleToRemove) {
+  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Supplier<IRole> role) {
     this.repositoryFactory = repositoryFactory;
-    this.roleToRemove = roleToRemove;
+    this.roleToRemove = role;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
     
-    logger.info("Removing full access of model to " + roleToRemove.name() + " for " + model.getId());
+    LOGGER.info("Removing full access of model to " + roleToRemove.get().getName() + " for " + model.getId());
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
     for (PolicyEntry policy : policies) {
-      if (policy.getPrincipalId().equals(roleToRemove.name()) && 
+      if (policy.getPrincipalId().equals(roleToRemove.get().getName()) &&
           policy.getPrincipalType() == PrincipalType.Role) {
         policyManager.removePolicyEntry(model.getId(), policy);
         break;

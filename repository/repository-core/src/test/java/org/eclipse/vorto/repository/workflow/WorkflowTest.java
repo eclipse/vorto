@@ -12,9 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.domain.Role;
@@ -23,7 +21,10 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.Test;
 
-public class WorkflowTest extends AbstractIntegrationTest {
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
+public class WorkflowTest extends UnitTestBase {
 
   private static final String ADMIN = "admin";
   private static final String PLAYGROUND = "playground";
@@ -32,7 +33,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetModelByState() throws Exception {
-    IUserContext user = createUserContext("alex", PLAYGROUND);
+    IUserContext user = createUserContext("admin", PLAYGROUND);
     ModelInfo model = importModel("Color.type");
     workflow.start(model.getId(), user);
     assertEquals(1,

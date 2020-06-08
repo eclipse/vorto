@@ -182,7 +182,7 @@ repositoryControllers.controller('DetailsController',
 				};
 
 				$scope.getAttachments = function (model) {
-					if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+					if ($rootScope.hasAuthority("sysadmin")) {
 						$http.get("./api/v1/attachments/" + model.id.prettyFormat)
 						.success(function (attachments) {
 							$scope.attachments = attachments;
@@ -297,7 +297,7 @@ repositoryControllers.controller('DetailsController',
 
 						if ($rootScope.authenticated) {
 							$http
-							.get("./rest/namespaces/ROLE_MODEL_CREATOR/" + $scope.model.id.namespace)
+							.get("./rest/namespaces/model_creator/" + $scope.model.id.namespace)
 							.then(function(result) {
 								if (result.data) {
 									$scope.canCreateModels = result.data;
@@ -919,7 +919,7 @@ repositoryControllers.controller('DetailsController',
 						if (($scope.model.state === 'InReview' || $scope.model.released
 								=== true || $rootScope.authenticated === false
 								|| $scope.permission === "READ") && !$rootScope.hasAuthority(
-								"ROLE_SYS_ADMIN")) {
+								"sysadmin")) {
 							//$scope.modelEditor.setReadOnly(true);
 						}
 					});
@@ -980,7 +980,7 @@ repositoryControllers.controller('DetailsController',
 						}
 						$scope.getCommentsForModelId($scope.modelId);
 						$scope.getWorkflowActions();
-						if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
+						if ($rootScope.hasAuthority("sysadmin")) {
 							$scope.diagnoseModel();
 						}
 					});

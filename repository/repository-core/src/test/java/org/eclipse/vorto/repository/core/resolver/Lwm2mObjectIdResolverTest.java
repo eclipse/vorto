@@ -12,16 +12,15 @@
  */
 package org.eclipse.vorto.repository.core.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.resolver.DefaultResolver;
 import org.eclipse.vorto.repository.web.core.dto.LWM2MQuery;
 import org.junit.Test;
 
-public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
+import static org.junit.Assert.*;
+
+public class Lwm2mObjectIdResolverTest extends UnitTestBase {
 
   @Test
   public void testResolveForExistingObjectId() {

@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.init;
 
-import java.util.Arrays;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
@@ -27,6 +26,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 /**
  * This class hooks up at repository initialization, autowires the 3 repositories where
  * "runtime-constant" data is held (privileges, namespace roles and repository roles) and verifies
@@ -38,33 +39,7 @@ import org.springframework.stereotype.Service;
 @Profile("!test")
 public class DBTablesInitializer implements ApplicationRunner {
 
-  public static final Privilege[] DEFAULT_PRIVILEGES;
-  public static final NamespaceRole[] DEFAULT_NAMESPACE_ROLES;
-  public static final RepositoryRole[] DEFAULT_REPOSITORY_ROLES;
-
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-
-  static {
-    DEFAULT_PRIVILEGES = new Privilege[]{
-        new Privilege(1, "read"),
-        new Privilege(2, "write"),
-        new Privilege(3, "admin")
-    };
-
-    DEFAULT_NAMESPACE_ROLES = new NamespaceRole[]{
-        new NamespaceRole(1, "model_viewer", 1),
-        new NamespaceRole(2, "model_creator", 3),
-        new NamespaceRole(4, "model_promoter", 3),
-        new NamespaceRole(8, "model_reviewer", 3),
-        new NamespaceRole(16, "model_publisher", 3),
-        new NamespaceRole(32, "namespace_admin", 7)
-    };
-
-    DEFAULT_REPOSITORY_ROLES = new RepositoryRole[]{
-        new RepositoryRole(1, "sysadmin", 7)
-    };
-
-  }
 
   @Autowired
   private PrivilegeRepository privilegeRepository;
@@ -76,18 +51,18 @@ public class DBTablesInitializer implements ApplicationRunner {
   private RepositoryRoleRepository repositoryRoleRepository;
 
   @Override
-  public void run(ApplicationArguments applicationArguments) throws Exception {
+  public void run(ApplicationArguments applicationArguments) {
     if (privilegeRepository.findAll().isEmpty()) {
       LOGGER.debug("Found privileges table empty - populating with default values.");
-      Arrays.stream(DEFAULT_PRIVILEGES).forEach(privilegeRepository::save);
+      Arrays.stream(Privilege.DEFAULT_PRIVILEGES).forEach(privilegeRepository::save);
     }
     if (namespaceRoleRepository.findAll().isEmpty()) {
       LOGGER.debug("Found namespace roles table empty - populating with default values.");
-      Arrays.stream(DEFAULT_NAMESPACE_ROLES).forEach(namespaceRoleRepository::save);
+      Arrays.stream(NamespaceRole.DEFAULT_NAMESPACE_ROLES).forEach(namespaceRoleRepository::save);
     }
     if (repositoryRoleRepository.findAll().isEmpty()) {
       LOGGER.debug("Found repository roles table empty - populating with default values.");
-      Arrays.stream(DEFAULT_REPOSITORY_ROLES).forEach(repositoryRoleRepository::save);
+      Arrays.stream(RepositoryRole.DEFAULT_REPOSITORY_ROLES).forEach(repositoryRoleRepository::save);
     }
   }
 }

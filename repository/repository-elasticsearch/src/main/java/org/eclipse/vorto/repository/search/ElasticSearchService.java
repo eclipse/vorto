@@ -13,19 +13,6 @@
 package org.eclipse.vorto.repository.search;
 
 import com.google.common.base.Strings;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -74,6 +61,13 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Search Service implementation using a remote Elastic Search Service.<br/>
  * This search service provides a powerful and flexible way to look for specific models.<br>
@@ -100,7 +94,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private static Logger logger = Logger.getLogger(ElasticSearchService.class);
 
-  private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<IIndexFieldExtractor>();
+  private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<>();
 
   private RestHighLevelClient client;
 
@@ -363,7 +357,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
         BulkRequest bulkRequest = new BulkRequest();
 
         modelsToIndex.forEach(model -> {
-          bulkRequest.add(createIndexRequest(model, repo.getTenantId()));
+          bulkRequest.add(createIndexRequest(model, repo.getWorkspaceId()));
         });
 
         try {
@@ -373,13 +367,13 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
           result.addIndexedNamespace(NamespaceDto.fromTenant(tenant).getName(), modelsToIndex.size());
           logger.info(
             String.format(
-              "Received %d replies for tenant '%s' with %d models",
-              bulkResponse.getItems().length, repo.getTenantId(), modelsToIndex.size()
+              "Received %d replies for workspace '%s' with %d models",
+              bulkResponse.getItems().length, repo.getWorkspaceId(), modelsToIndex.size()
             )
           );
         } catch (IOException e) {
           throw new IndexingException(
-            String.format("Error trying to index all models in '%s' tenant.", repo.getTenantId()), e);
+            String.format("Error trying to index all models in '%s' workspace.", repo.getWorkspaceId()), e);
         }
       }
     });
@@ -506,6 +500,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    * @param searchExpression
    * @return
    */
+  @Override
   public List<ModelInfo> search(String searchExpression) {
       return search(searchExpression, UserContext.user(SecurityContextHolder.getContext().getAuthentication()));
   }
@@ -599,6 +594,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    * @param userContext The user context with which to execute this query
    * @return
    */
+  @Override
   public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

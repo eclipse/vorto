@@ -12,20 +12,21 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.RequestRepositorySessionHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest {
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+public class RequestRepositorySessionHelperTest extends UnitTestBase {
 
     private static String TEST_TENANT_ID = "TEST_TENANT_ID";
 
@@ -34,7 +35,7 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
         // create a session helper with autowiring (live http request)
         RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper();
         helper.afterPropertiesSet();
-        helper.setTenantId(TEST_TENANT_ID);
+        helper.setWorkspaceId(TEST_TENANT_ID);
         helper.setRepository(createMockRepository());
         Session mySession = helper.getSession();
         Assert.assertNotNull(mySession);
@@ -53,8 +54,8 @@ public class RequestRepositorySessionHelperTest extends AbstractIntegrationTest 
     @Test
     public void testInternalSessionSupplierNonWired() throws RepositoryException {
         // create a session helper without autowiring (no http request)
-        RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false);
-        helper.setTenantId(TEST_TENANT_ID);
+        RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false, null);
+        helper.setWorkspaceId(TEST_TENANT_ID);
         helper.setRepository(createMockRepository());
         Session mySession = helper.getSession();
         Assert.assertNotNull(mySession);

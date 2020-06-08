@@ -12,12 +12,12 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents a supported privileges assigned to a user on a namespace.
@@ -27,6 +27,16 @@ import javax.persistence.Table;
   public class Privilege implements Serializable {
 
   private static final long serialVersionUID = -5897575755499074106L;
+
+  public static final Privilege[] DEFAULT_PRIVILEGES;
+
+  static {
+    DEFAULT_PRIVILEGES = new Privilege[]{
+        new Privilege(1, "readonly"),
+        new Privilege(2, "readwrite"),
+        new Privilege(3, "admin")
+    };
+  }
 
   public Privilege() {}
 

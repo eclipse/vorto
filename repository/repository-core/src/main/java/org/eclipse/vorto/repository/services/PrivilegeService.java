@@ -12,12 +12,13 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.eclipse.vorto.repository.repositories.PrivilegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Provides basic functionality with regards to privileges.

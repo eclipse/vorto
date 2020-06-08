@@ -26,6 +26,6 @@ import org.junit.runners.Suite.SuiteClasses;
     ModelRepositoryTest.class, ModelRepositoryTest2.class,
     BlueToothDeviceInfoProfileResolverTest.class,
     Lwm2mObjectIdResolverTest.class, AllSearchTests.class})
-public class AllTests {
+public class RepositoryUnitTestSuite {
 
 }

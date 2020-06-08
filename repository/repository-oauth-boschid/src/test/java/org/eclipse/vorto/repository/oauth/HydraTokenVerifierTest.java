@@ -12,15 +12,6 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
@@ -28,8 +19,18 @@ import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.VerificationHelper;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class HydraTokenVerifierTest extends AbstractVerifierTest {
 
@@ -47,7 +48,9 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
     when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
     when(userAccountService.getTenants(user)).thenReturn(tenantList);
 
-    return new BoschIoTSuiteOAuthProviderV2(publicKey(), userAccountService);
+    UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+
+    return new BoschIoTSuiteOAuthProviderV2(publicKey(), userAccountService, userNamespaceRoleService);
   }
   
   @Test

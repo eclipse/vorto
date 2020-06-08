@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.workflow.impl.conditions;
 
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 import org.springframework.security.core.Authentication;
 
@@ -24,7 +24,7 @@ public class IsAdminCondition implements IWorkflowCondition {
   public boolean passesCondition(ModelInfo model, IUserContext user) {
     Authentication authentication = user.getAuthentication();
     return authentication.getAuthorities().stream()
-        .anyMatch(ga -> ga.getAuthority().equals(Role.rolePrefix + Role.SYS_ADMIN));
+        .anyMatch(ga -> ga.getAuthority().equals(RepositoryRole.SYS_ADMIN.getName()));
   }
 
 }

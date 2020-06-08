@@ -12,11 +12,6 @@
  */
 package org.eclipse.vorto.repository.web.api.v1.util;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
@@ -25,13 +20,21 @@ import org.eclipse.vorto.repository.services.UserUtil;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
-import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Utility service providing all entity to DTO and vice-versa conversions the controllers require.
  */
-@Service
 public class EntityDTOConverter {
+
+    private EntityDTOConverter() {
+        // this class contains only static methods.
+    }
 
   /**
    * Conveniently builds a {@link NamespaceDto} from a given {@link Namespace} entity, and a
@@ -43,7 +46,7 @@ public class EntityDTOConverter {
    * @param usersAndRoles
    * @return
    */
-  public NamespaceDto createNamespaceDTO(Namespace namespace,
+  public static NamespaceDto createNamespaceDTO(Namespace namespace,
       Map<User, Collection<IRole>> usersAndRoles) {
     Collection<Collaborator> collaborators = createCollaborators(usersAndRoles);
     Collection<Collaborator> admins = collaborators.stream()
@@ -52,7 +55,7 @@ public class EntityDTOConverter {
     return new NamespaceDto(namespace.getName(), collaborators, admins);
   }
 
-  public Collection<Collaborator> createCollaborators(Map<User, Collection<IRole>> usersAndRoles) {
+  public static Collection<Collaborator> createCollaborators(Map<User, Collection<IRole>> usersAndRoles) {
     Collection<Collaborator> result = new TreeSet<>(Comparator.comparing(Collaborator::getUserId));
     usersAndRoles.forEach(
         (u, c) -> {
@@ -68,7 +71,7 @@ public class EntityDTOConverter {
     return result;
   }
 
-  public User createUser(UserUtil userUtil, Collaborator collaborator) throws InvalidUserException {
+  public static User createUser(UserUtil userUtil, Collaborator collaborator) throws InvalidUserException {
     return new UserBuilder(userUtil)
         .withAuthenticationProviderID(collaborator.getAuthenticationProviderId())
         .withAuthenticationSubject(collaborator.getSubject())

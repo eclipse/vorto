@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository;
+package org.eclipse.vorto.repository.importer;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({org.eclipse.vorto.repository.web.AllTests.class, org.eclipse.vorto.repository.server.it.AllTests.class})
-public class AllTests {
+@SuiteClasses({DependencyManagerTest.class, ModelBulkImportTest.class, ModelImporterTest.class})
+public class ImporterUnitTestSuite {
 
 }

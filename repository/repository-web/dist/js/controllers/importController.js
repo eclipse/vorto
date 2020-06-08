@@ -25,7 +25,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
 		$scope.getNamespaces = function() {
 		    $scope.userNamespaces = [];
-        $http.get("./rest/namespaces/role/ROLE_MODEL_CREATOR")
+        $http.get("./rest/namespaces/role/model_creator")
           .then(function(result) {
               if (result.data) {
                   $scope.userNamespaces = result.data;

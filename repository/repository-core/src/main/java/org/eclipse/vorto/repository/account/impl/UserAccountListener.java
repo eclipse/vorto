@@ -16,6 +16,8 @@ import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,12 @@ public class UserAccountListener implements ApplicationListener<AppEvent> {
 
   @Autowired
   private DefaultUserAccountService userAccountService;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private RoleService roleService;
 
   @Override
   public void onApplicationEvent(AppEvent event) {
@@ -49,7 +57,7 @@ public class UserAccountListener implements ApplicationListener<AppEvent> {
         return;
       }
       User user = userAccountService.getUser(auth.getName());
-      SpringUserUtils.refreshSpringSecurityUser(user);
+      SpringUserUtils.refreshSpringSecurityUser(user, userNamespaceRoleService);
     }
   }
 

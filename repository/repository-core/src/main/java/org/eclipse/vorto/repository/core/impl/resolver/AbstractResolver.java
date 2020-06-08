@@ -43,7 +43,7 @@ public abstract class AbstractResolver implements IModelIdResolver {
     
     Optional<ModelId> foundId = mappings.stream()
         .filter(resource -> matchesServiceKey(resource, query.getTargetPlatformKey()))
-        .map(r -> doResolve(this.repositoryFactory.getRepositoryByModel(r.getId()).getTenantId(),r, query)).filter(modelId -> Objects.nonNull(modelId)).findFirst();
+        .map(r -> doResolve(this.repositoryFactory.getRepositoryByModel(r.getId()).getWorkspaceId(),r, query)).filter(modelId -> Objects.nonNull(modelId)).findFirst();
     return foundId.isPresent() ? foundId.get() : null;
   }
 

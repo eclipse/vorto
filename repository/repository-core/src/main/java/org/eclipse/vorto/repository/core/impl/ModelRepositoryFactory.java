@@ -12,38 +12,18 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.IDiagnostics;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.TenantNotFoundException;
-import org.eclipse.vorto.repository.core.UserLoginException;
-import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.TenantService;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
@@ -55,12 +35,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 @Component("modelRepositoryFactory")
 public class ModelRepositoryFactory implements IModelRepositoryFactory, ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
-
-  public static final String ANONYMOUS_USER = "anonymousUser";
 
   @Autowired
   private IUserAccountService userAccountService;
@@ -79,15 +70,21 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Autowired
   private RepositoryConfiguration repositoryConfiguration;
-  
-  @Autowired
-  private ErrorMessageProvider errorMessageProvider;
-
-  @Autowired
-  private TenantService tenantService;
 
   @Autowired
   private RequestRepositorySessionHelper sessionHelper;
+
+  @Autowired
+  private NamespaceService namespaceService;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private PrivilegeService privilegeService;
+
+  @Autowired
+  private RoleService roleService;
 
   private ApplicationEventPublisher eventPublisher = null;
 
@@ -95,27 +92,31 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   private static final ModeShapeEngine ENGINE = new ModeShapeEngine();
   
-  private Supplier<Collection<String>> tenantsSupplier = () -> {
-    return tenantService.getTenants().stream().map(Tenant::getTenantId)
-        .collect(Collectors.toList());
-  };
+  private final Supplier<Collection<String>> workspaceIdSupplier = () -> namespaceService.findAllWorkspaceIds();
 
   public ModelRepositoryFactory() {}
-  
+
   public ModelRepositoryFactory(IUserAccountService userAccountService,
       ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory,
       RepositoryDiagnostics repoDiagnostics,
-      RepositoryConfiguration repoConfig, 
-      TenantService tenantService) {
+      RepositoryConfiguration repoConfig,
+      RequestRepositorySessionHelper sessionHelper,
+      NamespaceService namespaceService,
+      UserNamespaceRoleService userNamespaceRoleService,
+      PrivilegeService privilegeService
+  ) {
     this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.repoDiagnostics = repoDiagnostics;
     this.repositoryConfiguration = repoConfig;
-    this.tenantService = tenantService;
+    this.namespaceService = namespaceService;
+    this.sessionHelper = sessionHelper;
+    this.userNamespaceRoleService = userNamespaceRoleService;
+    this.privilegeService = privilegeService;
   }
 
   @PostConstruct
@@ -128,7 +129,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   }
 
   @PreDestroy
-  public void stop() throws Exception {
+  public void stop() {
     try {
       ENGINE.shutdown().get(10, TimeUnit.SECONDS);
     } catch (Exception e) {
@@ -136,89 +137,107 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     }
   }
   
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
-    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, user);
-    });
+    return new ModelRetrievalService(workspaceIdSupplier, workspaceId -> getRepository(workspaceId, user));
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
-    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, userContext.getAuthentication());
-    });
+    return new ModelRetrievalService(workspaceIdSupplier, workspaceId -> getRepository(workspaceId, userContext.getAuthentication()));
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService() {
-    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
-      return getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
-    });
+    return new ModelRetrievalService(workspaceIdSupplier,
+            workspaceId -> getRepository(workspaceId, SecurityContextHolder.getContext().getAuthentication()));
   }
   
   @Override
-  public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
+  public IDiagnostics getDiagnosticsService(String workspaceId, Authentication user) {
     Diagnostician diagnostics = new Diagnostician(repoDiagnostics);
-    diagnostics.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    diagnostics.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     return diagnostics;
   }
 
   @Override
-  public IRepositoryManager getRepositoryManager(String tenant, Authentication user) {
+  public IRepositoryManager getRepositoryManager(String workspaceId, Authentication user) {
     RepositoryManager repoManager = new RepositoryManager();
-    repoManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
+    repoManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     repoManager.setDefaultSessionSupplier(defaultWorkspaceSessionSupplier(user));
     return repoManager;
   }
 
   @Override
-  public IModelPolicyManager getPolicyManager(String tenant, Authentication user) {
-    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService, this);
-    policyManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
+  public IModelPolicyManager getPolicyManager(String workspaceId, Authentication user) {
+    ModelPolicyManager policyManager = new ModelPolicyManager(userAccountService, this, roleService);
+    policyManager.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     return policyManager;
   }
 
   @Override
   public IModelPolicyManager getPolicyManager(IUserContext userContext) {
-    return getPolicyManager(userContext.getTenant(), userContext.getAuthentication());
+    return getPolicyManager(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
 
-  public IModelRepository getRepository(String tenant, Authentication user) {
+  @Override
+  public IModelRepository getRepository(String workspaceId, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, getModelRetrievalService(user),this,tenantService,getPolicyManager(tenant, user),errorMessageProvider);
-    modelRepository.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(tenant, user));
+        this.attachmentValidator,
+        this.modelParserFactory,
+        getModelRetrievalService(user),
+        this,
+        getPolicyManager(workspaceId, user),
+        namespaceService,
+        privilegeService);
+
+    modelRepository.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     modelRepository.setApplicationEventPublisher(eventPublisher);
-    
     return modelRepository;
   }
 
   @Override
   public IModelRepository getRepository(IUserContext userContext) {
-    return getRepository(userContext.getTenant(), userContext.getAuthentication());
+    return getRepository(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
   
   @Override
-  public IModelRepository getRepository(String tenantId) {
-    return getRepository(tenantId, SecurityContextHolder.getContext().getAuthentication());
+  public IModelRepository getRepository(String workspaceId) {
+    return getRepository(workspaceId, SecurityContextHolder.getContext().getAuthentication());
   }
   
-  private Supplier<RequestRepositorySessionHelper> namedWorkspaceSessionSupplier(String tenant, Authentication user) {
+  @Override
+  public IModelRepository getRepositoryByNamespace(String namespace) {
+    return getRepositoryByNamespace(namespace, SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  @Override
+  public IModelRepository getRepositoryByModel(ModelId modelId) {
+    return getRepositoryByModel(modelId, SecurityContextHolder.getContext().getAuthentication());
+  }
+  
+  @Override
+  public IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext) {
+    return getRepositoryByModel(modelId, userContext.getAuthentication());
+  }
+
+  private Supplier<RequestRepositorySessionHelper> namedWorkspaceSessionSupplier(String workspaceId, Authentication user) {
     return () -> {
       if(sessionHelper == null)
-        sessionHelper = new RequestRepositorySessionHelper(false);
+        sessionHelper = new RequestRepositorySessionHelper(false, privilegeService);
       sessionHelper.setRepository(repository);
-      sessionHelper.setTenantId(tenant);
-      sessionHelper.setRolesInTenant(getUserRolesInTenant(tenant, user.getName()));
+      sessionHelper.setWorkspaceId(workspaceId);
+      sessionHelper.setRolesInNamespace(getUserRolesInNamespace(workspaceId, user.getName()));
       sessionHelper.setUser(user);
       return sessionHelper;
     };
   }
-  
+
   private Supplier<Session> defaultWorkspaceSessionSupplier(Authentication user) {
     return () -> {
       try {
@@ -231,47 +250,32 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
     };
   }
 
-  private Set<Role> getUserRolesInTenant(String tenantId, String username) {
+  private Set<IRole> getUserRolesInNamespace(String workspaceId, String username) {
     // TODO improve caching for non anon users
     if(UserContext.isAnonymous(username))
-      return new HashSet<Role>();
-    Tenant tenant = tenantService.getTenant(tenantId).orElseThrow(
-        () -> new IllegalArgumentException("tenantId '" + tenantId + "' doesn't exist!"));
-    return tenant
-        .getUser(username).map(
-            tUser -> tUser.getRoles().stream().map(
-                userRole -> userRole.getRole()).collect(Collectors.toSet()))
-        .orElse(Collections.emptySet());
-  }
+      return new HashSet<>();
 
-  @Override
-  public IModelRepository getRepositoryByNamespace(String namespace) {
-    return getRepositoryByNamespace(namespace, SecurityContextHolder.getContext().getAuthentication());
-  }
-  
-  private IModelRepository getRepositoryByNamespace(String namespace, Authentication auth) {
-    Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
-    if (tenant.isPresent()) {
-      return this.getRepository(tenant.get().getTenantId(), auth);
+   String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
+    try {
+      return new HashSet<>(userNamespaceRoleService.getRoles(username, namespace));
+    } catch (DoesNotExistException e) {
+      LOGGER.debug("User or namespace not found. ", e);
+      return Collections.emptySet();
     }
-    return null;
   }
 
-  @Override
-  public IModelRepository getRepositoryByModel(ModelId modelId) {
-    return getRepositoryByModel(modelId, SecurityContextHolder.getContext().getAuthentication());
+  private IModelRepository getRepositoryByNamespace(String namespace, Authentication auth) {
+    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
+        .map(workspaceId -> getRepository(workspaceId, auth))
+        .orElse(null);
   }
-  
-  public IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext) {
-    return getRepositoryByModel(modelId, userContext.getAuthentication());
-  }
-  
+
   private IModelRepository getRepositoryByModel(ModelId modelId, Authentication auth) {
-    IModelRepository repository =  getRepositoryByNamespace(modelId.getNamespace(), auth);
-    if (repository == null) {
+    IModelRepository foundRepository =  getRepositoryByNamespace(modelId.getNamespace(), auth);
+    if (foundRepository == null) {
       throw new ModelNotFoundException("Namespace " + modelId.getNamespace() + " does not exist in the system.");
     } else {
-      return repository;
+      return foundRepository;
     }
   }
 }

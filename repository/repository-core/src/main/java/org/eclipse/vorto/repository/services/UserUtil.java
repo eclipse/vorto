@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -22,6 +20,9 @@ import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Provides various utility functionalities including validation for {@link org.eclipse.vorto.repository.domain.User}
@@ -36,9 +37,6 @@ public class UserUtil {
 
   @Autowired
   private IOAuthProviderRegistry registry;
-
-  @Autowired
-  private ServiceValidationUtil validator;
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
@@ -77,10 +75,8 @@ public class UserUtil {
    */
   public void validateAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
-    validator.validateEmpties(authenticationProviderID);
-    if (!registry.list().stream()
-        .map(
-            IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
+    ServiceValidationUtil.validateEmpties(authenticationProviderID);
+    if (!registry.list().stream().map(IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
       throw new InvalidUserException("Invalid authentication provider ID for user.");
     }
   }
@@ -96,8 +92,8 @@ public class UserUtil {
    */
   public void validateNewUser(User user) throws InvalidUserException {
     // boilerplate null validation
-    validator.validateNulls(user);
-    validator.validateEmpties(user.getSubject(), user.getUsername(),
+    ServiceValidationUtil.validateNulls(user);
+    ServiceValidationUtil.validateEmpties(user.getSubject(), user.getUsername(),
         user.getAuthenticationProviderId());
     validateSubject(user.getSubject());
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
@@ -113,7 +109,7 @@ public class UserUtil {
    */
   public void validateExistingUser(User user) throws InvalidUserException {
     validateNewUser(user);
-    validator.validateEmpties(user.getId());
+    ServiceValidationUtil.validateEmpties(user.getId());
   }
 
   public void validateUsername(String username) throws InvalidUserException {

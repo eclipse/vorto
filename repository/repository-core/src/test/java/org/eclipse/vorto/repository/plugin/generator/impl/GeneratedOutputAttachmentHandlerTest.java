@@ -12,26 +12,8 @@
  */
 package org.eclipse.vorto.repository.plugin.generator.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.junit.Test;
@@ -40,6 +22,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author kolotu
@@ -116,7 +104,7 @@ public class GeneratedOutputAttachmentHandlerTest {
       }
 
       @Override
-      public String getTenant() {
+      public String getWorkspaceId() {
         return null;
       }
 

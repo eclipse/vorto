@@ -12,34 +12,21 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingRule;
-import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.api.model.mapping.Target;
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.model.AbstractModel;
-import org.eclipse.vorto.model.EntityModel;
-import org.eclipse.vorto.model.EnumModel;
-import org.eclipse.vorto.model.FunctionblockModel;
-import org.eclipse.vorto.model.Infomodel;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.core.api.model.mapping.*;
+import org.eclipse.vorto.model.*;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class ModelDtoFactoryTest extends AbstractIntegrationTest {
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class ModelDtoFactoryTest extends UnitTestBase {
 
   @Test
   public void testDtoCreation() {

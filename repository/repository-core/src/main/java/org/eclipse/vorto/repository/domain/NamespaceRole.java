@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents a role applicable to a namespace.<br/>
@@ -29,6 +29,19 @@ import javax.persistence.Table;
 public class NamespaceRole implements Serializable, IRole {
 
   private static final long serialVersionUID = 760754614830691891L;
+
+  public static final NamespaceRole[] DEFAULT_NAMESPACE_ROLES;
+
+  static {
+    DEFAULT_NAMESPACE_ROLES = new NamespaceRole[]{
+        new NamespaceRole(1, "model_viewer", 1),
+        new NamespaceRole(2, "model_creator", 3),
+        new NamespaceRole(4, "model_promoter", 3),
+        new NamespaceRole(8, "model_reviewer", 3),
+        new NamespaceRole(16, "model_publisher", 3),
+        new NamespaceRole(32, "namespace_admin", 7)
+    };
+  }
 
   public NamespaceRole() {}
 
@@ -45,6 +58,7 @@ public class NamespaceRole implements Serializable, IRole {
 
   private long privileges;
 
+  @Override
   public long getRole() {
     return role;
   }
@@ -53,6 +67,7 @@ public class NamespaceRole implements Serializable, IRole {
     this.role = role;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -61,6 +76,7 @@ public class NamespaceRole implements Serializable, IRole {
     this.name = name;
   }
 
+  @Override
   public long getPrivileges() {
     return privileges;
   }

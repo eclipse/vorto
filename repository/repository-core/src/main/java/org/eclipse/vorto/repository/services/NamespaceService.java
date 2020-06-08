@@ -12,33 +12,31 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
+import com.google.common.collect.Lists;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.CollisionException;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.vorto.repository.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
@@ -48,26 +46,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
 
-  @Autowired
   private NamespaceRepository namespaceRepository;
 
-  @Autowired
   private UserRepository userRepository;
 
-  @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
 
-  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  @Autowired
-  private ServiceValidationUtil validator;
-
-  @Autowired
   private ISearchService searchService;
 
-  @Autowired
-  private UserUtil userUtil;
+  private ModelRepositoryFactory repositoryFactory;
 
   @Value("${config.privateNamespaceQuota}")
   private Integer privateNamespaceQuota;
@@ -100,9 +89,21 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   public static final String SEARCH_FOR_PUBLIC_MODELS_FORMAT = "namespace:%s visibility:Public";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
+  public NamespaceService(
+      @Autowired NamespaceRepository namespaceRepository,
+      @Autowired UserRepository userRepository,
+      @Autowired UserRepositoryRoleService userRepositoryRoleService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired ISearchService searchService,
+      @Autowired ModelRepositoryFactory repositoryFactory) {
+    this.namespaceRepository = namespaceRepository;
+    this.userRepository = userRepository;
+    this.userRepositoryRoleService = userRepositoryRoleService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
+    this.searchService = searchService;
+    this.repositoryFactory = repositoryFactory;
+  }
 
-  // utilities
 
   /**
    * This infers whether a {@link Namespace} with the given name exists, without throwing
@@ -146,6 +147,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   /**
    * @param applicationEventPublisher
    */
+  @Override
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
     this.eventPublisher = applicationEventPublisher;
   }
@@ -203,10 +205,10 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public Namespace create(User actor, User target, String namespaceName)
       throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validate(actor, target);
-    validator.validateNulls(namespaceName);
+    ServiceValidationUtil.validate(actor, target);
+    ServiceValidationUtil.validateNulls(namespaceName);
     // lightweight validation of required properties
-    validator.validateNulls(actor.getId(), target.getId());
+    ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     if (namespaceName.trim().isEmpty()) {
       throw new NameSyntaxException(String
@@ -245,13 +247,15 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // persists the new namespace
     Namespace namespace = new Namespace();
     namespace.setName(namespaceName);
+    // TODO 2265 add workspace id here / verify implementation
+    namespace.setWorkspaceId(UUID.randomUUID().toString().replace("-", ""));
     namespaceRepository.save(namespace);
 
     userNamespaceRoleService.setAllRoles(actor, target, namespace, true);
 
     // application event handling
     eventPublisher
-        .publishEvent(new AppEvent(this, target.getUsername(), EventType.NAMESPACE_ADDED));
+        .publishEvent(new AppEvent(this, target.getUsername(), UserContext.user(target.getUsername(), namespace.getWorkspaceId()), EventType.NAMESPACE_ADDED));
 
     return namespace;
   }
@@ -298,42 +302,21 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public void deleteNamespace(User actor, String namespaceName)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateUser(actor);
-    validator.validateNulls(namespaceName, actor.getId());
+    ServiceValidationUtil.validateUser(actor);
+    ServiceValidationUtil.validateNulls(namespaceName, actor.getId());
 
     // will throw DoesNotExistException if none found
     Namespace currentNamespace = validateNamespaceExists(namespaceName);
 
-    // searches for public models and fails if any
-    if (!searchService
-        .search(String.format(SEARCH_FOR_PUBLIC_MODELS_FORMAT, currentNamespace.getName()))
-        .isEmpty()) {
-      throw new OperationForbiddenException(String
-          .format("Namespace [%s] has public models and cannot be deleted - aborting operation.",
-              currentNamespace.getName()));
-    }
-
-    // authorizing acting user
-    if (!userRepositoryRoleService.isSysadmin(actor)
-        && !userNamespaceRoleService
-        .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdminRole())) {
-      throw new OperationForbiddenException(String
-          .format("Acting user is not authorized to delete namespace [%s] - aborting operation.",
-              currentNamespace.getName()));
-    }
-
-    // deletes all collaborator associations
-    Collection<User> users = userNamespaceRoleService
-        .getRolesByUser(actor, currentNamespace).keySet();
-    for (User user : users) {
-      userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace, true);
-    }
+    searchForPublicModelsAndFailIfAnyExist(currentNamespace);
+    authorizeActingUser(actor, currentNamespace);
+    deleteModeshapeWorkspace(currentNamespace);
+    deleteAllCollaboratorAssociations(actor, currentNamespace);
 
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);
 
-    eventPublisher
-        .publishEvent(new AppEvent(this, currentNamespace.getName(), EventType.NAMESPACE_DELETED));
+    publishNamespaceDeletedEvent(actor, currentNamespace);
   }
 
   /**
@@ -392,5 +375,78 @@ public class NamespaceService implements ApplicationEventPublisherAware {
               privateNamespaceQuota)
       );
     }
+  }
+
+  /**
+   * Resolves workspace ID for the given namespace. Tries to lookup the namespace by name and returns
+   * the result, if there is one. Otherwise it filters all namespaces for ownership of the given
+   * namespace to identify the main workspace for subdomains.
+   * @param namespace - the given namespace
+   * @return Optional of the workspace ID or empty Optional, if no namespace was found.
+   */
+  public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
+    Optional<String> foundByFullNamespaceName = Optional.ofNullable(namespaceRepository.findByName(namespace))
+            .map(Namespace::getWorkspaceId);
+    if (foundByFullNamespaceName.isPresent()) {
+      return foundByFullNamespaceName;
+    }
+    return filterAllNamespacesByName(namespace).map(Namespace::getWorkspaceId);
+  }
+
+  public List<String> findAllWorkspaceIds() {
+    return Lists.newArrayList(namespaceRepository.findAll()).stream().map(Namespace::getWorkspaceId)
+        .collect(Collectors.toList());
+  }
+
+  public Namespace findNamespaceByWorkspaceId(String workspaceId) {
+    return namespaceRepository.findByWorkspaceId(workspaceId);
+  }
+
+  private void searchForPublicModelsAndFailIfAnyExist(Namespace currentNamespace)
+      throws OperationForbiddenException {
+    if (!searchService
+        .search(String.format(SEARCH_FOR_PUBLIC_MODELS_FORMAT, currentNamespace.getName()))
+        .isEmpty()) {
+      throw new OperationForbiddenException(String
+          .format("Namespace [%s] has public models and cannot be deleted - aborting operation.",
+              currentNamespace.getName()));
+    }
+  }
+
+  private void authorizeActingUser(User actor, Namespace currentNamespace)
+      throws DoesNotExistException, OperationForbiddenException {
+    if (!userRepositoryRoleService.isSysadmin(actor)
+        && !userNamespaceRoleService
+        .hasRole(actor, currentNamespace, userNamespaceRoleService.namespaceAdminRole())) {
+      throw new OperationForbiddenException(String
+          .format("Acting user is not authorized to delete namespace [%s] - aborting operation.",
+              currentNamespace.getName()));
+    }
+  }
+
+  private void publishNamespaceDeletedEvent(User actor, Namespace currentNamespace) {
+    eventPublisher
+        .publishEvent(new AppEvent(this, actor.getUsername(), UserContext
+            .user(SecurityContextHolder.getContext().getAuthentication(), currentNamespace.getWorkspaceId()), EventType.NAMESPACE_DELETED));
+  }
+
+  private void deleteAllCollaboratorAssociations(User actor, Namespace currentNamespace)
+      throws OperationForbiddenException, DoesNotExistException {
+    Collection<User> users = userNamespaceRoleService
+        .getRolesByUser(actor, currentNamespace).keySet();
+    for (User user : users) {
+      userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace, true);
+    }
+  }
+
+  private void deleteModeshapeWorkspace(Namespace currentNamespace) {
+    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(currentNamespace.getWorkspaceId(),
+        SecurityContextHolder.getContext().getAuthentication());
+    repoMgr.removeTenantWorkspace(currentNamespace.getWorkspaceId());
+  }
+
+  private Optional<Namespace> filterAllNamespacesByName(String namespace) {
+    return Lists.newArrayList(namespaceRepository.findAll()).stream()
+        .filter(ns -> ns.owns(namespace)).findAny();
   }
 }

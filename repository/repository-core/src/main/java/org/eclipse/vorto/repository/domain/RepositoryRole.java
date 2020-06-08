@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Contrary to {@link NamespaceRole}, this role applies instead to the whole repository.<br/>
@@ -31,6 +31,16 @@ import javax.persistence.Table;
 public class RepositoryRole implements Serializable, IRole {
 
   private static final long serialVersionUID = -6221938330735374556L;
+
+  public static final RepositoryRole SYS_ADMIN = new RepositoryRole(1, "sysadmin", 7);
+
+  public static final RepositoryRole[] DEFAULT_REPOSITORY_ROLES;
+
+  static {
+    DEFAULT_REPOSITORY_ROLES = new RepositoryRole[]{
+        SYS_ADMIN
+    };
+  }
 
   public RepositoryRole() {
   }
@@ -48,6 +58,7 @@ public class RepositoryRole implements Serializable, IRole {
 
   private long privileges;
 
+  @Override
   public long getRole() {
     return role;
   }
@@ -56,6 +67,7 @@ public class RepositoryRole implements Serializable, IRole {
     this.role = role;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -64,6 +76,7 @@ public class RepositoryRole implements Serializable, IRole {
     this.name = name;
   }
 
+  @Override
   public long getPrivileges() {
     return privileges;
   }

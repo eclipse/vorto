@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
-import java.util.Collection;
-import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -21,6 +19,9 @@ import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class RemovePolicies implements IWorkflowFunction {
 
@@ -37,15 +38,15 @@ public class RemovePolicies implements IWorkflowFunction {
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     logger.info("Removing permission from model " + model.getId());
     Collection<PolicyEntry> policies =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
             .getPolicyEntries(model.getId());
     for (PolicyEntry entry : policies) {
       logger.info("removing " + entry);
-      repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+      repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
           .removePolicyEntry(model.getId(), entry);
     }
 
-    logger.info(repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+    logger.info(repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
         .getPolicyEntries(model.getId()).toString());
   }
 }

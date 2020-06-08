@@ -12,17 +12,14 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
-import java.util.Map;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
 
@@ -38,7 +35,7 @@ public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
 
     logger.info("Adding access of model " + model.getId() + " to non-tenant member users");
     policyManager.addPolicyEntry(model.getId(),

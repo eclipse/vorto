@@ -65,7 +65,7 @@ public class TargetPlatformUpgradeTask extends AbstractUpgradeTask implements IU
       ModelRepository modelRepository =
           (ModelRepository) repositoryFactory.getRepositoryByModel(modelInfo.getId());
       ModelResource mappingModel = modelRepository.getEMFResource(modelInfo.getId());
-      modelRepository.save(mappingModel, UserContext.user(modelInfo.getAuthor(), modelRepository.getTenantId()));
+      modelRepository.save(mappingModel, UserContext.user(modelInfo.getAuthor(), modelRepository.getWorkspaceId()));
     }
   }
 

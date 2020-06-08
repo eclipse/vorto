@@ -12,11 +12,12 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 /**
  *
@@ -144,14 +145,14 @@ public interface IModelRepository {
    * @return
    */
   List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,
-      Optional<String> version) throws NotAuthorizedException;;
+      Optional<String> version) throws NotAuthorizedException;
 
   /**
    * Removes the model for the given ModelID
    *
    * @param modelId
    */
-  void removeModel(ModelId modelId) throws NotAuthorizedException;;
+  void removeModel(ModelId modelId) throws NotAuthorizedException;
 
   /**
    * Updates the model meta information
@@ -195,7 +196,7 @@ public interface IModelRepository {
    * @return
    */
   Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName)
-      throws NotAuthorizedException;;
+      throws NotAuthorizedException;
 
   /**
    * Attaches the given file to the model
@@ -268,10 +269,6 @@ public interface IModelRepository {
    */
   boolean exists(ModelId modelId);
 
-  /**
-   *
-   * @return
-   */
-  String getTenantId();
+  String getWorkspaceId();
 
 }

@@ -12,24 +12,13 @@
  */
 package org.eclipse.vorto.repository.search;
 
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -42,16 +31,15 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
-import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -61,11 +49,7 @@ import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -76,6 +60,15 @@ import org.springframework.security.core.Authentication;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -207,6 +200,16 @@ public final class SearchTestInfrastructure {
 
   private Tenant playgroundTenant = playgroundTenant();
 
+  NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
+
+  UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+
+  UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+
+  RoleService roleService = Mockito.mock(RoleService.class);
+
+  PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
+
   @InjectMocks
   protected ISearchService searchService = null;
 
@@ -261,7 +264,8 @@ public final class SearchTestInfrastructure {
     int getTCPEndPort() {
       return tcpStart + 1;
     }
-    private ESRandomizer(){};
+    private ESRandomizer(){}
+
     static ESRandomizer newInstance() {
       int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
       return new ESRandomizer()
@@ -363,6 +367,15 @@ public final class SearchTestInfrastructure {
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
     when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
 
+    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
+    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
+    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
+    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
+    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
+    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+
+    setupNamespaceMocking();
+
     modelParserFactory = new ModelParserFactory();
     modelParserFactory.init();
 
@@ -371,7 +384,7 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, null,
-        attachmentValidator, modelParserFactory, null, config, tenantService) {
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -379,16 +392,16 @@ public final class SearchTestInfrastructure {
       }
 
       @Override
-      public IModelRepository getRepository(String tenantId) {
-        return super.getRepository(createUserContext("admin", tenantId));
+      public IModelRepository getRepository(String workspaceId) {
+        return super.getRepository(createUserContext("admin", workspaceId));
       }
 
       @Override
-      public IModelRepository getRepository(String tenant, Authentication user) {
+      public IModelRepository getRepository(String workspaceId, Authentication user) {
         if (user == null) {
-          return getRepository(tenant);
+          return getRepository(workspaceId);
         }
-        return super.getRepository(tenant, user);
+        return super.getRepository(workspaceId, user);
       }
     };
 
@@ -431,7 +444,7 @@ public final class SearchTestInfrastructure {
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
-        tenantService);
+        userRepositoryRoleService, userNamespaceRoleService);
 
     importer = new VortoModelImporter();
     importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -441,7 +454,7 @@ public final class SearchTestInfrastructure {
     importer.setModelValidationHelper(modelValidationHelper);
 
     workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
+        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
 
@@ -560,5 +573,33 @@ public final class SearchTestInfrastructure {
 
   public ModelRepositoryFactory getRepositoryFactory() {
     return repositoryFactory;
+  }
+
+  private void setupNamespaceMocking() throws DoesNotExistException {
+    //when(requestRepositorySessionHelper.()).thenReturn()
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
+    NamespaceRole role = new NamespaceRole();
+    role.setName("namespace_admin");
+    role.setPrivileges(7);
+    role.setRole(32);
+    Set<IRole> roles = new HashSet<>();
+    roles.add(role);
+    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
+    Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
+    when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
+  }
+
+  private Namespace mockNamespace() {
+    Namespace namespace = new Namespace();
+    namespace.setName("org.eclipse.vorto");
+    namespace.setId(1L);
+    namespace.setWorkspaceId("playground");
+    return namespace;
   }
 }

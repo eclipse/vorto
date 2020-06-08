@@ -12,28 +12,25 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelRepositoryTest extends AbstractIntegrationTest {
+public class ModelRepositoryTest extends UnitTestBase {
 
   @Test
   public void testGetModelById() throws Exception {

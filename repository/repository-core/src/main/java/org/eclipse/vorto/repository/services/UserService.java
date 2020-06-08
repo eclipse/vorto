@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -31,6 +28,10 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 /**
  * Provides functionalities specific to user manipulation.<br/>
  */
@@ -41,9 +42,6 @@ public class UserService implements ApplicationEventPublisherAware {
   private UserUtil userUtil;
 
   @Autowired
-  private ServiceValidationUtil validator;
-
-  @Autowired
   private UserRepository userRepository;
 
   @Autowired
@@ -51,12 +49,6 @@ public class UserService implements ApplicationEventPublisherAware {
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
-
-  @Autowired
-  private NamespaceService namespaceService;
-
-  @Autowired
-  private RoleUtil roleUtil;
 
   private ApplicationEventPublisher eventPublisher;
 
@@ -75,7 +67,7 @@ public class UserService implements ApplicationEventPublisherAware {
    */
   public User createOrUpdateTechnicalUser(User technicalUser) throws InvalidUserException {
     // boilerplate null validation
-    validator.validateNulls(technicalUser);
+    ServiceValidationUtil.validateNulls(technicalUser);
 
     // validates technical user
     userUtil.validateNewUser(technicalUser);
@@ -105,7 +97,7 @@ public class UserService implements ApplicationEventPublisherAware {
   public User createOrUpdateUser(User actor, User target)
       throws InvalidUserException, OperationForbiddenException {
     // boilerplate null validation
-    validator.validateNulls(actor, target);
+    ServiceValidationUtil.validateNulls(actor, target);
 
     // validates technical user
     userUtil.validateNewUser(target);
@@ -155,7 +147,7 @@ public class UserService implements ApplicationEventPublisherAware {
   public boolean delete(User actor, User target)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    validator.validateNulls(actor, target);
+    ServiceValidationUtil.validateNulls(actor, target);
 
     if (!userRepository.exists(target.getId())) {
       LOGGER.info("Attempting to delete a user that does not exist. ");

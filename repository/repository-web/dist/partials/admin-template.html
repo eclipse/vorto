@@ -15,7 +15,7 @@
     		<uib-tab-heading><span class="glyphicon glyphicon-link" aria-hidden="true"></span>&nbsp;Namespaces</uib-tab-heading>
     		<div namespace-management="" ng-controller="namespaceManagementController"></div>
     	</uib-tab>
-    	<uib-tab ng-show="hasAuthority('ROLE_SYS_ADMIN')" index="1">
+    	<uib-tab ng-show="hasAuthority('sysadmin')" index="1">
     		<uib-tab-heading><i class="fa fa-info-circle"></i> Global Repository Functions</uib-tab-heading>
 			
 			<div ng-if="error" class="alert alert-danger">{{error}}</div>

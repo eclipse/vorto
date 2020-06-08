@@ -12,24 +12,21 @@
  */
 package org.eclipse.vorto.repository.core.impl.utils;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.core.impl.ValidationReportFactory;
-import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
-import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
-import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
-import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
-import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
-import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.core.impl.validation.*;
 import org.eclipse.vorto.repository.importer.ValidationReport;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ModelValidationHelper {
@@ -39,12 +36,15 @@ public class ModelValidationHelper {
   private IModelValidator modelReferencesValidator = null;
   private IModelValidator typeImportValidator = null;
   
-  private List<IModelValidator> MODEL_UPDATE_VALIDATORS = new ArrayList<IModelValidator>(3);
-  private List<IModelValidator> MODEL_CREATION_VALIDATORS = new ArrayList<IModelValidator>(4);
+  private List<IModelValidator> MODEL_UPDATE_VALIDATORS = new ArrayList<>(3);
+  private List<IModelValidator> MODEL_CREATION_VALIDATORS = new ArrayList<>(4);
 
-  public ModelValidationHelper(@Autowired IModelRepositoryFactory modelRepoFactory, @Autowired IUserAccountService userRepository, 
-      @Autowired ITenantService tenantService) {
-    this.hasAccessToNamespaceValidator = new UserHasAccessToNamespaceValidation(userRepository, tenantService);
+  public ModelValidationHelper(@Autowired IModelRepositoryFactory modelRepoFactory,
+      @Autowired IUserAccountService userRepository,
+      @Autowired UserRepositoryRoleService userRepositoryRoleService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+
+    this.hasAccessToNamespaceValidator = new UserHasAccessToNamespaceValidation(userRepository, userRepositoryRoleService, userNamespaceRoleService);
     this.duplicateModelValidator = new DuplicateModelValidation(modelRepoFactory);
     this.modelReferencesValidator = new ModelReferencesValidation(modelRepoFactory);
     this.typeImportValidator = new TypeImportValidation();
@@ -61,7 +61,7 @@ public class ModelValidationHelper {
   }
 
   public ValidationReport validateModelCreation(ModelInfo model, IUserContext userContext) {
-    List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
+    List<ValidationException> validationExceptions = new ArrayList<>();
     for (IModelValidator validator : this.MODEL_CREATION_VALIDATORS) {
       try {
         validator.validate(model, InvocationContext.create(userContext));
@@ -79,7 +79,7 @@ public class ModelValidationHelper {
   }
   
   public ValidationReport validateModelUpdate(ModelInfo model, IUserContext userContext) {
-    List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
+    List<ValidationException> validationExceptions = new ArrayList<>();
     for (IModelValidator validator : this.MODEL_UPDATE_VALIDATORS) {
       try {
         validator.validate(model, InvocationContext.create(userContext));

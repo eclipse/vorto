@@ -13,30 +13,13 @@
 package org.eclipse.vorto.repository.web.api.v1;
 
 import io.swagger.annotations.ApiParam;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.services.UserService;
-import org.eclipse.vorto.repository.services.UserUtil;
-import org.eclipse.vorto.repository.services.exceptions.CollisionException;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
-import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.exceptions.*;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
@@ -46,13 +29,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Performs a number of operations on namespaces and collaborators.
@@ -60,8 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/rest/namespaces")
 public class NamespaceController {
-
-  private static final Logger LOGGER = Logger.getLogger(NamespaceController.class);
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
@@ -74,9 +52,6 @@ public class NamespaceController {
 
   @Autowired
   private NamespaceService namespaceService;
-
-  @Autowired
-  private EntityDTOConverter converter;
 
   @RequestMapping(method = RequestMethod.GET, value = "/test")
   @PreAuthorize("isAuthenticated()")
@@ -102,7 +77,7 @@ public class NamespaceController {
       for (Map.Entry<Namespace, Map<User, Collection<IRole>>> entry : userNamespaceRoleService
           .getNamespacesCollaboratorsAndRoles(userContext.getUsername(),
               userContext.getUsername(), "namespace_admin").entrySet()) {
-        namespaces.add(converter.createNamespaceDTO(entry.getKey(), entry.getValue()));
+        namespaces.add(EntityDTOConverter.createNamespaceDTO(entry.getKey(), entry.getValue()));
       }
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(namespaces, HttpStatus.FORBIDDEN);
@@ -125,7 +100,7 @@ public class NamespaceController {
     try {
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
-      collaborators = converter.createCollaborators(userNamespaceRoleService
+      collaborators = EntityDTOConverter.createCollaborators(userNamespaceRoleService
           .getRolesByUser(userContext.getUsername(), namespace));
       return new ResponseEntity<>(collaborators, HttpStatus.OK);
     } catch (OperationForbiddenException ofe) {
@@ -153,7 +128,7 @@ public class NamespaceController {
     try {
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
-      User user = converter.createUser(userUtil, collaborator);
+      User user = EntityDTOConverter.createUser(userUtil, collaborator);
       userNamespaceRoleService
           .createTechnicalUserAndAddAsCollaborator(userContext.getUsername(), user, namespace,
               collaborator.getRoles());
@@ -183,7 +158,7 @@ public class NamespaceController {
 
     try {
       // no validation here save for essentials: we are pointing to an existing user
-      User user = converter.createUser(null, collaborator);
+      User user = EntityDTOConverter.createUser(null, collaborator);
       IUserContext userContext = UserContext
           .user(SecurityContextHolder.getContext().getAuthentication());
       return new ResponseEntity<>(
@@ -212,11 +187,10 @@ public class NamespaceController {
    * @param namespace
    * @return
    */
-  @RequestMapping(method = RequestMethod.PUT, value = "/{namespace:.+}", produces = "application/json")
+  @PutMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<NamespaceOperationResult> createNamespace(
-      @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace
-  ) {
+      @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace) {
 
     try {
       IUserContext userContext = UserContext
@@ -251,8 +225,8 @@ public class NamespaceController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/role/{role}", produces = "application/json")
   public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
-      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
-          required = false) final @PathVariable(value = "role", required = false) String role) {
+      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to")
+      final @PathVariable(value = "role", required = false) String role) {
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
@@ -264,7 +238,7 @@ public class NamespaceController {
               role);
       return new ResponseEntity<>(
           namespaces.entrySet().stream()
-              .map(e -> converter.createNamespaceDTO(e.getKey(), e.getValue()))
+              .map(e -> EntityDTOConverter.createNamespaceDTO(e.getKey(), e.getValue()))
               .collect(Collectors.toSet()),
           HttpStatus.OK
       );
@@ -408,7 +382,7 @@ public class NamespaceController {
     try {
       Namespace entity = namespaceService.getByName(namespace);
       return new ResponseEntity<>(
-          converter.createNamespaceDTO(
+          EntityDTOConverter.createNamespaceDTO(
               entity,
               userNamespaceRoleService.getRolesByUser(userContext.getUsername(), entity.getName())
           ),
