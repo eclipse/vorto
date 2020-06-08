@@ -314,11 +314,15 @@ begin
     end if;
 end;
 
+call create_user_repository_roles();
+
 # 8) add_workspace_id_and_populate
 create procedure add_workspace_id_and_populate()
 begin
-    alter table namespace add column workspace_id varchar(255) not null default 'undefined';
-    update namespace set workspace_id = (select tenant_id from tenant where id = namespace.tenant_id);
+    alter table namespace
+        add column workspace_id varchar(255) not null default 'undefined';
+    update namespace
+    set workspace_id = (select tenant_id from tenant where id = namespace.tenant_id);
 end;
 call add_workspace_id_and_populate();
 drop procedure add_workspace_id_and_populate;
