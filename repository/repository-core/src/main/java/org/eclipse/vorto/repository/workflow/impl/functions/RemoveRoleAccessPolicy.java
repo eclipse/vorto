@@ -39,7 +39,7 @@ public class RemoveRoleAccessPolicy implements IWorkflowFunction {
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
     
     LOGGER.info("Removing full access of model to " + roleToRemove.get().getName() + " for " + model.getId());
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());

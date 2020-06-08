@@ -182,7 +182,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Override
   public IModelPolicyManager getPolicyManager(IUserContext userContext) {
-    return getPolicyManager(userContext.getTenant(), userContext.getAuthentication());
+    return getPolicyManager(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
 
   @Override
@@ -203,7 +203,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   @Override
   public IModelRepository getRepository(IUserContext userContext) {
-    return getRepository(userContext.getTenant(), userContext.getAuthentication());
+    return getRepository(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
   
   @Override

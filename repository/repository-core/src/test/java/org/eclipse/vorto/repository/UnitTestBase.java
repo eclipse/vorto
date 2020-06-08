@@ -142,8 +142,10 @@ public abstract class UnitTestBase {
 
   protected void mockNamespaceRepository() {
     Namespace n = new Namespace();
+    n.setName("com.mycompany");
     n.setWorkspaceId("playground");
     when(namespaceRepository.findAll()).thenReturn(Lists.newArrayList(n));
+    when(namespaceRepository.findByName("com.mycompany")).thenReturn(n);
   }
 
   protected void mockNamespaceService() {
@@ -273,6 +275,7 @@ public abstract class UnitTestBase {
       NamespaceRole model_promoter, NamespaceRole model_publisher, NamespaceRole model_reviewer)
       throws DoesNotExistException, OperationForbiddenException {
     User alex = User.create("alex", "GITHUB", null);
+    alex.setId(1L);
     User erle = User.create("erle", "GITHUB", null);
     User admin = User.create("admin", "GITHUB", null);
     User creator = User.create("creator", "GITHUB", null);
@@ -392,7 +395,7 @@ public abstract class UnitTestBase {
   }
   
   protected IRepositoryManager getRepoManager(IUserContext userContext) {
-    return repositoryFactory.getRepositoryManager(userContext.getTenant(), userContext.getAuthentication());
+    return repositoryFactory.getRepositoryManager(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
 
   protected IUserContext createUserContext(String username) {

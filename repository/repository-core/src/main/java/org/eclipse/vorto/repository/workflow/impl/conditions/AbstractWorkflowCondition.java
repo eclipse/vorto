@@ -37,7 +37,7 @@ public abstract class AbstractWorkflowCondition implements IWorkflowCondition {
     }
 
     boolean hasRole(IUserContext userContext, User user, IRole role) {
-        Namespace namespace = namespaceService.findNamespaceByWorkspaceId(userContext.getTenant());
+        Namespace namespace = namespaceService.findNamespaceByWorkspaceId(userContext.getWorkspaceId());
         try {
             return userNamespaceRoleService.hasRole(user, namespace, role);
         } catch (DoesNotExistException e) {

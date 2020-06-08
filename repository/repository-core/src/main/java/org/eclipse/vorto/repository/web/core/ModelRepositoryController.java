@@ -520,7 +520,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     if (!userRepositoryRoleService.isSysadmin(user.getUsername()) &&
         !accountService
-            .hasRole(user.getTenant(), user.getAuthentication(), "model_publisher")) {
+            .hasRole(user.getWorkspaceId(), user.getAuthentication(), "model_publisher")) {
       return new ResponseEntity<>(
           Status.fail("Only users with Publisher roles are allowed to make models public"),
           HttpStatus.UNAUTHORIZED);

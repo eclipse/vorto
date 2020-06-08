@@ -136,7 +136,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 	}
 	
 	private IModelRepository getModelRepository(IUserContext context) {
-	  return modelRepositoryFactory.getRepository(context.getTenant(), context.getAuthentication());
+	  return modelRepositoryFactory.getRepository(context.getWorkspaceId(), context.getAuthentication());
 	}
 
 }

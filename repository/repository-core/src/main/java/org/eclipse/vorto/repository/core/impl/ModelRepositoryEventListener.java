@@ -50,23 +50,14 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
       makeModelsAnonymous(event);
     } else if (event.getEventType() == EventType.NAMESPACE_ADDED) {
       createWorkspaceForTenant(event);
-    } else if (event.getEventType() == EventType.NAMESPACE_DELETED) {
-      deleteWorkspaceForTenant(event);
     }
-  }
-
-  private void deleteWorkspaceForTenant(AppEvent event) {
-    IUserContext userContext = event.getUserContext();
-    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(),
-        userContext.getAuthentication());
-    repoMgr.removeTenantWorkspace(userContext.getTenant());
   }
 
   private void createWorkspaceForTenant(AppEvent event) {
     IUserContext userContext = event.getUserContext();
-    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getTenant(),
+    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(userContext.getWorkspaceId(),
         userContext.getAuthentication());
-    repoMgr.createTenantWorkspace(userContext.getTenant());
+    repoMgr.createTenantWorkspace(userContext.getWorkspaceId());
   }
 
   private void makeModelsAnonymous(AppEvent event) {

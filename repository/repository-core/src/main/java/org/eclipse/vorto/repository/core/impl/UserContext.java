@@ -66,7 +66,7 @@ public class UserContext implements IUserContext {
   }
 
   @Override
-  public String getTenant() {
+  public String getWorkspaceId() {
     return tenant;
   }
 

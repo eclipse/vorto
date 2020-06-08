@@ -42,7 +42,7 @@ public class GrantRoleAccessPolicy implements IWorkflowFunction {
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     LOGGER.info("Granting permission of model " + model.getId() + " to " + roleToGiveAccess.get().getName() + " role");
-    repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication()).addPolicyEntry(
+    repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication()).addPolicyEntry(
         model.getId(),
         PolicyEntry.of(roleToGiveAccess.get().getName(), PrincipalType.Role, Permission.FULL_ACCESS));
 

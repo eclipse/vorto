@@ -41,20 +41,20 @@ public class ClaimOwnership implements IWorkflowFunction {
 	public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
 		LOGGER.info("Claiming model " + model.getId() + " of user '" + user.getUsername() + "' and role 'admin'");
 		
-		Collection<PolicyEntry> policies = repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+		Collection<PolicyEntry> policies = repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
 		    .getPolicyEntries(model.getId());
 		for (PolicyEntry entry : policies) {
 		  LOGGER.info("removing " + entry);
-		  repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+		  repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
 		    .removePolicyEntry(model.getId(), entry);
 		}
 		
-		repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
+		repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
 		  .addPolicyEntry(model.getId(), PolicyEntry.of(user.getUsername(), PrincipalType.User, Permission.FULL_ACCESS), PolicyEntry.of(
 				RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS));
         
         model.setAuthor(user.getUsername());  
-        repositoryFactory.getRepository(user.getTenant(), user.getAuthentication())
+        repositoryFactory.getRepository(user.getWorkspaceId(), user.getAuthentication())
           .updateMeta(model);
 	}
 }

@@ -13,8 +13,6 @@
 package org.eclipse.vorto.repository.init;
 
 import com.google.common.collect.Sets;
-import java.util.Optional;
-import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -33,6 +31,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Component
 public class RepositoryInitializer {
@@ -115,7 +116,7 @@ public class RepositoryInitializer {
       }
 
       @Override
-      public String getTenant() {
+      public String getWorkspaceId() {
         return tenantId;
       }
 
