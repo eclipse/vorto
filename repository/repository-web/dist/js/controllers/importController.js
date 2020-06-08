@@ -189,7 +189,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                         $scope.fileAdded = true;
                         $scope.isLoading = false;
                         $rootScope.modelsSaved = null;
-                        $scope.importedModels = result;
+                        $scope.importedModels = result.data;
                     },
                     function(error) {
                         if (error.status == 403) {
@@ -213,7 +213,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $http.get('./api/v1/importers')
                 .then(
                     function (result) {
-                        $scope.importers = result;
+                        $scope.importers = result.data;
                     },
                     function(error) {}
                 );
