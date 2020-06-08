@@ -24,7 +24,7 @@ import java.util.Objects;
 
 public class SpringSecurityContext implements SecurityContext {
 
-  private static final Logger logger = LoggerFactory.getLogger(SpringSecurityContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityContext.class);
 
   private SpringSecurityCredentials credentials;
 
@@ -77,7 +77,7 @@ public class SpringSecurityContext implements SecurityContext {
 
   @Override
   public void logout() {
-    logger.debug("logout of Vorto Repository");
+    LOGGER.debug("logout of Vorto Repository");
   }
 
 }

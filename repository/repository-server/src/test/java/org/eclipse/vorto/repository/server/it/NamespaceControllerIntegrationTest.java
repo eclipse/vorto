@@ -15,21 +15,12 @@ package org.eclipse.vorto.repository.server.it;
 import com.google.common.collect.Lists;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,12 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * The tests cover simple operations on namespaces, as well as collaborators, with a few edge
  * cases.
  */
-@RunWith(SpringRunner.class)
-@ActiveProfiles(profiles = {"test"})
-@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = {"classpath:application-test.yml"})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
-@Sql("classpath:prepare_tables.sql")
 public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   /**
@@ -610,7 +595,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     made tenant admin of the namespace they just created).
     */
     Collaborator userModelCreatorCollaborator = new Collaborator();
-    userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_2_NAME);
+    userModelCreatorCollaborator.setUserId(USER_MODEL_VIEWER_NAME);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     roles.add("namespace_admin");
@@ -652,14 +637,14 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
   @Test
   public void testAccessibleNamespacesWithRole() throws Exception {
     // first, creates a namespace for the userModelCreator user
-    createNamespaceSuccessfully("vorto.private.myNamespace", userModelCreator);
+    createNamespaceSuccessfully("vorto.private.myNamespace", userModelCreator2);
 
     // now, creates a namespace for the userModelCreator2 user
-    createNamespaceSuccessfully("vorto.private.myNamespace2", userModelCreator2);
+    createNamespaceSuccessfully("vorto.private.myNamespace2", userModelCreator3);
 
     // Now adds userModelCreator to userModelCreator2's namespace as model creator
     Collaborator userModelCreatorCollaborator = new Collaborator();
-    userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME_2);
     userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaborator.setSubject("none");
     Set<String> roles = new HashSet<>();
@@ -704,7 +689,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
     // creating Collaborator for userModelCreator as admin in their own namespace
     Collaborator userModelCreatorCollaboratorAsAdmin = new Collaborator();
-    userModelCreatorCollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_NAME_2);
     userModelCreatorCollaboratorAsAdmin.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaboratorAsAdmin.setSubject("none");
     userModelCreatorCollaboratorAsAdmin.setRoles(ownerRoles);
@@ -712,7 +697,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
     // creating Collaborator for userModelCreator as user in their own namespace
     Collaborator userModelCreatorCollaboratorAsUserSysadmin = new Collaborator();
-    userModelCreatorCollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_NAME_2);
     userModelCreatorCollaboratorAsUserSysadmin.setAuthenticationProviderId(GITHUB);
     userModelCreatorCollaboratorAsUserSysadmin.setSubject("none");
     userModelCreatorCollaboratorAsUserSysadmin.setRoles(ownerRoles);
@@ -724,13 +709,13 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
     // creating userModelCreator2 as a Collaborator object
     Collaborator userModelCreator2CollaboratorAsAdmin = new Collaborator();
-    userModelCreator2CollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_2_NAME);
+    userModelCreator2CollaboratorAsAdmin.setUserId(USER_MODEL_CREATOR_NAME_3);
     userModelCreator2CollaboratorAsAdmin.setAuthenticationProviderId(GITHUB);
     userModelCreator2CollaboratorAsAdmin.setSubject("none");
     userModelCreator2CollaboratorAsAdmin.setRoles(ownerRoles);
 
     Collaborator userModelCreator2CollaboratorAsUserSysadmin = new Collaborator();
-    userModelCreator2CollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_2_NAME);
+    userModelCreator2CollaboratorAsUserSysadmin.setUserId(USER_MODEL_CREATOR_NAME_3);
     userModelCreator2CollaboratorAsUserSysadmin.setAuthenticationProviderId(GITHUB);
     userModelCreator2CollaboratorAsUserSysadmin.setSubject("none");
     userModelCreator2CollaboratorAsUserSysadmin.setRoles(ownerRoles);
@@ -756,7 +741,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             get("/rest/namespaces/role/model_creator")
-                .with(userModelCreator)
+                .with(userModelCreator2)
         )
         .andExpect(status().isOk())
         .andExpect(
@@ -789,14 +774,12 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void getNamespace() throws Exception {
-    createNamespaceSuccessfully("com.mycompany", userSysadmin);
     repositoryServer.perform(get("/rest/namespaces/com.mycompany").with(userSysadmin))
         .andExpect(status().isOk());
   }
 
   @Test
   public void updateCollaborator() throws Exception {
-    createNamespaceSuccessfully("com.mycompany", userSysadmin);
     // creates and adds a collaborator
     Collaborator collaborator = new Collaborator(USER_MODEL_CREATOR_NAME, GITHUB, "none",
         Lists.newArrayList("model_viewer", "model_creator"));
@@ -812,7 +795,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         "model_creator");
 
     // creates and adds another collaborator with different roles
-    collaborator = new Collaborator(USER_MODEL_CREATOR_2_NAME, GITHUB, "none",
+    collaborator = new Collaborator(USER_MODEL_VIEWER_NAME, GITHUB, "none",
         Lists.newArrayList("model_viewer"));
     repositoryServer.perform(
         put("/rest/namespaces/com.mycompany/users")
@@ -822,15 +805,13 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(status().isOk());
 
     // checks the collaborator's roles are returned correctly
-    checkCollaboratorRoles("com.mycompany", USER_MODEL_CREATOR_2_NAME, "model_viewer");
+    checkCollaboratorRoles("com.mycompany", USER_MODEL_VIEWER_NAME, "model_viewer");
   }
 
   @Test
   public void updateCollaboratorAddTechnicalUser() throws Exception {
 
     String namespaceName = "com.mycompany";
-
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
 
     Collaborator collaborator = new Collaborator("my-technical-user", GITHUB, "ProjectX",
         Lists.newArrayList("model_viewer", "model_creator"));
@@ -855,9 +836,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void updateCollaboratorWithoutPermissions() throws Exception {
-    String namespaceName = "com.mycompany";
-    // creates the namespace
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
     // creates user and collaborator to add
     String otherUser = "userstandard2";
     Collaborator collaborator = new Collaborator(otherUser, GITHUB, null,
@@ -866,10 +844,10 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .save(new UserBuilder().withName(otherUser).withAuthenticationProviderID(GITHUB).build());
     // tries to add other user as yet another user, who has no rights to that namespace
     repositoryServer.perform(
-        put(String.format("/rest/namespaces/%s/users", namespaceName))
+        put(String.format("/rest/namespaces/%s/users", "com.mycompany"))
             .content(objectMapper.writeValueAsString(collaborator))
             .contentType(MediaType.APPLICATION_JSON)
-            .with(userModelCreator2))
+            .with(userModelViewer))
         .andExpect(status().isForbidden());
   }
 
@@ -890,9 +868,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    */
   @Test
   public void updateCollaboratorUnknownProvider() throws Exception {
-    String namespaceName = "com.mycompany";
-    // creates the namespace
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
     // creates the collaborator payload and the existing user
     String otherUser = "userstandard2";
     Collaborator collaborator = new Collaborator(otherUser, "unknownProvider", null,
@@ -909,9 +884,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void createTechnicalCollaboratorUnknownProvider() throws Exception {
-    String namespaceName = "com.mycompany";
-    // creates the namespace
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
     // creates the collaborator payload and the existing user
     String otherUser = "userstandard2";
     Collaborator collaborator = new Collaborator(otherUser, "unknownProvider", null,
@@ -928,9 +900,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void updateCollaboratorNoSubject() throws Exception {
-    String namespaceName = "com.mycompany";
-    // creates the namespace
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
     // creates the collaborator payload and the existing user
     String otherUser = "userstandard2";
     Collaborator collaborator = new Collaborator(otherUser, GITHUB, null,
@@ -947,7 +916,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void createTechnicalCollaboratorNoSubject() throws Exception {
-    createNamespaceSuccessfully("com.mycompany", userSysadmin);
     Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, null,
         Lists.newArrayList("model_viewer", "model_creator"));
     collaborator.setTechnicalUser(true);
@@ -963,7 +931,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
   @Test
   public void updateCollaboratorUserDoesNotExist() throws Exception {
     String namespaceName = "com.mycompany";
-    createNamespaceSuccessfully(namespaceName, userSysadmin);
 
     Collaborator collaborator = new Collaborator("unknownUser", GITHUB, null,
         Lists.newArrayList("model_viewer", "model_creator"));

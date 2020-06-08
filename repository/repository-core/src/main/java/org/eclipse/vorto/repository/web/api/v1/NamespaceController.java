@@ -225,8 +225,8 @@ public class NamespaceController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/role/{role}", produces = "application/json")
   public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
-      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to",
-          required = false) final @PathVariable(value = "role", required = false) String role) {
+      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to")
+      final @PathVariable(value = "role", required = false) String role) {
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());

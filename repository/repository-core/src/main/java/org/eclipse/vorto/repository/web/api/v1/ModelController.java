@@ -41,10 +41,10 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
-  private static Logger logger = Logger.getLogger(ModelController.class);
+  private static final Logger LOGGER = Logger.getLogger(ModelController.class);
 
-  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
-  @GetMapping(value = "/{modelId:.+}")
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
@@ -53,19 +53,19 @@ public class ModelController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    logger.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
+    LOGGER.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
 
     ModelInfo resource = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
 
     if (resource == null) {
-      logger.warn(String.format("Could not find model with ID [%s] in repository", modelID));
+      LOGGER.warn(String.format("Could not find model with ID [%s] in repository", modelID));
       throw new ModelNotFoundException("Model does not exist", null);
     }
     return ModelDtoFactory.createDto(resource);
   }
 
-  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
-  @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}/content")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContent(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
@@ -78,8 +78,8 @@ public class ModelController extends AbstractRepositoryController {
     return converter.convert(modelID, Optional.empty());
   }
 
-  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
-  @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}/content/{targetplatformKey}")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContentForTargetPlatform(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
@@ -88,14 +88,13 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
     ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
-    
+
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
-  @PreAuthorize("hasAnyAuthority('ROLE_USER', 'model_viewer')")
-  @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}/file")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public void downloadModelById(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
@@ -109,7 +108,7 @@ public class ModelController extends AbstractRepositoryController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    logger.info("Download of Model file : [" + modelID.toString() + "]");
+    LOGGER.info("Download of Model file : [" + modelID.toString() + "]");
 
     if (includeDependencies) {
       byte[] zipContent = createZipWithAllDependencies(modelID);
@@ -133,12 +132,9 @@ public class ModelController extends AbstractRepositoryController {
 
     try {
       addModelToZip(zos, modelId);
-
       zos.close();
       baos.close();
-
       return baos.toByteArray();
-
     } catch (Exception ex) {
       throw new GenericApplicationException("Error while generating zip file.", ex);
     }

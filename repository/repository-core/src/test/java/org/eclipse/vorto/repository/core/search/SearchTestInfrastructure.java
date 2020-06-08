@@ -36,6 +36,7 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
@@ -149,6 +150,8 @@ public final class SearchTestInfrastructure {
   @Mock
   protected INotificationService notificationService = Mockito
       .mock(INotificationService.class);
+
+  protected NamespaceRepository namespaceRepository = Mockito.mock(NamespaceRepository.class);
 
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
@@ -353,6 +356,9 @@ public final class SearchTestInfrastructure {
         getUser("promoter", playgroundTenant)));
 
     when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
+    Namespace n = new Namespace();
+    n.setWorkspaceId("playground");
+    when(namespaceRepository.findAll()).thenReturn(Lists.newArrayList(n));
     when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
     when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
@@ -409,7 +415,7 @@ public final class SearchTestInfrastructure {
 
     tenantUserService = new TenantUserService(tenantService, accountService);
 
-    searchService = new SimpleSearchService(tenantService, repositoryFactory);
+    searchService = new SimpleSearchService(namespaceRepository, repositoryFactory);
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,

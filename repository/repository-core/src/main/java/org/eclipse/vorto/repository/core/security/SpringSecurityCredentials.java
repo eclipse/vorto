@@ -29,20 +29,20 @@ public class SpringSecurityCredentials implements Credentials {
 
   private Authentication authentication;
 
-  private Set<IRole> rolesInNamespace;
+  private Set<IRole> roles;
 
   private PrivilegeService privilegeService;
 
-  private final Predicate<String> hasPrivilege = privilegeName -> rolesInNamespace.stream()
+  private final Predicate<String> hasPrivilege = privilegeName -> roles.stream()
           .map(IRole::getPrivileges)
           .map(privilegeService::getPrivileges)
           .flatMap(Collection::stream)
           .map(Privilege::getName)
           .anyMatch(privilegeName::equalsIgnoreCase);
 
-  public SpringSecurityCredentials(Authentication authentication, Set<IRole> rolesInNamespace, PrivilegeService privilegeService) {
+  public SpringSecurityCredentials(Authentication authentication, Set<IRole> roles, PrivilegeService privilegeService) {
     this.authentication = authentication;
-    this.rolesInNamespace = rolesInNamespace;
+    this.roles = roles;
     this.privilegeService = privilegeService;
   }
 
@@ -51,7 +51,7 @@ public class SpringSecurityCredentials implements Credentials {
   }
 
   public Set<IRole> getRolesInNamespace() {
-    return rolesInNamespace;
+    return roles;
   }
 
   public boolean hasPrivilege(String privilege) {
@@ -59,9 +59,10 @@ public class SpringSecurityCredentials implements Credentials {
   }
 
   public boolean isSysAdmin() {
-    return rolesInNamespace.stream().filter(role -> RepositoryRole.SYS_ADMIN.getName()
+    return roles.stream().filter(role -> RepositoryRole.SYS_ADMIN.getName()
         .equalsIgnoreCase(role.getName()))
         .map(role -> RepositoryRole.SYS_ADMIN.getName())
         .anyMatch(hasPrivilege);
   }
+
 }

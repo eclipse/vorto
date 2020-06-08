@@ -12,18 +12,17 @@
  */
 package org.eclipse.vorto.repository.account;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import javax.transaction.Transactional;
-
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.springframework.security.core.Authentication;
+
+import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -129,7 +128,7 @@ public interface IUserAccountService {
    * @param userRoles
    * @return
    */
-  User createOrUpdate(String username, String provider, String subject, String tenantId, Role... userRoles);
+  User createOrUpdate(String username, String provider, String subject, String tenantId, IRole... userRoles);
 
   /**
    * Creates a new user in the Vorto repository, and adds him as a collaborator to @tenantId with the roles @userRoles
@@ -142,7 +141,7 @@ public interface IUserAccountService {
    * @param userRoles
    * @return
    */
-  User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId, Role... userRoles);
+  User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId, IRole... userRoles);
 
   /**
    *

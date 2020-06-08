@@ -19,8 +19,10 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.events.AppEvent;
-import org.eclipse.vorto.repository.core.impl.*;
-import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
+import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -31,6 +33,7 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
@@ -39,19 +42,22 @@ import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
 import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.tenant.TenantService;
-import org.eclipse.vorto.repository.tenant.TenantUserService;
-import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
+import org.eclipse.vorto.repository.utils.MockAppEventPublisher;
+import org.eclipse.vorto.repository.utils.NamespaceProvider;
+import org.eclipse.vorto.repository.utils.RoleProvider;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.After;
 import org.junit.Before;
-import org.mockito.*;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
@@ -63,35 +69,43 @@ import java.util.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public abstract class UnitTestBase {
 
   @InjectMocks
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 
   @Mock
-  protected UserRepository userRepository = Mockito.mock(UserRepository.class);
+  protected UserRepository userRepository;
 
   @Mock
-  protected AttachmentValidator attachmentValidator = Mockito.mock(AttachmentValidator.class);
+  protected AttachmentValidator attachmentValidator;
 
   @Mock
-  protected INotificationService notificationService = Mockito.mock(INotificationService.class);
+  protected INotificationService notificationService;
 
-  protected NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
+  @Mock
+  protected NamespaceRepository namespaceRepository;
 
-  protected UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
+  @Mock
+  protected NamespaceService namespaceService;
 
-  protected UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+  @Mock
+  protected UserNamespaceRoleService userNamespaceRoleService;
 
-  protected RequestRepositorySessionHelper requestRepositorySessionHelper = Mockito.mock(RequestRepositorySessionHelper.class);
+  @Mock
+  protected UserRepositoryRoleService userRepositoryRoleService;
 
-  protected PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
+  @Mock
+  protected PrivilegeService privilegeService;
 
-  protected RoleService roleService = Mockito.mock(RoleService.class);
+  @Mock
+  protected RoleService roleService;
+
+  @Mock
+  protected IIndexingService indexingService;
 
   protected DefaultUserAccountService accountService = null;
-
-  protected IModelPolicyManager policyManager;
 
   protected VortoModelImporter importer = null;
 
@@ -101,78 +115,113 @@ public abstract class UnitTestBase {
 
   protected ModelRepositoryFactory repositoryFactory;
 
-  protected TenantService tenantService = Mockito.mock(TenantService.class);
-  
-  protected IIndexingService indexingService = Mockito.mock(IIndexingService.class);
-
-  protected TenantUserService tenantUserService = null;
-  
   protected ModelValidationHelper modelValidationHelper = null;
   
-  protected ErrorMessageProvider errorMessageProvider = new ErrorMessageProvider();
-  
-  private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
-
-  private Tenant playgroundTenant = playgroundTenant();
-
   protected ISearchService searchService = null;
 
   @Before
-  public void beforeEach() throws Exception {
-    setupNamespaceMocking();
+  public void setup() throws Exception {
+    NamespaceRole namespace_admin = RoleProvider.namespaceAdmin();
+    NamespaceRole model_viewer = RoleProvider.modelViewer();
+    NamespaceRole model_creator = RoleProvider.modelCreator();
+    NamespaceRole model_promoter = RoleProvider.modelPromoter();
+    NamespaceRole model_publisher = RoleProvider.modelPublisher();
+    NamespaceRole model_reviewer = RoleProvider.modelReviewer();
+    mockNamespaceService();
+    mockNamespaceRolesAndPrivileges(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher, model_reviewer);
+    mockRoles();
+    mockUsers(namespace_admin, model_creator, model_promoter, model_publisher, model_reviewer);
+    mockNamespaceRepository();
+    mockServices();
+  }
 
-    when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
+  @After
+  public void after() {
+    repositoryFactory.stop();
+  }
 
-    when(userRepository.findAll()).thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant),
-        getUser("erle", playgroundTenant), getUser("alex", playgroundTenant),
-        getUser("creator", playgroundTenant), getUser("reviewer", playgroundTenant), 
-        getUser("promoter", playgroundTenant)));
+  protected void mockNamespaceRepository() {
+    Namespace n = new Namespace();
+    n.setWorkspaceId("playground");
+    when(namespaceRepository.findAll()).thenReturn(Lists.newArrayList(n));
+  }
 
-    when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
-    when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
-    when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
-    when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
+  protected void mockNamespaceService() {
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(NamespaceProvider.mockEclipseNamespace());
 
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
+  }
+
+  protected void mockServices() throws Exception {
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
-    
+
     Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
     listeners.add(supervisor);
     listeners.add(indexingSupervisor);
-    
+
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
-    
+
+    mockAccountService(eventPublisher);
+    mockModelParserFactory();
+    mockModelRepositoryFactory(eventPublisher);
+
+    supervisor.setRepositoryFactory(repositoryFactory);
+    modelParserFactory.setModelRepositoryFactory(repositoryFactory);
+    searchService = new SimpleSearchService(namespaceRepository, repositoryFactory);
+    supervisor.setSearchService(searchService);
+    this.modelValidationHelper = new ModelValidationHelper(repositoryFactory, this.accountService, userRepositoryRoleService, userNamespaceRoleService);
+    mockImporter(repositoryFactory);
+    this.workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
+  }
+
+  private void mockModelParserFactory() {
+    modelParserFactory = new ModelParserFactory();
+    modelParserFactory.init();
+  }
+
+  private void mockModelRepositoryFactory(ApplicationEventPublisher eventPublisher)
+      throws Exception {
+    RepositoryConfiguration config = RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
+
+    repositoryFactory =
+        new ModelRepositoryFactory(accountService, modelSearchUtil,
+            attachmentValidator, modelParserFactory, null, config, null, namespaceService,
+            userNamespaceRoleService, privilegeService) {
+
+          @Override
+          public IModelRetrievalService getModelRetrievalService() {
+            return super.getModelRetrievalService(createUserContext("admin"));
+          }
+
+          @Override
+          public IModelRepository getRepository(String workspaceId) {
+            return super.getRepository(createUserContext("admin", workspaceId));
+          }
+
+          @Override
+          public IModelRepository getRepository(String workspaceId, Authentication user) {
+            if (user == null)
+              return getRepository(workspaceId);
+            return super.getRepository(workspaceId, user);
+          }
+        };
+    repositoryFactory.setApplicationEventPublisher(eventPublisher);
+    repositoryFactory.start();
+  }
+
+  protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
     accountService = new DefaultUserAccountService();
     accountService.setNotificationService(notificationService);
     accountService.setUserRepository(userRepository);
     accountService.setApplicationEventPublisher(eventPublisher);
     accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
-    accountService.setTenantRepo(tenantRepo);
-    
-    modelParserFactory = new ModelParserFactory();
-    modelParserFactory.init();
-
-    RepositoryConfiguration config =
-        RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
-
-
-    ModelRepositoryFactory modelRepositoryFactory =
-        mockModelRepositoryFactory(eventPublisher, config);
-
-    mockServices(supervisor, modelRepositoryFactory);
   }
 
-  protected void mockServices(ModelRepositoryEventListener supervisor, ModelRepositoryFactory modelRepositoryFactory) {
-    supervisor.setRepositoryFactory(modelRepositoryFactory);
-    modelParserFactory.setModelRepositoryFactory(modelRepositoryFactory);
-
-    tenantUserService = new TenantUserService(tenantService, accountService);
-
-    searchService = new SimpleSearchService(tenantService, modelRepositoryFactory);
-    supervisor.setSearchService(searchService);
-
-    this.modelValidationHelper = new ModelValidationHelper(modelRepositoryFactory, this.accountService, userRepositoryRoleService, userNamespaceRoleService);
-
+  protected void mockImporter(ModelRepositoryFactory modelRepositoryFactory) {
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
     this.importer.setUserRepository(this.accountService);
@@ -181,74 +230,11 @@ public abstract class UnitTestBase {
     this.importer.setModelValidationHelper(modelValidationHelper);
     this.importer.setUserNamespaceRoleService(userNamespaceRoleService);
     this.importer.setUserRepositoryRoleService(userRepositoryRoleService);
-
-    this.workflow =
-        new DefaultWorkflowService(modelRepositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
-
-    MockitoAnnotations.initMocks(this);
   }
 
-  protected ModelRepositoryFactory mockModelRepositoryFactory(ApplicationEventPublisher eventPublisher,
-      RepositoryConfiguration config) throws Exception {
-    repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
-        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
-
-      @Override
-      public IModelRetrievalService getModelRetrievalService() {
-        return super.getModelRetrievalService(createUserContext("admin"));
-      }
-
-      @Override
-      public IModelRepository getRepository(String workspaceId) {
-        return super.getRepository(createUserContext("admin", workspaceId));
-      }
-
-      @Override
-      public IModelRepository getRepository(String workspaceId, Authentication user) {
-        if (user == null)
-          return getRepository(workspaceId);
-        return super.getRepository(workspaceId, user);
-      }
-    };
-    repositoryFactory.setApplicationEventPublisher(eventPublisher);
-    repositoryFactory.start();
-    return repositoryFactory;
-  }
-
-  private void setupNamespaceMocking() throws DoesNotExistException, OperationForbiddenException {
-    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
-    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockEclipseNamespace());
-
-    List<String> workspaceIds = new ArrayList<>();
-    workspaceIds.add("playground");
-    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
-    NamespaceRole namespace_admin = new NamespaceRole();
-    namespace_admin.setName("namespace_admin");
-    namespace_admin.setPrivileges(7);
-    namespace_admin.setRole(32);
-
-    NamespaceRole model_viewer = new NamespaceRole();
-    model_viewer.setName("model_viewer");
-    model_viewer.setPrivileges(1);
-    model_viewer.setRole(1);
-
-    NamespaceRole model_creator = new NamespaceRole();
-    model_creator.setName("model_creator");
-    model_creator.setPrivileges(3);
-    model_creator.setRole(2);
-
-    NamespaceRole model_promoter = new NamespaceRole();
-    model_promoter.setName("model_promoter");
-    model_promoter.setPrivileges(3);
-    model_promoter.setRole(4);
-
-    NamespaceRole model_publisher = new NamespaceRole();
-    model_publisher.setName("model_publisher");
-    model_publisher.setPrivileges(3);
-    model_publisher.setRole(4);
-
-    NamespaceRole model_reviewer = modelReviewer();
-
+  private void mockNamespaceRolesAndPrivileges(NamespaceRole namespace_admin,
+      NamespaceRole model_viewer, NamespaceRole model_creator, NamespaceRole model_promoter,
+      NamespaceRole model_publisher, NamespaceRole model_reviewer) throws DoesNotExistException {
     Set<IRole> roles = new HashSet<>();
     roles.add(namespace_admin);
     roles.add(model_viewer);
@@ -281,15 +267,11 @@ public abstract class UnitTestBase {
     when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
+  }
 
-    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
-    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
-    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
-    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
-    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
-    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
-    when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
-
+  private void mockUsers(NamespaceRole namespace_admin, NamespaceRole model_creator,
+      NamespaceRole model_promoter, NamespaceRole model_publisher, NamespaceRole model_reviewer)
+      throws DoesNotExistException, OperationForbiddenException {
     User alex = User.create("alex", "GITHUB", null);
     User erle = User.create("erle", "GITHUB", null);
     User admin = User.create("admin", "GITHUB", null);
@@ -298,16 +280,17 @@ public abstract class UnitTestBase {
     User reviewer = User.create("reviewer", "GITHUB", null);
     User publisher = User.create("publisher", "GITHUB", null);
 
-    when(userRepository.findByUsername("alex")).thenReturn(alex);
-    when(userRepository.findByUsername("erle")).thenReturn(erle);
-    when(userRepository.findByUsername("admin")).thenReturn(admin);
-    when(userRepository.findByUsername("creator")).thenReturn(creator);
-    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
-    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
-    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
-    when(userRepository.findAll()).thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
+    mockUserRepository(alex, erle, admin, creator, promoter, reviewer, publisher);
+    mockUserNamespaceRoleService(namespace_admin, model_creator, model_promoter, model_publisher, model_reviewer, alex, erle, admin, creator, promoter, reviewer, publisher);
+  }
+
+  private void mockUserNamespaceRoleService(NamespaceRole namespace_admin,
+      NamespaceRole model_creator, NamespaceRole model_promoter, NamespaceRole model_publisher,
+      NamespaceRole model_reviewer, User alex, User erle, User admin, User creator, User promoter,
+      User reviewer, User publisher) throws DoesNotExistException, OperationForbiddenException {
 
     when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
+
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_promoter))).thenReturn(true);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_reviewer))).thenReturn(true);
@@ -333,37 +316,29 @@ public abstract class UnitTestBase {
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
 
     when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class))).thenReturn(Sets.newHashSet(
-        mockEclipseNamespace(), mockComNamespace()));
+        NamespaceProvider.mockEclipseNamespace(), NamespaceProvider.mockComNamespace()));
   }
 
-  private NamespaceRole modelReviewer() {
-    NamespaceRole model_reviewer = new NamespaceRole();
-    model_reviewer.setName("model_reviewer");
-    model_reviewer.setPrivileges(3);
-    model_reviewer.setRole(8);
-    return model_reviewer;
+  private void mockUserRepository(User alex, User erle, User admin, User creator, User promoter,
+      User reviewer, User publisher) {
+    when(userRepository.findByUsername("alex")).thenReturn(alex);
+    when(userRepository.findByUsername("erle")).thenReturn(erle);
+    when(userRepository.findByUsername("admin")).thenReturn(admin);
+    when(userRepository.findByUsername("creator")).thenReturn(creator);
+    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
+    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
+    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findAll()).thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
   }
 
-  private Namespace mockEclipseNamespace() {
-    Namespace namespace = new Namespace();
-    namespace.setName("org.eclipse.vorto");
-    namespace.setId(1L);
-    namespace.setWorkspaceId("playground");
-    return namespace;
-  }
-
-  private Namespace mockComNamespace() {
-    Namespace namespace = new Namespace();
-    namespace.setName("com");
-    namespace.setId(2L);
-    namespace.setWorkspaceId("playground");
-    return namespace;
-  }
-
-
-  @After
-  public void after() throws Exception {
-    repositoryFactory.stop();
+  private void mockRoles() {
+    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(RoleProvider.modelViewer()));
+    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(RoleProvider.modelCreator()));
+    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(RoleProvider.modelPromoter()));
+    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(RoleProvider.modelReviewer()));
+    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(RoleProvider.modelPublisher()));
+    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(RoleProvider.namespaceAdmin()));
+    when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
   }
 
   protected ModelInfo importModel(String user, String modelName) {
@@ -397,26 +372,19 @@ public abstract class UnitTestBase {
     }
   }
 
-  protected ModelInfo releaseModel(ModelId modelId, IUserContext creator) throws WorkflowException {
+  protected void releaseModel(ModelId modelId, IUserContext creator) throws WorkflowException {
     workflow.start(modelId, creator);
-    
-    workflow.doAction(modelId, createUserContext("promoter"),
-        SimpleWorkflowModel.ACTION_RELEASE.getName());
-    
-    return workflow.doAction(modelId, createUserContext("reviewer"),
-        SimpleWorkflowModel.ACTION_APPROVE.getName());
+    workflow.doAction(modelId, createUserContext("promoter"), SimpleWorkflowModel.ACTION_RELEASE.getName());
+    workflow.doAction(modelId, createUserContext("reviewer"), SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
   
-  protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
-    when(
-        userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
+  protected void setReleaseState(ModelInfo model) throws WorkflowException {
+    when(userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
             .thenReturn(User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
-    workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
-        SimpleWorkflowModel.ACTION_RELEASE.getName());
+    workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"), SimpleWorkflowModel.ACTION_RELEASE.getName());
     when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
         .thenReturn(User.create("admin", "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN));
-    return workflow.doAction(model.getId(), createUserContext("admin", "playground"),
-        SimpleWorkflowModel.ACTION_APPROVE.getName());
+    workflow.doAction(model.getId(), createUserContext("admin", "playground"), SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
 
   protected IModelRepository getModelRepository(IUserContext userContext) {
@@ -439,7 +407,7 @@ public abstract class UnitTestBase {
     try {
       roles = userNamespaceRoleService.getRoles(username, "");
     } catch (DoesNotExistException e) {
-      roles = Sets.newHashSet(modelReviewer());
+      roles = Sets.newHashSet(RoleProvider.modelReviewer());
     }
 
     return new TestingAuthenticationToken(username, username, roles.stream().map(IRole::getName).toArray(String[]::new));
@@ -449,70 +417,4 @@ public abstract class UnitTestBase {
     return UserContext.user(createAuthenticationToken(username), tenantId);
   }
 
-  protected Tenant playgroundTenant() {
-    UserRole roleUser = new UserRole(Role.USER);
-    UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
-    UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
-    UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
-    UserRole rolePublisher = new UserRole(Role.MODEL_PUBLISHER);
-    UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
-    UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
-
-    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
-        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings", "vorto.private.playground"));
-
-    playground.addUser(createTenantUser("alex",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
-    playground.addUser(createTenantUser("erle",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
-    playground.addUser(createTenantUser("admin",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
-    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
-    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
-    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
-    playground.addUser(createTenantUser("publisher", Sets.newHashSet(roleUser, rolePublisher)));
-
-    return playground;
-  }
-
-  private TenantUser createTenantUser(String name, Set<UserRole> roles) {
-    User _user = User.create(name, "GITHUB", null);
-    TenantUser user = new TenantUser();
-    user.setRoles(roles);
-    _user.addTenantUser(user);
-    return user;
-  }
-
-  private User getUser(String userId, Tenant tenant) {
-    return tenant.getUsers().stream().map(TenantUser::getUser)
-        .filter(u -> u.getUsername().equals(userId)).findAny().get();
-  }
-
-  private TenantUser getTenantUser(String userId, Tenant tenant) {
-    return tenant.getUsers().stream().filter(tu -> tu.getUser().getUsername().equals(userId))
-        .findAny().get();
-  }
-
-  protected class MockAppEventPublisher implements ApplicationEventPublisher {
-    private Collection<ApplicationListener<AppEvent>> listeners;
-
-    public MockAppEventPublisher(Collection<ApplicationListener<AppEvent>> listeners) {
-      this.listeners = listeners;
-    }
-
-    @Override
-    public void publishEvent(ApplicationEvent event) {
-      if (event instanceof AppEvent) {
-        AppEvent appEvent = (AppEvent) event;
-        for(ApplicationListener<AppEvent> listener : listeners) {
-          listener.onApplicationEvent(appEvent);
-        }
-      }
-    }
-
-    @Override
-    public void publishEvent(Object event) {
-      // implement when need arises
-    }
-  }
 }

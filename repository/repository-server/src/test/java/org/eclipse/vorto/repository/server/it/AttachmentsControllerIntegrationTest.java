@@ -12,39 +12,22 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
-import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@ActiveProfiles(profiles = {"test"})
-@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = {"classpath:application-test.yml"})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
-@Sql("classpath:prepare_tables.sql")
 public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
 
   @Autowired
@@ -94,12 +77,7 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void testReasonableSizeAttachmentUpload() throws Exception {
-    TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    createNamespaceSuccessfully(test.namespace, userSysadmin);
-    Collaborator collaborator = new Collaborator();
-    collaborator.setUserId(USER_MODEL_CREATOR_NAME);
-    collaborator.setRoles(Sets.newHashSet("model_creator"));
-    addCollaboratorToNamespace(test.namespace, collaborator);
+    TestModel test = TestModel.TestModelBuilder.aTestModel().withNamespace(testModel.namespace).build();
     test.createModel(repositoryServer, userModelCreator);
 
     // we set the "fake" size of the attachment as a 1MB less than the configured maximum file size
@@ -113,7 +91,7 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
             content().json(
                 gson.toJson(
                     AttachResult.success(
-                        new AbstractIntegrationTest.SerializableModelId(ModelId.fromPrettyFormat(test.prettyName)),
+                        new SerializableModelId(ModelId.fromPrettyFormat(test.prettyName)),
                         "test.json"
                     )
                 )
@@ -167,7 +145,8 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
 
     // Try to delete model
     repositoryServer.perform(
-        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userModelCreator2))
+        delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(
+            userModelViewer))
         .andExpect(status().isForbidden());
     
     

@@ -18,6 +18,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
@@ -41,10 +42,13 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -68,7 +72,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = {"classpath:application-test.yml"})
 @ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Sql("classpath:prepare_tables.sql")
 public abstract class IntegrationTestBase {
+
+    protected MockMvc repositoryServer;
+
+    protected TestModel testModel;
+
+    /**
+     * Since this is set to 2 in test profile for reasons unclear, taking value directly from config
+     * to test cases where users create an excessive number of namespaces.
+     */
+    @Value("${config.privateNamespaceQuota}")
+    protected String privateNamespaceQuota;
+
+    @Autowired
+    protected WebApplicationContext wac;
+
+    @Autowired
+    protected UserRepository userRepository;
+
+    @Autowired
+    protected UserService userService;
+
+    @LocalServerPort
+    protected int port;
+
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userSysadmin;
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userSysadmin2;
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator;
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator2;
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator3;
+    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelViewer;
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    protected static final String USER_SYSADMIN_NAME = "userSysadmin";
+    protected static final String USER_SYSADMIN_NAME_2 = "userSysadmin2";
+    protected static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
+    protected static final String USER_MODEL_CREATOR_NAME_2 = "userModelCreator2";
+    protected static final String USER_MODEL_CREATOR_NAME_3 = "userModelCreator3";
+    protected static final String USER_MODEL_VIEWER_NAME = "userModelViewer";
+    protected static final String BOSCH_IOT_SUITE_AUTH = "BOSCH-IOT-SUITE-AUTH";
+    protected static final String GITHUB = "GITHUB";
 
     @Configuration
     @Profile("test")
@@ -80,20 +126,6 @@ public abstract class IntegrationTestBase {
         }
 
     }
-
-    protected MockMvc repositoryServer;
-
-    protected TestModel testModel;
-
-    @Autowired
-    protected WebApplicationContext wac;
-
-    @LocalServerPort
-    protected int port;
-
-    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userSysadmin;
-    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator;
-    protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userModelCreator2;
 
     @BeforeClass
     public static void configureOAuthConfiguration() {
@@ -107,35 +139,20 @@ public abstract class IntegrationTestBase {
     @Before
     public void setUpTest() throws Exception {
         repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-        userSysadmin = user(USER_SYSADMIN_NAME).password("pass");
-        userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass").roles("model_creator", "model_viewer");
-        userModelCreator2 = user(USER_MODEL_CREATOR_2_NAME).password("pass"); //TODO nonTenantUser
+        GrantedAuthority sysadminAuthority = new SimpleGrantedAuthority("sysadmin");
+        GrantedAuthority modelViewerAuthority = new SimpleGrantedAuthority("model_viewer");
+        GrantedAuthority modelCreatorAuthority = new SimpleGrantedAuthority("model_creator");
+        userSysadmin = user(USER_SYSADMIN_NAME).password("pass").authorities(sysadminAuthority);
+        userSysadmin2 = user(USER_SYSADMIN_NAME_2).password("pass").authorities(sysadminAuthority);
+        userModelCreator = user(USER_MODEL_CREATOR_NAME).password("pass").authorities(modelCreatorAuthority);
+        userModelCreator2 = user(USER_MODEL_CREATOR_NAME_2).password("pass").authorities(modelCreatorAuthority);
+        userModelCreator3 = user(USER_MODEL_CREATOR_NAME_3).password("pass").authorities(modelCreatorAuthority);
+        userModelViewer = user(USER_MODEL_VIEWER_NAME).password("pass").authorities(modelViewerAuthority); //TODO nonTenantUser
         testModel = TestModel.TestModelBuilder.aTestModel().build();
-        createNamespaceSuccessfully(testModel.namespace, userSysadmin);
-        addCollaboratorToNamespace(testModel.namespace, userModelCreatorCollaborator());
+        createNamespaceSuccessfully("com.mycompany", userSysadmin);
+        addCollaboratorToNamespace("com.mycompany", userModelCreatorCollaborator());
         testModel.createModel(repositoryServer, userSysadmin);
     }
-
-    protected ObjectMapper objectMapper = new ObjectMapper();
-
-    /**
-     * Since this is set to 2 in test profile for reasons unclear, taking value directly from config
-     * to test cases where users create an excessive number of namespaces.
-     */
-    @Value("${config.privateNamespaceQuota}")
-    protected String privateNamespaceQuota;
-
-    protected static final String USER_SYSADMIN_NAME = "userSysadmin";
-    protected static final String USER_MODEL_CREATOR_NAME = "userModelCreator";
-    protected static final String USER_MODEL_CREATOR_2_NAME = "userModelCreator2";
-    protected static final String BOSCH_IOT_SUITE_AUTH = "BOSCH-IOT-SUITE-AUTH";
-    protected static final String GITHUB = "GITHUB";
-
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
-    protected UserService userService;
 
     protected Collaborator userModelCreatorCollaborator() {
         Collaborator collaborator = new Collaborator();
@@ -162,7 +179,7 @@ public abstract class IntegrationTestBase {
                 assertTrue(maybeTarget.isPresent());
                 if (maybeTarget.isPresent()) {
                     Collaborator target = maybeTarget.get();
-                    assertEquals(target.getRoles(), Arrays.asList(roles));
+                    assertEquals(Arrays.asList(roles), target.getRoles());
                 }
             });
     }
@@ -196,7 +213,6 @@ public abstract class IntegrationTestBase {
                 put(String.format("/rest/namespaces/%s", namespaceName))
                    .with(actingUser)
             )
-            .andDo(e -> e.getResponse())
             .andExpect(status().isCreated())
             .andExpect(
                 content().json(
@@ -283,5 +299,21 @@ public abstract class IntegrationTestBase {
 
         repositoryServer.perform(put("/rest/models/" + modelId + "/policies")
             .with(userSysadmin).contentType(MediaType.APPLICATION_JSON).content(publicPolicyEntryStr));
+    }
+
+    /**
+     * This is a wrapper to allow comparison of JSON payloads involving {@link ModelId}, as it features
+     * a public method {@link ModelId#getPrettyFormat()} that does not have a correspective field. <br/>
+     * Therefore, expecting {@link ModelId} alone will fail when comparing JSON content because the
+     * actual response will contain the pretty format string whereas the expectation will not.
+     */
+    public static class SerializableModelId extends ModelId {
+      protected String prettyFormat;
+      protected SerializableModelId(ModelId from) {
+        this.prettyFormat = from.getPrettyFormat();
+        this.setName(from.getName());
+        this.setNamespace(from.getNamespace());
+        this.setVersion(from.getVersion());
+      }
     }
 }

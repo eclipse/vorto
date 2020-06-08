@@ -17,9 +17,14 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({AttachmentsControllerIntegrationTest.class, ModelControllerIntegrationTest.class,
-    ModelSearchControllerIntegrationTest.class, RepositoryJavaClientTest.class,
-    NamespaceControllerIntegrationTest.class})
-public class AllTests {
+@SuiteClasses({
+    AttachmentsControllerIntegrationTest.class,
+    ModelControllerIntegrationTest.class,
+    ModelSearchControllerIntegrationTest.class,
+    RepositoryJavaClientTest.class,
+    NamespaceControllerIntegrationTest.class,
+    AccountControllerTest.class,
+    ModelRepositoryControllerTest.class})
+public class IntegrationTestSuite {
 
 }

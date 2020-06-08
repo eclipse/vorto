@@ -451,7 +451,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     ServiceValidationUtil.validateNulls(actor.getId(), target.getId());
 
     return setRoles(actor, target, namespace,
-        roles.stream().collect(Collectors.summingLong(IRole::getRole)), newNamespace);
+        roles.stream().mapToLong(IRole::getRole).sum(), newNamespace);
   }
 
   /**

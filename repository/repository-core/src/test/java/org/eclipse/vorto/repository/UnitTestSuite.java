@@ -14,6 +14,8 @@ package org.eclipse.vorto.repository;
 
 import org.eclipse.vorto.repository.account.UserAccountServiceTest;
 import org.eclipse.vorto.repository.backup.RepositoryAdminTest;
+import org.eclipse.vorto.repository.core.RepositoryUnitTestSuite;
+import org.eclipse.vorto.repository.importer.ImporterUnitTestSuite;
 import org.eclipse.vorto.repository.indexing.IndexingTest;
 import org.eclipse.vorto.repository.mapping.PayloadMappingSpecificationTest;
 import org.eclipse.vorto.repository.model.BulkOperationServiceTest;
@@ -26,13 +28,13 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({UserAccountServiceTest.class,
               RepositoryAdminTest.class,
-              org.eclipse.vorto.repository.core.AllTests.class,
-              org.eclipse.vorto.repository.importer.AllTests.class,
+              RepositoryUnitTestSuite.class,
+              ImporterUnitTestSuite.class,
               IndexingTest.class,
               BulkOperationServiceTest.class,
               TenantServiceTest.class,
               PayloadMappingSpecificationTest.class,
               WorkflowTest.class})
-public class AllTests {
+public class UnitTestSuite {
 
 }

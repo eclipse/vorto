@@ -33,8 +33,8 @@ public class ModelBulkImportTest extends UnitTestBase {
   private BulkUploadHelper bulkUploadHelper;
 
   @Override
-  public void beforeEach() throws Exception {
-    super.beforeEach();
+  public void setup() throws Exception {
+    super.setup();
     bulkUploadHelper =
         new BulkUploadHelper(repositoryFactory, this.accountService, userNamespaceRoleService, userRepositoryRoleService);
   }

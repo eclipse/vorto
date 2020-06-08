@@ -13,19 +13,10 @@
 package org.eclipse.vorto.repository.server.it;
 
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.file.Files;
 import java.util.List;
@@ -37,12 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Tests for CORS requests with regards to any allowed Origin headers
  * (see application yml configuration).
  */
-@RunWith(SpringRunner.class)
-@ActiveProfiles(profiles = {"test"})
-@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = {"classpath:application-test.yml"})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
-@Sql("classpath:prepare_tables.sql")
 public class CORSRequestIntegrationTest extends IntegrationTestBase {
 
   private static List<String> testValidOrigins;

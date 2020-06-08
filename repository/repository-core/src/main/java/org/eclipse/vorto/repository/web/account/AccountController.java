@@ -19,7 +19,6 @@ import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
 import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
-import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 @RestController
 public class AccountController {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+  private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
   @Autowired
   private IUserAccountService accountService;
@@ -65,11 +64,8 @@ public class AccountController {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  @Autowired
-  private RoleService roleService;
-
-  @RequestMapping(method = RequestMethod.PUT, value = "/rest/tenants/{tenantId}/users/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  @PutMapping("/rest/tenants/{tenantId}/users/{userId}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Namespace', 'namespace_admin')")
   public ResponseEntity<Boolean> addOrUpdateUsersForTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
       @ApiParam(value = "userId", required = true) @PathVariable String userId,
@@ -104,8 +100,8 @@ public class AccountController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/rest/tenants/{tenantId}/users/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  @PostMapping("/rest/tenants/{tenantId}/users/{userId}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Namespace', 'namespace_admin')")
   public ResponseEntity<Boolean> createTechnicalUserForTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
       @ApiParam(value = "userId", required = true) @PathVariable String userId,
@@ -164,8 +160,8 @@ public class AccountController {
     return roles.toArray(new Role[roles.size()]);
   }
 
-  @RequestMapping(method = RequestMethod.DELETE, value = "/rest/tenants/{tenantId}/users/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  @DeleteMapping("/rest/tenants/{tenantId}/users/{userId}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Namespace', 'namespace_admin')")
   public ResponseEntity<Boolean> deleteUserFromTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
       @ApiParam(value = "userId", required = true) @PathVariable String userId) {
@@ -199,8 +195,8 @@ public class AccountController {
   }
 
 
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/{tenantId}/users")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  @GetMapping("/rest/tenants/{tenantId}/users")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Namespace', 'namespace_admin')")
   public ResponseEntity<Collection<TenantUserDto>> getUsersForTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId) {
 
@@ -227,8 +223,8 @@ public class AccountController {
     }
   }
   
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/tenants/{tenantId}/users/{userId}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Tenant', 'ROLE_TENANT_ADMIN')")
+  @GetMapping("/rest/tenants/{tenantId}/users/{userId}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#tenantId, 'org.eclipse.vorto.repository.domain.Namespace', 'namespace_admin')")
   public ResponseEntity<TenantUserDto> getUserForTenant(
       @ApiParam(value = "tenantId", required = true) @PathVariable String tenantId,
       @ApiParam(value = "userId", required = true) @PathVariable String userId) {
@@ -250,8 +246,8 @@ public class AccountController {
     }
   }
   
-  @RequestMapping(value = "/rest/tenants/{tenantId}/users/{username}/roles", method = RequestMethod.DELETE)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @DeleteMapping("/rest/tenants/{tenantId}/users/{username}/roles")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<UserDto> removeUserRole(@PathVariable("username") final String userName,
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
@@ -264,8 +260,8 @@ public class AccountController {
 
   // TODO : check if we really need this and if so, make this correct. This should return all the 
   // roles of the user in this tenant
-  @RequestMapping(value = "/rest/tenants/{tenantId}/users/{username}/roles", method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @GetMapping("/rest/tenants/{tenantId}/users/{username}/roles")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<UserDto> getUserRoles(@PathVariable("username") final String userName) {
     
     User user = accountService.getUser(ControllerUtils.sanitize(userName));
@@ -277,7 +273,7 @@ public class AccountController {
     return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/{username:.+}")
+  @GetMapping("/rest/accounts/{username:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
@@ -291,7 +287,7 @@ public class AccountController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/rest/accounts/search/{partial:.+}")
+  @GetMapping("/rest/accounts/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<Collaborator>> findUsers(
       @ApiParam(value = "Username", required = true) @PathVariable String partial) {
@@ -305,9 +301,8 @@ public class AccountController {
     }
   }
 
-  @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
-      value = "/rest/accounts")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #user.name == authentication.name")
+  @PostMapping(consumes = "application/json", value = "/rest/accounts")
+  @PreAuthorize("hasAuthority('sysadmin') or #user.name == authentication.name")
   public ResponseEntity<Boolean> createUserAccount(Principal user) {
     OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 
@@ -326,9 +321,8 @@ public class AccountController {
     return oauthProviderRegistry.getByAuthentication(oauth2User).getId();
   }
 
-  @RequestMapping(method = RequestMethod.POST,
-      value = "/rest/accounts/{username:.+}/updateTask")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #username == authentication.name")
+  @PostMapping("/rest/accounts/{username:.+}/updateTask")
+  @PreAuthorize("hasAuthority('sysadmin') or #username == authentication.name")
   public ResponseEntity<Boolean> upgradeUserAccount(Principal user,
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
 
@@ -342,8 +336,8 @@ public class AccountController {
     return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
 
-  @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.PUT)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #username == authentication.name")
+  @PutMapping("/rest/accounts/{username:.+}")
+  @PreAuthorize("hasAuthority('sysadmin') or #username == authentication.name")
   public ResponseEntity<UserDto> updateAccount(@PathVariable("username") final String username,
       HttpEntity<String> httpEntity) {
     User account = accountService.getUser(username);
@@ -356,8 +350,8 @@ public class AccountController {
     return new ResponseEntity<>(UserDto.fromUser(account), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.DELETE)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#username,'user:delete')")
+  @DeleteMapping("/rest/accounts/{username:.+}")
+  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#username,'user:delete')")
   public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
     try {
       accountService.delete(username);

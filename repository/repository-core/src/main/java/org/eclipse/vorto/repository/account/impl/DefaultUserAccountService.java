@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.PreConditions;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -311,35 +313,43 @@ public class DefaultUserAccountService
 
   @Override
   @Transactional
-  public User createOrUpdate(String username, String provider, String subject, String tenantId, Role... userRoles)
+  public User createOrUpdate(String username, String provider, String subject, String tenantId, IRole... userRoles)
           throws RoleNotSupportedException {
     return createOrUpdate(username, provider, subject, false, tenantId, userRoles);
   }
 
   @Override
   @Transactional
-  public User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String tenantId,
-          Role... userRoles)
+  public User createOrUpdate(String username, String provider, String subject, boolean isTechnicalUser, String workspaceId,
+          IRole... userRoles)
           throws RoleNotSupportedException {
 
     PreConditions.notNullOrEmpty(username, "username");
-    PreConditions.notNullOrEmpty(tenantId, "tenantId");
+    PreConditions.notNullOrEmpty(workspaceId, "workspaceId");
 
-    Tenant tenant = tenantRepo.findByTenantId(tenantId);
-
-    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+    Namespace namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId);
+    PreConditions.notNull(namespace, "Namespace with given workspaceId does not exist");
 
     User existingUser = userRepository.findByUsername(username);
-
     if (existingUser != null) {
-      addUserToTenant(tenantId, username, userRoles);
+      addRolesOnNamespace(namespace, existingUser, userRoles);
       return existingUser;
     } else {
       User user = create(username, provider, subject, isTechnicalUser);
-      TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
-      user.addTenantUser(tenantUser);
+      addRolesOnNamespace(namespace, user, userRoles);
       return userRepository.save(user);
     }
+  }
+
+  protected void addRolesOnNamespace(Namespace namespace, User existingUser, IRole[] userRoles) {
+    User actor = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    Arrays.stream(userRoles).forEach(role -> {
+      try {
+        userNamespaceRoleService.addRole(actor, existingUser, namespace, role);
+      } catch (OperationForbiddenException | DoesNotExistException e) {
+        throw new IllegalStateException(e);
+      }
+    });
   }
 
   @Override

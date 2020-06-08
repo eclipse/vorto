@@ -20,7 +20,6 @@ import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenc
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ModelParserTest extends UnitTestBase {
 
@@ -127,7 +125,6 @@ public class ModelParserTest extends UnitTestBase {
   @Test(expected = ValidationException.class)
   public void testModelWithInvalidReference() throws IOException {
     Optional<Tenant> tenant = Optional.empty();
-    when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(tenant);
     IModelParser parser = modelParserFactory.getParser("InfoModelWithoutNamespace.infomodel");
     parser.enableValidation();
     parser.parse(new ClassPathResource("sample_models/InfoModelWithoutNamespace.infomodel")

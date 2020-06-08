@@ -15,33 +15,20 @@ package org.eclipse.vorto.repository.server.it;
 import org.eclipse.vorto.model.*;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
-import org.eclipse.vorto.repository.web.VortoRepository;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringRunner.class)
-@ActiveProfiles(profiles = {"test"})
-@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = {"classpath:application-test.yml"})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
-@Sql("classpath:prepare_tables.sql")
 public class RepositoryJavaClientTest extends IntegrationTestBase {
 
   private IRepositoryClient repositoryClient = null;
 
+  @Before
   @Override
   public void setUpTest() throws Exception {
     super.setUpTest();

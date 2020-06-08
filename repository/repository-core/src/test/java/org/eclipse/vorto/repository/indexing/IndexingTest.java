@@ -24,6 +24,8 @@ import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
+import org.eclipse.vorto.repository.utils.MockAppEventPublisher;
+import org.eclipse.vorto.repository.utils.TenantProvider;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -132,7 +134,7 @@ public class IndexingTest extends UnitTestBase {
     
     tenantService.setApplicationEventPublisher(new MockAppEventPublisher(listeners));
     
-    tenantService.deleteTenant(playgroundTenant(), createUserContext("creator", "playground"));
+    tenantService.deleteTenant(TenantProvider.playgroundTenant(), createUserContext("creator", "playground"));
     
     Mockito.verify(indexingService, Mockito.times(1)).deleteIndexForTenant(Mockito.eq("playground"));
   }

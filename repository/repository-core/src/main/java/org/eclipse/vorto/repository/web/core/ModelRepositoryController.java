@@ -32,7 +32,6 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
@@ -40,6 +39,7 @@ import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -103,12 +103,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @Autowired
   private NamespaceService namespaceService;
 
-  private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
+  private static final Logger LOGGER = Logger.getLogger(ModelRepositoryController.class);
 
   @ApiOperation(value = "Returns the image of a vorto model")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model not found")})
-  @GetMapping(value = "/{modelId:.+}/images")
+  @GetMapping("/{modelId:.+}/images")
   public void getModelImage(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -116,7 +119,6 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
     IModelRepository modelRepo = getModelRepository(modelID);
 
     // first searches by "display image" tag
@@ -151,13 +153,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       IOUtils.copy(new ByteArrayInputStream(imageContent.get().getContent()),
           response.getOutputStream());
       response.flushBuffer();
-
     } catch (IOException e) {
       throw new GenericApplicationException("Error copying file.", e);
     }
   }
 
-  @PostMapping(value = "/{modelId:.+}/images")
+  @PostMapping("/{modelId:.+}/images")
   @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
@@ -167,7 +168,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
           required = true) final @PathVariable String modelId) {
 
-    logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
+    LOGGER.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
 
     ModelId actualModelID = ModelId.fromPrettyFormat(modelId);
 
@@ -198,7 +199,6 @@ public class ModelRepositoryController extends AbstractRepositoryController {
               Attachment.TAG_IMAGE,
               Attachment.TAG_DISPLAY_IMAGE
           );
-
     } catch (IOException e) {
       throw new GenericApplicationException("error in attaching file to model '" + modelId + "'",
           e);
@@ -207,14 +207,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         HttpStatus.CREATED);
   }
 
-  private static Predicate<Tenant> hasMemberWithRole(String username, Role role) {
-    return tenant -> tenant.getUsers().stream()
-        .anyMatch(user -> user.getUser().getUsername().equals(username)
-            && !user.getRoles().isEmpty() && user.hasRole(role));
-  }
-
-  // ToDo add Getter method
-  @ApiOperation(value = "Saves a model to the repository.")
+  @ApiOperation("Saves a model to the repository.")
   @PreAuthorize("hasAuthority('sysadmin') or "
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
@@ -225,10 +218,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
       IModelRepository modelRepository = getModelRepository(ModelId.fromPrettyFormat(modelId));
-
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
       if (modelRepository.getById(modelID) == null) {
         return new ResponseEntity<>(ValidationReport.invalid(null, "Model was not found"),
             HttpStatus.NOT_FOUND);
@@ -253,11 +245,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       }
       return new ResponseEntity<>(validationReport, HttpStatus.OK);
     } catch (ValidationException validationException) {
-      logger.warn(validationException);
+      LOGGER.warn(validationException);
       return new ResponseEntity<>(ValidationReport.invalid(null, validationException),
           HttpStatus.BAD_REQUEST);
     }
-
   }
 
   @PutMapping(value = "/refactorings/{oldId:.+}/{newId:.+}", produces = "application/json")
@@ -277,7 +268,6 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
-
 
   @GetMapping(value = "/refactorings/{modelId:.+}", produces = "application/json")
   @PreAuthorize("hasAuthority('sysadmin') or "
@@ -300,18 +290,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       @RequestBody(required = false) List<ModelProperty> properties) throws WorkflowException {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
     IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
-
     IModelRepository modelRepo = getModelRepository(modelID);
 
     if (modelRepo.exists(modelID)) {
       throw new ModelAlreadyExistsException();
     } else {
       String modelTemplate = null;
-
       if (modelType == ModelType.InformationModel && properties != null) {
         modelTemplate = new InfomodelTemplate().createModelTemplate(modelID, properties);
       } else {
@@ -333,17 +319,20 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<ModelInfo> createVersionOfModel(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "modelVersion", required = true) @PathVariable String modelVersion)
-      throws WorkflowException, IOException {
+      throws WorkflowException {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
 
-    ModelResource resource = getModelRepository(modelID)
-        .createVersion(modelID, modelVersion, userContext);
-    this.workflowService.start(resource.getId(), userContext);
-    return new ResponseEntity<>(resource, HttpStatus.CREATED);
+    try {
+      IUserContext userContext = UserContext.user(authentication, getWorkspaceId(modelId));
+      ModelResource resource = getModelRepository(modelID)
+          .createVersion(modelID, modelVersion, userContext);
+      this.workflowService.start(resource.getId(), userContext);
+      return new ResponseEntity<>(resource, HttpStatus.CREATED);
+    } catch (FatalModelRepositoryException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @DeleteMapping(value = "/{modelId:.+}")
@@ -355,16 +344,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     try {
-
       getModelRepository(ModelId.fromPrettyFormat(modelId))
           .removeModel(ModelId.fromPrettyFormat(modelId));
       return new ResponseEntity<>(false, HttpStatus.OK);
     } catch (FatalModelRepositoryException | NullPointerException e) {
-      logger.error(e);
+      LOGGER.error(e);
       return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
   }
-
 
   // ##################### Downloads ################################
   @GetMapping(value = {"/mine/download"})
@@ -382,33 +369,229 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       userModels.addAll(modelIds);
     }
 
-    logger.info("Exporting information models for user - results: "
+    LOGGER.info("Exporting information models for user - results: "
         + userModels.size());
 
     sendAsZipFile(response, user.getUsername() + "-models.zip",
         getModelsAndDependencies(userModels));
   }
 
-  private IModelRepository getModelRepository(String tenantId) {
-    return this.modelRepositoryFactory.getRepository(tenantId);
+  @ApiOperation(value = "Getting all mapping resources for the given model")
+  @PreAuthorize("isAuthenticated() or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
+  @GetMapping("/{modelId:.+}/download/mappings/{targetPlatform}")
+  public ResponseEntity<Boolean> downloadMappingsForPlatform(
+      @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
+          required = true) final @PathVariable String modelId,
+      @ApiParam(value = "The name of target platform, e.g. lwm2m",
+          required = true) final @PathVariable String targetPlatform,
+      final HttpServletResponse response) {
+
+    Objects.requireNonNull(modelId, "model ID must not be null");
+
+    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    try {
+      IModelRepository modelRepository = getModelRepository(modelID);
+      if (modelRepository.getById(modelID) == null) {
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+      }
+
+      List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelID,
+          ControllerUtils.sanitize(targetPlatform), Optional.empty());
+
+      List<ModelId> mappingModelIds =
+          mappingResources.stream().map(ModelInfo::getId).collect(Collectors.toList());
+
+      final String fileName =
+          modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID.getVersion() + ".zip";
+
+      sendAsZipFile(response, fileName, getModelsAndDependencies(mappingModelIds));
+      return new ResponseEntity<>(true, HttpStatus.OK);
+    } catch (FatalModelRepositoryException ex) {
+      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
   }
 
-  private Map<ModelInfo, FileContent> getModelsAndDependencies(Collection<ModelId> modelIds) {
-    Map<ModelInfo, FileContent> modelsMap = new HashMap<>();
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/{modelId:.+}/diagnostics")
+  public ResponseEntity<Collection<Diagnostic>> runDiagnostics(final @PathVariable String modelId) {
+    Objects.requireNonNull(modelId, "model ID must not be null");
 
-    if (modelIds != null && !modelIds.isEmpty()) {
-      for (ModelId modelId : modelIds) {
-        IModelRepository modelRepo = getModelRepository(modelId);
-        ModelInfo modelInfo = modelRepo.getById(modelId);
-        Optional<FileContent> modelContent = modelRepo.getFileContent(modelId, Optional.empty());
-        if (modelContent.isPresent()) {
-          modelsMap.put(modelInfo, modelContent.get());
-          modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
-        }
-      }
+    try {
+      return new ResponseEntity<>(
+          getDiagnosticService(getWorkspaceId(modelId)).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
+          HttpStatus.OK);
+    } catch (FatalModelRepositoryException ex) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}/policies")
+  public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
+    Objects.requireNonNull(modelId, "model ID must not be null");
+    try {
+      ModelId modelID = ModelId.fromPrettyFormat(modelId);
+      String workspaceId = getWorkspaceId(modelId);
+      Authentication user = SecurityContextHolder.getContext().getAuthentication();
+      return new ResponseEntity<>(
+          getPolicyManager(workspaceId).getPolicyEntries(modelID)
+              .stream()
+              .filter(userHasPolicyEntry(user, workspaceId))
+              .collect(Collectors.toList()),
+          HttpStatus.OK);
+    } catch (FatalModelRepositoryException ex) {
+      LOGGER.error(ex);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (NotAuthorizedException ex) {
+      LOGGER.warn(ex);
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @GetMapping("/{modelId:.+}/policy")
+  public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
+    Objects.requireNonNull(modelId, "model ID must not be null");
+
+    Authentication user = SecurityContextHolder.getContext().getAuthentication();
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    String tenantId = getWorkspaceId(modelId);
+
+    try {
+      List<PolicyEntry> policyEntries =
+          getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+              .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
+
+      return getBestPolicyEntryForUser(policyEntries)
+          .map(p -> new ResponseEntity<>(p, HttpStatus.OK))
+          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    } catch (NotAuthorizedException ex) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
+  @PutMapping(value = "/{modelId:.+}/policies")
+  public void addOrUpdatePolicyEntry(final @PathVariable String modelId,
+      final @RequestBody PolicyEntry entry) {
+
+    Objects.requireNonNull(modelId, "modelID must not be null");
+    Objects.requireNonNull(entry, "entry must not be null");
+
+    if (attemptChangePolicyOfCurrentUser(entry)) {
+      throw new IllegalArgumentException("Cannot change policy of current user");
+    } else if (!entry.getPrincipalId().equals(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)
+        && !this.accountService.exists(entry.getPrincipalId())) {
+      throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 
-    return modelsMap;
+    getPolicyManager(getWorkspaceId(modelId)).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
+  }
+
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
+  @DeleteMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}")
+  public void removePolicyEntry(final @PathVariable String modelId,
+      final @PathVariable String principalId, final @PathVariable String principalType) {
+
+    Objects.requireNonNull(modelId, "modelID must not be null");
+    Objects.requireNonNull(principalId, "principalID must not be null");
+    final PolicyEntry entry =
+        PolicyEntry.of(principalId, PrincipalType.valueOf(principalType), null);
+
+    if (attemptChangePolicyOfCurrentUser(entry)) {
+      throw new IllegalArgumentException("Cannot change policy of current user");
+    }
+    getPolicyManager(getWorkspaceId(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
+        entry);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
+  public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
+
+    IUserContext user =
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
+            getWorkspaceId(ControllerUtils.sanitize(modelId)));
+
+    if (!userRepositoryRoleService.isSysadmin(user.getUsername()) &&
+        !accountService
+            .hasRole(user.getTenant(), user.getAuthentication(), "model_publisher")) {
+      return new ResponseEntity<>(
+          Status.fail("Only users with Publisher roles are allowed to make models public"),
+          HttpStatus.UNAUTHORIZED);
+    }
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
+      return new ResponseEntity<>(
+          Status.fail("Only models with official namespace can be made public"),
+          HttpStatus.FORBIDDEN);
+    }
+
+    try {
+      LOGGER.info("Making the model '" + ControllerUtils.sanitize(modelId) + "' public.");
+      modelService.makeModelPublic(ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
+    } catch (ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
+      return new ResponseEntity<>(Status.fail(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    return new ResponseEntity<>(Status.success(), HttpStatus.OK);
+  }
+
+  private String getWorkspaceId(String modelId) {
+    String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
+    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
+        .orElseThrow(() -> new FatalModelRepositoryException("Namespace " + namespace + " could not be found.", null));
+  }
+
+  private IDiagnostics getDiagnosticService(final String tenantId) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return getModelRepositoryFactory().getDiagnosticsService(tenantId, authentication);
+  }
+
+  private IModelPolicyManager getPolicyManager(final String tenantId) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return getModelRepositoryFactory().getPolicyManager(tenantId, authentication);
+  }
+
+  private Predicate<PolicyEntry> userHasPolicyEntry(Authentication user, String tenantId) {
+    return p -> (p.getPrincipalType() == PrincipalType.User
+        && p.getPrincipalId().equals(user.getName()))
+        || (p.getPrincipalType() == PrincipalType.Role
+        && accountService.hasRole(tenantId, user, p.getPrincipalId()));
+  }
+
+  private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {
+    Optional<PolicyEntry> full =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.FULL_ACCESS).findFirst();
+    if (full.isPresent()) {
+      return full;
+    }
+
+    Optional<PolicyEntry> modify =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.MODIFY).findFirst();
+    if (modify.isPresent()) {
+      return modify;
+    }
+
+    Optional<PolicyEntry> read =
+        policyEntries.stream().filter(p -> p.getPermission() == Permission.READ).findFirst();
+    if (read.isPresent()) {
+      return read;
+    }
+
+    return Optional.empty();
+  }
+
+  private boolean attemptChangePolicyOfCurrentUser(PolicyEntry entry) {
+    return SecurityContextHolder.getContext().getAuthentication().getName()
+        .equals(entry.getPrincipalId());
   }
 
   private void sendAsZipFile(final HttpServletResponse response, final String fileName,
@@ -442,241 +625,24 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Getting all mapping resources for the given model")
-  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
-  @GetMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}")
-  public ResponseEntity<Boolean> downloadMappingsForPlatform(
-      @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
-          required = true) final @PathVariable String modelId,
-      @ApiParam(value = "The name of target platform, e.g. lwm2m",
-          required = true) final @PathVariable String targetPlatform,
-      final HttpServletResponse response) {
+  private IModelRepository getModelRepository(String tenantId) {
+    return this.modelRepositoryFactory.getRepository(tenantId);
+  }
 
-    Objects.requireNonNull(modelId, "model ID must not be null");
-
-    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    try {
-
-      IModelRepository modelRepository = getModelRepository(modelID);
-
-      if (modelRepository.getById(modelID) == null) {
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+  private Map<ModelInfo, FileContent> getModelsAndDependencies(Collection<ModelId> modelIds) {
+    Map<ModelInfo, FileContent> modelsMap = new HashMap<>();
+    if (modelIds != null && !modelIds.isEmpty()) {
+      for (ModelId modelId : modelIds) {
+        IModelRepository modelRepo = getModelRepository(modelId);
+        ModelInfo modelInfo = modelRepo.getById(modelId);
+        Optional<FileContent> modelContent = modelRepo.getFileContent(modelId, Optional.empty());
+        if (modelContent.isPresent()) {
+          modelsMap.put(modelInfo, modelContent.get());
+          modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
+        }
       }
-
-      List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelID,
-          ControllerUtils.sanitize(targetPlatform), Optional.empty());
-
-      List<ModelId> mappingModelIds =
-          mappingResources.stream().map(ModelInfo::getId).collect(Collectors.toList());
-
-      final String fileName =
-          modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID.getVersion() + ".zip";
-
-      sendAsZipFile(response, fileName, getModelsAndDependencies(mappingModelIds));
-      return new ResponseEntity<>(true, HttpStatus.OK);
-
-    } catch (FatalModelRepositoryException ex) {
-      return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-    }
-  }
-
-  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
-  @GetMapping(value = "/{modelId:.+}/diagnostics")
-  public ResponseEntity<Collection<Diagnostic>> runDiagnostics(final @PathVariable String modelId) {
-
-    Objects.requireNonNull(modelId, "model ID must not be null");
-
-    try {
-      return new ResponseEntity<>(
-          getDiagnosticService(getWorkspaceId(modelId)).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
-          HttpStatus.OK);
-    } catch (FatalModelRepositoryException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-  }
-
-  @PreAuthorize("hasAnyAuthority('ROLE_USER','model_viewer')")
-  @GetMapping(value = "/{modelId:.+}/policies")
-  public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
-
-    Objects.requireNonNull(modelId, "model ID must not be null");
-    try {
-      ModelId modelID = ModelId.fromPrettyFormat(modelId);
-      String workspaceId = getWorkspaceId(modelId);
-      Authentication user = SecurityContextHolder.getContext().getAuthentication();
-      return new ResponseEntity<>(
-          getPolicyManager(workspaceId).getPolicyEntries(modelID)
-              .stream()
-              .filter(userHasPolicyEntry(user, workspaceId))
-              .collect(Collectors.toList()),
-          HttpStatus.OK);
-    } catch (FatalModelRepositoryException ex) {
-      logger.error(ex);
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (NotAuthorizedException ex) {
-      logger.warn(ex);
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  @PreAuthorize("hasAnyAuthority('USER','model_viewer')")
-  @GetMapping(value = "/{modelId:.+}/policy")
-  public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
-
-    Objects.requireNonNull(modelId, "model ID must not be null");
-
-    Authentication user = SecurityContextHolder.getContext().getAuthentication();
-
-    ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    String tenantId = getWorkspaceId(modelId);
-
-    try {
-      List<PolicyEntry> policyEntries =
-          getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
-              .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
-
-      Optional<PolicyEntry> policyEntry = getBestPolicyEntryForUser(policyEntries);
-
-      if (policyEntry.isPresent()) {
-        return new ResponseEntity<>(policyEntry.get(), HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      }
-    } catch (NotAuthorizedException ex) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  @PreAuthorize("hasAuthority('sysadmin') or "
-      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
-  @PutMapping(value = "/{modelId:.+}/policies")
-  public void addOrUpdatePolicyEntry(final @PathVariable String modelId,
-      final @RequestBody PolicyEntry entry) {
-
-    Objects.requireNonNull(modelId, "modelID must not be null");
-    Objects.requireNonNull(entry, "entry must not be null");
-
-    if (attemptChangePolicyOfCurrentUser(entry)) {
-      throw new IllegalArgumentException("Cannot change policy of current user");
-    } else if (!entry.getPrincipalId().equals(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)
-        && !this.accountService.exists(entry.getPrincipalId())) {
-      throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 
-    getPolicyManager(getWorkspaceId(modelId)).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
-  }
-
-  private boolean attemptChangePolicyOfCurrentUser(PolicyEntry entry) {
-    return SecurityContextHolder.getContext().getAuthentication().getName()
-        .equals(entry.getPrincipalId());
-  }
-
-  @PreAuthorize("hasAuthority('sysadmin') or "
-      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
-      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
-  @DeleteMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}")
-  public void removePolicyEntry(final @PathVariable String modelId,
-      final @PathVariable String principalId, final @PathVariable String principalType) {
-
-    Objects.requireNonNull(modelId, "modelID must not be null");
-    Objects.requireNonNull(principalId, "principalID must not be null");
-    final PolicyEntry entry =
-        PolicyEntry.of(principalId, PrincipalType.valueOf(principalType), null);
-
-    if (attemptChangePolicyOfCurrentUser(entry)) {
-      throw new IllegalArgumentException("Cannot change policy of current user");
-    }
-    getPolicyManager(getWorkspaceId(modelId)).removePolicyEntry(ModelId.fromPrettyFormat(modelId),
-        entry);
-  }
-
-  @PreAuthorize("hasAuthority('sysadmin') or hasAnyAuthority('ROLE_USER','model_viewer')")
-  @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
-  public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
-
-    IUserContext user =
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-            getWorkspaceId(ControllerUtils.sanitize(modelId)));
-
-    if (!user.isSysAdmin() &&
-        !accountService
-            .hasRole(user.getTenant(), user.getAuthentication(), "ROLE_MODEL_PUBLISHER")) {
-      return new ResponseEntity<>(
-          Status.fail("Only users with Publisher roles are allowed to make models public"),
-          HttpStatus.UNAUTHORIZED);
-    }
-
-    ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-    if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
-      return new ResponseEntity<>(
-          Status.fail("Only models with official namespace can be made public"),
-          HttpStatus.FORBIDDEN);
-    }
-
-    try {
-      logger.info("Making the model '" + ControllerUtils.sanitize(modelId) + "' public.");
-      modelService.makeModelPublic(ModelId.fromPrettyFormat(ControllerUtils.sanitize(modelId)));
-    } catch (ModelNotReleasedException | ModelNamespaceNotOfficialException e) {
-      return new ResponseEntity<>(Status.fail(e.getMessage()), HttpStatus.FORBIDDEN);
-    }
-
-    return new ResponseEntity<>(Status.success(), HttpStatus.OK);
-  }
-
-  private String getWorkspaceId(String modelId) {
-    String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
-    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
-        .orElseThrow(() -> new FatalModelRepositoryException("Namespace " + namespace + " could not be found.", null));
-  }
-
-  private Optional<String> getWorkspaceId(ModelId modelId) {
-    return namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace());
-  }
-
-  private IDiagnostics getDiagnosticService(final String tenantId) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    return getModelRepositoryFactory().getDiagnosticsService(tenantId, authentication);
-  }
-
-  private IModelPolicyManager getPolicyManager(final String tenantId) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    IModelPolicyManager policyManager =
-        getModelRepositoryFactory().getPolicyManager(tenantId, authentication);
-    return policyManager;
-  }
-
-  private Predicate<PolicyEntry> userHasPolicyEntry(Authentication user, String tenantId) {
-    return (p) -> (p.getPrincipalType() == PrincipalType.User
-        && p.getPrincipalId().equals(user.getName()))
-        || (p.getPrincipalType() == PrincipalType.Role
-        && accountService.hasRole(tenantId, user, p.getPrincipalId()));
-  }
-
-  private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {
-    Optional<PolicyEntry> full =
-        policyEntries.stream().filter(p -> p.getPermission() == Permission.FULL_ACCESS).findFirst();
-    if (full.isPresent()) {
-      return full;
-    }
-
-    Optional<PolicyEntry> modify =
-        policyEntries.stream().filter(p -> p.getPermission() == Permission.MODIFY).findFirst();
-    if (modify.isPresent()) {
-      return modify;
-    }
-
-    Optional<PolicyEntry> read =
-        policyEntries.stream().filter(p -> p.getPermission() == Permission.READ).findFirst();
-    if (read.isPresent()) {
-      return read;
-    }
-
-    return Optional.empty();
+    return modelsMap;
   }
 }

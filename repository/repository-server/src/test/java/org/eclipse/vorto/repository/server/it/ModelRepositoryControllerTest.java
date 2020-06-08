@@ -10,35 +10,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.web;
+package org.eclipse.vorto.repository.server.it;
 
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.server.it.IntegrationTestBase;
-import org.eclipse.vorto.repository.server.it.TestModel;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@ActiveProfiles(profiles = {"test"})
-@SpringBootTest(classes = VortoRepository.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = {"classpath:application-test.yml"})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
-@Sql("classpath:prepare_tables.sql")
 public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
   @Autowired
@@ -47,7 +31,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void getModelImage() throws Exception {
     createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin)
-        .andDo(e -> e.getResponse())
         .andExpect(status().isCreated());
 
     this.repositoryServer
@@ -219,7 +202,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void getUserPolicy() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator2))
+        .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelViewer))
         .andExpect(status().isUnauthorized());
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userSysadmin))
@@ -234,7 +217,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void addValidPolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"user3\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
@@ -273,7 +256,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void removePolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"user2\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
@@ -283,8 +266,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .perform(
             delete("/rest/models/" + testModel.prettyName + "/policies/user2/User").with(userSysadmin))
         .andExpect(status().isOk());
-
-
   }
 
   /*
@@ -305,7 +286,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void makeModelPublicNonSysAdmin() throws Exception {
     this.repositoryServer
-        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userModelCreator2))
+        .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userModelViewer))
         .andExpect(status().isUnauthorized());
 
   }

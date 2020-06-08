@@ -34,8 +34,8 @@ public class PayloadMappingSpecificationTest extends UnitTestBase {
   
   @Override
   @Before
-  public void beforeEach() throws Exception {
-    super.beforeEach();
+  public void setup() throws Exception {
+    super.setup();
     
     this.mappingService = new DefaultPayloadMappingService(this.repositoryFactory,this.workflow);
   }
