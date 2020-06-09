@@ -33,14 +33,17 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
     		        $http.post('./rest/accounts', {
     		            headers: {'Content-Type': "application/json"}
     		        })
-    		        .success( function(data, status, headers, config) {
-    		        	$scope.isAcceptingTermsAndCondition = false;
-    		            $rootScope.init();
-    		            $location.path('/');
-    		            modalInstance.dismiss();
-    		        }).error(function(data, status, headers, config) {
-    		        	$scope.isAcceptingTermsAndCondition = false;
-    		        });
+    		        .then(
+    		        		function(result) {
+    		        			$scope.isAcceptingTermsAndCondition = false;
+    		            	$rootScope.init();
+    		            	$location.path('/');
+    		            	modalInstance.dismiss();
+    		        		},
+										function(error) {
+    		        			$scope.isAcceptingTermsAndCondition = false;
+    		        		}
+								);
     		    };
     		    
     		    $scope.showPrivacyPolicy =  function() {

@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.web.api.v1.util;
 import com.google.common.base.Strings;
 import java.util.Optional;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 
 /**
@@ -46,6 +47,39 @@ public final class NamespaceValidator {
       if (!namespace.startsWith(NAMESPACE_PREFIX)) {
         return Optional.of(NamespaceOperationResult.failure("User can only register a private namespace."));
       }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Validates a request to add a user to a namespace.
+   * @param request
+   * @return
+   */
+  public static Optional<NamespaceOperationResult> validateAccessRequest(NamespaceAccessRequestDTO request) {
+    if (request == null) {
+      return Optional.of(NamespaceOperationResult.failure("Cannot process request"));
+    }
+    /*
+     This is a dumb representation of the "conditions acknowledged" checkbox in the UI. The idea
+     here is that if a user "maliciously" enables the "send" button through scripting and thus
+     bypasses the validation of the checkbox, the value sent to the back-end can still be
+     evaluated.
+     Of course, one could also spoof the request and enable the flag, but in that case, the
+     conditions should be considered as acknowledged, since the clever user obviously knows what
+     they are doing.
+     */
+    if (!request.isConditionsAcknowledged()) {
+      return Optional.of(NamespaceOperationResult.failure("Conditions not acknowledged"));
+    }
+    if (Strings.nullToEmpty(request.getNamespaceName()).trim().isEmpty()) {
+      return Optional.of(NamespaceOperationResult.failure("No namespace specified"));
+    }
+    if (Strings.nullToEmpty(request.getRequestingUsername()).trim().isEmpty()) {
+      return Optional.of(NamespaceOperationResult.failure("No requesting user specified"));
+    }
+    if (Strings.nullToEmpty(request.getTargetUsername()).trim().isEmpty()) {
+      return Optional.of(NamespaceOperationResult.failure("No target user specified"));
     }
     return Optional.empty();
   }

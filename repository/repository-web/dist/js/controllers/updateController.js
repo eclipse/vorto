@@ -26,18 +26,18 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
         $scope.doUpdate = function() {
             $scope.isUpdating = true;
 
-            var updateSuccess = function(data, status, headers, config) {
+            var updateSuccess = function(result) {
                 $scope.isUpdating = false;
                 $scope.accountUpdated = true;
             };
 
-            var updateError = function(data, status, headers, config) {
+            var updateError = function(error) {
                 $scope.isUpdating = false;
             };
 
-            $http.post("./rest/accounts/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"} })
-                .success(updateSuccess)
-                .error(updateError);
+            $http
+              .post("./rest/accounts/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"} })
+              .then(updateSuccess, updateError);
         };
     }
 ]);

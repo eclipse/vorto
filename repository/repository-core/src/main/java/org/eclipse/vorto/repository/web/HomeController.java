@@ -78,6 +78,7 @@ public class HomeController {
     Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);
 
     map.put("name", oauthUser.getUserId());
+    map.put("subject", userAccount.getSubject());
     map.put("displayName", oauthUser.getDisplayName());
     map.put("isRegistered", Boolean.toString(userAccount != null));
     map.put("roles", oauthUser.getRoles());

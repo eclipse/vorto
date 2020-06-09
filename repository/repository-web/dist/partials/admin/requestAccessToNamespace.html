@@ -1,0 +1,171 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <h3 class="modal-title">Request access to a namespace</h3>
+</div>
+<div class="modal-body">
+  <div class="overlay" ng-show="isSendingRequest">
+    <div style="display: table-cell;vertical-align: middle;">
+      <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+      <span style="font-size: xx-large">&nbsp;Sending request...</span>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-2">
+        <label for="namespaceSearch">Namespace*:</label>
+      </div>
+      <div class="input-group col-sm-offset-5 col-sm-7">
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <input autofocus type="search" class="search-box-query-filter form-control search-input"
+                   id="namespaceSearch"
+                   placeholder="Search for namespaces (at least 4 characters)..."
+                   ng-model="namespacePartial"
+                   ng-model-options="{ debounce: 200 }" ng-change="findNamespaces()"
+                   style="height:32px"/>
+          </div>
+          <div class="col-sm-2" style="padding-left:0px">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-primary" ng-click="findNamespaces()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <ul class="dropDownUL" ng-show="namespaces.length > 0">
+              <li id="{{namespace.name}}"
+                  ng-repeat="namespace in namespaces track by namespace.name"
+                  ng-model="selectedNamespace" ng-click="selectNamespace(namespace)"
+                  ng-mouseover="highlightNamespace(namespace)"
+                  ng-mouseleave="unhighlightNamespace(namespace)">
+                {{namespace.name}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <hr/>
+    </div>
+    <div class="row">
+      <div class="col-sm-8">
+        <label>Ask access for*:</label>
+      </div>
+    </div>
+    <div class="row"><br/></div>
+    <div class="row">
+      <div class="col-sm-3">
+        <input type="radio" name="requestTargetUser" id="myself" value="{{username}}"
+               ng-model="userRadio" checked ng-checked="true"
+               ng-change="toggleUserSearchEnabled('myself')"/>
+        <label for="myself">myself ({{username}})</label>
+      </div>
+      <div class="col-sm-2">
+        <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
+               value="anotherUser"
+               ng-change="toggleUserSearchEnabled('otherUser')"/>
+        <label for="anotherUser">A technical user:</label>
+      </div>
+      <div class="input-group col-sm-7">
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <input type="search" class="search-box-query-filter form-control search-input"
+                   id="userId" placeholder="Search for technical users (at least 3 characters)..."
+                   ng-model="userPartial"
+                   ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
+                   style="height:32px">
+          </div>
+          <div class="col-sm-2" style="padding-left:0px">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-primary" ng-click="findUsers()">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10" style="padding-right:0px">
+            <ul class="dropDownUL" ng-show="retrievedUsers.length > 0">
+              <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
+                  ng-model="selectedUser" ng-click="selectUser(user)"
+                  ng-mouseover="highlightUser(user)"
+                  ng-mouseleave="unhighlightUser(user)">
+                {{user.userId}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <hr/>
+    </div>
+    <div class="row" id="roles">
+      <div class="col-sm-12">
+        <label>I want <i>{{selectedUser}}</i> to be able to:</label>
+      </div>
+      <div class="row"><br/><br/>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="roleView" type="checkbox" ng-model="desiredRoles[0]"> view models on the
+        namespace</input>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="roleCreate" type="checkbox" ng-model="desiredRoles[1]"> create models on the
+        namespace</input>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="roleRelease" type="checkbox" ng-model="desiredRoles[2]"> release models on the
+        namespace</input>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="roleReview" type="checkbox" ng-model="desiredRoles[3]"> review model states the
+        namespace</input>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="rolePublish" type="checkbox" ng-model="desiredRoles[4]"> publish models on the
+        namespace</input>
+      </div>
+      <div class="row col-sm-offset-1">
+        <input id="roleManage" type="checkbox" ng-model="desiredRoles[5]"
+               ng-change="disableAndCheckOtherCheckBoxes()"> manage the namespace</input>
+      </div>
+    </div>
+    <div class="row">
+      <hr/>
+    </div>
+    <div class="row">
+      <br/>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <input id="ack" type="checkbox" ng-model="ack" ng-change="computeSubmitAvailability()">
+        I declare that my request is motivated by legitimate business reasons, and acknowledge that
+        my / the target user's display name (and subject if present) will be shared with the
+        namespace administrator(s), if the message is sent successfully.
+        </input>
+      </div>
+    </div>
+    <div class="row">
+      <hr/>
+    </div>
+    <div class="row">
+      <br/>
+    </div>
+    <div ng-if="error" class="row alert alert-danger table-cell" style="text-align:center">{{ errorMessage }}<br/></div>
+    <div ng-if="success" class="row alert alert-success table-cell " style="text-align:center">
+      Your request was sent successfully.&nbsp;&nbsp;
+      <button class="btn btn-primary" ng-click="close()">Close</button>
+      <br/>
+    </div>
+    <div class="row">
+      <div class="col-sm-offset-10">
+        <button id="cancel" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button id="submit" class="btn btn-primary" ng-click="submit()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>

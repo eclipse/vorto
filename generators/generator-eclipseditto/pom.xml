@@ -47,7 +47,6 @@
 		<dependency>
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
-			<version>${xtext.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -32,23 +32,11 @@
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-core</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-server-config</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- Spring Boot dependencies -->
@@ -116,12 +104,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.google.guava</groupId>-->
-<!--			<artifactId>guava</artifactId>-->
-<!--			<version>${guava.version}</version>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>angular-swagger-ui</artifactId>
@@ -140,6 +122,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>angular-ui-bootstrap</artifactId>
@@ -149,6 +132,7 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
@@ -162,10 +146,12 @@
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>angular-route</artifactId>
+			<version>${angular.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>angular-animate</artifactId>
+			<version>${angular.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -204,8 +190,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.web </artifactId>
-			<version>${xtext.version}</version>
+			<artifactId>org.eclipse.xtext.web</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -226,22 +211,22 @@
 		</dependency>
 
 		<!-- Elastic search indexing service (start) -->
-        <dependency>
-		    <groupId>org.elasticsearch</groupId>
-		    <artifactId>elasticsearch</artifactId>
-			<version>6.7.2</version>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${elasticsearch.version}</version>
 		</dependency>
         
-        <dependency>
-		    <groupId>org.elasticsearch.client</groupId>
-		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <version>6.7.2</version>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>${elasticsearch.version}</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.apache.lucene</groupId>
 		    <artifactId>lucene-core</artifactId>
-		    <version>7.7.0</version>
+		    <version>7.7.2</version>
 		</dependency>
 		
 		<dependency>
@@ -255,31 +240,7 @@
 			<artifactId>repository-oauth-boschid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!--UI testing-->
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>selenium</artifactId>
-			<version>${testcontainers.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-api</artifactId>
-			<version>${selenium.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-remote-driver</artifactId>
-			<version>${selenium.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-support</artifactId>
-			<version>${selenium.version}</version>
-			<scope>test</scope>
-		</dependency>
+		
 	</dependencies>
 
 	<build>

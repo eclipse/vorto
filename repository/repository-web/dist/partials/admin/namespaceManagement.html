@@ -1,109 +1,139 @@
-<div class="row">
-	<div class="col-sm-4" ng-show="isRetrievingNamespaces">
-			<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching namespaces ...
-	</div>
-	<div class="col-sm-4 col-sm-offset-4">
-		<input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search" class="search-box-query-filter form-control search-input"
-					 id="namespaceSearch" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
-					 ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
-		>
-	</div>
+<div class="row justify-content-around">
+  <div class="col-sm-4">
+    <div class="input-group">
+      <input style="height:32px" ng-show="!isRetrievingNamespaces" autofocus type="search"
+             class="search-box-query-filter form-control search-input"
+             id="namespaceFilter" placeholder="Filter namespaces..." ng-model="namespaceSearchTerm"
+             ng-model-options="{ debounce: 200 }" ng-change="filterNamespaces()"
+      >
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-primary" ng-click="filterNamespaces()">
+          <span class="glyphicon glyphicon-filter" aria-hidden="true"/>
+        </button>
+      </span>
+    </div>
+  </div>
 
-	<div class="col-sm-1">
-		<button type="button" class="btn btn-primary"
-						ng-disabled="isRetrievingNamespaces" ng-click="createNamespace(newNamespace())">
-			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create
-		</button>
-	</div>
+  <div class="col-sm-2">
+    <button type="button" class="btn btn-primary"
+            ng-disabled="isRetrievingNamespaces" ng-click="createNamespace(newNamespace())">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create a namespace
+    </button>
+  </div>
+  <div class="col-sm-3">
+    <button type="button" class="btn btn-primary" ng-click="openRequestAccessToNamespace()">
+      <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Request access to a
+      namespace
+    </button>
+  </div>
 
-	<div class="col-sm-3">
-		<a uib-popover="Request for an official namespace, e.g. com.mycompany" popover-placement="top" popover-trigger="'mouseover'" href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body={{requestEmailTemplate}}" class="btn btn-default pull-right">
-			<i class="fa fa-envelope"></i>&nbsp;Request Official Namespace
-		</a>
+  <div class="col-sm-3">
+    <a uib-popover="Request for an official namespace, e.g. com.mycompany" popover-placement="top"
+       popover-trigger="'mouseover'"
+       href="mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&body={{requestEmailTemplate}}"
+       class="btn btn-default pull-right">
+      <i class="fa fa-envelope"></i>&nbsp;Request Official Namespace
+    </a>
 
-	</div>
-</div> 
+  </div>
+</div>
 <div class="row" style="height: 10px;"></div>
 <div ng-show="errorMessage !== ''" class="alert alert-danger alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+      aria-hidden="true">&times;</span></button>
   {{ errorMessage }}
 </div>
 
-<p>
-{{namespaces.length}} total namespaces found, {{filteredNamespaces.length}} in filter
-</p>
-<div ng-if="filteredNamespaces.length > 0" class="row">
-	<div class="col-sm-12">
-		<table class="table table-bordered table-striped table-condensed">
-			<thead>
-				<tr>
-					<th class="col-md-7">Namespace</th>
-					<th class="col-md-2">Owners</th>
-					<th class="col-md-3">Actions</th>
-				</tr>
-			</thead>
-			<tbody ng-repeat="namespace in filteredNamespaces">
-				<tr>
-					<td class="col-md-7">
-						<div>
-							{{namespace.name}}
-						</div>
-					</td>
-					<td class="col-md-2">
-						<div style="min-height:40px;max-height:160px;overflow-y:scroll">
-							<div ng-repeat="admin in namespace.admins | orderBy:admin">{{admin.userId}}</div>
-						</div>
-					</td>
-					<td class="col-md-3">
-							<a ng-click="openDeleteDialog(namespace)" data-toggle="tooltip" data-placement="bottom" title="Delete Namespace">
-								<i class="fa fa-trash fa-2x"  aria-hidden="true"></i>
-							</a>&nbsp;&nbsp;
-							<a ng-click="manageUsers(namespace)" data-toggle="tooltip" data-placement="bottom" title="Manage Collaborators">
-								<i class="fa fa-user fa-2x"  aria-hidden="true"></i>
-							</a>&nbsp;&nbsp;
-							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-href="rest/namespaces/{{namespace.name}}/backup"
-								data-toggle="tooltip" data-placement="bottom" title="Download the repository content of this namespace for backup.">
-								<i class="fa fa-download fa-2x" aria-hidden="true"></i>
-							</a>&nbsp;&nbsp;
-							<a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreNamespace(namespace)"
-								data-toggle="tooltip" data-placement="bottom" title="Restore the repository content of this namespace using backup.">
-								<span class="fa fa-wrench fa-2x" aria-hidden="true"></span>
-							</a>&nbsp;&nbsp;
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-<div  ng-if="namespaces.length == 0" >Currently you do not own any namespace yet.
-	<a href ng-click="createNamespace(newNamespace())">Create your own namespace
-	</a>
+<div class="overlay" ng-show="isRetrievingNamespaces">
+  <div style="display: table-cell;vertical-align: middle;">
+    <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+    <span style="font-size: xx-large">&nbsp;Loading namespaces...</span>
+  </div>
 </div>
 
- <script type="text/ng-template" id="deleteNamespace.html">
-	<div class="modal-header">
-			<button type="button" class="close" ng-click="cancel()">&times;</button>
-  		<h3 class="modal-title" id="modal-title-deleteNamespace">Delete Namespace</h3>
-	</div>
-  <div class="modal-body" id="modal-body-deleteNamespace">
-      <div class="row" ng-show="!hasPublicModels">
-      	<div class="col-md-12">
-        	Are you sure you want to delete this namespace? <br>      	
-      	</div>
-	  </div>
-	  <div ng-show="!hasPublicModels" class="alert alert-warning">
-		<i class='glyphicon glyphicon-warning-sign'></i>  All models will be permanently removed.
-	  </div>
-	  <div class="row" ng-if="hasPublicModels">
-		<div class="col-md-12">
-        	<div class="alert alert-warning" role="alert">
-        	<i class='glyphicon glyphicon-warning-sign'></i> This namespace cannot be deleted because it contains public models.
-        	</div>
-      	</div>
-     </div>
-	</div>
-	<div class="modal-footer">
-      <button class="btn btn-danger" ng-disabled="hasPublicModels" type="button" ng-click="delete()">Delete Namespace</button>
-      <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+<p>
+  {{namespaces.length}} total namespaces found, {{filteredNamespaces.length}} in filter
+</p>
+<div ng-if="filteredNamespaces.length > 0" class="row">
+  <div class="col-sm-12" >
+    <table class="table table-bordered table-striped table-condensed">
+      <thead>
+      <tr>
+        <th class="col-md-7">Namespace</th>
+        <th class="col-md-2">Owners</th>
+        <th class="col-md-3">Actions</th>
+      </tr>
+      </thead>
+      <tbody ng-repeat="namespace in filteredNamespaces">
+      <tr>
+        <td class="col-md-7">
+          <div>
+            {{namespace.name}}
+          </div>
+        </td>
+        <td class="col-md-2">
+          <div style="min-height:40px;max-height:160px;overflow-y:scroll">
+            <div ng-repeat="admin in namespace.admins | orderBy:admin">{{admin.userId}}</div>
+          </div>
+        </td>
+        <td class="col-md-3">
+          <a ng-click="openDeleteDialog(namespace)" data-toggle="tooltip" data-placement="bottom"
+             title="Delete Namespace">
+            <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+          </a>&nbsp;&nbsp;
+          <a ng-click="manageUsers(namespace)" data-toggle="tooltip" data-placement="bottom"
+             title="Manage Collaborators">
+            <i class="fa fa-user fa-2x" aria-hidden="true"></i>
+          </a>&nbsp;&nbsp;
+          <a ng-show="hasAuthority('ROLE_SYS_ADMIN')"
+             ng-href="rest/namespaces/{{namespace.name}}/backup"
+             data-toggle="tooltip" data-placement="bottom"
+             title="Download the repository content of this namespace for backup.">
+            <i class="fa fa-download fa-2x" aria-hidden="true"></i>
+          </a>&nbsp;&nbsp;
+          <a ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-click="restoreNamespace(namespace)"
+             data-toggle="tooltip" data-placement="bottom"
+             title="Restore the repository content of this namespace using backup.">
+            <span class="fa fa-wrench fa-2x" aria-hidden="true"></span>
+          </a>&nbsp;&nbsp;
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
-	</script>
+</div>
+<div ng-if="namespaces.length == 0">Currently you do not own any namespace yet.
+  <a href ng-click="createNamespace(newNamespace())">Create your own namespace
+  </a>
+</div>
+
+<script type="text/ng-template" id="deleteNamespace.html">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h3 class="modal-title" id="modal-title-deleteNamespace">Delete Namespace</h3>
+  </div>
+  <div class="modal-body" id="modal-body-deleteNamespace">
+    <div class="row" ng-show="!hasPublicModels">
+      <div class="col-md-12">
+        Are you sure you want to delete this namespace? <br>
+      </div>
+    </div>
+    <div ng-show="!hasPublicModels" class="alert alert-warning">
+      <i class='glyphicon glyphicon-warning-sign'></i> All models will be permanently removed.
+    </div>
+    <div class="row" ng-if="hasPublicModels">
+      <div class="col-md-12">
+        <div class="alert alert-warning" role="alert">
+          <i class='glyphicon glyphicon-warning-sign'></i> This namespace cannot be deleted because
+          it contains public models.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" ng-disabled="hasPublicModels" type="button" ng-click="delete()">
+      Delete Namespace
+    </button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+</script>

@@ -324,12 +324,12 @@ public final class SearchTestInfrastructure {
     );
 
     elasticSearch = EmbeddedElastic.builder()
-        .withElasticVersion("6.7.2")
+        .withElasticVersion("6.8.8")
         .withSetting(PopularProperties.HTTP_PORT, rando.getHTTPStartPort())
         .withSetting(PopularProperties.TRANSPORT_TCP_PORT, rando.getTCPStartPort())
         .withSetting("discovery.type", "single-node")
         .withJavaHome(JavaHomeOption.inheritTestSuite())
-        .withInResourceLocation("elasticsearch-6.7.2.zip")
+        .withInResourceLocation("elasticsearch-6.8.8.zip")
         .withInstallationDirectory(new File(rando.getInstallationDirectory()))
         // defaults to 15 seconds, making it up to 1 minute to try and smoothe down tests in slower machines
         .withStartTimeout(1, TimeUnit.MINUTES)
