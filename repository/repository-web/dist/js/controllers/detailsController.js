@@ -272,9 +272,9 @@ repositoryControllers.controller('DetailsController',
 						.then(
 								function (result) {
 									$scope.modelReferencedBy[tmpIdx] = {
-										"modelId": result.id.prettyFormat,
-										"type": result.type,
-										"state": result.state,
+										"modelId": result.data.id.prettyFormat,
+										"type": result.data.type,
+										"state": result.data.state,
 										"hasAccess": true
 									};
 									$scope.modelReferencedBy.show = true;
