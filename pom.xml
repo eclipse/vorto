@@ -67,7 +67,7 @@
 	<properties>
 		<tycho-version>1.3.0</tycho-version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-		<tomcat-embed.version>8.5.51</tomcat-embed.version>
+		<tomcat-embed.version>8.5.55</tomcat-embed.version>
 		<xtext.version>2.20.0</xtext.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -78,18 +78,52 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-		<guava.version>18.0</guava.version>
 		<org.eclipse.emf.version>2.11.1</org.eclipse.emf.version>
+		<angular.version>1.7.9</angular.version>
 
+		<elasticsearch.version>6.8.8</elasticsearch.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- xtext dependencies -->
 			<dependency>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 				<version>${xtext.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>org.eclipse.xtend.lib</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext.xbase</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext.xbase.web</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext.web.servlet</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext.web</artifactId>
+				<version>${xtext.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.eclipse.emf</groupId>
 				<artifactId>org.eclipse.emf.mwe2.launch</artifactId>

@@ -24,10 +24,6 @@
   <artifactId>repository-elasticsearch</artifactId>
   <packaging>jar</packaging>
 
-  <properties>
-    <elasticsearch.version>6.7.2</elasticsearch.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.eclipse.vorto</groupId>
@@ -83,7 +79,7 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>7.7.0</version>
+      <version>7.7.2</version>
       <scope>test</scope>
     </dependency>
 

@@ -31,14 +31,16 @@ repositoryControllers.controller("namespaceUserManagementController",
         $scope.getNamespaceUsers = function(namespacename) {
             $scope.isRetrievingNamespaceUsers = true;
             $http.get("./rest/namespaces/" + namespacename + "/users")
-                .then(function(result) {
-                    $scope.isRetrievingNamespaceUsers = false;
-                    $scope.namespaceUsers = result.data;
-                },
-                function(reason) {
-                    $scope.isRetrievingNamespaceUsers = false;
-                    // TODO : handling of failures
-                });
+                .then(
+                    function(result) {
+                        $scope.isRetrievingNamespaceUsers = false;
+                        $scope.namespaceUsers = result.data;
+                    },
+                    function(reason) {
+                        $scope.isRetrievingNamespaceUsers = false;
+                        // TODO : handling of failures
+                    }
+                );
         };
 
         $scope.getNamespaceUsers($scope.namespace.name);
@@ -98,12 +100,14 @@ repositoryControllers.controller("namespaceUserManagementController",
         	dialog.setCallback("Confirm", function() {
 	            $http
                 .delete("./rest/namespaces/" + $scope.namespace.name + "/users/" + user.userId)
-	              .then(function(result) {
-                  $scope.getNamespaceUsers($scope.namespace.name);
-                },
-                function(reason) {
-                  // TODO : Show error on window
-                });
+	              .then(
+	                  function(result) {
+                        $scope.getNamespaceUsers($scope.namespace.name);
+                    },
+                    function(reason) {
+                      // TODO : Show error on window
+                    }
+                );
         	});
         	
         	dialog.run();
@@ -155,18 +159,21 @@ repositoryControllers.controller("createOrUpdateUserController",
         }
 
         $scope.findUsers = function() {
-            // only initiates user search if partial name is larger >= 4 characters
+            // only initiates user search if partial name is larger >= 3 characters
             // this is to prevent unmanageably large drop-downs
-            if ($scope.userPartial && $scope.userPartial.length >= 4) {
+            if ($scope.userPartial && $scope.userPartial.length >= 3) {
                 $http.get("./rest/accounts/search/" + $scope.userPartial)
-                .then(function (result) {
-                    if (result.data) {
-                        $scope.retrievedUsers = result.data;
-                    } else {
-                        $scope.retrievedUsers = [];
-                        $scope.selectedUser = null;
-                    }
-                });
+                .then(
+                    function (result) {
+                        if (result.data) {
+                            $scope.retrievedUsers = result.data;
+                        } else {
+                            $scope.retrievedUsers = [];
+                            $scope.selectedUser = null;
+                        }
+                    },
+                    function(error){}
+                );
             }
             else {
                 $scope.retrievedUsers = [];
@@ -215,8 +222,8 @@ repositoryControllers.controller("createOrUpdateUserController",
                 },
                 function(reason) {
                     $scope.errorMessage = "Creation of technical user " +
-                        $scope.user.userId + " in namespace " +
-                        $scope.namespace.name + " failed. ";
+                    $scope.user.userId + " in namespace " +
+                    $scope.namespace.name + " failed. ";
                 }
             );
         };
@@ -251,12 +258,14 @@ repositoryControllers.controller("createOrUpdateUserController",
                         "userId": $scope.user.userId,
                         "roles" : $scope.getRoles($scope.user)
                     })
-                    .then(function(result) {
-                        $uibModalInstance.close($scope.user);
-                    },
-                    function(reason) {
-                        $scope.errorMessage = "You cannot change your own permissions.";
-                    });
+                    .then(
+                        function(result) {
+                            $uibModalInstance.close($scope.user);
+                        },
+                        function(reason) {
+                            $scope.errorMessage = "You cannot change your own permissions.";
+                        }
+                    );
                 }
                 else {
                     $scope.promptCreateNewTechnicalUser();
@@ -303,23 +312,25 @@ repositoryControllers.controller("createOrUpdateUserController",
             }
             
             $http.get("./rest/accounts/" + user.userId)
-                .then(function(result) {
-                    callback({ valid: true });
-                },
-                function(reason) {
-                    if (reason.status == 404) {
-                        callback({
-                            valid: false,
-                            errorMessage: "User doesn't exist."
-                        });
+                .then(
+                    function(result) {
+                        callback({ valid: true });
+                    },
+                    function(reason) {
+                        if (reason.status == 404) {
+                            callback({
+                                valid: false,
+                                errorMessage: "User doesn't exist."
+                            });
+                        }
+                        else {
+                            callback({
+                                valid: false,
+                                errorMessage: "Error while accessing the server."
+                            });
+                        }
                     }
-                    else {
-                        callback({
-                            valid: false,
-                            errorMessage: "Error while accessing the server."
-                        });
-                    }
-                });
+                );
         };
     }
 ]);

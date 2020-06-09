@@ -17,8 +17,8 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -51,8 +51,8 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
 
     String targetUrl = _user.map(user -> {
-      return "/#/";
-    }).orElse("/#/signup");
+      return "/#!/";
+    }).orElse("/#!/signup");
 
     if (response.isCommitted()) {
       logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);

@@ -14,9 +14,24 @@ package org.eclipse.vorto.repository.web.account;
 
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
-import org.eclipse.vorto.repository.domain.*;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
@@ -38,11 +53,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AccountController {
@@ -290,13 +308,16 @@ public class AccountController {
   @GetMapping("/rest/accounts/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Collection<Collaborator>> findUsers(
-      @ApiParam(value = "Username", required = true) @PathVariable String partial) {
+      @ApiParam(value = "Username", required = true) @PathVariable String partial,
+      @ApiParam(value = "Filter technical users only", required = false) @RequestParam(value = "onlyTechnicalUsers", required = false) boolean onlyTechnicalUsers) {
 
     Collection<User> users = accountService.findUsers(ControllerUtils.sanitize(partial.toLowerCase()));
     if (users != null) {
-      return new ResponseEntity<>(users.stream().map(Collaborator::fromUser).collect(Collectors.toList()), HttpStatus.OK);
-    }
-    else {
+      Predicate<User> filter = onlyTechnicalUsers ? User::isTechnicalUser : u -> true;
+      return new ResponseEntity<>(
+          users.stream().filter(filter).map(Collaborator::fromUser).collect(Collectors.toList()),
+          HttpStatus.OK);
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }

@@ -12,27 +12,60 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
+import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.services.*;
-import org.eclipse.vorto.repository.services.exceptions.*;
+import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.eclipse.vorto.repository.notification.IMessage;
+import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
+import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
+import org.eclipse.vorto.repository.notification.message.RequestAccessToNamespaceMessage;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.UserService;
+import org.eclipse.vorto.repository.services.UserUtil;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
+import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Performs a number of operations on namespaces and collaborators.
@@ -51,7 +84,16 @@ public class NamespaceController {
   private UserRepositoryRoleService userRepositoryRoleService;
 
   @Autowired
+  private UserNamespaceRoleRepository userNamespaceRoleRepository;
+
+  @Autowired
   private NamespaceService namespaceService;
+
+  @Autowired
+  private NamespaceRepository namespaceRepository;
+
+  @Autowired
+  private EmailNotificationService emailNotificationService;
 
   @RequestMapping(method = RequestMethod.GET, value = "/test")
   @PreAuthorize("isAuthenticated()")
@@ -85,6 +127,90 @@ public class NamespaceController {
       return new ResponseEntity<>(namespaces, HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(namespaces, HttpStatus.OK);
+  }
+
+  /**
+   * Finds all non-private namespaces regardless of logged-on user access by a partial string.
+   *
+   * @param partial
+   * @return
+   */
+  // TODO refactor
+  @RequestMapping(method = RequestMethod.GET, value = "/search/{partial:.+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Collection<NamespaceDto>> findAllNonPrivateNamespacesByPartial(
+      @ApiParam(value = "The partial name of the namespaces to be searched with", required = true) @PathVariable String partial
+  ) {
+    if (Strings.nullToEmpty(partial).trim().isEmpty()) {
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
+    }
+    Collection<NamespaceDto> result = namespaceRepository
+        .findPublicNamespaceByPartial(partial.toLowerCase()).stream()
+        .map(EntityDTOConverter::createNamespaceDTO)
+        .collect(Collectors.toList());
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  @PostMapping("/requestAccess")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<NamespaceOperationResult> requestAccessToNamespace(
+      @RequestBody @ApiParam(
+          value = "The request body specifying who initiates the request, the namespace, whom the request is intended for, and an optional collection of suggested roles", required = true)
+          NamespaceAccessRequestDTO request) {
+    Optional<NamespaceOperationResult> validationError = NamespaceValidator
+        .validateAccessRequest(request);
+    if (validationError.isPresent()) {
+      return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
+    }
+    // checks namespace exists
+    // should only occur if namespace was deleted after user search, but before sending request
+    Namespace target;
+    try {
+      target = namespaceService.getByName(request.getNamespaceName());
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found."),
+          HttpStatus.NOT_FOUND);
+    }
+
+    // checks any admin with an e-mail address set
+    Set<User> adminsWithEmail = userNamespaceRoleRepository.findAllByNamespace(target)
+        .stream()
+        .map(UserNamespaceRoles::getUser)
+        .filter(u -> !Strings.nullToEmpty(u.getEmailAddress()).trim().isEmpty())
+        .collect(Collectors.toSet());
+    if (adminsWithEmail.isEmpty()) {
+      return new ResponseEntity<>(NamespaceOperationResult.failure(String.format(
+          "None of the users administrating namespace %s has set their own e-mail. Please contact them directly. ",
+          request.getNamespaceName())), HttpStatus.PRECONDITION_FAILED);
+    }
+    int successCount = adminsWithEmail.size();
+    // attempts to send the e-mails
+    // ugly exception handling here, due to the way this was designed in the service
+    Collection<IMessage> messages = adminsWithEmail.stream()
+        .map(u -> new RequestAccessToNamespaceMessage(request, u)).collect(Collectors.toList());
+    for (IMessage message : messages) {
+      try {
+        emailNotificationService.sendNotification(message);
+      } catch (NotificationProblem np) {
+        successCount--;
+      }
+    }
+    // worked for all recipients
+    if (successCount == adminsWithEmail.size()) {
+      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
+    }
+    // worked for some recipients
+    else if (successCount > 0) {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .success("The message could not be sent to all administrators."),
+          HttpStatus.OK);
+    }
+    // did not work for any recipient
+    else {
+      return new ResponseEntity<>(NamespaceOperationResult
+          .failure("The message could not be sent to any administrator."),
+          HttpStatus.SERVICE_UNAVAILABLE);
+    }
   }
 
   /**
@@ -225,8 +351,7 @@ public class NamespaceController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/role/{role}", produces = "application/json")
   public ResponseEntity<Collection<NamespaceDto>> getUserAccessibleNamespacesWithRole(
-      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to")
-      final @PathVariable(value = "role", required = false) String role) {
+      @ApiParam(value = "The (optional) role to filter namespaces which this user has access to") final @PathVariable(value = "role", required = false) String role) {
 
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());

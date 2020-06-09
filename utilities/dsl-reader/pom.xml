@@ -67,20 +67,8 @@
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext</artifactId>
-			<version>${xtext.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
-		<dependency>
-				<groupId>org.eclipse.core</groupId>
-				<artifactId>org.eclipse.core.runtime</artifactId>
-				<version>3.7.0</version>
-			</dependency>
 		<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
@@ -90,7 +78,6 @@
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext.xbase</artifactId>
-			<version>${xtext.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>asm</artifactId>
