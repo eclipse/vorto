@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
@@ -46,7 +46,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
       @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}") String ciamPublicKeyUri,
       @Value("${oauth2.verification.eidp.issuer: #{null}}") String ciamJwtIssuer,
       @Value("${eidp.oauth2.client.clientId: #{null}}") String ciamClientId,
-      @Autowired IUserAccountService userAccountService,
+      @Autowired DefaultUserAccountService userAccountService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService) {
     super(PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), userAccountService, userNamespaceRoleService);
     this.ciamClientId = ciamClientId;

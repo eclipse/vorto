@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.core.impl;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
@@ -54,7 +54,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
   @Autowired
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
 
   @Autowired
   private ModelSearchUtil modelSearchUtil;
@@ -96,7 +96,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory, Applicat
 
   public ModelRepositoryFactory() {}
 
-  public ModelRepositoryFactory(IUserAccountService userAccountService,
+  public ModelRepositoryFactory(DefaultUserAccountService userAccountService,
       ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory,

@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.domain.User;
@@ -23,11 +23,11 @@ import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenExcept
 
 public class UserHasAccessToNamespaceValidation implements IModelValidator {
 
-  private IUserAccountService userRepository;
+  private DefaultUserAccountService userRepository;
   private UserRepositoryRoleService userRepositoryRoleService;
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  public UserHasAccessToNamespaceValidation(IUserAccountService userRepository,
+  public UserHasAccessToNamespaceValidation(DefaultUserAccountService userRepository,
       UserRepositoryRoleService userRepositoryRoleService,
       UserNamespaceRoleService userNamespaceRoleService) {
     

@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.tenant;
 
 import java.util.Optional;
 import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
@@ -28,10 +28,10 @@ public class TenantUserService implements ITenantUserService {
 
   private ITenantService tenantService;
 
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
 
   public TenantUserService(@Autowired ITenantService tenantService,
-      @Autowired IUserAccountService userAccountService) {
+      @Autowired DefaultUserAccountService userAccountService) {
     this.tenantService = tenantService;
     this.userAccountService = userAccountService;
   }

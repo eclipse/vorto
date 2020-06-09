@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
@@ -42,11 +42,11 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
 
   private Supplier<Map<String, PublicKey>> publicKeySupplier;
   private Map<String, PublicKey> publicKeys = null;
-  protected IUserAccountService userAccountService;
+  protected DefaultUserAccountService userAccountService;
   protected UserNamespaceRoleService userNamespaceRoleService;
 
   public AbstractOAuthProvider(Supplier<Map<String, PublicKey>> publicKeySupplier,
-      IUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
+      DefaultUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
     this.userAccountService = Objects.requireNonNull(userAccountService);
     this.publicKeySupplier = Objects.requireNonNull(publicKeySupplier);
     this.userNamespaceRoleService = Objects.requireNonNull(userNamespaceRoleService);

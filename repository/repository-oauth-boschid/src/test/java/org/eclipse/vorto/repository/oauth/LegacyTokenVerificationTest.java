@@ -12,7 +12,13 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -21,13 +27,6 @@ import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertTrue;
 
 public class LegacyTokenVerificationTest extends AbstractVerifierTest {
 
@@ -39,7 +38,7 @@ public class LegacyTokenVerificationTest extends AbstractVerifierTest {
             Namespace.toNamespace(Arrays.asList("vorto.private.erle"), tenant).stream().collect(Collectors.toSet()));
     User user = User.create("d758a35e-94ef-443f-9625-7f03092e2005", "GITHUB", null, tenant, Role.USER);
 
-    IUserAccountService userAccountService = Mockito.mock(IUserAccountService.class);
+    DefaultUserAccountService userAccountService = Mockito.mock(DefaultUserAccountService.class);
     Mockito.when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
 
     UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);

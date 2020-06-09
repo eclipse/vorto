@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.importer;
 
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
@@ -54,7 +54,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   protected IModelRepositoryFactory modelRepoFactory;
   
   @Autowired
-  protected IUserAccountService userRepository;
+  protected DefaultUserAccountService userRepository;
 
   @Autowired
   protected ModelParserFactory modelParserFactory;
@@ -313,7 +313,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.uploadStorage = uploadStorage;
   }
 
-  public void setUserRepository(IUserAccountService userRepository) {
+  public void setUserRepository(DefaultUserAccountService userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -329,7 +329,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     return uploadStorage;
   }
 
-  public IUserAccountService getUserRepository() {
+  public DefaultUserAccountService getUserRepository() {
     return userRepository;
   }
 

@@ -12,10 +12,16 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
+import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
@@ -28,31 +34,36 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 /**
  * Provides functionalities specific to user manipulation.<br/>
  */
 @Service
 public class UserService implements ApplicationEventPublisherAware {
 
-  @Autowired
   private UserUtil userUtil;
 
-  @Autowired
   private UserRepository userRepository;
 
-  @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
 
-  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  private INotificationService notificationService;
 
   private ApplicationEventPublisher eventPublisher;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
+  public UserService(@Autowired UserUtil userUtil, @Autowired UserRepository userRepository,
+      @Autowired UserRepositoryRoleService userRepositoryRoleService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired INotificationService notificationService) {
+    this.userUtil = userUtil;
+    this.userRepository = userRepository;
+    this.userRepositoryRoleService = userRepositoryRoleService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
+    this.notificationService = notificationService;
+  }
 
   /**
    * Validates and persists the given {@link User} as technical user.<br/>
@@ -186,12 +197,38 @@ public class UserService implements ApplicationEventPublisherAware {
       userNamespaceRoleService.deleteAllRoles(actor, target, namespace, false);
     }
 
+    // collecting target user's e-mail address if any
+    DeleteAccountMessage message = null;
+    if (target.hasEmailAddress()) {
+      message = new DeleteAccountMessage(target);
+    }
+
     // deleting target user
     userRepository.delete(target);
 
-    eventPublisher.publishEvent(new AppEvent(this, target.getId(), EventType.USER_DELETED));
-    return true;
+    eventPublisher.publishEvent(new AppEvent(this, target.getUsername(), EventType.USER_DELETED));
 
+    // sends the message if possible
+    if (message != null) {
+      notificationService.sendNotification(message);
+    }
+
+    return true;
+  }
+
+  /**
+   * @param actorUsername
+   * @param targetUsername
+   * @return
+   * @throws OperationForbiddenException
+   * @throws DoesNotExistException
+   * @see UserService#delete(User, User)
+   */
+  public boolean delete(String actorUsername, String targetUsername)
+      throws OperationForbiddenException, DoesNotExistException {
+    User actor = userRepository.findByUsername(actorUsername);
+    User target = userRepository.findByUsername(targetUsername);
+    return delete(actor, target);
   }
 
   /**

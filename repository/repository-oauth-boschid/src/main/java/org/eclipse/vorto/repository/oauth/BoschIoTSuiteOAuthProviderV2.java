@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.oauth;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -49,14 +49,14 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   public BoschIoTSuiteOAuthProviderV2(
           @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
           @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
-          @Autowired IUserAccountService userAccountService,
+          @Autowired DefaultUserAccountService userAccountService,
           @Autowired UserNamespaceRoleService userNamespaceRoleService) {
     super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService, userNamespaceRoleService);
     this.hydraJwtIssuer = hydraJwtIssuer;
   }
   
   public BoschIoTSuiteOAuthProviderV2(Supplier<Map<String, PublicKey>> publicKeySupplier, 
-      IUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
+      DefaultUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
     super(publicKeySupplier, userAccountService, userNamespaceRoleService);
   }
   

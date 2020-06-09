@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -44,7 +44,7 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
     User user = User.create("d758a35e-94ef-443f-9625-7f03092e2005", "GITHUB", null, tenant, Role.USER);
     List<Tenant> tenantList = new ArrayList<>();
     tenantList.add(tenant);
-    IUserAccountService userAccountService = Mockito.mock(IUserAccountService.class);
+    DefaultUserAccountService userAccountService = Mockito.mock(DefaultUserAccountService.class);
     when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
     when(userAccountService.getTenants(user)).thenReturn(tenantList);
 

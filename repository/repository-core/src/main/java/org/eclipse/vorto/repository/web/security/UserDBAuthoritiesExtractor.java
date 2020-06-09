@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
@@ -31,7 +31,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
 
   @Autowired
-  public IUserAccountService userService;
+  public DefaultUserAccountService userService;
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;

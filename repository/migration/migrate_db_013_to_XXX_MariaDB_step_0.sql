@@ -86,8 +86,8 @@ begin
             name      varchar(64) not null unique
         );
         # populates with "harmonized" values
-        insert into privileges values (1, 'read');
-        insert into privileges values (2, 'write');
+        insert into privileges values (1, 'readonly');
+        insert into privileges values (2, 'readwrite');
         insert into privileges values (4, 'admin');
     end if;
 end;

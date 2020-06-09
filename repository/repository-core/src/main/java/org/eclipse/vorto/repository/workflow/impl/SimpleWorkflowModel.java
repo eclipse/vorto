@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.notification.INotificationService;
@@ -60,7 +60,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	private static final List<IState> ALL_STATES = Arrays.asList(STATE_DRAFT,STATE_IN_REVIEW,STATE_RELEASED, STATE_DEPRECATED);
 	
 	public SimpleWorkflowModel(
-		IUserAccountService userRepository,
+		DefaultUserAccountService userRepository,
 		IModelRepositoryFactory repositoryFactory,
 		INotificationService notificationService,
 		IWorkflowService workflowService,

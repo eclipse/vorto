@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.tenant;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.WorkspaceNotFoundException;
 import org.eclipse.vorto.repository.core.events.AppEvent;
@@ -48,7 +48,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   private NamespaceRepository namespaceRepo;
 
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
   
   private ApplicationEventPublisher eventPublisher = null;
   
@@ -57,7 +57,7 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
   public TenantService(@Autowired ITenantRepository tenantRepo,
       @Autowired NamespaceRepository namespaceRepo,
-      @Autowired IUserAccountService accountService) {
+      @Autowired DefaultUserAccountService accountService) {
     this.tenantRepo = tenantRepo;
     this.namespaceRepo = namespaceRepo;
     this.userAccountService = accountService;

@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class AccountControllerTest extends IntegrationTestBase {
 
 
   @Autowired
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   @Autowired
   private RoleService roleService;
@@ -124,15 +124,5 @@ public class AccountControllerTest extends IntegrationTestBase {
     this.repositoryServer.perform(get("/rest/accounts/" + USER_SYSADMIN_NAME_2).with(userSysadmin))
         .andExpect(status().isNotFound());
   }
-
-  /*
-   * Test case to check whether empty tenant list is returned if user does not exist in user
-   * repository
-   */
-  @Test
-  public void getTenantsOfUser() throws Exception {
-    assert (this.accountService.getTenantsOfUser("doesNotExist").isEmpty());
-  }
-
 
 }

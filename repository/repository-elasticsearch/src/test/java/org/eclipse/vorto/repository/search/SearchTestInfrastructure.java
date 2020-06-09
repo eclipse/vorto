@@ -429,8 +429,6 @@ public final class SearchTestInfrastructure {
     accountService.setNotificationService(notificationService);
     accountService.setUserRepository(userRepository);
     accountService.setApplicationEventPublisher(eventPublisher);
-    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
-    accountService.setTenantRepo(tenantRepo);
 
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();

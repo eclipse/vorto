@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import javax.jcr.PathNotFoundException;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -49,7 +49,7 @@ public class DefaultCommentService implements ICommentService {
   private CommentRepository commentRepository;
 
   @Autowired
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   @Autowired
   private ITenantService tenantService;

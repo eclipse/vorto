@@ -13,9 +13,12 @@
 package org.eclipse.vorto.repository.server.it;
 
 import com.google.common.collect.Lists;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.junit.Test;
@@ -222,7 +225,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -254,7 +257,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isNotFound())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "false"
@@ -290,7 +293,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -369,7 +372,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -421,7 +424,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -438,7 +441,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -471,7 +474,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -526,7 +529,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -608,7 +611,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -659,7 +662,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching IUserAccountService#addUserToTenant
+        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -899,6 +902,22 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
   }
 
   @Test
+  public void createTechnicalCollaboratorNoProvider() throws Exception {
+    // creates the collaborator payload and the existing user
+    String otherUser = "userstandard2";
+    Collaborator collaborator = new Collaborator(otherUser, null, null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+
+    repositoryServer.perform(
+        post("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
   public void updateCollaboratorNoSubject() throws Exception {
     // creates the collaborator payload and the existing user
     String otherUser = "userstandard2";
@@ -917,6 +936,34 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
   @Test
   public void createTechnicalCollaboratorNoSubject() throws Exception {
     Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+
+    repositoryServer.perform(
+        post("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void createTechnicalCollaboratorSubjectTooShort() throws Exception {
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "abc",
+        Lists.newArrayList("model_viewer", "model_creator"));
+    collaborator.setTechnicalUser(true);
+
+    repositoryServer.perform(
+        post("/rest/namespaces/com.mycompany/users")
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void createTechnicalCollaboratorSubjectNotAlnum() throws Exception {
+    Collaborator collaborator = new Collaborator("my-technical-user", BOSCH_IOT_SUITE_AUTH, "$%&/$",
         Lists.newArrayList("model_viewer", "model_creator"));
     collaborator.setTechnicalUser(true);
 

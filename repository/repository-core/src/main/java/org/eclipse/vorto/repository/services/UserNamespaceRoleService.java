@@ -38,9 +38,8 @@ import java.util.stream.Collectors;
  * It is session-scoped, as any user with administrative privileges on a namespace can change
  * other users' access to it by means of roles.
  */
-// TODO #2265: some validation operations could be reused by autowiring the NamespaceService, which may, however, introduce a Spring circular dependency
 // TODO #2265: should operations on namespace roles trigger new application events?
-// TODO #2265 not expose actor and take it from session
+// TODO #2265 option open: not expose actor and take it from session
 @Service
 public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
 
@@ -215,7 +214,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   public Set<IRole> getRolesOnAllNamespaces(User user) {
     LOGGER.debug(String
         .format("Retrieving all roles for user [%s]", user.getUsername()));
-    Collection<UserNamespaceRoles> userNamespaceRoles = userNamespaceRoleRepository.findAllByUser(user);
+    Collection<UserNamespaceRoles> userNamespaceRoles = userNamespaceRoleRepository
+        .findAllByUser(user);
 
     if (Objects.isNull(userNamespaceRoles)) {
       return Sets.newHashSet(getUserRole());
@@ -233,7 +233,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   private IRole getUserRole() {
-    return roleService.findAnyByName("model_viewer").orElseThrow(() -> new IllegalStateException("Role 'model_viewer' is not present."));
+    return roleService.findAnyByName("model_viewer")
+        .orElseThrow(() -> new IllegalStateException("Role 'model_viewer' is not present."));
   }
 
   /**
@@ -514,15 +515,23 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   /**
    * Deletes the {@link User} + {@link Namespace} role association for the given {@link User} and
    * {@link Namespace} entirely. <br/>
-   * If the given {@link User} owns the {@link Namespace}, logs a warning to signify the namespace
-   * ownership will be "orphaned", and the namespace should either be deleted or its ownership
-   * transferred to another user.<br/>
-   * The operation is permitted only if the {@literal actor} {@link User} is either sysadmin, or
-   * the owner of the given {@link Namespace}.<br/>
-   * The operation is not permitted if the acting user is the same as the target user, when not
-   * deleting the namespace. In other words, one cannot remove all their privileges from a namespace,
-   * except when they intend to delete the actual namespace. <br/>
-   * Also worth noting but not handled here, a namespace cannot be deleted if it has public models.
+   * The operation is permitted in the following cases:
+   * <ol>
+   *   <li>
+   *     The acting user is sysadmin.
+   *   </li>
+   *   <li>
+   *     The acting user is trying to remove themselves and is not the only administrator of the
+   *     namespace.
+   *   </li>
+   *   <li>
+   *     The acting user is trying to remove themselves and is the only administrator of the
+   *     namespace, but they are deleting the namespace - this will fail early
+   *     in {@link NamespaceService#deleteNamespace(User, String)} if the namespace has public
+   *     models.
+   *   </li>
+   * </ol>
+   * In any other case, the operation will fail and throw {@link OperationForbiddenException}.
    *
    * @param actor
    * @param target
@@ -554,24 +563,22 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       throw new DoesNotExistException("Target user does not exist - aborting deletion of roles.");
     }
 
-    // checking actor privileges
+    // authorizing actor
 
-    // actor not sysadmin
-    if (!userRepositoryRoleService.isSysadmin(actor)) {
-      // actor has no admin role on, or does not own namespace
-      if (!hasRole(actor, namespace, namespaceAdminRole())) {
+    // Actor can administrate namespace, but trying to remove themselves, not contextually to
+    // deleting the whole namespace: forbidden
+    if (hasRole(actor, namespace, namespaceAdminRole()) && actor.equals(target) && !deleteNamespace) {
         throw new OperationForbiddenException(
-            String.format("Acting user cannot delete user roles for namespace [%s].",
+            String.format(
+                "Acting user with namespace administrator role cannot remove themselves from namespace [%s].",
                 namespace.getName())
         );
-      }
     }
-
-    // actor is same user as target - legacy business rule: cannot delete yourself from namespace
-    // this only applies when not trying to delete the namespace
-    if (!deleteNamespace && actor.equals(target)) {
+    // Actor has no admin role on namespace and is trying to remove somebody else, without being
+    // sysadmin
+    else if (!actor.equals(target) && !userRepositoryRoleService.isSysadmin(actor)){
       throw new OperationForbiddenException(
-          String.format("User cannot remove themselves from namespace [%s].",
+          String.format("Acting user cannot delete user roles for namespace [%s].",
               namespace.getName())
       );
     }
@@ -747,7 +754,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         Comparator.comparing(Namespace::getName));
     unr.forEach(
         r ->
-          result.put(r.getNamespace(), roleUtil.toNamespaceRoles(r.getRoles())));
+            result.put(r.getNamespace(), roleUtil.toNamespaceRoles(r.getRoles())));
     return result;
   }
 

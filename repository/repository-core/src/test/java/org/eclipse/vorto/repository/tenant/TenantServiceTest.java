@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.util.Lists;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.AuthorizationProvider;
@@ -44,7 +44,7 @@ public class TenantServiceTest {
   private static final String GITHUB = "GITHUB";
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
   private NamespaceRepository nsRepo = Mockito.mock(NamespaceRepository.class);
-  private IUserAccountService accountService = Mockito.mock(IUserAccountService.class);
+  private DefaultUserAccountService accountService = Mockito.mock(DefaultUserAccountService.class);
   protected TenantService tenantServiceObj = Mockito.mock(TenantService.class);
 
   @Before

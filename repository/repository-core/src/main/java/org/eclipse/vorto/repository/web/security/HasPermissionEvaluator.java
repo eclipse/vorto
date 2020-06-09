@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.web.security;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -36,7 +36,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
 
   private IModelRepositoryFactory repositoryFactory;
   
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   private NamespaceService namespaceService;
 
@@ -45,7 +45,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   public HasPermissionEvaluator(
       @Autowired IModelRepositoryFactory repositoryFactory,
       @Autowired TenantService tenantService,
-      @Autowired IUserAccountService userAccountService,
+      @Autowired DefaultUserAccountService userAccountService,
       @Autowired NamespaceService namespaceService) {
     this.repositoryFactory = repositoryFactory;
     this.namespaceService = namespaceService;

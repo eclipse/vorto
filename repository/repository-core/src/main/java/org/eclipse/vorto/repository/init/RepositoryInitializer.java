@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.init;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
@@ -44,7 +44,7 @@ public class RepositoryInitializer {
   private String[] admins;
 
   @Autowired
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
 
   @Autowired
   private ITenantService tenantService;

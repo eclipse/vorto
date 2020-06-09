@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
@@ -83,7 +83,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   private ITenantService tenantService;
 
   @Autowired
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   @Autowired
   private ModelParserFactory modelParserFactory;

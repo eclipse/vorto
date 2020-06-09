@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl.utils;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -40,7 +40,7 @@ public class ModelValidationHelper {
   private List<IModelValidator> MODEL_CREATION_VALIDATORS = new ArrayList<>(4);
 
   public ModelValidationHelper(@Autowired IModelRepositoryFactory modelRepoFactory,
-      @Autowired IUserAccountService userRepository,
+      @Autowired DefaultUserAccountService userRepository,
       @Autowired UserRepositoryRoleService userRepositoryRoleService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService) {
 

@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.core.impl;
 
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
@@ -44,14 +44,14 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
 
   private static final Logger LOGGER = Logger.getLogger(ModelPolicyManager.class);
 
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
 
   private IModelRepositoryFactory modelRepositoryFactory;
 
   private RoleService roleService;
 
   public ModelPolicyManager(
-      @Autowired IUserAccountService userAccountService,
+      @Autowired DefaultUserAccountService userAccountService,
       @Autowired IModelRepositoryFactory iModelRepositoryFactory,
       @Autowired RoleService roleService) {
     this.userAccountService = userAccountService;

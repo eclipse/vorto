@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
@@ -39,7 +39,7 @@ import java.util.zip.ZipInputStream;
 
 public class BulkUploadHelper {
 
-  private IUserAccountService userRepository;
+  private DefaultUserAccountService userRepository;
 
   private IModelRepositoryFactory modelRepoFactory;
 
@@ -48,7 +48,7 @@ public class BulkUploadHelper {
   private UserRepositoryRoleService userRepositoryRoleService;
 
   public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory,
-      IUserAccountService userRepository,
+      DefaultUserAccountService userRepository,
       UserNamespaceRoleService userNamespaceRoleService,
       UserRepositoryRoleService userRepositoryRoleService) {
     this.modelRepoFactory = modelRepoFactory;

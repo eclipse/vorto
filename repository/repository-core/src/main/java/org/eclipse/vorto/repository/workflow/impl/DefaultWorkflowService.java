@@ -14,7 +14,7 @@ package org.eclipse.vorto.repository.workflow.impl;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -46,7 +46,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	public DefaultWorkflowService(
 		@Autowired IModelRepositoryFactory modelRepositoryFactory,
-		@Autowired IUserAccountService userRepository,
+		@Autowired DefaultUserAccountService userRepository,
 		@Autowired INotificationService notificationService,
 		@Autowired NamespaceService namespaceService,
 		@Autowired UserNamespaceRoleService userNamespaceRoleService,

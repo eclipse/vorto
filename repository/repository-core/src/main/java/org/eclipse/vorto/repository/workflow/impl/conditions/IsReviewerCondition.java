@@ -12,7 +12,7 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.conditions;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.domain.IRole;
@@ -25,12 +25,12 @@ import java.util.Objects;
 
 public class IsReviewerCondition extends AbstractWorkflowCondition {
 
-  private IUserAccountService userRepository;
+  private DefaultUserAccountService userRepository;
 
   private RoleService roleService;
 
   public IsReviewerCondition(
-      IUserAccountService userRepository,
+      DefaultUserAccountService userRepository,
       NamespaceService namespaceService,
       UserNamespaceRoleService userNamespaceRoleService,
       RoleService roleService) {
