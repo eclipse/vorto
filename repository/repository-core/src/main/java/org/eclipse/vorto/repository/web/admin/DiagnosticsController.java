@@ -14,16 +14,16 @@ package org.eclipse.vorto.repository.web.admin;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
  * but it lives in its own package scoped to administrator functionalities. <br/>
  * It only provides one endpoint to diagnose all namespaces (formerly "tenants"). <br/>
  * This is only available to sysadmin users, so all namespaces are diagnosed without filter. <br/>
- * It still utilizes the {@link ITenantService} behind the scenes, up until that is refactored.
  */
 @RestController
 @RequestMapping(value = "/rest/namespaces/diagnostics")
@@ -41,20 +40,22 @@ public class DiagnosticsController {
   private IModelRepositoryFactory repoFactory;
 
   @Autowired
-  private ITenantService tenantService;
-  
-  @RequestMapping(method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  private NamespaceRepository namespaceRepository;
+
+  @GetMapping
+  @PreAuthorize("hasAuthority('sysadmin')")
   public Collection<Diagnostic> diagnose() {
     Collection<Diagnostic> diagnostics = new ArrayList<>();
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    for (Tenant tenant : tenantService.getTenants()) {
-      Collection<Diagnostic> tenantDiagnostics =
-          repoFactory.getDiagnosticsService(tenant.getTenantId(), auth).diagnoseAllModels();
-      tenantDiagnostics.forEach(diagnostic -> diagnostic.setTenantId(tenant.getTenantId()));
-      diagnostics.addAll(tenantDiagnostics);
-    }
+    diagnostics = namespaceRepository.findAll().stream().flatMap(
+        namespace -> repoFactory
+            .getDiagnosticsService(namespace.getWorkspaceId(), auth)
+            .diagnoseAllModels()
+            .stream()
+            .map(d -> d.setWorkspaceId(namespace.getWorkspaceId()))
+    )
+        .collect(Collectors.toList());
 
     return diagnostics;
   }

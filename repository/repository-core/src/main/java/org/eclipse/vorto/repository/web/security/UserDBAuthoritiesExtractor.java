@@ -12,12 +12,14 @@
  */
 package org.eclipse.vorto.repository.web.security;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +37,9 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
 
   @Autowired
   private RoleService roleService;
@@ -62,7 +67,18 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
   }
 
   private Set<IRole> getAllRoles(User user) {
-    return userNamespaceRoleService.getRolesOnAllNamespaces(user);
+    /*
+    #2265: this fix still underlines a bizarre construct where namespace roles
+    are gathered without a contextual namespace, and used as such throughout the
+    code base to pre-authorize in controllers, and display/hide parts of the UI in
+    the front-end.
+    Arguably, only the sysadmin role or lack thereof should be expressed without context.
+     */
+    Set<IRole> roles = userNamespaceRoleService.getRolesOnAllNamespaces(user);
+    if (userRepositoryRoleService.isSysadmin(user)) {
+      roles.add(userRepositoryRoleService.sysadmin());
+    }
+    return roles;
   }
 
 }

@@ -36,4 +36,6 @@ public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
   @Query("SELECT n from Namespace n WHERE n.name NOT LIKE 'vorto.private.%' AND LOWER(n.name) LIKE %?1%")
   Collection<Namespace> findPublicNamespaceByPartial(String partial);
 
+  @Override
+  Collection<Namespace> findAll();
 }
