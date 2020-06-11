@@ -19,7 +19,6 @@ import org.eclipse.vorto.repository.importer.ImporterUnitTestSuite;
 import org.eclipse.vorto.repository.indexing.IndexingTest;
 import org.eclipse.vorto.repository.mapping.PayloadMappingSpecificationTest;
 import org.eclipse.vorto.repository.model.BulkOperationServiceTest;
-import org.eclipse.vorto.repository.tenant.TenantServiceTest;
 import org.eclipse.vorto.repository.workflow.WorkflowTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -32,7 +31,6 @@ import org.junit.runners.Suite.SuiteClasses;
               ImporterUnitTestSuite.class,
               IndexingTest.class,
               BulkOperationServiceTest.class,
-              TenantServiceTest.class,
               PayloadMappingSpecificationTest.class,
               WorkflowTest.class})
 public class UnitTestSuite {
