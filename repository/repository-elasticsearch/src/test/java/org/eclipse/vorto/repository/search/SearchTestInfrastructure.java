@@ -37,9 +37,11 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
 import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
@@ -141,11 +143,13 @@ public final class SearchTestInfrastructure {
    * In order to easily compare a given model's file name with static file name resources, this
    * trivial utility concatenates the model's {@link org.eclipse.vorto.model.ModelId#getName()} with the
    * {@link ModelType#getExtension()} from {@link ModelInfo#getType()}.
+   *
    * @param model
    * @return
    */
   protected static String getFileName(ModelInfo model) {
-    return String.format(MODEL_FILENAME_FORMAT, model.getId().getName(), model.getType().getExtension());
+    return String
+        .format(MODEL_FILENAME_FORMAT, model.getId().getName(), model.getType().getExtension());
   }
 
   /**
@@ -161,6 +165,7 @@ public final class SearchTestInfrastructure {
 
   /**
    * Field initialized last in ctor.
+   *
    * @return a "alex" user context, used in most tests.
    */
   protected IUserContext getDefaultUser() {
@@ -204,14 +209,17 @@ public final class SearchTestInfrastructure {
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
 
-  UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+  NamespaceRepository namespaceRepository = Mockito.mock(NamespaceRepository.class);
+
+  UserRepositoryRoleService userRepositoryRoleService = Mockito
+      .mock(UserRepositoryRoleService.class);
 
   RoleService roleService = Mockito.mock(RoleService.class);
 
   PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
   @InjectMocks
-  protected ISearchService searchService = null;
+  protected ISearchService searchService;
 
   protected EmbeddedElastic elasticSearch;
 
@@ -231,47 +239,58 @@ public final class SearchTestInfrastructure {
    * </ul>
    */
   private static class ESRandomizer {
+
     private static final int MAX_PORT = 65535;
     private static final int MIN_PORT = 10000;
     private int httpStart = 19200;
     private int tcpStart = 19300;
     private String installationDirectory = ".";
     private static final String PATH_FORMAT = "target/temporaryESWithHTTP%dTCP%d";
+
     private ESRandomizer withHTTPStart(int start) {
       this.httpStart = start;
       return this;
     }
+
     private ESRandomizer withTCPStart(int start) {
       this.tcpStart = start;
       return this;
     }
+
     private ESRandomizer withInstallationDirectory(String path) {
       this.installationDirectory = path;
       return this;
     }
+
     String getInstallationDirectory() {
       return installationDirectory;
     }
+
     int getHTTPStartPort() {
       return httpStart;
     }
+
     int getHTTPEndPort() {
       return httpStart + 1;
     }
+
     int getTCPStartPort() {
       return tcpStart;
     }
+
     int getTCPEndPort() {
       return tcpStart + 1;
     }
-    private ESRandomizer(){}
+
+    private ESRandomizer() {
+    }
 
     static ESRandomizer newInstance() {
       int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
       return new ESRandomizer()
           .withHTTPStart(httpStart)
           .withTCPStart(httpStart + 100)
-          .withInstallationDirectory(String.format(PATH_FORMAT, httpStart, httpStart+100));
+          .withInstallationDirectory(String.format(PATH_FORMAT, httpStart, httpStart + 100));
     }
   }
 
@@ -367,12 +386,18 @@ public final class SearchTestInfrastructure {
     when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
     when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
 
-    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
-    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
-    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
-    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
-    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
-    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+    when(roleService.findAnyByName("model_viewer"))
+        .thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
+    when(roleService.findAnyByName("model_creator"))
+        .thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
+    when(roleService.findAnyByName("model_promoter"))
+        .thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
+    when(roleService.findAnyByName("model_reviewer"))
+        .thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
+    when(roleService.findAnyByName("model_publisher"))
+        .thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
+    when(roleService.findAnyByName("namespace_admin"))
+        .thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
 
     setupNamespaceMocking();
 
@@ -384,7 +409,8 @@ public final class SearchTestInfrastructure {
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory = new ModelRepositoryFactory(accountService, null,
-        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService,
+        userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -407,14 +433,15 @@ public final class SearchTestInfrastructure {
 
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     RestClientBuilder clientBuilder = RestClient.builder(
-      new HttpHost("localhost", rando.getHTTPStartPort(), "http"),
-      new HttpHost("localhost", rando.getHTTPEndPort(), "http"),
-      new HttpHost("localhost", rando.getTCPStartPort(), "http"),
-      new HttpHost("localhost", rando.getTCPEndPort(), "http")
+        new HttpHost("localhost", rando.getHTTPStartPort(), "http"),
+        new HttpHost("localhost", rando.getHTTPEndPort(), "http"),
+        new HttpHost("localhost", rando.getTCPStartPort(), "http"),
+        new HttpHost("localhost", rando.getTCPEndPort(), "http")
     );
-    searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder), repositoryFactory, tenantService);
+    searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder),
+        repositoryFactory, userNamespaceRoleService, namespaceRepository);
 
-    indexingService = (IIndexingService)searchService;
+    indexingService = (IIndexingService) searchService;
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
 
     Collection<ApplicationListener<AppEvent>> listeners = new ArrayList<>();
@@ -422,8 +449,6 @@ public final class SearchTestInfrastructure {
     listeners.add(indexingSupervisor);
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
-
-
 
     accountService = new DefaultUserAccountService();
     accountService.setNotificationService(notificationService);
@@ -438,7 +463,6 @@ public final class SearchTestInfrastructure {
 
     tenantUserService = new TenantUserService(tenantService, accountService);
 
-
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
@@ -452,7 +476,8 @@ public final class SearchTestInfrastructure {
     importer.setModelValidationHelper(modelValidationHelper);
 
     workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
+        new DefaultWorkflowService(repositoryFactory, accountService, notificationService,
+            namespaceService, userNamespaceRoleService, roleService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
 
@@ -462,6 +487,7 @@ public final class SearchTestInfrastructure {
   /**
    * Stops the Elasticsearch service first, then the repository. <br/>
    * Must be invoked on {@link org.junit.AfterClass} on each test class.
+   *
    * @throws Exception
    */
   public void terminate() throws Exception {
@@ -473,7 +499,7 @@ public final class SearchTestInfrastructure {
    * Reindexes all models.
    */
   public void reindex() {
-    ((IIndexingService)searchService).reindexAllModels();
+    ((IIndexingService) searchService).reindexAllModels();
   }
 
   private User getUser(String userId, Tenant tenant) {
@@ -573,11 +599,14 @@ public final class SearchTestInfrastructure {
     return repositoryFactory;
   }
 
-  private void setupNamespaceMocking() throws DoesNotExistException {
-    //when(requestRepositorySessionHelper.()).thenReturn()
-    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+  // TODO #2265 better inline comments for the mocks
+  private void setupNamespaceMocking() throws OperationForbiddenException, DoesNotExistException {
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString()))
+        .thenReturn(Optional.of("playground"));
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(namespaceRepository.findAll()).thenReturn(Arrays.asList(mockNamespace()));
     when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
+    when(userNamespaceRoleService.getNamespaces(anyString(), anyString())).thenReturn(Arrays.asList(mockNamespace()));
     List<String> workspaceIds = new ArrayList<>();
     workspaceIds.add("playground");
     when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
@@ -588,7 +617,8 @@ public final class SearchTestInfrastructure {
     Set<IRole> roles = new HashSet<>();
     roles.add(role);
     when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
-    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
+        .thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
   }

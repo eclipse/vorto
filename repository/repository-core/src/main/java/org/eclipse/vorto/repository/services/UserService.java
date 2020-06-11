@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.services;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.account.impl.AccountDeletionNotAllowed;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -175,26 +176,17 @@ public class UserService implements ApplicationEventPublisherAware {
       );
     }
 
-    // retrieving namespaces target owns
-    Collection<Namespace> namespacesOwnedByTarget = userNamespaceRoleService
+    // retrieving namespaces target manages
+    Collection<Namespace> namespacesManagedByTarget = userNamespaceRoleService
         .getNamespacesAndRolesByUser(actor, target).entrySet().stream()
         .filter(e -> e.getValue().contains(userNamespaceRoleService.namespaceAdminRole())).map(
             Entry::getKey).collect(Collectors.toSet());
 
     // target owns at least one namespace - failing
-    if (!namespacesOwnedByTarget.isEmpty()) {
+    if (!namespacesManagedByTarget.isEmpty()) {
       throw new OperationForbiddenException(
           "User is administrator in at least one namespace. Ownership must change before user can be deleted. Aborting operation."
       );
-    }
-
-    // retrieving namespaces where target has any role
-    Collection<Namespace> namespacesWhereTargetHasAnyRole = userNamespaceRoleService
-        .getNamespaces(actor, target);
-
-    // removing association for all namespaces
-    for (Namespace namespace : namespacesWhereTargetHasAnyRole) {
-      userNamespaceRoleService.deleteAllRoles(actor, target, namespace, false);
     }
 
     // collecting target user's e-mail address if any
@@ -203,17 +195,45 @@ public class UserService implements ApplicationEventPublisherAware {
       message = new DeleteAccountMessage(target);
     }
 
-    // deleting target user
-    userRepository.delete(target);
-
+    // firstly, publish the user deleted event - this way, the models are all anonymized while the
+    // user and their namespace associations are still there
     eventPublisher.publishEvent(new AppEvent(this, target.getUsername(), EventType.USER_DELETED));
 
-    // sends the message if possible
+    // then, retrie namespaces where target has any role
+    Collection<Namespace> namespacesWhereTargetHasAnyRole = userNamespaceRoleService
+        .getNamespaces(actor, target);
+
+    // and remove association for all namespaces
+    for (Namespace namespace : namespacesWhereTargetHasAnyRole) {
+      userNamespaceRoleService.deleteAllRoles(actor, target, namespace, false);
+    }
+
+    // finally, delete target user
+    userRepository.delete(target);
+
+    // and send them a message if possible
     if (message != null) {
       notificationService.sendNotification(message);
     }
 
     return true;
+  }
+
+  // just testing
+  @javax.transaction.Transactional
+  public void delete(final String userId) {
+    User userToDelete = userRepository.findByUsername(userId);
+    if (userToDelete != null) {
+      /*if (deleteWillOrphanTenants(userToDelete)) {
+        throw AccountDeletionNotAllowed.reason("Deleting this user will orphan some tenants.");
+      }*/
+
+      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
+      userRepository.delete(userToDelete);
+      if (userToDelete.hasEmailAddress()) {
+        notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
+      }
+    }
   }
 
   /**

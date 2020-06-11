@@ -59,7 +59,7 @@ public class AbstractRepositoryOperation {
     }
   }
 
-  public <T> void doInElevatedSession(SessionFunction<T> fn, IUserContext userContext, PrivilegeService privilegeService) {
+  public <T> T doInElevatedSession(SessionFunction<T> fn, IUserContext userContext, PrivilegeService privilegeService) {
     RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false, privilegeService);
     IUserContext elevatedUserContext = getUserContextForCreatingAttachment(userContext);
     try {
@@ -67,7 +67,7 @@ public class AbstractRepositoryOperation {
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
       helper.setRolesInNamespace(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
       helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());
-      fn.apply(helper.getSession());
+      return fn.apply(helper.getSession());
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Unexpected exception", e);
     } finally {

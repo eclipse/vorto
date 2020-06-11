@@ -26,7 +26,10 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.search.ElasticSearchService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -83,14 +86,18 @@ public class ElasticSearchConfiguration {
   
   @Autowired
   private IModelRepositoryFactory repositoryFactory;
-  
+
   @Autowired
-  private ITenantService tenantService;
+  private NamespaceRepository namespaceRepository;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
   
+
   @Bean
   @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql" })
   public ElasticSearchService elasticSearch() {
-    return new ElasticSearchService(client,repositoryFactory,tenantService);
+    return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService, namespaceRepository);
   }
   
   @Bean

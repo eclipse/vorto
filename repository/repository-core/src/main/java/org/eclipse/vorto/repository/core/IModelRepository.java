@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import java.util.Map;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
@@ -20,9 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- *
  * @author Alexander Edelmann
- *
  */
 public interface IModelRepository {
 
@@ -40,6 +39,7 @@ public interface IModelRepository {
   /**
    * Gets a very detailed model for the given model id, which includes resolving target platform mappings
    * If only basic meta - data is required, consider using {@link IModelRepository#getBasicInfo(ModelId)}
+   *
    * @param modelId
    * @return
    * @throws NotAuthorizedException if current user is not allowed to access the given model
@@ -48,6 +48,7 @@ public interface IModelRepository {
 
   /**
    * Gets the model ID of the latest (highest and released) version for the given model.
+   *
    * @param modelId - the ID of the model, version can be blank - it will be ignored
    * @return the model ID with the latest version number
    */
@@ -55,6 +56,7 @@ public interface IModelRepository {
 
   /**
    * Convenience method that loads an entire model and resolves all mappings that are used by this model
+   *
    * @param modelId
    * @return
    * @throws NotAuthorizedException
@@ -73,9 +75,9 @@ public interface IModelRepository {
    * Returns the actual model content for the given model id
    *
    * @param modelId
+   * @return
    * @throws ModelNotFoundException
    * @throws NotAuthorizedException if current user is not allowed to access the given model
-   * @return
    */
   ModelFileContent getModelContent(ModelId modelId, boolean validate) throws NotAuthorizedException;
 
@@ -86,7 +88,7 @@ public interface IModelRepository {
    * @param newVersion
    * @param user
    * @return the model and content of the newly created model in the repository
-   * @throws ModelNotFoundException if the given modelId cannot be found
+   * @throws ModelNotFoundException      if the given modelId cannot be found
    * @throws ModelAlreadyExistsException if the given model with the given version already exists
    */
   ModelResource createVersion(ModelId modelId, String newVersion, IUserContext user);
@@ -101,6 +103,7 @@ public interface IModelRepository {
 
   /**
    * Saves a model resource in the repository
+   *
    * @param resource
    * @param user
    * @return
@@ -109,7 +112,6 @@ public interface IModelRepository {
 
 
   /**
-   *
    * @param modelId
    * @param content
    * @param fileName
@@ -117,15 +119,16 @@ public interface IModelRepository {
    * @param validate
    * @return
    */
-  ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user,boolean validate);
+  ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user,
+      boolean validate);
 
   /**
    * Saves the model to the repo. If it does not exist, the model is created.
    *
-   * @param modelId the id of the model
-   * @param content the content
+   * @param modelId  the id of the model
+   * @param content  the content
    * @param fileName the filename of the model
-   * @param user user who has modified the model
+   * @param user     user who has modified the model
    * @return model info containing model meta data of the saved model
    */
   ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user);
@@ -141,7 +144,7 @@ public interface IModelRepository {
    *
    * @param modelId
    * @param targetPlatform
-   * @param version of the mapping. If not specified, latest is taken
+   * @param version        of the mapping. If not specified, latest is taken
    * @return
    */
   List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,
@@ -166,7 +169,7 @@ public interface IModelRepository {
    * Updates the state of the model
    *
    * @param modelId the model Id
-   * @param state the state of the model
+   * @param state   the state of the model
    * @return
    */
   ModelId updateState(ModelId modelId, String state);
@@ -174,11 +177,23 @@ public interface IModelRepository {
   /**
    * Updates the visibility of the model
    *
-   * @param modelId the model Id
+   * @param modelId    the model Id
    * @param visibility the visibility of the model
    * @return
    */
   ModelId updateVisibility(ModelId modelId, String visibility);
+
+  /**
+   * Updates a model's properties (see {@link org.eclipse.vorto.repository.core.impl.ModelRepository}'s
+   * public constants in an elevated session, with the given {@link IUserContext}.
+   *
+   * @param modelId
+   * @param properties
+   * @param context
+   * @return
+   */
+  ModelId updatePropertyInElevatedSession(ModelId modelId, Map<String, String> properties,
+      IUserContext context);
 
   /**
    * adds the given file content to the model
@@ -201,18 +216,19 @@ public interface IModelRepository {
   /**
    * Attaches the given file to the model
    *
-   * @param modelid The modelId where to attach the file
+   * @param modelid     The modelId where to attach the file
    * @param fileContent the filename
    * @param userContext the user context
-   * @param tags attachment tags
+   * @param tags        attachment tags
    * @throws Attachment when the attachment could not be attached to the node, e.g. because it is
-   *         not valid.
+   *                    not valid.
    */
   void attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag... tags)
       throws AttachmentException;
 
-  void attachFileInElevatedSession(ModelId modelId, FileContent fileContent, IUserContext userContext,
-                                   Tag... tags) throws AttachmentException;
+  void attachFileInElevatedSession(ModelId modelId, FileContent fileContent,
+      IUserContext userContext,
+      Tag... tags) throws AttachmentException;
 
   /**
    * Gets a list of attachments for the model (without its content)
@@ -223,6 +239,16 @@ public interface IModelRepository {
   List<Attachment> getAttachments(ModelId modelId) throws NotAuthorizedException;
 
   /**
+   * Gets a list of attachments for the model (without its content), performed in an elevated session.
+   *
+   * @param modelId
+   * @param context
+   * @return list of attachments of the given model
+   */
+  List<Attachment> getAttachmentsInElevatedSession(ModelId modelId, IUserContext context)
+      throws NotAuthorizedException;
+
+  /**
    * Gets a list of attachments having the given tag
    *
    * @param modelId
@@ -230,6 +256,19 @@ public interface IModelRepository {
    * @return
    */
   List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag)
+      throws NotAuthorizedException;
+
+  /**
+   * Gets a list of attachments having the given tag
+   *
+   * @param modelId
+   * @param attachmentTag
+   * @param doInElevatedSession
+   * @param context
+   * @return
+   */
+  List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag,
+      boolean doInElevatedSession, IUserContext context)
       throws NotAuthorizedException;
 
   /**
@@ -255,7 +294,7 @@ public interface IModelRepository {
   /**
    * Deletes the attachment
    *
-   * @param modelid The model id where the file was attached
+   * @param modelid  The model id where the file was attached
    * @param fileName the filename of the attachment
    * @return
    */
