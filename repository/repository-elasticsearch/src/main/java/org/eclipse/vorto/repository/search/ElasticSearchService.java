@@ -432,15 +432,15 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   @Override
-  public void indexModel(ModelInfo modelInfo, String tenantId) {
+  public void indexModel(ModelInfo modelInfo, String workspaceId) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
-    PreConditions.notNullOrEmpty(tenantId, TENANT_ID);
+    PreConditions.notNullOrEmpty(workspaceId, TENANT_ID);
 
     logger.info(String.format("Indexing model '%s'", modelInfo.getId()));
 
     try {
       IndexResponse indexResponse =
-          client.index(createIndexRequest(modelInfo, tenantId), RequestOptions.DEFAULT);
+          client.index(createIndexRequest(modelInfo, workspaceId), RequestOptions.DEFAULT);
       if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
         logger.info(String.format("Index created for '%s'", modelInfo.getId().getPrettyFormat()));
       }
@@ -513,8 +513,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   @Override
-  public void deleteIndexForTenant(String tenantId) {
-    deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, tenantId));
+  public void deleteIndexForTenant(String workspaceId) {
+    deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, workspaceId));
   }
 
   /**
@@ -623,7 +623,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(
-        toESQuery(SearchParameters.build(findNamespacesOfUser(userContext), searchExpression)));
+        toESQuery(SearchParameters.build(findWorkspaceIdsForUser(userContext), searchExpression)));
     searchSourceBuilder.from(0);
     searchSourceBuilder.size(MAX_SEARCH_RESULTS);
     searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
@@ -647,7 +647,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private Collection<String> findNamespacesOfUser(IUserContext userContext) {
+  private Collection<String> findWorkspaceIdsForUser(IUserContext userContext) {
     if (userContext.isAnonymous()) {
       return Collections.emptyList();
     }

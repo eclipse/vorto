@@ -49,7 +49,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
   
   /**
-   * Searches all tenants existing in the system. Use modeshape ACLs to get result back which matches user rights.
+   * Searches all namespaces existing in the system. Use modeshape ACLs to get result back which matches user rights.
    */
   @Override
   public List<ModelInfo> search(String expression) {
@@ -78,7 +78,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
-  public void indexModel(ModelInfo modelInfo, String tenantId) {
+  public void indexModel(ModelInfo modelInfo, String workspaceId) {
     // NOOP
   }
 
@@ -93,7 +93,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
-  public void deleteIndexForTenant(String tenantId) {
+  public void deleteIndexForTenant(String workspaceId) {
     // NOOP
   }
 
