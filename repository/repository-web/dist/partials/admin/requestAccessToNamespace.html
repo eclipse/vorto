@@ -82,7 +82,9 @@
                    id="userId" placeholder="Search for technical users (at least 3 characters)..."
                    ng-model="userPartial"
                    ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
-                   style="height:32px">
+                   style="height:32px"
+                   ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
+            >
           </div>
           <div class="col-sm-2" style="padding-left:0px">
             <span class="input-group-btn">
@@ -94,11 +96,15 @@
         </div>
         <div class="row">
           <div class="col-sm-10" style="padding-right:0px">
-            <ul class="dropDownUL" ng-show="retrievedUsers.length > 0">
+            <ul id="userDropDown" class="dropDownUL" ng-show="retrievedUsers.length > 0"
+                ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
+            >
               <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
                   ng-model="selectedUser" ng-click="selectUser(user)"
                   ng-mouseover="highlightUser(user)"
-                  ng-mouseleave="unhighlightUser(user)">
+                  ng-mouseleave="unhighlightUser(user)"
+                  ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
+              >
                 {{user.userId}}
               </li>
             </ul>
