@@ -78,7 +78,6 @@ public class ImportController extends AbstractRepositoryController {
 
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasAuthority('model_creator')")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<UploadModelResult> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
@@ -115,7 +114,6 @@ public class ImportController extends AbstractRepositoryController {
 
   @RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
   @PreAuthorize("hasAuthority('model_creator')")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<List<ModelInfo>> doImport(
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
@@ -142,7 +140,6 @@ public class ImportController extends AbstractRepositoryController {
   @ApiOperation(value = "Returns a list of supported importers")
   @PreAuthorize("hasAuthority('model_creator')")
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public List<ImporterInfo> getImporters() {
     List<ImporterInfo> importers = new ArrayList<>();
     this.importerService.getImporters().stream().forEach(importer -> {
