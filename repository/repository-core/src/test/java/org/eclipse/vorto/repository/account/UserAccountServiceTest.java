@@ -12,57 +12,29 @@
  */
 package org.eclipse.vorto.repository.account;
 
-import com.google.common.collect.Lists;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
-import org.eclipse.vorto.repository.tenant.TenantService;
-import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
-import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
-import org.eclipse.vorto.repository.utils.TenantProvider;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
-import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class UserAccountServiceTest extends UnitTestBase {
 
-  @Mock
-  private ITenantRepository tenantRepo;
-
-  @Mock
-  protected TenantService tenantService;
-
   private IWorkflowService workflow = null;
-
-  protected Tenant playgroundTenant = TenantProvider.playgroundTenant();
 
   @Before
   @Override
   public void setup() throws Exception {
     super.setup();
-    when(tenantService.getTenantFromNamespace(Matchers.anyString())).thenReturn(Optional.of(playgroundTenant));
-
-    when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
-    when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
-    when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
-    when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
-
-    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
+    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService,
+        namespaceService, userNamespaceRoleService, roleService);
 
   }
 
@@ -97,6 +69,7 @@ public class UserAccountServiceTest extends UnitTestBase {
   }
 
   private User setupUserWithRoles(String username) {
-    return User.create(username, "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN, Role.MODEL_CREATOR);
+    return User.create(username, "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN,
+        Role.MODEL_CREATOR);
   }
 }

@@ -14,15 +14,23 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.WorkspaceNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.importer.*;
-import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.importer.Context;
+import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.IModelImportService;
+import org.eclipse.vorto.repository.importer.IModelImporter;
+import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.ImporterInfo;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
@@ -35,14 +43,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -65,17 +72,18 @@ public class ImportController extends AbstractRepositoryController {
 
   @Autowired
   private IWorkflowService workflowService;
-  
+
   @Autowired
-  private ITenantService tenantService;
+  private NamespaceRepository namespaceRepository;
 
   @RequestMapping(method = RequestMethod.POST)
-  @PreAuthorize("hasRole('MODEL_CREATOR')")
+  @PreAuthorize("hasAuthority('model_creator')")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<UploadModelResult> uploadModel(
       @ApiParam(value = "The vorto model file to upload",
           required = true) @RequestParam("file") MultipartFile file,
-      @RequestParam("key") String key,  @RequestParam(required=true,value="targetNamespace") String targetNamespace) {
+      @RequestParam("key") String key,
+      @RequestParam(required = true, value = "targetNamespace") String targetNamespace) {
     if (file.getSize() > maxModelSize) {
       throw new UploadTooLargeException("model", maxModelSize);
     }
@@ -83,10 +91,10 @@ public class ImportController extends AbstractRepositoryController {
     LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
-      
+
       UploadModelResult result = importer.upload(
-          FileUpload.create(file.getOriginalFilename(), file.getBytes()), Context.create(getUserContext(targetNamespace),Optional.of(targetNamespace)));
-      
+          FileUpload.create(file.getOriginalFilename(), file.getBytes()),
+          Context.create(getUserContext(targetNamespace), Optional.of(targetNamespace)));
 
       if (!result.isValid()) {
         result.setMessage(String.format(UPLOAD_FAIL, file.getOriginalFilename()));
@@ -97,7 +105,7 @@ public class ImportController extends AbstractRepositoryController {
           result.setMessage(String.format(UPLOAD_VALID, file.getOriginalFilename()));
         }
       }
-       return new ResponseEntity<>(result, HttpStatus.OK);
+      return new ResponseEntity<>(result, HttpStatus.OK);
     } catch (IOException e) {
       return new ResponseEntity<>(
           new UploadModelResult(null, e.getMessage(), Collections.emptyList()),
@@ -106,18 +114,20 @@ public class ImportController extends AbstractRepositoryController {
   }
 
   @RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-  @PreAuthorize("hasRole('MODEL_CREATOR')")
+  @PreAuthorize("hasAuthority('model_creator')")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public ResponseEntity<List<ModelInfo>> doImport(
       @ApiParam(value = "The file name of uploaded model",
           required = true) final @PathVariable String handleId,
-      @RequestParam("key") String key, @RequestParam(required=true,value="targetNamespace") String targetNamespace) {
+      @RequestParam("key") String key,
+      @RequestParam(required = true, value = "targetNamespace") String targetNamespace) {
     LOGGER.info("Importing Model with handleID " + handleId);
     try {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
-      
-      List<ModelInfo> importedModels = importer.doImport(handleId, Context.create(getUserContext(targetNamespace),Optional.of(targetNamespace)));
+
+      List<ModelInfo> importedModels = importer.doImport(handleId,
+          Context.create(getUserContext(targetNamespace), Optional.of(targetNamespace)));
       for (ModelInfo modelInfo : importedModels) {
         workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
       }
@@ -125,12 +135,12 @@ public class ImportController extends AbstractRepositoryController {
       return new ResponseEntity<>(importedModels, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.error("Error Importing model. " + handleId, e);
-      throw new IllegalArgumentException("Could not import with handle ID "+handleId, e);
+      throw new IllegalArgumentException("Could not import with handle ID " + handleId, e);
     }
   }
 
   @ApiOperation(value = "Returns a list of supported importers")
-  @PreAuthorize("hasRole('MODEL_CREATOR')")
+  @PreAuthorize("hasAuthority('model_creator')")
   @RequestMapping(method = RequestMethod.GET, produces = "application/json")
   @CrossOrigin(origins = "https://www.eclipse.org")
   public List<ImporterInfo> getImporters() {
@@ -143,19 +153,23 @@ public class ImportController extends AbstractRepositoryController {
     return importers;
   }
 
-  private UserContext getUserContext(String namespace) {
-    Optional<Tenant> tenant = this.tenantService.getTenantFromNamespace(namespace);
-    if (tenant.isPresent()) {
-      return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),tenant.get().getTenantId());
+  private UserContext getUserContext(String namespaceName) {
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+
+    if (namespace != null) {
+      return UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication(), namespace.getWorkspaceId());
     } else {
-      throw new WorkspaceNotFoundException(namespace);
+      throw new WorkspaceNotFoundException(namespaceName);
     }
   }
-  
+
   private IUserContext getUserContext(ModelId id) {
-    String tenant = tenantService.getTenantFromNamespace(id.getNamespace())
-        .map(tn -> tn.getTenantId())
-        .orElseThrow(() -> TenantDoesntExistException.missingForNamespace(id.getNamespace()));
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenant);
+    Namespace namespace = namespaceRepository.findByName(id.getNamespace());
+    if (namespace == null) {
+      throw new WorkspaceNotFoundException(id.getNamespace());
+    }
+    return UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication(), namespace.getWorkspaceId());
   }
 }
