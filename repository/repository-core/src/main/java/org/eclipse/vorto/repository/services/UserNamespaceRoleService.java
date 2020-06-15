@@ -192,7 +192,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User user = userRepository.findByUsername(username);
-    Namespace namespace = namespaceRepository.findParent(namespaceName);
+    Namespace namespace = namespaceRepository.findSelfOrParent(namespaceName);
     IRole role = namespaceRoleRepository.find(roleName);
     return hasRole(user, namespace, role);
   }

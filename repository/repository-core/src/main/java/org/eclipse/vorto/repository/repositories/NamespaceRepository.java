@@ -31,8 +31,8 @@ public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
 
   Namespace findByWorkspaceId(String workspaceId);
 
-  @Query("SELECT n from Namespace n WHERE :name LIKE CONCAT(n.name, '.%') ")
-  Namespace findParent(@Param("name") String name);
+  @Query("SELECT n from Namespace n WHERE (n.name = :name) OR :name LIKE CONCAT(n.name, '.%') ")
+  Namespace findSelfOrParent(@Param("name") String name);
 
   @Query("SELECT n from Namespace n WHERE LOWER(n.name) LIKE %?1%")
   Collection<Namespace> findNamespaceByPartial(String partial);
