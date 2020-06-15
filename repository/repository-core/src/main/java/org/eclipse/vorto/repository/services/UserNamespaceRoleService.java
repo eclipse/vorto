@@ -161,6 +161,12 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     LOGGER.debug(String
         .format("Verify whether user has role [%s] on namespace [%s]",
             role.getName(), namespace.getName()));
+
+    // bypassing further tests if user is sysadmin
+    if (userRepositoryRoleService.isSysadmin(user)) {
+      return true;
+    }
+
     if (!namespaceRoleRepository.findAll().contains(role)) {
       throw new IllegalArgumentException(String.format("Role [%s] is unknown", role.getName()));
     }
@@ -186,7 +192,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User user = userRepository.findByUsername(username);
-    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    Namespace namespace = namespaceRepository.findParent(namespaceName);
     IRole role = namespaceRoleRepository.find(roleName);
     return hasRole(user, namespace, role);
   }
