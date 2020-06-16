@@ -12,12 +12,30 @@
  */
 package org.eclipse.vorto.repository;
 
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
@@ -27,7 +45,12 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.*;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
@@ -39,10 +62,17 @@ import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
-import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.UserService;
+import org.eclipse.vorto.repository.services.UserUtil;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.utils.MockAppEventPublisher;
 import org.eclipse.vorto.repository.utils.NamespaceProvider;
 import org.eclipse.vorto.repository.utils.RoleProvider;
@@ -55,7 +85,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
@@ -63,11 +92,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-
-import java.util.*;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class UnitTestBase {
@@ -432,14 +456,26 @@ public abstract class UnitTestBase {
   }
 
   protected void setReleaseState(ModelInfo model) throws WorkflowException {
+    User mockUser = null;
+    User mockAdmin = null;
+    try {
+      mockUser = new UserBuilder()
+          .withName(getCallerId())
+          .withAuthenticationProviderID("GITHUB").build();
+      mockAdmin = new UserBuilder()
+          .withName("admin")
+          .withAuthenticationProviderID("GITHUB")
+          .build();
+    } catch (InvalidUserException iue) {
+      fail(iue.getMessage());
+    }
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-        .thenReturn(
-            User.create(getCallerId(), "GITHUB", null, new Tenant("playground"), Role.USER));
+        .thenReturn(mockUser);
     workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
-        .thenReturn(User.create("admin", "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN));
+        .thenReturn(mockAdmin);
     workflow.doAction(model.getId(), createUserContext("admin", "playground"),
         SimpleWorkflowModel.ACTION_APPROVE.getName());
   }

@@ -13,7 +13,22 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.domain.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserNamespaceID;
+import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
@@ -21,17 +36,12 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This service reports information and manipulates user roles on namespaces.<br/>
@@ -44,6 +54,7 @@ import java.util.stream.Collectors;
 public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserNamespaceRoleService.class);
+  private static final String NAMESPACE_SEPARATOR = ".";
 
   @Autowired
   private UserRepository userRepository;
@@ -192,9 +203,36 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
     User user = userRepository.findByUsername(username);
-    Namespace namespace = namespaceRepository.findSelfOrParent(namespaceName);
+
+    Namespace namespace = resolveByNameOrParentName(namespaceName);
+
     IRole role = namespaceRoleRepository.find(roleName);
     return hasRole(user, namespace, role);
+  }
+
+  /**
+   * Recursive method that resolves the given {@code namespaceName} argument, looks for an exact
+   * match in the repository, and "moves one level up" if the exact match is not found, by
+   * searching for a namespace name minus the last {@literal .}-delimited segment. <br/>
+   * Returns {@literal null} if no match is found and no segment remains. <br/>
+   * Used in conjunction with requests containing "virtual" namespace names (or "sub-domains") that
+   * are only persisted as JCR child folder nodes, but not actual namespaces in addition to their
+   * "parent" in the relevant DB tables.
+   *
+   * @param namespaceName
+   * @return
+   */
+  public Namespace resolveByNameOrParentName(String namespaceName) {
+    Namespace target = namespaceRepository.findByName(namespaceName);
+    if (null == target) {
+      if (namespaceName.contains(NAMESPACE_SEPARATOR)) {
+        return resolveByNameOrParentName(
+            namespaceName.substring(0, namespaceName.lastIndexOf(NAMESPACE_SEPARATOR)));
+      } else {
+        return null;
+      }
+    }
+    return target;
   }
 
   /**
@@ -270,7 +308,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @return {@literal true} if the user did not have the role on the namespace prior to adding it, {@literal false} if they already had the role.
    * @throws OperationForbiddenException
    * @throws DoesNotExistException
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#addUserToTenant(String, String, Role...)
    */
   public boolean addRole(User actor, User target, Namespace namespace, IRole role)
       throws OperationForbiddenException, DoesNotExistException {
@@ -545,7 +582,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param deleteNamespace
    * @return
    * @throws DoesNotExistException
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#removeUserFromTenant(String, String)
    */
   @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
   public boolean deleteAllRoles(User actor, User target, Namespace namespace,
@@ -573,16 +609,17 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     // Actor can administrate namespace, but trying to remove themselves, not contextually to
     // deleting the whole namespace: forbidden
-    if (hasRole(actor, namespace, namespaceAdminRole()) && actor.equals(target) && !deleteNamespace) {
-        throw new OperationForbiddenException(
-            String.format(
-                "Acting user with namespace administrator role cannot remove themselves from namespace [%s].",
-                namespace.getName())
-        );
+    if (hasRole(actor, namespace, namespaceAdminRole()) && actor.equals(target)
+        && !deleteNamespace) {
+      throw new OperationForbiddenException(
+          String.format(
+              "Acting user with namespace administrator role cannot remove themselves from namespace [%s].",
+              namespace.getName())
+      );
     }
     // Actor has no admin role on namespace and is trying to remove somebody else, without being
     // sysadmin
-    else if (!actor.equals(target) && !userRepositoryRoleService.isSysadmin(actor)){
+    else if (!actor.equals(target) && !userRepositoryRoleService.isSysadmin(actor)) {
       throw new OperationForbiddenException(
           String.format("Acting user cannot delete user roles for namespace [%s].",
               namespace.getName())
@@ -806,7 +843,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param technicalUser
    * @param namespace
    * @param roles
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#createTechnicalUserAndAddToTenant(String, String, ICollaborator, Role...)
    */
   @Transactional(rollbackOn = {OperationForbiddenException.class, InvalidUserException.class})
   public void createTechnicalUserAndAddAsCollaborator(User actor, User technicalUser,

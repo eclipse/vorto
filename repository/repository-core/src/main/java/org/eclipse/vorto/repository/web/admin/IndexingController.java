@@ -27,12 +27,12 @@ public class IndexingController {
 
   @Autowired
   private IIndexingService indexingServices;
-  
+
   @RequestMapping(value = "/rest/reindex", method = RequestMethod.POST)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<IndexingResult> reindexModels() {
     IndexingResult result = indexingServices.reindexAllModels();
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
-  
+
 }

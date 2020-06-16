@@ -12,15 +12,41 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.security.AccessControlEntry;
+import javax.jcr.security.AccessControlList;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.AccessControlPolicyIterator;
+import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.RoleUtil;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantCollaboratorAccessPolicy;
@@ -32,31 +58,31 @@ import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.security.*;
-import java.util.*;
-import java.util.function.Predicate;
-
 public class ModelPolicyManager extends AbstractRepositoryOperation implements IModelPolicyManager {
 
   private static final Logger LOGGER = Logger.getLogger(ModelPolicyManager.class);
-
-  private DefaultUserAccountService userAccountService;
 
   private IModelRepositoryFactory modelRepositoryFactory;
 
   private RoleService roleService;
 
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  private RoleUtil roleUtil;
+
+  private NamespaceService namespaceService;
+
   public ModelPolicyManager(
-      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired RoleUtil roleUtil,
       @Autowired IModelRepositoryFactory iModelRepositoryFactory,
-      @Autowired RoleService roleService) {
-    this.userAccountService = userAccountService;
+      @Autowired RoleService roleService,
+      @Autowired NamespaceService namespaceService) {
+    this.userNamespaceRoleService = userNamespaceRoleService;
+    this.roleUtil = roleUtil;
     this.modelRepositoryFactory = iModelRepositoryFactory;
     this.roleService = roleService;
+    this.namespaceService = namespaceService;
   }
 
   @Override
@@ -74,7 +100,8 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
     });
   }
 
-  private List<PolicyEntry> convertAccessControlEntriesToPolicyEntries(AccessControlList acl) throws RepositoryException {
+  private List<PolicyEntry> convertAccessControlEntriesToPolicyEntries(AccessControlList acl)
+      throws RepositoryException {
     List<PolicyEntry> policyEntries = new ArrayList<>();
     for (AccessControlEntry entry : acl.getAccessControlEntries()) {
       PolicyEntry policy = PolicyEntry.of(entry);
@@ -97,7 +124,8 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         final AccessControlList _acl = acl;
 
         // put all existing ACE that are in newEntries to existingEntries
-        List<AccessControlEntry> existingEntries = putAllExistingACEFromNewEntriesToExistingEntries(acl, newEntries);
+        List<AccessControlEntry> existingEntries = putAllExistingACEFromNewEntriesToExistingEntries(
+            acl, newEntries);
 
         // remove all existingEntries, entries that are in newEntries
         removeAllExistingEntries(_acl, existingEntries);
@@ -139,15 +167,31 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
   }
 
   @Override
+  public void makePolicyEntryReadOnly(ModelId modelId, PolicyEntry entryToChange) {
+
+    // firstly, creates a read-only-permission entry based on the policy just removed
+    PolicyEntry readOnlyPolicy = new PolicyEntry();
+    readOnlyPolicy.setPermission(Permission.READ);
+    readOnlyPolicy.setPrincipalId(entryToChange.getPrincipalId());
+    readOnlyPolicy.setPrincipalType(entryToChange.getPrincipalType());
+    // and add it, so the policy to remove can be removed
+    this.addPolicyEntry(modelId, readOnlyPolicy);
+
+    // then, removes the entry
+    this.removePolicyEntry(modelId, entryToChange);
+
+  }
+
+  @Override
   public boolean hasPermission(final ModelId modelId, final Permission permission) {
     return doInSession(session -> this.getPolicyEntries(modelId).stream()
-          .anyMatch(userFilter(session).and(p -> hasPermission(p.getPermission(), permission))));
+        .anyMatch(userFilter(session).and(p -> hasPermission(p.getPermission(), permission))));
   }
 
   @Override
   public void copyPolicyEntries(ModelId sourceModelId, ModelId targetModelId) {
-   Collection<PolicyEntry> entries = getPolicyEntries(sourceModelId);
-   addPolicyEntry(targetModelId,entries.toArray(new PolicyEntry[entries.size()]));
+    Collection<PolicyEntry> entries = getPolicyEntries(sourceModelId);
+    addPolicyEntry(targetModelId, entries.toArray(new PolicyEntry[entries.size()]));
   }
 
   @Override
@@ -163,8 +207,22 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
       if (p.getPrincipalType() == PrincipalType.User) {
         return p.getPrincipalId().equalsIgnoreCase(session.getUserID());
       } else {
-        return userAccountService.hasRole(session.getWorkspace().getName(), session.getUserID(),
-            p.getPrincipalId());
+        String workspaceId = session.getWorkspace().getName();
+        String username = session.getUserID();
+        String roleName = p.getPrincipalId();
+        Namespace namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId);
+        if (namespace == null) {
+          throw new RuntimeException(new DoesNotExistException(
+              String.format("No namespace found for workspace ID [%s]", workspaceId)));
+        }
+        try {
+          return userNamespaceRoleService
+              .hasRole(username, namespace.getName(), roleUtil.normalize(roleName));
+        }
+        // should not occur unless namespace removed whilst checking for authorization
+        catch (DoesNotExistException dnee) {
+          throw new RuntimeException(dnee);
+        }
       }
     };
   }
@@ -249,9 +307,11 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
    */
   private void restorePolicyEntriesInternal(Session session) {
     LOGGER.info("restorePolicyEntries");
-    if (this.modelRepositoryFactory == null)
+    if (this.modelRepositoryFactory == null) {
       return;
-    IModelRepository repo = this.modelRepositoryFactory.getRepository(session.getWorkspace().getName());
+    }
+    IModelRepository repo = this.modelRepositoryFactory
+        .getRepository(session.getWorkspace().getName());
     List<ModelInfo> modelList = repo.search("");
 
     Map<String, IWorkflowFunction[]> stateToFunctionsMap = createStateToFunctionsMap();
@@ -266,36 +326,52 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
     LOGGER.debug("createStateToFunctionsMap");
     Map<String, IWorkflowFunction[]> stateToFunctionsMap = new HashMap<>();
 
-    final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(this.modelRepositoryFactory);
-    final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(this.modelRepositoryFactory, () -> getRole("model_promoter"));
-    final GrantCollaboratorAccessPolicy grantCollaboratorAccessPolicy = new GrantCollaboratorAccessPolicy(this.modelRepositoryFactory);
-    final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(this.modelRepositoryFactory, () -> getRole("model_publisher"));
+    final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy(
+        this.modelRepositoryFactory);
+    final IWorkflowFunction removeModelPromoterPolicy = new RemoveRoleAccessPolicy(
+        this.modelRepositoryFactory, () -> getRole("model_promoter"));
+    final GrantCollaboratorAccessPolicy grantCollaboratorAccessPolicy = new GrantCollaboratorAccessPolicy(
+        this.modelRepositoryFactory);
+    final IWorkflowFunction grantPublisherModelAccess = new GrantRoleAccessPolicy(
+        this.modelRepositoryFactory, () -> getRole("model_publisher"));
 
-    stateToFunctionsMap.put(ModelState.Draft.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy});
-    stateToFunctionsMap.put(ModelState.InReview.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, grantReviewerModelAccess, removeModelPromoterPolicy});
-    stateToFunctionsMap.put(ModelState.Released.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy, grantPublisherModelAccess});
-    stateToFunctionsMap.put(ModelState.Deprecated.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy, grantPublisherModelAccess});
+    stateToFunctionsMap
+        .put(ModelState.Draft.getName(), new IWorkflowFunction[]{grantCollaboratorAccessPolicy});
+    stateToFunctionsMap.put(ModelState.InReview.getName(),
+        new IWorkflowFunction[]{grantCollaboratorAccessPolicy, grantReviewerModelAccess,
+            removeModelPromoterPolicy});
+    stateToFunctionsMap.put(ModelState.Released.getName(),
+        new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy,
+            grantPublisherModelAccess});
+    stateToFunctionsMap.put(ModelState.Deprecated.getName(),
+        new IWorkflowFunction[]{grantCollaboratorAccessPolicy, removeModelPromoterPolicy,
+            grantPublisherModelAccess});
     return stateToFunctionsMap;
   }
 
   private IRole getRole(String roleName) {
-    return roleService.findAnyByName(roleName).orElseThrow(() -> new IllegalStateException("The role '" + roleName + "' was not found."));
+    return roleService.findAnyByName(roleName)
+        .orElseThrow(() -> new IllegalStateException("The role '" + roleName + "' was not found."));
   }
 
-  private void applyWorkflowFunctions(ModelInfo model, Session session, Map<String, IWorkflowFunction[]> stateToFunctionsMap) {
+  private void applyWorkflowFunctions(ModelInfo model, Session session,
+      Map<String, IWorkflowFunction[]> stateToFunctionsMap) {
     LOGGER.debug("applyWorkflowFunctions on Model: " + model.getFileName());
     IWorkflowFunction[] functions = stateToFunctionsMap.get(model.getState());
     if (functions == null) {
-      LOGGER.warn("applyWorkflowFunctions: no functions defined for state: " + model.getState() + " of model: " + model.getFileName());
+      LOGGER.warn("applyWorkflowFunctions: no functions defined for state: " + model.getState()
+          + " of model: " + model.getFileName());
       return;
     }
-    Arrays.stream(stateToFunctionsMap.get(model.getState())).forEach(func -> func.execute(model, UserContext.user(SecurityContextHolder.getContext().getAuthentication(), session.getWorkspace().getName()), null));
+    Arrays.stream(stateToFunctionsMap.get(model.getState())).forEach(func -> func.execute(model,
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
+            session.getWorkspace().getName()), null));
   }
 
   private void setVisibility(ModelInfo model) {
     if (IModelRepository.VISIBILITY_PUBLIC.equals(model.getVisibility())) {
       addPolicyEntry(model.getId(), PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY,
-              PolicyEntry.PrincipalType.User, PolicyEntry.Permission.READ));
+          PolicyEntry.PrincipalType.User, PolicyEntry.Permission.READ));
     }
   }
 

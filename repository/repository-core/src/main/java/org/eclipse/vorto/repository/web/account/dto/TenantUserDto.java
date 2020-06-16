@@ -13,22 +13,11 @@
 package org.eclipse.vorto.repository.web.account.dto;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.domain.TenantUser;
 
 public class TenantUserDto {
-  
+
   private String username;
   private Collection<String> roles;
-  
-  public static TenantUserDto fromTenantUser(TenantUser user) {
-    TenantUserDto tenantUser = new TenantUserDto();
-    tenantUser.setUsername(user.getUser().getUsername());
-    tenantUser.setRoles(user.getRoles().stream()
-        .map(userRole -> "ROLE_" + userRole.getRole().toString())
-        .collect(Collectors.toList()));
-    return tenantUser;
-  }
 
   public String getUsername() {
     return username;

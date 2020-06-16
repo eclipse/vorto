@@ -13,6 +13,13 @@
 package org.eclipse.vorto.repository.web.api.v1;
 
 import io.swagger.annotations.ApiParam;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelContent;
@@ -24,15 +31,11 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.zip.ZipOutputStream;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -43,9 +46,8 @@ public class ModelController extends AbstractRepositoryController {
 
   private static final Logger LOGGER = Logger.getLogger(ModelController.class);
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -64,23 +66,22 @@ public class ModelController extends AbstractRepositoryController {
     return ModelDtoFactory.createDto(resource);
   }
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}/content")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContent(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
-    
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(
+        this.modelRepositoryFactory);
+
     return converter.convert(modelID, Optional.empty());
   }
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}/content/{targetplatformKey}")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public ModelContent getModelContentForTargetPlatform(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -88,20 +89,20 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(
+        this.modelRepositoryFactory);
 
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}/file")
-  @CrossOrigin(origins = "https://www.eclipse.org")
   public void downloadModelById(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "Set true if dependencies shall be included",
           required = false) final @RequestParam(value = "includeDependencies",
-              required = false) boolean includeDependencies,
+          required = false) boolean includeDependencies,
       final HttpServletResponse response) {
 
     Objects.requireNonNull(modelId, "modelId must not be null");

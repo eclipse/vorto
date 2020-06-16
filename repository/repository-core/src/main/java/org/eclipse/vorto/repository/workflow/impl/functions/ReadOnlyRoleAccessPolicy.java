@@ -26,30 +26,32 @@ import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemoveRoleAccessPolicy implements IWorkflowFunction {
+public class ReadOnlyRoleAccessPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RemoveRoleAccessPolicy.class);
 
-  private Supplier<IRole> roleToRemove;
+  private Supplier<IRole> roleToMakeReadOnly;
 
-  public RemoveRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Supplier<IRole> role) {
+  public ReadOnlyRoleAccessPolicy(IModelRepositoryFactory repositoryFactory, Supplier<IRole> role) {
     this.repositoryFactory = repositoryFactory;
-    this.roleToRemove = role;
+    this.roleToMakeReadOnly = role;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user, Map<String, Object> context) {
     IModelPolicyManager policyManager =
         repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
-    IRole role = roleToRemove.get();
-    LOGGER.info("Removing full access of model to " + role.getName() + " for " + model.getId());
+    IRole role = roleToMakeReadOnly.get();
+    LOGGER.info(String
+        .format("Setting read-only access to model [%s] for role [%s].", model.getId(),
+            role.getName()));
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
     for (PolicyEntry policy : policies) {
       if (policy.getPrincipalId().equals(role.getName()) &&
           policy.getPrincipalType() == PrincipalType.Role) {
-        policyManager.removePolicyEntry(model.getId(), policy);
+        policyManager.makePolicyEntryReadOnly(model.getId(), policy);
         break;
       }
     }

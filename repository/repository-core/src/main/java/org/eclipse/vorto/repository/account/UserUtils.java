@@ -14,30 +14,18 @@ package org.eclipse.vorto.repository.account;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.StringJoiner;
 import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRole;
 
 public class UserUtils {
 
 
-  public static String getUserRolesAsCommaSeparatedString(String tenantId, User user) {
-    Set<Role> userRoles = UserUtils.extractRolesAsList(user.getRoles(tenantId));
-    StringJoiner roles = new StringJoiner(",");
-
-    for (Role userRole : userRoles) {
-      roles.add("ROLE_" + userRole);
-
-    }
-    return roles.toString();
-  }
-
   public static Set<Role> extractRolesAsList(Set<UserRole> userRoles) {
     Set<Role> existingRole = new HashSet<>();
 
-    if (userRoles == null)
+    if (userRoles == null) {
       return existingRole;
+    }
 
     for (UserRole userRole : userRoles) {
       existingRole.add(userRole.getRole());

@@ -17,13 +17,40 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.Attachment;
+import org.eclipse.vorto.repository.core.Diagnostic;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IDiagnostics;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
@@ -58,19 +85,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -238,7 +262,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
             HttpStatus.BAD_REQUEST);
       }
 
-      ValidationReport validationReport = modelValidationHelper.validateModelUpdate(modelInfo, userContext);
+      ValidationReport validationReport = modelValidationHelper
+          .validateModelUpdate(modelInfo, userContext);
       if (validationReport.isValid()) {
         modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
             modelInfo.getId().getName() + modelInfo.getType().getExtension(), userContext);
@@ -419,14 +444,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     try {
       return new ResponseEntity<>(
-          getDiagnosticService(getWorkspaceId(modelId)).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
+          getDiagnosticService(getWorkspaceId(modelId))
+              .diagnoseModel(ModelId.fromPrettyFormat(modelId)),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}/policies")
   public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "model ID must not be null");
@@ -449,7 +475,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  @PreAuthorize("isAuthenticated() or hasRole('ROLE_USER')")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
   @GetMapping("/{modelId:.+}/policy")
   public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "model ID must not be null");
@@ -488,7 +514,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 
-    getPolicyManager(getWorkspaceId(modelId)).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
+    getPolicyManager(getWorkspaceId(modelId))
+        .addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
   }
 
   @PreAuthorize("hasAuthority('sysadmin') or "
@@ -547,7 +574,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   private String getWorkspaceId(String modelId) {
     String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
     return namespaceService.resolveWorkspaceIdForNamespace(namespace)
-        .orElseThrow(() -> new FatalModelRepositoryException("Namespace " + namespace + " could not be found.", null));
+        .orElseThrow(() -> new FatalModelRepositoryException(
+            "Namespace " + namespace + " could not be found.", null));
   }
 
   private IDiagnostics getDiagnosticService(final String tenantId) {

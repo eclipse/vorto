@@ -12,18 +12,16 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import java.util.Map;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
 
@@ -37,19 +35,18 @@ public class GrantCollaboratorAccessPolicy implements IWorkflowFunction {
   }
 
   @Override
-  public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
-    LOGGER.info("Restricting permission of model " + model.getId() + " to collaborators within the tenant");
-    repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication()).addPolicyEntry(
-        model.getId(),
-        PolicyEntry.of("USER", PrincipalType.Role, Permission.READ),
-        PolicyEntry.of("model_viewer", PrincipalType.Role, Permission.READ),
-        PolicyEntry.of("model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of("model_promoter", PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of(RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of("ROLE_USER", PrincipalType.Role, Permission.READ),
-        PolicyEntry.of("ROLE_model_viewer", PrincipalType.Role, Permission.READ),
-        PolicyEntry.of("ROLE_model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of("ROLE_model_promoter", PrincipalType.Role, Permission.FULL_ACCESS),
-        PolicyEntry.of("ROLE_" + RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS));
+  public void execute(ModelInfo model, IUserContext user, Map<String, Object> context) {
+    LOGGER.info(
+        "Restricting permission of model " + model.getId() + " to collaborators within the tenant");
+    repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
+        .addPolicyEntry(
+            model.getId(),
+            PolicyEntry.of("model_viewer", PrincipalType.Role, Permission.READ),
+            PolicyEntry.of("model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
+            PolicyEntry.of("model_promoter", PrincipalType.Role, Permission.FULL_ACCESS),
+            PolicyEntry.of("model_reviewer", PrincipalType.Role, Permission.FULL_ACCESS),
+            PolicyEntry.of("model_publisher", PrincipalType.Role, Permission.FULL_ACCESS),
+            PolicyEntry.of("namespace_admin", PrincipalType.Role, Permission.FULL_ACCESS),
+            PolicyEntry.of("sysadmin", PrincipalType.Role, Permission.FULL_ACCESS));
   }
 }
