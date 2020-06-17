@@ -30,6 +30,16 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.workflowActions = [];
           $scope.chosenFile = false;
           $scope.editMode = false;
+          /*
+          The two properties below (isLoading and modelIsLoading) are now
+          referenced by the upper-bar buttons, which will be displayed only if
+          those flags are set to false.
+          This is to avoid having buttons available while the model is not yet
+          fully loaded, which can bear unexpected consequences.
+          As a result, every function that sets either of the flags to true
+          *must* set them to false both on successful or error conditions, once
+          terminated, lest the buttons do not appear as expected.
+           */
           $scope.modelIsLoading = false;
           $scope.isLoading = false;
           $scope.isLoadingGenerators = false;
