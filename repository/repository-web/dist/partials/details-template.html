@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-12" ng-show="!modelIsLoading && !isLoading">
 			<div ng-repeat="action in workflowActions">
 				<button class="btn btn-default pull-left" ng-click="openWorkflowActionDialog(action)">
 					<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
@@ -37,32 +37,32 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="((hasAuthority('ROLE_SYS_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions">
+			<div ng-show="((hasAuthority('ROLE_SYS_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions && !modelIsLoading && !isLoading">
 				<button class="btn btn-danger pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || canPublishModel) && model.released && model.visibility === 'private' && hasOfficialPrefix(model)">
+			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || canPublishModel) && model.released && model.visibility === 'private' && hasOfficialPrefix(model) && !modelIsLoading && !isLoading">
 				<button class="btn btn-default pull-left"  role="button"
 				    ng-click="makePublic(model)">
 					<span class="fa fa-globe" aria-hidden="true"></span>&nbsp;Publish</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="canCreateModels">
+			<div ng-show="canCreateModels && !modelIsLoading && !isLoading">
 				<a class="btn btn-default pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
-			<div ng-show="canCreateModels && !model.released">
+			<div ng-show="canCreateModels && !model.released && !modelIsLoading && !isLoading">
 				<a class="btn btn-default pull-left" ng-click="openRefactoringDialog()" role="button">
 					<span class="fa fa-edit" aria-hidden="true"></span>&nbsp;Rename</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="canCreateModels && model.type === 'InformationModel' ">
+			<div ng-show="canCreateModels && model.type === 'InformationModel' && !modelIsLoading && !isLoading">
 				<a class="btn btn-default pull-left" href="./#!/payloadmapping/{{model.id.prettyFormat}}" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
