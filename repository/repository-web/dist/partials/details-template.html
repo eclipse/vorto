@@ -5,7 +5,7 @@
 <section ng-if="!errorLoading" class="content">
 	<ol class="breadcrumb">
 		<li>
-			<a href="./#!/">Explore</a>
+			<a href="./#/">Explore</a>
 		</li>
 		<li class="active">Model Details</li>
 		
@@ -63,7 +63,7 @@
 			</div>
 			
 			<div ng-show="canCreateModels && model.type === 'InformationModel' && !modelIsLoading && !isLoading">
-				<a class="btn btn-default pull-left" href="./#!/payloadmapping/{{model.id.prettyFormat}}" role="button">
+				<a class="btn btn-default pull-left" href="./#/payloadmapping/{{model.id.prettyFormat}}" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
@@ -165,7 +165,7 @@
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>	
 																	<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
-																	<a ng-if="reference.hasAccess" ng-href="./#!/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
+																	<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
 																	 <span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>																																			
 																</li>
 															</ul>
@@ -198,7 +198,7 @@
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>
 																	<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>	
-																	<a ng-if="usage.hasAccess" ng-href="./#!/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
 																	 <span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>														
 																</li>
 															</ul>
@@ -223,8 +223,8 @@
 																			<span>
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
 																			</span>	
-																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#!/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
-																			<a ng-show="model.type === 'InformationModel'" ng-href="./#!/payloadmapping/{{model.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>
+																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
+																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>
 																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
 																	</li>
 																</ul>
@@ -330,7 +330,7 @@
 									<div class="box-body chat" id="chat-box">
 										<h3 ng-show="!authenticated" style="text-align: center;">
 											Please
-											<a href="#!/login">Sign In</a> to write a comment!
+											<a href="#/login">Sign In</a> to write a comment!
 										</h3>
 										<div class="box-footer">
 											<div class="input-group group">
@@ -482,7 +482,7 @@
 
 			<ul style="margin-top:30px;">
 				<li ng-repeat="usage in model.referencedBy" class="ng-scope">
-					<a ng-href="./#!/details/{{usage.prettyFormat}}" class="ng-binding">
+					<a ng-href="./#/details/{{usage.prettyFormat}}" class="ng-binding">
 						{{usage.prettyFormat}}
 					</a>
 				</li>
@@ -621,7 +621,7 @@
 	<div ng-if="validationError">
 		<div class="alert alert-danger">
 			<span class="glyphicon glyphicon-remove invalid"></span>
-			<i class="fa fa-fw fa-exclamation-triangle"></i>{{validationError.message}} in model <a href="./#!/details/{{validationError.modelId}}">{{validationError.modelId}}</a>
+			<i class="fa fa-fw fa-exclamation-triangle"></i>{{validationError.message}} in model <a href="./#/details/{{validationError.modelId}}">{{validationError.modelId}}</a>
 		</div>
   </div>
 	<div ng-if="!exists">

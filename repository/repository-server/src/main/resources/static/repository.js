@@ -35,8 +35,12 @@ define("repository", [
     angular.bootstrap(document, ["repository"]);
   };
 
-  repository.config(["$routeProvider", "$httpProvider",
-    function ($routeProvider, $httpProvider) {
+  repository.config(["$routeProvider", "$httpProvider", "$locationProvider",
+    function ($routeProvider, $httpProvider, $locationProvider) {
+
+      // resets the default "/#!" hash notation post AngularJS 1.6.0 for
+      // backwards compatibility - mostly wrt direct links to models
+      $locationProvider.hashPrefix('');
 
       $routeProvider.when("/", {
         templateUrl: "webjars/repository-web/dist/partials/search-template.html",
