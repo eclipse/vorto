@@ -1,7 +1,7 @@
 # Creating a thing in the Bosch IoT Suite from a Vorto Information Model
 
 This tutorial explains how to create a thing in the Bosch IoT Suite that was described as a Vorto Information Model.   
-As an example, we will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0). 
+As an example, we will use our [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0). 
 
 <img src="../images/tutorials/create_thing/raspbi_IM.png" />
 
@@ -33,7 +33,7 @@ As an example, we will use our [RaspberryPi Information Model](https://vorto.ecl
 
 ## Download the Device provision postman script
 
-**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**1.** On the Vorto Repository page of your Information Model (we will use the [RaspberryPi Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 <img src="../images/tutorials/create_thing/code_generators.png" />
 
 **2.** We want to provision a device. Click the `Source Code` button to download the generated Postman script.

@@ -15,7 +15,7 @@ Before you start, you need to understand what kind of information you need to de
 The SensorTag in our example consists of a temperature, movement, humidity, barometric pressure and optical sensor. These five functionalities are what we want to describe in our *Information Model* and are defined in the *Function Blocks* respectively. 
 
 To keep this example simple, we will focus only on the humidity sensor. The remaining functionalities can be modeled the same way.
-As Vorto is all about using generic classes and reducing integration effort, we will make use of the already existing description of a [humidity sensor](http://vorto.eclipse.org/#!/details/org.eclipse.vorto:Humidity:1.0.0?s=humid) you can conveniently find in the [Vorto Repository](http://vorto.eclipse.org/). 
+As Vorto is all about using generic classes and reducing integration effort, we will make use of the already existing description of a [humidity sensor](http://vorto.eclipse.org/#/details/org.eclipse.vorto:Humidity:1.0.0?s=humid) you can conveniently find in the [Vorto Repository](http://vorto.eclipse.org/). 
 This is how the template looks like:
 
 ```
