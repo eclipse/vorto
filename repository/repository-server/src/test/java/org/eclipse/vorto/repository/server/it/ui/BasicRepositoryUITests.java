@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository.server.it.ui;
 
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -29,7 +28,9 @@ import static org.eclipse.vorto.repository.domain.Role.*;
 
 
 /**
- * Tests some of the basic functionality of the vorto repository.
+ * Tests some of the basic functionality of the Vorto repository. To keep the tests independent the repository is
+ * wiped after each test method.
+ *
  */
 public class BasicRepositoryUITests extends AbstractUITest{
 
@@ -122,49 +123,39 @@ public class BasicRepositoryUITests extends AbstractUITest{
     public void testVisibleModels() throws Exception {
         // create an info model
         testCreateInfoModel();
-        // check if the model is visible in the overview
-        this.seleniumVortoHelper.gotoWelcomePage();
-        this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
         // login with user2 who should not be able to see the unpublished model
         this.seleniumVortoHelper.loginWithUser("user2", "pass");
         this.seleniumVortoHelper.gotoWelcomePage();
         // select model state: all.
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        WebDriverWait wait5Secs = new WebDriverWait(this.seleniumVortoHelper.getRemoteWebDriver(),5);
-        wait5Secs.until(ExpectedConditions.invisibilityOf(linkToModel));
-        // TODO figure out a better way to ensure that the model is not visible
+        // make sure that the model is not visible to user2
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//div[@id='searchResult']/div[count(*) = 0]");
         this.seleniumVortoHelper.loginWithUser("user1", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
-        wait5Secs.until(ExpectedConditions.visibilityOf(linkToModel));
+        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
+        WebDriverWait wait5Secs = new WebDriverWait(this.seleniumVortoHelper.getRemoteWebDriver(), 5);
+        wait5Secs.until(ExpectedConditions.elementToBeClickable(linkToModel));
+    }
+
+    /**
+     * Tests if a user is able to see the private model of another user after added as collaborator.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAddCollaboratorToNamespace() throws Exception {
+        testVisibleModels();
+        this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+        this.seleniumVortoHelper.loginWithUser("user2", "pass");
+        this.seleniumVortoHelper.selectModelStateInComboBox(null);
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
     }
 
     @Override
     protected void setUpTest() throws Exception {
-//        // load some test models.
-//        createModel("Zone.type", "com.test:Zone:1.0.0");
-//        setPublic("com.test:Zone:1.0.0");
-//        createModel("Color2.type", "com.test:Color:1.0.0");
-//        setPublic("com.test:Color:1.0.0");
-//        createModel("Fb_withDictionary.fbmodel", "com.test:InstalledSoftware:1.0.0");
-//        setPublic("com.test:InstalledSoftware:1.0.0");
-//        createModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-//        setPublic("com.test:Lamp:1.0.0");
-//        createModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
-
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)), "user1");
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(USER)), "user2");
-    }
-
-    @After
-    public void cleanupTestData() {
-        deleteNamespaces(SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
-    }
-
-    private void deleteNamespaces(String user1PrivateNamespace) {
-
     }
 }

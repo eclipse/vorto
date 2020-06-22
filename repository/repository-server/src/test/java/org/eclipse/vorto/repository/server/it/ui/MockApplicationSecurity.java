@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2020 Contributors to the Eclipse Foundation
- * <p>
+ *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
- * <p>
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * https://www.eclipse.org/legal/epl-2.0
- * <p>
+ *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.server.it.ui;
@@ -22,6 +22,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+/**
+ * Security configuration for UI Testing. Bypass the oauth2 authentication by enabling a simple form login and a Mock
+ * authentication provider.
+ */
 @Profile("local-ui-test")
 @Configuration
 public class MockApplicationSecurity extends WebSecurityConfigurerAdapter {
@@ -31,6 +35,7 @@ public class MockApplicationSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
+        // enable the simple form login and keep the rest as in the real authentication configuration.
         http.formLogin();
         http.httpBasic().and().authorizeRequests().antMatchers(HttpMethod.GET, "/rest/**", "/api/**")
                 .permitAll().antMatchers("/user/**").permitAll()

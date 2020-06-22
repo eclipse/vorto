@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2020 Contributors to the Eclipse Foundation
- * <p>
+ *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
- * <p>
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * https://www.eclipse.org/legal/epl-2.0
- * <p>
+ *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.server.it.ui;
@@ -30,13 +30,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A mock authentication provider which except all usernames and password. The granted authorities for a specific
+ * test user can be configured.
+ */
 @Profile("local-ui-test")
 @Primary
 @Service
 public class AuthenticationProviderMock implements AuthenticationProvider {
 
-    private Map<String, List<GrantedAuthority>> userAuhtoritiesMap = new HashMap<>();
-
+    private final Map<String, List<GrantedAuthority>> userAuthoritiesMap = new HashMap<>();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -44,7 +47,7 @@ public class AuthenticationProviderMock implements AuthenticationProvider {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                 = new UsernamePasswordAuthenticationToken(myUser, "", getGrantedAuthoritiesForUser(myUser.getUsername()));
         usernamePasswordAuthenticationToken.setDetails(new HashMap<>());
-        OAuth2Authentication myAuth = new OAuth2Authentication(new OAuth2Request(null, "foo", getGrantedAuthoritiesForUser(myUser.getUsername()),true,null,null,null,null,null ),usernamePasswordAuthenticationToken);
+        OAuth2Authentication myAuth = new OAuth2Authentication(new OAuth2Request(null, "foo", getGrantedAuthoritiesForUser(myUser.getUsername()), true, null, null, null, null, null), usernamePasswordAuthenticationToken);
         return myAuth;
     }
 
@@ -58,18 +61,20 @@ public class AuthenticationProviderMock implements AuthenticationProvider {
     }
 
     private List<GrantedAuthority> getGrantedAuthoritiesForUser(String userName) {
-        List<GrantedAuthority> authorityList = this.userAuhtoritiesMap.get(userName);
+        List<GrantedAuthority> authorityList = this.userAuthoritiesMap.get(userName);
         if (authorityList == null)
             authorityList = new LinkedList<>();
         return authorityList;
-
     }
 
+    /**
+     * Set a list of granted authorities for a specific user. FOR TESTING PURPOSES ONLY.
+     * See @{@link org.eclipse.vorto.repository.domain.Role}
+     *
+     * @param authorityList the list of authorities (e.g. USER, SYS_ADMIN) .
+     * @param userName the user name.
+     */
     public void setAuthorityListForUser(List<GrantedAuthority> authorityList, String userName) {
-        this.userAuhtoritiesMap.put(userName, authorityList);
+        this.userAuthoritiesMap.put(userName, authorityList);
     }
-
-
-
-
 }

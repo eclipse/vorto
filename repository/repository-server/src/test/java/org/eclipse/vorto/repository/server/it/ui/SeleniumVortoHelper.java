@@ -43,12 +43,18 @@ public class SeleniumVortoHelper {
 
     private final String rootUrl;
 
+    /**
+     * @param webDriver The remote web driver to use.
+     * @param rootUrl the base url of the repository
+     */
     public SeleniumVortoHelper(RemoteWebDriver webDriver, String rootUrl) {
         this.webDriver = webDriver;
         this.rootUrl = rootUrl;
     }
 
-
+    /**
+     * Locates and accepts the allow cookies footer. (System under tests needs an internet connections)
+     */
     public void allowCookies() {
         webDriver.get(rootUrl);
         WebElement cookieFooter = webDriver.findElementById("cookieconsent:desc");
@@ -62,7 +68,7 @@ public class SeleniumVortoHelper {
     /**
      * Select the desired model state in the model state combo box ("null" = All states)
      *
-     * @param modelState
+     * @param modelState the model state to select.
      */
     public void selectModelStateInComboBox(ModelState modelState)  {
         Select stateComboBox = new Select(webDriver.findElementById(ID_CB_MODEL_STATE));
@@ -80,7 +86,7 @@ public class SeleniumVortoHelper {
      */
     public void openManageTab() {
         webDriver.get(rootUrl);
-        webDriver.findElementByLinkText("Manage").click();
+        webDriver.findElementByXPath("//a[@href='./#!/manage']").click();
     }
 
     /**
@@ -93,11 +99,12 @@ public class SeleniumVortoHelper {
         openManageNamespacesTab();
         webDriver.findElementByXPath("//button[contains(.,'Create a namespace')]").click();
         WebElement namespaceInputField = webDriver.findElementByXPath("//input[@name='namespace']");
-        // Clear pre-filled text field.
+        // Click and clear pre-filled text field.
         WebDriverWait wait5Secs = new WebDriverWait(webDriver, 5);
         wait5Secs.until(ExpectedConditions.elementToBeClickable(namespaceInputField));
         namespaceInputField.click();
         namespaceInputField.clear();
+        // Enter the name of the namespace to create in th text field.
         namespaceInputField.sendKeys(myNamespace);
         webDriver.findElementByXPath("//button[@ng-click='createOrUpdateNamespace()']").click();
     }
@@ -110,6 +117,12 @@ public class SeleniumVortoHelper {
         webDriver.findElementByXPath("//uib-tab-heading[contains(.,'Namespaces')]").click();
     }
 
+    /**
+     * Login a user (see @{@link AuthenticationProviderMock})
+     *
+     * @param username the user name.
+     * @param password the password.
+     */
     public void loginWithUser(String username, String password) {
         webDriver.get(rootUrl + "/login");
         webDriver.findElementByName("username").sendKeys(username);
@@ -121,11 +134,30 @@ public class SeleniumVortoHelper {
         return this.webDriver;
     }
 
-    public String getTestFileContent(String fileName) throws IOException {
-        return Streams.asString(SeleniumVortoHelper.class.getResourceAsStream(fileName));
-    }
-
+    /**
+     * open the repository start page.
+     */
     public void gotoWelcomePage() {
         this.webDriver.get(rootUrl);
+    }
+
+    public void addUserToNamespace(String userToAdd, String namespace) {
+        openManageNamespacesTab();
+        WebElement namespaceFilterField = this.webDriver.findElementById("namespaceFilter");
+        namespaceFilterField.sendKeys(namespace);
+        // xpath selects the row with the namespace in it and finds the link to open the collaborators dialog
+        WebElement manageUsersLink = this.webDriver.findElementByXPath("//div[@class='ng-binding' and contains(.,'" + namespace + "')]/../../td/a[@ng-click='manageUsers(namespace)']");
+        manageUsersLink.click();
+        this.webDriver.findElementByXPath("//button[@ng-click='createOrUpdateUser(newUser())']").click();
+        WebElement userIdSearchBox = this.webDriver.findElementById("userId");
+        userIdSearchBox.clear();
+        userIdSearchBox.sendKeys(userToAdd);
+        this.webDriver.findElementById(userToAdd).click();
+        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelCreator']").click();
+        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelPromoter']").click();
+        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelReviewer']").click();
+        this.webDriver.findElementByXPath("//input[@ng-model='user.roleAdmin']").click();
+        this.webDriver.findElementById("submitButton").click();
+        this.webDriver.findElementByXPath("//button[contains(.,'Cancel')]").click();
     }
 }
