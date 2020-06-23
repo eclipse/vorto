@@ -181,7 +181,8 @@ public final class SearchTestInfrastructure {
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
 
-  UserRepositoryRoleService userRepositoryRoleService = Mockito.mock(UserRepositoryRoleService.class);
+  UserRepositoryRoleService userRepositoryRoleService = Mockito
+      .mock(UserRepositoryRoleService.class);
 
   PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
@@ -248,7 +249,8 @@ public final class SearchTestInfrastructure {
 
   private void setupNamespaceMocking() throws DoesNotExistException {
     //when(requestRepositorySessionHelper.()).thenReturn()
-    when(namespaceService.resolveWorkspaceIdForNamespace(anyString())).thenReturn(Optional.of("playground"));
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString()))
+        .thenReturn(Optional.of("playground"));
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
 
     List<String> workspaceIds = new ArrayList<>();
@@ -293,16 +295,23 @@ public final class SearchTestInfrastructure {
     roles.add(model_reviewer);
 
     when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
-    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class))).thenReturn(roles);
+    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
+        .thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
 
-    when(roleService.findAnyByName("model_viewer")).thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
-    when(roleService.findAnyByName("model_creator")).thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
-    when(roleService.findAnyByName("model_promoter")).thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
-    when(roleService.findAnyByName("model_reviewer")).thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
-    when(roleService.findAnyByName("model_publisher")).thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
-    when(roleService.findAnyByName("namespace_admin")).thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+    when(roleService.findAnyByName("model_viewer"))
+        .thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
+    when(roleService.findAnyByName("model_creator"))
+        .thenReturn(Optional.of(new NamespaceRole(2, "model_creator", 3)));
+    when(roleService.findAnyByName("model_promoter"))
+        .thenReturn(Optional.of(new NamespaceRole(4, "model_promoter", 3)));
+    when(roleService.findAnyByName("model_reviewer"))
+        .thenReturn(Optional.of(new NamespaceRole(8, "model_reviewer", 3)));
+    when(roleService.findAnyByName("model_publisher"))
+        .thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
+    when(roleService.findAnyByName("namespace_admin"))
+        .thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
     when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
 
     User alex = User.create("alex", "GITHUB", null);
@@ -320,7 +329,8 @@ public final class SearchTestInfrastructure {
     when(userRepository.findByUsername("promoter")).thenReturn(promoter);
     when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
     when(userRepository.findByUsername("publisher")).thenReturn(publisher);
-    when(userRepository.findAll()).thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
+    when(userRepository.findAll())
+        .thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
 
     when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
@@ -339,11 +349,14 @@ public final class SearchTestInfrastructure {
 
     when(userNamespaceRoleService.hasRole(eq(creator), any(), eq(model_creator))).thenReturn(true);
 
-    when(userNamespaceRoleService.hasRole(eq(promoter), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(promoter), any(), eq(model_promoter)))
+        .thenReturn(true);
 
-    when(userNamespaceRoleService.hasRole(eq(reviewer), any(), eq(model_reviewer))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(reviewer), any(), eq(model_reviewer)))
+        .thenReturn(true);
 
-    when(userNamespaceRoleService.hasRole(eq(publisher), any(), eq(model_publisher))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(publisher), any(), eq(model_publisher)))
+        .thenReturn(true);
   }
 
   private Namespace mockNamespace() {
@@ -396,9 +409,8 @@ public final class SearchTestInfrastructure {
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
-    accountService = new DefaultUserAccountService();
-    accountService.setNotificationService(notificationService);
-    accountService.setUserRepository(userRepository);
+    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+        userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
 
     modelParserFactory = new ModelParserFactory();
@@ -408,8 +420,9 @@ public final class SearchTestInfrastructure {
     config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(accountService, modelSearchUtil,
-        attachmentValidator, modelParserFactory, null, config, null, namespaceService, userNamespaceRoleService, privilegeService) {
+    repositoryFactory = new ModelRepositoryFactory(modelSearchUtil,
+        attachmentValidator, modelParserFactory, null, config, null, namespaceService,
+        userNamespaceRoleService, privilegeService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -451,7 +464,8 @@ public final class SearchTestInfrastructure {
     importer.setModelValidationHelper(modelValidationHelper);
 
     workflow =
-        new DefaultWorkflowService(repositoryFactory, accountService, notificationService, namespaceService, userNamespaceRoleService, roleService);
+        new DefaultWorkflowService(repositoryFactory, accountService, notificationService,
+            namespaceService, userNamespaceRoleService, roleService);
 
     MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
   }

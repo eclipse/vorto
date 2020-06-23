@@ -226,7 +226,7 @@ public abstract class UnitTestBase {
         .read(new ClassPathResource("vorto-repository.json").getPath());
 
     repositoryFactory =
-        new ModelRepositoryFactory(accountService, modelSearchUtil,
+        new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
             userNamespaceRoleService, privilegeService) {
 
@@ -253,9 +253,8 @@ public abstract class UnitTestBase {
   }
 
   protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
-    accountService = new DefaultUserAccountService();
-    accountService.setNotificationService(notificationService);
-    accountService.setUserRepository(userRepository);
+    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+        userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
   }
 

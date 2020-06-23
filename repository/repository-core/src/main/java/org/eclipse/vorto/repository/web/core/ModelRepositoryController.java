@@ -66,7 +66,9 @@ import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
@@ -129,6 +131,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
+
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
 
   private static final Logger LOGGER = Logger.getLogger(ModelRepositoryController.class);
 
@@ -463,7 +468,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       return new ResponseEntity<>(
           getPolicyManager(workspaceId).getPolicyEntries(modelID)
               .stream()
-              .filter(userHasPolicyEntry(user, workspaceId))
+              .filter(p -> userHasPolicyEntry(p, user, workspaceId))
               .collect(Collectors.toList()),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
@@ -487,7 +492,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     try {
       List<PolicyEntry> policyEntries =
           getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
-              .filter(userHasPolicyEntry(user, tenantId)).collect(Collectors.toList());
+              .filter(p -> userHasPolicyEntry(p, user, tenantId)).collect(Collectors.toList());
 
       return getBestPolicyEntryForUser(policyEntries)
           .map(p -> new ResponseEntity<>(p, HttpStatus.OK))
@@ -545,15 +550,21 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
             getWorkspaceId(ControllerUtils.sanitize(modelId)));
 
-    if (!userRepositoryRoleService.isSysadmin(user.getUsername()) &&
-        !accountService
-            .hasRole(user.getWorkspaceId(), user.getAuthentication(), "model_publisher")) {
-      return new ResponseEntity<>(
-          Status.fail("Only users with Publisher roles are allowed to make models public"),
-          HttpStatus.UNAUTHORIZED);
-    }
-
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    try {
+      if (!userRepositoryRoleService.isSysadmin(user.getUsername()) &&
+          !userNamespaceRoleService
+              .hasRole(user.getUsername(), modelID.getNamespace(), "model_publisher")) {
+        return new ResponseEntity<>(
+            Status.fail("Only users with Publisher roles are allowed to make models public"),
+            HttpStatus.UNAUTHORIZED);
+      }
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(
+          Status.fail(dnee.getMessage()),
+          HttpStatus.NOT_FOUND);
+    }
 
     if (modelID.getNamespace().startsWith(Namespace.PRIVATE_NAMESPACE_PREFIX)) {
       return new ResponseEntity<>(
@@ -588,11 +599,21 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     return getModelRepositoryFactory().getPolicyManager(tenantId, authentication);
   }
 
-  private Predicate<PolicyEntry> userHasPolicyEntry(Authentication user, String tenantId) {
-    return p -> (p.getPrincipalType() == PrincipalType.User
-        && p.getPrincipalId().equals(user.getName()))
-        || (p.getPrincipalType() == PrincipalType.Role
-        && accountService.hasRole(tenantId, user, p.getPrincipalId()));
+  private boolean userHasPolicyEntry(PolicyEntry policyEntry, Authentication user, String workspaceId) {
+    Namespace namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId);
+    if (policyEntry.getPrincipalType() == PrincipalType.User && policyEntry.getPrincipalId().equals(user.getName())) {
+      return true;
+    }
+    else if (policyEntry.getPrincipalType() == PrincipalType.Role) {
+      try {
+        return userNamespaceRoleService.hasRole(user.getName(), namespace.getName(), policyEntry.getPrincipalId());
+      }
+      catch (DoesNotExistException dnee) {
+        LOGGER.warn(dnee);
+        return false;
+      }
+    }
+    return false;
   }
 
   private Optional<PolicyEntry> getBestPolicyEntryForUser(List<PolicyEntry> policyEntries) {

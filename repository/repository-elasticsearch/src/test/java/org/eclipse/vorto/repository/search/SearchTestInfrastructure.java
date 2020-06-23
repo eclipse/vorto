@@ -407,7 +407,7 @@ public final class SearchTestInfrastructure {
     config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(accountService, null,
+    repositoryFactory = new ModelRepositoryFactory(null,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService,
         userNamespaceRoleService, privilegeService) {
 
@@ -449,9 +449,8 @@ public final class SearchTestInfrastructure {
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
-    accountService = new DefaultUserAccountService();
-    accountService.setNotificationService(notificationService);
-    accountService.setUserRepository(userRepository);
+    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+        userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
 
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
@@ -605,7 +604,8 @@ public final class SearchTestInfrastructure {
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
     when(namespaceRepository.findAll()).thenReturn(Arrays.asList(mockNamespace()));
     when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
-    when(userNamespaceRoleService.getNamespaces(anyString(), anyString())).thenReturn(Arrays.asList(mockNamespace()));
+    when(userNamespaceRoleService.getNamespaces(anyString(), anyString()))
+        .thenReturn(Arrays.asList(mockNamespace()));
     List<String> workspaceIds = new ArrayList<>();
     workspaceIds.add("playground");
     when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);

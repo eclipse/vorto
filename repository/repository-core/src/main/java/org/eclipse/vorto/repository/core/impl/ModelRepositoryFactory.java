@@ -25,7 +25,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -62,9 +61,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     ApplicationEventPublisherAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
-
-  @Autowired
-  private DefaultUserAccountService userAccountService;
 
   @Autowired
   private ModelSearchUtil modelSearchUtil;
@@ -111,7 +107,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   public ModelRepositoryFactory() {
   }
 
-  public ModelRepositoryFactory(DefaultUserAccountService userAccountService,
+  public ModelRepositoryFactory(
       ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory,
@@ -122,7 +118,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       UserNamespaceRoleService userNamespaceRoleService,
       PrivilegeService privilegeService
   ) {
-    this.userAccountService = userAccountService;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;

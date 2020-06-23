@@ -12,15 +12,15 @@
  */
 package org.eclipse.vorto.repository.web.security;
 
+import java.io.Serializable;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.tenant.TenantService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,29 +28,22 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
-import java.util.Optional;
-
 @Component
 public class HasPermissionEvaluator implements PermissionEvaluator {
 
   private IModelRepositoryFactory repositoryFactory;
-  
-  private DefaultUserAccountService accountService;
 
   private NamespaceService namespaceService;
 
-  private TenantService tenantService;
+  private UserNamespaceRoleService userNamespaceRoleService;
 
   public HasPermissionEvaluator(
       @Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired TenantService tenantService,
-      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
       @Autowired NamespaceService namespaceService) {
     this.repositoryFactory = repositoryFactory;
     this.namespaceService = namespaceService;
-    this.accountService = userAccountService;
-    this.tenantService = tenantService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
   @Override
@@ -63,8 +56,10 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
         try {
           ModelId modelId = (ModelId) targetDomainObject;
 
-          String workspaceId = namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace())
-              .orElseThrow(() -> new ModelNotFoundException("Model '" + modelId.getPrettyFormat() + "' can't be found in any workspace."));
+          String workspaceId = namespaceService
+              .resolveWorkspaceIdForNamespace(modelId.getNamespace())
+              .orElseThrow(() -> new ModelNotFoundException(
+                  "Model '" + modelId.getPrettyFormat() + "' can't be found in any workspace."));
 
           String permission = (String) targetPermission;
           ModelInfo modelInfo = repositoryFactory.getRepository(workspaceId, authentication)
@@ -87,8 +82,9 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
         ModelId modelId = (ModelId) targetDomainObject;
         Permission permission = (Permission) targetPermission;
         String workspaceId = namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace())
-            .orElseThrow(() -> new ModelNotFoundException("The workspace for '" + modelId.getPrettyFormat() + "' could not be found."));
-        
+            .orElseThrow(() -> new ModelNotFoundException(
+                "The workspace for '" + modelId.getPrettyFormat() + "' could not be found."));
+
         return repositoryFactory.getPolicyManager(workspaceId, authentication)
             .hasPermission(modelId, permission);
       }
@@ -103,18 +99,17 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
       String targetType, Object permission) {
 
     final String role = (String) permission;
-    
-    if (targetType.equals(Tenant.class.getName())) {
-      final String tenantId = (String) targetId;
-      return accountService.hasRole(tenantId, authentication, role);
-    } else if ("ModelId".equals(targetType)) {                                               
-      final ModelId modelId = ModelId.fromPrettyFormat((String) targetId);                   
-      Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
-      if (tenant.isPresent()) {                                                              
-        return accountService.hasRole(tenant.get().getTenantId(), authentication, role);     
-      } 
+
+    if ("ModelId".equals(targetType)) {
+      final ModelId modelId = ModelId.fromPrettyFormat((String) targetId);
+      try {
+        return userNamespaceRoleService
+            .hasRole(authentication.getName(), modelId.getNamespace(), role);
+      } catch (DoesNotExistException dnee) {
+        return false;
+      }
     }
-    
-    return false;  
+
+    return false;
   }
 }

@@ -68,148 +68,160 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
   private static final String STEREOTYPE_FUNCTIONS = "functions";
 
   private static final String STEREOTYPE_SOURCE = "source";
-  
+
   @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
-  
+
   @Autowired
   private IWorkflowService workflowService;
-  
-  private static Logger logger = Logger.getLogger(DefaultPayloadMappingService.class);
-  
+
+  private static final Logger LOGGER = Logger.getLogger(DefaultPayloadMappingService.class);
+
   public DefaultPayloadMappingService() {
   }
-  
-  public DefaultPayloadMappingService(IModelRepositoryFactory repositoryFactory, IWorkflowService workflowService) {
+
+  public DefaultPayloadMappingService(IModelRepositoryFactory repositoryFactory,
+      IWorkflowService workflowService) {
     this.modelRepositoryFactory = repositoryFactory;
     this.workflowService = workflowService;
   }
-  
+
   @Override
   public IMappingSpecification getOrCreateSpecification(ModelId modelId) {
-    ModelContent modelContent = getModelContent(modelId,createTargetPlatformKey(modelId));
-    
+    ModelContent modelContent = getModelContent(modelId, createTargetPlatformKey(modelId));
+
     Infomodel infomodel = (Infomodel) modelContent.getModels().get(modelContent.getRoot());
-        
+
     MappingSpecification specification = new MappingSpecification();
     specification.setInfoModel(infomodel);
-    addReferencesRecursive(infomodel,infomodel.getTargetPlatformKey()); 
+    addReferencesRecursive(infomodel, infomodel.getTargetPlatformKey());
     return specification;
   }
-  
+
   /**
-   * 
    * @param modelId
    * @return
    */
-  private String createTargetPlatformKey(ModelId modelId) {
+  private static String createTargetPlatformKey(ModelId modelId) {
     return modelId.getPrettyFormat().replace(".", "_").replace(":", "_");
   }
-  
+
   private ModelContent getModelContent(ModelId modelId, String targetPlatformKey) {
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);  
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(
+        this.modelRepositoryFactory);
     return converter.convert(modelId, Optional.of(targetPlatformKey));
   }
-  
+
   /**
    * Adds reference types of the given properties to the mapping Specification (needed for lookup)
+   *
    * @param model to traverse properties
    */
   private void addReferencesRecursive(IModel model, String targetPlatformKey) {
-    
+
     if (model instanceof Infomodel) {
-      Infomodel infomodel = (Infomodel)model;
+      Infomodel infomodel = (Infomodel) model;
       for (ModelProperty property : infomodel.getFunctionblocks()) {
-        ModelId referenceModelId = (ModelId)property.getType();
+        ModelId referenceModelId = (ModelId) property.getType();
         ModelId mappingId = property.getMappingReference();
         IModel referenceModel = null;
         if (mappingId != null) {
-          referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
+          referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),
+              mappingId.getPrettyFormat());
         } else {
-          ModelContent modelContent = getModelContent(referenceModelId,targetPlatformKey);
+          ModelContent modelContent = getModelContent(referenceModelId, targetPlatformKey);
           referenceModel = modelContent.getModels().get(modelContent.getRoot());
         }
-        property.setType((FunctionblockModel)referenceModel);
-        addReferencesRecursive(referenceModel,targetPlatformKey);
+        property.setType((FunctionblockModel) referenceModel);
+        addReferencesRecursive(referenceModel, targetPlatformKey);
       }
     } else if (model instanceof EntityModel) {
-      EntityModel entityModel = (EntityModel)model;
+      EntityModel entityModel = (EntityModel) model;
       for (ModelProperty property : entityModel.getProperties()) {
         initStereotypeIfMissing(property);
         if (property.getType() instanceof ModelId) {
-          ModelId referenceModelId = (ModelId)property.getType();
+          ModelId referenceModelId = (ModelId) property.getType();
           ModelId mappingId = property.getMappingReference();
           IModel referenceModel = null;
           if (mappingId != null) {
-            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
+            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),
+                mappingId.getPrettyFormat());
           } else {
-            ModelContent modelContent = getModelContent(referenceModelId,targetPlatformKey);
+            ModelContent modelContent = getModelContent(referenceModelId, targetPlatformKey);
             referenceModel = modelContent.getModels().get(modelContent.getRoot());
           }
           if (referenceModel instanceof EntityModel) {
-            property.setType((EntityModel)referenceModel);
-            addReferencesRecursive(referenceModel,targetPlatformKey);
+            property.setType((EntityModel) referenceModel);
+            addReferencesRecursive(referenceModel, targetPlatformKey);
           } else {
-            property.setType((EnumModel)referenceModel);
-          }     
-        }      
-      }
-    }  else if (model instanceof FunctionblockModel) {
-      FunctionblockModel fbModel = (FunctionblockModel)model;
-      for (ModelProperty property : fbModel.getProperties()) {
-        initStereotypeIfMissing(property);
-        if (property.getType() instanceof ModelId) {
-          ModelId referenceModelId = (ModelId)property.getType();
-          ModelId mappingId = property.getMappingReference();
-          IModel referenceModel = null;
-          if (mappingId != null) {
-            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),mappingId.getPrettyFormat());
-          } else {
-            ModelContent modelContent = getModelContent(referenceModelId,targetPlatformKey);
-            referenceModel = modelContent.getModels().get(modelContent.getRoot());
-          }
-          
-          if (referenceModel instanceof EntityModel) {
-            property.setType((EntityModel)referenceModel);
-            addReferencesRecursive(referenceModel,targetPlatformKey);
-          } else {
-            property.setType((EnumModel)referenceModel);
+            property.setType((EnumModel) referenceModel);
           }
         }
       }
-    }  
+    } else if (model instanceof FunctionblockModel) {
+      FunctionblockModel fbModel = (FunctionblockModel) model;
+      for (ModelProperty property : fbModel.getProperties()) {
+        initStereotypeIfMissing(property);
+        if (property.getType() instanceof ModelId) {
+          ModelId referenceModelId = (ModelId) property.getType();
+          ModelId mappingId = property.getMappingReference();
+          IModel referenceModel = null;
+          if (mappingId != null) {
+            referenceModel = getModelContentByModelAndMappingId(referenceModelId.getPrettyFormat(),
+                mappingId.getPrettyFormat());
+          } else {
+            ModelContent modelContent = getModelContent(referenceModelId, targetPlatformKey);
+            referenceModel = modelContent.getModels().get(modelContent.getRoot());
+          }
+
+          if (referenceModel instanceof EntityModel) {
+            property.setType((EntityModel) referenceModel);
+            addReferencesRecursive(referenceModel, targetPlatformKey);
+          } else {
+            property.setType((EnumModel) referenceModel);
+          }
+        }
+      }
+    }
   }
-  
+
   private IModel getModelContentByModelAndMappingId(final String _modelId,
       final @PathVariable String mappingId) {
-    
+
     final ModelId modelId = ModelId.fromPrettyFormat(_modelId);
     final ModelId mappingModelId = ModelId.fromPrettyFormat(mappingId);
     IModelRepository repository = this.modelRepositoryFactory.getRepositoryByModel(modelId);
 
     ModelInfo vortoModelInfo = repository.getById(modelId);
-    ModelInfo mappingModelInfo = this.modelRepositoryFactory.getRepositoryByModel(mappingModelId).getById(mappingModelId);
+    ModelInfo mappingModelInfo = this.modelRepositoryFactory.getRepositoryByModel(mappingModelId)
+        .getById(mappingModelId);
 
     if (vortoModelInfo == null) {
-      throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
+      throw new ModelNotFoundException(
+          String.format("Could not find vorto model with ID: %s", modelId));
     } else if (mappingModelInfo == null) {
-      throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
+      throw new ModelNotFoundException(
+          String.format("Could not find mapping with ID: %s", mappingId));
 
     }
 
     IModelWorkspace mappingWorkspace = getWorkspaceForModel(mappingModelInfo.getId());
 
-    Optional<Model> model = mappingWorkspace.get().stream().filter(_model -> ModelUtils.fromEMFModelId(ModelIdFactory.newInstance(_model)).equals(vortoModelInfo.getId())).findFirst();
+    Optional<Model> model = mappingWorkspace.get().stream().filter(
+        _model -> ModelUtils.fromEMFModelId(ModelIdFactory.newInstance(_model))
+            .equals(vortoModelInfo.getId())).findFirst();
     if (model.isPresent()) {
-      
+
       final Model flattenedModel = ModelConversionUtils.convertToFlatHierarchy(model.get());
-      return ModelDtoFactory.createResource(flattenedModel, Optional.of((MappingModel) mappingWorkspace.get()
-          .stream().filter(_model -> _model instanceof MappingModel && mappingMatchesModelId((MappingModel)_model, vortoModelInfo)).findFirst().get()));
+      return ModelDtoFactory
+          .createResource(flattenedModel, Optional.of((MappingModel) mappingWorkspace.get()
+              .stream().filter(_model -> _model instanceof MappingModel && mappingMatchesModelId(
+                  (MappingModel) _model, vortoModelInfo)).findFirst().get()));
     } else {
       return null;
     }
   }
-  
+
   private IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
     List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
     DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
@@ -229,7 +241,8 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
     List<ModelInfo> modelInfos = new ArrayList<>();
 
-    ModelInfo modelResource = this.modelRepositoryFactory.getRepositoryByModel(modelId).getById(modelId);
+    ModelInfo modelResource = this.modelRepositoryFactory.getRepositoryByModel(modelId)
+        .getById(modelId);
     modelInfos.add(modelResource);
 
     for (ModelId reference : modelResource.getReferences()) {
@@ -239,10 +252,12 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
     return modelInfos;
   }
 
-  private boolean mappingMatchesModelId(MappingModel mappingModel, ModelInfo modelToMatchAgainst) {  
-    return mappingModel.getReferences().stream().filter(reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion()).equals(modelToMatchAgainst.getId())).count() > 0;    
+  private boolean mappingMatchesModelId(MappingModel mappingModel, ModelInfo modelToMatchAgainst) {
+    return mappingModel.getReferences().stream().filter(
+        reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion())
+            .equals(modelToMatchAgainst.getId())).count() > 0;
   }
-  
+
   private void initStereotypeIfMissing(ModelProperty property) {
     if (!property.getStereotype(STEREOTYPE_SOURCE).isPresent()) {
       property.addStereotype(Stereotype.createWithXpath(EMPTY_STRING));
@@ -251,13 +266,14 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
       unescapeMappingAttributesForStereotype(property, STEREOTYPE_SOURCE);
     }
   }
-  
+
   private void unescapeMappingAttributesForStereotype(ModelProperty property, String stereotype) {
     if (property.getStereotype(stereotype).isPresent()) {
-      property.getStereotype(stereotype).get().setAttributes(unescapeExpression(property.getStereotype(stereotype).get().getAttributes()));
+      property.getStereotype(stereotype).get().setAttributes(
+          unescapeExpression(property.getStereotype(stereotype).get().getAttributes()));
     }
   }
-  
+
   private Map<String, String> unescapeExpression(Map<String, String> attributes) {
     Map<String, String> unescapedAttributes = new HashMap<String, String>(attributes.size());
     for (String key : attributes.keySet()) {
@@ -270,21 +286,22 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
   @Override
   public void saveSpecification(IMappingSpecification specification, IUserContext user) {
     MappingSpecificationSerializer.create(specification).iterator()
-    .forEachRemaining(serializer -> {
-      final ModelId createdModelId = serializer.getModelId();
-      
-      String serializedMapping = serializer.serialize();
-      logger.trace("Saving mapping: "+serializedMapping);
-      this.modelRepositoryFactory.getRepositoryByModel(createdModelId).save(createdModelId, serializedMapping.getBytes(),
-          createdModelId.getName() + ".mapping", user,false);
-      
-      try {
-        workflowService.start(createdModelId, user);
-      } catch (WorkflowException e) {
-        throw new RuntimeException("Could not start workflow for mapping model",e);
-      }
-      
-    }); 
+        .forEachRemaining(serializer -> {
+          final ModelId createdModelId = serializer.getModelId();
+
+          String serializedMapping = serializer.serialize();
+          LOGGER.trace(String.format("Saving mapping: %s", serializedMapping));
+          this.modelRepositoryFactory.getRepositoryByModel(createdModelId)
+              .save(createdModelId, serializedMapping.getBytes(),
+                  createdModelId.getName() + ".mapping", user, false);
+
+          try {
+            workflowService.start(createdModelId, user);
+          } catch (WorkflowException e) {
+            throw new RuntimeException("Could not start workflow for mapping model", e);
+          }
+
+        });
   }
 
   @Override
@@ -295,14 +312,17 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
 
   @Override
   public Optional<ModelInfo> resolveMappingIdForModelId(ModelId modelId) {
-     return this.modelRepositoryFactory.getRepositoryByModel(modelId)
-      .getMappingModelsForTargetPlatform(modelId, createTargetPlatformKey(modelId),Optional.of(modelId.getVersion())).stream()
-      .filter(modelInfo -> modelInfo.getReferences().contains(modelId)).findAny();
+    return this.modelRepositoryFactory.getRepositoryByModel(modelId)
+        .getMappingModelsForTargetPlatform(modelId, createTargetPlatformKey(modelId),
+            Optional.of(modelId.getVersion())).stream()
+        .filter(modelInfo -> modelInfo.getReferences().contains(modelId)).findAny();
   }
 
   @Override
   public boolean exists(ModelId modelId) {
-    return !this.modelRepositoryFactory.getRepositoryByModel(modelId).getMappingModelsForTargetPlatform(modelId, createTargetPlatformKey(modelId),Optional.of(modelId.getVersion())).isEmpty();
+    return !this.modelRepositoryFactory.getRepositoryByModel(modelId)
+        .getMappingModelsForTargetPlatform(modelId, createTargetPlatformKey(modelId),
+            Optional.of(modelId.getVersion())).isEmpty();
   }
 
 }
