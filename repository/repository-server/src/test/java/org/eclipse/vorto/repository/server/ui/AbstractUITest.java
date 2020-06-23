@@ -10,11 +10,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.it.ui;
+package org.eclipse.vorto.repository.server.ui;
 
-import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -37,14 +37,14 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles( profiles={"local-ui-test"})
+@ActiveProfiles(profiles={"local-ui-test"})
 @SpringBootTest(classes = VortoRepository.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // https://github.com/spring-projects/spring-boot/issues/12280
 @TestPropertySource(properties = {"repo.configFile = vorto-repository-config-h2.json"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(initializers = AbstractUITest.Initializer.class)
-public abstract class AbstractUITest extends AbstractIntegrationTest {
+public abstract class AbstractUITest {
 
     @LocalServerPort
     protected int port;
@@ -62,12 +62,22 @@ public abstract class AbstractUITest extends AbstractIntegrationTest {
                     .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL, new File("./target/"))
                     .withCapabilities(DesiredCapabilities.chrome());
 
+    @BeforeClass
+    public static void configureOAuthConfiguration() {
+        System.setProperty("github_clientid", "foo");
+        System.setProperty("github_clientSecret", "foo");
+        System.setProperty("eidp_clientid", "foo");
+        System.setProperty("eidp_clientSecret", "foo");
+        System.setProperty("line.separator", "\n");
+    }
+
     @Before
     public void setRootUrl() throws Exception {
         rootUrl = String.format("http://host.testcontainers.internal:%d", port);
         chrome.getWebDriver().manage().deleteAllCookies();
         chrome.getWebDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.seleniumVortoHelper = new SeleniumVortoHelper(chrome.getWebDriver(), rootUrl);
+        setUpTest();
     }
 
     /**
@@ -81,5 +91,8 @@ public abstract class AbstractUITest extends AbstractIntegrationTest {
             });
         }
     }
+
+
+    protected abstract void setUpTest() throws Exception;
 
 }

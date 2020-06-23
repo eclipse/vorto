@@ -10,21 +10,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.it.ui;
+package org.eclipse.vorto.repository.server.ui;
 
-import com.sun.mail.iap.ByteArray;
-import org.apache.commons.fileupload.util.Streams;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Assert;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * Helper class for vorto repository Selenium tests.

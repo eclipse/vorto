@@ -53,6 +53,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -71,6 +72,7 @@ import org.springframework.web.context.WebApplicationContext;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // https://github.com/spring-projects/spring-boot/issues/12280
 @TestPropertySource(properties = {"repo.configFile = vorto-repository-config-h2.json"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractIntegrationTest {
 
   protected MockMvc repositoryServer;

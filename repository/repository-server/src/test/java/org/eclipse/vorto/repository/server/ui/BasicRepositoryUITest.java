@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.it.ui;
+package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
@@ -32,7 +32,7 @@ import static org.eclipse.vorto.repository.domain.Role.*;
  * wiped after each test method.
  *
  */
-public class BasicRepositoryUITests extends AbstractUITest{
+public class BasicRepositoryUITest extends AbstractUITest {
 
     /**
      * Tests if the title is correct.
@@ -120,7 +120,7 @@ public class BasicRepositoryUITests extends AbstractUITest{
      * Tests if non-published models become visible when logged in.
      */
     @Test
-    public void testVisibleModels() throws Exception {
+    public void testVisibleModels() {
         // create an info model
         testCreateInfoModel();
         // login with user2 who should not be able to see the unpublished model
@@ -140,7 +140,6 @@ public class BasicRepositoryUITests extends AbstractUITest{
     /**
      * Tests if a user is able to see the private model of another user after added as collaborator.
      *
-     * @throws Exception
      */
     @Test
     public void testAddCollaboratorToNamespace() throws Exception {
@@ -151,8 +150,8 @@ public class BasicRepositoryUITests extends AbstractUITest{
         this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
     }
 
-    @Override
-    protected void setUpTest() throws Exception {
+
+    protected void setUpTest() {
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)), "user1");
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(

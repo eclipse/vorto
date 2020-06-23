@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.it.ui;
+package org.eclipse.vorto.repository.server.ui;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({BasicRepositoryUITests.class})
+@SuiteClasses({BasicRepositoryUITest.class})
 public class AllTests {
 
 }

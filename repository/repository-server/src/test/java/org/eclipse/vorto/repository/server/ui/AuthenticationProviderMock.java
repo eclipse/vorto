@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.it.ui;
+package org.eclipse.vorto.repository.server.ui;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A mock authentication provider which except all usernames and password. The granted authorities for a specific
+ * A mock authentication provider which excepts all usernames and passwords. The granted authorities for a specific
  * test user can be configured.
  */
 @Profile("local-ui-test")
