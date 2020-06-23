@@ -442,7 +442,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   private void deleteModeshapeWorkspace(Namespace currentNamespace) {
     IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(currentNamespace.getWorkspaceId(),
         SecurityContextHolder.getContext().getAuthentication());
-    repoMgr.removeTenantWorkspace(currentNamespace.getWorkspaceId());
+    repoMgr.removeWorkspace(currentNamespace.getWorkspaceId());
   }
 
   private Optional<Namespace> filterAllNamespacesByName(String namespace) {

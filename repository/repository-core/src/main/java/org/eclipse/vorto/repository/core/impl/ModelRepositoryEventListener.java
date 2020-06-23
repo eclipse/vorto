@@ -59,7 +59,7 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
     IRepositoryManager repoMgr = repositoryFactory
         .getRepositoryManager(userContext.getWorkspaceId(),
             userContext.getAuthentication());
-    repoMgr.createTenantWorkspace(userContext.getWorkspaceId());
+    repoMgr.createWorkspace(userContext.getWorkspaceId());
   }
 
   private void makeModelsAnonymous(AppEvent event) {

@@ -14,25 +14,25 @@ package org.eclipse.vorto.repository.backup;
 
 import java.util.Collection;
 import java.util.function.Predicate;
-import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.Namespace;
 
 public interface IBackupRestoreService {
-  
+
   /**
-   * Creates a zipped backup for tenants who passed the tenantFilter 
-   * 
-   * @param tenantFilter a predicate that determines who among the tenants are placed in the backup
+   * Creates a zipped backup for tenants who passed the tenantFilter
+   *
+   * @param namespaceFilter a predicate that determines who among the namespaces are placed in the backup
    * @return a byte array for a zip file that contains the backup
    */
-  byte[] createBackup(Predicate<Tenant> tenantFilter);
-  
+  byte[] createBackup(Predicate<Namespace> namespaceFilter);
+
   /**
    * Restores the given backup file to its tenants
-   * 
-   * @param backupFile the zipped backup file
-   * @param tenantFilter a filter for which tenants to restore. If you want to restore to all tenants, 
-   * pass a predicate that returns true
+   *
+   * @param backupFile      the zipped backup file
+   * @param namespaceFilter a filter for which namespaces to restore. If you want to restore to all
+   *                        namespaces, pass a predicate that returns {@literal true}.
    * @return collection of tenants restored
    */
-  Collection<Tenant> restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter);
+  Collection<Namespace> restoreRepository(byte[] backupFile, Predicate<Namespace> namespaceFilter);
 }

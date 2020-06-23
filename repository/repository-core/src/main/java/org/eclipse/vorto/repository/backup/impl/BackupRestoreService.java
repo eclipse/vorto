@@ -12,14 +12,14 @@
  */
 package org.eclipse.vorto.repository.backup.impl;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -30,9 +30,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.backup.IBackupRestoreService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.modeshape.common.collection.ImmutableMapEntry;
@@ -40,60 +40,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 @Component
 public class BackupRestoreService implements IBackupRestoreService {
 
-  private static Logger logger = Logger.getLogger(BackupRestoreService.class);
-  
-  private static Function<Tenant, String> tenantSignature = (tenant) -> 
-    tenant.getNamespaces().iterator().next().getName();
-  
+  private static final Logger LOGGER = Logger.getLogger(BackupRestoreService.class);
+
   private IModelRepositoryFactory modelRepositoryFactory;
-  
-  private ITenantService tenantService;
-  
+
   private IIndexingService indexingService;
-  
-  private Supplier<Authentication> authSupplier = 
+
+  private NamespaceRepository namespaceRepository;
+
+  private Supplier<Authentication> authSupplier =
       () -> SecurityContextHolder.getContext().getAuthentication();
-  
+
   public BackupRestoreService(@Autowired IModelRepositoryFactory modelRepositoryFactory,
-      @Autowired ITenantService tenantService, @Autowired IIndexingService indexingService) {
+      @Autowired IIndexingService indexingService,
+      @Autowired NamespaceRepository namespaceRepository) {
     this.modelRepositoryFactory = modelRepositoryFactory;
-    this.tenantService = tenantService;
     this.indexingService = indexingService;
+    this.namespaceRepository = namespaceRepository;
   }
-  
+
   @Override
-  public byte[] createBackup(Predicate<Tenant> tenantFilter) {
-    return createZippedInputStream(createBackups(tenantFilter));
+  public byte[] createBackup(Predicate<Namespace> namespaceFilter) {
+    return createZippedInputStream(createBackups(namespaceFilter));
   }
-  
-  private Map<String, byte[]> createBackups(Predicate<Tenant> tenantFilter) {
-    return createBackups(tenantService.getTenants()
+
+  private Map<String, byte[]> createBackups(Predicate<Namespace> namespaceFilter) {
+    return createBackups(namespaceRepository.findAll()
         .stream()
-        .filter(tenantFilter)
+        .filter(namespaceFilter)
         .collect(Collectors.toList()));
   }
-  
-  private Map<String, byte[]> createBackups(Collection<Tenant> tenants) {
-  return tenants.stream()
-      .map(tenant -> 
-        new ImmutableMapEntry<String, byte[]>(
-            tenantSignature.apply(tenant), 
-            modelRepositoryFactory.getRepositoryManager(tenant.getTenantId(), authSupplier.get()).backup())
-      ).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+
+  private Map<String, byte[]> createBackups(Collection<Namespace> namespaces) {
+    return namespaces.stream()
+        .map(namespace ->
+            new ImmutableMapEntry<>(
+                namespace.getName(),
+                modelRepositoryFactory
+                    .getRepositoryManager(namespace.getWorkspaceId(), authSupplier.get()).backup())
+        ).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
   }
-  
+
   private byte[] createZippedInputStream(Map<String, byte[]> backups) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ZipOutputStream zos = new ZipOutputStream(baos);
 
     try {
-      for(Map.Entry<String, byte[]> entry : backups.entrySet()) {
+      for (Map.Entry<String, byte[]> entry : backups.entrySet()) {
         ZipEntry zipEntry = new ZipEntry(entry.getKey() + ".xml");
         zos.putNextEntry(zipEntry);
         zos.write(entry.getValue());
@@ -109,68 +106,74 @@ public class BackupRestoreService implements IBackupRestoreService {
       throw new GenericApplicationException("Error while generating zip file.", ex);
     }
   }
-  
+
   @Override
-  public Collection<Tenant> restoreRepository(byte[] backupFile, Predicate<Tenant> tenantFilter) {
-    Preconditions.checkNotNull(backupFile, "backupFile must not be null");
+  public Collection<Namespace> restoreRepository(byte[] backupFile,
+      Predicate<Namespace> namespaceFilter) {
+    Preconditions.checkNotNull(backupFile, "Backup file must not be null");
     try {
-      Collection<Tenant> tenantsRestored = Lists.newArrayList();
+      Collection<Namespace> namespacesRestored = Lists.newArrayList();
       Map<String, byte[]> backups = getBackups(backupFile);
-      
-      backups.forEach((namespace, backup) -> {
-        logger.info("Restoring backup for '" + namespace + "'");
-        Optional<Tenant> tenant = tenantService.getTenantFromNamespace(namespace);
-        if (tenant.isPresent() && tenantFilter.test(tenant.get())) {
+
+      backups.forEach((namespaceName, backup) -> {
+        LOGGER.info(String.format("Restoring backup for [%s]", namespaceName));
+        Namespace namespace = namespaceRepository.findByName(namespaceName);
+        if (null != namespace && namespaceFilter.test(namespace)) {
           try {
-            String tenantId = tenant.get().getTenantId();
-            IRepositoryManager repoMgr = modelRepositoryFactory.getRepositoryManager(tenantId, authSupplier.get()); 
-            
-            if (!repoMgr.isWorkspaceExist(tenantId)) {
-              repoMgr.createTenantWorkspace(tenantId);
+            String workspaceId = namespace.getWorkspaceId();
+            IRepositoryManager repoMgr = modelRepositoryFactory
+                .getRepositoryManager(workspaceId, authSupplier.get());
+
+            if (!repoMgr.exists(workspaceId)) {
+              repoMgr.createWorkspace(workspaceId);
             } else {
-              repoMgr.removeTenantWorkspace(tenantId);
-              repoMgr.createTenantWorkspace(tenantId);
+              repoMgr.removeWorkspace(workspaceId);
+              repoMgr.createWorkspace(workspaceId);
             }
-            
+
             repoMgr.restore(backup);
-            this.modelRepositoryFactory.getPolicyManager(tenantId, SecurityContextHolder.getContext().getAuthentication()).restorePolicyEntries();
-            tenantsRestored.add(tenant.get());
+            this.modelRepositoryFactory.getPolicyManager(workspaceId,
+                SecurityContextHolder.getContext().getAuthentication()).restorePolicyEntries();
+            namespacesRestored.add(namespace);
           } catch (Exception e) {
-            logger.error("Error in restoration of '" + namespace + "'", e);
+            LOGGER.error(String.format("Error while restoring [%s]", namespaceName), e);
           }
         } else {
-          logger.info("Skipping restoration of '" + namespace + "' either because the tenant could not be found, or is filtered.");
+          LOGGER.info(String.format(
+              "Skipping restoration of [%s] either because the namespace could not be found, or was filtered out.",
+              namespaceName));
         }
       });
-            
-      if (!tenantsRestored.isEmpty()) {
+
+      if (!namespacesRestored.isEmpty()) {
         indexingService.reindexAllModels();
       }
-      
-      return tenantsRestored;
-      
+
+      return namespacesRestored;
+
     } catch (IOException e) {
       throw new GenericApplicationException("Problem while reading zip file during restore", e);
     }
   }
-  
+
   private Map<String, byte[]> getBackups(byte[] file) throws IOException {
     Map<String, byte[]> backups = new HashMap<>();
-    
+
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(file));
     ZipEntry entry = null;
-    
+
     while ((entry = zis.getNextEntry()) != null) {
       if (!entry.isDirectory()
           && !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
-        String namespace = entry.getName().substring(entry.getName().lastIndexOf("/") + 1).replace(".xml", "");
+        String namespace = entry.getName().substring(entry.getName().lastIndexOf("/") + 1)
+            .replace(".xml", "");
         backups.put(namespace, ZipUtils.copyStream(zis, entry));
       }
     }
-    
+
     return backups;
   }
-  
+
   public Supplier<Authentication> getAuthSupplier() {
     return authSupplier;
   }

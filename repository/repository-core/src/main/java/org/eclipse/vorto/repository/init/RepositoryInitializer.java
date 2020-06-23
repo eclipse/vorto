@@ -100,7 +100,7 @@ public class RepositoryInitializer {
   private void createWorkspaceIfNotExisting(Tenant tenant) {
     logger.info("Creating workspace for '" + tenant.getTenantId() + "' if NOT existing.");
     IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(null, null);
-    repoMgr.createTenantWorkspace(tenant.getTenantId());
+    repoMgr.createWorkspace(tenant.getTenantId());
   }
 
   private IUserContext createAdminContext(String userId, String tenantId) {
