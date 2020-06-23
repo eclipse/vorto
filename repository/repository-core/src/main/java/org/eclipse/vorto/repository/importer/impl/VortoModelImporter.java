@@ -12,6 +12,20 @@
  */
 package org.eclipse.vorto.repository.importer.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
@@ -29,30 +43,18 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
 /**
  * Imports (a bulk of) Vorto DSL Files to the Vorto Repository
- *
  */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
-  
-  
-  @Autowired
-  private ITenantService tenantService;
+
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
@@ -87,14 +89,19 @@ public class VortoModelImporter extends AbstractModelImporter {
         ModelWorkspaceReader reader = IModelWorkspace.newReader();
         getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
             .forEach(extractedFile -> {
-              reader.addFile(new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()), ModelType.fromFileName(extractedFile.getFileExtension()));
+              reader.addFile(
+                  new ByteArrayInputStream(addVortolangIfMissing(extractedFile).getContent()),
+                  ModelType.fromFileName(extractedFile.getFileExtension()));
             });
-        IModelWorkspace workspace = reader.read();  
-        ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(context.getTargetNamespace().get()).execute();
+        IModelWorkspace workspace = reader.read();
+        ChangeSet changeSet = RefactoringTask.from(workspace)
+            .toNamespaceForAllModels(context.getTargetNamespace().get()).execute();
         ZipUploadFile zipFile = new ZipUploadFile(fileUpload.getFileName());
         for (Model model : changeSet.get()) {
           ModelResource resource = new ModelResource(model);
-          zipFile.addToZip(FileUpload.create(resource.getId().getPrettyFormat().replace("\\.", "_")+resource.getType().getExtension(), resource.toDSL()));
+          zipFile.addToZip(FileUpload.create(
+              resource.getId().getPrettyFormat().replace("\\.", "_") + resource.getType()
+                  .getExtension(), resource.toDSL()));
         }
         return zipFile.getFileUpload();
       } else {
@@ -104,20 +111,21 @@ public class VortoModelImporter extends AbstractModelImporter {
       return addVortolangIfMissing(fileUpload);
     }
   }
-  
+
   /**
    * adds Vortolang 1.0 attribute if the uploaded file does not define it.
+   *
    * @param fileUpload
    * @return
    */
   private FileUpload addVortolangIfMissing(FileUpload fileUpload) {
     String currentModelContent = null;
     try {
-      currentModelContent = new String(fileUpload.getContent(),"utf-8");
+      currentModelContent = new String(fileUpload.getContent(), "utf-8");
     } catch (UnsupportedEncodingException e1) {
-        // ignore as encoding is supported
+      // ignore as encoding is supported
     }
-    
+
     if (!currentModelContent.contains("vortolang 1.0")) {
       final String newline = System.getProperty("line.separator");
       StringBuilder contentBuilder = new StringBuilder();
@@ -127,15 +135,16 @@ public class VortoModelImporter extends AbstractModelImporter {
       contentBuilder.append(currentModelContent);
       currentModelContent = contentBuilder.toString();
     }
-    
+
     return FileUpload.create(fileUpload.getFileName(), currentModelContent.getBytes());
   }
 
-  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) { 
+  private FileUpload refactor(FileUpload fileUpload, String targetNamespace) {
     IModelWorkspace workspace =
         IModelWorkspace.newReader().addFile(new ByteArrayInputStream(fileUpload.getContent()),
             ModelType.fromFileName(fileUpload.getFileName())).read();
-    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(targetNamespace).execute();
+    ChangeSet changeSet = RefactoringTask.from(workspace).toNamespaceForAllModels(targetNamespace)
+        .execute();
     ModelResource resource = new ModelResource(changeSet.get().get(0));
     return FileUpload.create(fileUpload.getFileName(), resource.toDSL());
   }
@@ -144,13 +153,15 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, Context context) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepoFactory(), getUserRepository(), userNamespaceRoleService, userRepositoryRoleService);
+          new BulkUploadHelper(getModelRepoFactory(), getUserAccountService(),
+              userNamespaceRoleService, userRepositoryRoleService);
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           context.getUser());
     } else {
       try {
         final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(), fileUpload.getContent());
-        return Arrays.asList(modelValidationHelper.validateModelCreation(modelInfo, context.getUser()));
+        return Arrays
+            .asList(modelValidationHelper.validateModelCreation(modelInfo, context.getUser()));
       } catch (ValidationException ex) {
         return Arrays.asList(ValidationReport.invalid(null, ex));
       }
@@ -163,7 +174,9 @@ public class VortoModelImporter extends AbstractModelImporter {
 
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       Collection<FileContent> fileContents = getFileContents(fileUpload);
-      result.addAll(fileContents.stream().map(fileContent -> (ModelResource)getModelParserFactory().getParser(fileContent.getFileName()).parse(new ByteArrayInputStream(fileContent.getContent()))).collect(Collectors.toList()));
+      result.addAll(fileContents.stream().map(fileContent -> (ModelResource) getModelParserFactory()
+          .getParser(fileContent.getFileName())
+          .parse(new ByteArrayInputStream(fileContent.getContent()))).collect(Collectors.toList()));
     } else {
       final ModelResource modelInfo =
           (ModelResource) getModelParserFactory().getParser(fileUpload.getFileExtension())
@@ -251,14 +264,6 @@ public class VortoModelImporter extends AbstractModelImporter {
 
       return FileUpload.create(fileName, baos.toByteArray());
     }
-  }
-
-  public ITenantService getTenantService() {
-    return tenantService;
-  }
-
-  public void setTenantService(ITenantService tenantService) {
-    this.tenantService = tenantService;
   }
 
   public void setUserNamespaceRoleService(

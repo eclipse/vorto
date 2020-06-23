@@ -445,7 +445,7 @@ public final class SearchTestInfrastructure {
 
     importer = new VortoModelImporter();
     importer.setUploadStorage(new InMemoryTemporaryStorage());
-    importer.setUserRepository(accountService);
+    importer.setUserAccountService(accountService);
     importer.setModelParserFactory(modelParserFactory);
     importer.setModelRepoFactory(repositoryFactory);
     importer.setModelValidationHelper(modelValidationHelper);

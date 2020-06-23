@@ -91,7 +91,7 @@ public class PluginConfiguration {
     importer.setModelParserFactory(this.modelParserFactory);
     importer.setModelRepoFactory(this.modelRepositoryFactory);
     importer.setUploadStorage(fileStorage);
-    importer.setUserRepository(userAccountService);
+    importer.setUserAccountService(userAccountService);
     importer.setRestTemplate(restTemplate);
     return importer;
   }

@@ -142,7 +142,7 @@ public class ModelBulkImportTest extends UnitTestBase {
     // vortoImporter.setTenantUserService(tenantUserService);
 
     vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
-    vortoImporter.setUserRepository(accountService);
+    vortoImporter.setUserAccountService(accountService);
 
     UploadModelResult uploadResult = vortoImporter.upload(
         FileUpload.create("sample_models/lwm2m/lwm2m.zip",

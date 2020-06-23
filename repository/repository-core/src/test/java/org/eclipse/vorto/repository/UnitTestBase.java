@@ -268,7 +268,7 @@ public abstract class UnitTestBase {
   protected void mockImporter(ModelRepositoryFactory modelRepositoryFactory) {
     this.importer = new VortoModelImporter();
     this.importer.setUploadStorage(new InMemoryTemporaryStorage());
-    this.importer.setUserRepository(this.accountService);
+    this.importer.setUserAccountService(this.accountService);
     this.importer.setModelParserFactory(modelParserFactory);
     this.importer.setModelRepoFactory(modelRepositoryFactory);
     this.importer.setModelValidationHelper(modelValidationHelper);

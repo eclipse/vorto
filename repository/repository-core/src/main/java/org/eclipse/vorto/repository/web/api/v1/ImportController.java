@@ -43,7 +43,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -87,7 +86,7 @@ public class ImportController extends AbstractRepositoryController {
       throw new UploadTooLargeException("model", maxModelSize);
     }
 
-    LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
+    LOGGER.info(String.format("uploadModel: [%s]", file.getOriginalFilename()));
     try {
       IModelImporter importer = importerService.getImporterByKey(key).get();
 
@@ -119,7 +118,7 @@ public class ImportController extends AbstractRepositoryController {
           required = true) final @PathVariable String handleId,
       @RequestParam("key") String key,
       @RequestParam(required = true, value = "targetNamespace") String targetNamespace) {
-    LOGGER.info("Importing Model with handleID " + handleId);
+    LOGGER.info(String.format("Importing Model with handleID %s", handleId));
     try {
 
       IModelImporter importer = importerService.getImporterByKey(key).get();
@@ -132,8 +131,8 @@ public class ImportController extends AbstractRepositoryController {
 
       return new ResponseEntity<>(importedModels, HttpStatus.OK);
     } catch (Exception e) {
-      LOGGER.error("Error Importing model. " + handleId, e);
-      throw new IllegalArgumentException("Could not import with handle ID " + handleId, e);
+      LOGGER.error(String.format("Error Importing model. %s", handleId), e);
+      throw new IllegalArgumentException(String.format("Could not import with handle ID %s", handleId), e);
     }
   }
 
