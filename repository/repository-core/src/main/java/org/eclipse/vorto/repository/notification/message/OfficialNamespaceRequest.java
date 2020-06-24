@@ -18,26 +18,26 @@ import org.eclipse.vorto.repository.domain.User;
 
 public class OfficialNamespaceRequest extends AbstractMessage {
 
-  private String tenantId;
+  private String workspaceId;
   private String namespace;
   private String requestingUser;
   private Date requestDate;
 
-  public OfficialNamespaceRequest(User recipient, String tenantId, String namespace,
+  public OfficialNamespaceRequest(User recipient, String workspaceId, String namespace,
       String username, Date dateRequested) {
     super(recipient);
-    this.tenantId = tenantId;
+    this.workspaceId = workspaceId;
     this.namespace = namespace;
     this.requestingUser = username;
     this.requestDate = dateRequested;
   }
 
-  public String getTenantId() {
-    return tenantId;
+  public String getWorkspaceId() {
+    return workspaceId;
   }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
+  public void setWorkspaceId(String workspaceId) {
+    this.workspaceId = workspaceId;
   }
 
   public String getNamespace() {
@@ -73,13 +73,13 @@ public class OfficialNamespaceRequest extends AbstractMessage {
   public String getContent() {
     return String.format(
         "User '%s' has requested the official namespace '%s' for tenant '%s' on '%s'",
-        requestingUser, namespace, tenantId,
+        requestingUser, namespace, workspaceId,
         new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(requestDate));
   }
 
   @Override
   public String toString() {
-    return "OfficialNamespaceRequest [tenantId=" + tenantId + ", namespace=" + namespace
+    return "OfficialNamespaceRequest [tenantId=" + workspaceId + ", namespace=" + namespace
         + ", requestingUser=" + requestingUser + ", requestDate=" + requestDate + "]";
   }
 }

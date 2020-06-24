@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Logger;
@@ -36,7 +35,6 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.extractor.BasicIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
@@ -513,7 +511,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   @Override
-  public void deleteIndexForTenant(String workspaceId) {
+  public void deleteIndexForWorkspace(String workspaceId) {
     deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, workspaceId));
   }
 
@@ -667,14 +665,6 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private Predicate<Tenant> getUserFilter(IUserContext userContext) {
-    if (userContext.isSysAdmin()) {
-      return tenant -> true;
-    } else {
-      return tenant -> tenant.hasUser(userContext.getUsername());
-    }
-  }
-
   private ModelInfo fromSearchHit(SearchHit searchHit) {
     ModelInfo modelInfo = new ModelInfo();
 
@@ -709,6 +699,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     return QueryBuilders.termQuery(BasicIndexFieldExtractor.VISIBILITY, PUBLIC);
   }
 
+  @Deprecated
   private static QueryBuilder isOwnedByTenants(Collection<String> tenants) {
     return QueryBuilders.termsQuery(TENANT_ID, tenants);
   }
@@ -819,7 +810,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     BoolQueryBuilder result = QueryBuilders.boolQuery();
 
     // adding tenant ids
-    Set<String> tenantIds = parameters.getTenantIds();
+    Set<String> tenantIds = parameters.getWorkspaceIds();
     if (tenantIds.isEmpty()) {
       result = result.must(isPublic());
     } else {

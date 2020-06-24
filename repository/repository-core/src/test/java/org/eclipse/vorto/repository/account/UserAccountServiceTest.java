@@ -17,8 +17,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
@@ -55,21 +53,14 @@ public class UserAccountServiceTest extends UnitTestBase {
     assertEquals(2, getModelRepository(alex).search("author:anonymous").size());
   }
 
-  @Test
-  public void testGetUserRoles() throws Exception {
-    User user = setupUserWithRoles("alex");
-    assertEquals(2, user.getRoles("playground").size());
-  }
-
   @Test(expected = IllegalArgumentException.class)
   public void testCreateUserAlreadyExists() throws Exception {
-    User user = setupUserWithRoles("alex");
+    User user = setupUser("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
     accountService.create(user.getUsername(), "GITHUB", null);
   }
 
-  private User setupUserWithRoles(String username) {
-    return User.create(username, "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN,
-        Role.MODEL_CREATOR);
+  private User setupUser(String username) {
+    return User.create(username, "GITHUB", null);
   }
 }

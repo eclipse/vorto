@@ -12,15 +12,17 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import com.google.common.collect.Lists;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
-import com.google.common.collect.Lists;
 
 @Entity
 @Table(name = "namespace")
@@ -32,32 +34,11 @@ public class Namespace {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // TODO remove
-  @ManyToOne
-  @JoinColumn(name = "tenant_id")
-  private Tenant tenant;
-
   @Column(name = "workspace_id")
   private String workspaceId;
 
   @NaturalId
   private String name;
-
-  // TODO move biz logic away
-  public static Collection<Namespace> toNamespace(Collection<String> namespaces, Tenant tenant) {
-    return namespaces.stream().map(name -> {
-      Namespace namespace = new Namespace();
-      namespace.setName(name);
-      namespace.setTenant(tenant);
-      return namespace;
-    }).collect(Collectors.toList());
-  }
-
-  public static Namespace newNamespace(String name) {
-    Namespace namespace = new Namespace();
-    namespace.setName(name);
-    return namespace;
-  }
 
   public Long getId() {
     return id;
@@ -73,14 +54,6 @@ public class Namespace {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public Tenant getTenant() {
-    return tenant;
-  }
-
-  public void setTenant(Tenant tenant) {
-    this.tenant = tenant;
   }
 
   public String getWorkspaceId() {

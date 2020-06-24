@@ -5,8 +5,6 @@
 delete
 from privileges;
 delete
-from user_role;
-delete
 from namespace_roles;
 delete
 from repository_roles;
@@ -17,11 +15,7 @@ from user_repository_roles;
 delete
 from namespace;
 delete
-from tenant_user;
-delete
 from user;
-delete
-from tenant;
 
 -- inserts "constant" data that would not change at runtime, yet is required by other tables --
 insert into privileges

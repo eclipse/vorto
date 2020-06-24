@@ -48,8 +48,6 @@ import org.springframework.stereotype.Service;
  * It is session-scoped, as any user with administrative privileges on a namespace can change
  * other users' access to it by means of roles.
  */
-// TODO #2265: should operations on namespace roles trigger new application events?
-// TODO #2265 option open: not expose actor and take it from session
 @Service
 public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
 

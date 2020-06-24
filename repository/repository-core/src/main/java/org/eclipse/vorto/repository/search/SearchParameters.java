@@ -34,7 +34,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
  */
 public class SearchParameters {
 
-  Set<String> tenantIds = new HashSet<>();
+  Set<String> workspaceIds = new HashSet<>();
   Set<String> taggedNames = new HashSet<>();
   Set<String> unTaggedNames = new HashSet<>();
   Set<String> states = new HashSet<>();
@@ -59,7 +59,7 @@ public class SearchParameters {
     SearchParameters result = new SearchParameters();
     // adding tenants
     if (Objects.nonNull(tenantIds)) {
-      tenantIds.forEach(result::withTenantId);
+      tenantIds.forEach(result::withWorkspaceId);
     }
     // searching for tagged content and adding to instance
     Arrays.stream(SearchTags.values()).forEach(st -> st.parseValue(result, freeTextSearch));
@@ -83,11 +83,11 @@ public class SearchParameters {
 
   /**
    *
-   * @param tenantId
+   * @param workspaceId
    * @return
    */
-  public SearchParameters withTenantId(String tenantId) {
-    tenantIds.add(tenantId);
+  public SearchParameters withWorkspaceId(String workspaceId) {
+    workspaceIds.add(workspaceId);
     return this;
   }
 
@@ -95,16 +95,16 @@ public class SearchParameters {
    *
    * @return
    */
-  public Set<String> getTenantIds() {
-    return Collections.unmodifiableSet(tenantIds);
+  public Set<String> getWorkspaceIds() {
+    return Collections.unmodifiableSet(workspaceIds);
   }
 
   /**
    *
    * @return
    */
-  public boolean hasTenantIds() {
-    return !tenantIds.isEmpty();
+  public boolean hasWorkspaceIds() {
+    return !workspaceIds.isEmpty();
   }
 
   /**
@@ -371,7 +371,7 @@ public class SearchParameters {
    */
   public boolean isEmpty() {
     return !hasAuthors() && !hasTaggedNames() && !hasUntaggedNames() && !hasNamespaces() && !hasStates() && !hasStates() &&
-        !hasTenantIds() && !hasTypes() && !hasUserReferences() && !hasVersions() && !hasVisibilities();
+        !hasWorkspaceIds() && !hasTypes() && !hasUserReferences() && !hasVersions() && !hasVisibilities();
   }
 
   @Override
@@ -383,7 +383,7 @@ public class SearchParameters {
       return false;
     }
     SearchParameters that = (SearchParameters) o;
-    return tenantIds.equals(that.tenantIds) &&
+    return workspaceIds.equals(that.workspaceIds) &&
         taggedNames.equals(that.taggedNames) &&
         unTaggedNames.equals(that.unTaggedNames) &&
         states.equals(that.states) &&
@@ -398,7 +398,7 @@ public class SearchParameters {
   @Override
   public int hashCode() {
     return Objects
-        .hash(tenantIds, taggedNames, unTaggedNames, states, types, authors, userReferences,
+        .hash(workspaceIds, taggedNames, unTaggedNames, states, types, authors, userReferences,
             visibilities, namespaces, versions);
   }
 }

@@ -13,13 +13,9 @@
 package org.eclipse.vorto.repository.repositories;
 
 import java.util.Collection;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,13 +39,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
    */
   @Query("SELECT u from User u WHERE LOWER(u.username) LIKE %?1%")
   Collection<User> findUserByPartial(String partial);
-
-  @Deprecated
-  @Query("SELECT u from User u, TenantUser tu, UserRole r " +
-      "WHERE u.id = tu.user.id AND " +
-      "tu.id = r.user.id AND " +
-      "r.role = :role")
-  Collection<User> findUsersWithRole(@Param("role") Role role);
 
   @Override
   <S extends User> S save(S entity);

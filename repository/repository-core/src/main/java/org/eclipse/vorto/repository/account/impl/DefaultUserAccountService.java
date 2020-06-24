@@ -14,31 +14,22 @@ package org.eclipse.vorto.repository.account.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import javax.transaction.Transactional;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.utils.PreConditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -126,25 +117,6 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
 
   public void saveUser(User user) {
     this.userRepository.save(user);
-  }
-
-  public Collection<User> getSystemAdministrators() {
-    return userRepository.findUsersWithRole(Role.SYS_ADMIN);
-  }
-
-  @Transactional
-  public Collection<Tenant> getTenants(User user) {
-    return userRepository.findOne(user.getId()).getTenants();
-  }
-
-  @Transactional
-  public Set<Role> getRoles(User user, String tenantId) {
-    return userRepository.findOne(user.getId()).getUserRoles(tenantId);
-  }
-
-  @Transactional
-  public Set<Role> getAllRoles(User user) {
-    return userRepository.findOne(user.getId()).getAllRoles();
   }
 
 }

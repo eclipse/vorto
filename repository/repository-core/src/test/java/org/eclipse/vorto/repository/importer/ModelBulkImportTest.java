@@ -138,9 +138,6 @@ public class ModelBulkImportTest extends UnitTestBase {
     vortoImporter.setModelRepoFactory(repositoryFactory);
     vortoImporter.setModelParserFactory(modelParserFactory);
 
-    // TODO : Fix!
-    // vortoImporter.setTenantUserService(tenantUserService);
-
     vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
     vortoImporter.setUserAccountService(accountService);
 

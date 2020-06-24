@@ -66,13 +66,6 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
   }
 
   private Set<IRole> getAllRoles(User user) {
-    /*
-    #2265: this fix still underlines a bizarre construct where namespace roles
-    are gathered without a contextual namespace, and used as such throughout the
-    code base to pre-authorize in controllers, and display/hide parts of the UI in
-    the front-end.
-    Arguably, only the sysadmin role or lack thereof should be expressed without context.
-     */
     Set<IRole> roles = userNamespaceRoleService.getRolesOnAllNamespaces(user);
     if (userRepositoryRoleService.isSysadmin(user)) {
       roles.add(userRepositoryRoleService.sysadmin());

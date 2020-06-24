@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.comment.impl;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.jcr.PathNotFoundException;
 import org.eclipse.vorto.model.ModelId;
@@ -24,12 +25,13 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Comment;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,30 +41,40 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultCommentService implements ICommentService {
 
-  @Autowired
   private IModelRepositoryFactory modelRepositoryFactory;
 
-  @Autowired
   private INotificationService notificationService;
 
-  @Autowired
   private CommentRepository commentRepository;
 
-  @Autowired
   private DefaultUserAccountService accountService;
 
-  @Autowired
-  private ITenantService tenantService;
+  private NamespaceService namespaceService;
 
-  public void createComment(Comment comment) {
+  public DefaultCommentService(@Autowired ModelRepositoryFactory modelRepositoryFactory,
+      @Autowired INotificationService notificationService,
+      @Autowired CommentRepository commentRepository,
+      @Autowired DefaultUserAccountService defaultUserAccountService,
+      @Autowired NamespaceService namespaceService) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
+    this.notificationService = notificationService;
+    this.accountService = defaultUserAccountService;
+    this.namespaceService = namespaceService;
+  }
+
+  public void createComment(Comment comment) throws DoesNotExistException {
 
     final ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
 
-    Tenant tenant = tenantService.getTenantFromNamespace(id.getNamespace())
-        .orElseThrow(() -> new ModelNotFoundException(
-            "The tenant for '" + id.getPrettyFormat() + "' could not be found."));
+    Optional<String> workspaceId = namespaceService
+        .resolveWorkspaceIdForNamespace(id.getNamespace());
+    if (!workspaceId.isPresent()) {
+      throw new DoesNotExistException(
+          String.format("Namespace [%s] does not exist.", id.getNamespace()));
+    }
 
-    IModelRepository modelRepo = modelRepositoryFactory.getRepository(tenant.getTenantId());
+    IModelRepository modelRepo = modelRepositoryFactory
+        .getRepository(workspaceId.get());
 
     if (modelRepo.exists(id)) {
       comment.setAuthor(comment.getAuthor());
@@ -87,13 +99,14 @@ public class DefaultCommentService implements ICommentService {
       recipients.add(c.getAuthor());
     }
 
-    recipients.stream().filter(recipient -> !User.USER_ANONYMOUS.equalsIgnoreCase(recipient)).forEach(recipient -> { 
-      User user = accountService.getUser(recipient);
-      if (user != null) {
-        notificationService.sendNotification(
-            new CommentReplyMessage(user, model, comment.getContent()));
-      } 
-    });
+    recipients.stream().filter(recipient -> !User.USER_ANONYMOUS.equalsIgnoreCase(recipient))
+        .forEach(recipient -> {
+          User user = accountService.getUser(recipient);
+          if (user != null) {
+            notificationService.sendNotification(
+                new CommentReplyMessage(user, model, comment.getContent()));
+          }
+        });
   }
 
   public List<Comment> getCommentsforModelId(ModelId modelId) {

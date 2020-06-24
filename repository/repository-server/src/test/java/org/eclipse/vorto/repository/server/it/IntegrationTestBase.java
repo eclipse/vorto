@@ -156,7 +156,7 @@ public abstract class IntegrationTestBase {
     userModelCreator3 = user(USER_MODEL_CREATOR_NAME_3).password("pass")
         .authorities(modelCreatorAuthority);
     userModelViewer = user(USER_MODEL_VIEWER_NAME).password("pass")
-        .authorities(modelViewerAuthority); //TODO nonTenantUser
+        .authorities(modelViewerAuthority);
     testModel = TestModel.TestModelBuilder.aTestModel().build();
     createNamespaceSuccessfully("com.mycompany", userSysadmin);
     addCollaboratorToNamespace("com.mycompany", userModelCreatorCollaborator());

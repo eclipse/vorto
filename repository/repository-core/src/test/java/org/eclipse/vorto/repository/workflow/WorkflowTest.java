@@ -15,10 +15,9 @@ package org.eclipse.vorto.repository.workflow;
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
+import org.h2.engine.Role;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -181,14 +180,14 @@ public class WorkflowTest extends UnitTestBase {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
-            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+            .thenReturn(User.create(getCallerId(), GITHUB, null));
 
     model = workflow.doAction(model.getId(), createUserContext(getCallerId(), PLAYGROUND),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), model.getState());
 
     when(userRepository.findByUsername(createUserContext(ADMIN, PLAYGROUND).getUsername()))
-        .thenReturn(User.create(ADMIN, GITHUB, null, new Tenant(PLAYGROUND), Role.SYS_ADMIN));
+        .thenReturn(User.create(ADMIN, GITHUB, null));
 
     model = workflow.doAction(model.getId(), createUserContext(ADMIN, PLAYGROUND),
         SimpleWorkflowModel.ACTION_REJECT.getName());
@@ -215,7 +214,7 @@ public class WorkflowTest extends UnitTestBase {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
-            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+            .thenReturn(User.create(getCallerId(), GITHUB, null));
     fbModel = workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(), fbModel.getState());
@@ -231,7 +230,7 @@ public class WorkflowTest extends UnitTestBase {
 
     when(userRepository
         .findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
-            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+            .thenReturn(User.create(getCallerId(), GITHUB, null));
     workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(typeModel.getId()).getById(typeModel.getId()).getState());
@@ -248,7 +247,7 @@ public class WorkflowTest extends UnitTestBase {
 
     when(userRepository
             .findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
-            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+            .thenReturn(User.create(getCallerId(), GITHUB, null));
     workflow.doAction(fbModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
             SimpleWorkflowModel.ACTION_RELEASE.getName());
     assertEquals("InReview",this.repositoryFactory.getRepositoryByModel(typeModel.getId()).getById(typeModel.getId()).getState());
@@ -268,7 +267,7 @@ public class WorkflowTest extends UnitTestBase {
 
     when(
         userRepository.findByUsername(createUserContext(getCallerId(), PLAYGROUND).getUsername()))
-            .thenReturn(User.create(getCallerId(), GITHUB, null, new Tenant(PLAYGROUND), Role.USER));
+            .thenReturn(User.create(getCallerId(), GITHUB, null));
     workflow.doAction(typeModel.getId(), createUserContext(getCallerId(), PLAYGROUND),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
 

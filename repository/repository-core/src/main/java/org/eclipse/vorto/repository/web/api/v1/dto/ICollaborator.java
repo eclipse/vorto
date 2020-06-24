@@ -16,20 +16,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 
 /**
- * This interface is meant as a glue between {@link Collaborator} and {@link org.eclipse.vorto.repository.web.account.dto.TenantUserDto}
- * POJOs, since they have the exact same properties but are used in different contexts. <br/>
- * This will be obsolete when the back-end side of the "tenant  to namespace" refactory is completed. <br/>
- * At this time, the interface will allow passing {@link Collaborator} instances to the
- * {@link DefaultUserAccountService}, when e.g. creating a technical user with the new
- * {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController}.
  */
 public interface ICollaborator {
   String getUserId();
   void setUserId(String userId);
   String getAuthenticationProviderId();
   void setAuthenticationProviderId(String providerId);
-  Collection<String> getRoles();
-  void setRoles(Collection<String> roles);
   String getSubject();
   void setSubject(String subject);
   @JsonProperty("isTechnicalUser")

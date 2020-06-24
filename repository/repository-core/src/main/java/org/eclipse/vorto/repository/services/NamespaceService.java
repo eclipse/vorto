@@ -13,19 +13,28 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.*;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -34,14 +43,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
  * For operations on namespace collaborators, see {@link UserNamespaceRoleService}.
- * TODO migrate TenantService#isInConflictWith if needed, once actual logic understood
  */
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
@@ -197,7 +201,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws DoesNotExistException
    * @throws CollisionException
    * @throws NameSyntaxException
-   * @see org.eclipse.vorto.repository.tenant.TenantService#createOrUpdateTenant(String, String, Set, Optional, Optional, Optional, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class, CollisionException.class,
       NameSyntaxException.class, PrivateNamespaceQuotaExceededException.class,
@@ -247,7 +250,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // persists the new namespace
     Namespace namespace = new Namespace();
     namespace.setName(namespaceName);
-    // TODO 2265 add workspace id here / verify implementation
     namespace.setWorkspaceId(UUID.randomUUID().toString().replace("-", ""));
     namespaceRepository.save(namespace);
 
@@ -255,7 +257,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
     // application event handling
     eventPublisher
-        .publishEvent(new AppEvent(this, target.getUsername(), UserContext.user(target.getUsername(), namespace.getWorkspaceId()), EventType.NAMESPACE_ADDED));
+        .publishEvent(new AppEvent(this, target.getUsername(),
+            UserContext.user(target.getUsername(), namespace.getWorkspaceId()),
+            EventType.NAMESPACE_ADDED));
 
     return namespace;
   }
@@ -296,7 +300,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @param namespaceName
    * @throws DoesNotExistException
    * @throws OperationForbiddenException
-   * @see org.eclipse.vorto.repository.tenant.TenantService#deleteTenant(Tenant, IUserContext)
    */
   @Transactional(rollbackFor = {DoesNotExistException.class, OperationForbiddenException.class})
   public void deleteNamespace(User actor, String namespaceName)
@@ -381,12 +384,14 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * Resolves workspace ID for the given namespace. Tries to lookup the namespace by name and returns
    * the result, if there is one. Otherwise it filters all namespaces for ownership of the given
    * namespace to identify the main workspace for subdomains.
+   *
    * @param namespace - the given namespace
    * @return Optional of the workspace ID or empty Optional, if no namespace was found.
    */
   public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
-    Optional<String> foundByFullNamespaceName = Optional.ofNullable(namespaceRepository.findByName(namespace))
-            .map(Namespace::getWorkspaceId);
+    Optional<String> foundByFullNamespaceName = Optional
+        .ofNullable(namespaceRepository.findByName(namespace))
+        .map(Namespace::getWorkspaceId);
     if (foundByFullNamespaceName.isPresent()) {
       return foundByFullNamespaceName;
     }
@@ -427,7 +432,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   private void publishNamespaceDeletedEvent(User actor, Namespace currentNamespace) {
     eventPublisher
         .publishEvent(new AppEvent(this, actor.getUsername(), UserContext
-            .user(SecurityContextHolder.getContext().getAuthentication(), currentNamespace.getWorkspaceId()), EventType.NAMESPACE_DELETED));
+            .user(SecurityContextHolder.getContext().getAuthentication(),
+                currentNamespace.getWorkspaceId()), EventType.NAMESPACE_DELETED));
   }
 
   private void deleteAllCollaboratorAssociations(User actor, Namespace currentNamespace)
@@ -440,8 +446,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   private void deleteModeshapeWorkspace(Namespace currentNamespace) {
-    IRepositoryManager repoMgr = repositoryFactory.getRepositoryManager(currentNamespace.getWorkspaceId(),
-        SecurityContextHolder.getContext().getAuthentication());
+    IRepositoryManager repoMgr = repositoryFactory
+        .getRepositoryManager(currentNamespace.getWorkspaceId(),
+            SecurityContextHolder.getContext().getAuthentication());
     repoMgr.removeWorkspace(currentNamespace.getWorkspaceId());
   }
 

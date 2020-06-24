@@ -93,7 +93,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
-  public void deleteIndexForTenant(String workspaceId) {
+  public void deleteIndexForWorkspace(String workspaceId) {
     // NOOP
   }
 

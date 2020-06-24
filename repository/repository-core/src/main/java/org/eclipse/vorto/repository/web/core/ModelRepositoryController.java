@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -59,7 +57,6 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.model.IBulkOperationsService;
@@ -69,7 +66,7 @@ import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
@@ -104,9 +101,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController("internal.modelRepositoryController2")
 @RequestMapping(value = "/rest/models")
 public class ModelRepositoryController extends AbstractRepositoryController {
-
-  @Autowired
-  private ITenantService tenantService;
 
   @Autowired
   private DefaultUserAccountService accountService;
@@ -304,11 +298,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Map<String, String>> newRefactoring(@PathVariable String modelId) {
-    Tenant tenant = this.tenantService.getTenant(
-        this.modelRepositoryFactory.getRepositoryByModel(ModelId.fromPrettyFormat(modelId))
-            .getWorkspaceId()).get();
+    Namespace namespace = userNamespaceRoleService
+        .resolveByNameOrParentName(ModelId.fromPrettyFormat(modelId).getNamespace());
     Map<String, String> response = new HashMap<>();
-    response.put("namespace", tenant.getDefaultNamespace());
+    response.put("namespace", namespace.getName());
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -389,11 +382,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     List<ModelId> userModels = Lists.newArrayList();
 
     User user = accountService.getUser(principal.getName());
-    Set<Tenant> userTenants = user.getTenants();
+    Collection<Namespace> namespaces = null;
+    try {
+      namespaces = userNamespaceRoleService.getNamespaces(user, user);
+    } catch (OperationForbiddenException | DoesNotExistException e) {
+      LOGGER.error(e.getMessage(), e);
+    }
 
-    for (Tenant tenant : userTenants) {
-      IModelRepository modelRepo = getModelRepository(tenant.getTenantId());
-      List<ModelInfo> modelInfos = modelRepo.search("author:" + user.getUsername());
+    for (Namespace namespace : namespaces) {
+      IModelRepository modelRepo = getModelRepository(namespace.getWorkspaceId());
+      List<ModelInfo> modelInfos = modelRepo.search(String.format("author:%s", user.getUsername()));
       List<ModelId> modelIds =
           modelInfos.stream().map(modelInfo -> modelInfo.getId()).collect(Collectors.toList());
       userModels.addAll(modelIds);
@@ -599,16 +597,17 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     return getModelRepositoryFactory().getPolicyManager(tenantId, authentication);
   }
 
-  private boolean userHasPolicyEntry(PolicyEntry policyEntry, Authentication user, String workspaceId) {
+  private boolean userHasPolicyEntry(PolicyEntry policyEntry, Authentication user,
+      String workspaceId) {
     Namespace namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId);
-    if (policyEntry.getPrincipalType() == PrincipalType.User && policyEntry.getPrincipalId().equals(user.getName())) {
+    if (policyEntry.getPrincipalType() == PrincipalType.User && policyEntry.getPrincipalId()
+        .equals(user.getName())) {
       return true;
-    }
-    else if (policyEntry.getPrincipalType() == PrincipalType.Role) {
+    } else if (policyEntry.getPrincipalType() == PrincipalType.Role) {
       try {
-        return userNamespaceRoleService.hasRole(user.getName(), namespace.getName(), policyEntry.getPrincipalId());
-      }
-      catch (DoesNotExistException dnee) {
+        return userNamespaceRoleService
+            .hasRole(user.getName(), namespace.getName(), policyEntry.getPrincipalId());
+      } catch (DoesNotExistException dnee) {
         LOGGER.warn(dnee);
         return false;
       }

@@ -13,12 +13,9 @@
 package org.eclipse.vorto.repository.server.it;
 
 import com.google.common.collect.Lists;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
-import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
 import org.junit.Test;
@@ -225,7 +222,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
         .andExpect(
             content().string(
                 "true"
@@ -257,7 +253,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isNotFound())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "false"
@@ -293,7 +289,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -372,7 +368,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -424,7 +420,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -441,7 +437,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -474,7 +470,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -529,7 +525,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -611,7 +607,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"
@@ -662,7 +658,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        // currently returns a simple boolean payload, matching DefaultUserAccountService#addUserToTenant
+        
         .andExpect(
             content().string(
                 "true"

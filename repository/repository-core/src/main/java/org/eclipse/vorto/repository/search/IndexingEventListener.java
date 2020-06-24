@@ -41,7 +41,7 @@ public class IndexingEventListener implements ApplicationListener<AppEvent>  {
       ModelId modelId = (ModelId) event.getSubject();
       indexingService.deleteIndex(modelId);
     } else if (event.getEventType() == EventType.NAMESPACE_DELETED) {
-      indexingService.deleteIndexForTenant(event.getUserContext().getWorkspaceId());
+      indexingService.deleteIndexForWorkspace(event.getUserContext().getWorkspaceId());
     }
   }
 

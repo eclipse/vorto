@@ -329,7 +329,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         }
 
         session.save();
-        LOGGER.info("Model was saved successful");
+        LOGGER.info("Model was saved successfully");
 
         ModelInfo createdModel = getById(modelInfo.getId());
 

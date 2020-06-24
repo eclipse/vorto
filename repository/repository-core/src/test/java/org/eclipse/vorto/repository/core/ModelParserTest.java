@@ -18,7 +18,6 @@ import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -124,7 +123,6 @@ public class ModelParserTest extends UnitTestBase {
 
   @Test(expected = ValidationException.class)
   public void testModelWithInvalidReference() throws IOException {
-    Optional<Tenant> tenant = Optional.empty();
     IModelParser parser = modelParserFactory.getParser("InfoModelWithoutNamespace.infomodel");
     parser.enableValidation();
     parser.parse(new ClassPathResource("sample_models/InfoModelWithoutNamespace.infomodel")

@@ -60,6 +60,6 @@ public interface IIndexingService {
    *  
    * @param workspaceId the owning tenant
    */
-  void deleteIndexForTenant(String workspaceId);
+  void deleteIndexForWorkspace(String workspaceId);
   
 }

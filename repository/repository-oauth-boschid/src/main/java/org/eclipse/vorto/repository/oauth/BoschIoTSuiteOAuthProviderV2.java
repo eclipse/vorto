@@ -12,11 +12,19 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import java.security.PublicKey;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.MalformedElement;
@@ -24,6 +32,7 @@ import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.eclipse.vorto.repository.oauth.internal.Resource;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -31,35 +40,32 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.PublicKey;
-import java.util.*;
-import java.util.function.Supplier;
-
 @Component
 public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
 
   private static final String RS256_ALG = "RS256";
 
   private static final String CLIENT_ID = "client_id";
-  
+
   private String hydraJwtIssuer;
 
   @Autowired
   public BoschIoTSuiteOAuthProviderV2(
-          @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
-          @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
-          @Autowired DefaultUserAccountService userAccountService,
-          @Autowired UserNamespaceRoleService userNamespaceRoleService) {
-    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService, userNamespaceRoleService);
+      @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
+      @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
+      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService,
+        userNamespaceRoleService);
     this.hydraJwtIssuer = hydraJwtIssuer;
   }
-  
-  public BoschIoTSuiteOAuthProviderV2(Supplier<Map<String, PublicKey>> publicKeySupplier, 
-      DefaultUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
+
+  public BoschIoTSuiteOAuthProviderV2(Supplier<Map<String, PublicKey>> publicKeySupplier,
+      DefaultUserAccountService userAccountService,
+      UserNamespaceRoleService userNamespaceRoleService) {
     super(publicKeySupplier, userAccountService, userNamespaceRoleService);
   }
-  
+
   @Override
   public String getId() {
     return "BOSCH-IOT-SUITE-AUTH";
@@ -72,15 +78,18 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
 
   @Override
   public String getIssuer() {
-    return hydraJwtIssuer; 
+    return hydraJwtIssuer;
   }
-  
+
   @Override
-  public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken jwtToken) {
+  public OAuth2Authentication createAuthentication(HttpServletRequest httpRequest,
+      JwtToken jwtToken) {
     return getTechnicalUser(jwtToken)
-            .map(technicalUser -> createAuthentication(technicalUser.getUsername(), technicalUser.getUsername(),
-                    technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest)))
-            .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+        .map(technicalUser -> createAuthentication(technicalUser.getUsername(),
+            technicalUser.getUsername(),
+            technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest)))
+        .orElseThrow(
+            () -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
   }
 
   private Set<IRole> getRolesForRequest(User user, HttpServletRequest httpRequest) {
@@ -97,7 +106,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     }
     return userNamespaceRoleService.getRolesOnAllNamespaces(user);
   }
-  
+
   @Override
   public boolean verify(HttpServletRequest httpRequest, JwtToken jwtToken) {
     if (!verifyAlgorithm(jwtToken)) {
@@ -113,13 +122,14 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     }
 
     return getTechnicalUser(jwtToken)
-            .map(user -> true)
-            .orElseThrow(() -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+        .map(user -> true)
+        .orElseThrow(
+            () -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
   }
 
   private Optional<User> getTechnicalUser(JwtToken jwtToken) {
     String technicalUserId = getClientId(jwtToken)
-            .orElseThrow(() -> new MalformedElement("jwtToken doesn't have clientId"));
+        .orElseThrow(() -> new MalformedElement("jwtToken doesn't have clientId"));
     return Optional.ofNullable(userAccountService.getUser(technicalUserId));
   }
 
@@ -128,12 +138,15 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   }
 
   private Optional<Namespace> namespaceApplicableToResource(User user, Resource resource) {
-    Collection<Tenant> tenants = userAccountService.getTenants(user);
-    for (Tenant tenant : tenants) {
-      for (Namespace ns : tenant.getNamespaces()) {
-        if (scopeApplies(ns, resource)) {
-          return Optional.of(ns);
-        }
+    Collection<Namespace> namespaces = null;
+    try {
+      namespaces = userNamespaceRoleService.getNamespaces(user, user);
+    } catch (OperationForbiddenException | DoesNotExistException e) {
+      return Optional.empty();
+    }
+    for (Namespace namespace : namespaces) {
+      if (scopeApplies(namespace, resource)) {
+        return Optional.of(namespace);
       }
     }
     return Optional.empty();
@@ -144,7 +157,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
       return namespace.owns(ModelId.fromPrettyFormat(resource.getName()));
     } else {
       return namespace.owns(resource.getName());
-    } 
+    }
   }
 
   private Optional<Resource> resource(HttpServletRequest request) {
@@ -157,7 +170,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   protected Optional<String> getUserId(Map<String, Object> map) {
     return Optional.ofNullable((String) map.get(JWT_SUB));
   }
-  
+
   protected Optional<String> getClientId(JwtToken token) {
     if (token.getPayloadMap().containsKey(CLIENT_ID)) {
       return Optional.ofNullable((String) token.getPayloadMap().get(CLIENT_ID));

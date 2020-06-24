@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 @Component
+@Deprecated
 public class TenantVerificationFilter extends GenericFilterBean {
 
   private static final String TENANT_ID = "tid";

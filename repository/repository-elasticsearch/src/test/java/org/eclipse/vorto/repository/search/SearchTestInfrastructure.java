@@ -52,8 +52,6 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -69,9 +67,6 @@ import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.tenant.TenantService;
-import org.eclipse.vorto.repository.tenant.TenantUserService;
-import org.eclipse.vorto.repository.tenant.repository.ITenantRepository;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
@@ -213,15 +208,9 @@ public final class SearchTestInfrastructure {
 
   protected ModelRepositoryFactory repositoryFactory;
 
-  protected TenantService tenantService = Mockito.mock(TenantService.class);
-
   protected IIndexingService indexingService = null;
 
-  protected TenantUserService tenantUserService = null;
-
   protected ModelValidationHelper modelValidationHelper = null;
-
-  private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
@@ -507,8 +496,6 @@ public final class SearchTestInfrastructure {
     supervisor.setRepositoryFactory(repositoryFactory);
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
 
-    tenantUserService = new TenantUserService(tenantService, accountService);
-
     supervisor.setSearchService(searchService);
 
     modelValidationHelper = new ModelValidationHelper(repositoryFactory, accountService,
@@ -546,11 +533,6 @@ public final class SearchTestInfrastructure {
    */
   public void reindex() {
     ((IIndexingService) searchService).reindexAllModels();
-  }
-
-  private User getUser(String userId, Tenant tenant) {
-    return tenant.getUsers().stream().map(TenantUser::getUser)
-        .filter(u -> u.getUsername().equals(userId)).findAny().get();
   }
 
   protected IUserContext createUserContext(String username) {

@@ -50,11 +50,11 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
     if (event.getEventType() == EventType.USER_DELETED) {
       makeModelsAnonymous(event);
     } else if (event.getEventType() == EventType.NAMESPACE_ADDED) {
-      createWorkspaceForTenant(event);
+      createWorkspace(event);
     }
   }
 
-  private void createWorkspaceForTenant(AppEvent event) {
+  private void createWorkspace(AppEvent event) {
     IUserContext userContext = event.getUserContext();
     IRepositoryManager repoMgr = repositoryFactory
         .getRepositoryManager(userContext.getWorkspaceId(),

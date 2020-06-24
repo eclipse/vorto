@@ -224,9 +224,6 @@ public class UserService implements ApplicationEventPublisherAware {
   public void delete(final String userId) {
     User userToDelete = userRepository.findByUsername(userId);
     if (userToDelete != null) {
-      /*if (deleteWillOrphanTenants(userToDelete)) {
-        throw AccountDeletionNotAllowed.reason("Deleting this user will orphan some tenants.");
-      }*/
 
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
       userRepository.delete(userToDelete);
