@@ -524,7 +524,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>ui-test</id>
+			<id>ui-tests</id>
 			<build>
 				<plugins>
 					<plugin>
