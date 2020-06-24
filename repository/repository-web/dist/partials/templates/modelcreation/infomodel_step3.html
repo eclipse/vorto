@@ -20,7 +20,7 @@
 							<option value="">-- Select a property--</option>
 						</select>
 						<ui-select class="modelcreator-result" on-remove="removeProperty($item, $model)" multiple tagging search-enabled="false" tagging-label="(custom 'new' label)" ng-model="selected.properties" theme="bootstrap" sortable="true">
-	    					<ui-select-match>{{$item.name}} (<a href="./#!/details/{{$item.type.namespace}}:{{$item.type.name}}:{{$item.type.version}}" target="_blank">{{$item.type.name}}</a>)</ui-select-match>
+	    					<ui-select-match>{{$item.name}} (<a href="./#/details/{{$item.type.namespace}}:{{$item.type.name}}:{{$item.type.version}}" target="_blank">{{$item.type.name}}</a>)</ui-select-match>
 	    						<ui-select-choices repeat="property in properties | filter:$select.search">
 	      							{{property.name}}
 	    					</ui-select-choices>

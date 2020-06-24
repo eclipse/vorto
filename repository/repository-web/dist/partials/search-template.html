@@ -1,7 +1,7 @@
 <section class="content">
 		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('ROLE_MODEL_CREATOR')">
 		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		  <strong>Get started by <a href="./#!/manage">creating</a> your first namespace.</strong>
+		  <strong>Get started by <a href="./#/manage">creating</a> your first namespace.</strong>
 		</div>
 		<h2 id="searchHeadline">Models</h2>
 		<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'">
@@ -52,7 +52,7 @@
 					<div ng-hide="isLoading" class="row"">
 						<div class="col-md-4" ng-repeat="model in models">
 							<div ng-if="model.type === 'InformationModel'" class="model-box im">
-						 		<a href="./#!/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.id.prettyFormat}}">
 					                <div class="inner">
 									  <span class="model-name">{{model.id.name}}</span>
 									  <div ng-if="model.visibility === 'public'" class="visibilityIcon">
@@ -75,7 +75,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Functionblock'" class="model-box fb">
-						 		<a href="./#!/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
 										<span class="model-name">{{model.id.name}}</span>
 										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
@@ -95,7 +95,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Datatype'" class="model-box dt">
-						 		<a href="./#!/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
 										<span class="model-name">{{model.id.name}}</span>
 										<div ng-if="model.visibility === 'public'" class="visibilityIcon">
@@ -115,7 +115,7 @@
                 				</a>
               				</div>
               				<div ng-if="model.type === 'Mapping'" class="model-box mp">
-						 		<a href="./#!/details/{{model.id.prettyFormat}}">
+						 		<a href="./#/details/{{model.id.prettyFormat}}">
                 					<div class="inner">
 										<span class="model-name">{{model.id.name}}</span>
 										<div ng-if="model.visibility === 'public'" class="visibilityIcon">

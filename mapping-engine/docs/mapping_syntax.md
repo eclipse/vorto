@@ -61,7 +61,7 @@ mapping LWM2M {
 ## Comparing Payloads
 To understand the difference of the normalized, mapped payload and the target platform specific ones a little bit better, let's compare the normalized Vorto payload coming out of the Mapping Engine with two target platform specific payloads that can be used with the platforms.
 
-We will be using the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#!/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) as an example.
+We will be using the [RaspberryPiTutorial Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPiTutorial:1.0.0) as an example.
 It has 3 features, temperature, battery, and location.     
 In the **normalized Vorto format**, the location feature, e.g. looks like this.
 
