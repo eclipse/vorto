@@ -43,6 +43,7 @@ repositoryControllers.controller('DetailsController',
 				$scope.newComment = {value: ""};
 				$scope.canGenerate = true;
 				$scope.canPublishModel = false;
+				$scope.error = false;
 
 				$scope.editorConfig = {
 					infomodel: {
