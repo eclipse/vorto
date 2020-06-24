@@ -12,8 +12,24 @@
  */
 package org.eclipse.vorto.repository.search;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
@@ -31,7 +47,14 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.*;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.TenantUser;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
@@ -39,7 +62,11 @@ import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.tenant.TenantService;
@@ -50,7 +77,10 @@ import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -61,15 +91,6 @@ import org.springframework.security.core.Authentication;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
-
-import java.io.File;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -202,8 +223,6 @@ public final class SearchTestInfrastructure {
 
   private ITenantRepository tenantRepo = Mockito.mock(ITenantRepository.class);
 
-  private Tenant playgroundTenant = playgroundTenant();
-
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
@@ -296,41 +315,6 @@ public final class SearchTestInfrastructure {
   private static final Logger LOGGER = Logger.getLogger(SearchTestInfrastructure.class);
   private static final String RANDOM_ES_LOG_FORMAT = "Initializing Elasticsearch test service port randomizer with HTTP [%d-%d] and TRANSPORT TCP [%d-%d] and installation directory: %s";
 
-  protected Tenant playgroundTenant() {
-    UserRole roleUser = new UserRole(Role.USER);
-    UserRole roleCreator = new UserRole(Role.MODEL_CREATOR);
-    UserRole rolePromoter = new UserRole(Role.MODEL_PROMOTER);
-    UserRole roleReviewer = new UserRole(Role.MODEL_REVIEWER);
-    UserRole rolePublisher = new UserRole(Role.MODEL_PUBLISHER);
-    UserRole roleTenantAdmin = new UserRole(Role.TENANT_ADMIN);
-    UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
-
-    Tenant playground = Tenant.newTenant("playground", "org.eclipse",
-        Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings",
-            "vorto.private.playground"));
-
-    playground.addUser(createTenantUser("alex",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
-    playground.addUser(createTenantUser("erle",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));
-    playground.addUser(createTenantUser("admin",
-        Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleSysAdmin)));
-    playground.addUser(createTenantUser("creator", Sets.newHashSet(roleUser, roleCreator)));
-    playground.addUser(createTenantUser("promoter", Sets.newHashSet(roleUser, rolePromoter)));
-    playground.addUser(createTenantUser("reviewer", Sets.newHashSet(roleUser, roleReviewer)));
-    playground.addUser(createTenantUser("publisher", Sets.newHashSet(roleUser, rolePublisher)));
-
-    return playground;
-  }
-
-  private TenantUser createTenantUser(String name, Set<UserRole> roles) {
-    User _user = User.create(name, "GITHUB", null);
-    TenantUser user = new TenantUser();
-    user.setRoles(roles);
-    _user.addTenantUser(user);
-    return user;
-  }
-
   protected SearchTestInfrastructure() throws Exception {
 
     ESRandomizer rando = ESRandomizer.newInstance();
@@ -358,32 +342,51 @@ public final class SearchTestInfrastructure {
         .build();
     elasticSearch.start();
 
-    when(tenantService.getTenantFromNamespace(Matchers.anyString()))
-        .thenReturn(Optional.of(playgroundTenant));
+    when(namespaceService.resolveWorkspaceIdForNamespace(anyString()))
+        .thenReturn(Optional.of("playground"));
+    when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
+    when(namespaceRepository.findAll()).thenReturn(Lists.newArrayList(mockNamespace()));
 
-    when(userRepository.findByUsername("alex")).thenReturn(getUser("alex", playgroundTenant));
+    List<String> workspaceIds = new ArrayList<>();
+    workspaceIds.add("playground");
+    when(namespaceService.findAllWorkspaceIds()).thenReturn(workspaceIds);
+    NamespaceRole namespace_admin = new NamespaceRole();
+    namespace_admin.setName("namespace_admin");
+    namespace_admin.setPrivileges(7);
+    namespace_admin.setRole(32);
 
-    when(userRepository.findByUsername("erle")).thenReturn(getUser("erle", playgroundTenant));
+    NamespaceRole model_viewer = new NamespaceRole();
+    model_viewer.setName("model_viewer");
+    model_viewer.setPrivileges(1);
+    model_viewer.setRole(1);
 
-    when(userRepository.findByUsername("admin")).thenReturn(getUser("admin", playgroundTenant));
+    NamespaceRole model_creator = new NamespaceRole();
+    model_creator.setName("model_creator");
+    model_creator.setPrivileges(3);
+    model_creator.setRole(2);
 
-    when(userRepository.findByUsername("creator")).thenReturn(getUser("creator", playgroundTenant));
+    NamespaceRole model_promoter = new NamespaceRole();
+    model_promoter.setName("model_promoter");
+    model_promoter.setPrivileges(3);
+    model_promoter.setRole(4);
 
-    when(userRepository.findByUsername("promoter"))
-        .thenReturn(getUser("promoter", playgroundTenant));
+    NamespaceRole model_publisher = new NamespaceRole();
+    model_publisher.setName("model_publisher");
+    model_publisher.setPrivileges(3);
+    model_publisher.setRole(4);
 
-    when(userRepository.findByUsername("reviewer"))
-        .thenReturn(getUser("reviewer", playgroundTenant));
+    NamespaceRole model_reviewer = new NamespaceRole();
+    model_reviewer.setName("model_reviewer");
+    model_reviewer.setPrivileges(3);
+    model_reviewer.setRole(8);
 
-    when(userRepository.findAll()).thenReturn(Lists.newArrayList(getUser("admin", playgroundTenant),
-        getUser("erle", playgroundTenant), getUser("alex", playgroundTenant),
-        getUser("creator", playgroundTenant), getUser("reviewer", playgroundTenant),
-        getUser("promoter", playgroundTenant)));
-
-    when(tenantService.getTenant("playground")).thenReturn(Optional.of(playgroundTenant));
-    when(tenantService.getTenants()).thenReturn(Lists.newArrayList(playgroundTenant));
-    when(tenantRepo.findByTenantId("playground")).thenReturn(playgroundTenant);
-    when(tenantRepo.findAll()).thenReturn(Lists.newArrayList(playgroundTenant));
+    Set<IRole> roles = new HashSet<>();
+    roles.add(namespace_admin);
+    roles.add(model_viewer);
+    roles.add(model_creator);
+    roles.add(model_promoter);
+    roles.add(model_publisher);
+    roles.add(model_reviewer);
 
     when(roleService.findAnyByName("model_viewer"))
         .thenReturn(Optional.of(new NamespaceRole(1, "model_viewer", 1)));
@@ -397,6 +400,51 @@ public final class SearchTestInfrastructure {
         .thenReturn(Optional.of(new NamespaceRole(16, "model_publisher", 3)));
     when(roleService.findAnyByName("namespace_admin"))
         .thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
+    when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
+
+    User alex = User.create("alex", "GITHUB", null);
+    User erle = User.create("erle", "GITHUB", null);
+    User admin = User.create("admin", "GITHUB", null);
+    User creator = User.create("creator", "GITHUB", null);
+    User promoter = User.create("promoter", "GITHUB", null);
+    User reviewer = User.create("reviewer", "GITHUB", null);
+    User publisher = User.create("publisher", "GITHUB", null);
+
+    when(userRepository.findByUsername("alex")).thenReturn(alex);
+    when(userRepository.findByUsername("erle")).thenReturn(erle);
+    when(userRepository.findByUsername("admin")).thenReturn(admin);
+    when(userRepository.findByUsername("creator")).thenReturn(creator);
+    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
+    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
+    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findAll())
+        .thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
+
+    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_reviewer))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(model_reviewer))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(erle), any(), eq(namespace_admin))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_creator))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_promoter))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(model_reviewer))).thenReturn(true);
+    when(userNamespaceRoleService.hasRole(eq(admin), any(), eq(namespace_admin))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(creator), any(), eq(model_creator))).thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(promoter), any(), eq(model_promoter)))
+        .thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(reviewer), any(), eq(model_reviewer)))
+        .thenReturn(true);
+
+    when(userNamespaceRoleService.hasRole(eq(publisher), any(), eq(model_publisher)))
+        .thenReturn(true);
 
     setupNamespaceMocking();
 
@@ -510,18 +558,19 @@ public final class SearchTestInfrastructure {
   }
 
   protected Authentication createAuthenticationToken(String username) {
-    Set<String> userRoles = getTenantUser(username, playgroundTenant).getRoles().stream()
-        .map(uRole -> Role.rolePrefix + uRole.getRole().name()).collect(Collectors.toSet());
+    if (username.equalsIgnoreCase("admin")) {
+      return new TestingAuthenticationToken(username, username, RepositoryRole.SYS_ADMIN.getName());
+    }
+    Collection<IRole> roles;
+    try {
+      roles = userNamespaceRoleService.getRoles(username, "");
+    } catch (DoesNotExistException e) {
+      roles = Sets
+          .newHashSet(org.eclipse.vorto.repository.search.utils.RoleProvider.modelReviewer());
+    }
 
-    Authentication auth = new TestingAuthenticationToken(username, username,
-        userRoles.toArray(new String[userRoles.size()]));
-
-    return auth;
-  }
-
-  private TenantUser getTenantUser(String userId, Tenant tenant) {
-    return tenant.getUsers().stream().filter(tu -> tu.getUser().getUsername().equals(userId))
-        .findAny().get();
+    return new TestingAuthenticationToken(username, username,
+        roles.stream().map(IRole::getName).toArray(String[]::new));
   }
 
   protected IUserContext createUserContext(String username, String tenantId) {
@@ -597,7 +646,6 @@ public final class SearchTestInfrastructure {
     return repositoryFactory;
   }
 
-  // TODO #2265 better inline comments for the mocks
   private void setupNamespaceMocking() throws OperationForbiddenException, DoesNotExistException {
     when(namespaceService.resolveWorkspaceIdForNamespace(anyString()))
         .thenReturn(Optional.of("playground"));
