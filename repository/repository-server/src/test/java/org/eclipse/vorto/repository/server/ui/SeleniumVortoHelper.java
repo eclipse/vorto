@@ -80,7 +80,7 @@ public class SeleniumVortoHelper {
      */
     public void openManageTab() {
         webDriver.get(rootUrl);
-        webDriver.findElementByXPath("//a[@href='./#!/manage']").click();
+        webDriver.findElementByXPath("//a[@href='./#/manage']").click();
     }
 
     /**
@@ -135,6 +135,12 @@ public class SeleniumVortoHelper {
         this.webDriver.get(rootUrl);
     }
 
+    /**
+     * Adds a user to a namespace.
+     *
+     * @param userToAdd the user to add.
+     * @param namespace the namespace.
+     */
     public void addUserToNamespace(String userToAdd, String namespace) {
         openManageNamespacesTab();
         WebElement namespaceFilterField = this.webDriver.findElementById("namespaceFilter");
@@ -146,6 +152,7 @@ public class SeleniumVortoHelper {
         WebElement userIdSearchBox = this.webDriver.findElementById("userId");
         userIdSearchBox.clear();
         userIdSearchBox.sendKeys(userToAdd);
+        // tick all checkboxes (could be made configurable)
         this.webDriver.findElementById(userToAdd).click();
         this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelCreator']").click();
         this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelPromoter']").click();
