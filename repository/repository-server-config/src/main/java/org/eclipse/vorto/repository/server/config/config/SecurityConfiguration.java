@@ -28,7 +28,6 @@ import org.eclipse.vorto.repository.oauth.IOAuthFlowConfiguration;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.filter.BearerTokenFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
-import org.eclipse.vorto.repository.web.tenant.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.ui.AngularCsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,9 +90,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private String allowedOrigins;
 
   @Autowired
-  private TenantVerificationFilter tenantVerificationFilter;
-
-  @Autowired
   private IOAuthProviderRegistry oauthProviderRegistry;
 
   @Autowired
@@ -125,7 +121,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .addFilterAfter(anonymousFilter(), AnonymousAuthenticationFilter.class)
         .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
         .addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
-        .addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class).csrf()
+        .csrf()
         .csrfTokenRepository(csrfTokenRepository()).and().csrf().disable().logout()
         .logoutUrl("/logout").logoutSuccessUrl("/").and().headers().frameOptions().sameOrigin();
 
