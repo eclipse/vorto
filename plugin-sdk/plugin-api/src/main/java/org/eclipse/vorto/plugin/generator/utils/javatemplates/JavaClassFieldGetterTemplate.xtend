@@ -20,11 +20,13 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.ITemplate
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
 
 class JavaClassFieldGetterTemplate implements ITemplate<Property> {
 	
 	var String getterPrefix;
-	
+
 	new(String getterPrefix) {
 		this.getterPrefix = getterPrefix;
 	}
@@ -49,11 +51,33 @@ class JavaClassFieldGetterTemplate implements ITemplate<Property> {
 						return this.«ValueMapper.normalize(property.name)»;
 					}
 				«ENDIF»
-			«ENDIF»
+			«ELSEIF property.type instanceof DictionaryPropertyType»
+                «var DictionaryPropertyType dictionary = property.type as DictionaryPropertyType»
+                «IF dictionary.keyType !== null && dictionary.valueType !== null»
+                    public java.util.Map<«getPropertyType(dictionary.keyType)»,«getPropertyType(dictionary.valueType)»> «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+                        return this.«ValueMapper.normalize(property.name)»;
+                    }
+                «ELSE»
+                    public java.util.Map«getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+                        return this.«ValueMapper.normalize(property.name)»;
+                    }
+                «ENDIF»
+             «ENDIF»
+
 		'''
 	}
 	
 	protected def getNamespaceOfDatatype() {
 		''''''
 	}
+
+	def String getPropertyType(PropertyType propertyType) {
+        if (propertyType instanceof PrimitivePropertyType) {
+            return ValueMapper.mapSimpleDatatype((propertyType as PrimitivePropertyType).type as PrimitiveType);
+        } else if(propertyType instanceof ObjectPropertyType) {
+            return getNamespaceOfDatatype() + (propertyType as ObjectPropertyType).type.name.toFirstUpper
+        } else {
+            return "java.util.Map"
+        }
+    }
 }

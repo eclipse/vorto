@@ -30,6 +30,7 @@ public class ConfigPropertiesFunctionBlock {
     public device.mysensor.model.datatypes.UnitEntity getConfigValue() {
     	return this.configValue;
     }
+    
     /**
     * Setter for configBoolean.
     */
@@ -42,6 +43,7 @@ public class ConfigPropertiesFunctionBlock {
     public boolean getConfigBoolean() {
     	return this.configBoolean;
     }
+    
     
     public Map getStatusProperties() {
         Map<String, Object> status = new HashMap<String, Object>();

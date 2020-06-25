@@ -24,16 +24,8 @@ import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.plugin.generator.GeneratorException;
-import org.eclipse.vorto.plugin.generator.GeneratorPluginInfo;
-import org.eclipse.vorto.plugin.generator.ICodeGenerator;
-import org.eclipse.vorto.plugin.generator.IGenerationResult;
-import org.eclipse.vorto.plugin.generator.InvocationContext;
-import org.eclipse.vorto.plugin.generator.utils.ChainedCodeGeneratorTask;
-import org.eclipse.vorto.plugin.generator.utils.GenerationResultBuilder;
-import org.eclipse.vorto.plugin.generator.utils.GenerationResultZip;
-import org.eclipse.vorto.plugin.generator.utils.GeneratorTaskFromFileTemplate;
-import org.eclipse.vorto.plugin.generator.utils.IGeneratedWriter;
+import org.eclipse.vorto.plugin.generator.*;
+import org.eclipse.vorto.plugin.generator.utils.*;
 
 /**
  * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector.
@@ -56,19 +48,15 @@ public class EclipseHonoJavaGenerator implements ICodeGenerator {
   private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context) {
     GenerationResultZip output = new GenerationResultZip(infomodel, "hono-java");
     ChainedCodeGeneratorTask<InformationModel> generator =
-        new ChainedCodeGeneratorTask<InformationModel>();
+        new ChainedCodeGeneratorTask<>();
 
-    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()));
-    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new Log4jTemplate()));
-
-    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AppTemplate()));
-    generator
-        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IDataServiceTemplate()));
-    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoDataService()));
-    generator
-        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoMqttClientTemplate()));
-    generator.addTask(
-        new GeneratorTaskFromFileTemplate<InformationModel>(new InformationModelTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomFileTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new Log4jTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new AppTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new IDataServiceTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new HonoDataService()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new HonoMqttClientTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<>(new InformationModelTemplate()));
 
     generator.generate(infomodel, context, output);
 

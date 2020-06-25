@@ -15,11 +15,13 @@ package org.eclipse.vorto.plugin.generator.utils.javatemplates
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.plugin.generator.InvocationContext
 import org.eclipse.vorto.plugin.generator.utils.ITemplate
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
 
 class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 	
@@ -49,11 +51,32 @@ class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 						this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 					}
 				«ENDIF»
-			«ENDIF»
+			«ELSEIF property.type instanceof DictionaryPropertyType»
+            	«var DictionaryPropertyType dictionary = property.type as DictionaryPropertyType»
+            	«IF dictionary.keyType !== null && dictionary.valueType !== null»
+            		public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(java.util.Map<«getPropertyType(dictionary.keyType)»,«getPropertyType(dictionary.valueType)»> «ValueMapper.normalize(property.name)») {
+            			this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
+            		}
+            	«ELSE»
+            	    public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(java.util.Map «ValueMapper.normalize(property.name)») {
+            	        this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
+            	    }
+            	«ENDIF»
+            «ENDIF»
 		'''
 	}
 	
 	protected def getNamespaceOfDatatype() {
 		''''''
 	}
+
+	def String getPropertyType(PropertyType propertyType) {
+        if (propertyType instanceof PrimitivePropertyType) {
+            return ValueMapper.mapSimpleDatatype((propertyType as PrimitivePropertyType).type as PrimitiveType);
+        } else if (propertyType instanceof ObjectPropertyType) {
+            return getNamespaceOfDatatype() + (propertyType as ObjectPropertyType).type.name.toFirstUpper
+        } else {
+            return "java.util.Map"
+        }
+    }
 }

@@ -30,6 +30,7 @@ public class StatusPropertiesFunctionBlock {
     public device.mysensor.model.datatypes.UnitEntity getStatusValue() {
     	return this.statusValue;
     }
+    
     /**
     * Setter for statusBoolean.
     */
@@ -42,6 +43,7 @@ public class StatusPropertiesFunctionBlock {
     public boolean getStatusBoolean() {
     	return this.statusBoolean;
     }
+    
     
     public Map getStatusProperties() {
         Map<String, Object> status = new HashMap<String, Object>();

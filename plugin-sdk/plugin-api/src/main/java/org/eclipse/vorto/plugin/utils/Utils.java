@@ -14,18 +14,9 @@ package org.eclipse.vorto.plugin.utils;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
-import org.eclipse.vorto.core.api.model.datatype.Property;
-import org.eclipse.vorto.core.api.model.datatype.Type;
-import org.eclipse.vorto.core.api.model.functionblock.Event;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.functionblock.Operation;
-import org.eclipse.vorto.core.api.model.functionblock.Param;
-import org.eclipse.vorto.core.api.model.functionblock.RefParam;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
+import org.eclipse.vorto.core.api.model.datatype.*;
+import org.eclipse.vorto.core.api.model.functionblock.*;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
@@ -67,7 +58,7 @@ public class Utils {
 	}
 
 	public static EList<Entity> getReferencedEntities(FunctionBlock fb) {
-		BasicEList<Entity> entities = new BasicEList<Entity>();
+		BasicEList<Entity> entities = new BasicEList<>();
 		for (Type type : getReferencedTypes(fb)) {
 			if ((type instanceof Entity) && !entities.contains(type)) {
 				entities.add((Entity) type);
@@ -77,9 +68,9 @@ public class Utils {
 	}
 
 	public static EList<Enum> getReferencedEnums(FunctionBlock fb) {
-		BasicEList<Enum> enums = new BasicEList<Enum>();
+		BasicEList<Enum> enums = new BasicEList<>();
 		for (Type type : getReferencedTypes(fb)) {
-			if ((type instanceof Enum) && (!enums.contains((Enum) type))) {
+			if ((type instanceof Enum) && (!enums.contains(type))) {
 				enums.add((Enum) type);
 			}
 		}
@@ -87,7 +78,7 @@ public class Utils {
 	}
 
 	public static EList<Type> getReferencedTypes(Type type) {
-		BasicEList<Type> types = new BasicEList<Type>();
+		BasicEList<Type> types = new BasicEList<>();
 		types.add(type);
 
 		if (type instanceof Entity) {
@@ -101,19 +92,28 @@ public class Utils {
 	}
 
 	public static EList<Type> getReferencedTypes(Property property) {
-		BasicEList<Type> types = new BasicEList<Type>();
+		BasicEList<Type> types = new BasicEList<>();
 		if (property.getType() instanceof ObjectPropertyType) {
 			ObjectPropertyType objectType = (ObjectPropertyType) property.getType();
 			types.add(objectType.getType());
 			if (objectType.getType() instanceof Entity) {
-				types.addAll(getReferencedTypes((Entity) objectType.getType()));
+				types.addAll(getReferencedTypes(objectType.getType()));
+			}
+		}
+		if (property.getType() instanceof DictionaryPropertyType) {
+			DictionaryPropertyType dictionaryType = (DictionaryPropertyType) property.getType();
+			if (dictionaryType.getKeyType() instanceof ObjectPropertyType) {
+				types.addAll(getReferencedTypes(((ObjectPropertyType)dictionaryType.getKeyType()).getType()));
+			}
+			if (dictionaryType.getValueType() instanceof ObjectPropertyType) {
+				types.addAll(getReferencedTypes(((ObjectPropertyType)dictionaryType.getValueType()).getType()));
 			}
 		}
 		return types;
 	}
 
 	public static EList<Type> getReferencedTypes(FunctionBlock fb) {
-		BasicEList<Type> types = new BasicEList<Type>();
+		BasicEList<Type> types = new BasicEList<>();
 		if (fb != null) {
 			// Analyze the status properties...
 			if (fb.getStatus() != null) {
