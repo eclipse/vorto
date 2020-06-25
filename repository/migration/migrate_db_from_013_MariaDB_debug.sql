@@ -1,5 +1,5 @@
 # the following is optional and can be run to ensure that the debug_user_namespace_privileges table is populated
-# correctly after running migrate_db_013_to_XXX_MariaDB_step_0.sql
+# correctly after running migrate_db_from_013_MariaDB_preparation.sql
 
 # creates the debug table
 drop procedure if exists create_debug_user_namespace_privileges_table;

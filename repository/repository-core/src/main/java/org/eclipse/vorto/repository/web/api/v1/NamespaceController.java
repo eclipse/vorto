@@ -95,16 +95,6 @@ public class NamespaceController {
   @Autowired
   private EmailNotificationService emailNotificationService;
 
-  @RequestMapping(method = RequestMethod.GET, value = "/test")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Boolean> test() {
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication());
-    userRepositoryRoleService.setSysadmin(userContext.getUsername());
-    return new ResponseEntity<>(userRepositoryRoleService.isSysadmin(userContext.getUsername()),
-        HttpStatus.OK);
-  }
-
   /**
    * @return all namespaces the logged on user has access to.
    */
