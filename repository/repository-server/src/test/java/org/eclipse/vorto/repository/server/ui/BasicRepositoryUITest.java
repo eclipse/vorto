@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -144,7 +145,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
     @Test
     public void testAddCollaboratorToNamespace() throws Exception {
         testVisibleModels();
-        this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+        this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE, MODEL_PUBLISHER, MODEL_PROMOTER, MODEL_CREATOR, MODEL_REVIEWER);
         this.seleniumVortoHelper.loginWithUser("user2", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
         this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");

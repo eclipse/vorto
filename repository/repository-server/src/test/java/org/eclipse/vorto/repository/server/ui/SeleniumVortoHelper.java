@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
@@ -19,6 +20,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helper class for vorto repository Selenium tests.
@@ -36,6 +40,15 @@ public class SeleniumVortoHelper {
     private final RemoteWebDriver webDriver;
 
     private final String rootUrl;
+
+    private static Map<Role, String> ROLE_TO_LINK_MAP = new HashMap<>();
+
+    static {
+        ROLE_TO_LINK_MAP.put(Role.MODEL_CREATOR, "//input[@ng-model='user.roleModelCreator']");
+        ROLE_TO_LINK_MAP.put(Role.MODEL_PROMOTER, "//input[@ng-model='user.roleModelPromoter']");
+        ROLE_TO_LINK_MAP.put(Role.MODEL_REVIEWER, "//input[@ng-model='user.roleModelReviewer']");
+        ROLE_TO_LINK_MAP.put(Role.MODEL_PUBLISHER, "//input[@ng-model='user.roleAdmin']");
+    }
 
     /**
      * @param webDriver The remote web driver to use.
@@ -141,7 +154,7 @@ public class SeleniumVortoHelper {
      * @param userToAdd the user to add.
      * @param namespace the namespace.
      */
-    public void addUserToNamespace(String userToAdd, String namespace) {
+    public void addUserToNamespace(String userToAdd, String namespace, Role... roles) {
         openManageNamespacesTab();
         WebElement namespaceFilterField = this.webDriver.findElementById("namespaceFilter");
         namespaceFilterField.sendKeys(namespace);
@@ -154,11 +167,14 @@ public class SeleniumVortoHelper {
         userIdSearchBox.sendKeys(userToAdd);
         // tick all checkboxes (could be made configurable)
         this.webDriver.findElementById(userToAdd).click();
-        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelCreator']").click();
-        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelPromoter']").click();
-        this.webDriver.findElementByXPath("//input[@ng-model='user.roleModelReviewer']").click();
-        this.webDriver.findElementByXPath("//input[@ng-model='user.roleAdmin']").click();
+        selectRolesForUserInNamespaceDialog(roles);
         this.webDriver.findElementById("submitButton").click();
         this.webDriver.findElementByXPath("//button[contains(.,'Cancel')]").click();
+    }
+
+    private void selectRolesForUserInNamespaceDialog(Role[] roles) {
+        for (int i=0; i < roles.length; i++) {
+            this.webDriver.findElementByXPath(ROLE_TO_LINK_MAP.get(roles[i])).click();
+        }
     }
 }
