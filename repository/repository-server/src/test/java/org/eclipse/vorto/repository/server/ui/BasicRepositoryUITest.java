@@ -132,7 +132,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//div[@id='searchResult']/div[count(*) = 0]");
         this.seleniumVortoHelper.loginWithUser("user1", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
+        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
         WebDriverWait wait5Secs = new WebDriverWait(this.seleniumVortoHelper.getRemoteWebDriver(), 5);
         wait5Secs.until(ExpectedConditions.elementToBeClickable(linkToModel));
     }
@@ -147,7 +147,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
         this.seleniumVortoHelper.loginWithUser("user2", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#!/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
     }
 
 
