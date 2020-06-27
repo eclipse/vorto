@@ -879,6 +879,41 @@ A model property can be used by events, function block properties or entities.
 	
 		IntervalType: INT | SIGNEDINT | FLOAT | DATETIME | STRING | BOOLEAN;
 
+### Example
+
+Consider the following Enum which defines some Temperature Units
+
+    vortolang 1.0
+    namespace org.example
+    version 1.0.0
+    displayname "TemperatureUnits"
+    description "Datatype for TemperatureUnits"
+    
+    enum TemperatureUnits {
+        Kelvin "Degree Kelvin" , 
+    	Celsius "Degree Celsius",
+    	Fahrenheit "Degree Fahrenheit"
+    }
+    
+Then we can reference the measurement unit in a property as follows:
+
+    vortolang 1.0
+    namespace org.example
+    version 1.0.0
+    displayname "Test FB"
+    description "Functionblock for Example"
+    
+    using org.example.TemperatureUnits;1.0.0
+    
+    functionblock TestMu {
+        status {
+            temperature as float  with {
+                measurementUnit: org.example.TemperatureUnits.Kelvin 
+             }
+        }
+    }
+    
+Note, in the example above we also say that the propery is readable.
 
 ## Function Block Mapping
 A Function Block Mapping describes a mapping of a Function Block and its properties for a 
