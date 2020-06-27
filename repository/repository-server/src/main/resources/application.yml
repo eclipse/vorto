@@ -47,6 +47,22 @@ repo:
     extension: ext, pdf, doc, zip, jpg, png, svg, html, json, yml, yaml
     fileSize: 5
 
+eclipse:
+  oauth2:
+    enabled: true
+    client:
+      clientId: ${eclipse_clientid}
+      clientSecret: ${eclipse_clientSecret}
+      accessTokenUri: https://accounts.eclipse.org/oauth2/token
+      userAuthorizationUri: https://accounts.eclipse.org/oauth2/authorize
+      clientAuthenticationScheme: form
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: https://accounts.eclipse.org/oauth2/UserInfo
+
 github:
   oauth2:
     enabled: true
