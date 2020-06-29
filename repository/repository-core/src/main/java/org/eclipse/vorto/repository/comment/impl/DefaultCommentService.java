@@ -58,6 +58,7 @@ public class DefaultCommentService implements ICommentService {
       @Autowired NamespaceService namespaceService) {
     this.modelRepositoryFactory = modelRepositoryFactory;
     this.notificationService = notificationService;
+    this.commentRepository = commentRepository;
     this.accountService = defaultUserAccountService;
     this.namespaceService = namespaceService;
   }

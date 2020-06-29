@@ -117,16 +117,16 @@ repositoryControllers.controller('DetailsController',
 					.then(
 							function (result) {
 								$scope.isLoading = false;
-								$scope.message = result.message;
-								if (result.valid) {
+								$scope.message = result.data.message;
+								if (result.data.valid) {
 									$scope.loadDetails();
 								} else {
-									$scope.validationIssues = result.validationIssues;
+									$scope.validationIssues = result.data.validationIssues;
 								}
 							},
 							function (error) {
 								$scope.isLoading = false;
-								if (status === 400) {
+								if (error.status === 400) {
 									$scope.message = error.data.message;
 									$scope.validationIssues = error.data.validationIssues;
 								} else {
