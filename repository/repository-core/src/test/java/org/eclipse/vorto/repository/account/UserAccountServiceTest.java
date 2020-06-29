@@ -15,25 +15,24 @@ package org.eclipse.vorto.repository.account;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.web.account.dto.TenantTechnicalUserDto;
-import org.eclipse.vorto.repository.web.api.v1.dto.ICollaborator;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserAccountServiceTest extends AbstractIntegrationTest {
+public class UserAccountServiceTest extends UnitTestBase {
 
   private IWorkflowService workflow = null;
 
   @Before
-  public void setUp() {
-    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService);
+  @Override
+  public void setup() throws Exception {
+    super.setup();
+    workflow = new DefaultWorkflowService(repositoryFactory, accountService, notificationService,
+        namespaceService, userNamespaceRoleService, roleService);
 
   }
 
@@ -49,88 +48,19 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
     importModel("HueLightStrips.infomodel", admin);
 
     assertEquals(2, getModelRepository(alex).search("author:" + alex.getUsername()).size());
-    accountService.delete("alex");
+    userService.delete("alex", "alex");
     assertEquals(0, getModelRepository(alex).search("author:" + alex.getUsername()).size());
     assertEquals(2, getModelRepository(alex).search("author:anonymous").size());
   }
 
-  @Test
-  public void testGetUserRoles() throws Exception {
-    User user = setupUserWithRoles("alex");
-    assertEquals(2, user.getRoles("playground").size());
-  }
-
   @Test(expected = IllegalArgumentException.class)
   public void testCreateUserAlreadyExists() throws Exception {
-    User user = setupUserWithRoles("alex");
+    User user = setupUser("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
     accountService.create(user.getUsername(), "GITHUB", null);
   }
 
-  /**
-   * Tests that creating a technical user and adding to a non-existing namespace fails.
-   */
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateTechnicalUserAndAddToNonExistingNamespace() {
-    ICollaborator technicalUser = new TenantTechnicalUserDto();
-    technicalUser.setAuthenticationProviderId("GITHUB");
-    technicalUser.setSubject("subject");
-    accountService.createTechnicalUserAndAddToTenant(
-        "doesNotExist", "pepe",
-        technicalUser,
-        Role.USER
-    );
-  }
-
-  /**
-   * Tests that creating a technical user with no authentication provider fails.
-   */
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateTechnicalUserWithoutAuthenticationProvider() {
-    ICollaborator technicalUser = new TenantTechnicalUserDto();
-    technicalUser.setAuthenticationProviderId(null);
-    technicalUser.setSubject("subject");
-    // this implicitly creates the "playground" namespace
-    User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant(
-        "playground", "pepe", technicalUser, Role.USER
-    );
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateTechnicalUserWithoutSubject() {
-    ICollaborator technicalUser = new TenantTechnicalUserDto();
-    technicalUser.setAuthenticationProviderId("GITHUB");
-    technicalUser.setSubject(null);
-    User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant(
-        "playground", "pepe", technicalUser, Role.USER
-    );
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateTechnicalUserWithSubjectTooShort() {
-    ICollaborator technicalUser = new TenantTechnicalUserDto();
-    technicalUser.setAuthenticationProviderId("GITHUB");
-    technicalUser.setSubject("abc");
-    User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant(
-        "playground", "pepe", technicalUser, Role.USER
-    );
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateTechnicalUserWithSubjectNotAlphanumeric() {
-    ICollaborator technicalUser = new TenantTechnicalUserDto();
-    technicalUser.setAuthenticationProviderId("GITHUB");
-    technicalUser.setSubject("!§$%");
-    User user = setupUserWithRoles("alex");
-    accountService.createTechnicalUserAndAddToTenant(
-        "playground", "pepe", technicalUser, Role.USER
-    );
-  }
-
-  private User setupUserWithRoles(String username) {
-    return User.create(username, "GITHUB", null, new Tenant("playground"), Role.SYS_ADMIN, Role.MODEL_CREATOR);
+  private User setupUser(String username) {
+    return User.create(username, "GITHUB", null);
   }
 }

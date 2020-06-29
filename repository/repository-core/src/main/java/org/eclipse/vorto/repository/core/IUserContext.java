@@ -20,7 +20,7 @@ public interface IUserContext {
   
   String getUsername();
   
-  String getTenant();
+  String getWorkspaceId();
 
   String getHashedUsername();
 

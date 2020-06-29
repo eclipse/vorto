@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import javax.annotation.PostConstruct;
 import org.eclipse.vorto.plugin.importer.ImporterPluginInfo;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -41,7 +41,7 @@ public class PluginConfiguration {
   private ModelParserFactory modelParserFactory;
 
   @Autowired
-  private IUserAccountService userAccountService;
+  private DefaultUserAccountService userAccountService;
 
   @Value("${plugins:#{null}}")
   private String pluginsJson;
@@ -91,7 +91,7 @@ public class PluginConfiguration {
     importer.setModelParserFactory(this.modelParserFactory);
     importer.setModelRepoFactory(this.modelRepositoryFactory);
     importer.setUploadStorage(fileStorage);
-    importer.setUserRepository(userAccountService);
+    importer.setUserAccountService(userAccountService);
     importer.setRestTemplate(restTemplate);
     return importer;
   }

@@ -12,12 +12,10 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.oauth.internal.TokenUtils;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.impl.SimpleSearchService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.utils.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +29,9 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class RepositoryConfiguration extends BaseConfiguration {
@@ -49,12 +50,6 @@ public class RepositoryConfiguration extends BaseConfiguration {
 
   @Value("${repo.configFile}")
   private String repositoryConfigFile = null;
-  
-  @Autowired
-  private ITenantService tenantService;
-  
-  @Autowired
-  private IModelRepositoryFactory repositoryFactory;
 
   @Bean
   public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
@@ -75,9 +70,12 @@ public class RepositoryConfiguration extends BaseConfiguration {
   }
   
   @Bean
-  @Profile(value = {"local","local-test", "local-https", "local-dev-simplesearch"})
-  public SimpleSearchService simpleSearch() {
-    return new SimpleSearchService(this.tenantService, this.repositoryFactory);
+  @Profile(value = {"local", "test", "local-test", "local-https", "local-dev-simplesearch"})
+  public SimpleSearchService simpleSearch(
+      @Autowired NamespaceRepository namespaceRepository,
+      @Autowired IModelRepositoryFactory repositoryFactory) {
+
+    return new SimpleSearchService(namespaceRepository, repositoryFactory);
   }
   
   @Bean

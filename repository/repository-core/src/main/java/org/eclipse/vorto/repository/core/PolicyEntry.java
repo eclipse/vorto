@@ -12,13 +12,14 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+
+import javax.jcr.security.AccessControlEntry;
+import javax.jcr.security.Privilege;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.jcr.security.AccessControlEntry;
-import javax.jcr.security.Privilege;
-import org.eclipse.vorto.repository.domain.Role;
 
 public class PolicyEntry {
 
@@ -39,14 +40,12 @@ public class PolicyEntry {
   public static PolicyEntry of(AccessControlEntry ace) {
     PolicyEntry entry = new PolicyEntry();
     Principal principal = ace.getPrincipal();
-
-    if (Role.isValid(principal.getName())) {
-      entry.principalType = PrincipalType.Role;
-      entry.principalId = Role.of(principal.getName()).name();
-    } else {
+    if (principal.getName().equalsIgnoreCase(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)) {
       entry.principalType = PrincipalType.User;
-      entry.principalId = principal.getName();
+    } else {
+      entry.principalType = PrincipalType.Role;
     }
+    entry.principalId = principal.getName();
 
     final Set<String> privileges = privileges(ace.getPrivileges());
     if (privileges.contains("jcr:all")) {
@@ -61,31 +60,24 @@ public class PolicyEntry {
   }
 
   private static Set<String> privileges(Privilege[] privileges) {
-    return Arrays.asList(privileges).stream().map(p -> p.getName()).collect(Collectors.toSet());
+    return Arrays.stream(privileges).map(Privilege::getName).collect(Collectors.toSet());
   }
 
   public String getPrincipalId() {
     return principalId;
   }
 
-
   public void setPrincipalId(String principalId) {
     this.principalId = principalId;
   }
-
-
 
   public PrincipalType getPrincipalType() {
     return principalType;
   }
 
-
-
   public void setPrincipalType(PrincipalType principalType) {
     this.principalType = principalType;
   }
-
-
 
   public Permission getPermission() {
     return permission;
@@ -95,11 +87,11 @@ public class PolicyEntry {
     this.permission = permission;
   }
 
-  public static enum PrincipalType {
+  public enum PrincipalType {
     User, Role
   }
 
-  public static enum Permission {
+  public enum Permission {
     FULL_ACCESS, READ, MODIFY;
 
     public boolean includes(Permission permission) {
@@ -111,11 +103,7 @@ public class PolicyEntry {
   }
 
   public boolean isSame(AccessControlEntry entry) {
-    if (this.principalType == PrincipalType.Role) {
-      return entry.getPrincipal().getName().equals("ROLE_" + this.principalId);
-    } else {
-      return entry.getPrincipal().getName().equals(this.principalId);
-    }
+    return entry.getPrincipal().getName().equals(this.principalId);
   }
 
   @Override
@@ -125,15 +113,11 @@ public class PolicyEntry {
   }
 
   public String toACEPrincipal() {
-    if (this.principalType == PrincipalType.Role) {
-      return "ROLE_" + this.principalId;
-    } else {
-      return this.principalId;
-    }
+    return this.principalId;
   }
 
   public boolean isAdminPolicy() {
-    return this.principalId.equalsIgnoreCase(Role.SYS_ADMIN.name())
+    return this.principalId.equalsIgnoreCase(RepositoryRole.SYS_ADMIN.getName())
         && this.principalType == PrincipalType.Role;
   }
 

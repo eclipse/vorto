@@ -15,7 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,7 +47,7 @@ public class PrivilegedUserContextProvider {
 
   private static Authentication createAdminTechnicalUser(String username) {
     List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(UserRole.ROLE_SYS_ADMIN));
+    authorities.add(new SimpleGrantedAuthority(RepositoryRole.SYS_ADMIN.getName()));
     return new UsernamePasswordAuthenticationToken(username, username, authorities);
   }
 

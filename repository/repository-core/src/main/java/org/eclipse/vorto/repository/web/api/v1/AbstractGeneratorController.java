@@ -12,26 +12,27 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AbstractGeneratorController extends AbstractRepositoryController {
 
@@ -43,7 +44,7 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
   protected IGeneratorPluginService generatorService;
 
   @Autowired
-  protected ITenantService tenantService;
+  protected NamespaceService namespaceService;
 
   protected void generateAndWriteToOutputStream(String modelId, String pluginKey, HttpServletRequest request, HttpServletResponse response) {
     generateAndWriteToOutputStream(modelId, pluginKey, getRequestParams(request), response);
@@ -62,13 +63,15 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
   }
 
   protected IUserContext getUserContext(ModelId modelId) {
-    Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
-    if (!tenant.isPresent()) {
-      throw new ModelNotFoundException("The tenant for '" + modelId + "' could not be found.");
+    String workspaceId;
+    try {
+      Namespace namespace = namespaceService.getByName(modelId.getNamespace());
+      workspaceId = namespace.getWorkspaceId();
+    } catch (DoesNotExistException e) {
+      throw new ModelNotFoundException("The namespace for '" + modelId + "' could not be found.");
     }
-
     return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-        tenant.get().getTenantId());
+            workspaceId);
   }
 
   protected void writeToResponse(final HttpServletResponse response, GeneratedOutput generatedOutput)

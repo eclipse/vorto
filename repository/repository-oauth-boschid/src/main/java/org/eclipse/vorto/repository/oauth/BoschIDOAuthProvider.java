@@ -12,15 +12,11 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -28,6 +24,10 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class BoschIDOAuthProvider extends AbstractOAuthProvider {
@@ -46,8 +46,9 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
       @Value("${oauth2.verification.eidp.publicKeyUri: #{null}}") String ciamPublicKeyUri,
       @Value("${oauth2.verification.eidp.issuer: #{null}}") String ciamJwtIssuer,
       @Value("${eidp.oauth2.client.clientId: #{null}}") String ciamClientId,
-      @Autowired IUserAccountService userAccountService) {
-    super(PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), userAccountService);
+      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    super(PublicKeyHelper.supplier(new RestTemplate(), ciamPublicKeyUri), userAccountService, userNamespaceRoleService);
     this.ciamClientId = ciamClientId;
     this.ciamJwtIssuer = ciamJwtIssuer; 
   }
@@ -97,7 +98,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
       throw new InvalidTokenException("User from token is not a registered user in the repository!");
     }
 
-    return createAuthentication(this.ciamClientId, userId, name.orElse(userId), email.orElse(null), user.getAllRoles()); 
+    return createAuthentication(this.ciamClientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user));
   }
 
   @Override

@@ -13,15 +13,11 @@
 package org.eclipse.vorto.repository.web.account.dto;
 
 import java.sql.Timestamp;
-import java.util.Map;
-import java.util.Set;
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.User;
 
 public class UserDto {
-  private String username;
 
-  private Map<String, Set<Role>> roles;
+  private String username;
 
   private Timestamp dateCreated;
 
@@ -31,27 +27,14 @@ public class UserDto {
 
   public static UserDto fromUser(User user) {
     UserDto dto = new UserDto(user.getUsername(), user.getDateCreated(), user.getLastUpdated());
-    dto.setRoles(user.getTenantRoles());
     dto.setEmail(user.getEmailAddress());
     return dto;
-  }
-
-  public UserDto() {
-    super();
   }
 
   private UserDto(String username, Timestamp dateCreated, Timestamp lastUpdated) {
     this.username = username;
     this.dateCreated = dateCreated;
     this.lastUpdated = lastUpdated;
-  }
-
-  public Map<String, Set<Role>> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Map<String, Set<Role>> roles) {
-    this.roles = roles;
   }
 
   public String getUsername() {
@@ -85,6 +68,5 @@ public class UserDto {
   public void setEmail(String email) {
     this.email = email;
   }
-
 
 }

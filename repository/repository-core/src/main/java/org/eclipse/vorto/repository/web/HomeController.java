@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
@@ -52,7 +52,7 @@ public class HomeController {
   private String supportEmail;
 
   @Autowired
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   @Autowired
   private IOAuthProviderRegistry registry;

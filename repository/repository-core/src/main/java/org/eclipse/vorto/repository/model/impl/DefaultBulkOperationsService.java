@@ -12,17 +12,9 @@
  */
 package org.eclipse.vorto.repository.model.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -30,24 +22,28 @@ import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.model.RepositoryAccessException;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 @Service
 public class DefaultBulkOperationsService implements IBulkOperationsService {
 
-  private static Logger logger = Logger.getLogger(DefaultBulkOperationsService.class);
+  private static final Logger LOGGER = Logger.getLogger(DefaultBulkOperationsService.class);
 
   private IModelRepositoryFactory repositoryFactory;
 
-  public DefaultBulkOperationsService(@Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired ITenantService tenantService) {
+  public DefaultBulkOperationsService(@Autowired IModelRepositoryFactory repositoryFactory) {
     this.repositoryFactory = repositoryFactory;
   }
 
+  @Override
   public List<ModelId> makeModelPublic(ModelId modelId) {
     List<ModelId> accumulator = new ArrayList<>();
 
@@ -81,13 +77,13 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
     }
 
     if (isPrivate(modelInfo)) {
-      logger.info("Changing visibility of model " + modelId.getPrettyFormat() + " to public.");
+      LOGGER.info("Changing visibility of model " + modelId.getPrettyFormat() + " to public.");
       // Add public visibility property
       repository.updateVisibility(modelId, IModelRepository.VISIBILITY_PUBLIC);
 
       // Add corresponding policy to model
       IModelPolicyManager policyMgr = this.repositoryFactory
-          .getPolicyManager(repository.getTenantId(), getAuthenticationToken());
+          .getPolicyManager(repository.getWorkspaceId(), getAuthenticationToken());
       policyMgr.addPolicyEntry(modelId, PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY,
           PrincipalType.User, Permission.READ));
 
@@ -112,7 +108,7 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
 
     for (ModelId modelId : accumulator) {
       IModelRepository repo = this.repositoryFactory.getRepositoryByModel(modelId);
-      String tenantId = repo.getTenantId();
+      String tenantId = repo.getWorkspaceId();
 
       // changed back visibility property
       repo.updateVisibility(modelId, IModelRepository.VISIBILITY_PRIVATE);

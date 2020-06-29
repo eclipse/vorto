@@ -73,7 +73,8 @@ public class DefaultAction implements IAction {
 
   @Override
   public String toString() {
-    return "DefaultAction [name=" + name + ", description=" + description + ", to=" + to + "]";
+    return String
+        .format("DefaultAction [name=%s, description=%s, to=%s]", name, description, to.getName());
   }
 
   @Override

@@ -12,19 +12,20 @@
  */
 package org.eclipse.vorto.repository.search.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingResult;
-import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple search which merely delegates the search to the model repository
@@ -32,13 +33,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class SimpleSearchService implements ISearchService, IIndexingService {
 
-  private ITenantService tenantService;
+  private NamespaceRepository namespaceRepository;
 
   private IModelRepositoryFactory repositoryFactory;
 
-  public SimpleSearchService(ITenantService tenantService,
+  public SimpleSearchService(NamespaceRepository namespaceRepository,
       IModelRepositoryFactory repositoryFactory) {
-    this.tenantService = tenantService;
+    this.namespaceRepository = namespaceRepository;
     this.repositoryFactory = repositoryFactory;
   }
 
@@ -48,7 +49,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
   
   /**
-   * Searches all tenants existing in the system. Use modeshape ACLs to get result back which matches user rights.
+   * Searches all namespaces existing in the system. Use modeshape ACLs to get result back which matches user rights.
    */
   @Override
   public List<ModelInfo> search(String expression) {
@@ -57,9 +58,8 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   
   private List<ModelInfo> search(String expression, Authentication authentication) {
     List<ModelInfo> result = new ArrayList<>();
-    
-    tenantService.getTenants().forEach(tenant -> {
-      IModelRepository repository = this.repositoryFactory.getRepository(tenant.getTenantId(), 
+    namespaceRepository.findAll().forEach(namespace -> {
+      IModelRepository repository = this.repositoryFactory.getRepository(namespace.getWorkspaceId(),
           authentication);
       result.addAll(repository.search(expression));
     });
@@ -78,7 +78,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
-  public void indexModel(ModelInfo modelInfo, String tenantId) {
+  public void indexModel(ModelInfo modelInfo, String workspaceId) {
     // NOOP
   }
 
@@ -93,7 +93,7 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   }
 
   @Override
-  public void deleteIndexForTenant(String tenantId) {
+  public void deleteIndexForWorkspace(String workspaceId) {
     // NOOP
   }
 

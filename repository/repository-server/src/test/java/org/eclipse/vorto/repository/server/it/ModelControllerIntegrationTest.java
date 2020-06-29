@@ -12,21 +12,17 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.junit.Test;
 
-public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
-
-  protected void setUpTest() throws Exception {
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(repositoryServer,userCreator);
-  }
+public class ModelControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void testModelAccess() throws Exception {
-    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName).with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName).with(userModelCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -36,7 +32,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetModelContent() throws Exception {
-    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userModelCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -46,7 +42,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testModelFileDownloadContent() throws Exception {
-    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userModelCreator))
         .andExpect(status().isOk());
     
     assertTrue(true);
@@ -57,7 +53,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
    */
   @Test
   public void testModelFileDownloadContentWithDependencies() throws Exception {
-    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file"+"?includeDependencies=true").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file"+"?includeDependencies=true").with(userModelCreator))
         .andExpect(status().isOk());
     
     assertTrue(true);

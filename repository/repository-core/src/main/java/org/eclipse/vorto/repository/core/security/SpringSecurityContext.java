@@ -12,59 +12,58 @@
  */
 package org.eclipse.vorto.repository.core.security;
 
-import java.util.Set;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.modeshape.jcr.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
+
+import java.util.Objects;
 
 public class SpringSecurityContext implements SecurityContext {
 
-  private static final Logger logger = LoggerFactory.getLogger(SpringSecurityContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityContext.class);
 
-  private Authentication authentication;
-  private Set<Role> rolesInTenant;
+  private SpringSecurityCredentials credentials;
 
-  public SpringSecurityContext(Authentication authentication, Set<Role> rolesInTenant) {
-    this.authentication = authentication;
-    this.rolesInTenant = rolesInTenant;
+  public SpringSecurityContext(SpringSecurityCredentials credentials) {
+    this.credentials = credentials;
   }
 
   @Override
   public boolean isAnonymous() {
-    return authentication instanceof AnonymousAuthenticationToken;
+    return credentials.getAuthentication() instanceof AnonymousAuthenticationToken;
   }
 
   @Override
   public String getUserName() {
-    return authentication.getName();
+    return credentials.getAuthentication().getName();
   }
 
   @Override
   public boolean hasRole(String principalName) {
+    if (Objects.nonNull(principalName) && principalName.startsWith("ROLE_")) {
+      principalName = principalName.replace("ROLE_", "");
+    }
     // grant named model owners access to their models
-    if (principalName.equals(authentication.getName())
-        || principalName.equals(UserContext.getHash(authentication.getName()))) {
+    if (principalName.equals(credentials.getAuthentication().getName())
+        || principalName.equals(UserContext.getHash(credentials.getAuthentication().getName()))) {
       return true;
     }
 
     // grant sys ads access to the models
-    boolean isRoleValid = Role.isValid(principalName);
-    if (isRoleValid && Role.of(principalName) == Role.SYS_ADMIN && isSysAdmin()) {
+    if (credentials.isSysAdmin()) {
       return true;
     }
 
     // grant people with certain roles access to the models
-    for (Role userRole : rolesInTenant) {
-      if (userRole.hasPermission(principalName)
-          || (isRoleValid && Role.of(principalName) == userRole)) {
-        return true;
-      }
+    if (credentials.hasPrivilege(principalName)) {
+      return true;
+    }
+    if (credentials.getRolesInNamespace().stream().map(IRole::getName).anyMatch(principalName::equalsIgnoreCase)) {
+      return true;
     }
 
     // grant non-members of the tenant (including anonymous users) access to models
@@ -76,14 +75,9 @@ public class SpringSecurityContext implements SecurityContext {
     return "readonly".equals(principalName);
   }
 
-  private boolean isSysAdmin() {
-    return authentication.getAuthorities().stream()
-        .anyMatch(auth -> auth.getAuthority().equals(UserRole.ROLE_SYS_ADMIN));
-  }
-
   @Override
   public void logout() {
-    logger.debug("logout of Vorto Repository");
+    LOGGER.debug("logout of Vorto Repository");
   }
 
 }

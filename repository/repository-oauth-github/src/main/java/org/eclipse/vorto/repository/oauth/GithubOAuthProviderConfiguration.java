@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import javax.servlet.http.HttpServletRequest;
-import org.eclipse.vorto.repository.oauth.AbstractOAuthProviderConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -21,20 +19,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Configuration
 public class GithubOAuthProviderConfiguration extends AbstractOAuthProviderConfiguration {
 
   private static final String LOGOUT_URL = "/logout";
 
-  @Value("#{servletContext.contextPath}")
-  private String servletContextPath;
-
+  private String contextPath;
 
   public GithubOAuthProviderConfiguration(
       @Value("${github.oauth2.resource.userInfoUri}") String githubUserInfoEndpointUrl,
-      @Value("${github.oauth2.client.clientId}") String githubClientId) {
+      @Value("${github.oauth2.client.clientId}") String githubClientId,
+      @Value("${server.contextPath}") String contextPath) {
     super(new UserInfoTokenServices(githubUserInfoEndpointUrl, githubClientId));
-
+    if (contextPath.endsWith("/")) {
+      contextPath = contextPath.substring(0, contextPath.length() - 1);
+    }
+    this.contextPath = contextPath;
   }
 
   @Override
@@ -60,7 +62,7 @@ public class GithubOAuthProviderConfiguration extends AbstractOAuthProviderConfi
 
   @Override
   public String getLogoutUrl(HttpServletRequest request) {
-    return getBaseUrl(request) + servletContextPath + LOGOUT_URL;
+    return getBaseUrl(request) + contextPath + LOGOUT_URL;
   }
 
   private String getBaseUrl(HttpServletRequest request) {
@@ -69,7 +71,6 @@ public class GithubOAuthProviderConfiguration extends AbstractOAuthProviderConfi
     } else {
       return request.getRequestURL().toString().replace(request.getRequestURI(), "");
     }
-
   }
 
   @Override

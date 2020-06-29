@@ -64,12 +64,12 @@ define(["../../init/appController"], function (repositoryControllers) {
             return {
               edit: true,
               userId: user.userId,
-              roleModelCreator: user.roles.includes("MODEL_CREATOR"),
-              roleModelPromoter: user.roles.includes("MODEL_PROMOTER"),
-              roleModelReviewer: user.roles.includes("MODEL_REVIEWER"),
-              roleModelPublisher: user.roles.includes("MODEL_PUBLISHER"),
-              roleUser: user.roles.includes("USER"),
-              roleAdmin: user.roles.includes("TENANT_ADMIN")
+              roleModelCreator: user.roles.includes("model_creator"),
+              roleModelPromoter: user.roles.includes("model_promoter"),
+              roleModelReviewer: user.roles.includes("model_reviewer"),
+              roleModelPublisher: user.roles.includes("model_publisher"),
+              roleUser: user.roles.includes("model_viewer"),
+              roleAdmin: user.roles.includes("namespace_admin")
             };
           };
 
@@ -336,27 +336,27 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.getRoles = function (user) {
             var roles = [];
             if ($scope.user.roleModelCreator) {
-              roles.push("ROLE_MODEL_CREATOR")
+              roles.push("model_creator")
             }
 
             if ($scope.user.roleModelPromoter) {
-              roles.push("ROLE_MODEL_PROMOTER")
+              roles.push("model_promoter")
             }
 
             if ($scope.user.roleModelReviewer) {
-              roles.push("ROLE_MODEL_REVIEWER")
+              roles.push("model_reviewer")
             }
 
             if ($scope.user.roleModelPublisher) {
-              roles.push("ROLE_MODEL_PUBLISHER")
+              roles.push("model_publisher")
             }
 
             if ($scope.user.roleUser) {
-              roles.push("ROLE_USER")
+              roles.push("model_viewer")
             }
 
             if ($scope.user.roleAdmin) {
-              roles.push("ROLE_TENANT_ADMIN")
+              roles.push("namespace_admin")
             }
 
             return roles;

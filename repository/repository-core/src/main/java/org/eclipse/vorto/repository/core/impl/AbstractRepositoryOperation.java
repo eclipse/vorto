@@ -17,7 +17,8 @@ import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 import javax.jcr.PathNotFoundException;
@@ -58,15 +59,15 @@ public class AbstractRepositoryOperation {
     }
   }
 
-  public <T> void doInElevatedSession(SessionFunction<T> fn, IUserContext userContext) {
-    RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false);
+  public <T> T doInElevatedSession(SessionFunction<T> fn, IUserContext userContext, PrivilegeService privilegeService) {
+    RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false, privilegeService);
     IUserContext elevatedUserContext = getUserContextForCreatingAttachment(userContext);
     try {
       helper.setUser(elevatedUserContext.getAuthentication());
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
-      helper.setRolesInTenant(Stream.of(Role.SYS_ADMIN).collect(Collectors.toSet()));
-      helper.setTenantId(repositorySessionHelperSupplier.get().getTenantId());
-      fn.apply(helper.getSession());
+      helper.setRolesInNamespace(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
+      helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());
+      return fn.apply(helper.getSession());
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Unexpected exception", e);
     } finally {

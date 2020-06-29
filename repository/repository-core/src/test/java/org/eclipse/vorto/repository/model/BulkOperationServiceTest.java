@@ -12,13 +12,8 @@
  */
 package org.eclipse.vorto.repository.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.List;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.model.impl.DefaultBulkOperationsService;
@@ -27,10 +22,14 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
 import org.springframework.security.core.Authentication;
 
-public class BulkOperationServiceTest extends AbstractIntegrationTest {
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+public class BulkOperationServiceTest extends UnitTestBase {
 
   private IBulkOperationsService getModelService(final String username) {
-    return new DefaultBulkOperationsService(repositoryFactory, tenantService) {
+    return new DefaultBulkOperationsService(repositoryFactory) {
       @Override
       protected Authentication getAuthenticationToken() {
         return createAuthenticationToken(username);
@@ -73,7 +72,6 @@ public class BulkOperationServiceTest extends AbstractIntegrationTest {
     }
        
     IBulkOperationsService modelService = getModelService("reviewer");
-    
     modelService.makeModelPublic(ModelId.fromPrettyFormat("com.mycompany:Point3d:1.0.0"));
     
     fail("Making a model public if done by non-publisher should have thrown an error!");

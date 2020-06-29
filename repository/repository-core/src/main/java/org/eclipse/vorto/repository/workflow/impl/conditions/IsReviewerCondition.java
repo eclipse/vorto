@@ -12,23 +12,40 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.conditions;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 
-public class IsReviewerCondition implements IWorkflowCondition {
+import java.util.Objects;
 
-  private IUserAccountService userRepository;
+public class IsReviewerCondition extends AbstractWorkflowCondition {
 
-  public IsReviewerCondition(IUserAccountService userRepository) {
+  private DefaultUserAccountService userRepository;
+
+  private RoleService roleService;
+
+  public IsReviewerCondition(
+      DefaultUserAccountService userRepository,
+      NamespaceService namespaceService,
+      UserNamespaceRoleService userNamespaceRoleService,
+      RoleService roleService) {
+
+    super(namespaceService, userNamespaceRoleService);
     this.userRepository = userRepository;
+    this.roleService = roleService;
   }
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
+    IRole role = roleService.findAnyByName("model_reviewer")
+        .orElseThrow(() -> new IllegalStateException("model_reviewer role not found."));
     User foundUser = userRepository.getUser(user.getUsername());
-    return foundUser != null ? foundUser.isReviewer(user.getTenant()) : false;
+    return Objects.nonNull(foundUser)  && hasRole(user, foundUser, role);
   }
+
 }

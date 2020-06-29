@@ -12,57 +12,49 @@
  */
 package org.eclipse.vorto.repository.core.impl.utils;
 
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.impl.InvocationContext;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
+import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
+import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
+import org.eclipse.vorto.repository.core.impl.validation.*;
+import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
+import org.springframework.util.StringUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.InvocationContext;
-import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
-import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
-import org.eclipse.vorto.repository.core.impl.parser.LocalModelWorkspace;
-import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
-import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdValidation;
-import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
-import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
-import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
-import org.eclipse.vorto.repository.core.impl.validation.UserHasAccessToNamespaceValidation;
-import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.importer.ValidationReport;
-import org.eclipse.vorto.repository.tenant.ITenantService;
-import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
-import org.springframework.util.StringUtils;
 
 public class BulkUploadHelper {
 
-  private IUserAccountService userRepository;
+  private DefaultUserAccountService userRepository;
 
   private IModelRepositoryFactory modelRepoFactory;
 
-  private ITenantService tenantService;
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  private UserRepositoryRoleService userRepositoryRoleService;
 
   public BulkUploadHelper(IModelRepositoryFactory modelRepoFactory,
-      IUserAccountService userRepository, ITenantService tenantService, ErrorMessageProvider errorMessageProvider) {
+      DefaultUserAccountService userRepository,
+      UserNamespaceRoleService userNamespaceRoleService,
+      UserRepositoryRoleService userRepositoryRoleService) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepository;
-    this.tenantService = tenantService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
+    this.userRepositoryRoleService = userRepositoryRoleService;
   }
 
   public List<ValidationReport> uploadMultiple(byte[] content, String zipFileName,
@@ -104,9 +96,9 @@ public class BulkUploadHelper {
 
   private Function<ModelInfo, ValidationReport> createConvertToUploadModelResultFn(
       List<IModelValidator> bulkUploadValidators, InvocationContext context) {
-    return (modelInfo) -> {
+    return modelInfo -> {
       try {
-        bulkUploadValidators.stream().forEach(validator -> validator.validate(modelInfo, context));
+        bulkUploadValidators.forEach(validator -> validator.validate(modelInfo, context));
       } catch (ValidationException validationException) {
         return ValidationReport.invalid(modelInfo, validationException);
       }
@@ -123,7 +115,6 @@ public class BulkUploadHelper {
     if (content == null) {
       throw new FatalModelRepositoryException("Contents of zip file are invalid", null);
     }
-
 
     ZipParseResult parsingResult = new ZipParseResult();
 
@@ -144,11 +135,11 @@ public class BulkUploadHelper {
             .add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
       } catch (ValidationException grammarProblem) {
         parsingResult.invalidModels.add(ValidationReport.invalid(
-            trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()),
+            trytoCreateModelFromCorruptFile(fileContent.getFileName()),
             grammarProblem));
       } catch (Exception e) {
         parsingResult.invalidModels.add(ValidationReport.invalid(
-            trytoCreateModelFromCorruptFile(fileContent.getFileName(), fileContent.getContent()),
+            trytoCreateModelFromCorruptFile(fileContent.getFileName()),
             "File cannot be processed to a Vorto model."));
       }
     });
@@ -157,7 +148,7 @@ public class BulkUploadHelper {
   }
 
   private Collection<FileContent> getFileContentsFromZip(byte[] content) {
-    Collection<FileContent> fileContents = new ArrayList<FileContent>();
+    Collection<FileContent> fileContents = new ArrayList<>();
 
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(content));
     ZipEntry entry = null;
@@ -165,7 +156,7 @@ public class BulkUploadHelper {
     try {
       while ((entry = zis.getNextEntry()) != null) {
         if (!entry.isDirectory() && ModelParserFactory.hasParserFor(entry.getName())) {
-          fileContents.add(new FileContent(entry.getName(), copyStream(zis, entry)));
+          fileContents.add(new FileContent(entry.getName(), copyStream(zis)));
         }
       }
     } catch (IOException e) {
@@ -176,7 +167,7 @@ public class BulkUploadHelper {
   }
 
   // TODO: try to guess the modelinfo based on the content of the file, instead of the filename
-  private ModelInfo trytoCreateModelFromCorruptFile(String fileName, byte[] fileContent) {
+  private ModelInfo trytoCreateModelFromCorruptFile(String fileName) {
     try {
       final String modelName = fileName.substring(0, fileName.lastIndexOf("."));
       final ModelType type = ModelType.fromFileName(fileName);
@@ -191,15 +182,15 @@ public class BulkUploadHelper {
   }
 
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
-    List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
-    bulkUploadValidators.add(new UserHasAccessToNamespaceValidation(userRepository, tenantService));
+    List<IModelValidator> bulkUploadValidators = new LinkedList<>();
+    bulkUploadValidators.add(new UserHasAccessToNamespaceValidation(userRepository, userRepositoryRoleService, userNamespaceRoleService));
     bulkUploadValidators.add(new DuplicateModelValidation(modelRepoFactory));
     bulkUploadValidators.add(new BulkModelDuplicateIdValidation(modelRepoFactory, modelResources));
     bulkUploadValidators.add(new BulkModelReferencesValidation(modelRepoFactory, modelResources));
     return bulkUploadValidators;
   }
 
-  protected static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
+  protected static byte[] copyStream(ZipInputStream in) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       int size;

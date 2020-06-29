@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import java.util.Map;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.domain.User;
@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 public class PendingApprovalNotification implements IWorkflowFunction {
 
   private INotificationService notificationService;
-  private IUserAccountService accountService;
+  private DefaultUserAccountService accountService;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PendingApprovalNotification.class);
 
   public PendingApprovalNotification(INotificationService notificationService,
-      IUserAccountService accountService) {
+      DefaultUserAccountService accountService) {
     this.notificationService = notificationService;
     this.accountService = accountService;
   }

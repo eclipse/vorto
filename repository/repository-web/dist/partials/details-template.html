@@ -37,14 +37,14 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="((hasAuthority('ROLE_SYS_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions && !modelIsLoading && !isLoading">
+			<div ng-show="((hasAuthority('sysadmin')) || permission === 'FULL_ACCESS') && !model.released && workflowActions && !modelIsLoading && !isLoading">
 				<button class="btn btn-danger pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="(hasAuthority('ROLE_SYS_ADMIN') || canPublishModel) && model.released && model.visibility === 'private' && hasOfficialPrefix(model) && !modelIsLoading && !isLoading">
+			<div ng-show="(hasAuthority('sysadmin') || canPublishModel) && model.released && model.visibility === 'private' && hasOfficialPrefix(model) && !modelIsLoading && !isLoading">
 				<button class="btn btn-default pull-left"  role="button"
 				    ng-click="makePublic(model)">
 					<span class="fa fa-globe" aria-hidden="true"></span>&nbsp;Publish</button>
@@ -67,7 +67,7 @@
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping</a>
 			</div>
 
-			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
+			<div ng-show="hasAuthority('model_creator')">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
@@ -96,7 +96,7 @@
 													<div class="noimg" ng-show="!model.hasImage">No Image Yet
 													</div>
 													<img class="details-img" ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" />
-													<div class="upload" ng-show="(hasAuthority('ROLE_SYS_ADMIN') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
+													<div class="upload" ng-show="(hasAuthority('sysadmin') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
 														<a href="" ng-click="chooseImageFile()">
 															<i class="fa fa-upload"></i> Click to change image</a>
 													</div>
@@ -240,10 +240,10 @@
 													<a ng-hide="model.type === 'Mapping' || model.type === 'Datatype'" ng-href="./api/v1/generators/jsonschema/models/{{model.id.prettyFormat}}" class="pull-center">
 														<i class="fa fa-fw fa-download"></i>JSON Schema</a>
 												</dd>
-												<dt ng-show="hasAuthority('ROLE_SYS_ADMIN')">
+												<dt ng-show="hasAuthority('sysadmin')">
 													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
 												</dt>
-												<dt ng-show="!(hasAuthority('ROLE_SYS_ADMIN'))">
+												<dt ng-show="!(hasAuthority('sysadmin'))">
 													Attachments:
 												</dt>
 												<dd>
@@ -251,7 +251,7 @@
 														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 														</a>
-														<button ng-hide="(!hasAuthority('ROLE_SYS_ADMIN')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+														<button ng-hide="(!hasAuthority('sysadmin')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 															<i class="fa fa-close"></i>
 														</button>
 													</div>
@@ -268,7 +268,7 @@
 												<label ng-show="canCreateModels" class="ng-binding">Model Editor</label>
 												<label ng-show="!canCreateModels" class="ng-binding">Model Preview</label>
 											</div>
-											<div ng-hide="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
+											<div ng-hide="model.imported && !(hasAuthority('sysadmin'))  && !model.released"
 											    class="col-sm-9">
 											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/master/docs/vortolang-1.0.md">
 													<i class="fa fa-question fa-2x"></i>
@@ -279,13 +279,13 @@
 													<span ng-if="!isLoading" class="fa fa-save" aria-hidden="true"></span>
 													<i ng-style="{'visibility' : isLoading ? 'visible' : 'hidden'}" class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
 													
-												<a class="btn btn-sm btn-default pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_SYS_ADMIN'))"
+												<a class="btn btn-sm btn-default pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('sysadmin'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Reference</a>
 												
 
 											</div>
-											<div ng-show="model.imported && !(hasAuthority('ROLE_SYS_ADMIN'))  && !model.released"
+											<div ng-show="model.imported && !(hasAuthority('sysadmin'))  && !model.released"
 											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
 												<a class="btn btn-sm btn-default pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>

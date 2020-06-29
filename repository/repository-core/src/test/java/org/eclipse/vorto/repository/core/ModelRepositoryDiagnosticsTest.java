@@ -12,13 +12,9 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import java.util.Arrays;
-import java.util.Collection;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.Diagnostician;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ModelValidationDiagnostic;
@@ -27,7 +23,13 @@ import org.eclipse.vorto.repository.core.impl.diagnostics.ReferenceIntegrityDiag
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class ModelRepositoryDiagnosticsTest extends UnitTestBase {
 
   @Test
   public void testDiagnosisAllValidModels() {

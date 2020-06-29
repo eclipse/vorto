@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.api.v1;
 
+import io.swagger.annotations.ApiParam;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,13 +31,11 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.ApiParam;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -45,11 +44,10 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
-  private static Logger logger = Logger.getLogger(ModelController.class);
+  private static final Logger LOGGER = Logger.getLogger(ModelController.class);
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
+  @GetMapping("/{modelId:.+}")
   public ModelInfo getModelInfo(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
@@ -57,34 +55,33 @@ public class ModelController extends AbstractRepositoryController {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    logger.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
+    LOGGER.info(String.format("Generated model info: [%s]", modelID.getPrettyFormat()));
 
     ModelInfo resource = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
 
     if (resource == null) {
-      logger.warn(String.format("Could not find model with ID [%s] in repository", modelID));
+      LOGGER.warn(String.format("Could not find model with ID [%s] in repository", modelID));
       throw new ModelNotFoundException("Model does not exist", null);
     }
     return ModelDtoFactory.createDto(resource);
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
+  @GetMapping("/{modelId:.+}/content")
   public ModelContent getModelContent(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
-    
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(
+        this.modelRepositoryFactory);
+
     return converter.convert(modelID, Optional.empty());
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
+  @GetMapping("/{modelId:.+}/content/{targetplatformKey}")
   public ModelContent getModelContentForTargetPlatform(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
@@ -92,28 +89,27 @@ public class ModelController extends AbstractRepositoryController {
           required = true) final @PathVariable String targetplatformKey) {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(
+        this.modelRepositoryFactory);
 
-    ModelIdToModelContentConverter converter = new ModelIdToModelContentConverter(this.modelRepositoryFactory);
-    
     return converter.convert(modelID, Optional.of(targetplatformKey));
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
-  @CrossOrigin(origins = "https://www.eclipse.org")
+  @PreAuthorize("isAuthenticated() or hasAuthority('model_viewer')")
+  @GetMapping("/{modelId:.+}/file")
   public void downloadModelById(
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "Set true if dependencies shall be included",
           required = false) final @RequestParam(value = "includeDependencies",
-              required = false) boolean includeDependencies,
+          required = false) boolean includeDependencies,
       final HttpServletResponse response) {
 
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-    logger.info("Download of Model file : [" + modelID.toString() + "]");
+    LOGGER.info("Download of Model file : [" + modelID.toString() + "]");
 
     if (includeDependencies) {
       byte[] zipContent = createZipWithAllDependencies(modelID);
@@ -137,12 +133,9 @@ public class ModelController extends AbstractRepositoryController {
 
     try {
       addModelToZip(zos, modelId);
-
       zos.close();
       baos.close();
-
       return baos.toByteArray();
-
     } catch (Exception ex) {
       throw new GenericApplicationException("Error while generating zip file.", ex);
     }

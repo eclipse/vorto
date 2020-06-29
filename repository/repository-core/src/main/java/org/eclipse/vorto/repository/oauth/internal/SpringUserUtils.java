@@ -12,19 +12,21 @@
  */
 package org.eclipse.vorto.repository.oauth.internal;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.RoleUtil;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import com.google.common.collect.Sets;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SpringUserUtils {
 
@@ -32,7 +34,7 @@ public class SpringUserUtils {
     // Hide the default constructor
   }
 
-  public static void refreshSpringSecurityUser(User user) {
+  public static void refreshSpringSecurityUser(User user, UserNamespaceRoleService userNamespaceRoleService) {
     // We only need to replace the authorities as that might be the only thing that changed
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -44,7 +46,7 @@ public class SpringUserUtils {
 
       UsernamePasswordAuthenticationToken newAuth =
           new UsernamePasswordAuthenticationToken(oldAuth.getPrincipal(), oldAuth.getCredentials(),
-              SpringUserUtils.toAuthorityList(getUserRoles(user)));
+              SpringUserUtils.toAuthorityList(getUserRoles(user, userNamespaceRoleService)));
       newAuth.setDetails(oldAuth.getDetails());
 
       OAuth2Authentication newAuthentication =
@@ -55,21 +57,20 @@ public class SpringUserUtils {
     }
   }
 
-  private static Set<Role> getUserRoles(User user) {
-    if (user.getAllRoles().isEmpty()) {
-      return Sets.newHashSet(Role.USER);
-    }
-    return user.getAllRoles();
+  private static Set<IRole> getUserRoles(User user, UserNamespaceRoleService userNamespaceRoleService) {
+    return userNamespaceRoleService.getRolesOnAllNamespaces(user);
   }
 
-  public static List<GrantedAuthority> toAuthorityList(Set<Role> roles) {
+  public static List<GrantedAuthority> toAuthorityList(Set<IRole> roles) {
     Set<String> roleStrings =
-        roles.stream().map(role -> "ROLE_" + role.toString()).collect(Collectors.toSet());
+        roles.stream().map(IRole::getName).collect(Collectors.toSet());
     return AuthorityUtils.createAuthorityList(roleStrings.toArray(new String[roleStrings.size()]));
   }
 
-  public static Set<Role> authorityListToSet(Collection<? extends GrantedAuthority> authorities) {
-    return AuthorityUtils.authorityListToSet(authorities).stream().map(Role::of)
+  public static Set<IRole> authorityListToSet(Collection<? extends GrantedAuthority> authorities, RoleUtil roleUtil) {
+    return AuthorityUtils.authorityListToSet(authorities).stream()
+        .map(roleUtil::toNamespaceRoles)
+        .flatMap(Collection::stream)
         .collect(Collectors.toSet());
   }
 }

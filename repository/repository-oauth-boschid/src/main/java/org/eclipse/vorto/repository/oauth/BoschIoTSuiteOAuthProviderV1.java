@@ -12,16 +12,17 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import org.eclipse.vorto.repository.oauth.internal.JwtToken;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.security.PublicKey;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.oauth.internal.JwtToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Component
 public class BoschIoTSuiteOAuthProviderV1 extends BoschIoTSuiteOAuthProviderV2 {
@@ -32,13 +33,14 @@ public class BoschIoTSuiteOAuthProviderV1 extends BoschIoTSuiteOAuthProviderV2 {
   public BoschIoTSuiteOAuthProviderV1(
       @Value("${oauth2.verification.legacy.issuer: #{null}}") String legacyJwtIssuer,
       @Value("${oauth2.verification.legacy.publicKeyUri: #{null}}") String legacyPublicKeyUri,
-      @Autowired IUserAccountService userAccountService) {
-    super(legacyJwtIssuer, legacyPublicKeyUri, userAccountService);
+      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    super(legacyJwtIssuer, legacyPublicKeyUri, userAccountService, userNamespaceRoleService);
   }
   
   public BoschIoTSuiteOAuthProviderV1(Supplier<Map<String, PublicKey>> publicKeySupplier, 
-      IUserAccountService userAccountService) {
-    super(publicKeySupplier, userAccountService);
+      DefaultUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
+    super(publicKeySupplier, userAccountService, userNamespaceRoleService);
   }
 
   @Override
