@@ -6,7 +6,7 @@ Use the Client API to
 - search for models by full-text search 
 - read model content
 - download model attachments, such as images etc.
-- generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#!/generators)
+- generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#/generators)
 
 ### Maven dependency
 
@@ -33,7 +33,7 @@ Collection<ModelInfo> models = repositoryClient.search("sensor");
 
 ### Fetch a specific model 
 
-The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#!/details/com.bosch/BoschGLM100C/1.0.0)
+The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
 
 ```java
 ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");

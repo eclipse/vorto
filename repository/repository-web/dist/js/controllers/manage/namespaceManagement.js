@@ -91,7 +91,7 @@ define(["../../init/appController"], function (repositoryControllers) {
             if (!namespaceNames.includes(sanitizedUserID)) {
               return sanitizedUserID;
             }
-            // namespace already exists with sanitized user ID - suggesting
+                // namespace already exists with sanitized user ID - suggesting
             // name prepended with integer
             else {
               let index = 0;
@@ -121,10 +121,10 @@ define(["../../init/appController"], function (repositoryControllers) {
                   controller: "requestAccessToNamespaceController",
                   size: "lg",
                   resolve: {
-                    username: function() {
+                    username: function () {
                       return $rootScope.displayName;
                     },
-                    subject: function() {
+                    subject: function () {
                       return $rootScope.userInfo.subject;
                     }
                   },
@@ -332,6 +332,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.namespaces = [];
           $scope.selectedNamespace = null;
+          $scope.lastHighlightedNamespace = null;
           $scope.namespacePartial = "";
           $scope.username = username;
           $scope.loggedInUserSubject = subject;
@@ -339,6 +340,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.userPartial = "";
           $scope.selectedUser = null;
           $scope.retrievedUsers = [];
+          $scope.lastHighlightedUser = null;
           $scope.userRadio = "myself";
           $scope.desiredRoles = [];
           $scope.ack = false;
@@ -347,10 +349,11 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.error = false;
           $scope.success = false;
 
-          $scope.computeSubmitAvailability = function() {
+          $scope.computeSubmitAvailability = function () {
             let element = document.getElementById("submit");
             if (element) {
-              element.disabled = !$scope.selectedNamespace || !$scope.selectedUser || !$scope.ack;
+              element.disabled = !$scope.selectedNamespace
+                  || !$scope.selectedUser || !$scope.ack;
             }
           }
 
@@ -362,10 +365,13 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.highlightNamespace = function (namespace) {
+            let list = document.getElementById("namespaceDropdown");
             let element = document.getElementById(namespace.name);
-            if (element) {
+            if (list && element) {
               element.style.backgroundColor = '#7fc6e7';
-              element.style.color = '#ffffff'
+              element.style.color = '#ffffff';
+              list.scrollTop = element.offsetTop - element.clientHeight;
+              $scope.lastHighlightedNamespace = namespace;
             }
           }
 
@@ -387,6 +393,102 @@ define(["../../init/appController"], function (repositoryControllers) {
             $scope.computeSubmitAvailability();
           }
 
+          $scope.selectOtherNamespace = function (event, selected) {
+            let length = $scope.namespaces.length;
+            let key = event.key;
+            if (length == 1 && key !== 'Enter') {
+              $scope.highlightNamespace($scope.namespaces[0]);
+              return;
+            }
+            let nextOrPrevious = null;
+            if (key === 'ArrowUp') {
+              nextOrPrevious = false;
+            } else if (key === 'ArrowDown') {
+              nextOrPrevious = true;
+            } else if (key === 'Enter') {
+              if ($scope.lastHighlightedNamespace) {
+                $scope.selectNamespace($scope.lastHighlightedNamespace);
+                return;
+              }
+            }
+            if ($scope.namespaces && nextOrPrevious !== null) {
+              // if this is invoked from the input text, no namespace is selected
+              let nextIndex = nextOrPrevious ? 0 : length - 1;
+              if (selected) {
+                let selectedIndex = $scope.namespaces.indexOf(selected);
+                // increment/decrement
+                nextIndex = nextOrPrevious ? selectedIndex + 1
+                    : selectedIndex - 1;
+                // handle rotation
+                if (nextIndex >= length) {
+                  nextIndex = 0;
+                } else if (nextIndex < 0) {
+                  nextIndex = length - 1;
+                }
+              }
+              // highlighting target list element
+              $scope.highlightNamespace($scope.namespaces[nextIndex]);
+              // unhighlighting previously highlighted element - forward
+              if (nextOrPrevious) {
+                $scope.unhighlightNamespace(
+                    $scope.namespaces[nextIndex > 0 ? nextIndex - 1 : length
+                        - 1]);
+              } else {
+                $scope.unhighlightNamespace(
+                    $scope.namespaces[nextIndex < length - 1 ? nextIndex + 1
+                        : 0]);
+              }
+            }
+          }
+
+          $scope.selectOtherTechnicalUser = function (event, selected) {
+            let length = $scope.retrievedUsers.length;
+            let key = event.key;
+            if (length == 1 && key !== 'Enter') {
+              $scope.highlightUser($scope.retrievedUsers[0]);
+              return;
+            }
+            let nextOrPrevious = null;
+            if (key === 'ArrowUp') {
+              nextOrPrevious = false;
+            } else if (key === 'ArrowDown') {
+              nextOrPrevious = true;
+            } else if (key === 'Enter') {
+              if ($scope.lastHighlightedUser) {
+                $scope.selectUser($scope.lastHighlightedUser);
+                return;
+              }
+            }
+            if ($scope.retrievedUsers && nextOrPrevious !== null) {
+              // if this is invoked from the input text, no namespace is selected
+              let nextIndex = nextOrPrevious ? 0 : length - 1;
+              if (selected) {
+                let selectedIndex = $scope.retrievedUsers.indexOf(selected);
+                // increment/decrement
+                nextIndex = nextOrPrevious ? selectedIndex + 1
+                    : selectedIndex - 1;
+                // handle rotation
+                if (nextIndex >= length) {
+                  nextIndex = 0;
+                } else if (nextIndex < 0) {
+                  nextIndex = length - 1;
+                }
+              }
+              // highlighting target list element
+              $scope.highlightUser($scope.retrievedUsers[nextIndex]);
+              // unhighlighting previously highlighted element - forward
+              if (nextOrPrevious) {
+                $scope.unhighlightUser(
+                    $scope.retrievedUsers[nextIndex > 0 ? nextIndex - 1 : length
+                        - 1]);
+              } else {
+                $scope.unhighlightUser(
+                    $scope.retrievedUsers[nextIndex < length - 1 ? nextIndex + 1
+                        : 0]);
+              }
+            }
+          }
+
           $scope.findNamespaces = function () {
             // only initiates user search if partial name is larger >= 4 characters
             // this is to prevent unmanageably large drop-downs
@@ -402,7 +504,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                       $scope.selectedNamespace = {};
                     }
                   },
-                  function(error) {}
+                  function (error) {
+                  }
               );
             } else {
               $scope.namespaces = [];
@@ -423,10 +526,13 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.highlightUser = function (user) {
+            let list = document.getElementById("userDropDown");
             let element = document.getElementById(user.userId);
-            if (element) {
+            if (list && element) {
               element.style.backgroundColor = '#7fc6e7';
-              element.style.color = '#ffffff'
+              element.style.color = '#ffffff';
+              list.scrollTop = element.offsetTop - element.clientHeight;
+              $scope.lastHighlightedUser = user;
             }
           }
 
@@ -442,7 +548,8 @@ define(["../../init/appController"], function (repositoryControllers) {
             // only initiates user search if partial name is larger >= 3 characters
             // this is to prevent unmanageably large drop-downs
             if ($scope.userPartial && $scope.userPartial.length >= 3) {
-              $http.get("./rest/accounts/search/" + $scope.userPartial + "?onlyTechnicalUsers=true")
+              $http.get("./rest/accounts/search/" + $scope.userPartial
+                  + "?onlyTechnicalUsers=true")
               .then(
                   function (result) {
                     if (result.data) {
@@ -452,7 +559,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                       $scope.selectedUser = null;
                     }
                   },
-                  function(error) {}
+                  function (error) {
+                  }
               );
             } else {
               $scope.retrievedUsers = [];
@@ -466,15 +574,14 @@ define(["../../init/appController"], function (repositoryControllers) {
            * 1) toggles between user search box enabled/disabled based on radio
            * 2) sets the selected user according to radio (can be undefined)
            */
-          $scope.toggleUserSearchEnabled = function(value) {
+          $scope.toggleUserSearchEnabled = function (value) {
             let element = document.getElementById("userId");
             if (element) {
               if (value == "myself") {
                 element.disabled = true;
                 $scope.selectedUser = $scope.username;
                 $scope.selectedSubject = $scope.loggedInUserSubject;
-              }
-              else {
+              } else {
                 element.disabled = false;
                 $scope.userPartial = "";
                 $scope.selectedUser = null;
@@ -491,7 +598,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           });
 
           // ugly
-          $scope.disableAndCheckOtherCheckBoxes = function() {
+          $scope.disableAndCheckOtherCheckBoxes = function () {
             let toggle = $scope.desiredRoles[5];
             let element = document.getElementById("roleView");
             if (element) {
@@ -520,15 +627,15 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
           }
 
-          $scope.submit = function() {
+          $scope.submit = function () {
             // roles to convey if any
-            const allRoles = ['model_viewer', 'model_creator', 'model_promoter', 'model_reviewer', 'model_publisher', 'namespace_admin'];
+            const allRoles = ['model_viewer', 'model_creator', 'model_promoter',
+              'model_reviewer', 'model_publisher', 'namespace_admin'];
             let rolesToConvey = [];
             // namespace_admin implies all roles
-            if($scope.desiredRoles[5]) {
+            if ($scope.desiredRoles[5]) {
               rolesToConvey = allRoles;
-            }
-            else {
+            } else {
               let i = 0;
               for (i = 0; i < allRoles.length; i++) {
                 if ($scope.desiredRoles[i]) {
@@ -538,12 +645,12 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
 
             let payload = {
-              'requestingUsername' : $scope.username,
-              'targetUsername' : $scope.selectedUser,
-              'namespaceName' : $scope.selectedNamespace.name,
-              'suggestedRoles' : rolesToConvey,
-              'conditionsAcknowledged' : $scope.ack,
-              'targetSubject' : $scope.selectedSubject
+              'requestingUsername': $scope.username,
+              'targetUsername': $scope.selectedUser,
+              'namespaceName': $scope.selectedNamespace.name,
+              'suggestedRoles': rolesToConvey,
+              'conditionsAcknowledged': $scope.ack,
+              'targetSubject': $scope.selectedSubject
             };
             $scope.isSendingRequest = true;
 
@@ -573,8 +680,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                         break;
                       }
                     }
-                  }
-                  else {
+                  } else {
                     $scope.errorMessage = 'Request failed for unknown reason. Please try again later.';
                     $scope.disableCancelButton();
                     $scope.disableSendButton();
@@ -583,25 +689,25 @@ define(["../../init/appController"], function (repositoryControllers) {
             );
           };
 
-          $scope.disableCancelButton = function() {
+          $scope.disableCancelButton = function () {
             let cancelButton = document.getElementById("cancel");
             if (cancelButton) {
               cancelButton.disabled = true;
             }
           }
 
-          $scope.disableSendButton = function() {
+          $scope.disableSendButton = function () {
             let sendButton = document.getElementById("submit");
             if (sendButton) {
               sendButton.disabled = true;
             }
           }
 
-          $scope.cancel = function() {
+          $scope.cancel = function () {
             $uibModalInstance.dismiss("Canceled.");
           };
 
-          $scope.close = function() {
+          $scope.close = function () {
             $uibModalInstance.dismiss("Closed.");
           }
         }

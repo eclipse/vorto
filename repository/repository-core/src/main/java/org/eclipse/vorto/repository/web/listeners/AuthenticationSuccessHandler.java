@@ -51,8 +51,8 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
 
     String targetUrl = _user.map(user -> {
-      return "/#!/";
-    }).orElse("/#!/signup");
+      return "/#/";
+    }).orElse("/#/signup");
 
     if (response.isCommitted()) {
       logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);

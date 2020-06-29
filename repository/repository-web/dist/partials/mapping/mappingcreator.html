@@ -2,8 +2,8 @@
 <!-- Main content -->
 <section class="content" id="mapping">
    <ol class="breadcrumb">
-      <li><a href="./#!/"></i>Explore</a></li>
-      <li><a href="./#!/details/{{modelId}}"></i>{{modelId}}</a></li>
+      <li><a href="./#/"></i>Explore</a></li>
+      <li><a href="./#/details/{{modelId}}"></i>{{modelId}}</a></li>
       <li class="active">Payload Mapping Specification</li>
       
       <a class="pull-right help-icon" href="https://github.com/eclipse/vorto/tree/master/mapping-engine" target="_blank" 
@@ -13,7 +13,7 @@
   <div ng-if="validationError" class="row">
 		<div class="alert alert-danger">
 			<span class="glyphicon glyphicon-remove invalid"></span>
-			<i class="fa fa-fw fa-exclamation-triangle"></i>{{validationError.message}} in model <a href="./#!/details/{{validationError.modelId}}">{{validationError.modelId}}</a>
+			<i class="fa fa-fw fa-exclamation-triangle"></i>{{validationError.message}} in model <a href="./#/details/{{validationError.modelId}}">{{validationError.modelId}}</a>
 		</div>
   </div>
   <div class="row">
@@ -24,7 +24,7 @@
 		              <dt>State: <span class="state state-{{state}}">{{ state }}</span></dt>
 		           </div>
 		           <div class="col-md-3 text-center" ng-show="mappingId != null">
-				      <dt>DSL: <span><a href="./#!/details/{{mappingId}}"></i>Mapping</a></span></dt>
+				      <dt>DSL: <span><a href="./#/details/{{mappingId}}"></i>Mapping</a></span></dt>
 		           </div>
 	               <div class="col-md-6">
 	             	 <a href="./rest/mappings/specifications/{{modelId}}/file" ng-disabled="isLoading || validationError != null || mappingId == null" class="btn btn-sm  btn-primary pull-right"><span class="fa fa-download" aria-hidden="true"></span>&nbsp;Download Spec</a>

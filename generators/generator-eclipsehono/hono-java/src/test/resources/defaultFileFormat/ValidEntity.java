@@ -33,6 +33,7 @@ public class UnitEntity {
 		return this.value;
 	}
 	
+	
 	/**
 	* Setter for value.
 	*/
@@ -46,6 +47,7 @@ public class UnitEntity {
 	public UnitEnum getUnitEnum() {
 		return this.unitEnum;
 	}
+	
 	
 	/**
 	* Setter for unitEnum.
