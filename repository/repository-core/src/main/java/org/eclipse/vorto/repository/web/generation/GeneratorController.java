@@ -12,7 +12,9 @@
  */
 package org.eclipse.vorto.repository.web.generation;
 
-import java.util.Collection;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.plugin.generator.impl.DefaultGeneratorPluginService;
@@ -24,9 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+
+import java.util.Collection;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -40,7 +41,7 @@ public class GeneratorController extends AbstractRepositoryController {
   private IGeneratorPluginService generatorService;
 
   @ApiOperation(value = "Returns the rank of code generators by usage")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('model_viewer')")
   @RequestMapping(value = "/rankings/{top}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public Collection<GeneratorPluginConfiguration> getMostlyUsedGenerators(
@@ -49,7 +50,7 @@ public class GeneratorController extends AbstractRepositoryController {
     return this.generatorService.getMostlyUsed(top);
   }
   
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @PreAuthorize("hasRole('sysadmin')")
   @RequestMapping(value = "/plugincache/{pluginkey}/remove", method = RequestMethod.GET)
   public void removeCachedPlugin(final @PathVariable String pluginkey) {
     ((DefaultGeneratorPluginService)generatorService).clearPluginCache(pluginkey);

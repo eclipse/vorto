@@ -17,8 +17,8 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -33,7 +33,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
   @Autowired
-  private IUserRepository userRepository;
+  private UserRepository userRepository;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

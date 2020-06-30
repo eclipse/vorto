@@ -12,12 +12,13 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.model.ModelId;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TestModel {
   public String namespace = TestUtils.createRandomString(10).toLowerCase();
@@ -52,11 +53,6 @@ public class TestModel {
 
   public void createModel(MockMvc mockMvc,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1) throws Exception {
-		/*
-		 * mockMvc.perform(post("/rest/tenants/playground/models/" + prettyName +
-		 * "/InformationModel").with(user1)
-		 * .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
-		 */
     mockMvc.perform(post("/rest/models/" + prettyName + "/InformationModel").with(user1)
             .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
   }

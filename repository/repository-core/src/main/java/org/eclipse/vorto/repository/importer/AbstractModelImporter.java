@@ -19,13 +19,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -42,6 +43,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
@@ -49,7 +51,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Extend this class for Implementation of a special importer for Vorto
- *
  */
 public abstract class AbstractModelImporter implements IModelImporter {
 
@@ -62,18 +63,21 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   @Autowired
   protected IModelRepositoryFactory modelRepoFactory;
-  
+
   @Autowired
-  protected IUserAccountService userRepository;
+  protected DefaultUserAccountService userAccountService;
 
   @Autowired
   protected ModelParserFactory modelParserFactory;
-  
+
   @Autowired
   protected ModelValidationHelper modelValidationHelper;
-  
+
   @Autowired
   protected ErrorMessageProvider errorMessageProvider;
+
+  @Autowired
+  protected UserRepositoryRoleService userRepositoryRoleService;
 
   private Set<String> supportedFileExtensions = new HashSet<>();
 
@@ -91,40 +95,40 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public UploadModelResult upload(FileUpload fileUpload, Context context) {
     if (!this.supportedFileExtensions.contains(fileUpload.getFileExtension())) {
       return new UploadModelResult(null, Arrays.asList(ValidationReport.invalid(null,
-          "File type is invalid. Must be " + this.supportedFileExtensions)));
+          String.format("File type is invalid. Must be %s", this.supportedFileExtensions))));
     }
-    List<ValidationReport> reports = new ArrayList<ValidationReport>();
+    List<ValidationReport> reports = new ArrayList<>();
     if (handleZipUploads() && isZipFile(fileUpload)) {
       getUploadedFilesFromZip(fileUpload.getContent()).stream().filter(this::isSupported)
           .forEach(extractedFile -> {
-            logger.info("Validating uploaded file "+extractedFile.getFileName());
-            extractedFile = preValidation(extractedFile,context);
+            logger.info(String.format("Validating uploaded file %s", extractedFile.getFileName()));
+            extractedFile = preValidation(extractedFile, context);
             List<ValidationReport> validationResult = validate(extractedFile, context);
             postValidate(validationResult, context);
             reports.addAll(validationResult);
           });
 
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
-      logger.info("Validating uploaded file "+fileUpload.getFileName());
-      fileUpload = preValidation(fileUpload,context);
+      logger.info(String.format("Validating uploaded file %s", fileUpload.getFileName()));
+      fileUpload = preValidation(fileUpload, context);
       List<ValidationReport> validationResult = validate(fileUpload, context);
-      postValidate(validationResult,context);
+      postValidate(validationResult, context);
       reports.addAll(validationResult);
     }
-    
-    logger.info("Upload completed");
 
+    logger.info("Upload completed");
 
     if (reports.size() == 0) {
       return new UploadModelResult(null, Arrays.asList(
-          ValidationReport.invalid("Uploaded File does not contain any " + getKey() + " files.")));
+          ValidationReport
+              .invalid(String.format("Uploaded File does not contain any %s files.", getKey()))));
     } else if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
       return new UploadModelResult(createUploadHandle(fileUpload), reports);
     } else {
       return new UploadModelResult(createUploadHandle(fileUpload), reports);
     }
   }
-  
+
   protected FileUpload preValidation(FileUpload fileUpload, Context context) {
     return fileUpload;
   }
@@ -138,7 +142,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   protected Collection<FileUpload> getUploadedFilesFromZip(byte[] uploadedFile) {
-    Collection<FileUpload> fileUploads = new ArrayList<FileUpload>();
+    Collection<FileUpload> fileUploads = new ArrayList<>();
 
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(uploadedFile));
     ZipEntry entry = null;
@@ -159,9 +163,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   /**
    * Checks if the uploaded models already exist in the repository.
-   * 
+   *
    * @param reports reports from the specific importer implementation
-   * @param user currently performing the upload
    */
   protected void postValidate(List<ValidationReport> reports, Context context) {
     reports.forEach(report -> {
@@ -175,7 +178,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
               report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
               report.setValid(false);
             } else {
-              if (isAdmin(context.getUser()) || m.getAuthor().equals(context.getUser().getUsername())) {
+              if (isAdmin(context.getUser()) || m.getAuthor()
+                  .equals(context.getUser().getUsername())) {
                 report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
                 report.setValid(true);
               } else {
@@ -185,9 +189,11 @@ public abstract class AbstractModelImporter implements IModelImporter {
             }
           }
         } catch (Exception e) {
-          logger.error("Error while validating the model " + report.getModel().getId(), e);
+          logger.error(
+              String.format("Error while validating the model %s", report.getModel().getId()), e);
           report.setMessage(new StatusMessage(
-              "Internal error while trying to import model [" + report.getModel().getId() + "]",
+              String.format("Internal error while trying to import model [%s]",
+                  report.getModel().getId()),
               MessageSeverity.WARNING));
           report.setValid(false);
         }
@@ -197,8 +203,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   private boolean isAdmin(IUserContext userContext) {
-    User user = getUserRepository().getUser(userContext.getUsername());
-    return user != null && (user.isSysAdmin(userContext.getTenant()));
+    User user = getUserAccountService().getUser(userContext.getUsername());
+    return Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user);
   }
 
   private String createUploadHandle(FileUpload fileUpload) {
@@ -212,7 +218,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
     if (uploadedItem == null) {
       throw new ModelImporterException(
-          "No uploaded file found for handleId '" + uploadHandleId + "'");
+          String.format("No uploaded file found for handleId '%s'", uploadHandleId));
     }
 
     List<ModelInfo> importedModels = new ArrayList<>();
@@ -241,21 +247,21 @@ public abstract class AbstractModelImporter implements IModelImporter {
   private List<ModelInfo> sortAndSaveToRepository(List<ModelResource> resources,
       FileUpload extractedFile, Context context) {
     final IUserContext user = context.getUser();
-    
-    List<ModelInfo> savedModels = new ArrayList<ModelInfo>();
+
+    List<ModelInfo> savedModels = new ArrayList<>();
     DependencyManager dm = new DependencyManager();
     for (ModelResource resource : resources) {
       dm.addResource(resource);
     }
 
-    dm.getSorted().stream().forEach(resource -> {
+    dm.getSorted().forEach(resource -> {
       try {
         IModelRepository modelRepository = modelRepoFactory.getRepositoryByModel(resource.getId());
-          ModelInfo importedModel = modelRepository.save((ModelResource)resource, user);
-          savedModels.add(importedModel);
-          postProcessImportedModel(importedModel,
-              new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
-        
+        ModelInfo importedModel = modelRepository.save((ModelResource) resource, user);
+        savedModels.add(importedModel);
+        postProcessImportedModel(importedModel,
+            new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
+
       } catch (Exception e) {
         logger.error("Problem importing model", e);
         throw new ModelImporterException("Problem importing model", e);
@@ -307,21 +313,12 @@ public abstract class AbstractModelImporter implements IModelImporter {
     importedModel.setImported(true);
   }
 
-  /**
-   * validates the given fileUpload content
-   * 
-   * @param content
-   * @param fileName
-   * @param user
-   * @return
-   */
   protected abstract List<ValidationReport> validate(FileUpload fileUpload, Context context);
 
   /**
    * converts the given file upload content to Vorto DSL content
-   * 
+   *
    * @param fileUpload
-   * @param user
    * @return Vorto DSL content
    */
   protected abstract List<ModelResource> convert(FileUpload fileUpload, Context context);
@@ -330,8 +327,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.uploadStorage = uploadStorage;
   }
 
-  public void setUserRepository(IUserAccountService userRepository) {
-    this.userRepository = userRepository;
+  public void setUserAccountService(DefaultUserAccountService userAccountService) {
+    this.userAccountService = userAccountService;
   }
 
   public void setModelParserFactory(ModelParserFactory modelParserFactory) {
@@ -346,8 +343,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
     return uploadStorage;
   }
 
-  public IUserAccountService getUserRepository() {
-    return userRepository;
+  public DefaultUserAccountService getUserAccountService() {
+    return userAccountService;
   }
 
   public ModelParserFactory getModelParserFactory() {
@@ -357,7 +354,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public IModelRepositoryFactory getModelRepoFactory() {
     return modelRepoFactory;
   }
-  
+
   public ModelValidationHelper getModelValidationHelper() {
     return modelValidationHelper;
   }
@@ -365,6 +362,5 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public void setModelValidationHelper(ModelValidationHelper modelValidationHelper) {
     this.modelValidationHelper = modelValidationHelper;
   }
-  
-  
+
 }

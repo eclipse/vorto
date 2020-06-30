@@ -12,14 +12,11 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+
+import java.util.*;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -34,7 +31,7 @@ public class ModelInfo extends AbstractModel {
   protected String state;
   protected Boolean imported = false;
   protected String visibility = "private";
-  protected List<ModelId> referencedBy = new ArrayList<ModelId>();
+  protected List<ModelId> referencedBy = new ArrayList<>();
 
   protected Map<String,String> platformMappings = new HashMap<>();
 

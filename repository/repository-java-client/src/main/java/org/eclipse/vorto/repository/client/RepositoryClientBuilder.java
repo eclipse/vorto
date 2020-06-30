@@ -48,7 +48,8 @@ public class RepositoryClientBuilder {
 		this.baseUrl = baseUrl;
 		return this;
 	}
-	
+
+	@Deprecated
 	public RepositoryClientBuilder setTenant(String tenantId) {
 		this.tenantId = tenantId;
 		return this;

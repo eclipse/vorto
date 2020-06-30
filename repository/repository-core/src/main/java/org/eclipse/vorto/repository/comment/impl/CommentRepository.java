@@ -15,10 +15,12 @@ package org.eclipse.vorto.repository.comment.impl;
 import java.util.List;
 import org.eclipse.vorto.repository.domain.Comment;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Repository
 public interface CommentRepository extends CrudRepository<Comment, Long> {
 
   List<Comment> findByModelId(String modelId);

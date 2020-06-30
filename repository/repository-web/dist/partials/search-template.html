@@ -1,10 +1,10 @@
 <section class="content">
-		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('ROLE_MODEL_CREATOR')">
+		<div class="alert alert-warning alert-dismissible" role="alert" ng-show="authenticated && !hasAuthority('model_creator')">
 		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		  <strong>Get started by <a href="./#/manage">creating</a> your first namespace.</strong>
 		</div>
 		<h2 id="searchHeadline">Models</h2>
-		<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'">
+		<div ng-show="hasAuthority('model_creator') && userInfo.isRegistered === 'true'">
 			<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Create model</a>
 		</div>
 		<br/><br/>

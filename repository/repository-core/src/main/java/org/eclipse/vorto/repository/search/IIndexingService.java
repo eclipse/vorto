@@ -34,12 +34,12 @@ public interface IIndexingService {
   IndexingResult forceReindexAllModels();
 
   /**
-   * Indexes the given model with the given tenantId 
+   * Indexes the given model with the given workspaceId
    * 
    * @param modelInfo the model to be indexed
-   * @param tenantId the tenant that owns this model
+   * @param workspaceId the tenant that owns this model
    */
-  void indexModel(ModelInfo modelInfo, String tenantId);
+  void indexModel(ModelInfo modelInfo, String workspaceId);
   
   /**
    * Updates the index for the given model
@@ -58,8 +58,8 @@ public interface IIndexingService {
   /**
    * Deletes all the index of the models owned by tenant
    *  
-   * @param tenantId the owning tenant
+   * @param workspaceId the owning tenant
    */
-  void deleteIndexForTenant(String tenantId);
+  void deleteIndexForWorkspace(String workspaceId);
   
 }

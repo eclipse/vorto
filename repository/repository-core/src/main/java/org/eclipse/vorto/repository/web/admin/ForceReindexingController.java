@@ -31,15 +31,17 @@ import org.springframework.web.bind.annotation.RestController;
  * and re-create the Vorto index with the correct mapping, and re-index all model from repository.<br/>
  * In case the simple search is in use instead, this will act exactly the same as {@link IndexingController}
  * - at the time, that does nothing in simple search either.
+ *
  * @author mena-bosch
  */
 @RestController
 public class ForceReindexingController {
+
   @Autowired
   private IIndexingService indexingServices;
 
   @RequestMapping(value = "/rest/forcereindex", method = RequestMethod.POST)
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<IndexingResult> reindexModels() {
     IndexingResult result = indexingServices.forceReindexAllModels();
     return new ResponseEntity<>(result, HttpStatus.OK);

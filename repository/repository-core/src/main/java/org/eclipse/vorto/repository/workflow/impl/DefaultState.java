@@ -62,8 +62,8 @@ public class DefaultState implements IState {
 
   @Override
   public String toString() {
-    return "DefaultState [name=" + name + ", description=" + description + ", actions=" + actions
-        + "]";
+    return String
+        .format("DefaultState [name=%s, description=%s, actions=%s]", name, description, actions);
   }
 
 

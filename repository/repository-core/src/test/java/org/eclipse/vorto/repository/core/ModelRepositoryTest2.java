@@ -12,15 +12,16 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.UnitTestBase;
+import org.junit.Test;
+
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.junit.Test;
-
-public class ModelRepositoryTest2 extends AbstractIntegrationTest {
+public class ModelRepositoryTest2 extends UnitTestBase {
 
   @Test
   public void testReferencedByApi() {

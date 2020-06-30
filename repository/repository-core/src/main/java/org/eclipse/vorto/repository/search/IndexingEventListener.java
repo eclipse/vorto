@@ -33,15 +33,15 @@ public class IndexingEventListener implements ApplicationListener<AppEvent>  {
   public void onApplicationEvent(AppEvent event) {
     if (event.getEventType() == EventType.MODEL_CREATED) {
       ModelInfo modelInfo = (ModelInfo) event.getSubject();
-      indexingService.indexModel(modelInfo, event.getUserContext().getTenant());
+      indexingService.indexModel(modelInfo, event.getUserContext().getWorkspaceId());
     } else if (event.getEventType() == EventType.MODEL_UPDATED) {
       ModelInfo modelInfo = (ModelInfo) event.getSubject();
       indexingService.updateIndex(modelInfo);
     } else if (event.getEventType() == EventType.MODEL_DELETED) {
       ModelId modelId = (ModelId) event.getSubject();
       indexingService.deleteIndex(modelId);
-    } else if (event.getEventType() == EventType.TENANT_DELETED) {
-      indexingService.deleteIndexForTenant(event.getUserContext().getTenant());
+    } else if (event.getEventType() == EventType.NAMESPACE_DELETED) {
+      indexingService.deleteIndexForWorkspace(event.getUserContext().getWorkspaceId());
     }
   }
 

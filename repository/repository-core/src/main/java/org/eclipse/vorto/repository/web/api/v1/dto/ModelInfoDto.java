@@ -18,17 +18,17 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 
 public class ModelInfoDto extends ModelInfo {
 
-  private String tenantId;
+  private String workspaceId;
   
   public ModelInfoDto(ModelId modelId, ModelType modelType) {
     super(modelId, modelType);
   }
 
-  public String getTenantId() {
-    return tenantId;
+  public String getWorkspaceId() {
+    return workspaceId;
   }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
+  public void setWorkspaceId(String workspaceId) {
+    this.workspaceId = workspaceId;
   }
 }

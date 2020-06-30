@@ -12,55 +12,38 @@
  */
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.domain.Role;
-import org.eclipse.vorto.repository.domain.TenantUser;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.domain.UserRole;
 
 public class Collaborator implements ICollaborator {
+
   private String userId;
-  private String authenticationProviderId;  
+  private String authenticationProviderId;
   private String subject;
   private boolean isTechnicalUser;
   private Collection<String> roles;
-  
-  public static Collaborator fromTenantUser(TenantUser tenantUser) {
-    return new Collaborator(tenantUser.getUser().getUsername(), 
-        tenantUser.getUser().getAuthenticationProviderId(),
-        tenantUser.getUser().getSubject(),
-        tenantUser.getUser().isTechnicalUser(),
-        tenantUser.getRoles().stream().map(role -> role.getRole().name())
-          .collect(Collectors.toList()));
-  }
 
   public static Collaborator fromUser(User user) {
     return new Collaborator(
         user.getUsername(),
         user.getAuthenticationProviderId(),
         user.getSubject(),
-        user.isTechnicalUser(),
-        user.getRoles(user.getUsername())
-            .stream()
-            .map(UserRole::getRole)
-            .map(Role::name)
-            .collect(Collectors.toList())
+        user.isTechnicalUser()
     );
 
   }
 
-  public Collaborator() {}
-  
-  public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
-    this(userId, providerId, subject, false, roles);
+  public Collaborator() {
   }
-  
-  public Collaborator(String userId, String providerId, String subject, boolean isTechnicalUser, Collection<String> roles) {
+
+  public Collaborator(String userId, String providerId, String subject, Collection<String> roles) {
+    this(userId, providerId, subject, false);
+    this.roles = roles;
+  }
+
+  public Collaborator(String userId, String providerId, String subject, boolean isTechnicalUser) {
     this.userId = userId;
     this.authenticationProviderId = providerId;
-    this.roles = roles;
     this.subject = subject;
     this.isTechnicalUser = isTechnicalUser;
   }
@@ -81,14 +64,6 @@ public class Collaborator implements ICollaborator {
     this.authenticationProviderId = providerId;
   }
 
-  public Collection<String> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Collection<String> roles) {
-    this.roles = roles;
-  }
-
   public String getSubject() {
     return subject;
   }
@@ -104,5 +79,13 @@ public class Collaborator implements ICollaborator {
   public void setTechnicalUser(boolean isTechnicalUser) {
     this.isTechnicalUser = isTechnicalUser;
   }
-  
+
+  public void setRoles(Collection<String> roles) {
+    this.roles = roles;
+  }
+
+  public Collection<String> getRoles() {
+    return this.roles;
+  }
+
 }

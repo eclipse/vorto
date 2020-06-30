@@ -12,15 +12,16 @@
  */
 package org.eclipse.vorto.repository.core.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.impl.resolver.DefaultResolver;
 import org.eclipse.vorto.repository.web.core.dto.BluetoothQuery;
 import org.junit.Test;
 
-public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class BlueToothDeviceInfoProfileResolverTest extends UnitTestBase {
 
   @Test
   public void testResolveInfoModelByDeviceInfoProfileSerialNo() {

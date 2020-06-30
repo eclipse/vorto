@@ -27,17 +27,17 @@ import org.eclipse.vorto.repository.core.IRepositoryManager;
 
 public class RepositoryManager extends AbstractRepositoryOperation implements IRepositoryManager {
 
-  private static Logger logger = Logger.getLogger(RepositoryManager.class);
-  
+  private static final Logger LOGGER = Logger.getLogger(RepositoryManager.class);
+
   private Supplier<Session> defaultSessionSupplier;
-  
+
   @Override
   public byte[] backup() {
     return doInSession(session -> {
       try {
         return backupRepository(session);
       } catch (IOException e) {
-        logger.error("Exception while making a backup", e);
+        LOGGER.error("Exception while making a backup", e);
         throw new FatalModelRepositoryException(
             "Something went wrong while making a backup of the system.", e);
       }
@@ -58,20 +58,20 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
       try {
         oldData = backupRepository(session);
 
-        logger.info("Attempting to restore backup");
+        LOGGER.info("Attempting to restore backup");
         session.getWorkspace().importXML("/", new ByteArrayInputStream(data),
             ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-        logger.info("Restored backup succesfully");
+        LOGGER.info("Restored backup successfully");
 
       } catch (RepositoryException | IOException e) {
-        logger.error("Backup failed. Will try to revert the restoration with previous data.", e);
+        LOGGER.error("Backup failed. Will try to revert the restoration with previous data.", e);
         try {
-          logger.info("Reverting to old data.");
+          LOGGER.info("Reverting to old data.");
           session.getWorkspace().importXML("/", new ByteArrayInputStream(oldData),
               ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-          logger.info("Reverted the restoration succesfully");
+          LOGGER.info("Reverted the restoration successfully");
         } catch (RepositoryException | IOException ex) {
-          logger.error("Revert of restoration unsuccesfull", ex);
+          LOGGER.error("Revert of restoration unsuccessful", ex);
         }
         throw e;
       }
@@ -80,42 +80,43 @@ public class RepositoryManager extends AbstractRepositoryOperation implements IR
   }
 
   @Override
-  public boolean createTenantWorkspace(final String tenantId) {
+  public boolean createWorkspace(final String workspaceId) {
     try {
       Workspace workspace = defaultSessionSupplier.get().getWorkspace();
-      if (!isWorkspaceExist(workspace, tenantId)) {
-        workspace.createWorkspace(tenantId);
+      if (!exists(workspace, workspaceId)) {
+        workspace.createWorkspace(workspaceId);
         return true;
       } else {
-        logger.info("Workspace with ID '"+tenantId+"' already exists.");
+        LOGGER.info("Workspace with ID '" + workspaceId + "' already exists.");
         return false;
       }
     } catch (RepositoryException e) {
-      logger.error("Exception while creating workspace", e);
+      LOGGER.error("Exception while creating workspace", e);
       throw new FatalModelRepositoryException("Cannot create workspace for user", e);
     }
   }
-  
+
   @Override
-  public boolean isWorkspaceExist(final String tenantId) {
+  public boolean exists(final String workspaceId) {
     try {
       Workspace workspace = defaultSessionSupplier.get().getWorkspace();
-      return isWorkspaceExist(workspace, tenantId);
+      return exists(workspace, workspaceId);
     } catch (RepositoryException e) {
-      logger.error("Exception while accessing workspace", e);
+      LOGGER.error("Exception while accessing workspace", e);
       throw new FatalModelRepositoryException("Cannot access workspace for user", e);
     }
   }
-  
-  private boolean isWorkspaceExist(final Workspace workspace, final String tenantId) throws RepositoryException {
-    return Arrays.asList(workspace.getAccessibleWorkspaceNames()).contains(tenantId);
+
+  private boolean exists(final Workspace workspace, final String workspaceId)
+      throws RepositoryException {
+    return Arrays.asList(workspace.getAccessibleWorkspaceNames()).contains(workspaceId);
   }
-  
+
   @Override
-  public boolean removeTenantWorkspace(final String tenantId) {
+  public boolean removeWorkspace(final String workspaceId) {
     return doInSession(session -> {
       Workspace workspace = session.getWorkspace();
-      workspace.deleteWorkspace(tenantId);
+      workspace.deleteWorkspace(workspaceId);
       return true;
     });
   }

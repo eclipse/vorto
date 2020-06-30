@@ -12,44 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import static org.eclipse.vorto.repository.core.Attachment.TAG_DISPLAY_IMAGE;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_DOCUMENTATION;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_IMAGE;
-import static org.eclipse.vorto.repository.core.Attachment.TAG_IMPORTED;
-
 import com.google.common.collect.Lists;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Binary;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -57,24 +20,9 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.AttachmentException;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
-import org.eclipse.vorto.repository.core.ModelFileContent;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.core.ModelResource;
-import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.core.impl.parser.ErrorMessageProvider;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -83,8 +31,9 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.domain.Tenant;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
@@ -94,56 +43,67 @@ import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
+import javax.jcr.*;
+import javax.jcr.query.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static org.eclipse.vorto.repository.core.Attachment.*;
+
 public class ModelRepository extends AbstractRepositoryOperation
     implements IModelRepository, ApplicationEventPublisherAware {
 
-  private static final String VORTO_VISIBILITY = "vorto:visibility";
+  public static final String VORTO_VISIBILITY = "vorto:visibility";
 
-  private static final String VORTO_TAGS = "vorto:tags";
+  public static final String VORTO_TAGS = "vorto:tags";
 
-  private static final String VORTO_REFERENCES = "vorto:references";
+  public static final String VORTO_REFERENCES = "vorto:references";
 
-  private static final String VORTO_META = "vorto:meta";
+  public static final String VORTO_META = "vorto:meta";
 
-  private static final String VORTO_AUTHOR = "vorto:author";
+  public static final String VORTO_AUTHOR = "vorto:author";
 
-  private static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
+  public static final String VORTO_TARGETPLATFORM = "vorto:targetplatform";
 
-  private static final String VORTO_STATE = "vorto:state";
+  public static final String VORTO_STATE = "vorto:state";
 
-  private static final String VORTO_DISPLAYNAME = "vorto:displayname";
+  public static final String VORTO_DISPLAYNAME = "vorto:displayname";
 
-  private static final String VORTO_NODE_TYPE = "vorto:type";
+  public static final String VORTO_NODE_TYPE = "vorto:type";
 
-  private static final String VORTO_DESCRIPTION = "vorto:description";
+  public static final String VORTO_DESCRIPTION = "vorto:description";
 
-  private static final String JCR_LAST_MODIFIED_BY = "jcr:lastModifiedBy";
+  public static final String JCR_LAST_MODIFIED_BY = "jcr:lastModifiedBy";
 
-  private static final String JCR_LAST_MODIFIED = "jcr:lastModified";
+  public static final String JCR_LAST_MODIFIED = "jcr:lastModified";
 
-  private static final String JCR_CREATED = "jcr:created";
+  public static final String JCR_CREATED = "jcr:created";
 
-  private static final String JCR_DATA = "jcr:data";
+  public static final String JCR_DATA = "jcr:data";
 
-  private static final String JCR_CONTENT = "jcr:content";
+  public static final String JCR_CONTENT = "jcr:content";
 
-  private static final String MIX_LAST_MODIFIED = "mix:lastModified";
+  public static final String MIX_LAST_MODIFIED = "mix:lastModified";
 
-  private static final String MIX_REFERENCEABLE = "mix:referenceable";
+  public static final String MIX_REFERENCEABLE = "mix:referenceable";
 
-  private static final String NT_FOLDER = "nt:folder";
+  public static final String NT_FOLDER = "nt:folder";
 
-  private static final String NT_FILE = "nt:file";
+  public static final String NT_FILE = "nt:file";
 
-  private static final String NT_RESOURCE = "nt:resource";
+  public static final String NT_RESOURCE = "nt:resource";
 
-  private static final String MODE_ACCESS_CONTROLLABLE = "mode:accessControllable";
+  public static final String MODE_ACCESS_CONTROLLABLE = "mode:accessControllable";
 
-  private static final String ATTACHMENTS_NODE = "attachments";
+  public static final String ATTACHMENTS_NODE = "attachments";
 
   private static final Function<ModelInfo, String> VERSION_COMPARATOR = m -> m.getId().getVersion();
 
-  private static Logger logger = Logger.getLogger(ModelRepository.class);
+  private static final Logger LOGGER = Logger.getLogger(ModelRepository.class);
 
   private IModelRetrievalService modelRetrievalService;
 
@@ -157,22 +117,25 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   private ModelRepositoryFactory repositoryFactory;
 
-  private ITenantService tenantService;
+  private NamespaceService namespaceService;
 
   private IModelPolicyManager policyManager;
+
+  private PrivilegeService privilegeService;
 
 
   public ModelRepository(ModelSearchUtil modelSearchUtil, AttachmentValidator attachmentValidator,
       ModelParserFactory modelParserFactory, IModelRetrievalService modelRetrievalService,
-      ModelRepositoryFactory repositoryFactory, ITenantService tenantService,
-      IModelPolicyManager policyManager, ErrorMessageProvider errorMessageProvider) {
+      ModelRepositoryFactory repositoryFactory, IModelPolicyManager policyManager,
+      NamespaceService namespaceService, PrivilegeService privilegeService) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.modelRetrievalService = modelRetrievalService;
     this.repositoryFactory = repositoryFactory;
-    this.tenantService = tenantService;
+    this.namespaceService = namespaceService;
     this.policyManager = policyManager;
+    this.privilegeService = privilegeService;
   }
 
   @Override
@@ -186,9 +149,9 @@ public class ModelRepository extends AbstractRepositoryOperation
       String queryExpression = Optional.ofNullable(expression).orElse("");
 
       List<ModelInfo> modelResources = new ArrayList<>();
-      Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
+      Query query = ModelSearchUtil.createQueryFromExpression(session, queryExpression);
 
-      logger.debug("Searching repository with expression " + query.getStatement());
+      LOGGER.debug("Searching repository with expression " + query.getStatement());
       QueryResult result = query.execute();
       RowIterator rowIterator = result.getRows();
       while (rowIterator.hasNext()) {
@@ -198,7 +161,7 @@ public class ModelRepository extends AbstractRepositoryOperation
           try {
             modelResources.add(createMinimalModelInfo(currentNode));
           } catch (Exception ex) {
-            logger.debug("Error while converting node to a ModelInfo", ex);
+            LOGGER.debug("Error while converting node to a ModelInfo", ex);
           }
         }
       }
@@ -207,7 +170,8 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
-  private ModelInfo createMinimalModelInfo(Node fileNode) throws RepositoryException {
+  private ModelInfo createMinimalModelInfo(Node fileNode, boolean doInElevatedSession, IUserContext context)
+      throws RepositoryException {
     Node folderNode = fileNode.getParent();
     ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(folderNode.getPath()),
         fileNode.getProperty(VORTO_NODE_TYPE).getString());
@@ -239,10 +203,15 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     if (resource.getType() == ModelType.InformationModel) {
       resource
-          .setHasImage(!this.getAttachmentsByTag(resource.getId(), TAG_IMAGE).isEmpty());
+          .setHasImage(!this.getAttachmentsByTag(resource.getId(), TAG_IMAGE, doInElevatedSession, context)
+              .isEmpty());
     }
 
     return resource;
+  }
+
+  private ModelInfo createMinimalModelInfo(Node fileNode) throws RepositoryException {
+    return createMinimalModelInfo(fileNode, false, null);
   }
 
   @Override
@@ -318,8 +287,8 @@ public class ModelRepository extends AbstractRepositoryOperation
     return doInSession(jcrSession -> {
       org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) jcrSession;
 
-      logger.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
-          + " in Workspace/Tenant: " + session.getWorkspace().getName() + "/" + getTenantId());
+      LOGGER.info("Saving " + modelInfo.toString() + " as " + modelInfo.getFileName()
+          + " in Workspace: " + session.getWorkspace().getName());
 
       try {
         Node folderNode = createNodeForModelId(session, modelInfo.getId());
@@ -360,7 +329,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         }
 
         session.save();
-        logger.info("Model was saved successful");
+        LOGGER.info("Model was saved successfully");
 
         ModelInfo createdModel = getById(modelInfo.getId());
 
@@ -369,7 +338,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
         return createdModel;
       } catch (Exception e) {
-        logger.error("Error checking in model", e);
+        LOGGER.error("Error checking in model", e);
         throw new FatalModelRepositoryException("Problem saving model " + modelInfo.getId(), e);
       }
     });
@@ -397,10 +366,10 @@ public class ModelRepository extends AbstractRepositoryOperation
       return modelId;
     }
     return getModelVersions(modelId).stream()
-            .filter(m -> ModelState.Released.getName().equals(m.getState()))
-            .max(Comparator.comparing(VERSION_COMPARATOR))
-            .map(ModelInfo::getId)
-            .orElse(null);
+        .filter(m -> ModelState.Released.getName().equals(m.getState()))
+        .max(Comparator.comparing(VERSION_COMPARATOR))
+        .map(ModelInfo::getId)
+        .orElse(null);
   }
 
   private List<ModelInfo> getModelVersions(ModelId modelId) {
@@ -454,12 +423,12 @@ public class ModelRepository extends AbstractRepositoryOperation
         for (ModelInfo modelInfo : entry.getValue()) {
           if (modelInfo.getType() == ModelType.Mapping) {
             try {
-              model.addPlatformMapping(modelInfo.getTargetPlatformKey(),modelInfo.getId());
+              model.addPlatformMapping(modelInfo.getTargetPlatformKey(), modelInfo.getId());
             } catch (ValidationException e) {
-              logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
+              LOGGER.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(),
                   e);
             } catch (Exception e) {
-              logger.warn("Error while getting a platform mapping", e);
+              LOGGER.warn("Error while getting a platform mapping", e);
             }
           }
         }
@@ -468,6 +437,40 @@ public class ModelRepository extends AbstractRepositoryOperation
     }
 
     return model;
+  }
+
+  public ModelInfo getBasicInfoInElevatedSession(ModelId modelId, IUserContext context) {
+    return doInElevatedSession(
+        session -> {
+          try {
+            ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+            Node folderNode = session.getNode(modelIdHelper.getFullPath());
+
+            Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
+            ModelInfo modelInfo = createMinimalModelInfo(modelFileNode, true, context);
+
+            setReferencesOnResource(folderNode, modelInfo);
+
+            Map<String, List<ModelInfo>> referencingModels =
+                modelRetrievalService.getModelsReferencing(modelId);
+
+            for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
+              for (ModelInfo referencee : entry.getValue()) {
+                modelInfo.getReferencedBy().add(referencee.getId());
+              }
+            }
+
+            return modelInfo;
+          } catch (PathNotFoundException e) {
+            return null;
+          } catch (AccessDeniedException e) {
+            throw new NotAuthorizedException(modelId, e);
+          }
+        },
+        context,
+        privilegeService
+    );
   }
 
   public ModelInfo getBasicInfo(ModelId modelId) {
@@ -518,7 +521,7 @@ public class ModelRepository extends AbstractRepositoryOperation
           referencingModels
               .add(createMinimalModelInfo(currentNode.getNodes(FILE_NODES).nextNode()));
         } catch (Exception ex) {
-          logger.error("Error while converting node to a ModelId", ex);
+          LOGGER.error("Error while converting node to a ModelId", ex);
         }
       }
 
@@ -529,7 +532,7 @@ public class ModelRepository extends AbstractRepositoryOperation
   @Override
   public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform,
       Optional<String> version) {
-    logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
+    LOGGER.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
     Set<ModelInfo> mappingResources = new HashSet<>();
     ModelInfo modelResource = getBasicInfo(modelId);
@@ -544,7 +547,8 @@ public class ModelRepository extends AbstractRepositoryOperation
           if (targetPlatform.equalsIgnoreCase(referenceeModelInfo.getTargetPlatformKey())) {
             mappingResources.add(referenceeModelInfo);
           }
-        } else if (getEMFResource(referenceeModelInfo.getId()).matchesTargetPlatform(targetPlatform)) {
+        } else if (getEMFResource(referenceeModelInfo.getId())
+            .matchesTargetPlatform(targetPlatform)) {
           mappingResources.add(referenceeModelInfo);
 
         }
@@ -556,7 +560,7 @@ public class ModelRepository extends AbstractRepositoryOperation
             .getMappingModelsForTargetPlatform(referencedModelId, targetPlatform, version));
       }
     }
-    return new ArrayList<ModelInfo>(mappingResources);
+    return new ArrayList<>(mappingResources);
   }
 
   @Override
@@ -566,7 +570,7 @@ public class ModelRepository extends AbstractRepositoryOperation
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
         if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-          logger.warn("Folder Node :" + folderNode
+          LOGGER.warn("Folder Node :" + folderNode
               + " does not have any files as children. Cannot load EMF Model.");
           return null;
         }
@@ -630,6 +634,40 @@ public class ModelRepository extends AbstractRepositoryOperation
     return updateProperty(modelId, node -> node.setProperty(VORTO_VISIBILITY, visibility));
   }
 
+  @Override
+  public ModelId updatePropertyInElevatedSession(ModelId modelId, Map<String, String> properties,
+      IUserContext context) {
+    return doInElevatedSession(
+        session -> {
+          try {
+            Node folderNode = createNodeForModelId(session, modelId);
+            Node fileNode =
+                folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES)
+                    .nextNode()
+                    : null;
+
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+              fileNode.setProperty(entry.getKey(), entry.getValue());
+            }
+            fileNode.addMixin(MIX_LAST_MODIFIED);
+
+            session.save();
+
+            eventPublisher
+                .publishEvent(
+                    new AppEvent(this, getBasicInfoInElevatedSession(modelId, context), null,
+                        EventType.MODEL_UPDATED));
+
+            return modelId;
+          } catch (AccessDeniedException e) {
+            throw new NotAuthorizedException(modelId, e);
+          }
+        },
+        context,
+        privilegeService
+    );
+  }
+
   private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
     return doInSession(session -> {
       try {
@@ -655,6 +693,7 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   @FunctionalInterface
   private interface NodeConsumer {
+
     void accept(Node node) throws RepositoryException;
   }
 
@@ -734,16 +773,19 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public void attachFileInElevatedSession(ModelId modelId, FileContent fileContent, IUserContext userContext,
-                                          Tag... tags) throws AttachmentException {
+  public void attachFileInElevatedSession(ModelId modelId, FileContent fileContent,
+      IUserContext userContext,
+      Tag... tags) throws AttachmentException {
 
     attachmentValidator.validateAttachment(fileContent, modelId);
-    doInElevatedSession(session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags), userContext);
+    doInElevatedSession(
+        session -> doAttachFileInSession(modelId, fileContent, userContext, session, tags),
+        userContext, privilegeService);
   }
 
 
-
-  private boolean doAttachFileInSession(ModelId modelId, FileContent fileContent, IUserContext userContext, Session session, Tag[] tags) throws RepositoryException {
+  private boolean doAttachFileInSession(ModelId modelId, FileContent fileContent,
+      IUserContext userContext, Session session, Tag[] tags) throws RepositoryException {
     try {
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
       Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -755,8 +797,9 @@ public class ModelRepository extends AbstractRepositoryOperation
         attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
       }
 
-      String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId).collect(Collectors.toList())
-              .toArray(new String[tags.length]);
+      String[] tagIds = Arrays.stream(tags).filter(Objects::nonNull).map(Tag::getId)
+          .collect(Collectors.toList())
+          .toArray(new String[tags.length]);
 
       // if the display image tag is present (we're uploading a new image for presentational
       // purposes), removes the tag from all other attachments
@@ -768,12 +811,12 @@ public class ModelRepository extends AbstractRepositoryOperation
           Value[] attachmentTagsValuesFiltered = Arrays.stream(attachmentTags.getValues())
               .filter(
                   v -> {
-                     try {
-                       return !v.getString().equals(TAG_DISPLAY_IMAGE.getId());
-                       // swallowing here
-                     } catch (RepositoryException re) {
-                       return false;
-                     }
+                    try {
+                      return !v.getString().equals(TAG_DISPLAY_IMAGE.getId());
+                      // swallowing here
+                    } catch (RepositoryException re) {
+                      return false;
+                    }
                   }
               )
               .toArray(Value[]::new);
@@ -824,7 +867,8 @@ public class ModelRepository extends AbstractRepositoryOperation
             if (fileNode.hasProperty(VORTO_TAGS)) {
               final List<Value> tags = Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
               attachment.setTags(
-                  tags.stream().map(ModelRepository::fromModeshapeValue).filter(Objects::nonNull).collect(Collectors.toList()));
+                  tags.stream().map(ModelRepository::fromModeshapeValue).filter(Objects::nonNull)
+                      .collect(Collectors.toList()));
             }
             attachments.add(attachment);
           }
@@ -837,16 +881,53 @@ public class ModelRepository extends AbstractRepositoryOperation
     });
   }
 
+  @Override
+  public List<Attachment> getAttachmentsInElevatedSession(ModelId modelId, IUserContext context) {
+    return doInElevatedSession(session -> {
+          try {
+            ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+            Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+
+            if (modelFolderNode.hasNode(ATTACHMENTS_NODE)) {
+              Node attachmentFolderNode = modelFolderNode.getNode(ATTACHMENTS_NODE);
+              List<Attachment> attachments = new ArrayList<>();
+              NodeIterator nodeIt = attachmentFolderNode.getNodes();
+              while (nodeIt.hasNext()) {
+                Node fileNode = (Node) nodeIt.next();
+                Attachment attachment = Attachment.newInstance(modelId, fileNode.getName());
+                if (fileNode.hasProperty(VORTO_TAGS)) {
+                  final List<Value> tags = Arrays.asList(fileNode.getProperty(VORTO_TAGS).getValues());
+                  attachment.setTags(
+                      tags.stream().map(ModelRepository::fromModeshapeValue).filter(Objects::nonNull)
+                          .collect(Collectors.toList()));
+                }
+                attachments.add(attachment);
+              }
+              return attachments;
+            }
+            return Collections.emptyList();
+          } catch (AccessDeniedException e) {
+            throw new NotAuthorizedException(modelId, e);
+          }
+        },
+        context,
+        privilegeService
+    );
+  }
+
 
   private static final Set<Tag> TAGS = new HashSet<>();
+
   static {
     TAGS.add(TAG_IMAGE);
     TAGS.add(TAG_DISPLAY_IMAGE);
     TAGS.add(TAG_DOCUMENTATION);
     TAGS.add(TAG_IMPORTED);
   }
+
   /**
    * Transforms a modeshape {@link Value} to a {@link Tag} if possible.
+   *
    * @param value
    * @return one of the known Vorto tags or null.
    */
@@ -854,22 +935,29 @@ public class ModelRepository extends AbstractRepositoryOperation
     final String tagValue;
     try {
       tagValue = value.getString();
-    }
-    catch (RepositoryException re) {
-      logger.warn("Could not retrieve tag value from JCR node.");
+    } catch (RepositoryException re) {
+      LOGGER.warn("Could not retrieve tag value from JCR node.");
       return null;
     }
     return TAGS.stream()
-      .filter(t -> t.getId().equals(tagValue))
-      .findAny()
-      .orElse(
-        new Tag(tagValue)
-      );
+        .filter(t -> t.getId().equals(tagValue))
+        .findAny()
+        .orElse(
+            new Tag(tagValue)
+        );
   }
 
   @Override
   public List<Attachment> getAttachmentsByTag(final ModelId modelId, final Tag tag) {
-    return getAttachments(modelId).stream().filter(attachment -> attachment.getTags().contains(tag))
+    return getAttachmentsByTag(modelId, tag, false, null);
+  }
+
+  @Override
+  public List<Attachment> getAttachmentsByTag(final ModelId modelId, final Tag tag,
+      boolean doInElevatedSession, IUserContext context) {
+    List<Attachment> attachments =
+        doInElevatedSession ? getAttachmentsInElevatedSession(modelId, context) : getAttachments(modelId);
+    return attachments.stream().filter(attachment -> attachment.getTags().contains(tag))
         .collect(Collectors.toList());
   }
 
@@ -984,36 +1072,29 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public String getTenantId() {
-    return doInSession(session -> {
-      return session.getWorkspace().getName();
-    });
+  public String getWorkspaceId() {
+    return doInSession(session -> session.getWorkspace().getName());
   }
 
   @Override
   public ModelInfo rename(ModelId oldModelId, ModelId newModelId, IUserContext user) {
-    final Tenant tenant = this.tenantService.getTenant(getTenantId()).get();
+    Namespace namespace = namespaceService.findNamespaceByWorkspaceId(getWorkspaceId());
 
     if (getById(newModelId) != null) {
       throw new ModelAlreadyExistsException();
-    } else if (!newModelId.getNamespace().startsWith(tenant.getDefaultNamespace())) {
+    } else if (!newModelId.getNamespace().startsWith(namespace.getName())) {
       throw new NewNamespacesNotSupersetException();
     }
 
     ModelInfo oldModel = getById(oldModelId);
-
     ChangeSet changeSet = refactorModelWithNewId(oldModel, newModelId);
-
     saveChangeSetIntoRepository(changeSet, user);
 
     ModelInfo newModel = getById(newModelId);
-
     newModel = copy(oldModel, newModel, user);
-
     removeModel(oldModel.getId());
 
     return newModel;
-
   }
 
   /**
@@ -1051,26 +1132,17 @@ public class ModelRepository extends AbstractRepositoryOperation
    */
   private void saveChangeSetIntoRepository(ChangeSet changeSet, IUserContext user) {
     DependencyManager dm = new DependencyManager();
-
-    changeSet.getChanges().stream().forEach(model -> {
-      dm.addResource(new ModelResource(model));
-    });
-
-    dm.getSorted().forEach(sortedModel -> {
-      save((ModelResource) sortedModel, user);
-    });
-
+    changeSet.getChanges().forEach(model -> dm.addResource(new ModelResource(model)));
+    dm.getSorted().forEach(sortedModel -> save((ModelResource) sortedModel, user));
   }
 
   private ChangeSet refactorModelWithNewId(ModelInfo oldModel, ModelId newModelId) {
     IModelWorkspace workspace = createWorkspaceFromModelAndReferences(oldModel.getId());
 
-    ChangeSet changeSet = RefactoringTask.from(workspace)
+    return RefactoringTask.from(workspace)
         .toModelId(ModelUtils.toEMFModelId(oldModel.getId(), oldModel.getType()),
             ModelUtils.toEMFModelId(newModelId, oldModel.getType()))
         .execute();
-
-    return changeSet;
   }
 
   private IModelWorkspace createWorkspaceFromModelAndReferences(ModelId modelId) {
@@ -1093,7 +1165,8 @@ public class ModelRepository extends AbstractRepositoryOperation
 
     setReferencesOnResource(folderNode, resource);
 
-    Map<String, List<ModelInfo>> referencingModels = modelRetrievalService.getModelsReferencing(resource.getId());
+    Map<String, List<ModelInfo>> referencingModels = modelRetrievalService
+        .getModelsReferencing(resource.getId());
 
     for (Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
       for (ModelInfo modelInfo : entry.getValue()) {
@@ -1103,13 +1176,14 @@ public class ModelRepository extends AbstractRepositoryOperation
     return resource;
   }
 
-  private void setReferencesOnResource(Node folderNode, ModelInfo resource) throws RepositoryException {
+  private void setReferencesOnResource(Node folderNode, ModelInfo resource)
+      throws RepositoryException {
     if (folderNode.hasProperty(VORTO_REFERENCES)) {
       Value[] referenceValues;
       try {
         referenceValues = folderNode.getProperty(VORTO_REFERENCES).getValues();
       } catch (Exception ex) {
-        referenceValues = new Value[] {folderNode.getProperty(VORTO_REFERENCES).getValue()};
+        referenceValues = new Value[]{folderNode.getProperty(VORTO_REFERENCES).getValue()};
       }
 
       if (referenceValues != null) {

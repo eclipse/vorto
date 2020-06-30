@@ -18,24 +18,24 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.domain.UserRole;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.springframework.security.core.Authentication;
 
 public class UserContext implements IUserContext {
 
   private String username;
-  private String tenant;
+  private String workspaceId;
   private Authentication authentication;
 
   private static final List<String> ANONYMOUS_USERS =
       Arrays.asList("anonymous", "anonymousUser", getHash("anonymous"), getHash("anonymousUser"));
 
-  public static UserContext user(String username, String tenant) {
-    return new UserContext(username, tenant);
+  public static UserContext user(String username, String workspaceId) {
+    return new UserContext(username, workspaceId);
   }
 
-  public static UserContext user(Authentication authentication, String tenant) {
-    return new UserContext(authentication, tenant);
+  public static UserContext user(Authentication authentication, String workspaceId) {
+    return new UserContext(authentication, workspaceId);
   }
   
   public static UserContext user(Authentication authentication) {
@@ -44,28 +44,32 @@ public class UserContext implements IUserContext {
 
   private UserContext() {}
 
-  private UserContext(Authentication authentication, String tenant) {
-    this(authentication.getName(), tenant);
+  private UserContext(Authentication authentication, String workspaceId) {
+    this(authentication.getName(), workspaceId);
     this.authentication = authentication;
   }
 
-  private UserContext(String username, String tenant) {
+  private UserContext(String username, String workspaceId) {
     this.username = username;
-    this.tenant = tenant;
+    this.workspaceId = workspaceId;
   }
 
+  @Override
   public String getUsername() {
     return username;
   }
 
+  @Override
   public String getHashedUsername() {
     return getHash(username);
   }
 
-  public String getTenant() {
-    return tenant;
+  @Override
+  public String getWorkspaceId() {
+    return workspaceId;
   }
 
+  @Override
   public Authentication getAuthentication() {
     return authentication;
   }
@@ -107,6 +111,6 @@ public class UserContext implements IUserContext {
   
   public static boolean isSysAdmin(Authentication authentication) {
     return authentication.getAuthorities().stream()
-        .anyMatch(auth -> auth.getAuthority().equals(UserRole.ROLE_SYS_ADMIN));
+        .anyMatch(auth -> auth.getAuthority().equals(RepositoryRole.SYS_ADMIN.getName()));
   }
 }

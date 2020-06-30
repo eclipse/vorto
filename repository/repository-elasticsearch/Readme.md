@@ -69,7 +69,7 @@ from `key` to `text`.
 This requires re-creating the whole Vorto index for Elasticsearch.
 
 One straightforward way to do this is to send an HTTP POST request to the `/rest/forcereindex` 
-endpoint while authorized as a system administrator (i.e. with role `ROLE_SYS_ADMIN`). 
+endpoint while authorized as a system administrator (i.e. with role `sysadmin`). 
 
 In the web UI, this is done by:
  

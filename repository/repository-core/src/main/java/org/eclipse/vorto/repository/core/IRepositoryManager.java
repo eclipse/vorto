@@ -16,35 +16,37 @@ public interface IRepositoryManager {
 
   /**
    * Backs up the given repository
+   *
    * @return backup which can be use to restore at a later time
    */
   byte[] backup();
-  
+
   /**
    * Restores a repository with the given data
+   *
    * @param data
    */
   void restore(byte[] data);
-  
+
   /**
-   * Creates a workspace with the given tenantId
-   * 
+   * Creates a workspace with the given workspaceId
+   *
    * @return true if creation is successful
    */
-  boolean createTenantWorkspace(final String tenantId);
-  
+  boolean createWorkspace(final String workspaceId);
+
   /**
-   * Returns whether the workspace for this tenant exist or not 
-   * 
-   * @param tenantId
+   * Returns whether the workspace for this tenant exist or not
+   *
+   * @param workspaceId
    * @return
    */
-  boolean isWorkspaceExist(final String tenantId);
-  
+  boolean exists(final String workspaceId);
+
   /**
-   * Removes a workspace with the given tenantId
-   * 
+   * Removes a workspace with the given workspaceId
+   *
    * @return true if removal is successful
    */
-  boolean removeTenantWorkspace(final String tenantId);
+  boolean removeWorkspace(final String workspaceId);
 }

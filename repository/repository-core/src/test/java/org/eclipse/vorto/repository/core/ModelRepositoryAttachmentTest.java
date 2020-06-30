@@ -12,23 +12,21 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.UnitTestBase;
+import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 
-public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
+import static org.junit.Assert.*;
+
+public class ModelRepositoryAttachmentTest extends UnitTestBase {
 
   @Test
   public void testAttachNewFile() {

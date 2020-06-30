@@ -15,7 +15,8 @@ package org.eclipse.vorto.repository.core;
 import org.eclipse.vorto.model.ModelId;
 
 public class Diagnostic {
-  private String tenantId;
+
+  private String workspaceId;
   private ModelId modelId;
   private String nodeId;
   private String diagnosticMessage;
@@ -35,48 +36,55 @@ public class Diagnostic {
     return modelId;
   }
 
-  public void setModelId(ModelId modelId) {
+  public Diagnostic setModelId(ModelId modelId) {
     this.modelId = modelId;
+    return this;
   }
 
   public String getDiagnosticMessage() {
     return diagnosticMessage;
   }
 
-  public void setDiagnosticMessage(String diagnosticMessage) {
+  public Diagnostic setDiagnosticMessage(String diagnosticMessage) {
     this.diagnosticMessage = diagnosticMessage;
+    return this;
   }
 
   public String getNodeId() {
     return nodeId;
   }
 
-  public void setNodeId(String nodeId) {
+  public Diagnostic setNodeId(String nodeId) {
     this.nodeId = nodeId;
-  }
-  
-  public String getTenantId() {
-    return tenantId;
+    return this;
   }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
+  public String getWorkspaceId() {
+    return workspaceId;
+  }
+
+  public Diagnostic setWorkspaceId(String workspaceId) {
+    this.workspaceId = workspaceId;
+    return this;
   }
 
   @Override
   public String toString() {
-    return "Diagnostic [tenantId=" + tenantId + ", modelId=" + modelId + ", nodeId=" + nodeId
-        + ", diagnosticMessage=" + diagnosticMessage + "]";
+    return String.format("Diagnostic [workspaceId=%s, modelId=%s, nodeId=%s, diagnosticMessage=%s]",
+        workspaceId, modelId, nodeId, diagnosticMessage);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     Diagnostic other = (Diagnostic) obj;
 
     return checkStringProperty(diagnosticMessage, other.diagnosticMessage)
@@ -85,19 +93,23 @@ public class Diagnostic {
 
   private boolean checkStringProperty(String myString, String otherString) {
     if (myString == null) {
-      if (otherString != null)
+      if (otherString != null) {
         return false;
-    } else if (!myString.equals(otherString))
+      }
+    } else if (!myString.equals(otherString)) {
       return false;
+    }
     return true;
   }
 
   private boolean checkModelId(ModelId mine, ModelId other) {
     if (mine == null) {
-      if (other != null)
+      if (other != null) {
         return false;
-    } else if (!mine.equals(other))
+      }
+    } else if (!mine.equals(other)) {
       return false;
+    }
     return true;
   }
 }

@@ -37,9 +37,6 @@ import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.plugin.generator.GenerationException;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
-import org.eclipse.vorto.repository.tenant.TenantAdminDoesntExistException;
-import org.eclipse.vorto.repository.tenant.TenantDoesntExistException;
-import org.eclipse.vorto.repository.tenant.TenantHasNoNamespaceException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
@@ -53,9 +50,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public abstract class AbstractRepositoryController extends ResponseEntityExceptionHandler {
-  
-  private static Logger logger = Logger.getLogger(AbstractRepositoryController.class);  
-  
+
+  private static Logger logger = Logger.getLogger(AbstractRepositoryController.class);
+
   @Autowired
   protected IModelRepositoryFactory modelRepositoryFactory;
 
@@ -63,13 +60,14 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   protected static final String CONTENT_DISPOSITION = "content-disposition";
 
-  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Something went wrong in the application.") // 404
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Something went wrong in the application.")
+  // 404
   @ExceptionHandler(GenericApplicationException.class)
   public void genericError(final GenericApplicationException ex) {
     // do logging
     logger.error(ex);
   }
-  
+
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Model not found.") // 404
   @ExceptionHandler(ModelNotFoundException.class)
   public void notFound(final ModelNotFoundException ex) {
@@ -85,18 +83,18 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
   @ExceptionHandler(IllegalArgumentException.class)
   public Object wrongInput(final IllegalArgumentException ex) {
-      //logger.error("IllegalArgumentException occured", ex);
-      Map<String, Object> error = new HashMap<String, Object>();
-	  error.put("message", ex.getMessage());
-	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
+    //logger.error("IllegalArgumentException occured", ex);
+    Map<String, Object> error = new HashMap<String, Object>();
+    error.put("message", ex.getMessage());
+    return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
-  
+
   @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
   @ExceptionHandler(NewNamespacesNotSupersetException.class)
   public Object wrongInput(final NewNamespacesNotSupersetException ex) {
-      Map<String, Object> error = new HashMap<String, Object>();
-      error.put("message", "Specified namespace does not match owning namespace.");
-      return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
+    Map<String, Object> error = new HashMap<String, Object>();
+    error.put("message", "Specified namespace does not match owning namespace.");
+    return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
 
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
@@ -110,25 +108,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   public void generatorProblem(final GenerationException ex) {
     // do logging
   }
-  
-  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Tenant in request doesn't exist.")
-  @ExceptionHandler(TenantDoesntExistException.class)
-  public void tenantDoesntExistProblem(final TenantDoesntExistException ex) {
-    // do logging
-  }
-  
-  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Given user doesn't exist.")
-  @ExceptionHandler(TenantAdminDoesntExistException.class)
-  public void userDoesntExistException(final TenantAdminDoesntExistException ex) {
-    // do logging
-  }
-  
-  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Tenant has no namespace.")
-  @ExceptionHandler(TenantHasNoNamespaceException.class)
-  public void tenantHasNoNamespaceProblem(final TenantHasNoNamespaceException ex) {
-    // do logging
-  }
-  
+
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(ValidationException.class)
   public ResponseEntity<Object> cannotLoadSpecification(final ValidationException ex) {
@@ -139,7 +119,8 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   }
 
   protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
-    Optional<FileContent> fileContent = getModelRepository(modelId).getFileContent(modelId, Optional.empty());
+    Optional<FileContent> fileContent = getModelRepository(modelId)
+        .getFileContent(modelId, Optional.empty());
 
     final byte[] modelContent = fileContent.get().getContent();
     if (modelContent != null && modelContent.length > 0) {
@@ -159,11 +140,13 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 
   protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
     try {
-      FileContent modelFile = getModelRepository(modelId).getFileContent(modelId, Optional.empty()).get();
+      FileContent modelFile = getModelRepository(modelId).getFileContent(modelId, Optional.empty())
+          .get();
       ModelInfo modelResource = getModelRepository(modelId).getById(modelId);
 
       try {
-        ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
+        ZipEntry zipEntry = new ZipEntry(
+            modelResource.getId().getPrettyFormat() + modelResource.getType().getExtension());
         zipOutputStream.putNextEntry(zipEntry);
         zipOutputStream.write(modelFile.getContent());
         zipOutputStream.closeEntry();
@@ -174,10 +157,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
       for (ModelId reference : modelResource.getReferences()) {
         addModelToZip(zipOutputStream, reference);
       }
-    } catch(NotAuthorizedException notAuthorized) {
-        return;
+    } catch (NotAuthorizedException notAuthorized) {
+      return;
     }
-    
+
   }
 
   protected void sendAsZipFile(final HttpServletResponse response, final String fileName,
@@ -234,15 +217,15 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 
     return modelInfos;
   }
-   
+
   protected IModelRepository getModelRepository(ModelId modelId) {
     return modelRepositoryFactory.getRepositoryByModel(modelId);
   }
-  
+
   protected IModelRepositoryFactory getModelRepositoryFactory() {
     return modelRepositoryFactory;
   }
-  
+
   public void setModelRepositoryFactory(IModelRepositoryFactory modelRepositoryFactory) {
     this.modelRepositoryFactory = modelRepositoryFactory;
   }

@@ -12,12 +12,15 @@
  */
 package org.eclipse.vorto.repository.web.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
@@ -32,8 +35,9 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.mapping.IPayloadMappingService;
-import org.eclipse.vorto.repository.tenant.ITenantService;
+import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestContentType;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -52,38 +56,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/rest/mappings/specifications")
 public class PayloadMappingController extends AbstractRepositoryController {
 
-  private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
-      .user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
-
-  @Autowired
-  private ITenantService tenantService;
-  
   @Autowired
   private IPayloadMappingService mappingService;
+
+  @Autowired
+  private NamespaceRepository namespaceRepository;
 
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String CONTENT_DISPOSITION = "content-disposition";
-  
+
   private static final IPayloadDeserializer CSV_DESERIALIZER = new CSVDeserializer();
   private static final IPayloadDeserializer JSON_DESERIALIZER = new JSONDeserializer();
 
   @GetMapping(value = "/{modelId:.+}/mappingId")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public ResponseEntity<Map<String,Object>> getMappingIdForModelId(@PathVariable final String modelId) throws Exception { 
-    Optional<ModelInfo> mappingId = mappingService.resolveMappingIdForModelId(ModelId.fromPrettyFormat(modelId));
+  @PreAuthorize("hasAuthority('model_viewer')")
+  public ResponseEntity<Map<String, Object>> getMappingIdForModelId(
+      @PathVariable final String modelId) {
+    Optional<ModelInfo> mappingId = mappingService
+        .resolveMappingIdForModelId(ModelId.fromPrettyFormat(modelId));
     if (mappingId.isPresent()) {
-      Map<String,Object> result = new HashMap<>(1);
-      result.put("mappingId", mappingId.get().getId().getPrettyFormat()); 
+      Map<String, Object> result = new HashMap<>(1);
+      result.put("mappingId", mappingId.get().getId().getPrettyFormat());
       return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
     } else {
       throw new ModelNotFoundException("Cannot find mapping for modelId");
@@ -91,21 +90,21 @@ public class PayloadMappingController extends AbstractRepositoryController {
   }
 
   @GetMapping(value = "/{modelId:.+}")
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public IMappingSpecification getMappingSpecification(@PathVariable final String modelId) throws Exception {
+  @PreAuthorize("hasAuthority('model_viewer')")
+  public IMappingSpecification getMappingSpecification(@PathVariable final String modelId) {
     return mappingService.getOrCreateSpecification(ModelId.fromPrettyFormat(modelId));
   }
-  
+
   @RequestMapping(value = "/{modelId:.+}/exists", method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_USER')")
-  public Map<String,Object> exists(@PathVariable final String modelId) throws Exception {
-    Map<String,Object> result = new HashMap<>();
+  @PreAuthorize("hasAuthority('model_viewer')")
+  public Map<String, Object> exists(@PathVariable final String modelId) {
+    Map<String, Object> result = new HashMap<>();
     result.put("exists", mappingService.exists(ModelId.fromPrettyFormat(modelId)));
     return result;
   }
 
   @PutMapping(value = "/test")
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAuthority('model_viewer')")
   public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest)
       throws Exception {
 
@@ -116,20 +115,33 @@ public class PayloadMappingController extends AbstractRepositoryController {
       content = JSON_DESERIALIZER.deserialize(testRequest.getContent());
     }
 
-    InfomodelValue mappedOutput =  mappingService.runTest(testRequest.getSpecification(), content);
-    
+    InfomodelValue mappedOutput = mappingService.runTest(testRequest.getSpecification(), content);
+
     TestMappingResponse response = new TestMappingResponse();
     response.setCanonical(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
-    response.setDitto(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory.toDittoProtocol(mappedOutput, "com.acme:4711")));
-    response.setAwsiot(new Gson().toJson(org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory.toShadowUpdateRequest(mappedOutput)));
+    response.setDitto(new Gson().toJson(
+        org.eclipse.vorto.mapping.targetplatform.ditto.TwinPayloadFactory
+            .toDittoProtocol(mappedOutput, "com.acme:4711")));
+    response.setAwsiot(new Gson().toJson(
+        org.eclipse.vorto.mapping.targetplatform.awsiot.TwinPayloadFactory
+            .toShadowUpdateRequest(mappedOutput)));
     response.setReport(mappedOutput.validate());
     return response;
   }
 
   @PutMapping(value = "/{modelId:.+}")
-  @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-  public void saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification, @PathVariable String modelId) {
-    IUserContext userContext = userContextFn.apply(getTenant(modelId));
+  @PreAuthorize("hasAuthority('model_creator')")
+  public void saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
+      @PathVariable String modelId) {
+    Namespace namespace = namespaceRepository
+        .findByName(ModelId.fromPrettyFormat(modelId).getNamespace());
+    IUserContext userContext;
+    if (namespace != null) {
+      userContext = UserContext
+          .user(SecurityContextHolder.getContext().getAuthentication(), namespace.getWorkspaceId());
+    } else {
+      userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    }
     this.mappingService.saveSpecification(mappingSpecification, userContext);
   }
 
@@ -137,9 +149,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
       value = {@ApiResponse(code = 200, message = "Successful download of mapping specification"),
           @ApiResponse(code = 400, message = "Wrong input"),
           @ApiResponse(code = 404, message = "Model not found")})
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAuthority('model_viewer')")
   @GetMapping(value = "/{modelId:.+}/file")
-  public void downloadModelById(@PathVariable final String modelId, final HttpServletResponse response) {
+  public void downloadModelById(@PathVariable final String modelId,
+      final HttpServletResponse response) {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
@@ -148,7 +161,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
         + modelID.getName() + "_" + modelID.getVersion() + "-mappingspec.json");
     response.setContentType(APPLICATION_OCTET_STREAM);
     try {
-      MappingSpecification spec = (MappingSpecification) this.mappingService.getOrCreateSpecification(modelID);
+      MappingSpecification spec = (MappingSpecification) this.mappingService
+          .getOrCreateSpecification(modelID);
       ObjectMapper mapper = new ObjectMapper();
       IOUtils.copy(
           new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
@@ -165,24 +179,4 @@ public class PayloadMappingController extends AbstractRepositoryController {
   public void modelExists(final ModelAlreadyExistsException ex) {
     // do logging
   }
-
-
-  public void setUserContextFn(Function<String, IUserContext> userContextFn) {
-    this.userContextFn = userContextFn;
-  }
-
-  public void setTenantService(ITenantService tenantService) {
-    this.tenantService = tenantService;
-  }
-
-  private String getTenant(String modelId) {
-    return getTenant(ModelId.fromPrettyFormat(modelId)).orElseThrow(
-        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
-  }
-
-  private Optional<String> getTenant(ModelId modelId) {
-    return tenantService.getTenantFromNamespace(modelId.getNamespace())
-        .map(tenant -> tenant.getTenantId());
-  }
-
 }

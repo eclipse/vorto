@@ -23,7 +23,7 @@ public interface IModelPolicyManager {
 
   /**
    * Gets a list of all policies for the given model
-   * 
+   *
    * @param modelId
    * @return
    * @throws NotAuthorizedException
@@ -32,7 +32,7 @@ public interface IModelPolicyManager {
 
   /**
    * Adds a policy entry for the given model
-   * 
+   *
    * @param modelId
    * @param entries
    */
@@ -40,15 +40,23 @@ public interface IModelPolicyManager {
 
   /**
    * Removes the policy entry for the given model
-   * 
+   *
    * @param modelId
    * @param entryToRemove
    */
   void removePolicyEntry(ModelId modelId, PolicyEntry entryToRemove);
 
   /**
+   * Makes the given policy entry read-only, for the given model.
+   *
+   * @param modelId
+   * @param entryToChange
+   */
+  void makePolicyEntryReadOnly(ModelId modelId, PolicyEntry entryToChange);
+
+  /**
    * checks if the current user has the given permission for the given model ID
-   * 
+   *
    * @param modelId
    * @param permission
    * @return true if he/she has access, false otherwise
@@ -57,6 +65,7 @@ public interface IModelPolicyManager {
 
   /**
    * Copies the policy entries from source model to target model
+   *
    * @param oldModelId
    * @param newModelId
    */

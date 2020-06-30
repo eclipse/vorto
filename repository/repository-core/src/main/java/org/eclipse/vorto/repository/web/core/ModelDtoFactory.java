@@ -94,7 +94,7 @@ public class ModelDtoFactory {
         new ModelInfoDto(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
 
     copy(resource, dto);
-    dto.setTenantId(tenantId);
+    dto.setWorkspaceId(tenantId);
 
     return dto;
   }
