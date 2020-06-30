@@ -1,4 +1,4 @@
-# the following is optional and can be run to ensure that the debug_user_namespace_privileges table is populated
+# The following is optional and can be run to ensure that the debug_user_namespace_privileges table is populated
 # correctly after running migrate_db_from_013_MariaDB_preparation.sql
 
 # creates the debug table
