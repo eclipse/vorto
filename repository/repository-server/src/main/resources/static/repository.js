@@ -144,6 +144,30 @@ define("repository", [
     $rootScope.watchLocationChanges = function () {
       $rootScope.$on("$locationChangeStart", function (event, next, current) {
         $rootScope.error = false;
+        // saves previous location before forwarding, so it can be sent as a
+        // "redirect" parameter to the login request
+        if (!$rootScope.previousLocation) {
+          /*
+           This is pretty hack-ish.
+           In the typical use case (a user punching a direct Vorto URL in an
+           empty tab/window), the URL we want to store for the back-end to
+           redirect to post-authentication is the "current" argument.
+           However when punching a direct Vorto URL in a tab/window where Vorto
+           is already running (albeit unauthenticated in our case), the correct
+           argument to pick is "next" - this is an uncommon edge case.
+           In order to make sure we pick the right one, we default to "current"
+           (most typical use case) but check that the "current" one is not the
+           actual login page - in which case we pick "next".
+           */
+          let parameter = (current && !current.endsWith("/login")
+              && !current.endsWith("/#/")) ? current : next;
+          // stores the parameter as a relative path, so any absolute paths
+          // can be intercepted and ignored in the back-end for security reasons
+          if (parameter.includes("/#")) {
+            parameter = parameter.substring(parameter.indexOf("/#") + 2);
+          }
+          $rootScope.previousLocation = parameter;
+        }
         if ($rootScope.needAuthentication() && $rootScope.authenticated
             === false) {
           $location.path("/login");
@@ -170,6 +194,27 @@ define("repository", [
         }
       }
       return flag;
+    }
+
+    $rootScope.redirectToLogin = function (url) {
+      // parameter is defined in login-template and should never be undefined,
+      // so this debatable default should formally never be in use
+      let result = "github/login";
+      if (url) {
+        result = url;
+        /*
+        Checks if the log in page landing is caused by a location change and
+        if so, adds the previous location as a request parameter, so the
+        back-end can re-direct to it.
+        Note that the $rootScope is cleared after a log on, so the
+        previousLocation will be "cleared" if the log on succeeds.
+        */
+        if ($rootScope.previousLocation) {
+          result += '?redirect=' + encodeURIComponent(
+              $rootScope.previousLocation);
+        }
+      }
+      return result;
     }
 
     $rootScope.init = function () {

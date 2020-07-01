@@ -2,12 +2,13 @@
   <div class="row">
     <div class="col-md-6 col-md-offset-3 text-center">
       <h2>Sign in</h2>
-      <br />
+      <br/>
       <div class="social-auth-links text-center">
         <p></p>
 
         <div ng-repeat="provider in context.providers">
-          <a href="{{provider.loginUrl}}" class="btn btn-default btn-block"> <img src="{{provider.logoHref}}" alt="Sign in with {{provider.label}}" />
+          <a ng-href="{{redirectToLogin(provider.loginUrl)}}" class="btn btn-default btn-block">
+            <img src="{{provider.logoHref}}" alt="Sign in with {{provider.label}}"/>
             Sign in with {{provider.label}}
           </a>
           </br>
@@ -15,5 +16,5 @@
         </div>
       </div>
     </div>
-  </div>    
+  </div>
 </section>
