@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.listeners;
 
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.ServletException;
@@ -50,9 +51,26 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
     Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
 
-    String targetUrl = _user.map(user -> {
-      return "/#/";
-    }).orElse("/#/signup");
+    /*
+    Fetches previous location from request parameter if any present, otherwise defaults to /#/.
+    If the request parameter represents an absolute URI, it has been likely tampered with and
+    should be discarded in favor of the home /#/ for security reasons.
+    As the expected relative path will start with "/", the default hash will be prepended to it.
+     */
+    final String redirectURL = Optional
+        // param can be absent
+        .ofNullable(request.getParameter("redirect"))
+        // validating value if present
+        .map(u -> {
+          // absolute URL or empty param value: ignoring
+          if (Strings.isNullOrEmpty(u) || !u.startsWith("/")) {
+            return "/#/";
+          }
+          // building relative path prepended by hash
+          return "/#".concat(u);
+        }).orElse("/#/");
+
+    String targetUrl = _user.map(user -> redirectURL).orElse("/#/signup");
 
     if (response.isCommitted()) {
       logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
