@@ -23,7 +23,8 @@ define([
     '../controllers/updateController',
     '../controllers/mapping/mappingbuilder-controller',
     '../controllers/manage/namespaceManagement',
-    '../controllers/manage/namespaceUserManagement'
+    '../controllers/manage/namespaceUserManagement',
+    '../controllers/requestAccessToNamespaceController'
 ], function () {
 
 });
