@@ -29,7 +29,6 @@ import org.springframework.stereotype.Repository;
  * {@link DBTablesInitializer}, if the table is found empty.
  */
 @Repository
-@Cacheable("repositoryRoles")
 public interface RepositoryRoleRepository extends CrudRepository<RepositoryRole, Long> {
 
   @Query("select p from RepositoryRole p where p.name = :name")

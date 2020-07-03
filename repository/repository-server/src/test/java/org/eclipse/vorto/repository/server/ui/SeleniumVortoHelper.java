@@ -12,9 +12,9 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
-import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.junit.Assert;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -33,7 +33,9 @@ public class SeleniumVortoHelper {
 
     public static String ID_CB_NAMESPACE_ROOT = "namespaceRoot";
 
-    public static String USER1_PRIVATE_NAMESPACE = "vorto.private.user1";
+    public static String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
+
+    public static String USER1_PRIVATE_NAMESPACE = "user1";
 
     public static String USER1_EMPTY_INFO_MODEL = "EmptyInfoModel";
 
@@ -41,13 +43,13 @@ public class SeleniumVortoHelper {
 
     private final String rootUrl;
 
-    private static Map<Role, String> ROLE_TO_LINK_MAP = new HashMap<>();
+    private static Map<String, String> ROLE_TO_LINK_MAP = new HashMap<>();
 
     static {
-        ROLE_TO_LINK_MAP.put(Role.MODEL_CREATOR, "//input[@ng-model='user.roleModelCreator']");
-        ROLE_TO_LINK_MAP.put(Role.MODEL_PROMOTER, "//input[@ng-model='user.roleModelPromoter']");
-        ROLE_TO_LINK_MAP.put(Role.MODEL_REVIEWER, "//input[@ng-model='user.roleModelReviewer']");
-        ROLE_TO_LINK_MAP.put(Role.MODEL_PUBLISHER, "//input[@ng-model='user.roleAdmin']");
+        ROLE_TO_LINK_MAP.put("model_creator", "//input[@ng-model='user.roleModelCreator']");
+        ROLE_TO_LINK_MAP.put("model_promoter", "//input[@ng-model='user.roleModelPromoter']");
+        ROLE_TO_LINK_MAP.put("model_reviewer", "//input[@ng-model='user.roleModelReviewer']");
+        ROLE_TO_LINK_MAP.put("model_publisher", "//input[@ng-model='user.roleAdmin']");
     }
 
     /**
@@ -93,7 +95,9 @@ public class SeleniumVortoHelper {
      */
     public void openManageTab() {
         webDriver.get(rootUrl);
-        webDriver.findElementByXPath("//a[@href='./#/manage']").click();
+        WebElement manageLink = webDriver.findElementByXPath("//a[@href='./#/manage']");
+        // workaround for unstable "click()"
+        manageLink.sendKeys(Keys.ENTER);
     }
 
     /**
@@ -154,10 +158,11 @@ public class SeleniumVortoHelper {
      * @param userToAdd the user to add.
      * @param namespace the namespace.
      */
-    public void addUserToNamespace(String userToAdd, String namespace, Role... roles) {
+    public void addUserToNamespace(String userToAdd, String namespace, String... roles) {
         openManageNamespacesTab();
         WebElement namespaceFilterField = this.webDriver.findElementById("namespaceFilter");
-        namespaceFilterField.sendKeys(namespace);
+        if(namespaceFilterField.isEnabled())
+            namespaceFilterField.sendKeys(namespace);
         // xpath selects the row with the namespace in it and finds the link to open the collaborators dialog
         WebElement manageUsersLink = this.webDriver.findElementByXPath("//div[@class='ng-binding' and contains(.,'" + namespace + "')]/../../td/a[@ng-click='manageUsers(namespace)']");
         manageUsersLink.click();
@@ -172,7 +177,7 @@ public class SeleniumVortoHelper {
         this.webDriver.findElementByXPath("//button[contains(.,'Cancel')]").click();
     }
 
-    private void selectRolesForUserInNamespaceDialog(Role[] roles) {
+    private void selectRolesForUserInNamespaceDialog(String[] roles) {
         for (int i=0; i < roles.length; i++) {
             this.webDriver.findElementByXPath(ROLE_TO_LINK_MAP.get(roles[i])).click();
         }

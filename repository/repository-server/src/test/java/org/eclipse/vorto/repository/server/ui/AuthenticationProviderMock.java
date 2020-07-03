@@ -69,7 +69,7 @@ public class AuthenticationProviderMock implements AuthenticationProvider {
 
     /**
      * Set a list of granted authorities for a specific user. FOR TESTING PURPOSES ONLY.
-     * See @{@link org.eclipse.vorto.repository.domain.Role}
+     * See @{@link org.eclipse.vorto.repository.domain.NamespaceRole}
      *
      * @param authorityList the list of authorities (e.g. USER, SYS_ADMIN) .
      * @param userName the user name.

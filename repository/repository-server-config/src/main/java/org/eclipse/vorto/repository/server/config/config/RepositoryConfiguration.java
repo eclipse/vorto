@@ -70,7 +70,7 @@ public class RepositoryConfiguration extends BaseConfiguration {
   }
   
   @Bean
-  @Profile(value = {"local", "test", "local-test", "local-https", "local-dev-simplesearch"})
+  @Profile(value = {"local", "test", "local-test", "local-ui-test", "local-https", "local-dev-simplesearch"})
   public SimpleSearchService simpleSearch(
       @Autowired NamespaceRepository namespaceRepository,
       @Autowired IModelRepositoryFactory repositoryFactory) {

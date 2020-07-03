@@ -12,6 +12,13 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
+import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.eclipse.vorto.repository.init.DBTablesInitializer;
+import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
+import org.eclipse.vorto.repository.repositories.PrivilegeRepository;
+import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,15 +32,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,6 +70,9 @@ public abstract class AbstractUITest {
     @Autowired
     protected AuthenticationProviderMock mock;
 
+    @Autowired
+    protected UserRepository userRepository;
+
     @Rule
     public BrowserWebDriverContainer chrome =
             new BrowserWebDriverContainer()
@@ -72,12 +89,27 @@ public abstract class AbstractUITest {
     }
 
     @Before
-    public void setRootUrl() throws Exception {
+    public void prepareTests() throws Exception {
+        setRootUrl();
+        setUpTest();
+    }
+
+    @Configuration
+    @Profile("test")
+    public static class TestConfig {
+
+        @Bean
+        public static PropertySourcesPlaceholderConfigurer properties() {
+            return new PropertySourcesPlaceholderConfigurer();
+        }
+
+    }
+
+    private void setRootUrl() throws Exception {
         rootUrl = String.format("http://host.testcontainers.internal:%d", port);
         chrome.getWebDriver().manage().deleteAllCookies();
         chrome.getWebDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.seleniumVortoHelper = new SeleniumVortoHelper(chrome.getWebDriver(), rootUrl);
-        setUpTest();
     }
 
     /**

@@ -30,7 +30,6 @@ import org.springframework.stereotype.Repository;
  * {@link DBTablesInitializer}, if the table is found empty.
  */
 @Repository
-@Cacheable("namespaceRoles")
 public interface NamespaceRoleRepository extends CrudRepository<NamespaceRole, Long> {
 
   @Query("select n from NamespaceRole n where n.name = :name")

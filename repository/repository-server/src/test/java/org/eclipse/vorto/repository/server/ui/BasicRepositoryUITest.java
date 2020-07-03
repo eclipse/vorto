@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-import static org.eclipse.vorto.repository.domain.Role.*;
-
+import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
 
 /**
  * Tests some of the basic functionality of the Vorto repository. To keep the tests independent the repository is
@@ -88,7 +87,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         this.seleniumVortoHelper.createNamespace(  SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
         this.seleniumVortoHelper.openManageNamespacesTab();
         // check if the namespace was created successfully.
-        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//td/div[@class='ng-binding' and contains(.,'" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//td/div[@class='ng-binding' and contains(.,'" + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
     }
 
     /**
@@ -108,7 +107,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         remoteWebDriver.findElementByXPath("//input[@name='modelType' and @value='InformationModel']").click();
         remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
         Select namespaceComboBox = new Select(remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
-        namespaceComboBox.selectByVisibleText(SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+        namespaceComboBox.selectByVisibleText(SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
         WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
         modelNameTextField.sendKeys(SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL);
         remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
@@ -133,7 +132,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//div[@id='searchResult']/div[count(*) = 0]");
         this.seleniumVortoHelper.loginWithUser("user1", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
+        WebElement linkToModel = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
         WebDriverWait wait5Secs = new WebDriverWait(this.seleniumVortoHelper.getRemoteWebDriver(), 5);
         wait5Secs.until(ExpectedConditions.elementToBeClickable(linkToModel));
     }
@@ -145,17 +144,19 @@ public class BasicRepositoryUITest extends AbstractUITest {
     @Test
     public void testAddCollaboratorToNamespace() throws Exception {
         testVisibleModels();
-        this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE, MODEL_PUBLISHER, MODEL_PROMOTER, MODEL_CREATOR, MODEL_REVIEWER);
+        this.seleniumVortoHelper.addUserToNamespace("user2", SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE, "model_publisher", "model_promoter", "model_creator", "model_reviewer");
         this.seleniumVortoHelper.loginWithUser("user2", "pass");
         this.seleniumVortoHelper.selectModelStateInComboBox(null);
-        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@href='./#/details/" + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + ":" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + ":1.0.0']");
     }
 
 
     protected void setUpTest() {
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
-                Sets.newHashSet(USER, SYS_ADMIN, TENANT_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)), "user1");
+                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4])), "user1");
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
-                Sets.newHashSet(USER)), "user2");
+                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
+        userRepository.save(User.create("user1", "GITHUB", null, false));
+        userRepository.save(User.create("user2", "GITHUB", null, false));
     }
 }
