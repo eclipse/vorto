@@ -1,8 +1,14 @@
 <div class="modal-header">
-  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <button ng-show="modal" type="button" class="close" ng-click="$dismiss()">&times;</button>
   <h3 class="modal-title">Request access to a namespace</h3>
 </div>
 <div class="modal-body">
+  <div class="overlay" ng-show="errorLoadingUserData">
+    <div style="display: table-cell;vertical-align: middle;">
+      <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+      <span style="font-size: xx-large">&nbsp;Error: unable to retrieve user data.s</span>
+    </div>
+  </div>
   <div class="overlay" ng-show="isSendingRequest">
     <div style="display: table-cell;vertical-align: middle;">
       <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
@@ -62,12 +68,12 @@
       </div>
     </div>
     <div class="row"><br/></div>
-    <div class="row">
+    <div class="row" >
       <div class="col-sm-3">
         <input type="radio" name="requestTargetUser" id="myself" value="{{username}}"
-               ng-model="userRadio" checked ng-checked="true"
+               ng-model="userRadio"
                ng-change="toggleUserSearchEnabled('myself')"/>
-        <label for="myself">myself ({{username}})</label>
+        <label id="myselfLabel" for="myself">myself ({{username}})</label>
       </div>
       <div class="col-sm-2">
         <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
@@ -171,12 +177,13 @@
       errorMessage }}<br/></div>
     <div ng-if="success" class="row alert alert-success table-cell " style="text-align:center">
       Your request was sent successfully.&nbsp;&nbsp;
-      <button class="btn btn-primary" ng-click="close()">Close</button>
+      <button ng-show="modal" class="btn btn-primary" ng-click="$dismiss()">Close</button>
+      <button ng-show="!modal" class="btn btn-primary" ng-click="$location.reload()">New request</button>
       <br/>
     </div>
     <div class="row">
       <div class="col-sm-offset-10">
-        <button id="cancel" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button id="cancel" class="btn btn-default" ng-click="$dismiss()">Cancel</button>
         <button id="submit" class="btn btn-primary" ng-click="submit()">Send</button>
       </div>
     </div>

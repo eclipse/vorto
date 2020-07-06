@@ -73,6 +73,9 @@ define("repository", [
       }).when("/manage", {
         templateUrl: "webjars/repository-web/dist/partials/admin-template.html",
         controller: "AdminController"
+      }).when("/requestAccessToNamespace", {
+        templateUrl: "/webjars/repository-web/dist/partials/admin/requestAccessToNamespace.html",
+        controller: "requestAccessToNamespaceController"
       }).when("/privacy", {
         templateUrl: "webjars/repository-web/dist/partials/privacypolicy-template.html"
       }).otherwise({
