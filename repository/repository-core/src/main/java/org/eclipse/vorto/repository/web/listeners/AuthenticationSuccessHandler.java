@@ -49,15 +49,29 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
     OAuth2Authentication auth = (OAuth2Authentication) authentication;
 
-    Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
+    Optional<User> user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
+    String redirectURL = buildRedirectURL(request);
+    String targetUrl = user.map(e -> redirectURL).orElse("/#/signup");
 
-    /*
-    Fetches previous location from request parameter if any present, otherwise defaults to /#/.
-    If the request parameter represents an absolute URI, it has been likely tampered with and
-    should be discarded in favor of the home /#/ for security reasons.
-    As the expected relative path will start with "/", the default hash will be prepended to it.
-     */
-    final String redirectURL = Optional
+    if (response.isCommitted()) {
+      logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+      return;
+    }
+
+    redirectStrategy.sendRedirect(request, response, targetUrl);
+  }
+
+  /**
+   * Fetches previous location from request parameter if any present, otherwise defaults to /#/.
+   * If the request parameter represents an absolute URI, it has been likely tampered with and
+   * should be discarded in favor of the home /#/ for security reasons.
+   * As the expected relative path will start with "/", the default hash will be prepended to it.
+   * @param request
+   * @return redirect URL - if the redirect URL equals /#/login the return value will be /#/ instead
+   * to avoid redirecting to the same login page again. 
+   */
+  private String buildRedirectURL(HttpServletRequest request) {
+    String redirectURL = Optional
         // param can be absent
         .ofNullable(request.getParameter("redirect"))
         // validating value if present
@@ -70,14 +84,11 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
           return "/#".concat(u);
         }).orElse("/#/");
 
-    String targetUrl = _user.map(user -> redirectURL).orElse("/#/signup");
-
-    if (response.isCommitted()) {
-      logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-      return;
+    if ("/#/login".equals(redirectURL)) {
+      return "/#/";
     }
 
-    redirectStrategy.sendRedirect(request, response, targetUrl);
+    return redirectURL;
   }
 
   public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
