@@ -13,11 +13,6 @@
 package org.eclipse.vorto.repository.web.listeners;
 
 import com.google.common.base.Strings;
-import java.io.IOException;
-import java.util.Optional;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +22,12 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -44,6 +45,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     clearAuthenticationAttributes(request);
   }
 
+  @Override
   protected void handle(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws IOException {
 
@@ -68,7 +70,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
    * As the expected relative path will start with "/", the default hash will be prepended to it.
    * @param request
    * @return redirect URL - if the redirect URL equals /#/login the return value will be /#/ instead
-   * to avoid redirecting to the same login page again. 
+   * to avoid redirecting to the same login page again.
    */
   private String buildRedirectURL(HttpServletRequest request) {
     String redirectURL = Optional
@@ -91,10 +93,12 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     return redirectURL;
   }
 
+  @Override
   public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
     this.redirectStrategy = redirectStrategy;
   }
 
+  @Override
   protected RedirectStrategy getRedirectStrategy() {
     return redirectStrategy;
   }
