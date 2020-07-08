@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import javax.transaction.Transactional;
 
 @Service
 public class UserRepositoryRoleService {
@@ -72,13 +73,14 @@ public class UserRepositoryRoleService {
    * @param username
    * @return
    */
+  @Transactional
   public void setSysadmin(String username) {
     User user = userRepository.findByUsername(username);
     if (user == null) {
       throw new IllegalArgumentException("User is null");
     }
     UserRepositoryRoles roles = new UserRepositoryRoles();
-    roles.setRoles(sysadmin().getRole());
+    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
     roles.setUser(user);
     userRepositoryRoleRepository.save(roles);
   }
