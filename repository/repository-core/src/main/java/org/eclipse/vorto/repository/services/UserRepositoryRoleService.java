@@ -79,6 +79,8 @@ public class UserRepositoryRoleService {
     if (user == null) {
       throw new IllegalArgumentException("User is null");
     }
+    if(isSysadmin(user))
+      return;
     UserRepositoryRoles roles = new UserRepositoryRoles();
     roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
     roles.setUser(user);
