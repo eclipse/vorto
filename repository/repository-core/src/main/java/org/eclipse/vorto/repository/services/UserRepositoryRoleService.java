@@ -80,7 +80,7 @@ public class UserRepositoryRoleService {
       throw new IllegalArgumentException("User is null");
     }
     UserRepositoryRoles roles = new UserRepositoryRoles();
-    roles.setRoles(sysadmin().getRole());
+    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
     roles.setUser(user);
     userRepositoryRoleRepository.save(roles);
   }
