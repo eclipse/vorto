@@ -79,9 +79,20 @@ public class UserRepositoryRoleService {
     if (user == null) {
       throw new IllegalArgumentException("User is null");
     }
-    UserRepositoryRoles roles = new UserRepositoryRoles();
-    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
-    roles.setUser(user);
+    if(isSysadmin(user))
+      return;
+    updateOrInsertSysadminRole(user);
+  }
+
+  private void updateOrInsertSysadminRole(User user) {
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
+    if(roles == null) {
+      roles = new UserRepositoryRoles();
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+      roles.setUser(user);
+    } else {
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+    }
     userRepositoryRoleRepository.save(roles);
   }
 }
