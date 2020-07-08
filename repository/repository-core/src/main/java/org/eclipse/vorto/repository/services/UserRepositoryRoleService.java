@@ -81,9 +81,18 @@ public class UserRepositoryRoleService {
     }
     if(isSysadmin(user))
       return;
-    UserRepositoryRoles roles = new UserRepositoryRoles();
-    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
-    roles.setUser(user);
+    updateOrInsertSysadminRole(user);
+  }
+
+  private void updateOrInsertSysadminRole(User user) {
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
+    if(roles == null) {
+      roles = new UserRepositoryRoles();
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+      roles.setUser(user);
+    } else {
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+    }
     userRepositoryRoleRepository.save(roles);
   }
 }
