@@ -12,13 +12,14 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
-import java.util.Arrays;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableCaching
@@ -29,10 +30,13 @@ public class RepositoryCachingConfiguration {
     SimpleCacheManager cacheManager = new SimpleCacheManager();
     cacheManager.setCaches(
         Arrays.asList(
-            new ConcurrentMapCache("userRepositoryRoles"),
-            new ConcurrentMapCache("namespaceRoles"),
-            new ConcurrentMapCache("repositoryRoles"),
-            new ConcurrentMapCache("privileges")
+            new ConcurrentMapCache("userRepositoryRolesCache"),
+            new ConcurrentMapCache("namespaceRolesCache"),
+            new ConcurrentMapCache("repositoryRolesCache"),
+            new ConcurrentMapCache("privilegesCache"),
+            new ConcurrentMapCache("namespaceRoleCache"),
+            new ConcurrentMapCache("repositoryRoleCache"),
+            new ConcurrentMapCache("privilegeCache")
         )
     );
     return cacheManager;
