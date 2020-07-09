@@ -65,7 +65,7 @@ public class AbstractRepositoryOperation {
     try {
       helper.setUser(elevatedUserContext.getAuthentication());
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
-      helper.setRolesInNamespace(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
+      helper.setUserRoles(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
       helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());
       return fn.apply(helper.getSession());
     } catch (Exception e) {
