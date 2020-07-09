@@ -108,7 +108,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       RequestRepositorySessionHelper sessionHelper,
       NamespaceService namespaceService,
       UserNamespaceRoleService userNamespaceRoleService,
-      PrivilegeService privilegeService
+      PrivilegeService privilegeService,
+      UserRepositoryRoleService userRepositoryRoleService
   ) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -119,6 +120,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     this.sessionHelper = sessionHelper;
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.privilegeService = privilegeService;
+    this.userRepositoryRoleService = userRepositoryRoleService;
   }
 
   @PostConstruct

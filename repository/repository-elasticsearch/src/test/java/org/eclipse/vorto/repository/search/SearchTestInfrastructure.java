@@ -12,24 +12,8 @@
  */
 package org.eclipse.vorto.repository.search;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.log4j.Logger;
@@ -47,12 +31,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.NamespaceRole;
-import org.eclipse.vorto.repository.domain.Privilege;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
@@ -60,11 +39,7 @@ import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.RoleService;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -86,6 +61,14 @@ import org.springframework.security.core.Authentication;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -446,7 +429,7 @@ public final class SearchTestInfrastructure {
 
     repositoryFactory = new ModelRepositoryFactory(null,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-        userNamespaceRoleService, privilegeService) {
+        userNamespaceRoleService, privilegeService, userRepositoryRoleService) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
