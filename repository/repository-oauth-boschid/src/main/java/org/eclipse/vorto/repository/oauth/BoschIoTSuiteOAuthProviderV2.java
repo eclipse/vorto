@@ -12,15 +12,6 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import java.security.PublicKey;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
@@ -39,6 +30,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.PublicKey;
+import java.util.*;
+import java.util.function.Supplier;
 
 @Component
 public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
@@ -88,8 +84,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
         .map(technicalUser -> createAuthentication(technicalUser.getUsername(),
             technicalUser.getUsername(),
             technicalUser.getUsername(), null, getRolesForRequest(technicalUser, httpRequest)))
-        .orElseThrow(
-            () -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+        .orElse(null);
   }
 
   private Set<IRole> getRolesForRequest(User user, HttpServletRequest httpRequest) {
@@ -121,10 +116,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
       return false;
     }
 
-    return getTechnicalUser(jwtToken)
-        .map(user -> true)
-        .orElseThrow(
-            () -> new MalformedElement("clientId in jwtToken isn't a registered technical user"));
+    return true;
   }
 
   private Optional<User> getTechnicalUser(JwtToken jwtToken) {
