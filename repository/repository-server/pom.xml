@@ -240,6 +240,12 @@
 			<artifactId>repository-oauth-boschid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-oauth-eclipse</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 	</dependencies>
 
