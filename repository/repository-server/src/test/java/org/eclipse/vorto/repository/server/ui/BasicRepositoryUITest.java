@@ -26,6 +26,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
+import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSITORY_ROLES;
 
 /**
  * Tests some of the basic functionality of the Vorto repository. To keep the tests independent the repository is
@@ -84,7 +85,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
     @Test
     public void testCreateNamespace() {
         this.seleniumVortoHelper.loginWithUser("user1", "pass");
-        this.seleniumVortoHelper.createNamespace(  SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+        this.seleniumVortoHelper.createNamespace( SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
         this.seleniumVortoHelper.openManageNamespacesTab();
         // check if the namespace was created successfully.
         this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//td/div[@class='ng-binding' and contains(.,'" + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
@@ -153,7 +154,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
 
     protected void setUpTest() {
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
-                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4])), "user1");
+                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
         userRepository.save(User.create("user1", "GITHUB", null, false));

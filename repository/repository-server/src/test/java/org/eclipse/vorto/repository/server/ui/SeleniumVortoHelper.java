@@ -66,11 +66,13 @@ public class SeleniumVortoHelper {
      */
     public void allowCookies() {
         webDriver.get(rootUrl);
+        WebDriverWait wait5Secs = new WebDriverWait(webDriver,5);
         WebElement cookieFooter = webDriver.findElementById("cookieconsent:desc");
+        wait5Secs.until(ExpectedConditions.visibilityOf(cookieFooter));
+        wait5Secs.until(ExpectedConditions.elementToBeClickable(cookieFooter));
         Assert.assertTrue(cookieFooter.isDisplayed());
         WebElement allowCookieButton = webDriver.findElementByLinkText("Allow cookies");
         allowCookieButton.click();
-        WebDriverWait wait5Secs = new WebDriverWait(webDriver,5);
         wait5Secs.until(ExpectedConditions.invisibilityOf(cookieFooter));
     }
 
@@ -113,6 +115,8 @@ public class SeleniumVortoHelper {
         // Click and clear pre-filled text field.
         WebDriverWait wait5Secs = new WebDriverWait(webDriver, 5);
         wait5Secs.until(ExpectedConditions.elementToBeClickable(namespaceInputField));
+        Assert.assertTrue(namespaceInputField.isDisplayed());
+        Assert.assertTrue(namespaceInputField.isEnabled());
         namespaceInputField.click();
         namespaceInputField.clear();
         // Enter the name of the namespace to create in th text field.

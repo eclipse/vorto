@@ -92,6 +92,7 @@ public abstract class AbstractUITest {
     public void prepareTests() throws Exception {
         setRootUrl();
         setUpTest();
+        chrome.getWebDriver().manage().deleteAllCookies();
     }
 
     @Configuration
@@ -107,7 +108,6 @@ public abstract class AbstractUITest {
 
     private void setRootUrl() throws Exception {
         rootUrl = String.format("http://host.testcontainers.internal:%d", port);
-        chrome.getWebDriver().manage().deleteAllCookies();
         chrome.getWebDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         this.seleniumVortoHelper = new SeleniumVortoHelper(chrome.getWebDriver(), rootUrl);
     }
