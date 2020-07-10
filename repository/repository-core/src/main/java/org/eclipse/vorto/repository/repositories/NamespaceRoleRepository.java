@@ -12,15 +12,17 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import java.util.Set;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.init.DBTablesInitializer;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Set;
 
 /**
  * Read-only repository for namespace roles.<br/>
@@ -30,14 +32,41 @@ import org.springframework.stereotype.Repository;
  * {@link DBTablesInitializer}, if the table is found empty.
  */
 @Repository
-@Cacheable("namespaceRoles")
 public interface NamespaceRoleRepository extends CrudRepository<NamespaceRole, Long> {
 
   @Query("select n from NamespaceRole n where n.name = :name")
+  @Cacheable("namespaceRoleCache")
   IRole find(@Param("name") String name);
 
   @Query("select case when count(n) > 0 then true else false end from NamespaceRole n where n.name = :role")
+  @Cacheable("namespaceRoleCache")
   boolean exists(@Param("role") String roleName);
 
+  @Cacheable(value = "namespaceRolesCache")
   Set<NamespaceRole> findAll();
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  <S extends NamespaceRole> S save(S s);
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  <S extends NamespaceRole> Iterable<S> save(Iterable<S> iterable);
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  void delete(Long aLong);
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  void delete(Iterable<? extends NamespaceRole> iterable);
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  void delete(NamespaceRole namespaceRole);
+
+  @Override
+  @CacheEvict(value = {"namespaceRolesCache","namespaceRoleCache"}, allEntries = true)
+  void deleteAll();
+
 }
