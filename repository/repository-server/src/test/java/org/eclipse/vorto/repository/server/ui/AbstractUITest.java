@@ -81,6 +81,8 @@ public abstract class AbstractUITest {
 
     @BeforeClass
     public static void configureOAuthConfiguration() {
+        System.setProperty("eclipse_clientid", "foo");
+        System.setProperty("eclipse_clientSecret", "foo");
         System.setProperty("github_clientid", "foo");
         System.setProperty("github_clientSecret", "foo");
         System.setProperty("eidp_clientid", "foo");
