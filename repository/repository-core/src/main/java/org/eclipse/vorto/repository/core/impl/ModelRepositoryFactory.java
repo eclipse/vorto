@@ -12,38 +12,14 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.IDiagnostics;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.UserLoginException;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.RoleService;
-import org.eclipse.vorto.repository.services.RoleUtil;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
@@ -55,6 +31,19 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Component("modelRepositoryFactory")
 public class ModelRepositoryFactory implements IModelRepositoryFactory,
@@ -87,6 +76,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
+  @Autowired
   private PrivilegeService privilegeService;
 
   @Autowired
@@ -116,7 +108,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       RequestRepositorySessionHelper sessionHelper,
       NamespaceService namespaceService,
       UserNamespaceRoleService userNamespaceRoleService,
-      PrivilegeService privilegeService
+      PrivilegeService privilegeService,
+      UserRepositoryRoleService userRepositoryRoleService
   ) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -127,6 +120,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     this.sessionHelper = sessionHelper;
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.privilegeService = privilegeService;
+    this.userRepositoryRoleService = userRepositoryRoleService;
   }
 
   @PostConstruct
@@ -253,7 +247,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       }
       sessionHelper.setRepository(repository);
       sessionHelper.setWorkspaceId(workspaceId);
-      sessionHelper.setRolesInNamespace(getUserRolesInNamespace(workspaceId, user.getName()));
+      sessionHelper.setUserRoles(getUserRoles(workspaceId, user.getName()));
       sessionHelper.setUser(user);
       return sessionHelper;
     };
@@ -272,7 +266,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     };
   }
 
-  private Set<IRole> getUserRolesInNamespace(String workspaceId, String username) {
+  private Set<IRole> getUserRoles(String workspaceId, String username) {
     // TODO improve caching for non anon users
     if (UserContext.isAnonymous(username)) {
       return new HashSet<>();
@@ -280,7 +274,11 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
 
     String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
     try {
-      return new HashSet<>(userNamespaceRoleService.getRoles(username, namespace));
+      Set<IRole> userRoles = new HashSet<>(userNamespaceRoleService.getRoles(username, namespace));
+      if (userRepositoryRoleService.isSysadmin(username)) {
+        userRoles.add(RepositoryRole.SYS_ADMIN);
+      }
+      return userRoles;
     } catch (DoesNotExistException e) {
       LOGGER.debug("User or namespace not found. ", e);
       return Collections.emptySet();

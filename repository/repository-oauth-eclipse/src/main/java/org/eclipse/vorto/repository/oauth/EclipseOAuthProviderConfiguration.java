@@ -37,15 +37,18 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
 
   private static final String LOGOUT_URL = "/logout";
 
-  @Value("#{servletContext.contextPath}")
-  private String servletContextPath;
+  private final String contextPath;
 
 
   public EclipseOAuthProviderConfiguration(
       @Value("${eclipse.oauth2.resource.userInfoUri}") String eclipseUserInfoEndpointUrl,
-      @Value("${eclipse.oauth2.client.clientId}") String eclipseClientId) {
+      @Value("${eclipse.oauth2.client.clientId}") String eclipseClientId,
+      @Value("${server.contextPath}") String contextPath) {
     super(new UserInfoTokenServices(eclipseUserInfoEndpointUrl, eclipseClientId));
-
+    if (contextPath.endsWith("/")) {
+      contextPath = contextPath.substring(0, contextPath.length() - 1);
+    }
+    this.contextPath = contextPath;
   }
 
   @Override
@@ -71,7 +74,7 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
 
   @Override
   public String getLogoutUrl(HttpServletRequest request) {
-    return getBaseUrl(request) + servletContextPath + LOGOUT_URL;
+    return getBaseUrl(request) + contextPath + LOGOUT_URL;
   }
 
   private String getBaseUrl(HttpServletRequest request) {

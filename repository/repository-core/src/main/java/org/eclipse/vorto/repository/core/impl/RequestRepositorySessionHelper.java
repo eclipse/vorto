@@ -148,7 +148,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         this.user = user;
     }
 
-    public void setRolesInNamespace(Set<IRole> userRolesInNamespace) {
-        this.roleSet = userRolesInNamespace;
+    public void setUserRoles(Set<IRole> userRoles) {
+        this.roleSet = userRoles;
     }
 }
