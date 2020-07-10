@@ -41,6 +41,7 @@
 		<module>repository-web</module>
 		<module>repository-oauth-github</module>
 		<module>repository-oauth-boschid</module>
+		<module>repository-oauth-eclipse</module>
 	</modules>
 
 	<dependencyManagement>

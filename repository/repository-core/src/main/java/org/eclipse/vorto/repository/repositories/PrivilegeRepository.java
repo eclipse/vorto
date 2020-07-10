@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.repositories;
 import java.util.Set;
 import org.eclipse.vorto.repository.domain.Privilege;
 import org.eclipse.vorto.repository.init.DBTablesInitializer;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -31,7 +32,33 @@ import org.springframework.stereotype.Repository;
 public interface PrivilegeRepository extends CrudRepository<Privilege, Long> {
 
   @Query("select p from Privilege p where p.name = :name")
+  @Cacheable("privilegeCache")
   Privilege find(@Param("name") String name);
 
+  @Cacheable("privilegesCache")
   Set<Privilege> findAll();
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  <S extends Privilege> S save(S s);
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  <S extends Privilege> Iterable<S> save(Iterable<S> iterable);
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  void delete(Long aLong);
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  void delete(Iterable<? extends Privilege> iterable);
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  void delete(Privilege privilege);
+
+  @Override
+  @CacheEvict(value = {"privilegesCache", "privilegeCache"}, allEntries = true)
+  void deleteAll();
 }

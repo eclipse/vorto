@@ -12,10 +12,10 @@
  */
 package org.eclipse.vorto.repository.init;
 
-import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import java.util.stream.Stream;
 
 @Component
 public class RepositoryInitializer {
@@ -34,6 +35,9 @@ public class RepositoryInitializer {
 
   @Value("${server.admin:#{null}}")
   private String[] admins;
+
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
 
   @Autowired
   private DefaultUserAccountService userAccountService;
@@ -56,6 +60,7 @@ public class RepositoryInitializer {
       user.setEmailAddress("vorto-dev@bosch-si.com");
       userAccountService.saveUser(user);
     }
+    userRepositoryRoleService.setSysadmin(username);
   }
 
 }

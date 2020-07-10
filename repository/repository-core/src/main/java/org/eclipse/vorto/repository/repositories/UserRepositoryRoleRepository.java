@@ -12,8 +12,8 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -25,6 +25,33 @@ import org.springframework.stereotype.Repository;
  * strategy is used.
  */
 @Repository
-@Cacheable("userRepositoryRoles")
 public interface UserRepositoryRoleRepository extends CrudRepository<UserRepositoryRoles, Long> {
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    <S extends UserRepositoryRoles> S save(S s);
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    <S extends UserRepositoryRoles> Iterable<S> save(Iterable<S> iterable);
+
+    @Override
+    @Cacheable("userRepositoryRolesCache")
+    Iterable<UserRepositoryRoles> findAll();
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    void delete(Long aLong);
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    void delete(UserRepositoryRoles userRepositoryRoles);
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    void delete(Iterable<? extends UserRepositoryRoles> iterable);
+
+    @Override
+    @CacheEvict(value = "userRepositoryRolesCache", allEntries = true)
+    void deleteAll();
 }
