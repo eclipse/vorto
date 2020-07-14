@@ -38,12 +38,12 @@ public class UserAccountListener implements ApplicationListener<AppEvent> {
 
   @Override
   public void onApplicationEvent(AppEvent event) {
-    if (event.getEventType() == EventType.TENANT_ADDED) {
+    // update the user context in case of a namespace event (e.g. to display or hide the create model button - #2484).
+    if (event.getEventType() == EventType.NAMESPACE_ADDED || event.getEventType() == EventType.NAMESPACE_DELETED || event.getEventType() == EventType.NAMESPACE_UPDATED) {
       refreshUserContext(null);
     }
-
     if (event.getEventType() == EventType.USER_MODIFIED
-        || event.getEventType() == EventType.USER_ADDED) {
+            || event.getEventType() == EventType.USER_ADDED) {
       String userId = (String) event.getSubject();
       refreshUserContext(userId);
     }
