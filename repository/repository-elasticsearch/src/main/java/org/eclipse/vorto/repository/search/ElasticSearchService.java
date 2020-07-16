@@ -55,6 +55,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -498,6 +499,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     PreConditions.notNull(modelId, "modelId must not be null.");
 
     DeleteRequest request = new DeleteRequest(VORTO_INDEX, DOC, modelId.getPrettyFormat());
+    request.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
     try {
       DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.DELETED) {
