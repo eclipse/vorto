@@ -21,28 +21,17 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * See: https://wiki.eclipse.org/OpenID
- *
- * Endpoint (URL's)
- *
- * Authorization endpoint: https://accounts.eclipse.org/oauth2/authorize
- *
- * Token endpoint: https://accounts.eclipse.org/oauth2/token
- *
- * User information endpoint: https://accounts.eclipse.org/oauth2/UserInfo
- */
 @Configuration
-public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConfiguration {
+public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProviderConfiguration {
 
   private static final String LOGOUT_URL = "/logout";
 
   private final String contextPath;
 
 
-  public EclipseOAuthProviderConfiguration(
-      @Value("${eclipse.oauth2.resource.userInfoUri}") String eclipseUserInfoEndpointUrl,
-      @Value("${eclipse.oauth2.client.clientId}") String eclipseClientId,
+  public BoschIoTSuiteOAuthProviderConfiguration(
+      @Value("${suite.oauth2.resource.userInfoUri}") String eclipseUserInfoEndpointUrl,
+      @Value("${suite.oauth2.client.clientId}") String eclipseClientId,
       @Value("${server.contextPath}") String contextPath) {
     super(new UserInfoTokenServices(eclipseUserInfoEndpointUrl, eclipseClientId));
     if (contextPath.endsWith("/")) {
@@ -53,7 +42,7 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
 
   @Override
   public String getFilterProcessingUrl() {
-    return "eclipse/login";
+    return "suite/login";
   }
 
   @Override
@@ -62,14 +51,14 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
   }
 
   @Bean
-  @ConfigurationProperties("eclipse.oauth2.client")
-  public AuthorizationCodeResourceDetails eclipse() {
+  @ConfigurationProperties("suite.oauth2.client")
+  public AuthorizationCodeResourceDetails suite() {
     return new AuthorizationCodeResourceDetails();
   }
 
   @Override
   protected AuthorizationCodeResourceDetails createDetails() {
-    return eclipse();
+    return suite();
   }
 
   @Override
@@ -88,7 +77,7 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
 
   @Override
   public String getLogoHref() {
-    return "webjars/repository-web/dist/images/eclipse.png";
+    return "webjars/repository-web/dist/images/bosch-social.png";
   }
 
 }

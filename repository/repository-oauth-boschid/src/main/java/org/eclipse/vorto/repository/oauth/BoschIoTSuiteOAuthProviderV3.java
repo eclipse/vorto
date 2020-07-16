@@ -23,19 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Component
-public class GithubRepositoryAuthProvider implements IOAuthProvider {
+public class BoschIoTSuiteOAuthProviderV3 implements IOAuthProvider {
 
   @Autowired
-  private GithubOAuthProviderConfiguration configuration;
-  
+  private BoschIoTSuiteOAuthProviderConfiguration configuration;
+
   private String clientId;
-  
-  private static final String ID = "GITHUB";
-  
+
+  private static final String ID = "BOSCH-IOT-SUITE-AUTH-CODE";
+
   @Autowired
-  public GithubRepositoryAuthProvider(@Value("${github.oauth2.client.clientId}") String clientId, GithubOAuthProviderConfiguration githubTokenService) {
+  public BoschIoTSuiteOAuthProviderV3(@Value("${suite.oauth2.client.clientId}") String clientId, BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration) {
     this.clientId = Objects.requireNonNull(clientId);
-    this.configuration = Objects.requireNonNull(githubTokenService);
+    this.configuration = Objects.requireNonNull(suiteOAuthProviderConfiguration);
   }
 
   @Override
@@ -69,8 +69,8 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
     return configuration.getUserInfoTokenService().loadAuthentication(jwtToken);
   }
 
-  @Override
   @SuppressWarnings("rawtypes")
+  @Override
   public OAuthUser createUser(Authentication authentication) {
     OAuthUser user = new OAuthUser();
     user.setUserId(authentication.getName());
@@ -84,7 +84,7 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
     }
     
     Set<String> roles = new HashSet<>();
-    authentication.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
+    authentication.getAuthorities().forEach(e -> roles.add(e.getAuthority()));
     user.setRoles(roles);
     
     return user;
@@ -102,7 +102,7 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
 
   @Override
   public String getLabel() {
-    return "Github";
+    return "Bosch IoT SuiteAuth";
   }
 }
 
