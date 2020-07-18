@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(value = "/context", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getContext() {
 
-        if (contextPath == "/")
+        if (contextPath.equals("/"))
             contextPath = "";
 
         if (contextPath.startsWith("/"))
