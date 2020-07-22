@@ -41,7 +41,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
   },
   "features": {
     «FOR fbProperty : model.properties SEPARATOR ","»
-    «IF fbProperty.isMultiple»
+    «IF fbProperty.multiplicity»
     "«fbProperty.name»0" : {
     «ELSE»
     "«fbProperty.name»" : {
