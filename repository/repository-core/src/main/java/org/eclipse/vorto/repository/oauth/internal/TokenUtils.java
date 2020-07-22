@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.oauth.internal;
 
-import java.util.Arrays;
-
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -30,6 +28,8 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
+
+import java.util.Arrays;
 
 public class TokenUtils {
     public static AccessTokenProvider proxiedAccessTokenProvider(String proxyHost, int proxyPort,
@@ -63,6 +63,8 @@ public class TokenUtils {
     public static AccessTokenProvider accessTokenProvider() {
         AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
             new AuthorizationCodeAccessTokenProvider();
+
+        authorizationCodeAccessTokenProvider.setStateKeyGenerator(new CustomStateKeyGenerator());
 
         ImplicitAccessTokenProvider implicitAccessTokenProvider = new ImplicitAccessTokenProvider();
 
