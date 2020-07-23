@@ -40,7 +40,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
     "modelDisplayName": "«model.displayname»"
   },
   "features": {
-    «FOR fbProperty : model.properties SEPARATOR ","»
+«FOR fbProperty : model.properties SEPARATOR ","»
     «IF fbProperty.multiplicity»
     "«fbProperty.name»0" : {
     «ELSE»
@@ -66,7 +66,7 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
  		«ENDIF»
       }
     }
- 	«ENDFOR»
+«ENDFOR»
   }
 }
 		'''
