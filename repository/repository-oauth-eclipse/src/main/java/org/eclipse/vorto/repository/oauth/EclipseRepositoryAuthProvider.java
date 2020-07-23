@@ -20,11 +20,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class EclipseRepositoryAuthProvider implements IOAuthProvider {
@@ -74,6 +70,7 @@ public class EclipseRepositoryAuthProvider implements IOAuthProvider {
   }
 
   @SuppressWarnings("rawtypes")
+  @Override
   public OAuthUser createUser(Authentication authentication) {
     OAuthUser user = new OAuthUser();
     user.setUserId(authentication.getName());
@@ -87,7 +84,7 @@ public class EclipseRepositoryAuthProvider implements IOAuthProvider {
     }
     
     Set<String> roles = new HashSet<>();
-    authentication.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
+    authentication.getAuthorities().forEach(e -> roles.add(e.getAuthority()));
     user.setRoles(roles);
     
     return user;

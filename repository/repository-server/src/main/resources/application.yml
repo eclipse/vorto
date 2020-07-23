@@ -97,6 +97,23 @@ eidp:
       logoutRedirectUrl: 
       preferTokenInfo: true
 
+suite:
+  oauth2:
+    enabled: true
+    client:
+      clientId: ${suite_clientid}
+      clientSecret: ${suite_clientSecret}
+      accessTokenUri: https://access-int.bosch-iot-suite.com/v2/oauth2/token
+      userAuthorizationUri: https://access-int.bosch-iot-suite.com/v2/oauth2/auth
+      clientAuthenticationScheme: header
+      resource: http://localhost:8080
+      scope:
+        - openid
+        - offline_access
+    resource:
+      userInfoUri: https://access-int.bosch-iot-suite.com/v2/userinfo
+      logoutRedirectUrl: http://localhost:8080
+
 oauth2:
   verification:
     legacy:

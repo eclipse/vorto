@@ -23,19 +23,25 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Component
-public class GithubRepositoryAuthProvider implements IOAuthProvider {
+public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
+
+  public static final String FAMILY_NAME = "family_name";
+  public static final String GIVEN_NAME = "given_name";
+  public static final String EMAIL = "email";
+
+  private final BoschIoTSuiteOAuthProviderConfiguration configuration;
+
+  private final String clientId;
+
+  private static final String ID = "BOSCH-IOT-SUITE-AUTH-CODE";
 
   @Autowired
-  private GithubOAuthProviderConfiguration configuration;
-  
-  private String clientId;
-  
-  private static final String ID = "GITHUB";
-  
-  @Autowired
-  public GithubRepositoryAuthProvider(@Value("${github.oauth2.client.clientId}") String clientId, GithubOAuthProviderConfiguration githubTokenService) {
+  public BoschIoTSuiteOAuthProviderAuthCode(
+      @Value("${suite.oauth2.client.clientId}") String clientId,
+      @Autowired BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration
+  ) {
     this.clientId = Objects.requireNonNull(clientId);
-    this.configuration = Objects.requireNonNull(githubTokenService);
+    this.configuration = Objects.requireNonNull(suiteOAuthProviderConfiguration);
   }
 
   @Override
@@ -45,12 +51,11 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
 
   @Override
   public boolean canHandle(Authentication auth) {
-    if (auth == null || !(auth instanceof OAuth2Authentication)) {
+    if (!(auth instanceof OAuth2Authentication)) {
       return false;
     }
     
     OAuth2Authentication oauth2Auth = (OAuth2Authentication) auth;
-    
     if (oauth2Auth.getOAuth2Request() == null) {
       return false;
     }
@@ -66,11 +71,11 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
 
   @Override
   public Authentication authenticate(HttpServletRequest request, String jwtToken) {
-    return configuration.getUserInfoTokenService().loadAuthentication(jwtToken);
+    return null; // this method is never called
   }
 
-  @Override
   @SuppressWarnings("rawtypes")
+  @Override
   public OAuthUser createUser(Authentication authentication) {
     OAuthUser user = new OAuthUser();
     user.setUserId(authentication.getName());
@@ -78,13 +83,22 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
 
     if (authentication instanceof OAuth2Authentication) {
       Authentication userAuthentication = ((OAuth2Authentication)authentication).getUserAuthentication();
-      if (userAuthentication.getDetails() != null && ((Map)userAuthentication.getDetails()).containsKey("email")) {
-        user.setEmail((String)((Map)userAuthentication.getDetails()).get("email"));
+      if (userAuthentication.getDetails() != null && ((Map)userAuthentication.getDetails()).containsKey(EMAIL)) {
+        Map<String, String> userDetails = ((Map<String, String>)userAuthentication.getDetails());
+        if (userDetails.containsKey(EMAIL)) {
+          String email = (String)((Map)userAuthentication.getDetails()).get(EMAIL);
+          user.setEmail(email);
+          user.setDisplayName(email);
+        }
+
+        if (userDetails.containsKey(FAMILY_NAME) && userDetails.containsKey(GIVEN_NAME)) {
+          user.setDisplayName(userDetails.get(GIVEN_NAME) + " " + userDetails.get(FAMILY_NAME));
+        }
       }
     }
     
     Set<String> roles = new HashSet<>();
-    authentication.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
+    authentication.getAuthorities().forEach(e -> roles.add(e.getAuthority()));
     user.setRoles(roles);
     
     return user;
@@ -102,7 +116,7 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
 
   @Override
   public String getLabel() {
-    return "Github";
+    return "Bosch IoT SuiteAuth";
   }
 }
 
