@@ -30,10 +30,11 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
 
 
   public BoschIoTSuiteOAuthProviderConfiguration(
-      @Value("${suite.oauth2.resource.userInfoUri}") String eclipseUserInfoEndpointUrl,
-      @Value("${suite.oauth2.client.clientId}") String eclipseClientId,
+      @Value("${suite.oauth2.resource.userInfoUri}") String userInfoEndpointUrl,
+      @Value("${suite.oauth2.client.clientId}") String clientId,
       @Value("${server.contextPath}") String contextPath) {
-    super(new UserInfoTokenServices(eclipseUserInfoEndpointUrl, eclipseClientId));
+    super(new UserInfoTokenServices(userInfoEndpointUrl, clientId));
+    this.tokenService.setPrincipalExtractor(new EidpPrincipalExtractor());
     if (contextPath.endsWith("/")) {
       contextPath = contextPath.substring(0, contextPath.length() - 1);
     }

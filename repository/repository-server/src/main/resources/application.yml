@@ -111,7 +111,7 @@ suite:
         - openid
         - offline_access
     resource:
-      userInfoUri: https://access-int.bosch-iot-suite.com/v2/oauth2/userinfo
+      userInfoUri: https://access-int.bosch-iot-suite.com/v2/userinfo
       logoutRedirectUrl: http://localhost:8080
 
 oauth2:
