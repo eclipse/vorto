@@ -12,15 +12,26 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
+import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import static org.eclipse.vorto.repository.oauth.AbstractOAuthProvider.*;
+import static org.eclipse.vorto.repository.oauth.BoschIDOAuthProvider.JWT_CLIENT_ID;
 
 @Component
 public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
@@ -33,15 +44,24 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
 
   private final String clientId;
 
+  private final DefaultUserAccountService userAccountService;
+
+  private final UserNamespaceRoleService userNamespaceRoleService;
+
+
   private static final String ID = "BOSCH-IOT-SUITE-AUTH-CODE";
 
   @Autowired
   public BoschIoTSuiteOAuthProviderAuthCode(
       @Value("${suite.oauth2.client.clientId}") String clientId,
-      @Autowired BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration
+      @Autowired BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration,
+      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService
   ) {
     this.clientId = Objects.requireNonNull(clientId);
     this.configuration = Objects.requireNonNull(suiteOAuthProviderConfiguration);
+    this.userAccountService = Objects.requireNonNull(userAccountService);
+    this.userNamespaceRoleService = Objects.requireNonNull(userNamespaceRoleService);
   }
 
   @Override
@@ -66,12 +86,57 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
   @Override
   public boolean canHandle(String jwtToken) {
     Optional<JwtToken> maybeJwtToken = JwtToken.instance(jwtToken);
-    return jwtToken != null && jwtToken.trim().length() > 0 && !maybeJwtToken.isPresent();
+    return jwtToken != null && jwtToken.trim().length() > 0 && maybeJwtToken.isPresent();
   }
 
   @Override
   public Authentication authenticate(HttpServletRequest request, String jwtToken) {
-    return null; // this method is never called
+        return JwtToken.instance(jwtToken)
+            .map(jwt -> createAuthentication(request, jwt))
+            .orElse(null);
+  }
+
+  private OAuth2Authentication createAuthentication(HttpServletRequest httpRequest, JwtToken accessToken) {
+    Map<String, Object> tokenPayload = accessToken.getPayloadMap();
+
+    Optional<String> email = Optional.ofNullable((String) tokenPayload.get(JWT_EMAIL));
+    Optional<String> name =
+        Optional.ofNullable((String) tokenPayload.get(JWT_NAME)).map(str -> str.split("@")[0]);
+
+    String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
+        "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
+    User user = userAccountService.getUser(userId);
+
+    if (user == null) {
+      throw new InvalidTokenException("User from token is not a registered user in the repository!");
+    }
+
+    return createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user));
+  }
+
+  protected Optional<String> getUserId(Map<String, Object> map) {
+    Optional<String> userId = Optional.ofNullable((String) map.get(JWT_SUB));
+    if (!userId.isPresent()) {
+      return Optional.ofNullable((String) map.get(JWT_CLIENT_ID));
+    }
+    return userId;
+  }
+
+  protected OAuth2Authentication createAuthentication(String clientId, String userId, String name,
+      String email, Set<IRole> roles) {
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        name, "N/A", SpringUserUtils.toAuthorityList(roles));
+
+    Map<String, Object> detailsMap = new HashMap<>();
+    detailsMap.put(JWT_SUB, userId);
+    detailsMap.put(JWT_NAME, name);
+    detailsMap.put(JWT_EMAIL, email);
+    authToken.setDetails(detailsMap);
+
+    OAuth2Request request =
+        new OAuth2Request(null, clientId, null, true, null, null, null, null, null);
+
+    return new OAuth2Authentication(request, authToken);
   }
 
   @SuppressWarnings("rawtypes")
