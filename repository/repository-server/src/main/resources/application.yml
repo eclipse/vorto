@@ -106,7 +106,6 @@ suite:
       accessTokenUri: https://access-int.bosch-iot-suite.com/v2/oauth2/token
       userAuthorizationUri: https://access-int.bosch-iot-suite.com/v2/oauth2/auth
       clientAuthenticationScheme: header
-      resource: http://localhost:8080
       scope:
         - openid
         - offline_access
