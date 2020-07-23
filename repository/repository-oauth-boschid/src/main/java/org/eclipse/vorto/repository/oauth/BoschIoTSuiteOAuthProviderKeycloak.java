@@ -25,12 +25,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @Component
-public class BoschIoTSuiteOAuthProviderV1 extends BoschIoTSuiteOAuthProviderV2 {
+public class BoschIoTSuiteOAuthProviderKeycloak extends BoschIoTSuiteOAuthProviderHydra {
   
   private static final String AZP = "azp";
 
   @Autowired
-  public BoschIoTSuiteOAuthProviderV1(
+  public BoschIoTSuiteOAuthProviderKeycloak(
       @Value("${oauth2.verification.legacy.issuer: #{null}}") String legacyJwtIssuer,
       @Value("${oauth2.verification.legacy.publicKeyUri: #{null}}") String legacyPublicKeyUri,
       @Autowired DefaultUserAccountService userAccountService,
@@ -38,7 +38,7 @@ public class BoschIoTSuiteOAuthProviderV1 extends BoschIoTSuiteOAuthProviderV2 {
     super(legacyJwtIssuer, legacyPublicKeyUri, userAccountService, userNamespaceRoleService);
   }
   
-  public BoschIoTSuiteOAuthProviderV1(Supplier<Map<String, PublicKey>> publicKeySupplier, 
+  public BoschIoTSuiteOAuthProviderKeycloak(Supplier<Map<String, PublicKey>> publicKeySupplier,
       DefaultUserAccountService userAccountService, UserNamespaceRoleService userNamespaceRoleService) {
     super(publicKeySupplier, userAccountService, userNamespaceRoleService);
   }

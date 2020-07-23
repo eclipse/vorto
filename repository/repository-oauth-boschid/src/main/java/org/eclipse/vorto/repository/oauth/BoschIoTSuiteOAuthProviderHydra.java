@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 @Component
-public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
+public class BoschIoTSuiteOAuthProviderHydra extends AbstractOAuthProvider {
 
   private static final String RS256_ALG = "RS256";
 
@@ -46,7 +46,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
   private String hydraJwtIssuer;
 
   @Autowired
-  public BoschIoTSuiteOAuthProviderV2(
+  public BoschIoTSuiteOAuthProviderHydra(
       @Value("${oauth2.verification.hydra.issuer: #{null}}") String hydraJwtIssuer,
       @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
       @Autowired DefaultUserAccountService userAccountService,
@@ -56,7 +56,7 @@ public class BoschIoTSuiteOAuthProviderV2 extends AbstractOAuthProvider {
     this.hydraJwtIssuer = hydraJwtIssuer;
   }
 
-  public BoschIoTSuiteOAuthProviderV2(Supplier<Map<String, PublicKey>> publicKeySupplier,
+  public BoschIoTSuiteOAuthProviderHydra(Supplier<Map<String, PublicKey>> publicKeySupplier,
       DefaultUserAccountService userAccountService,
       UserNamespaceRoleService userNamespaceRoleService) {
     super(publicKeySupplier, userAccountService, userNamespaceRoleService);
