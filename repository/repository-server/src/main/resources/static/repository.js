@@ -78,6 +78,16 @@ define("repository", [
         controller: "requestAccessToNamespaceController"
       }).when("/privacy", {
         templateUrl: "webjars/repository-web/dist/partials/privacypolicy-template.html"
+      }).when("/postLogin", {
+        redirectTo: function() {
+          let cookies = document.cookie.split(";")
+          for (const cookiesKey in cookies) {
+            if (cookiesKey.startsWith("postLoginRedirect")) {
+              return cookiesKey.split("=")[1];
+            }
+          }
+          return "/";
+        }
       }).otherwise({
         redirectTo: "/"
       });
@@ -213,8 +223,10 @@ define("repository", [
         previousLocation will be "cleared" if the log on succeeds.
         */
         if ($rootScope.previousLocation) {
-          result += '?redirect=' + encodeURIComponent(
-              $rootScope.previousLocation);
+          document.cookie = "postLoginRedirect=" + $rootScope.previousLocation;
+          $rootScope.postLoginRedirect = $rootScope.previousLocation;
+          // result += '?redirect=' + encodeURIComponent(
+          //     $rootScope.previousLocation);
         }
       }
       return result;
