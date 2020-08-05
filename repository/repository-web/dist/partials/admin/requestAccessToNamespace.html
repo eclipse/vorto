@@ -182,7 +182,8 @@
           <input id="ackCreateTechnicalUser" type="checkbox" ng-model="ackCreateTechnicalUser"
                  ng-change="computeCreateTechnicalUserAvailability()">
           I acknowledge that I have read the
-          <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms and Conditions</a>
+          <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms and
+            Conditions</a>
           and <a id="privacypolicy" href ng-click="showPrivacyPolicy()">Privacy policy</a>, and that
           both apply to the technical user I intend to create as they apply to myself.
           </input>
@@ -252,7 +253,7 @@
     <div ng-if="success" class="row alert alert-success table-cell " style="text-align:center">
       Your request was sent successfully.&nbsp;&nbsp;
       <button ng-show="modal" class="btn btn-primary" ng-click="$dismiss()">Close</button>
-      <button ng-show="!modal" class="btn btn-primary" ng-click="$location.reload()">New request
+      <button ng-show="!modal" class="btn btn-primary" ng-click="reloadPage()">New request
       </button>
       <br/>
     </div>

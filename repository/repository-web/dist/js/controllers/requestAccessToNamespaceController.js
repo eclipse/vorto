@@ -14,7 +14,9 @@ define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
       ["$rootScope", "$scope", "$http", "$routeParams", "$uibModal",
-        function ($rootScope, $scope, $http, $routeParams, $uibModal) {
+        "$location",
+        function ($rootScope, $scope, $http, $routeParams, $uibModal,
+            $location) {
 
           // infers whether this page is loaded as modal or standalone
           $scope.modal = $scope.$parent && $scope.$parent.modal;
@@ -55,6 +57,10 @@ define(["../init/appController"], function (repositoryControllers) {
           // legalese before creating the technical user
           $scope.ackCreateTechnicalUser = false;
 
+          $scope.reloadPage = function () {
+            $location.search({});
+          }
+
           $scope.showPrivacyPolicy = function () {
             var privacyPolicyModalInstance = $uibModal.open({
               animation: true,
@@ -92,7 +98,8 @@ define(["../init/appController"], function (repositoryControllers) {
                   }
 
                   // hides the technical user creation legalese
-                  let div = document.getElementById("ackCreateTechnicalUserDiv");
+                  let div = document.getElementById(
+                      "ackCreateTechnicalUserDiv");
                   if (div) {
                     div.style.visibility = "hidden";
                   }
@@ -115,7 +122,7 @@ define(["../init/appController"], function (repositoryControllers) {
             $scope.loadUserData();
           }
 
-          $scope.computeCreateTechnicalUserAvailability = function() {
+          $scope.computeCreateTechnicalUserAvailability = function () {
             let button = document.getElementById(
                 "createTechnicalUserButton");
             if (button) {
@@ -159,7 +166,8 @@ define(["../init/appController"], function (repositoryControllers) {
                   }
                   // disabling ack checkbox as it cannot be "taken back" once
                   // the tech user is created
-                  let checkbox = document.getElementById("ackCreateTechnicalUser");
+                  let checkbox = document.getElementById(
+                      "ackCreateTechnicalUser");
                   if (checkbox) {
                     checkbox.disabled = true;
                   }
