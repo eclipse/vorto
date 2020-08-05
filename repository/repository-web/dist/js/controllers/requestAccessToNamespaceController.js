@@ -13,11 +13,170 @@
 define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
-      ["$rootScope", "$scope", "$http",
-        function ($rootScope, $scope, $http) {
+      ["$rootScope", "$scope", "$http", "$routeParams", "$uibModal",
+        function ($rootScope, $scope, $http, $routeParams, $uibModal) {
 
           // infers whether this page is loaded as modal or standalone
           $scope.modal = $scope.$parent && $scope.$parent.modal;
+
+          // general error data
+          $scope.errorMessage = null;
+          $scope.error = false;
+
+          // technical user error data when parametrized (has to appear
+          // in a different place than general error)
+          $scope.createTechnicalUserError = false;
+          $scope.createTechnicalUserErrorMessage = null;
+
+          // parses GET parameters if any and assigns/digests values
+          // for usage with external service integrations
+          $scope.paramUserId = null;
+          $scope.paramOauthProvider = null;
+          $scope.paramClientName = null;
+          $scope.parametrized = $routeParams.userId;
+
+          // initializes scope fields if applicable
+          if ($scope.parametrized) {
+            $scope.paramUserId = $routeParams.userId;
+            $scope.paramOauthProvider = $routeParams.oauthProvider;
+            $scope.paramClientName = $routeParams.clientName;
+          }
+          // defaults flag to display a loading overlay if parametrized
+          $scope.isLoadingUserData = $scope.parametrized;
+          $scope.isCreatingTechnicalUser = false;
+
+          // object representing the technical user that either exists already,
+          // or the one to create
+          $scope.technicalUser = null;
+
+          // default caption for the "create technical user button" - may change
+          // if the user exists already or has just been created
+          $scope.createUserButtonCaption = "Create...";
+          // legalese before creating the technical user
+          $scope.ackCreateTechnicalUser = false;
+
+          $scope.showPrivacyPolicy = function () {
+            var privacyPolicyModalInstance = $uibModal.open({
+              animation: true,
+              templateUrl: "webjars/repository-web/dist/partials/privacypolicy-dialog.html",
+              size: "lg",
+              controller: function ($scope) {
+                $scope.cancel = function () {
+                  privacyPolicyModalInstance.dismiss();
+                };
+              },
+              backdrop: 'static'
+            });
+          };
+
+          $scope.loadUserData = function () {
+            $scope.isLoadingUserData = true;
+            $http.get("./rest/accounts/" + $scope.paramUserId)
+            .then(
+                function (result) {
+                  // builds tech user data from result
+                  $scope.technicalUser = result.data;
+                  // assigns selected user for form submit
+                  $scope.selectedUser = $scope.technicalUser.username;
+                  // stop loading data
+                  $scope.isLoadingUserData = false;
+                  // replaces field from given oauth provider parameter if applicable,
+                  // as it is used as ng-model in the technical user representation
+                  $scope.paramOauthProvider = $scope.technicalUser.authenticationProvider;
+                  // disable create user button and change caption
+                  $scope.createUserButtonCaption = "Technical user exists";
+                  let button = document.getElementById(
+                      "createTechnicalUserButton");
+                  if (button) {
+                    button.disabled = true;
+                  }
+
+                  // hides the technical user creation legalese
+                  let div = document.getElementById("ackCreateTechnicalUserDiv");
+                  if (div) {
+                    div.style.visibility = "hidden";
+                  }
+                  // verifies form submittable or not
+                  $scope.computeSubmitAvailability();
+                },
+                function (error) {
+                  // no error handling here: the user simply doesn't exist (yet)
+                  $scope.technicalUser = null;
+                  $scope.isLoadingUserData = false;
+                  $scope.selectedUser = null;
+                  $scope.computeSubmitAvailability();
+                }
+            )
+          }
+
+          // starts attempting to load an existing technical user if the form
+          // is parametrized
+          if ($scope.parametrized) {
+            $scope.loadUserData();
+          }
+
+          $scope.computeCreateTechnicalUserAvailability = function() {
+            let button = document.getElementById(
+                "createTechnicalUserButton");
+            if (button) {
+              button.disabled = !$scope.ackCreateTechnicalUser;
+            }
+          }
+
+          $scope.computeCreateTechnicalUserAvailability();
+
+          $scope.createTechnicalUser = function () {
+            $scope.isCreatingTechnicalUser = true;
+            $http.post('./rest/accounts/createTechnicalUser',
+                {
+                  "username": $scope.paramUserId,
+                  "authenticationProvider": $scope.paramOauthProvider,
+                  "subject": "", // TODO if we decide to parametrize with subject
+                  "isTechnicalUser": true,
+                  "dateCreated": null,
+                  "lastUpdated": null,
+                  "email": ""
+                }
+            )
+            .then(
+                function (result) {
+                  // ignoring result message
+                  $scope.technicalUser =
+                      {
+                        "username": $scope.paramUserId,
+                        "authenticationProvider": $scope.paramOauthProvider,
+                        "subject": "", // TODO if we decide to parametrize with subject
+                        "isTechnicalUser": true
+                      };
+                  $scope.selectedUser = $scope.technicalUser.username;
+                  $scope.isCreatingTechnicalUser = false;
+                  // disable create user button and change caption
+                  $scope.createUserButtonCaption = "Technical user created";
+                  let button = document.getElementById(
+                      "createTechnicalUserButton");
+                  if (button) {
+                    button.disabled = true;
+                  }
+                  // disabling ack checkbox as it cannot be "taken back" once
+                  // the tech user is created
+                  let checkbox = document.getElementById("ackCreateTechnicalUser");
+                  if (checkbox) {
+                    checkbox.disabled = true;
+                  }
+                  $scope.computeSubmitAvailability();
+                },
+                function (error) {
+                  $scope.createTechnicalUserError = true;
+                  if (error.data) {
+                    $scope.createTechnicalUserErrorMessage = error.data.errorMessage;
+                  }
+                  $scope.isCreatingTechnicalUser = false;
+                  $scope.selectedUser = null;
+                  $scope.computeSubmitAvailability();
+                }
+            );
+          }
+
           // user data initialization / error handling
           $scope.errorLoadingUserData = false;
           $scope.username = null;
@@ -27,15 +186,15 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.initialize = function () {
             // no user data in root scope: loaded as standalone
             // (requires additional networking call)
-            if (!$scope.username && (!$rootScope.displayName || !$rootScope.userInfo)) {
+            if (!$scope.username && (!$rootScope.displayName
+                || !$rootScope.userInfo)) {
               $http.get("./user")
               .then(
                   function (result) {
                     // not optional
                     if (result.data.displayName) {
                       $scope.username = result.data.displayName;
-                    }
-                    else {
+                    } else {
                       $scope.errorLoadingUserData = true;
                     }
                     // optional
@@ -65,11 +224,9 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.selectedUser = null;
           $scope.retrievedUsers = [];
           $scope.lastHighlightedUser = null;
-          $scope.desiredRoles = [];
+          $scope.desiredRoles = [true];
           $scope.ack = false;
           $scope.isSendingRequest = false;
-          $scope.errorMessage = null;
-          $scope.error = false;
           $scope.success = false;
           $scope.initialize();
 
@@ -319,6 +476,7 @@ define(["../init/appController"], function (repositoryControllers) {
             $scope.focusOnNamespaceSearch();
             $scope.computeSubmitAvailability();
             $scope.toggleUserSearchEnabled('myself');
+            $scope.computeCreateTechnicalUserAvailability();
 
             // this is incredibly stupid but neither ng-model, nor ng-checked,
             // nor HTML checked, nor plain Javascript work - some unknown

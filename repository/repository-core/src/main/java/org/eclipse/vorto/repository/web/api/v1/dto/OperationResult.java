@@ -15,19 +15,16 @@ package org.eclipse.vorto.repository.web.api.v1.dto;
 import java.util.Optional;
 
 /**
- * This is a nearly identical copy of nested class
- * {@link org.eclipse.vorto.repository.web.tenant.TenantManagementController#Result}, for usage in
- * the new {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController}.<br/>
  * It simply provides a serializable response to common namespace CRUD operations, to work with the
  * front-end.
  */
-public class NamespaceOperationResult {
+public class OperationResult {
 
   private boolean success;
   private String errorMessage;
 
   /**
-   * Generates an empty success {@link NamespaceOperationResult} if the given flag is {@code true}
+   * Generates an empty success {@link OperationResult} if the given flag is {@code true}
    * (typically the outcome of a service operation), or a failure result with the given optional
    * message otherwise.
    *
@@ -35,7 +32,7 @@ public class NamespaceOperationResult {
    * @param errorMessageIfFailure
    * @return
    */
-  public static NamespaceOperationResult generate(boolean success,
+  public static OperationResult generate(boolean success,
       Optional<String> errorMessageIfFailure) {
     if (success) {
       return success();
@@ -44,19 +41,19 @@ public class NamespaceOperationResult {
     }
   }
 
-  public static NamespaceOperationResult success() {
-    return new NamespaceOperationResult(true, null);
+  public static OperationResult success() {
+    return new OperationResult(true, null);
   }
 
-  public static NamespaceOperationResult success(String message) {
-    return new NamespaceOperationResult(true, message);
+  public static OperationResult success(String message) {
+    return new OperationResult(true, message);
   }
 
-  public static NamespaceOperationResult failure(String msg) {
-    return new NamespaceOperationResult(false, msg);
+  public static OperationResult failure(String msg) {
+    return new OperationResult(false, msg);
   }
 
-  private NamespaceOperationResult(boolean success, String errorMessage) {
+  private OperationResult(boolean success, String errorMessage) {
     this.success = success;
     this.errorMessage = errorMessage;
   }

@@ -9,7 +9,7 @@
 <body>
 Dear ${recipient},
 <br/><br>
-a Vorto user has requested access to a namespace you manage:<br/><br/>
+a Vorto user has requested access to a namespace you manage, for user <b>${targetUser}</b>:<br/><br/>
 <table>
   <caption>Details</caption>
   <tr>

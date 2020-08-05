@@ -49,7 +49,7 @@ import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExc
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
-import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,11 +143,11 @@ public class NamespaceController {
 
   @PostMapping("/requestAccess")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<NamespaceOperationResult> requestAccessToNamespace(
+  public ResponseEntity<OperationResult> requestAccessToNamespace(
       @RequestBody @ApiParam(
           value = "The request body specifying who initiates the request, the namespace, whom the request is intended for, and an optional collection of suggested roles", required = true)
           NamespaceAccessRequestDTO request) {
-    Optional<NamespaceOperationResult> validationError = NamespaceValidator
+    Optional<OperationResult> validationError = NamespaceValidator
         .validateAccessRequest(request);
     if (validationError.isPresent()) {
       return new ResponseEntity<>(validationError.get(), HttpStatus.BAD_REQUEST);
@@ -158,7 +158,7 @@ public class NamespaceController {
     try {
       target = namespaceService.getByName(request.getNamespaceName());
     } catch (DoesNotExistException dnee) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure("Namespace not found."),
+      return new ResponseEntity<>(OperationResult.failure("Namespace not found."),
           HttpStatus.NOT_FOUND);
     }
 
@@ -169,7 +169,7 @@ public class NamespaceController {
         .filter(u -> !Strings.nullToEmpty(u.getEmailAddress()).trim().isEmpty())
         .collect(Collectors.toSet());
     if (adminsWithEmail.isEmpty()) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(String.format(
+      return new ResponseEntity<>(OperationResult.failure(String.format(
           "None of the users administrating namespace %s has set their own e-mail. Please contact them directly. ",
           request.getNamespaceName())), HttpStatus.PRECONDITION_FAILED);
     }
@@ -187,17 +187,17 @@ public class NamespaceController {
     }
     // worked for all recipients
     if (successCount == adminsWithEmail.size()) {
-      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.OK);
+      return new ResponseEntity<>(OperationResult.success(), HttpStatus.OK);
     }
     // worked for some recipients
     else if (successCount > 0) {
-      return new ResponseEntity<>(NamespaceOperationResult
+      return new ResponseEntity<>(OperationResult
           .success("The message could not be sent to all administrators."),
           HttpStatus.OK);
     }
     // did not work for any recipient
     else {
-      return new ResponseEntity<>(NamespaceOperationResult
+      return new ResponseEntity<>(OperationResult
           .failure("The message could not be sent to any administrator."),
           HttpStatus.SERVICE_UNAVAILABLE);
     }
@@ -305,7 +305,7 @@ public class NamespaceController {
    */
   @PutMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<NamespaceOperationResult> createNamespace(
+  public ResponseEntity<OperationResult> createNamespace(
       @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace) {
 
     try {
@@ -313,20 +313,20 @@ public class NamespaceController {
           .user(SecurityContextHolder.getContext().getAuthentication());
       namespaceService
           .create(userContext.getUsername(), userContext.getUsername(), namespace);
-      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.CREATED);
+      return new ResponseEntity<>(OperationResult.success(), HttpStatus.CREATED);
 
     } catch (DoesNotExistException | NameSyntaxException e) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(e.getMessage()),
+      return new ResponseEntity<>(OperationResult.failure(e.getMessage()),
           HttpStatus.BAD_REQUEST);
     } catch (PrivateNamespaceQuotaExceededException pnqee) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(pnqee.getMessage()),
+      return new ResponseEntity<>(OperationResult.failure(pnqee.getMessage()),
           HttpStatus.FORBIDDEN);
     }
     // omitting explicit collision message and just going with status here
     catch (CollisionException ce) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(""), HttpStatus.CONFLICT);
+      return new ResponseEntity<>(OperationResult.failure(""), HttpStatus.CONFLICT);
     } catch (OperationForbiddenException ofe) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(ofe.getMessage()),
+      return new ResponseEntity<>(OperationResult.failure(ofe.getMessage()),
           HttpStatus.FORBIDDEN);
     }
   }
@@ -433,19 +433,19 @@ public class NamespaceController {
    */
   @DeleteMapping(value = "/{namespace:.+}", produces = "application/json")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<NamespaceOperationResult> deleteNamespace(
+  public ResponseEntity<OperationResult> deleteNamespace(
       @ApiParam(value = "The name of the namespace to be deleted", required = true) final @PathVariable String namespace
   ) {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     try {
       namespaceService.deleteNamespace(userContext.getUsername(), namespace);
-      return new ResponseEntity<>(NamespaceOperationResult.success(), HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(OperationResult.success(), HttpStatus.NO_CONTENT);
     } catch (OperationForbiddenException ofe) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(ofe.getMessage()),
+      return new ResponseEntity<>(OperationResult.failure(ofe.getMessage()),
           HttpStatus.FORBIDDEN);
     } catch (DoesNotExistException dnee) {
-      return new ResponseEntity<>(NamespaceOperationResult.failure(dnee.getMessage()),
+      return new ResponseEntity<>(OperationResult.failure(dnee.getMessage()),
           HttpStatus.NOT_FOUND);
     }
   }
