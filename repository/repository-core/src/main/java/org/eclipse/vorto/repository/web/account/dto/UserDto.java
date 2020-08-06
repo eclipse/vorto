@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.web.account.dto;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import org.eclipse.vorto.repository.domain.User;
 
 public class UserDto {
@@ -25,16 +26,38 @@ public class UserDto {
 
   private String email;
 
+  private String authenticationProvider;
+
+  private String subject;
+
+  private boolean isTechnicalUser;
+
   public static UserDto fromUser(User user) {
-    UserDto dto = new UserDto(user.getUsername(), user.getDateCreated(), user.getLastUpdated());
+    UserDto dto = new UserDto();
+    dto.setAuthenticationProvider(user.getAuthenticationProviderId());
+    dto.setDateCreated(user.getDateCreated());
     dto.setEmail(user.getEmailAddress());
+    dto.setLastUpdated(user.getLastUpdated());
+    dto.setSubject(user.getSubject());
+    dto.setTechnicalUser(user.isTechnicalUser());
+    dto.setUsername(user.getUsername());
     return dto;
   }
 
-  private UserDto(String username, Timestamp dateCreated, Timestamp lastUpdated) {
-    this.username = username;
-    this.dateCreated = dateCreated;
-    this.lastUpdated = lastUpdated;
+  public User toUser() {
+    User user = new User();
+    user.setAuthenticationProviderId(getAuthenticationProvider());
+    user.setDateCreated(getDateCreated());
+    user.setEmailAddress(getEmail());
+    user.setLastUpdated(getLastUpdated());
+    user.setSubject(getSubject());
+    user.setTechnicalUser(isTechnicalUser());
+    user.setUsername(getUsername());
+    user.setAckOfTermsAndCondTimestamp(Timestamp.from(Instant.now()));
+    return user;
+  }
+
+  private UserDto() {
   }
 
   public String getUsername() {
@@ -67,6 +90,34 @@ public class UserDto {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getAuthenticationProvider() {
+    return authenticationProvider;
+  }
+
+  public void setAuthenticationProvider(String authenticationProvider) {
+    this.authenticationProvider = authenticationProvider;
+  }
+
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
+
+  public boolean isTechnicalUser() {
+    return isTechnicalUser;
+  }
+
+  public void setTechnicalUser(boolean technicalUser) {
+    isTechnicalUser = technicalUser;
+  }
+
+  public void setIsTechnicalUser(boolean value) {
+    isTechnicalUser = value;
   }
 
 }

@@ -12,6 +12,9 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -20,9 +23,6 @@ import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Provides various utility functionalities including validation for {@link org.eclipse.vorto.repository.domain.User}
@@ -76,8 +76,12 @@ public class UserUtil {
   public void validateAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
     ServiceValidationUtil.validateEmpties(authenticationProviderID);
-    if (!registry.list().stream().map(IOAuthProvider::getId).collect(Collectors.toSet()).contains(authenticationProviderID)) {
-      throw new InvalidUserException("Invalid authentication provider ID for user.");
+    Set<String> supportedAuthenticationProviders = registry.list().stream()
+        .map(IOAuthProvider::getId).collect(Collectors.toSet());
+    if (!supportedAuthenticationProviders.contains(authenticationProviderID)) {
+      throw new InvalidUserException(String
+          .format("Invalid authentication provider ID for user.\nSupported values are: %s",
+              supportedAuthenticationProviders));
     }
   }
 
@@ -93,8 +97,8 @@ public class UserUtil {
   public void validateNewUser(User user) throws InvalidUserException {
     // boilerplate null validation
     ServiceValidationUtil.validateNulls(user);
-    ServiceValidationUtil.validateEmpties(user.getSubject(), user.getUsername(),
-        user.getAuthenticationProviderId());
+    ServiceValidationUtil.validateEmpties(user.getUsername(),
+        user.getAuthenticationProviderId(), user.getSubject());
     validateSubject(user.getSubject());
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
   }

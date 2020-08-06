@@ -6,13 +6,25 @@
   <div class="overlay" ng-show="errorLoadingUserData">
     <div style="display: table-cell;vertical-align: middle;">
       <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
-      <span style="font-size: xx-large">&nbsp;Error: unable to retrieve user data.s</span>
+      <span style="font-size: xx-large">&nbsp;Error: unable to retrieve user data.</span>
     </div>
   </div>
   <div class="overlay" ng-show="isSendingRequest">
     <div style="display: table-cell;vertical-align: middle;">
       <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
       <span style="font-size: xx-large">&nbsp;Sending request...</span>
+    </div>
+  </div>
+  <div class="overlay" ng-show="isLoadingUserData && parametrized">
+    <div style="display: table-cell;vertical-align: middle;">
+      <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+      <span style="font-size: xx-large">&nbsp;Loading technical user data...</span>
+    </div>
+  </div>
+  <div class="overlay" ng-show="isCreatingTechnicalUser && parametrized">
+    <div style="display: table-cell;vertical-align: middle;">
+      <i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+      <span style="font-size: xx-large">&nbsp;Creating technical user...</span>
     </div>
   </div>
   <div class="form-group">
@@ -68,7 +80,7 @@
       </div>
     </div>
     <div class="row"><br/></div>
-    <div class="row" >
+    <div class="row" ng-show="!parametrized">
       <div class="col-sm-3">
         <input type="radio" name="requestTargetUser" id="myself" value="{{username}}"
                ng-model="userRadio"
@@ -118,6 +130,72 @@
         </div>
       </div>
     </div>
+    <div ng-show="parametrized">
+      <div class="row" style="padding-top:5px;padding-bottom:5px">
+        <div class="col-sm-4 col-sm-offset-1">
+          <label>Technical user name / client ID:</label>
+        </div>
+        <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
+          <input class="form-control" disabled ng-model="paramUserId"/>
+        </div>
+      </div>
+      <div class="row" style="padding-top:5px;padding-bottom:5px">
+        <div class="col-sm-4 col-sm-offset-1">
+          <label>Client name:</label>
+        </div>
+        <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
+          <input class="form-control" disabled ng-model="paramClientName"/>
+        </div>
+      </div>
+      <div class="row" style="padding-top:5px;padding-bottom:5px">
+        <div class="col-sm-4 col-sm-offset-1">
+          <label>Subject:</label>
+        </div>
+        <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
+          <input class="form-control" disabled ng-model="paramSubject"/>
+        </div>
+      </div>
+      <div class="row" style="padding-top:5px;padding-bottom:5px">
+        <div class="col-sm-4 col-sm-offset-1">
+          <label>Authentication provider:</label>
+        </div>
+        <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
+          <input class="form-control" disabled
+                 ng-model="paramOauthProvider"/>
+        </div>
+      </div>
+      <div class="row" style="padding-top:5px;padding-bottom:5px">
+        <div class="col-sm-10 col-sm-offset-1" style="padding-right:0px">
+          <div class="pull-right">
+            <button id="createTechnicalUserButton" class="btn btn-primary"
+                    ng-click="createTechnicalUser()"
+                    ng-disabled="technicalUser">{{createUserButtonCaption}}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <br/>
+      </div>
+      <div id="ackCreateTechnicalUserDiv" class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <input id="ackCreateTechnicalUser" type="checkbox" ng-model="ackCreateTechnicalUser"
+                 ng-change="computeCreateTechnicalUserAvailability()">
+          I acknowledge that I have read the
+          <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms and
+            Conditions</a>
+          and <a id="privacypolicy" href ng-click="showPrivacyPolicy()">Privacy policy</a>, and that
+          both apply to the technical user I intend to create as they apply to myself.
+          </input>
+        </div>
+      </div>
+      <div class="row">
+        <br/>
+      </div>
+      <div ng-if="createTechnicalUserError" class="row alert alert-danger table-cell"
+           style="text-align:center">{{
+        createTechnicalUserErrorMessage }}<br/></div>
+    </div>
     <div class="row">
       <hr/>
     </div>
@@ -161,9 +239,9 @@
     <div class="row">
       <div class="col-sm-12">
         <input id="ack" type="checkbox" ng-model="ack" ng-change="computeSubmitAvailability()">
-        I declare that my request is motivated by legitimate business reasons, and acknowledge that
-        my / the target user's display name (and subject if present) will be shared with the
-        namespace administrator(s), if the message is sent successfully.
+        I declare that my request complies with the <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms of Service</a>,
+        and I acknowledge that my username, the target user's display name, and the subject (if applicable),
+        will be shared with the namespace administrator(s), when the message is sent to them.
         </input>
       </div>
     </div>
@@ -178,7 +256,8 @@
     <div ng-if="success" class="row alert alert-success table-cell " style="text-align:center">
       Your request was sent successfully.&nbsp;&nbsp;
       <button ng-show="modal" class="btn btn-primary" ng-click="$dismiss()">Close</button>
-      <button ng-show="!modal" class="btn btn-primary" ng-click="$location.reload()">New request</button>
+      <button ng-show="!modal" class="btn btn-primary" ng-click="reloadPage()">New request
+      </button>
       <br/>
     </div>
     <div class="row">
