@@ -98,7 +98,7 @@ public class UserUtil {
     // boilerplate null validation
     ServiceValidationUtil.validateNulls(user);
     ServiceValidationUtil.validateEmpties(user.getUsername(),
-        user.getAuthenticationProviderId());
+        user.getAuthenticationProviderId(), user.getSubject());
     validateSubject(user.getSubject());
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
   }

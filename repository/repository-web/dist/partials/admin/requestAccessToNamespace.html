@@ -152,7 +152,7 @@
           <label>Subject:</label>
         </div>
         <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
-          <input class="form-control" disabled ng-model="technicalUser.subject"/>
+          <input class="form-control" disabled ng-model="paramSubject"/>
         </div>
       </div>
       <div class="row" style="padding-top:5px;padding-bottom:5px">
@@ -188,6 +188,9 @@
           both apply to the technical user I intend to create as they apply to myself.
           </input>
         </div>
+      </div>
+      <div class="row">
+        <br/>
       </div>
       <div ng-if="createTechnicalUserError" class="row alert alert-danger table-cell"
            style="text-align:center">{{
@@ -236,9 +239,9 @@
     <div class="row">
       <div class="col-sm-12">
         <input id="ack" type="checkbox" ng-model="ack" ng-change="computeSubmitAvailability()">
-        I declare that my request is motivated by legitimate business reasons, and acknowledge that
-        my / the target user's display name (and subject if present) will be shared with the
-        namespace administrator(s), if the message is sent successfully.
+        I declare that my request complies with the <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms of Service</a>,
+        and I acknowledge that my username, the target user's display name, and the subject (if applicable),
+        will be shared with the namespace administrator(s), when the message is sent to them.
         </input>
       </div>
     </div>

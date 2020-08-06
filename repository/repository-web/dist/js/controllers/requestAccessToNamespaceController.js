@@ -35,6 +35,7 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.paramUserId = null;
           $scope.paramOauthProvider = null;
           $scope.paramClientName = null;
+          $scope.paramSubject = null;
           $scope.parametrized = $routeParams.userId;
 
           // initializes scope fields if applicable
@@ -42,6 +43,11 @@ define(["../init/appController"], function (repositoryControllers) {
             $scope.paramUserId = $routeParams.userId;
             $scope.paramOauthProvider = $routeParams.oauthProvider;
             $scope.paramClientName = $routeParams.clientName;
+            $scope.paramSubject = $routeParams.subject;
+            // no subject provided as parameter - using the client name
+            if (!$scope.paramSubject) {
+              $scope.paramSubject = $scope.paramClientName;
+            }
           }
           // defaults flag to display a loading overlay if parametrized
           $scope.isLoadingUserData = $scope.parametrized;
@@ -86,9 +92,9 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.selectedUser = $scope.technicalUser.username;
                   // stop loading data
                   $scope.isLoadingUserData = false;
-                  // replaces field from given oauth provider parameter if applicable,
-                  // as it is used as ng-model in the technical user representation
+                  // replaces GET parameter values with actual technical user values
                   $scope.paramOauthProvider = $scope.technicalUser.authenticationProvider;
+                  $scope.paramSubject = $scope.technicalUser.subject;
                   // disable create user button and change caption
                   $scope.createUserButtonCaption = "Technical user exists";
                   let button = document.getElementById(
@@ -138,7 +144,7 @@ define(["../init/appController"], function (repositoryControllers) {
                 {
                   "username": $scope.paramUserId,
                   "authenticationProvider": $scope.paramOauthProvider,
-                  "subject": "", // TODO if we decide to parametrize with subject
+                  "subject": $scope.paramSubject,
                   "isTechnicalUser": true,
                   "dateCreated": null,
                   "lastUpdated": null,
