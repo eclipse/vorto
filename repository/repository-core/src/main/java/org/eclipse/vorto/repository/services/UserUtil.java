@@ -62,7 +62,8 @@ public class UserUtil {
       return;
     }
     if (!subject.matches(AUTHENTICATION_SUBJECT_VALIDATION_PATTERN)) {
-      throw new InvalidUserException("Invalid subject for user.");
+      throw new InvalidUserException(
+          "Invalid subject for user. The subject should consist in a sequence of 4 or more alphanumeric characters.");
     }
   }
 

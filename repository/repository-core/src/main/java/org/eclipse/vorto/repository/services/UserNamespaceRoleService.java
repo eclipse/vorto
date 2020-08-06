@@ -209,6 +209,38 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   /**
+   * Returns whether there is any association between the given {@link Namespace} and the given
+   * {@link User}.
+   *
+   * @param user
+   * @param namespace
+   * @return
+   */
+  public boolean hasAnyRole(User user, Namespace namespace) throws DoesNotExistException {
+    ServiceValidationUtil.validate(user, namespace);
+    LOGGER.debug(
+        String
+            .format("Verifying whether user has any role on namespace [%s]",
+                namespace.getName()
+            )
+    );
+    return userNamespaceRoleRepository.findByNamespaceAndUser(namespace, user) != null;
+  }
+
+  /**
+   * @param username
+   * @param namespaceName
+   * @return
+   * @throws DoesNotExistException
+   * @see UserNamespaceRoleService#hasAnyRole(User, Namespace)
+   */
+  public boolean hasAnyRole(String username, String namespaceName) throws DoesNotExistException {
+    User user = userRepository.findByUsername(username);
+    Namespace namespace = namespaceRepository.findByName(namespaceName);
+    return hasAnyRole(user, namespace);
+  }
+
+  /**
    * Recursive method that resolves the given {@code namespaceName} argument, looks for an exact
    * match in the repository, and "moves one level up" if the exact match is not found, by
    * searching for a namespace name minus the last {@literal .}-delimited segment. <br/>
