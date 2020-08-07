@@ -87,6 +87,8 @@ public abstract class AbstractUITest {
         System.setProperty("github_clientSecret", "foo");
         System.setProperty("eidp_clientid", "foo");
         System.setProperty("eidp_clientSecret", "foo");
+        System.setProperty("suite_clientid", "foo");
+        System.setProperty("suite_clientSecret", "foo");
         System.setProperty("line.separator", "\n");
     }
 
