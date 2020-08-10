@@ -37,42 +37,46 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 {
   "definition": "«model.namespace»:«model.name»:«model.version»",
   "attributes": {
- 	"modelDisplayName": "«model.displayname»"
- 	 },
- 	"features": {
- 	«FOR fbProperty : model.properties SEPARATOR ","»
- 	"«fbProperty.name»" : {
- 	"definition": [
- 		«getReferencesJson(fbProperty.type)»
- 	],
- 	"properties": {
- 		«IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
- 		"status": {
- 			«FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ","»
- 			"«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ELSEIF statusProperty.type instanceof ObjectPropertyType»«getJsonObjectType(statusProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(statusProperty.type as DictionaryPropertyType)»«ENDIF»
- 			«ENDFOR»
- 		}«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
+    "modelDisplayName": "«model.displayname»"
+  },
+  "features": {
+«FOR fbProperty : model.properties SEPARATOR ","»
+    «IF fbProperty.multiplicity»
+    "«fbProperty.name»0" : {
+    «ELSE»
+    "«fbProperty.name»" : {
+    «ENDIF»
+      "definition": [
+        «getReferencesJson(fbProperty.type)»
+      ],
+      "properties": {
+        «IF fbProperty.type.functionblock.status !== null && !fbProperty.type.functionblock.status.properties.isEmpty»
+        "status": {
+          «FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ","»
+          "«statusProperty.name»" : «IF statusProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(statusProperty.type as PrimitivePropertyType)»«ELSEIF statusProperty.type instanceof ObjectPropertyType»«getJsonObjectType(statusProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(statusProperty.type as DictionaryPropertyType)»«ENDIF»
+          «ENDFOR»
+        }«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»,«ENDIF»
+        «ENDIF»
+        «IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
+        "configuration": {
+          «FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
+          "«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSEIF configProperty.type instanceof ObjectPropertyType»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(configProperty.type as DictionaryPropertyType)»«ENDIF»
+          «ENDFOR»
+ 	    }
  		«ENDIF»
- 		«IF fbProperty.type.functionblock.configuration !== null && !fbProperty.type.functionblock.configuration.properties.isEmpty»
- 		"configuration": {
- 			«FOR configProperty : fbProperty.type.functionblock.configuration.properties SEPARATOR ","»
- 			"«configProperty.name»" : «IF configProperty.type instanceof PrimitivePropertyType»«getJsonPrimitive(configProperty.type as PrimitivePropertyType)»«ELSEIF configProperty.type instanceof ObjectPropertyType»«getJsonObjectType(configProperty.type as ObjectPropertyType)»«ELSE»«getJsonDictionaryType(configProperty.type as DictionaryPropertyType)»«ENDIF»
- 			«ENDFOR»
- 	}
- 		«ENDIF»
- 	}
- 	}
- 	«ENDFOR»
-}
+      }
+    }
+«ENDFOR»
+  }
 }
 		'''
 	}
 
 	def getJsonDictionaryType(DictionaryPropertyType propertyType) {
 		'''
-			{
-				"key" : "value"
-			}
+          {
+            "key" : "value"
+          }
 		'''
 	}
 
@@ -91,11 +95,11 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 
 	def getEntityJson(Entity entity) {
 		'''
-			{
-				«FOR property : entity.properties SEPARATOR ","»
-					"«property.name»" : «IF property.type instanceof PrimitivePropertyType»«getJsonPrimitive(property.type as PrimitivePropertyType)»«ELSE»«getJsonObjectType(property.type as ObjectPropertyType)»«ENDIF»
-				«ENDFOR»
-			}
+          {
+          «FOR property : entity.properties SEPARATOR ","»
+            "«property.name»" : «IF property.type instanceof PrimitivePropertyType»«getJsonPrimitive(property.type as PrimitivePropertyType)»«ELSE»«getJsonObjectType(property.type as ObjectPropertyType)»«ENDIF»
+          «ENDFOR»
+          }
 		'''
 	}
 
@@ -125,9 +129,9 @@ class DittoStructureTemplate implements IFileTemplate<InformationModel> {
 
     def getReferencesJson(FunctionblockModel model) {
         '''
-        «FOR fb : Utils.getFunctionBlockHierarchy(model) SEPARATOR ","»
-        "«fb.namespace»:«fb.name»:«fb.version»"
-        «ENDFOR»
+«FOR fb : Utils.getFunctionBlockHierarchy(model) SEPARATOR ","»
+"«fb.namespace»:«fb.name»:«fb.version»"
+«ENDFOR»
         '''
 	}
 }

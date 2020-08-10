@@ -17,7 +17,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
-import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -57,7 +57,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(
             content().json(
                 objectMapper.writeValueAsString(
-                    NamespaceOperationResult.failure(String
+                    OperationResult.failure(String
                         .format("[%s] is not a valid namespace name - aborting namespace creation.",
                             badNamespaceName))
                 )
@@ -80,7 +80,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(status().isBadRequest())
         .andExpect(
             content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult
+                objectMapper.writeValueAsString(OperationResult
                     .failure("Namespace name is empty - aborting namespace creation."))
             )
         );
@@ -103,7 +103,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(
             content().json(
                 objectMapper.writeValueAsString(
-                    NamespaceOperationResult.failure(String.format(
+                    OperationResult.failure(String.format(
                         "[%s] is an invalid name for a private namespace - aborting namespace creation.",
                         namespaceName)))
             )
@@ -163,7 +163,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 // hard-coded error message due to production profile limiting to 1 namespace for
                 // non-sysadmins
                 objectMapper.writeValueAsString(
-                    NamespaceOperationResult.failure(
+                    OperationResult.failure(
                         String.format(
                             "User already has reached quota [%d] of private namespaces - aborting namespace creation.",
                             maxNamespaces

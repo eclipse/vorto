@@ -13,18 +13,6 @@
 package org.eclipse.vorto.repository.search;
 
 import com.google.common.base.Strings;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -75,6 +63,12 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Search Service implementation using a remote Elastic Search Service.<br/>
@@ -498,6 +492,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     PreConditions.notNull(modelId, "modelId must not be null.");
 
     DeleteRequest request = new DeleteRequest(VORTO_INDEX, DOC, modelId.getPrettyFormat());
+    request.setRefreshPolicy(DeleteRequest.RefreshPolicy.IMMEDIATE);
     try {
       DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.DELETED) {

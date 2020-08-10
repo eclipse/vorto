@@ -26,7 +26,7 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
-import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -223,7 +223,7 @@ public abstract class IntegrationTestBase {
         .andExpect(status().isCreated())
         .andExpect(
             content().json(
-                objectMapper.writeValueAsString(NamespaceOperationResult.success())
+                objectMapper.writeValueAsString(OperationResult.success())
             )
         );
   }

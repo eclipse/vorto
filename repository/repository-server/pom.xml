@@ -240,14 +240,37 @@
 			<artifactId>repository-oauth-boschid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-oauth-eclipse</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-	</dependencies>
+		<!--UI testing-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>selenium</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-api</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-driver</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
 
 	<build>
 		<resources>

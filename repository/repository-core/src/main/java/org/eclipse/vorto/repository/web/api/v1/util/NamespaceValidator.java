@@ -16,13 +16,13 @@ import com.google.common.base.Strings;
 import java.util.Optional;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
-import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 
 /**
  * As the name indicates, validates a namespace name based on whether:
  * <ul>
  *   <li>
- *     the user is a sysadmin and does not need to prepend {@link NamespaceValidator#NAMESPACE_PREFIX}
+ *     the user is a sysadmin and does not need to prepend {@link NamespaceValidator#PRIVATE_NAMESPACE_PREFIX}
  *     to the namespace's name, and
  *   </li>
  *   <li>
@@ -31,21 +31,23 @@ import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceOperationResult;
  *   </li>
  * </ul>
  * The {@link NamespaceValidator#validate(String, IUserContext)} method returns an {@link Optional}
- * of {@link NamespaceOperationResult} that will be empty if the namespace is valid, and
+ * of {@link OperationResult} that will be empty if the namespace is valid, and
  */
 public final class NamespaceValidator {
-  public static final String NAMESPACE_PREFIX = "vorto.private.";
+
+  public static final String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
   public static final String VALID_NAMESPACE = "(\\p{Alnum}|_)+(\\.(\\p{Alnum}|_)+)*";
-  public static Optional<NamespaceOperationResult> validate(String namespace, IUserContext context) {
+
+  public static Optional<OperationResult> validate(String namespace, IUserContext context) {
     if (Strings.nullToEmpty(namespace).trim().isEmpty()) {
-      return Optional.of(NamespaceOperationResult.failure("Empty namespace"));
+      return Optional.of(OperationResult.failure("Empty namespace"));
     }
     if (!namespace.matches(VALID_NAMESPACE)) {
-      return Optional.of(NamespaceOperationResult.failure("Invalid namespace notation."));
+      return Optional.of(OperationResult.failure("Invalid namespace notation."));
     }
     if (!context.isSysAdmin()) {
-      if (!namespace.startsWith(NAMESPACE_PREFIX)) {
-        return Optional.of(NamespaceOperationResult.failure("User can only register a private namespace."));
+      if (!namespace.startsWith(PRIVATE_NAMESPACE_PREFIX)) {
+        return Optional.of(OperationResult.failure("User can only register a private namespace."));
       }
     }
     return Optional.empty();
@@ -53,12 +55,13 @@ public final class NamespaceValidator {
 
   /**
    * Validates a request to add a user to a namespace.
+   *
    * @param request
    * @return
    */
-  public static Optional<NamespaceOperationResult> validateAccessRequest(NamespaceAccessRequestDTO request) {
+  public static Optional<OperationResult> validateAccessRequest(NamespaceAccessRequestDTO request) {
     if (request == null) {
-      return Optional.of(NamespaceOperationResult.failure("Cannot process request"));
+      return Optional.of(OperationResult.failure("Cannot process request"));
     }
     /*
      This is a dumb representation of the "conditions acknowledged" checkbox in the UI. The idea
@@ -70,16 +73,16 @@ public final class NamespaceValidator {
      they are doing.
      */
     if (!request.isConditionsAcknowledged()) {
-      return Optional.of(NamespaceOperationResult.failure("Conditions not acknowledged"));
+      return Optional.of(OperationResult.failure("Conditions not acknowledged"));
     }
     if (Strings.nullToEmpty(request.getNamespaceName()).trim().isEmpty()) {
-      return Optional.of(NamespaceOperationResult.failure("No namespace specified"));
+      return Optional.of(OperationResult.failure("No namespace specified"));
     }
     if (Strings.nullToEmpty(request.getRequestingUsername()).trim().isEmpty()) {
-      return Optional.of(NamespaceOperationResult.failure("No requesting user specified"));
+      return Optional.of(OperationResult.failure("No requesting user specified"));
     }
     if (Strings.nullToEmpty(request.getTargetUsername()).trim().isEmpty()) {
-      return Optional.of(NamespaceOperationResult.failure("No target user specified"));
+      return Optional.of(OperationResult.failure("No target user specified"));
     }
     return Optional.empty();
   }
