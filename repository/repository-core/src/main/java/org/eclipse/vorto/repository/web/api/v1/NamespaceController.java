@@ -120,38 +120,22 @@ public class NamespaceController {
   }
 
   /**
-   * Finds all namespaces accessible to the authenticated user, by a partial name. <br/>
-   * This is used in the UI to search for namespaces the user can view, aka all the public ones and
-   * the private ones the user has at least one role in.
+   * Finds all non-private namespaces regardless of logged-on user access by a partial string.
    *
    * @param partial
    * @return
    */
+  // TODO refactor
   @RequestMapping(method = RequestMethod.GET, value = "/search/{partial:.+}")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Collection<NamespaceDto>> findAllAccessibleNamespacesByPartial(
+  public ResponseEntity<Collection<NamespaceDto>> findAllNonPrivateNamespacesByPartial(
       @ApiParam(value = "The partial name of the namespaces to be searched with", required = true) @PathVariable String partial
   ) {
     if (Strings.nullToEmpty(partial).trim().isEmpty()) {
       return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
     }
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication());
     Collection<NamespaceDto> result = namespaceRepository
-        .findNamespaceByPartial(partial.toLowerCase()).stream()
-        .filter(n -> {
-          try {
-            return
-                // all public namespaces
-                !n.getName().startsWith(NamespaceValidator.PRIVATE_NAMESPACE_PREFIX)
-                    ||
-                    // or namespaces where user has a role
-                    userNamespaceRoleService.hasAnyRole(userContext.getUsername(), n.getName());
-            // should never occur here
-          } catch (DoesNotExistException dnee) {
-            return false;
-          }
-        })
+        .findPublicNamespaceByPartial(partial.toLowerCase()).stream()
         .map(EntityDTOConverter::createNamespaceDTO)
         .collect(Collectors.toList());
     return new ResponseEntity<>(result, HttpStatus.OK);
