@@ -13,6 +13,9 @@
 package org.eclipse.vorto.repository.server.it;
 
 import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
@@ -253,7 +256,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isNotFound())
-        
+
         .andExpect(
             content().string(
                 "false"
@@ -289,7 +292,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -368,7 +371,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -420,7 +423,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -437,7 +440,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -470,7 +473,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -525,7 +528,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -607,7 +610,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -658,7 +661,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
-        
+
         .andExpect(
             content().string(
                 "true"
@@ -1003,7 +1006,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     String namespaceName = "vorto.private.mynamespace";
     createNamespaceSuccessfully(namespaceName, userModelCreator);
 
-
     // deletes
     repositoryServer.perform(
         delete(String.format("/rest/namespaces/%s", namespaceName))
@@ -1032,6 +1034,51 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     )
 
         .andExpect(status().isForbidden());
+  }
+
+  // newer tests
+
+  /**
+   * Verifies that the set of namespaces retrieved by searching for all accessible namespaces by a
+   * partial substring of the name for a given user returns both all public namespaces with partial
+   * matches, and all private namespaces with partial matches (where the user has at least one role).<br/>
+   * This is used by the "request access to namespace" form.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testFindAllAccessibleNamespacesByPartial() throws Exception {
+    // creates a public namespace as sysadmin and adds userModelCreator as collaborator
+    String publicNamespaceName = "org.publicnamespace.abcd";
+    createNamespaceSuccessfully(publicNamespaceName, userSysadmin);
+    Collaborator collaborator = new Collaborator("userModelCreator", "GITHUB", null,
+        Lists.newArrayList("model_viewer", "model_creator"));
+    repositoryServer.perform(
+        put(String.format("/rest/namespaces/%s/users", publicNamespaceName))
+            .content(objectMapper.writeValueAsString(collaborator))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(userSysadmin))
+        .andExpect(status().isOk());
+    // creates a private namespace where the searched name would match, but the userModelCreator has
+    // no role
+    createNamespaceSuccessfully("vorto.private.sysadmin.abcd", userSysadmin);
+    // creates a private namespace for userModelCreator
+    String privateNamespaceName = "vorto.private.mynamespace.abcd";
+    createNamespaceSuccessfully(privateNamespaceName, userModelCreator);
+
+    // now compares expected namespaces to appear in search with REST endpoint outcome
+    // note that users and admins in returned DTOs are empty here by design
+    // also note that the namespaces are sorted by name
+    List<NamespaceDto> expectedNamespaces = Arrays.asList(
+        new NamespaceDto(publicNamespaceName, Collections.emptyList(), Collections.emptyList()),
+        new NamespaceDto(privateNamespaceName, Collections.emptyList(), Collections.emptyList())
+    );
+    repositoryServer.perform(
+        get("/rest/namespaces/search/abcd")
+            .with(userModelCreator)
+    )
+        .andExpect(status().isOk())
+        .andExpect(content().json(objectMapper.writeValueAsString(expectedNamespaces)));
   }
 
 }
