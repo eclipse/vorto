@@ -88,6 +88,9 @@ define("repository", [
               redirectUri = cookieKey.split("=")[1];
             }
           });
+          if ("/login" === redirectUri) {
+            return "/";
+          }
           return redirectUri;
         }
       }).otherwise({
