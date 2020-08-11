@@ -78,6 +78,18 @@ define("repository", [
         controller: "requestAccessToNamespaceController"
       }).when("/privacy", {
         templateUrl: "webjars/repository-web/dist/partials/privacypolicy-template.html"
+      }).when("/postLogin", {
+        redirectTo: function() {
+          let cookies = document.cookie.split(";");
+          var redirectUri = "/";
+          cookies.forEach(cookie => {
+            let cookieKey = cookie.trim();
+            if (cookieKey.startsWith("postLoginRedirect")) {
+              redirectUri = cookieKey.split("=")[1];
+            }
+          });
+          return redirectUri;
+        }
       }).otherwise({
         redirectTo: "/"
       });
@@ -144,39 +156,39 @@ define("repository", [
       }
     };
 
-    // $rootScope.watchLocationChanges = function () {
-    //   $rootScope.$on("$locationChangeStart", function (event, next, current) {
-    //     $rootScope.error = false;
-    //     // saves previous location before forwarding, so it can be sent as a
-    //     // "redirect" parameter to the login request
-    //     if (!$rootScope.previousLocation) {
-    //       /*
-    //        This is pretty hack-ish.
-    //        In the typical use case (a user punching a direct Vorto URL in an
-    //        empty tab/window), the URL we want to store for the back-end to
-    //        redirect to post-authentication is the "current" argument.
-    //        However when punching a direct Vorto URL in a tab/window where Vorto
-    //        is already running (albeit unauthenticated in our case), the correct
-    //        argument to pick is "next" - this is an uncommon edge case.
-    //        In order to make sure we pick the right one, we default to "current"
-    //        (most typical use case) but check that the "current" one is not the
-    //        actual login page - in which case we pick "next".
-    //        */
-    //       let parameter = (current && !current.endsWith("/login")
-    //           && !current.endsWith("/#/")) ? current : next;
-    //       // stores the parameter as a relative path, so any absolute paths
-    //       // can be intercepted and ignored in the back-end for security reasons
-    //       if (parameter.includes("/#")) {
-    //         parameter = parameter.substring(parameter.indexOf("/#") + 2);
-    //       }
-    //       $rootScope.previousLocation = parameter;
-    //     }
-    //     if ($rootScope.needAuthentication() && $rootScope.authenticated
-    //         === false) {
-    //       $location.path("/login");
-    //     }
-    //   });
-    // };
+    $rootScope.watchLocationChanges = function () {
+      $rootScope.$on("$locationChangeStart", function (event, next, current) {
+        $rootScope.error = false;
+        // saves previous location before forwarding, so it can be sent as a
+        // "redirect" parameter to the login request
+        if (!$rootScope.previousLocation) {
+          /*
+           This is pretty hack-ish.
+           In the typical use case (a user punching a direct Vorto URL in an
+           empty tab/window), the URL we want to store for the back-end to
+           redirect to post-authentication is the "current" argument.
+           However when punching a direct Vorto URL in a tab/window where Vorto
+           is already running (albeit unauthenticated in our case), the correct
+           argument to pick is "next" - this is an uncommon edge case.
+           In order to make sure we pick the right one, we default to "current"
+           (most typical use case) but check that the "current" one is not the
+           actual login page - in which case we pick "next".
+           */
+          let parameter = (current && !current.endsWith("/login")
+              && !current.endsWith("/#/")) ? current : next;
+          // stores the parameter as a relative path, so any absolute paths
+          // can be intercepted and ignored in the back-end for security reasons
+          if (parameter.includes("/#")) {
+            parameter = parameter.substring(parameter.indexOf("/#") + 2);
+          }
+          $rootScope.previousLocation = parameter;
+        }
+        if ($rootScope.needAuthentication() && $rootScope.authenticated
+            === false) {
+          $location.path("/login");
+        }
+      });
+    };
 
     $rootScope.needAuthentication = function () {
       var split = $location.path().split("/");
@@ -213,8 +225,7 @@ define("repository", [
         previousLocation will be "cleared" if the log on succeeds.
         */
         if ($rootScope.previousLocation) {
-          result += '?redirect=' + encodeURIComponent(
-              $rootScope.previousLocation);
+          document.cookie = "postLoginRedirect=" + $rootScope.previousLocation;
         }
       }
       return result;
