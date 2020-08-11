@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.oauth;
 
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,6 +85,13 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest {
     public void authenticateInvalidTokenTest() {
        Authentication authentication = sut.authenticate(null, "invalid-token");
        assertNull(authentication);
+    }
+
+    @Test
+    public void authenticateSuccessTest() {
+        when(userAccountService.getUser(any())).thenReturn(new User());
+        Authentication authentication = sut.authenticate(null, TOKEN);
+        assertTrue(authentication.isAuthenticated());
     }
 
 
