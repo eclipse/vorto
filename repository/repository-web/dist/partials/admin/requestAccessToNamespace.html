@@ -113,8 +113,14 @@
           </div>
           <div class="col-sm-2" style="padding-left:0px">
             <span class="input-group-btn">
-              <button type="button" class="btn btn-primary" ng-click="findUsers()">
+              <button id="technicalUserSearchButton" ng-show="!userPartial && !selectedUser && retrievedUsers.length == 0" type="button" class="btn btn-primary" ng-click="findUsers()">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"/>
+              </button>
+              <button id="technicalUserCreateButton" ng-show="userPartial && !selectedUser" type="button" class="btn btn-primary" ng-click="openCreateTechnicalUserDialog()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"/>
+              </button>
+              <button id="technicalUserClearButton" ng-show="selectedUser" type="button" class="btn btn-primary" ng-click="clearUserSearch()">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
               </button>
             </span>
           </div>

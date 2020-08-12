@@ -29,26 +29,59 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.createNewTechnicalUser = function () {
             $scope.isCurrentlyAddingOrUpdating = true;
-            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users",
-                {
-                  "userId": $scope.user.userId,
-                  "roles": $scope.getRoles($scope.user),
-                  "authenticationProviderId": $scope.selectedAuthenticationProviderId,
-                  "subject": $scope.technicalUserSubject,
-                  "isTechnicalUser": true
-                })
-            .then(
-                function (result) {
-                  $scope.isCurrentlyAddingOrUpdating = false;
-                  $uibModalInstance.close($scope.user);
-                },
-                function (reason) {
-                  $scope.isCurrentlyAddingOrUpdating = false;
-                  $scope.errorMessage = "Creation of technical user " +
-                      $scope.user.userId + " in namespace " +
-                      $scope.namespace.name + " failed. ";
-                }
-            );
+            // logic two-fold depending on whether a namespace is present or not
+
+            // modal opened with namespace, will create tech user and associate
+            // with given namespace, with given roles
+            if ($scope.namespace) {
+              $http.post(
+                  "./rest/namespaces/" + $scope.namespace.name + "/users",
+                  {
+                    "userId": $scope.user.userId,
+                    "roles": $scope.getRoles($scope.user),
+                    "authenticationProviderId": $scope.selectedAuthenticationProviderId,
+                    "subject": $scope.technicalUserSubject,
+                    "isTechnicalUser": true
+                  })
+              .then(
+                  function (result) {
+                    $scope.isCurrentlyAddingOrUpdating = false;
+                    $uibModalInstance.close($scope.user);
+                  },
+                  function (reason) {
+                    $scope.isCurrentlyAddingOrUpdating = false;
+                    $scope.errorMessage = "Creation of technical user " +
+                        $scope.user.userId + " in namespace " +
+                        $scope.namespace.name + " failed. ";
+                  }
+              );
+            }
+            // modal invoked with no namespace, will only create the tech user
+            else {
+              $http.post('./rest/accounts/createTechnicalUser',
+                  {
+                    "username": $scope.user.userId,
+                    "authenticationProvider": $scope.selectedAuthenticationProviderId,
+                    "subject": $scope.technicalUserSubject,
+                    "isTechnicalUser": true,
+                    "dateCreated": null,
+                    "lastUpdated": null,
+                    "email": ""
+                  }
+              )
+              .then(
+                  function (result) {
+                    $scope.isCurrentlyAddingOrUpdating = false;
+                    $uibModalInstance.close($scope.user);
+                  },
+                  function (error) {
+                    $scope.isCurrentlyAddingOrUpdating = false;
+                    $scope.errorMessage = "Creation of technical user " +
+                        $scope.user.userId + " in namespace " +
+                        $scope.namespace.name + " failed. ";
+                  }
+              );
+            }
           };
 
           $scope.cancel = function () {
@@ -86,5 +119,7 @@ define(["../init/appController"], function (repositoryControllers) {
             return roles;
           };
         }
-      ]);
-});
+      ])
+  ;
+})
+;
