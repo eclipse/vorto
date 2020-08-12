@@ -1,6 +1,13 @@
 <div class="modal-header">
   <button ng-show="modal" type="button" class="close" ng-click="$dismiss()">&times;</button>
-  <h3 class="modal-title">Request access to a namespace</h3>
+  <h3 class="modal-title">Request access to a namespace
+    <a class="help-icon"
+       href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/requesting_access_to_a_namespace.md"
+       target="_blank"
+       title="Read more about requesting access to a namespace">
+      <span class="fa fa-question-circle"/>
+    </a>
+  </h3>
 </div>
 <div class="modal-body">
   <div class="overlay" ng-show="errorLoadingUserData">
@@ -239,8 +246,11 @@
     <div class="row">
       <div class="col-sm-12">
         <input id="ack" type="checkbox" ng-model="ack" ng-change="computeSubmitAvailability()">
-        I declare that my request complies with the <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms of Service</a>,
-        and I acknowledge that my username, the target user's display name, and the subject (if applicable),
+        I declare that my request complies with the <a target="_blank"
+                                                       href="https://www.eclipse.org/legal/termsofuse.php">Terms
+        of Service</a>,
+        and I acknowledge that my username, the target user's display name, and the subject (if
+        applicable),
         will be shared with the namespace administrator(s), when the message is sent to them.
         </input>
       </div>

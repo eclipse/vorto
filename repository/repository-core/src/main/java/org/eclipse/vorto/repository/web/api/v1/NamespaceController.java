@@ -153,6 +153,7 @@ public class NamespaceController {
           }
         })
         .map(EntityDTOConverter::createNamespaceDTO)
+        .sorted(Comparator.comparing(NamespaceDto::getName))
         .collect(Collectors.toList());
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
