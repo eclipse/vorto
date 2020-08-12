@@ -67,20 +67,6 @@ define(["../init/appController"], function (repositoryControllers) {
             $location.search({});
           }
 
-          $scope.showPrivacyPolicy = function () {
-            var privacyPolicyModalInstance = $uibModal.open({
-              animation: true,
-              templateUrl: "webjars/repository-web/dist/partials/privacypolicy-dialog.html",
-              size: "lg",
-              controller: function ($scope) {
-                $scope.cancel = function () {
-                  privacyPolicyModalInstance.dismiss();
-                };
-              },
-              backdrop: 'static'
-            });
-          };
-
           $scope.loadUserData = function () {
             $scope.isLoadingUserData = true;
             $http.get("./rest/accounts/" + $scope.paramUserId)

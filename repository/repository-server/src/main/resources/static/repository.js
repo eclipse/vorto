@@ -79,7 +79,7 @@ define("repository", [
       }).when("/privacy", {
         templateUrl: "webjars/repository-web/dist/partials/privacypolicy-template.html"
       }).when("/postLogin", {
-        redirectTo: function() {
+        redirectTo: function () {
           let cookies = document.cookie.split(";");
           var redirectUri = "/";
           cookies.forEach(cookie => {
@@ -99,7 +99,7 @@ define("repository", [
 
       $httpProvider.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-    }]).run(function ($location, $http, $rootScope) {
+    }]).run(function ($location, $http, $rootScope, $uibModal) {
 
     $rootScope.privateNamespacePrefix = "vorto.private.";
 
@@ -124,6 +124,20 @@ define("repository", [
 
     $rootScope.logout = function () {
       window.location.href = $rootScope.userInfo.logOutUrl;
+    };
+
+    $rootScope.showPrivacyPolicy = function () {
+      var privacyPolicyModalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: "webjars/repository-web/dist/partials/privacypolicy-dialog.html",
+        size: "lg",
+        controller: function ($scope) {
+          $scope.cancel = function () {
+            privacyPolicyModalInstance.dismiss();
+          };
+        },
+        backdrop: 'static'
+      });
     };
 
     $rootScope.setUser = function (user) {

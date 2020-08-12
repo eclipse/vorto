@@ -251,13 +251,16 @@ define(["../../init/appController"], function (repositoryControllers) {
               animation: true,
               templateUrl: "webjars/repository-web/dist/partials/admin/createTechnicalUser.html",
               size: "md",
-              controller: "createOrUpdateUserController",
+              controller: "createTechnicalUserController",
               resolve: {
                 user: function () {
                   return user;
                 },
                 namespace: function () {
                   return namespace;
+                },
+                context: function() {
+                  return $rootScope.context;
                 }
               }
             });
@@ -265,28 +268,6 @@ define(["../../init/appController"], function (repositoryControllers) {
             modalInstance.result.finally(function (result) {
               $uibModalInstance.close($scope.user);
             });
-          };
-
-          $scope.createNewTechnicalUser = function () {
-            $scope.isCurrentlyAddingOrUpdating = false;
-            $http.post("./rest/namespaces/" + $scope.namespace.name + "/users",
-                {
-                  "userId": $scope.user.userId,
-                  "roles": $scope.getRoles($scope.user),
-                  "authenticationProviderId": $scope.selectedAuthenticationProviderId,
-                  "subject": $scope.technicalUserSubject,
-                  "isTechnicalUser": true
-                })
-            .then(
-                function (result) {
-                  $uibModalInstance.close($scope.user);
-                },
-                function (reason) {
-                  $scope.errorMessage = "Creation of technical user " +
-                      $scope.user.userId + " in namespace " +
-                      $scope.namespace.name + " failed. ";
-                }
-            );
           };
 
           $scope.toggleSubmitButton = function () {
