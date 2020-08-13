@@ -15,15 +15,6 @@ package org.eclipse.vorto.repository.web;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.security.Principal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
@@ -38,6 +29,13 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class HomeController {
@@ -67,7 +65,7 @@ public class HomeController {
     Map<String, Object> map = new LinkedHashMap<>();
     
     if (user == null)
-      return new ResponseEntity<Map<String, Object>>(map, HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
     
     IOAuthProvider provider = registry.getByPrincipal(user);
         
@@ -78,7 +76,9 @@ public class HomeController {
     Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);
 
     map.put("name", oauthUser.getUserId());
-    map.put("subject", userAccount.getSubject());
+    if (Objects.nonNull(userAccount))
+      map.put("subject", userAccount.getSubject());
+
     map.put("displayName", oauthUser.getDisplayName());
     map.put("isRegistered", Boolean.toString(userAccount != null));
     map.put("roles", oauthUser.getRoles());
@@ -86,7 +86,7 @@ public class HomeController {
     map.put("logOutUrl", provider.getWebflowConfiguration().get().getLogoutUrl(request));
     map.put("provider", new OAuthProvider(provider.getId(), provider.getLabel(), provider.getWebflowConfiguration().get()));
 
-    return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+    return new ResponseEntity<>(map, HttpStatus.OK);
   }
 
   private boolean needUpdate(User user, Date updateCutoff) {
