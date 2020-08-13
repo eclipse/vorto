@@ -85,7 +85,7 @@ define("repository", [
           cookies.forEach(cookie => {
             let cookieKey = cookie.trim();
             if (cookieKey.startsWith("postLoginRedirect")) {
-              redirectUri = cookieKey.split("=")[1];
+              redirectUri = cookieKey.replace("postLoginRedirect=", "");
             }
           });
           if ("/login" === redirectUri) {
