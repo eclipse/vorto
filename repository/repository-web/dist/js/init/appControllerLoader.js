@@ -24,7 +24,8 @@ define([
     '../controllers/mapping/mappingbuilder-controller',
     '../controllers/manage/namespaceManagement',
     '../controllers/manage/namespaceUserManagement',
-    '../controllers/requestAccessToNamespaceController'
+    '../controllers/requestAccessToNamespaceController',
+    '../controllers/createTechnicalUserController'
 ], function () {
 
 });

@@ -67,20 +67,6 @@ define(["../init/appController"], function (repositoryControllers) {
             $location.search({});
           }
 
-          $scope.showPrivacyPolicy = function () {
-            var privacyPolicyModalInstance = $uibModal.open({
-              animation: true,
-              templateUrl: "webjars/repository-web/dist/partials/privacypolicy-dialog.html",
-              size: "lg",
-              controller: function ($scope) {
-                $scope.cancel = function () {
-                  privacyPolicyModalInstance.dismiss();
-                };
-              },
-              backdrop: 'static'
-            });
-          };
-
           $scope.loadUserData = function () {
             $scope.isLoadingUserData = true;
             $http.get("./rest/accounts/" + $scope.paramUserId)
@@ -439,6 +425,41 @@ define(["../init/appController"], function (repositoryControllers) {
             }
           }
 
+          $scope.openCreateTechnicalUserDialog = function () {
+            let modalInstance = $uibModal.open({
+              animation: true,
+              templateUrl: "webjars/repository-web/dist/partials/admin/createTechnicalUser.html",
+              size: "md",
+              controller: "createTechnicalUserController",
+              resolve: {
+                user: function () {
+                  return {
+                    "userId": $scope.userPartial
+                  };
+                },
+                namespace: function () {
+                  return null;
+                },
+                context: function () {
+                  return $rootScope.context;
+                }
+              }
+            });
+            // if the modal returns with a "user" created, selects it
+            modalInstance.result.then(
+                function (result) {
+                  $scope.selectUser(result);
+                }
+            );
+
+          }
+
+          $scope.clearUserSearch = function () {
+            $scope.userPartial = "";
+            $scope.selectedUser = null;
+            $scope.retrievedUsers = [];
+          }
+
           $scope.findUsers = function () {
             // only initiates user search if partial name is larger >= 3 characters
             // this is to prevent unmanageably large drop-downs
@@ -470,14 +491,39 @@ define(["../init/appController"], function (repositoryControllers) {
            * 2) sets the selected user according to radio (can be undefined)
            */
           $scope.toggleUserSearchEnabled = function (value) {
-            let element = document.getElementById("userId");
-            if (element) {
+            let userSearch = document.getElementById("userId");
+            let userSearchButton = document.getElementById(
+                "technicalUserSearchButton");
+            let userCreateButton = document.getElementById(
+                "technicalUserCreateButton");
+            let clearUserSearchButton = document.getElementById(
+                "technicalUserClearButton");
+
+            if (userSearch) {
               if (value == "myself") {
-                element.disabled = true;
+                userSearch.disabled = true;
+                if (userSearchButton) {
+                  userSearchButton.disabled = true;
+                }
+                if (userCreateButton) {
+                  userCreateButton.disabled = true;
+                }
+                if (clearUserSearchButton) {
+                  clearUserSearchButton.disabled = true;
+                }
                 $scope.selectedUser = $scope.username;
                 $scope.selectedSubject = $scope.loggedInUserSubject;
               } else {
-                element.disabled = false;
+                userSearch.disabled = false;
+                if (userSearchButton) {
+                  userSearchButton.disabled = false;
+                }
+                if (userCreateButton) {
+                  userCreateButton.disabled = false;
+                }
+                if (clearUserSearchButton) {
+                  clearUserSearchButton.disabled = false;
+                }
                 $scope.userPartial = "";
                 $scope.selectedUser = null;
                 $scope.selectedSubject = null;
