@@ -88,6 +88,7 @@ define("repository", [
               redirectUri = cookieKey.replace("postLoginRedirect=", "");
             }
           });
+          document.cookie = "postLoginRedirect=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"
           if ("/login" === redirectUri) {
             return "/";
           }
@@ -228,7 +229,7 @@ define("repository", [
         previousLocation will be "cleared" if the log on succeeds.
         */
         if ($rootScope.previousLocation) {
-          document.cookie = "postLoginRedirect=" + $rootScope.previousLocation;
+          document.cookie = "postLoginRedirect=" + $rootScope.previousLocation + "; Path=/;";
         }
       }
       return result;
