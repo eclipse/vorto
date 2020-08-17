@@ -32,7 +32,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * User information endpoint: https://accounts.eclipse.org/oauth2/UserInfo
  */
-@Configuration
+/**
+ * Temporarily disabled due to potential conflicts with GITHUB as provider wrt username collisions -
+ * see #2529 for status
+ */
+//@Configuration
 public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConfiguration {
 
   private static final String LOGOUT_URL = "/logout";
