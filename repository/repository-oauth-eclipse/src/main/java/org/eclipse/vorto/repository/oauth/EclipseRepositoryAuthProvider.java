@@ -22,7 +22,11 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@Component
+/**
+ * Temporarily disabled due to potential conflicts with GITHUB as provider wrt username collisions -
+ * see #2529 for status
+ */
+//@Component
 public class EclipseRepositoryAuthProvider implements IOAuthProvider {
 
   @Autowired
