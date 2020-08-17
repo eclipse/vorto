@@ -13,13 +13,6 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Lists;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -30,11 +23,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.CollisionException;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.eclipse.vorto.repository.services.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,6 +31,10 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
@@ -313,11 +306,11 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
     searchForPublicModelsAndFailIfAnyExist(currentNamespace);
     authorizeActingUser(actor, currentNamespace);
-    deleteModeshapeWorkspace(currentNamespace);
     deleteAllCollaboratorAssociations(actor, currentNamespace);
 
     // finally deletes the actual namespace
     namespaceRepository.delete(currentNamespace);
+    deleteModeshapeWorkspace(currentNamespace);
 
     publishNamespaceDeletedEvent(actor, currentNamespace);
   }
@@ -440,9 +433,17 @@ public class NamespaceService implements ApplicationEventPublisherAware {
       throws OperationForbiddenException, DoesNotExistException {
     Collection<User> users = userNamespaceRoleService
         .getRolesByUser(actor, currentNamespace).keySet();
+    boolean actorIsAmongstUsers = users.contains(actor);
+    if (actorIsAmongstUsers) {
+      users.remove(actor);
+    }
     for (User user : users) {
       userNamespaceRoleService.deleteAllRoles(actor, user, currentNamespace, true);
     }
+    if (actorIsAmongstUsers) {
+      userNamespaceRoleService.deleteAllRoles(actor, actor, currentNamespace, true);
+    }
+
   }
 
   private void deleteModeshapeWorkspace(Namespace currentNamespace) {
