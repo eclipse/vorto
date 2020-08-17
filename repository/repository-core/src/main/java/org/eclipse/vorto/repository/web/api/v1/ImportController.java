@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.ImporterInfo;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
@@ -74,6 +75,9 @@ public class ImportController extends AbstractRepositoryController {
 
   @Autowired
   private NamespaceRepository namespaceRepository;
+
+  @Autowired
+  private NamespaceService namespaceService;
 
   @RequestMapping(method = RequestMethod.POST)
   @PreAuthorize("hasAuthority('model_creator')")
@@ -126,13 +130,14 @@ public class ImportController extends AbstractRepositoryController {
       List<ModelInfo> importedModels = importer.doImport(handleId,
           Context.create(getUserContext(targetNamespace), Optional.of(targetNamespace)));
       for (ModelInfo modelInfo : importedModels) {
-        workflowService.start(modelInfo.getId(), getUserContext(modelInfo.getId()));
+        workflowService.start(modelInfo.getId(), getUserContext(targetNamespace));
       }
 
       return new ResponseEntity<>(importedModels, HttpStatus.OK);
     } catch (Exception e) {
       LOGGER.error(String.format("Error Importing model. %s", handleId), e);
-      throw new IllegalArgumentException(String.format("Could not import with handle ID %s", handleId), e);
+      throw new IllegalArgumentException(
+          String.format("Could not import with handle ID %s", handleId), e);
     }
   }
 

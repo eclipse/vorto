@@ -210,14 +210,9 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.importedModels = result.data;
                 },
                 function (error) {
-                  if (error.status == 403) {
-                    $scope.error = "Operation is Forbidden";
-                  } else if (error.status == 401) {
-                    $scope.error = "Unauthorized Operation";
-                  } else if (error.status == 400) {
-                    $scope.error = "Bad Request. Server Down";
-                  } else if (error.status == 500) {
-                    $scope.error = "Internal Server Error";
+                  if (error.data && error.data.message) {
+                    $scope.error = error.data.message + " - response status: "
+                        + error.status;
                   } else {
                     $scope.error = "Failed Request with response status "
                         + error.status;
