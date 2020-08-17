@@ -309,8 +309,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     deleteAllCollaboratorAssociations(actor, currentNamespace);
 
     // finally deletes the actual namespace
-    namespaceRepository.delete(currentNamespace);
     deleteModeshapeWorkspace(currentNamespace);
+    namespaceRepository.delete(currentNamespace);
 
     publishNamespaceDeletedEvent(actor, currentNamespace);
   }
