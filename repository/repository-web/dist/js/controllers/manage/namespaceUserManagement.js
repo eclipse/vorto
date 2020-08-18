@@ -46,11 +46,15 @@ define(["../../init/appController"], function (repositoryControllers) {
                 function(result) {
                   // returns boolean
                   $scope.authorized = result.data;
+                  $scope.getNamespaceUsers($scope.namespace.name);
                 },
                 function(error) {
                   $scope.authorized = false;
                 }
             )
+          }
+          else {
+            $scope.authorized = true;
           }
 
           $scope.getNamespaceUsers = function (namespacename) {
