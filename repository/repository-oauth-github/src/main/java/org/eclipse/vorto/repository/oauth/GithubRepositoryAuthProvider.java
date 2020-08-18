@@ -84,7 +84,7 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
     }
     
     Set<String> roles = new HashSet<>();
-    authentication.getAuthorities().stream().forEach(e -> roles.add(e.getAuthority()));
+    authentication.getAuthorities().forEach(e -> roles.add(e.getAuthority()));
     user.setRoles(roles);
     
     return user;

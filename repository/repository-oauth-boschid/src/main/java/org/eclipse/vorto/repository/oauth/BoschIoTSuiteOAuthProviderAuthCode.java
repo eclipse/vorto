@@ -92,7 +92,7 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
   @Override
   public Authentication authenticate(HttpServletRequest request, String jwtToken) {
         return JwtToken.instance(jwtToken)
-            .map(jwt -> createAuthentication(jwt))
+            .map(this::createAuthentication)
             .orElse(null);
   }
 
