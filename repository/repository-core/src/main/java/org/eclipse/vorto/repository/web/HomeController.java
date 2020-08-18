@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.OAuthUser;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.web.oauth.OAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +56,9 @@ public class HomeController {
   @Autowired
   private IOAuthProviderRegistry registry;
 
+  @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
   @ApiOperation(value = "Returns the currently logged in User")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Unauthorized"),
       @ApiResponse(code = 200, message = "OK")})
@@ -76,8 +80,10 @@ public class HomeController {
     Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);
 
     map.put("name", oauthUser.getUserId());
-    if (Objects.nonNull(userAccount))
+
+    if (Objects.nonNull(userAccount)) {
       map.put("subject", userAccount.getSubject());
+    }
 
     map.put("displayName", oauthUser.getDisplayName());
     map.put("isRegistered", Boolean.toString(userAccount != null));
@@ -85,6 +91,8 @@ public class HomeController {
     map.put("needUpdate", Boolean.toString(needUpdate(userAccount, updateCutoff)));
     map.put("logOutUrl", provider.getWebflowConfiguration().get().getLogoutUrl(request));
     map.put("provider", new OAuthProvider(provider.getId(), provider.getLabel(), provider.getWebflowConfiguration().get()));
+
+    map.put("sysadmin", userAccount == null ? false : userRepositoryRoleService.isSysadmin(userAccount));
 
     return new ResponseEntity<>(map, HttpStatus.OK);
   }
