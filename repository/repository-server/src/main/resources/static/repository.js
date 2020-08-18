@@ -146,6 +146,7 @@ define("repository", [
         $rootScope.userInfo = user;
         $rootScope.user = user.name;
         $rootScope.displayName = user.displayName;
+        $rootScope.sysadmin = user.sysadmin;
         // fixes the annoying "Welcome, {{displayName}}" glitch
         let userWelcome = document.getElementById('userWelcome');
         if (userWelcome && $rootScope.domReady) {
@@ -171,6 +172,7 @@ define("repository", [
         $rootScope.displayName = null;
         $rootScope.authenticated = false;
         $rootScope.authority = null;
+        $rootScope.sysadmin = false;
       }
     };
 
@@ -216,6 +218,9 @@ define("repository", [
 
     $rootScope.hasAuthority = function (role) {
       var flag = false;
+      if (role == 'sysadmin') {
+        return $rootScope.sysadmin;
+      }
       if ($rootScope.authority != undefined) {
         for (var element of $rootScope.authority) {
           if (element === role) {
