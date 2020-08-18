@@ -12,6 +12,7 @@
 			<span style="font-size: xx-large">&nbsp;Loading namespace and collaborators...</span>
 		</div>
 	</div>
+	<div ng-if="authorized == false" class="row alert alert-danger table-cell" style="text-align:center">You do not manage the '{{namespace.name}}' namespace.<br/></div>
 	<div class="row">
 		<div class="col-sm-12">
 			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingNamespaceUsers" ng-click="createOrUpdateUser(newUser())">

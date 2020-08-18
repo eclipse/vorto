@@ -19,7 +19,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           // infers whether this page is loaded as modal or standalone
           $scope.modal = modal;
-
+          // trying first with injected namespace object if present
           $scope.namespace = namespace;
           // handling namespace object injected as null, aka in standalone mode
           if (!$scope.namespace) {
@@ -28,8 +28,30 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
           }
 
+          // flag to infer whether user can manage the given namespace
+          // proper authorization takes place in the back-end.
+          // this is a weak/cosmetic feature to prevent even viewing the
+          // collaborators and buttons if one is not admin of the namespace
+          $scope.authorized = null;
+
           $scope.isRetrievingNamespaceUsers = false;
           $scope.namespaceUsers = [];
+
+          // if in standalone mode, we want an additional authorization check
+          // on whether the logged on user manages the given namespace, and fail
+          // to load anything otherwise
+          if (!$scope.modal) {
+            $http.get("./rest/namespaces/namespace_admin/" + $scope.namespace.name)
+            .then(
+                function(result) {
+                  // returns boolean
+                  $scope.authorized = result.data;
+                },
+                function(error) {
+                  $scope.authorized = false;
+                }
+            )
+          }
 
           $scope.getNamespaceUsers = function (namespacename) {
             $scope.isRetrievingNamespaceUsers = true;
@@ -46,7 +68,9 @@ define(["../../init/appController"], function (repositoryControllers) {
             );
           };
 
-          $scope.getNamespaceUsers($scope.namespace.name);
+          if ($scope.authorized) {
+            $scope.getNamespaceUsers($scope.namespace.name);
+          }
 
           $scope.newUser = function () {
             return {
