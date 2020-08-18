@@ -17,11 +17,9 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
 import org.eclipse.vorto.repository.plugin.generator.IGeneratorPluginService;
 import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,15 +61,11 @@ public class AbstractGeneratorController extends AbstractRepositoryController {
   }
 
   protected IUserContext getUserContext(ModelId modelId) {
-    String workspaceId;
-    try {
-      Namespace namespace = namespaceService.getByName(modelId.getNamespace());
-      workspaceId = namespace.getWorkspaceId();
-    } catch (DoesNotExistException e) {
-      throw new ModelNotFoundException("The namespace for '" + modelId + "' could not be found.");
-    }
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-            workspaceId);
+    return namespaceService.resolveWorkspaceIdForNamespace(modelId.getNamespace())
+        .map(workspaceId -> UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
+            workspaceId))
+        .orElseThrow(() -> new ModelNotFoundException(
+            "The namespace for '" + modelId + "' could not be found."));
   }
 
   protected void writeToResponse(final HttpServletResponse response, GeneratedOutput generatedOutput)
