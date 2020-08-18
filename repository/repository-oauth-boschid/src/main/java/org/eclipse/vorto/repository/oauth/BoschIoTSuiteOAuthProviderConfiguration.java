@@ -48,7 +48,7 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
 
   @Override
   protected String getUserAttributeId() {
-    return "login";
+    return "sub";
   }
 
   @Bean
