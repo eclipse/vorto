@@ -144,7 +144,7 @@ define(["../init/appController"], function (repositoryControllers) {
                     mappingcount: mappingcount
                   };
                   $scope.beingUploaded = false;
-                  $scope.resultMessage = result.message;
+                  $scope.resultMessage = result.data.message;
                 },
                 function (error) {
                   $scope.isLoading = false;
