@@ -1,18 +1,19 @@
 <div class="modal-header">
-	<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
+	<button ng-show="modal" ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="$dismiss()">&times;</button>
 	<h4 class="modal-title">Manage Collaborators <a class="help-icon"
 		href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/managing_collaborators.md" target="_blank" 
 		title="Read more about managing Collaborators"><span class="fa fa-question-circle" /></a>
 	</h4>
 </div>
 <div class="modal-body">
-	<div class="row">
-		<div class="col-sm-8">
-			<div class="row" ng-show="isRetrievingNamespaceUsers">
-				<i class="fa fa-refresh fa-spin"></i>&nbsp;Fetching collaborators ...
-			</div>
+	<div class="overlay" ng-show="isRetrievingNamespaceUsers">
+		<div style="display: table-cell;vertical-align: middle;">
+			<i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+			<span style="font-size: xx-large">&nbsp;Loading namespace and collaborators...</span>
 		</div>
-		<div class="col-sm-4">
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
 			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingNamespaceUsers" ng-click="createOrUpdateUser(newUser())">
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add</button>
 		</div>
@@ -62,5 +63,5 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Close</button>
+	<button type="button" ng-show="modal" class="btn btn-default pull-right" ng-click="$dismiss()">Close</button>
 </div>

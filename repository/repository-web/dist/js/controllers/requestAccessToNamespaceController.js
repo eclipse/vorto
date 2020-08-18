@@ -14,12 +14,12 @@ define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
       ["$rootScope", "$scope", "$http", "$routeParams", "$uibModal",
-        "$location",
+        "$location", "modal",
         function ($rootScope, $scope, $http, $routeParams, $uibModal,
-            $location) {
+            $location, modal) {
 
           // infers whether this page is loaded as modal or standalone
-          $scope.modal = $scope.$parent && $scope.$parent.modal;
+          $scope.modal = modal;
 
           // general error data
           $scope.errorMessage = null;

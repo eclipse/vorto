@@ -112,7 +112,6 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.openRequestAccessToNamespace = function () {
-            $scope.modal = true;
             var modalInstance = $uibModal.open(
                 {
                   animation: true,
@@ -122,11 +121,15 @@ define(["../../init/appController"], function (repositoryControllers) {
                   controller: "requestAccessToNamespaceController",
                   size: "lg",
                   scope: $scope,
-                  backdrop: 'static'
+                  backdrop: 'static',
+                  resolve: {
+                    modal: function() {
+                      return true;
+                    }
+                  }
                 }
             );
             modalInstance.result.finally(function (result) {
-              $scope.modal = false;
               $scope.getNamespaces();
             });
           }
@@ -240,6 +243,9 @@ define(["../../init/appController"], function (repositoryControllers) {
               resolve: {
                 namespace: function () {
                   return namespace;
+                },
+                modal: function() {
+                  return true;
                 }
               },
               backdrop: 'static'

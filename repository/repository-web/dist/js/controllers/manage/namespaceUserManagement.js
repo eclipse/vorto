@@ -13,22 +13,23 @@
 define(["../../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("namespaceUserManagementController",
-      ["$rootScope", "$scope", "$http", "$uibModal", "$uibModalInstance",
-        "namespace", "dialogConfirm",
-        function ($rootScope, $scope, $http, $uibModal, $uibModalInstance,
-            namespace, dialogConfirm) {
+      ["$rootScope", "$scope", "$http", "$uibModal", "namespace", "dialogConfirm", "$routeParams", "modal",
+        function ($rootScope, $scope, $http, $uibModal, namespace, dialogConfirm, $routeParams, modal) {
+
+
+          // infers whether this page is loaded as modal or standalone
+          $scope.modal = modal;
 
           $scope.namespace = namespace;
+          // handling namespace object injected as null, aka in standalone mode
+          if (!$scope.namespace) {
+            $scope.namespace = {
+              name: $routeParams.namespace
+            }
+          }
+
           $scope.isRetrievingNamespaceUsers = false;
           $scope.namespaceUsers = [];
-
-          $scope.cancel = function () {
-            $uibModalInstance.dismiss("Canceled.");
-          };
-
-          $scope.$on("USER_CONTEXT_UPDATED", function (evt, data) {
-
-          });
 
           $scope.getNamespaceUsers = function (namespacename) {
             $scope.isRetrievingNamespaceUsers = true;
@@ -98,7 +99,7 @@ define(["../../init/appController"], function (repositoryControllers) {
 
           $scope.deleteUser = function (user) {
             var dialog = dialogConfirm($scope,
-                "Are you sure you want to remove user '" + user.userId + "'?",
+                "Are you sure you want to remove '" + user.userId + "' as a collaborator from the namespace?",
                 ["Confirm", "Cancel"]);
 
             dialog.setCallback("Confirm", function () {

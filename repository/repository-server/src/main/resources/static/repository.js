@@ -75,7 +75,23 @@ define("repository", [
         controller: "AdminController"
       }).when("/requestAccessToNamespace", {
         templateUrl: "/webjars/repository-web/dist/partials/admin/requestAccessToNamespace.html",
-        controller: "requestAccessToNamespaceController"
+        controller: "requestAccessToNamespaceController",
+        resolve: {
+          modal: function() {
+            return false;
+          }
+        }
+      }).when("/provideAccessToNamespace", {
+        templateUrl: "/webjars/repository-web/dist/partials/admin/namespaceUserManagement.html",
+        controller: "namespaceUserManagementController",
+        resolve: {
+          namespace: function() {
+            return null;
+          },
+          modal: function() {
+            return false;
+          }
+        }
       }).when("/privacy", {
         templateUrl: "webjars/repository-web/dist/partials/privacypolicy-template.html"
       }).when("/postLogin", {
