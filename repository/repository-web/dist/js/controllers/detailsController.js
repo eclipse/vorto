@@ -201,7 +201,7 @@ define(["../init/appController"], function (repositoryControllers) {
               $http.get("./api/v1/attachments/" + model.id.prettyFormat)
               .then(
                   function (result) {
-                    $scope.attachments = result.data.attachments;
+                    $scope.attachments = result.data;
                   },
                   function (error) {
                   }
