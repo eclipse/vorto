@@ -138,7 +138,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                           // if the form is parametrized with a user, then we jump to
                           // the edit or add modal
                           $scope.createOrUpdateUser(
-                              editableUser($scope.targetUser));
+                              $scope.editableUser($scope.targetUser));
                         },
                         function (error) {
                           // will need to add a user manually at this point
@@ -199,7 +199,8 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.editableUser = function (user) {
             return {
               edit: true,
-              userId: user.userId,
+              // different "username" notations over time caused this
+              userId: user.userId ? user.userId : user.username,
               roleModelCreator: user.roles.includes("model_creator"),
               roleModelPromoter: user.roles.includes("model_promoter"),
               roleModelReviewer: user.roles.includes("model_reviewer"),
