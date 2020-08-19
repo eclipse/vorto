@@ -34,6 +34,8 @@ a Vorto user has requested access to a namespace you manage, for user <b>${targe
   </tr>
 </table>
 <br/>
+Click <a href="${host}/#/provideAccessToNamespace?namespace=${namespace}&targetUser=${targetUser}&desiredRoles=<#list suggestedRoles as role>${role}<#sep>,</#list>">here</a> to approve, reject or modify the request.
+<br/>
 <hr/>
 <br/>
 Your username and e-mail address have <b>not</b> been shared with requesting user ${requestingUser}.<br/><br/>
