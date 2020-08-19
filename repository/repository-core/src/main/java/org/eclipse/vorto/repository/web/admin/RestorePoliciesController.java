@@ -22,8 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,23 +39,24 @@ public class RestorePoliciesController {
   @Autowired
   private NamespaceRepository namespaceRepository;
 
-  @RequestMapping(value = "/rest/models/restorepolicies", method = RequestMethod.POST)
+  @PostMapping("/rest/models/restorepolicies")
   @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<String> restorePolicies() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    namespaceRepository.findAll().stream().forEach(
+    namespaceRepository.findAll().forEach(
         n -> this.repoFactory.getPolicyManager(n.getWorkspaceId(), auth).restorePolicyEntries()
     );
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
-  @RequestMapping(method = RequestMethod.POST, value = "/rest/models/{namespace}/restorepolicies")
+  @PostMapping("/rest/models/{namespace}/restorepolicies")
   @PreAuthorize("hasAuthority('sysadmin')")
   public ResponseEntity<String> restorePoliciesForNamespace(
       @ApiParam(value = "The namespace for which the policies should be restored",
           required = true) final @PathVariable String namespace) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    this.repoFactory.getPolicyManager(namespace, auth).restorePolicyEntries();
+    String workspaceId = namespaceRepository.findByName(namespace).getWorkspaceId();
+    this.repoFactory.getPolicyManager(workspaceId, auth).restorePolicyEntries();
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
