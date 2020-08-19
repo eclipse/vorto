@@ -120,7 +120,7 @@
   <div class="modal-footer">
     <div class="form-group">
       <div class="col-sm-12">
-        <button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-default pull-right" ng-click="$dismiss()">Cancel</button>
         <!-- ng-disabled does not seem to work properly or ever refresh -->
         <button id="submitButton" type="button" class="btn btn-primary pull-right"
                 ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">

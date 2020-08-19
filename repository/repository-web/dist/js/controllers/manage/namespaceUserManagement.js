@@ -13,20 +13,45 @@
 define(["../../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("namespaceUserManagementController",
-      ["$rootScope", "$scope", "$http", "$uibModal", "namespace", "dialogConfirm", "$routeParams", "modal",
-        function ($rootScope, $scope, $http, $uibModal, namespace, dialogConfirm, $routeParams, modal) {
+      ["$rootScope", "$scope", "$http", "$uibModal", "namespace",
+        "dialogConfirm", "$routeParams", "modal", "$location",
+        function ($rootScope, $scope, $http, $uibModal, namespace,
+            dialogConfirm, $routeParams, modal, $location) {
 
+          // retrieves logged on user's name
+          $scope.currentUser = null;
 
           // infers whether this page is loaded as modal or standalone
           $scope.modal = modal;
           // trying first with injected namespace object if present
-          $scope.namespace = namespace;
-          // handling namespace object injected as null, aka in standalone mode
+          // note that we may be returning to this page so the $scope variable
+          // may already exist
           if (!$scope.namespace) {
+            $scope.namespace = namespace;
+          }
+          // handling namespace object injected as null, aka in standalone mode
+          if (!$scope.namespace && $routeParams.namespace) {
             $scope.namespace = {
               name: $routeParams.namespace
             }
           }
+
+          /*
+           Target user to provide access to: this will be used by the standalone
+           parametrized version of the form, typically through a  link received
+           by e-mail. When present, the form will attempt to open the modal to
+           add/update a user and pre-populate the child modal with the relevant
+           data.
+           */
+          $scope.targetUsername = $routeParams.targetUser;
+          // will be constructed based on retrieval of targetUsername in namespace
+          // collaborators if present, or by calling the back-end otherwise
+          $scope.targetUser = null;
+          // this flag will signal an error retrieving the user if that fails
+          $scope.failedToRetrieveUser = false;
+
+          $scope.desiredRoles = $routeParams.desiredRoles
+              ? $routeParams.desiredRoles.split(",") : null;
 
           // flag to infer whether user can manage the given namespace
           // proper authorization takes place in the back-end.
@@ -34,46 +59,128 @@ define(["../../init/appController"], function (repositoryControllers) {
           // collaborators and buttons if one is not admin of the namespace
           $scope.authorized = null;
 
+          // Flag to check if a user is attempting to edit themselves as
+          // collaborator trough standalone form parametrization.
+          // Note that the real authorization is in the back-end - this just
+          // provides an early stop.
+          $scope.editingSelf = false;
+
           $scope.isRetrievingNamespaceUsers = false;
           $scope.namespaceUsers = [];
 
           // if in standalone mode, we want an additional authorization check
           // on whether the logged on user manages the given namespace, and fail
           // to load anything otherwise
-          if (!$scope.modal) {
-            $http.get("./rest/namespaces/namespace_admin/" + $scope.namespace.name)
+          if (!$scope.modal && $scope.namespace) {
+            $http.get(
+                "./rest/namespaces/namespace_admin/" + $scope.namespace.name)
             .then(
-                function(result) {
-                  // returns boolean
+                // returns boolean
+                function (result) {
                   $scope.authorized = result.data;
-                  $scope.getNamespaceUsers($scope.namespace.name);
+                  if ($scope.authorized) {
+                    // retrieves existing collaborators for the namespace
+                    $scope.initialize($scope.namespace.name);
+                  }
                 },
-                function(error) {
+                function (error) {
                   $scope.authorized = false;
                 }
             )
-          }
-          else {
+          } else {
             $scope.authorized = true;
           }
 
-          $scope.getNamespaceUsers = function (namespacename) {
-            $scope.isRetrievingNamespaceUsers = true;
+          $scope.retrieveNamespaceUsers = function(namespacename) {
             $http.get("./rest/namespaces/" + namespacename + "/users")
             .then(
                 function (result) {
                   $scope.isRetrievingNamespaceUsers = false;
                   $scope.namespaceUsers = result.data;
+                  // checks if user attempting to edit themselves as collaborator
+                  if ($scope.targetUsername && $scope.targetUsername
+                      == $scope.currentUser.name) {
+                    $scope.editingSelf = true;
+                    return;
+                  }
+                  // defines target user by target username and either existing
+                  // data or data to be fetched
+                  // checks if given user name is present in retrieved users
+                  if (
+                      $scope.targetUsername &&
+                      $scope.namespaceUsers.map(u => u.userId).includes(
+                          $scope.targetUsername)
+                  ) {
+                    $scope.targetUser = $scope.namespaceUsers.find(
+                        e => e.userId == $scope.targetUsername);
+                    // if the form is parametrized with a user, then we jump to
+                    // the edit or add modal
+
+                    // replaces the target user's roles with the desired roles
+                    // if present
+                    if ($scope.desiredRoles) {
+                      $scope.targetUser.roles = $scope.desiredRoles;
+                    }
+                    $scope.createOrUpdateUser(
+                        $scope.editableUser($scope.targetUser));
+                  }
+                  // need to load the user from the back-end
+                  else if ($scope.targetUsername) {
+                    $http.get("./rest/accounts/" + $scope.targetUsername)
+                    .then(
+                        function (result) {
+                          $scope.targetUser = result.data;
+                          // replaces the target user's roles with the desired roles
+                          // if present
+                          if ($scope.desiredRoles) {
+                            $scope.targetUser.roles = $scope.desiredRoles;
+                          }
+                          // if the form is parametrized with a user, then we jump to
+                          // the edit or add modal
+                          $scope.createOrUpdateUser(
+                              editableUser($scope.targetUser));
+                        },
+                        function (error) {
+                          // will need to add a user manually at this point
+                          $scope.failedToRetrieveUser = true;
+                        }
+                    );
+                  }
                 },
                 function (reason) {
                   $scope.isRetrievingNamespaceUsers = false;
                   // TODO : handling of failures
                 }
             );
+          }
+
+          $scope.initialize = function (namespacename) {
+            // no namespace provided or retrieved - redirect to manage
+            if (!namespacename) {
+              $location.path("/manage");
+              return;
+            }
+            $scope.isRetrievingNamespaceUsers = true;
+            if (!$scope.currentUser) {
+              // first, initialize the information about the logged in user
+              $http.get("./user")
+              .then(
+                  function (result) {
+                    $scope.currentUser = result.data;
+                    $scope.retrieveNamespaceUsers(namespacename);
+                  },
+                  function (error) {
+                    $scope.failedToRetrieveUser = true;
+                  }
+              );
+            }
+            else {
+              $scope.retrieveNamespaceUsers(namespacename);
+            }
           };
 
           if ($scope.authorized) {
-            $scope.getNamespaceUsers($scope.namespace.name);
+            $scope.initialize($scope.namespace ? $scope.namespace.name : null);
           }
 
           $scope.newUser = function () {
@@ -102,9 +209,9 @@ define(["../../init/appController"], function (repositoryControllers) {
             };
           };
 
-          $scope.createOrUpdateUser = function (user, namespace) {
+          $scope.createOrUpdateUser = function (user) {
             $scope.mode = user.edit ? "Update" : "Add";
-            var modalInstance = $uibModal.open({
+            let modalInstance = $uibModal.open({
               animation: true,
               templateUrl: "webjars/repository-web/dist/partials/admin/createOrUpdateUser.html",
               size: "md",
@@ -120,14 +227,19 @@ define(["../../init/appController"], function (repositoryControllers) {
             });
 
             modalInstance.result.finally(function (result) {
-              $scope.getNamespaceUsers($scope.namespace.name);
-              $rootScope.init();
+              // resets query params and internal params derived from route
+              $location.search({namespace: $scope.namespace.name});
+              $scope.targetUsername = null;
+              $scope.targetUser = null;
+              $scope.suggestedRoles = null;
+              $scope.retrieveNamespaceUsers($scope.namespace.name);
             });
           };
 
           $scope.deleteUser = function (user) {
             var dialog = dialogConfirm($scope,
-                "Are you sure you want to remove '" + user.userId + "' as a collaborator from the namespace?",
+                "Are you sure you want to remove '" + user.userId
+                + "' as a collaborator from the namespace?",
                 ["Confirm", "Cancel"]);
 
             dialog.setCallback("Confirm", function () {
@@ -136,7 +248,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                   + user.userId)
               .then(
                   function (result) {
-                    $scope.getNamespaceUsers($scope.namespace.name);
+                    $scope.initialize($scope.namespace.name);
                   },
                   function (reason) {
                     // TODO : Show error on window
@@ -288,7 +400,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                 namespace: function () {
                   return namespace;
                 },
-                context: function() {
+                context: function () {
                   return $rootScope.context;
                 }
               }

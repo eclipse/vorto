@@ -13,6 +13,8 @@
 		</div>
 	</div>
 	<div ng-if="authorized == false" class="row alert alert-danger table-cell" style="text-align:center">You do not manage the '{{namespace.name}}' namespace.<br/></div>
+	<div ng-if="editingSelf" class="row alert alert-danger table-cell" style="text-align:center">You cannot edit yourself ('{{targetUsername}}') as collaborator.<br/></div>
+	<div ng-if="failedToRetrieveUser" class="row alert alert-danger table-cell" style="text-align:center">Failed to retrieve user '{{targetUsername}}'. Please add the user manually.<br/></div>
 	<div class="row">
 		<div class="col-sm-12">
 			<button class="btn btn-primary pull-right" type="button" ng-disabled="isRetrievingNamespaceUsers" ng-click="createOrUpdateUser(newUser())">
