@@ -197,6 +197,10 @@ define(["../../init/appController"], function (repositoryControllers) {
           };
 
           $scope.editableUser = function (user) {
+            // default value
+            if (!user.roles) {
+              user.roles = ["model_viewer"];
+            }
             return {
               edit: true,
               // different "username" notations over time caused this
