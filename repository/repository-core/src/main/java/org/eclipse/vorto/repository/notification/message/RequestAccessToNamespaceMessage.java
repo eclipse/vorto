@@ -28,10 +28,12 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
 
   private TemplateRenderer renderer;
   private NamespaceAccessRequestDTO request;
+  private String host;
   public static final String SUBJECT_FORMAT = "Vorto request to access namespace %s for user %s";
 
-  public RequestAccessToNamespaceMessage(NamespaceAccessRequestDTO request, User recipient) {
+  public RequestAccessToNamespaceMessage(NamespaceAccessRequestDTO request, User recipient, String host) {
     super(recipient);
+    this.host = host;
     this.renderer = new TemplateRenderer("request_access_to_namespace.ftl");
     this.request = request;
   }
@@ -44,6 +46,7 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
   @Override
   public String getContent() {
     Map<String, Object> map = new HashMap<>();
+    map.put("host", host);
     map.put("namespace", request.getNamespaceName());
     map.put("requestingUser", request.getRequestingUsername());
     map.put("targetUser", request.getTargetUsername());

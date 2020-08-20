@@ -53,6 +53,7 @@ import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.eclipse.vorto.repository.web.api.v1.util.EntityDTOConverter;
 import org.eclipse.vorto.repository.web.api.v1.util.NamespaceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -94,6 +95,9 @@ public class NamespaceController {
 
   @Autowired
   private EmailNotificationService emailNotificationService;
+
+  @Value("${host:http://localhost:8080}")
+  private String host;
 
   /**
    * @return all namespaces the logged on user has access to.
@@ -194,7 +198,7 @@ public class NamespaceController {
     // attempts to send the e-mails
     // ugly exception handling here, due to the way this was designed in the service
     Collection<IMessage> messages = adminsWithEmail.stream()
-        .map(u -> new RequestAccessToNamespaceMessage(request, u)).collect(Collectors.toList());
+        .map(u -> new RequestAccessToNamespaceMessage(request, u, host)).collect(Collectors.toList());
     for (IMessage message : messages) {
       try {
         emailNotificationService.sendNotification(message);
