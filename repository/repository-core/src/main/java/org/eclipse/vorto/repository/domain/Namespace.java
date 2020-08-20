@@ -12,13 +12,11 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import com.google.common.collect.Lists;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.utils.NamespaceUtils;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 
 @Entity
 @Table(name = "namespace", indexes = {
@@ -64,27 +62,15 @@ public class Namespace {
   }
 
   public boolean owns(ModelId modelId) {
-    return in(getName(), components(modelId.getNamespace()));
+    return NamespaceUtils.in(getName(), NamespaceUtils.components(modelId.getNamespace()));
   }
 
   public boolean owns(String namespace) {
-    return in(getName(), components(namespace));
+    return NamespaceUtils.in(getName(), NamespaceUtils.components(namespace));
   }
 
   public boolean isInConflictWith(String namespace) {
-    return in(namespace, components(getName())) || in(getName(), components(namespace));
+    return NamespaceUtils.in(namespace, NamespaceUtils.components(getName())) || NamespaceUtils.in(getName(), NamespaceUtils.components(namespace));
   }
 
-  private String[] components(String namespace) {
-    String[] breakdown = namespace.split("\\.");
-    List<String> components = Lists.newArrayList();
-    for (int i = 1; i <= breakdown.length; i++) {
-      components.add(String.join(".", Arrays.copyOfRange(breakdown, 0, i)));
-    }
-    return components.toArray(new String[components.size()]);
-  }
-
-  private boolean in(String str, String[] strings) {
-    return Arrays.stream(strings).anyMatch(str::equals);
-  }
 }

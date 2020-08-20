@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.services.exceptions.*;
+import org.eclipse.vorto.repository.utils.NamespaceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -454,7 +455,13 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   private Optional<Namespace> filterAllNamespacesByName(String namespace) {
-    return Lists.newArrayList(namespaceRepository.findAll()).stream()
-        .filter(ns -> ns.owns(namespace)).findAny();
+    String[] components = NamespaceUtils.components(namespace);
+    for (String component : components) {
+      Namespace ns = namespaceRepository.findByName(component);
+      if (Objects.nonNull(ns) && ns.owns(namespace)) {
+        return Optional.of(ns);
+      }
+    }
+    return Optional.empty();
   }
 }
