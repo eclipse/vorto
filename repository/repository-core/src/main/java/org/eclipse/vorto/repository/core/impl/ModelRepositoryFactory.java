@@ -93,8 +93,11 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
 
   private static final ModeShapeEngine ENGINE = new ModeShapeEngine();
 
-  private final Supplier<Collection<String>> workspaceIdSupplier = () -> namespaceService
+  private final Supplier<Collection<String>> allWorkspaceIdSupplier = () -> namespaceService
       .findAllWorkspaceIds();
+
+  private final Supplier<Collection<String>> visibleWorkspaceIdSupplier = () -> namespaceService
+      .findWorkspaceIdsOfPossibleReferences();
 
   public ModelRepositoryFactory() {
   }
@@ -148,19 +151,19 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
 
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(user.getName()),
         workspaceId -> getRepository(workspaceId, user));
   }
 
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(userContext.getUsername()),
         workspaceId -> getRepository(workspaceId, userContext.getAuthentication()));
   }
 
   @Override
   public IModelRetrievalService getModelRetrievalService() {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(SecurityContextHolder.getContext().getAuthentication().getName()),
         workspaceId -> getRepository(workspaceId,
             SecurityContextHolder.getContext().getAuthentication()));
   }
@@ -299,5 +302,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     } else {
       return foundRepository;
     }
+  }
+
+  private Supplier<Collection<String>> getMatchingWorkspaceIdSupplier(String username) {
+    if (userRepositoryRoleService.isSysadmin(username)) {
+      return allWorkspaceIdSupplier;
+    }
+    return  visibleWorkspaceIdSupplier;
   }
 }
