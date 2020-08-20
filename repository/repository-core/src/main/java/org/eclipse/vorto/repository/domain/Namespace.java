@@ -13,19 +13,18 @@
 package org.eclipse.vorto.repository.domain;
 
 import com.google.common.collect.Lists;
-import java.util.Arrays;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import org.eclipse.vorto.model.ModelId;
 import org.hibernate.annotations.NaturalId;
 
+import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
-@Table(name = "namespace")
+@Table(name = "namespace", indexes = {
+    @Index(name = "idx_namespace_name", columnList = "name", unique = true),
+    @Index(name = "idx_namespace_workspace_id", columnList = "workspace_id", unique = true)
+})
 public class Namespace {
 
   public static final String PRIVATE_NAMESPACE_PREFIX = "vorto.private.";
