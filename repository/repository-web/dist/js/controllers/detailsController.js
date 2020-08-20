@@ -1054,7 +1054,6 @@ define(["../init/appController"], function (repositoryControllers) {
               } else {
                 $scope.getContent($scope.modelId, editor);
               }
-              $scope.getCommentsForModelId($scope.modelId);
               $scope.getWorkflowActions();
             });
             $scope.getPlatformGenerators();
