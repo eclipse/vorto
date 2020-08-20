@@ -1025,17 +1025,6 @@ define(["../init/appController"], function (repositoryControllers) {
             );
           };
 
-          $scope.diagnoseModel = function () {
-            $http.get('./rest/models/' + $scope.modelId + '/diagnostics')
-            .then(
-                function (result) {
-                  $scope.diagnostics = result;
-                },
-                function (error) {
-                }
-            );
-          };
-
           $scope.isEditingVisible = function (model) {
             return $scope.permission !== 'READ' && !model.released;
           };
@@ -1077,9 +1066,6 @@ define(["../init/appController"], function (repositoryControllers) {
               }
               $scope.getCommentsForModelId($scope.modelId);
               $scope.getWorkflowActions();
-              if ($rootScope.hasAuthority("sysadmin")) {
-                $scope.diagnoseModel();
-              }
             });
             $scope.getPlatformGenerators();
           };
