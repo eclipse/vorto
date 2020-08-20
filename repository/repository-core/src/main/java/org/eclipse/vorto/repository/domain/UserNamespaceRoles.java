@@ -12,21 +12,19 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 
 /**
  * Represents the roles a user has on a namespace.
  */
 @Entity
-@Table(name = "user_namespace_roles")
+@Table(name = "user_namespace_roles", indexes = {
+    @Index(name = "idx_user_namespace_roles_user_id", columnList = "user_id"),
+    @Index(name = "idx_user_namespace_roles_namespace_id", columnList = "namespace_id")
+})
 public class UserNamespaceRoles implements Serializable {
 
   private static final long serialVersionUID = -5348119599452266874L;

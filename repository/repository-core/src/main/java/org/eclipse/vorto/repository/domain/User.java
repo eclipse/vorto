@@ -12,22 +12,16 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import org.hibernate.annotations.NaturalId;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
+
 @Entity
-@Table(name = "user")
+@Table(name = "user", indexes = {
+    @Index(name = "idx_user_username", columnList = "username")
+})
 public class User implements Serializable {
 
   public static final String USER_ANONYMOUS = "anonymous";
