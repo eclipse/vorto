@@ -14,9 +14,9 @@ define(["../init/appController"], function (repositoryControllers) {
 
   repositoryControllers.controller("requestAccessToNamespaceController",
       ["$rootScope", "$scope", "$http", "$routeParams", "$uibModal",
-        "$location", "modal",
+        "$location", "modal", "$window",
         function ($rootScope, $scope, $http, $routeParams, $uibModal,
-            $location, modal) {
+            $location, modal, $window) {
 
           // infers whether this page is loaded as modal or standalone
           $scope.modal = modal;
@@ -65,6 +65,7 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.reloadPage = function () {
             $location.search({});
+            $window.location.reload();
           }
 
           $scope.loadUserData = function () {
@@ -82,7 +83,7 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.paramOauthProvider = $scope.technicalUser.authenticationProvider;
                   $scope.paramSubject = $scope.technicalUser.subject;
                   // disable create user button and change caption
-                  $scope.createUserButtonCaption = "Technical user exists";
+                  $scope.createUserButtonCaption = "User exists";
                   let button = document.getElementById(
                       "createTechnicalUserButton");
                   if (button) {
@@ -543,7 +544,11 @@ define(["../init/appController"], function (repositoryControllers) {
             // AngularJS event handler occurring after DOM ready prevents
             // checking the default radio
             setTimeout(() => {
-              document.getElementById("myself").checked = true;
+              // still possible to have undefined on DOM ready in certain cases
+              let element = document.getElementById("myself");
+              if (element) {
+                element.checked = true;
+              }
             }, 200);
           });
 
