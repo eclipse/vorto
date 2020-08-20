@@ -325,20 +325,10 @@ define(["../init/appController"], function (repositoryControllers) {
 
                   $scope.canCreateModels = false;
 
-                  if ($rootScope.authenticated) {
-                    $http
-                    .get("./rest/namespaces/model_creator/"
-                        + $scope.model.id.namespace)
-                    .then(function (result) {
-                          if (result.data) {
-                            $scope.canCreateModels = result.data;
-                          }
-                        },
-                        function (error) {
-                          if (error.data.message) {
-                            $scope.errorLoading = error.data.message;
-                          }
-                        });
+
+
+                  if ($rootScope.authenticated && $rootScope.authority && $rootScope.authority.includes("model_creator")) {
+                      $scope.canCreateModels = result.data;
 
                     $scope.getUserPolicy();
                     $scope.getAllUserPolicies();
