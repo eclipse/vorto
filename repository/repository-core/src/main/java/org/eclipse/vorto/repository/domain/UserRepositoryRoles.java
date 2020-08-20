@@ -12,15 +12,9 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 /**
  * Represents the roles a user has on the repository.<br/>
@@ -31,7 +25,9 @@ import javax.persistence.Table;
  * the {@literal sysadmin} role.
  */
 @Entity
-@Table(name = "user_repository_roles")
+@Table(name = "user_repository_roles", indexes = {
+    @Index(name = "idx_user_repository_roles_user", columnList = "user_id")
+})
 public class UserRepositoryRoles implements Serializable {
 
   private static final long serialVersionUID = -6226755293886720665L;
