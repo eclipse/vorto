@@ -429,7 +429,7 @@ public final class SearchTestInfrastructure {
 
     repositoryFactory = new ModelRepositoryFactory(null,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-        userNamespaceRoleService, privilegeService, userRepositoryRoleService) {
+        userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {

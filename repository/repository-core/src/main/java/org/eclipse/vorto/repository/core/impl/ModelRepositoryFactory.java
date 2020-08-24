@@ -19,6 +19,8 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
@@ -38,10 +40,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -87,14 +86,20 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   @Autowired
   private RoleUtil roleUtil;
 
+  @Autowired
+  private UserRepository userRepository;
+
   private ApplicationEventPublisher eventPublisher = null;
 
   private Repository repository;
 
   private static final ModeShapeEngine ENGINE = new ModeShapeEngine();
 
-  private final Supplier<Collection<String>> workspaceIdSupplier = () -> namespaceService
+  private final Supplier<Collection<String>> allWorkspaceIdSupplier = () -> namespaceService
       .findAllWorkspaceIds();
+
+  private final Supplier<Collection<String>> visibleWorkspaceIdSupplier = () -> namespaceService
+      .findWorkspaceIdsOfPossibleReferences();
 
   public ModelRepositoryFactory() {
   }
@@ -109,7 +114,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       NamespaceService namespaceService,
       UserNamespaceRoleService userNamespaceRoleService,
       PrivilegeService privilegeService,
-      UserRepositoryRoleService userRepositoryRoleService
+      UserRepositoryRoleService userRepositoryRoleService,
+      UserRepository userRepository
   ) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -121,6 +127,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.privilegeService = privilegeService;
     this.userRepositoryRoleService = userRepositoryRoleService;
+    this.userRepository = userRepository;
   }
 
   @PostConstruct
@@ -148,19 +155,19 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
 
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(user.getName()),
         workspaceId -> getRepository(workspaceId, user));
   }
 
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(userContext.getUsername()),
         workspaceId -> getRepository(workspaceId, userContext.getAuthentication()));
   }
 
   @Override
   public IModelRetrievalService getModelRetrievalService() {
-    return new ModelRetrievalService(workspaceIdSupplier,
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(SecurityContextHolder.getContext().getAuthentication().getName()),
         workspaceId -> getRepository(workspaceId,
             SecurityContextHolder.getContext().getAuthentication()));
   }
@@ -299,5 +306,13 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     } else {
       return foundRepository;
     }
+  }
+
+  private Supplier<Collection<String>> getMatchingWorkspaceIdSupplier(String username) {
+    User user = userRepository.findByUsername(username);
+    if (Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user)) {
+      return allWorkspaceIdSupplier;
+    }
+    return  visibleWorkspaceIdSupplier;
   }
 }

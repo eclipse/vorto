@@ -12,11 +12,12 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
-import java.util.Collection;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
 
 /**
  * Holds all persisted namespaces.
@@ -35,6 +36,10 @@ public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
   @Query("SELECT n from Namespace n WHERE n.name NOT LIKE 'vorto.private.%' AND LOWER(n.name) LIKE %?1%")
   Collection<Namespace> findPublicNamespaceByPartial(String partial);
 
+  @Query("SELECT n from Namespace n WHERE n.name NOT LIKE 'vorto.private.%'")
+  Collection<Namespace> findAllPublicNamespaces();
+
   @Override
   Collection<Namespace> findAll();
+
 }

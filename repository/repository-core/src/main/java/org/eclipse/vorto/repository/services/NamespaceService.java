@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Lists;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
@@ -395,6 +396,20 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public List<String> findAllWorkspaceIds() {
     return Lists.newArrayList(namespaceRepository.findAll()).stream().map(Namespace::getWorkspaceId)
         .collect(Collectors.toList());
+  }
+
+  public Set<String> findWorkspaceIdsOfPossibleReferences() {
+    Set<Namespace> visibleNamespaces = new HashSet<>(namespaceRepository.findAllPublicNamespaces());
+    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    if (!userContext.isAnonymous()) {
+      User user = userRepository.findByUsername(userContext.getUsername());
+      try {
+        visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long)null));
+      } catch (OperationForbiddenException | DoesNotExistException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    return visibleNamespaces.stream().map(Namespace::getWorkspaceId).collect(Collectors.toSet());
   }
 
   public Namespace findNamespaceByWorkspaceId(String workspaceId) {
