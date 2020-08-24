@@ -347,6 +347,7 @@ public abstract class UnitTestBase {
         .thenReturn(true);
 
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
+    when(userRepositoryRoleService.isSysadmin("admin")).thenReturn(true);
 
     when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class)))
         .thenReturn(Sets.newHashSet(
