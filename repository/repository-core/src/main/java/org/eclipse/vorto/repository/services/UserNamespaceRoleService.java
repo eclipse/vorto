@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.domain.*;
+import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
@@ -57,6 +58,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   @Autowired
   private UserRepositoryRoleService userRepositoryRoleService;
+
+  @Autowired
+  private INotificationService notificationService;
 
   @Autowired
   private RoleUtil roleUtil;
