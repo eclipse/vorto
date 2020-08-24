@@ -201,6 +201,8 @@ public abstract class UnitTestBase {
     RepositoryConfiguration config = RepositoryConfiguration
         .read(new ClassPathResource("vorto-repository.json").getPath());
 
+    when(userRepositoryRoleService.isSysadmin("admin")).thenReturn(true);
+
     repositoryFactory =
         new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
@@ -347,7 +349,7 @@ public abstract class UnitTestBase {
         .thenReturn(true);
 
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
-    when(userRepositoryRoleService.isSysadmin("admin")).thenReturn(true);
+    when(userRepositoryRoleService.isSysadmin(admin)).thenReturn(true);
 
     when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class)))
         .thenReturn(Sets.newHashSet(
