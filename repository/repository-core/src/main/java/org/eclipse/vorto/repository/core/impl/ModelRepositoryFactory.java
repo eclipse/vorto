@@ -19,6 +19,8 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
@@ -38,10 +40,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -86,6 +85,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
 
   @Autowired
   private RoleUtil roleUtil;
+
+  @Autowired
+  private UserRepository userRepository;
 
   private ApplicationEventPublisher eventPublisher = null;
 
@@ -305,7 +307,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   private Supplier<Collection<String>> getMatchingWorkspaceIdSupplier(String username) {
-    if (userRepositoryRoleService.isSysadmin(username)) {
+    User user = userRepository.findByUsername(username);
+    if (Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user)) {
       return allWorkspaceIdSupplier;
     }
     return  visibleWorkspaceIdSupplier;
