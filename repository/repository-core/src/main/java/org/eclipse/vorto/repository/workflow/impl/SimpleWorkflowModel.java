@@ -173,6 +173,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 
   private IRole getRole(String roleName, RoleService roleService) {
     return roleService.findAnyByName(roleName)
-        .orElseThrow(() -> new IllegalStateException("The role '" + roleName + "' was not found."));
+        .orElseThrow(() -> new IllegalStateException(
+            String.format("The role '%s' was not found.", roleName)));
   }
 }
