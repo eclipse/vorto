@@ -13,7 +13,22 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.domain.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserNamespaceID;
+import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
@@ -27,10 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This service reports information and manipulates user roles on namespaces.<br/>
@@ -152,7 +163,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param namespace
    * @param role
    * @return
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#hasRole(String, String, String)
    */
   public boolean hasRole(User user, Namespace namespace, IRole role) throws DoesNotExistException {
     ServiceValidationUtil.validate(user, namespace, role);
@@ -193,7 +203,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     Namespace namespace = resolveByNameOrParentName(namespaceName);
 
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return hasRole(user, namespace, role);
   }
 
@@ -374,7 +384,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return addRole(actor, target, namespace, role);
   }
 
@@ -435,7 +445,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return removeRole(actor, target, namespace, role);
   }
 
@@ -638,7 +648,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     }
     // Actor has no admin role on namespace and is trying to remove somebody else, without being
     // sysadmin
-    else if (!hasRole(actor, namespace, namespaceAdminRole()) && !actor.equals(target) && !userRepositoryRoleService.isSysadmin(actor)) {
+    else if (!hasRole(actor, namespace, namespaceAdminRole()) && !actor.equals(target)
+        && !userRepositoryRoleService.isSysadmin(actor)) {
       throw new OperationForbiddenException(
           String.format("Acting user cannot delete user roles for namespace [%s].",
               namespace.getName())

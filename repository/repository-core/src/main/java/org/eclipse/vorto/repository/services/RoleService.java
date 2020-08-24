@@ -38,6 +38,9 @@ public class RoleService {
   @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
 
+  @Autowired
+  private RoleUtil roleUtil;
+
   /**
    * Aggregates both known role repositories and returns the first {@link IRole} matching the given
    * name.
@@ -46,9 +49,10 @@ public class RoleService {
    * @return the first {@link IRole} matching the given name.
    */
   public Optional<IRole> findAnyByName(String name) {
+    String normalized = roleUtil.normalize(name);
     return Stream
-        .of(Optional.ofNullable(namespaceRoleRepository.find(name)),
-            Optional.ofNullable(repositoryRoleRepository.find(name)))
+        .of(Optional.ofNullable(namespaceRoleRepository.find(normalized)),
+            Optional.ofNullable(repositoryRoleRepository.find(normalized)))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();
