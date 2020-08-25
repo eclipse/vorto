@@ -203,7 +203,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     Namespace namespace = resolveByNameOrParentName(namespaceName);
 
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return hasRole(user, namespace, role);
   }
 
@@ -384,7 +384,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return addRole(actor, target, namespace, role);
   }
 
@@ -445,7 +445,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     User actor = userRepository.findByUsername(actorUsername);
     User target = userRepository.findByUsername(targetUsername);
     Namespace namespace = namespaceRepository.findByName(namespaceName);
-    IRole role = namespaceRoleRepository.find(roleName);
+    IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
     return removeRole(actor, target, namespace, role);
   }
 
@@ -797,6 +797,18 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     return result;
   }
 
+  /**
+   * Near-proxy call to repository: retrieves user roles by workspace ID and username, alternatively
+   * to the usual namespace+user convention across this service. <br/>
+   * This helps removing unnecessary queries to retrieve the namespace name by workspace ID first,
+   * and then query for roles in some case e.g. in
+   * {@link org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory#getUserRoles(String, String)}.
+   *
+   * @param workspaceId
+   * @param user
+   * @return
+   * @throws DoesNotExistException
+   */
   public Collection<IRole> getRolesByWorkspaceIdAndUser(String workspaceId, User user)
       throws DoesNotExistException {
     ServiceValidationUtil.validateEmpties(workspaceId);
@@ -810,6 +822,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
   }
 
+  /**
+   * @param workspaceId
+   * @param username
+   * @return
+   * @throws DoesNotExistException
+   * @see UserNamespaceRoleService#getRolesByWorkspaceIdAndUser(String, String)
+   */
   public Collection<IRole> getRolesByWorkspaceIdAndUser(String workspaceId, String username)
       throws DoesNotExistException {
     User user = userRepository.findByUsername(username);

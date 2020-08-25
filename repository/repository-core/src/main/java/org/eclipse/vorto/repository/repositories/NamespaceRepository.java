@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Holds all persisted namespaces.
- * TODO #2265 better caching key vs eviction
  */
 @Repository
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
@@ -35,6 +34,10 @@ public interface NamespaceRepository extends CrudRepository<Namespace, Long> {
   @Query("SELECT n from Namespace n WHERE n.name NOT LIKE 'vorto.private.%' AND LOWER(n.name) LIKE %?1%")
   Collection<Namespace> findPublicNamespaceByPartial(String partial);
 
+  @Query("SELECT n from Namespace n WHERE n.name NOT LIKE 'vorto.private.%'")
+  Collection<Namespace> findAllPublicNamespaces();
+
   @Override
   Collection<Namespace> findAll();
+
 }

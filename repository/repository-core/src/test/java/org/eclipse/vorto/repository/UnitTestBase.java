@@ -206,11 +206,13 @@ public abstract class UnitTestBase {
     RepositoryConfiguration config = RepositoryConfiguration
         .read(new ClassPathResource("vorto-repository.json").getPath());
 
+    when(userRepositoryRoleService.isSysadmin("admin")).thenReturn(true);
+
     repositoryFactory =
         new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
             userNamespaceRoleService, privilegeService, userRepositoryRoleService,
-            userNamespaceRolesCache) {
+            userNamespaceRolesCache, userRepository) {
 
           @Override
           public IModelRetrievalService getModelRetrievalService() {
@@ -303,35 +305,37 @@ public abstract class UnitTestBase {
               model_reviewer);
     });
 
-    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), anyString())).thenAnswer(inv -> {
-      if (inv.getArguments()[1].equals("namespace_admin")) {
-        return Sets.newHashSet(namespace_admin);
-      }
+    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), anyString()))
+        .thenAnswer(inv -> {
+          if (inv.getArguments()[1].equals("namespace_admin")) {
+            return Sets.newHashSet(namespace_admin);
+          }
 
-      if (inv.getArguments()[1].equals("viewer")) {
-        return Sets.newHashSet(model_viewer);
-      }
+          if (inv.getArguments()[1].equals("viewer")) {
+            return Sets.newHashSet(model_viewer);
+          }
 
-      if (inv.getArguments()[1].equals("creator")) {
-        return Sets.newHashSet(model_creator);
-      }
+          if (inv.getArguments()[1].equals("creator")) {
+            return Sets.newHashSet(model_creator);
+          }
 
-      if (inv.getArguments()[1].equals("promoter")) {
-        return Sets.newHashSet(model_promoter);
-      }
+          if (inv.getArguments()[1].equals("promoter")) {
+            return Sets.newHashSet(model_promoter);
+          }
 
-      if (inv.getArguments()[1].equals("publisher")) {
-        return Sets.newHashSet(model_publisher);
-      }
+          if (inv.getArguments()[1].equals("publisher")) {
+            return Sets.newHashSet(model_publisher);
+          }
 
-      if (inv.getArguments()[1].equals("reviewer")) {
-        return Sets.newHashSet(model_reviewer);
-      }
+          if (inv.getArguments()[1].equals("reviewer")) {
+            return Sets.newHashSet(model_reviewer);
+          }
 
-      return Sets
-          .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher,
-              model_reviewer);
-    });
+          return Sets
+              .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
+                  model_publisher,
+                  model_reviewer);
+        });
 
     when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
         .thenReturn(roles);
@@ -393,6 +397,7 @@ public abstract class UnitTestBase {
         .thenReturn(true);
 
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
+    when(userRepositoryRoleService.isSysadmin(admin)).thenReturn(true);
 
     when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class)))
         .thenReturn(Sets.newHashSet(
