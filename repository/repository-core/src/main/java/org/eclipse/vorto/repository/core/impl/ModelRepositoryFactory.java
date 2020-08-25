@@ -12,14 +12,42 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.IDiagnostics;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
+import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.UserLoginException;
+import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.RoleUtil;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
@@ -31,19 +59,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 @Component("modelRepositoryFactory")
 public class ModelRepositoryFactory implements IModelRepositoryFactory,
@@ -87,6 +102,9 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   @Autowired
   private RoleUtil roleUtil;
 
+  @Autowired
+  private UserNamespaceRolesCache userNamespaceRolesCache;
+
   private ApplicationEventPublisher eventPublisher = null;
 
   private Repository repository;
@@ -109,7 +127,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       NamespaceService namespaceService,
       UserNamespaceRoleService userNamespaceRoleService,
       PrivilegeService privilegeService,
-      UserRepositoryRoleService userRepositoryRoleService
+      UserRepositoryRoleService userRepositoryRoleService,
+      UserNamespaceRolesCache userNamespaceRolesCache
   ) {
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -121,6 +140,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.privilegeService = privilegeService;
     this.userRepositoryRoleService = userRepositoryRoleService;
+    this.userNamespaceRolesCache = userNamespaceRolesCache;
   }
 
   @PostConstruct
@@ -266,22 +286,49 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     };
   }
 
+  /**
+   * This method accesses a request-scoped {@link UserNamespaceRolesCache} bean that maps composite
+   * workspace+user IDs to roles. <br/>
+   * This implies values for multiple calls with same workspace ID and username are cached within
+   * the current request, and expire in the next one. <br/>
+   * Not a perfect system as there are also numerous individual ID calls per request at times,
+   * but better than nothing (i.e. at least caches the large amount of repeated calls within e.g. a
+   * request to load a model).
+   * @param workspaceId
+   * @param username
+   * @return
+   */
   private Set<IRole> getUserRoles(String workspaceId, String username) {
-    // TODO improve caching for non anon users
+
     if (UserContext.isAnonymous(username)) {
       return new HashSet<>();
     }
 
-    try {
-      Set<IRole> userRoles = new HashSet<>(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username));
-      if (userRepositoryRoleService.isSysadmin(username)) {
-        userRoles.add(RepositoryRole.SYS_ADMIN);
-      }
-      return userRoles;
-    } catch (DoesNotExistException e) {
-      LOGGER.debug("User or namespace not found. ", e);
-      return Collections.emptySet();
-    }
+    String compositeID = workspaceId.concat(username);
+
+    Set<IRole> result = userNamespaceRolesCache.get(compositeID)
+        .orElseGet(
+            () -> {
+              try {
+                Set<IRole> put = new HashSet<>(
+                    userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username)
+                );
+                if (userRepositoryRoleService.isSysadmin(username)) {
+                  put.add(RepositoryRole.SYS_ADMIN);
+                }
+                userNamespaceRolesCache.put(
+                    compositeID,
+                    put
+                );
+                return put;
+              } catch (DoesNotExistException dnee) {
+                LOGGER.debug("User or namespace not found. ", dnee);
+                return Collections.emptySet();
+              }
+            }
+        );
+    return result;
+
   }
 
   private IModelRepository getRepositoryByNamespace(String namespace, Authentication auth) {
