@@ -272,9 +272,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       return new HashSet<>();
     }
 
-    String namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId).getName();
     try {
-      Set<IRole> userRoles = new HashSet<>(userNamespaceRoleService.getRoles(username, namespace));
+      Set<IRole> userRoles = new HashSet<>(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username));
       if (userRepositoryRoleService.isSysadmin(username)) {
         userRoles.add(RepositoryRole.SYS_ADMIN);
       }
