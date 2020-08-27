@@ -49,7 +49,7 @@ public class AddedToNamespaceMessage extends AbstractMessage {
     try {
       return renderer.render(map);
     } catch (Exception e) {
-      throw new NotificationProblem("Problem collaborator added to namespce email content", e);
+      throw new NotificationProblem("Problem rendering collaborator added to namespace email content", e);
     }
   }
 }

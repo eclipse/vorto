@@ -13,23 +13,26 @@
 package org.eclipse.vorto.repository.notification.message;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 
 /**
- * Sent to users if they have been removed as collaborators from a namespace.
+ * Sent to users if their roles have changed in a namespace.
  */
-public class RemovedFromNamespaceMessage extends AbstractMessage {
+public class RolesChangedInNamespaceMessage extends AbstractMessage {
 
   private TemplateRenderer renderer;
   private String namespace;
-  public static final String SUBJECT_FORMAT = "You have been removed as a collaborator from the %s Vorto namespace";
+  private List<String> roles;
+  public static final String SUBJECT_FORMAT = "Your roles as a collaborator to the %s Vorto namespace have changed";
 
-  public RemovedFromNamespaceMessage(User recipient, String namespace) {
+  public RolesChangedInNamespaceMessage(User recipient, String namespace, List<String> roles) {
     super(recipient);
     this.namespace = namespace;
-    this.renderer = new TemplateRenderer("removed_from_namespace.ftl");
+    this.roles = roles;
+    this.renderer = new TemplateRenderer("roles_changed_in_namespace.ftl");
   }
 
   @Override
@@ -41,12 +44,13 @@ public class RemovedFromNamespaceMessage extends AbstractMessage {
   public String getContent() {
     Map<String, Object> map = new HashMap<>();
     map.put("namespace", namespace);
+    map.put("roles", roles);
     map.put("recipient", recipient.getUsername());
     try {
       return renderer.render(map);
     } catch (Exception e) {
-      throw new NotificationProblem(
-          "Problem rendering collaborator removed from namespace email content", e);
+      throw new NotificationProblem("Problem rendering roles changed in namespace email content",
+          e);
     }
   }
 }
