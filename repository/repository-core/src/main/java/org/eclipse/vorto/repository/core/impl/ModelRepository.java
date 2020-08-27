@@ -386,7 +386,8 @@ public class ModelRepository extends AbstractRepositoryOperation
         }
         return models;
       } catch (PathNotFoundException e) {
-        return null;
+        throw new ModelNotFoundException(
+            String.format("Model [%s] does not exist", modelId.getPrettyFormat()), null);
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
       }
