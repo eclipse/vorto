@@ -12,16 +12,14 @@
  */
 package org.eclipse.vorto.repository.repositories;
 
+import java.util.Collection;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-
 /**
  * Holds all persisted namespaces.
- * TODO #2265 better caching key vs eviction
  */
 @Repository
 public interface NamespaceRepository extends CrudRepository<Namespace, Long> {

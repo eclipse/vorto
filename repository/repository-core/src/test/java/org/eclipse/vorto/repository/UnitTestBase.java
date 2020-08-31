@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -108,6 +109,9 @@ public abstract class UnitTestBase {
   @Mock
   protected IIndexingService indexingService;
 
+  @Mock
+  protected UserNamespaceRolesCache userNamespaceRolesCache;
+
   protected DefaultUserAccountService accountService = null;
 
   protected UserService userService = null;
@@ -189,6 +193,7 @@ public abstract class UnitTestBase {
     mockImporter(repositoryFactory);
     this.workflow = new DefaultWorkflowService(repositoryFactory, accountService,
         notificationService, namespaceService, userNamespaceRoleService, roleService);
+    mockUserNamespaceRolesCache();
   }
 
   private void mockModelParserFactory() {
@@ -206,7 +211,8 @@ public abstract class UnitTestBase {
     repositoryFactory =
         new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-            userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
+            userNamespaceRoleService, privilegeService, userRepositoryRoleService,
+            userNamespaceRolesCache, userRepository) {
 
           @Override
           public IModelRetrievalService getModelRetrievalService() {
@@ -240,6 +246,11 @@ public abstract class UnitTestBase {
     userService = new UserService(userUtil, userRepository, userRepositoryRoleService,
         userNamespaceRoleService, notificationService);
     userService.setApplicationEventPublisher(eventPublisher);
+  }
+
+  // disables caching in test as it won't impact on performance
+  protected void mockUserNamespaceRolesCache() {
+    when(userNamespaceRolesCache.get(anyString())).thenReturn(Optional.empty());
   }
 
   protected void mockImporter(ModelRepositoryFactory modelRepositoryFactory) {
@@ -293,8 +304,45 @@ public abstract class UnitTestBase {
           .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher,
               model_reviewer);
     });
+
+    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), anyString()))
+        .thenAnswer(inv -> {
+          if (inv.getArguments()[1].equals("namespace_admin")) {
+            return Sets.newHashSet(namespace_admin);
+          }
+
+          if (inv.getArguments()[1].equals("viewer")) {
+            return Sets.newHashSet(model_viewer);
+          }
+
+          if (inv.getArguments()[1].equals("creator")) {
+            return Sets.newHashSet(model_creator);
+          }
+
+          if (inv.getArguments()[1].equals("promoter")) {
+            return Sets.newHashSet(model_promoter);
+          }
+
+          if (inv.getArguments()[1].equals("publisher")) {
+            return Sets.newHashSet(model_publisher);
+          }
+
+          if (inv.getArguments()[1].equals("reviewer")) {
+            return Sets.newHashSet(model_reviewer);
+          }
+
+          return Sets
+              .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
+                  model_publisher,
+                  model_reviewer);
+        });
+
     when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
         .thenReturn(roles);
+
+    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), any(User.class)))
+        .thenReturn(roles);
+
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
   }

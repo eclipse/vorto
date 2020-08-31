@@ -798,6 +798,44 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   /**
+   * Near-proxy call to repository: retrieves user roles by workspace ID and username, alternatively
+   * to the usual namespace+user convention across this service. <br/>
+   * This helps removing unnecessary queries to retrieve the namespace name by workspace ID first,
+   * and then query for roles in some case e.g. in
+   * {@link org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory#getUserRoles(String, String)}.
+   *
+   * @param workspaceId
+   * @param user
+   * @return
+   * @throws DoesNotExistException
+   */
+  public Collection<IRole> getRolesByWorkspaceIdAndUser(String workspaceId, User user)
+      throws DoesNotExistException {
+    ServiceValidationUtil.validateEmpties(workspaceId);
+    ServiceValidationUtil.validate(user);
+    UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
+        .findByWorkspaceIdAndUser(workspaceId, user);
+    // no roles found
+    if (Objects.isNull(userNamespaceRoles)) {
+      return Collections.emptyList();
+    }
+    return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
+  }
+
+  /**
+   * @param workspaceId
+   * @param username
+   * @return
+   * @throws DoesNotExistException
+   * @see UserNamespaceRoleService#getRolesByWorkspaceIdAndUser(String, String)
+   */
+  public Collection<IRole> getRolesByWorkspaceIdAndUser(String workspaceId, String username)
+      throws DoesNotExistException {
+    User user = userRepository.findByUsername(username);
+    return getRolesByWorkspaceIdAndUser(workspaceId, user);
+  }
+
+  /**
    * Builds a map of all {@link IRole}s by {@link Namespace} where the given target {@link User} has
    * any role, as acted by the acting {@link User}.<br/>
    * Can return an empty map if none found. <br/>
