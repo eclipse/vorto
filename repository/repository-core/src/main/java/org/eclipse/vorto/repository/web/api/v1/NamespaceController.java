@@ -30,14 +30,13 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.notification.IMessage;
+import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
-import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
 import org.eclipse.vorto.repository.notification.message.RequestAccessToNamespaceMessage;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.services.UserUtil;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
@@ -82,9 +81,6 @@ public class NamespaceController {
   private UserUtil userUtil;
 
   @Autowired
-  private UserRepositoryRoleService userRepositoryRoleService;
-
-  @Autowired
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
   @Autowired
@@ -94,7 +90,7 @@ public class NamespaceController {
   private NamespaceRepository namespaceRepository;
 
   @Autowired
-  private EmailNotificationService emailNotificationService;
+  private INotificationService emailNotificationService;
 
   @Value("${host:http://localhost:8080}")
   private String host;
@@ -198,7 +194,8 @@ public class NamespaceController {
     // attempts to send the e-mails
     // ugly exception handling here, due to the way this was designed in the service
     Collection<IMessage> messages = adminsWithEmail.stream()
-        .map(u -> new RequestAccessToNamespaceMessage(request, u, host)).collect(Collectors.toList());
+        .map(u -> new RequestAccessToNamespaceMessage(request, u, host))
+        .collect(Collectors.toList());
     for (IMessage message : messages) {
       try {
         emailNotificationService.sendNotification(message);
