@@ -62,7 +62,7 @@ public class GeneratedOutputAttachmentHandler {
     Tag[] tags = requestParams.values()
         .stream()
         .map(Tag::new)
-        .collect(Collectors.toSet())
+        .collect(Collectors.toList())
         .toArray(new Tag[requestParams.size() + 2]);
     tags[tags.length - 1] = new Tag(plugin.getKey() + '_' + plugin.getPluginVersion());
     tags[tags.length - 2] = new Tag("generated");
