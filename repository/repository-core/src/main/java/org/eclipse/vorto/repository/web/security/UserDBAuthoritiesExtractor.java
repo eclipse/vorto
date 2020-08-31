@@ -52,12 +52,13 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
   public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
     List<String> attributes = Arrays.stream(userAttributeId.split("/")).collect(Collectors.toList());
     if (attributes.size() > 1) {
+      Map <String, Object> internalMap = new HashMap<>(map);
       String finalUserAttr = attributes.get(attributes.size() - 1);
       attributes.remove(attributes.size() - 1);
       for(String attr : attributes) {
-        map = (Map<String, Object>) map.get(attr);
+        internalMap = (Map<String, Object>) internalMap.get(attr);
       }
-      return getGrantedAuthorities(map, finalUserAttr);
+      return getGrantedAuthorities(internalMap, finalUserAttr);
     }
     return getGrantedAuthorities(map, userAttributeId);
   }
