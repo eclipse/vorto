@@ -12,22 +12,38 @@
  */
 package org.eclipse.vorto.repository.notification;
 
+import org.springframework.scheduling.annotation.Async;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public interface INotificationService {
+
   /**
-   * Sends the given message using a notification channel, e.g. Email
-   * 
+   * Sends the message synchronously and blocks until either sent or failed. <br/>
+   * This is useful when the caller needs to ensure the message has been sent, or react accordingly
+   * otherwise.
+   *
    * @param message
+   * @see INotificationService#sendNotificationAsync(IMessage) for asynchronous usage instead.
    */
   void sendNotification(IMessage message);
 
-  public class NotificationProblem extends RuntimeException {
+  /**
+   * This will send the givne {@link IMessage} in "fire-and-forget" mode. <br/>
+   * The advantage is that it will not block and the caller can just move on without caring much
+   * about whether sending the message succeeded.<br/>
+   * The disadvantage is that exceptions thrown (namely here, the {@link NotificationProblem}
+   * wrapper) will not be propagated to the caller.
+   *
+   * @param message
+   * @see INotificationService#sendNotification(IMessage) for synchronous usage instead.
+   */
+  @Async
+  void sendNotificationAsync(IMessage message);
 
-    /**
-     * 
-     */
+  class NotificationProblem extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     public NotificationProblem(String msg, Throwable t) {

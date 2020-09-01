@@ -57,7 +57,7 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
     try {
       return renderer.render(map);
     } catch (Exception e) {
-      throw new NotificationProblem("Problem rendering delete account email content", e);
+      throw new NotificationProblem("Problem rendering request access to namespace email content", e);
     }
   }
 }
