@@ -13,7 +13,17 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
@@ -23,7 +33,12 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.*;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.eclipse.vorto.repository.utils.NamespaceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,10 +46,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
@@ -396,6 +407,21 @@ public class NamespaceService implements ApplicationEventPublisherAware {
         .collect(Collectors.toList());
   }
 
+  public Set<String> findWorkspaceIdsOfPossibleReferences() {
+    Set<Namespace> visibleNamespaces = new HashSet<>(namespaceRepository.findAllPublicNamespaces());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
+    if (!userContext.isAnonymous()) {
+      User user = userRepository.findByUsername(userContext.getUsername());
+      try {
+        visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long) null));
+      } catch (OperationForbiddenException | DoesNotExistException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    return visibleNamespaces.stream().map(Namespace::getWorkspaceId).collect(Collectors.toSet());
+  }
+
   public Namespace findNamespaceByWorkspaceId(String workspaceId) {
     return namespaceRepository.findByWorkspaceId(workspaceId);
   }
@@ -454,7 +480,13 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   private Optional<Namespace> filterAllNamespacesByName(String namespace) {
-    return Lists.newArrayList(namespaceRepository.findAll()).stream()
-        .filter(ns -> ns.owns(namespace)).findAny();
+    String[] components = NamespaceUtils.components(namespace);
+    for (String component : components) {
+      Namespace ns = namespaceRepository.findByName(component);
+      if (Objects.nonNull(ns) && ns.owns(namespace)) {
+        return Optional.of(ns);
+      }
+    }
+    return Optional.empty();
   }
 }

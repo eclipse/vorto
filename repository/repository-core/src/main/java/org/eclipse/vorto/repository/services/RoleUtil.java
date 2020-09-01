@@ -36,6 +36,7 @@ public class RoleUtil {
   static {
     LEGACY_ROLE_CONVERSION.put("ROLE_USER", "model_viewer");
     LEGACY_ROLE_CONVERSION.put("TENANT_ADMIN", "namespace_admin");
+    LEGACY_ROLE_CONVERSION.put("SYS_ADMIN", "sysadmin");
   }
 
   @Autowired
@@ -107,10 +108,57 @@ public class RoleUtil {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Normalize given roles and converts to {@link IRole} objects.
+   *
+   * @param roles
+   * @return
+   * @see RoleUtil#normalize(String)
+   */
   public Collection<IRole> toNamespaceRoles(Collection<String> roles) {
     return toNamespaceRoles(roles.toArray(new String[roles.size()]));
   }
 
+  /**
+   * Converts the given role representation from the old notation to the new. <br/>
+   * <table style="border:1px solid black">
+   * <th>Old notation</th>
+   * <th>New notation</th>
+   * <tr>
+   * <td>USER</td>
+   * <td>model_viewer</td>
+   * </tr>
+   * <tr>
+   * <td>MODEL_CREATOR</td>
+   * <td>model_creator</td>
+   * </tr>
+   * <tr>
+   * <td>MODEL_PROMOTER</td>
+   * <td>model_promoter</td>
+   * </tr>
+   * <tr>
+   * <td>MODEL_REVIEWER</td>
+   * <td>model_reviewer</td>
+   * </tr>
+   * <tr>
+   * <td>MODEL_PUBLISHER</td>
+   * <td>model_publisher</td>
+   * </tr>
+   * <tr>
+   * <td>TENANT_ADMIN</td>
+   * <td>namespace_admin</td>
+   * </tr>
+   * <tr>
+   * <td>SYS_ADMIN</td>
+   * <td>sysadmin</td>
+   * </tr>
+   * </table>
+   * <br/>
+   * Note that the Spring {@literal ROLE_} prefix is also removed where applicable.
+   *
+   * @param role
+   * @return
+   */
   public String normalize(String role) {
     if (null == role || role.trim().isEmpty()) {
       return "";
@@ -119,6 +167,7 @@ public class RoleUtil {
     if (conversion == null) {
       conversion = role;
     }
-    return conversion.replace(LEGACY_ROLE_PREFIX, "").toLowerCase();
+    conversion = conversion.replace(LEGACY_ROLE_PREFIX, "").toLowerCase();
+    return conversion;
   }
 }
