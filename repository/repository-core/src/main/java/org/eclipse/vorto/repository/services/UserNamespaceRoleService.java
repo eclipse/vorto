@@ -394,7 +394,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                   namespace.getName(),
                   roleUtil.toNamespaceRoles(roles.getRoles())
                       .stream()
-                      .map(IRole::toString)
+                      .map(IRole::getName)
                       .collect(Collectors.toList())
               )
           );
@@ -470,7 +470,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                   namespace.getName(),
                   roleUtil.toNamespaceRoles(roles.getRoles())
                       .stream()
-                      .map(IRole::toString)
+                      .map(IRole::getName)
                       .collect(Collectors.toList())
               )
           );
@@ -556,7 +556,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                 namespace.getName(),
                 roleUtil.toNamespaceRoles(roles.getRoles())
                     .stream()
-                    .map(IRole::toString)
+                    .map(IRole::getName)
                     .collect(Collectors.toList())
             )
         );
@@ -577,7 +577,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                   namespace.getName(),
                   roleUtil.toNamespaceRoles(roles.getRoles())
                       .stream()
-                      .map(IRole::toString)
+                      .map(IRole::getName)
                       .collect(Collectors.toList())
               )
           );
