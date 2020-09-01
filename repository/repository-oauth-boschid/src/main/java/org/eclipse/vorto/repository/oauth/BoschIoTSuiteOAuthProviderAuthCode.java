@@ -110,11 +110,18 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
   }
 
   protected Optional<String> getUserId(Map<String, Object> map) {
-    Optional<String> userId = Optional.ofNullable((String) map.get(JWT_SUB));
-    if (!userId.isPresent()) {
-      return Optional.ofNullable((String) map.get(JWT_CLIENT_ID));
+    try {
+      // service token with CIAM context
+      String userId = (String) getFromMap(getFromMap(map,"ext"), "orig_id").get("sub");
+      return Optional.ofNullable(userId);
+    } catch (CiamIdNotFoundException e) {
+      // technical user token without CIAM context
+      Optional<String> userId = Optional.ofNullable((String) map.get(JWT_SUB));
+      if (!userId.isPresent()) {
+        return Optional.ofNullable((String) map.get(JWT_CLIENT_ID));
+      }
+      return userId;
     }
-    return userId;
   }
 
   protected OAuth2Authentication createAuthentication(String clientId, String userId, String name,
@@ -177,6 +184,13 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
   @Override
   public String getLabel() {
     return "Bosch IoT SuiteAuth";
+  }
+
+  private Map<String, Object> getFromMap(Map<String, Object> map, String key) throws CiamIdNotFoundException {
+    if (map.containsKey(key)) {
+      return (Map<String, Object>) map.get(key);
+    }
+    throw new CiamIdNotFoundException();
   }
 }
 
