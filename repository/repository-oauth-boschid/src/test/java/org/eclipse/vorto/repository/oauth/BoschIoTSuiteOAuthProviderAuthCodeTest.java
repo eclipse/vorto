@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
@@ -75,10 +74,10 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest {
         assertFalse(sut.canHandle(authentication));
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test
     public void authenticateUserNotFoundTest() {
         when(userAccountService.getUser(any())).thenReturn(null);
-        sut.authenticate(null, TOKEN);
+        assertNull(sut.authenticate(null, TOKEN));
     }
 
     @Test

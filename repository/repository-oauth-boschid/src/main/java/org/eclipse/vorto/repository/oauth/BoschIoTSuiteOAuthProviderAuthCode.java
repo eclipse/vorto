@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository.oauth;
 
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
@@ -105,13 +104,9 @@ public class BoschIoTSuiteOAuthProviderAuthCode implements IOAuthProvider {
 
     String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-    User user = userAccountService.getUser(userId);
-
-    if (user == null) {
-      throw new InvalidTokenException("User from token is not a registered user in the repository!");
-    }
-
-    return createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user));
+    return Optional.ofNullable(userAccountService.getUser(userId))
+        .map(user -> createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user)))
+        .orElse(null);
   }
 
   protected Optional<String> getUserId(Map<String, Object> map) {
