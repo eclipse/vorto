@@ -41,9 +41,12 @@ public interface UserNamespaceRoleRepository extends
   Collection<UserNamespaceRoles> findAllByNamespaceAndRoles(@Param("namespace") Namespace namespace,
       @Param("roles") long roles);
 
-  @Query("select unr from UserNamespaceRoles  unr where unr.id.namespace = :namespace and unr.id.user = :user")
+  @Query("select unr from UserNamespaceRoles unr where unr.id.namespace = :namespace and unr.id.user = :user")
   UserNamespaceRoles findByNamespaceAndUser(@Param("namespace") Namespace namespace,
       @Param("user") User user);
+
+  @Query("select unr from UserNamespaceRoles unr where unr.id.namespace.workspaceId = :workspaceId and unr.id.user = :user")
+  UserNamespaceRoles findByWorkspaceIdAndUser(@Param("workspaceId") String workspaceId, @Param("user") User user);
 
   Set<UserNamespaceRoles> findAll();
 }

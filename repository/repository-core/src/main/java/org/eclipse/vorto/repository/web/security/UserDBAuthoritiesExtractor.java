@@ -12,11 +12,6 @@
  */
 package org.eclipse.vorto.repository.web.security;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
@@ -27,6 +22,10 @@ import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
 
@@ -51,7 +50,21 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
   @Override
   @Transactional
   public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
-    String username = (String) map.get(userAttributeId);
+    List<String> attributes = Arrays.stream(userAttributeId.split("/")).collect(Collectors.toList());
+    if (attributes.size() > 1) {
+      Map <String, Object> internalMap = new HashMap<>(map);
+      String finalUserAttr = attributes.get(attributes.size() - 1);
+      attributes.remove(attributes.size() - 1);
+      for(String attr : attributes) {
+        internalMap = (Map<String, Object>) internalMap.get(attr);
+      }
+      return getGrantedAuthorities(internalMap, finalUserAttr);
+    }
+    return getGrantedAuthorities(map, userAttributeId);
+  }
+
+  protected List<GrantedAuthority> getGrantedAuthorities(Map<String, Object> map, String userAttr) {
+    String username = (String) map.get(userAttr);
     User user = userService.getUser(username);
     if (user == null) {
       return Collections.emptyList();

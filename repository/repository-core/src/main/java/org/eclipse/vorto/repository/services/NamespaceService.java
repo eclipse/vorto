@@ -13,6 +13,15 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.events.AppEvent;
@@ -24,7 +33,11 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
-import org.eclipse.vorto.repository.services.exceptions.*;
+import org.eclipse.vorto.repository.services.exceptions.CollisionException;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
 import org.eclipse.vorto.repository.utils.NamespaceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +46,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
@@ -400,11 +409,12 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   public Set<String> findWorkspaceIdsOfPossibleReferences() {
     Set<Namespace> visibleNamespaces = new HashSet<>(namespaceRepository.findAllPublicNamespaces());
-    IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
     if (!userContext.isAnonymous()) {
       User user = userRepository.findByUsername(userContext.getUsername());
       try {
-        visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long)null));
+        visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long) null));
       } catch (OperationForbiddenException | DoesNotExistException e) {
         throw new IllegalStateException(e);
       }

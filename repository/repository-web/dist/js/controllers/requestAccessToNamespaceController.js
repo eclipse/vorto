@@ -38,12 +38,23 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.paramSubject = null;
           $scope.parametrized = $routeParams.userId;
 
+          // parametrizable also, optionally
+          $scope.selectedNamespace = null;
+          $scope.namespacePartial = "";
+
           // initializes scope fields if applicable
           if ($scope.parametrized) {
             $scope.paramUserId = $routeParams.userId;
             $scope.paramOauthProvider = $routeParams.oauthProvider;
             $scope.paramClientName = $routeParams.clientName;
             $scope.paramSubject = $routeParams.subject;
+            // checks if namespace specified
+            if ($routeParams.namespace) {
+              $scope.namespacePartial = $routeParams.namespace;
+              $scope.selectedNamespace = {
+                name: $scope.namespacePartial
+              };
+            }
             // no subject provided as parameter - using the client name
             if (!$scope.paramSubject) {
               $scope.paramSubject = $scope.paramClientName;
@@ -218,9 +229,7 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.userRadio = "myself";
           $scope.namespaces = [];
-          $scope.selectedNamespace = null;
           $scope.lastHighlightedNamespace = null;
-          $scope.namespacePartial = "";
           $scope.userPartial = "";
           $scope.selectedUser = null;
           $scope.retrievedUsers = [];
@@ -248,12 +257,14 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.highlightNamespace = function (namespace) {
             let list = document.getElementById("namespaceDropdown");
-            let element = document.getElementById(namespace.name);
-            if (list && element) {
-              element.style.backgroundColor = '#7fc6e7';
-              element.style.color = '#ffffff';
-              list.scrollTop = element.offsetTop - element.clientHeight;
-              $scope.lastHighlightedNamespace = namespace;
+            if (namespace) {
+              let element = document.getElementById(namespace.name);
+              if (list && element) {
+                element.style.backgroundColor = '#7fc6e7';
+                element.style.color = '#ffffff';
+                list.scrollTop = element.offsetTop - element.clientHeight;
+                $scope.lastHighlightedNamespace = namespace;
+              }
             }
           }
 

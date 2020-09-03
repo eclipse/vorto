@@ -735,16 +735,17 @@ public class ModelRepository extends AbstractRepositoryOperation
   public Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName) {
     return doInSession(session -> {
       try {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        ModelId finalModelId = getLatestModelVersionIfLatestTagIsSet(modelId);
+        ModelIdHelper modelIdHelper = new ModelIdHelper(finalModelId);
 
         Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
         Node fileNode;
         if (fileName.isPresent()) {
-          fileNode = (Node) folderNode.getNode(fileName.get());
+          fileNode = folderNode.getNode(fileName.get());
         } else {
           if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-            throw new NotAuthorizedException(modelId);
+            throw new NotAuthorizedException(finalModelId);
           }
           fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
         }

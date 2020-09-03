@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.notification.IMessage;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,6 +51,21 @@ public class EmailNotificationService implements INotificationService {
 
   @Value("${mail.login.password}")
   private String mailPassword;
+
+  /**
+   * This will send the givne {@link IMessage} in "fire-and-forget" mode. <br/>
+   * The advantage is that it will not block and the caller can just move on without caring much
+   * about whether sending the message succeeded.<br/>
+   * The disadvantage is that exceptions thrown (namely here, the {@link NotificationProblem}
+   * wrapper) will not be propagated to the caller.
+   *
+   * @param message
+   * @see EmailNotificationService#sendNotification(IMessage) for synchronous usage instead.
+   */
+  @Async
+  public void sendNotificationAsync(IMessage message) {
+    doSendEmail(message);
+  }
 
   public void sendNotification(IMessage message) {
     doSendEmail(message);

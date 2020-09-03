@@ -32,6 +32,33 @@ public class UserDto {
 
   private boolean isTechnicalUser;
 
+  /**
+   * Converts a {@link User} entity to a payload for the UI. <br/>
+   *
+   * @param user
+   * @param suppressSensitiveData only leaves the username, authentication provider, subject and technical user flag, removing the other properties from the DTO.
+   * @return
+   */
+  public static UserDto fromUser(User user, boolean suppressSensitiveData) {
+    if (!suppressSensitiveData) {
+      return fromUser(user);
+    } else {
+      UserDto dto = new UserDto();
+      dto.setAuthenticationProvider(user.getAuthenticationProviderId());
+      dto.setSubject(user.getSubject());
+      dto.setTechnicalUser(user.isTechnicalUser());
+      dto.setUsername(user.getUsername());
+      return dto;
+    }
+  }
+
+  /**
+   * Does not suppress any sensitive data from the converted DTO.
+   *
+   * @param user
+   * @return
+   * @see UserDto#fromUser(User, boolean)
+   */
   public static UserDto fromUser(User user) {
     UserDto dto = new UserDto();
     dto.setAuthenticationProvider(user.getAuthenticationProviderId());
@@ -43,6 +70,7 @@ public class UserDto {
     dto.setUsername(user.getUsername());
     return dto;
   }
+
 
   public User toUser() {
     User user = new User();
