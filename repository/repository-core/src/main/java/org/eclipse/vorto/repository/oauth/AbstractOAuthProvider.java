@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
@@ -31,6 +32,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class AbstractOAuthProvider implements IOAuthProvider {
+
+  private static final Logger LOGGER = Logger.getLogger(AbstractOAuthProvider.class);
 
   protected static final String JWT_EMAIL = "email";
   private static final String JWT_EXPIRY = "exp";
@@ -104,7 +107,8 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
 
     PublicKey publicKey = publicKeys.get(keyId);
     if (publicKey == null) {
-      throw new InvalidTokenException(String.format("There are no public keys with kid '%s'", keyId));
+      LOGGER.warn(String.format("There are no public keys with kid '%s'", keyId));
+      return false;
     }
     
     return VerificationHelper.verifyJwtToken(publicKey, jwtToken);
