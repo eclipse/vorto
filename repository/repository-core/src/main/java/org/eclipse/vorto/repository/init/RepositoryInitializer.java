@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.init;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
@@ -51,27 +52,35 @@ public class RepositoryInitializer {
   @EventListener(ApplicationReadyEvent.class)
   @Profile("!test")
   public void initRepo() {
-    Stream.of(admins).forEach(this::createAdminUser);
+    for (int id = 0; id < admins.length; id++) {
+      // ids 1-indexed
+      createAdminUser(admins[id], id + 1);
+    }
 
   }
 
-  private void createAdminUser(String username) {
+  private void createAdminUser(String username, long id) {
     if (!userAccountService.exists(username)) {
       logger.info("Creating admin user: {}", username);
       User user = User.create(username, null, null);
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
+      user.setAuthenticationProviderId("GITHUB");
       userAccountService.saveUser(user);
     }
     User user = userRepository.findByUsername(username);
-    UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
-    if (roles == null) {
-      roles = new UserRepositoryRoles();
-      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(user.getId())
+    .orElse(
+        new UserRepositoryRoles()
+    );
+    if (roles.getUser() == null) {
       roles.setUser(user);
-    } else {
-      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
     }
+    if (roles.getId() == null) {
+      roles.setId(id);
+    }
+    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+
     userRepositoryRoleRepository.save(roles);
   }
 
