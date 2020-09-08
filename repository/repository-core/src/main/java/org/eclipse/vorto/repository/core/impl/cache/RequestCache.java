@@ -63,6 +63,7 @@ import org.springframework.web.context.annotation.RequestScope;
  * {@link org.eclipse.vorto.repository.services.UserNamespaceRoleService}, or operations reading
  * roles for multiple users, etc.).
  */
+// TODO map by users and don't fail fast if a request involves > 1 user
 @Service
 @RequestScope
 public class RequestCache {
