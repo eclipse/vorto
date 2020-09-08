@@ -859,7 +859,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         // roles not found: returns empty list
         .orElse(Collections.emptyList());
     // weird mixup of role types - added according to logic previously in ModelRepositoryFactory
-    if (cache.getUserRepositoryRoles().contains(RepositoryRole.SYS_ADMIN)) {
+    if (cache.withUser(user).getUserRepositoryRoles().contains(RepositoryRole.SYS_ADMIN)) {
       result.add(RepositoryRole.SYS_ADMIN);
     }
     return result;

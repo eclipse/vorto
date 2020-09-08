@@ -13,18 +13,14 @@
 package org.eclipse.vorto.repository.core.impl.cache;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -66,9 +62,7 @@ import org.springframework.web.context.annotation.RequestScope;
 // TODO map by users and don't fail fast if a request involves > 1 user
 @Service
 @RequestScope
-public class RequestCache {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(RequestCache.class);
+public class RequestCache implements IRequestCache {
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
@@ -84,93 +78,42 @@ public class RequestCache {
     this.userRepository = userRepository;
   }
 
-  private Collection<UserNamespaceRoles> userNamespaceRoles = ConcurrentHashMap.newKeySet();
-  private Collection<UserRepositoryRoles> userRepositoryRoles = ConcurrentHashMap.newKeySet();
-  private AtomicReference<User> user = new AtomicReference<>();
+  private Map<User, IRequestCache> cache = new ConcurrentHashMap<>();
 
-  /**
-   * Initializes or retrieves this cache with the given {@link User}.
-   *
-   * @param user
-   * @return RequestCache for chained builder-style invocations.
-   * @throws DoesNotExistException is the given {@link User} is not found.
-   */
-  public RequestCache withUser(User user) {
-    // setting user if not already set
-    // cannot use compareAndSet as it would eagerly invoke the repository query method
-    if (this.user.get() == null) {
-      this.user.set(userRepository.findOne(user.getId()));
+  @Override
+  public IRequestCache withUser(User user) {
+    if (null == user) {
+      return new NullUserCache();
     }
-    // checks the cache is invoked with the same user as previously initialized, or fail fast
-    if (!getUser().equals(user)) {
-      LOGGER.error(
-          "Attempting to re-initialize same request cache with a different user - arguably this should never happen."
-      );
-      throw new IllegalStateException("Attempting to initialize with different user");
-    }
-    if (null == getUser()) {
-      throw new IllegalStateException("User is null");
-    }
-    // setting UNR if not already set
-    if (this.userNamespaceRoles.isEmpty()) {
-      this.userNamespaceRoles.addAll(userNamespaceRoleRepository.findAllByUser(this.user.get()));
-    }
-    // setting URR if not already set
-    if (this.userRepositoryRoles.isEmpty()) {
-      userRepositoryRoleRepository.findByUser(this.user.get().getId())
-          .map(urr -> this.userRepositoryRoles.add(urr));
-    }
-    return this;
+    cache.putIfAbsent(user,
+        new UserRequestCache(userNamespaceRoleRepository, userRepositoryRoleRepository, user));
+    return cache.get(user);
   }
 
-  /**
-   * Initializes or retrieves this cache with the given user name.
-   *
-   * @param username
-   * @return
-   * @throws DoesNotExistException is the {@link User} associated with the given name is not found.
-   * @see RequestCache#withUser(User)
-   */
-  public RequestCache withUser(String username) {
-    // setting user if not already set
-    // cannot use compareAndSet as it would eagerly invoke the repository query method
-    if (this.user.get() == null) {
-      this.user.set(userRepository.findByUsername(username));
+  @Override
+  public IRequestCache withUser(String username) {
+    IRequestCache userCache = new UserRequestCache(userNamespaceRoleRepository,
+        userRepositoryRoleRepository, userRepository, username);
+    if (null == userCache.getUser()) {
+      return new NullUserCache();
     }
-    return withUser(this.user.get());
+    cache.putIfAbsent(userCache.getUser(), userCache);
+    return cache.get(userCache.getUser());
   }
 
-  /**
-   * @return an unmodifiable collection of user-namespace roles.
-   */
+  @Override
   public Collection<UserNamespaceRoles> getUserNamespaceRoles() {
-    if (null == getUser()) {
-      LOGGER.error(
-          "User is null. Either this was invoked without a prior invocation of 'withUser', or the latter has thrown DoesNotExistException and was not properly intercepted"
-      );
-      throw new IllegalStateException("User is null");
-    }
-    return Collections.unmodifiableCollection(this.userNamespaceRoles);
+    throw new UnsupportedOperationException("Must invoke withUser first");
   }
 
-  /**
-   * @return an unmodifiable collection of user-repository roles.
-   */
+  @Override
   public Collection<UserRepositoryRoles> getUserRepositoryRoles() {
-    if (null == getUser()) {
-      LOGGER.error(
-          "User is null. Either this was invoked without a prior invocation of 'withUser', or the latter has thrown DoesNotExistException and was not properly intercepted"
-      );
-      throw new IllegalStateException("User is null");
-    }
-    return Collections.unmodifiableCollection(this.userRepositoryRoles);
+    throw new UnsupportedOperationException("Must invoke withUser first");
   }
 
-  /**
-   * @return the looked-up user.
-   */
+  @Override
   public User getUser() {
-    return this.user.get();
+    throw new UnsupportedOperationException("Must invoke withUser first");
   }
 
 }
