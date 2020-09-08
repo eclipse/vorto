@@ -12,9 +12,13 @@
  */
 package org.eclipse.vorto.repository.init;
 
+import java.util.stream.Stream;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +28,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import java.util.stream.Stream;
 
 @Component
 public class RepositoryInitializer {
@@ -37,13 +40,13 @@ public class RepositoryInitializer {
   private String[] admins;
 
   @Autowired
-  private UserRepositoryRoleService userRepositoryRoleService;
-
-  @Autowired
   private DefaultUserAccountService userAccountService;
 
   @Autowired
-  private ModelRepositoryFactory repositoryFactory;
+  private UserRepository userRepository;
+
+  @Autowired
+  private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
   @EventListener(ApplicationReadyEvent.class)
   @Profile("!test")
@@ -60,7 +63,16 @@ public class RepositoryInitializer {
       user.setEmailAddress("vorto-dev@bosch-si.com");
       userAccountService.saveUser(user);
     }
-    userRepositoryRoleService.setSysadmin(username);
+    User user = userRepository.findByUsername(username);
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
+    if (roles == null) {
+      roles = new UserRepositoryRoles();
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+      roles.setUser(user);
+    } else {
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+    }
+    userRepositoryRoleRepository.save(roles);
   }
 
 }

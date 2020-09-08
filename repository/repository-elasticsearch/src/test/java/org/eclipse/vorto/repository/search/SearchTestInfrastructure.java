@@ -44,7 +44,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
+import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
@@ -216,9 +216,6 @@ public final class SearchTestInfrastructure {
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
-
-  protected UserNamespaceRolesCache userNamespaceRolesCache = Mockito
-      .mock(UserNamespaceRolesCache.class);
 
   NamespaceRepository namespaceRepository = Mockito.mock(NamespaceRepository.class);
 
@@ -473,8 +470,6 @@ public final class SearchTestInfrastructure {
 
     when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), any(User.class)))
         .thenReturn(roles);
-    // disables caching in test as it won't impact on performance
-    when(userNamespaceRolesCache.get(anyString())).thenReturn(Optional.empty());
 
     setupNamespaceMocking();
 
@@ -487,8 +482,7 @@ public final class SearchTestInfrastructure {
 
     repositoryFactory = new ModelRepositoryFactory(null,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-        userNamespaceRoleService, privilegeService, userRepositoryRoleService,
-        userNamespaceRolesCache, userRepository) {
+        userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {

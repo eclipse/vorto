@@ -24,8 +24,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
@@ -80,6 +82,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private RequestCache cache;
 
   private ApplicationEventPublisher eventPublisher;
 
@@ -159,6 +164,10 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   /**
+   * Returns whether the given {@link User} has the given {@link IRole} on the given
+   * {@link Namespace}.<br/>
+   * Cached - see {@link RequestCache}.
+   *
    * @param user
    * @param namespace
    * @param role
@@ -178,12 +187,19 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     if (!namespaceRoleRepository.findAll().contains(role)) {
       throw new IllegalArgumentException(String.format("Role [%s] is unknown", role.getName()));
     }
-    UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
-        .findOne(new UserNamespaceID(user, namespace));
-    if (Objects.isNull(userNamespaceRoles)) {
-      return false;
-    }
-    return (userNamespaceRoles.getRoles() & role.getRole()) == role.getRole();
+    return cache
+        // initializes or retrieves request cache
+        .withUser(user)
+        // get user namespace roles for user
+        .getUserNamespaceRoles()
+        .stream()
+        // filters by given namespace
+        .filter(unr -> namespace.equals(unr.getNamespace()))
+        .findAny()
+        // roles found: returns whether user has role through bitwise &
+        .map(unr -> (unr.getRoles() & role.getRole()) == role.getRole())
+        // roles not found: returns false
+        .orElse(false);
   }
 
   /**
@@ -199,17 +215,18 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     LOGGER.debug(String
         .format("Retrieving user, namespace [%s] and role [%s]", namespaceName,
             roleName));
-    User user = userRepository.findByUsername(username);
 
+    User user = cache.withUser(username).getUser();
     Namespace namespace = resolveByNameOrParentName(namespaceName);
-
     IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
+
     return hasRole(user, namespace, role);
   }
 
   /**
    * Returns whether there is any association between the given {@link Namespace} and the given
-   * {@link User}.
+   * {@link User}.<br/>
+   * Cached - see {@link RequestCache}.
    *
    * @param user
    * @param namespace
@@ -223,7 +240,11 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                 namespace.getName()
             )
     );
-    return userNamespaceRoleRepository.findByNamespaceAndUser(namespace, user) != null;
+    return cache
+        .withUser(user)
+        .getUserNamespaceRoles()
+        .stream()
+        .anyMatch(unr -> namespace.equals(unr.getNamespace()));
   }
 
   /**
@@ -234,7 +255,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @see UserNamespaceRoleService#hasAnyRole(User, Namespace)
    */
   public boolean hasAnyRole(String username, String namespaceName) throws DoesNotExistException {
-    User user = userRepository.findByUsername(username);
+    User user = cache.withUser(username).getUser();
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     return hasAnyRole(user, namespace);
   }
@@ -265,7 +286,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   }
 
   /**
-   * Returns all {@link IRole}s the given {@link User} has on the given {@link Namespace}.
+   * Returns all {@link IRole}s the given {@link User} has on the given {@link Namespace}.<br/>
+   * Cached - see {@link RequestCache}.
    *
    * @param user
    * @param namespace
@@ -275,39 +297,19 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     ServiceValidationUtil.validate(user, namespace);
     LOGGER.debug(String
         .format("Retrieving roles for user and namespace [%s]", namespace.getName()));
-    UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
-        .findOne(new UserNamespaceID(user, namespace));
-    // no roles found
-    if (Objects.isNull(userNamespaceRoles)) {
-      return Collections.emptyList();
-    }
-    return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
-  }
-
-  public Set<IRole> getRolesOnAllNamespaces(User user) {
-    LOGGER.debug(String
-        .format("Retrieving all roles for user [%s]", user.getUsername()));
-    Collection<UserNamespaceRoles> userNamespaceRoles = userNamespaceRoleRepository
-        .findAllByUser(user);
-
-    if (Objects.isNull(userNamespaceRoles)) {
-      return Sets.newHashSet(getUserRole());
-    }
-
-    Set<IRole> allRoles = userNamespaceRoles.stream()
-        .map(UserNamespaceRoles::getRoles)
-        .map(roleUtil::toNamespaceRoles)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
-    if (allRoles.isEmpty()) {
-      allRoles.add(getUserRole());
-    }
-    return allRoles;
-  }
-
-  private IRole getUserRole() {
-    return roleService.findAnyByName("model_viewer")
-        .orElseThrow(() -> new IllegalStateException("Role 'model_viewer' is not present."));
+    return cache
+        // initializes or retrieves request cache
+        .withUser(user)
+        // get user namespace roles for user
+        .getUserNamespaceRoles()
+        .stream()
+        // filters by given namespace
+        .filter(unr -> namespace.equals(unr.getNamespace()))
+        .findAny()
+        // roles found: returns roles long converted to Collection<IRole>
+        .map(unr -> roleUtil.toNamespaceRoles(unr.getRoles()))
+        // roles not found: returns an empty list
+        .orElse(Collections.emptyList());
   }
 
   /**
@@ -319,9 +321,35 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<IRole> getRoles(String username, String namespaceName)
       throws DoesNotExistException {
-    User user = userRepository.findByUsername(username);
+    User user = cache.withUser(username).getUser();
     Namespace namespace = namespaceRepository.findByName(namespaceName);
     return getRoles(user, namespace);
+  }
+
+  /**
+   * Only to be used contextually to Spring authorization integration as it artificially adds the
+   * {@literal model_viewer} role, delegating context for only public models to the caller.<br/>
+   * Cached - see {@link RequestCache}.
+   *
+   * @param user
+   * @return a set of all roles the user can have on any namespace, defaulting to {@literal model_viewer}.
+   */
+  public Set<IRole> getRolesOnAllNamespaces(User user) {
+    Set<IRole> result = cache
+        .withUser(user)
+        .getUserNamespaceRoles()
+        .stream()
+        .distinct()
+        .map(UserNamespaceRoles::getRoles)
+        .map(roleUtil::toNamespaceRoles)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+    return result.isEmpty() ? Sets.newHashSet(modelViewerRole()) : result;
+  }
+
+  private IRole modelViewerRole() {
+    return roleService.findAnyByName("model_viewer")
+        .orElseThrow(() -> new IllegalStateException("Role 'model_viewer' is not present."));
   }
 
   /**
@@ -696,6 +724,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * Verifies whether the given {@link User} can view the given {@link Namespace}, which always
    * yields true if the user is {@literal sysadmin}, or if the user has any role on the
    * namespace.<br/>
+   * Cached - see {@link RequestCache}.
    *
    * @param user
    * @param namespace
@@ -703,14 +732,17 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public void verifyCanView(User user, Namespace namespace) throws OperationForbiddenException {
     if (!userRepositoryRoleService.isSysadmin(user)) {
-      UserNamespaceRoles actorRoles = userNamespaceRoleRepository
-          .findOne(new UserNamespaceID(user, namespace));
-      // acting user has no visibility on namespace
-      if (actorRoles == null) {
-        throw new OperationForbiddenException(
-            String.format("User has no visibility on namespace [%s].", namespace.getName())
-        );
-      }
+      cache
+          .withUser(user)
+          .getUserNamespaceRoles()
+          .stream()
+          .filter(unr -> unr.getNamespace().equals(namespace))
+          .findAny()
+          .orElseThrow(
+              () -> new OperationForbiddenException(
+                  String.format("User has no visibility on namespace [%s].", namespace.getName())
+              )
+          );
     }
   }
 
@@ -718,21 +750,21 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * Retrieves the {@link User}s who collaborate (i.e. have any {@link IRole}) on the given
    * {@link Namespace}, filtered optionally by the given roles, expressed as {@code long}.<br/>
    * The operation fails if the acting {@link User} is not authorited to perform it, i.e. they are
-   * neither {@literal sysadmin}, nor have any read privilege on the givne {@link Namespace}.
+   * neither {@literal sysadmin}, nor have any read privilege on the given {@link Namespace}.
    *
-   * @param actor
+   * @param user
    * @param namespace
    * @param roles
    * @return
    * @throws OperationForbiddenException
    */
-  public Collection<User> getUsers(User actor, Namespace namespace, Long roles)
+  public Collection<User> getUsers(User user, Namespace namespace, Long roles)
       throws OperationForbiddenException, DoesNotExistException {
     // boilerplate null validation
-    ServiceValidationUtil.validate(actor, namespace);
+    ServiceValidationUtil.validate(user, namespace);
 
     // authorize actor
-    verifyCanView(actor, namespace);
+    verifyCanView(user, namespace);
 
     if (roles == null) {
       return userNamespaceRoleRepository.findAllByNamespace(namespace).stream()
@@ -813,13 +845,24 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
       throws DoesNotExistException {
     ServiceValidationUtil.validateEmpties(workspaceId);
     ServiceValidationUtil.validate(user);
-    UserNamespaceRoles userNamespaceRoles = userNamespaceRoleRepository
-        .findByWorkspaceIdAndUser(workspaceId, user);
-    // no roles found
-    if (Objects.isNull(userNamespaceRoles)) {
-      return Collections.emptyList();
+    Collection<IRole> result = cache
+        // initializes or retrieves request cache
+        .withUser(user)
+        // get user namespace roles for user
+        .getUserNamespaceRoles()
+        .stream()
+        // filters by given workspace ID
+        .filter(unr -> unr.getNamespace().getWorkspaceId().equals(workspaceId))
+        .findAny()
+        // roles found: convert to Collection<IRole>
+        .map(unr -> roleUtil.toNamespaceRoles(unr.getRoles()))
+        // roles not found: returns empty list
+        .orElse(Collections.emptyList());
+    // weird mixup of role types - added according to logic previously in ModelRepositoryFactory
+    if (cache.getUserRepositoryRoles().contains(RepositoryRole.SYS_ADMIN)) {
+      result.add(RepositoryRole.SYS_ADMIN);
     }
-    return roleUtil.toNamespaceRoles(userNamespaceRoles.getRoles());
+    return result;
   }
 
   /**
@@ -831,7 +874,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    */
   public Collection<IRole> getRolesByWorkspaceIdAndUser(String workspaceId, String username)
       throws DoesNotExistException {
-    User user = userRepository.findByUsername(username);
+    User user = cache.withUser(username).getUser();
     return getRolesByWorkspaceIdAndUser(workspaceId, user);
   }
 

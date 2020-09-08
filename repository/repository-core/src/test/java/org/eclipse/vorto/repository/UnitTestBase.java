@@ -23,7 +23,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
+import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -109,9 +109,6 @@ public abstract class UnitTestBase {
   @Mock
   protected IIndexingService indexingService;
 
-  @Mock
-  protected UserNamespaceRolesCache userNamespaceRolesCache;
-
   protected DefaultUserAccountService accountService = null;
 
   protected UserService userService = null;
@@ -193,7 +190,6 @@ public abstract class UnitTestBase {
     mockImporter(repositoryFactory);
     this.workflow = new DefaultWorkflowService(repositoryFactory, accountService,
         notificationService, namespaceService, userNamespaceRoleService, roleService);
-    mockUserNamespaceRolesCache();
   }
 
   private void mockModelParserFactory() {
@@ -211,8 +207,7 @@ public abstract class UnitTestBase {
     repositoryFactory =
         new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-            userNamespaceRoleService, privilegeService, userRepositoryRoleService,
-            userNamespaceRolesCache, userRepository) {
+            userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
 
           @Override
           public IModelRetrievalService getModelRetrievalService() {
@@ -246,11 +241,6 @@ public abstract class UnitTestBase {
     userService = new UserService(userUtil, userRepository, userRepositoryRoleService,
         userNamespaceRoleService, notificationService);
     userService.setApplicationEventPublisher(eventPublisher);
-  }
-
-  // disables caching in test as it won't impact on performance
-  protected void mockUserNamespaceRolesCache() {
-    when(userNamespaceRolesCache.get(anyString())).thenReturn(Optional.empty());
   }
 
   protected void mockImporter(ModelRepositoryFactory modelRepositoryFactory) {

@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
@@ -19,6 +20,7 @@ import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -35,6 +37,9 @@ public class UserRepositoryRoleService {
   @Autowired
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
+  @Autowired
+  private RequestCache cache;
+
   public IRole sysadmin() {
     return repositoryRoleRepository.find(RepositoryRole.SYS_ADMIN.getName());
   }
@@ -44,14 +49,14 @@ public class UserRepositoryRoleService {
    * @return whether the given {@link User} has the {@literal sysadmin} role.
    */
   public boolean isSysadmin(User user) {
-
-    UserRepositoryRoles userRepositoryRoles = userRepositoryRoleRepository.findOne(user.getId());
-    // no explicit repository roles for this user - they are not sysadmin
-    if (userRepositoryRoles == null) {
-      return false;
-    }
-    // should never happen until the table is broken
-    return (userRepositoryRoles.getRoles() & sysadmin().getRole()) == sysadmin().getRole();
+    return
+        cache
+            .withUser(user)
+            .getUserRepositoryRoles()
+            .stream()
+            .findAny()
+            .map(urr -> (urr.getRoles() & sysadmin().getRole()) == sysadmin().getRole())
+            .orElse(false);
   }
 
   /**
@@ -60,11 +65,7 @@ public class UserRepositoryRoleService {
    * @see UserRepositoryRoleService#isSysadmin(User)
    */
   public boolean isSysadmin(String username) {
-    User user = userRepository.findByUsername(username);
-    if (user == null) {
-      throw new IllegalArgumentException("User is null");
-    }
-    return isSysadmin(user);
+    return isSysadmin(cache.withUser(username).getUser());
   }
 
   /**
@@ -79,14 +80,15 @@ public class UserRepositoryRoleService {
     if (user == null) {
       throw new IllegalArgumentException("User is null");
     }
-    if(isSysadmin(user))
+    if (isSysadmin(user)) {
       return;
+    }
     updateOrInsertSysadminRole(user);
   }
 
   private void updateOrInsertSysadminRole(User user) {
     UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
-    if(roles == null) {
+    if (roles == null) {
       roles = new UserRepositoryRoles();
       roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
       roles.setUser(user);
