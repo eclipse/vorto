@@ -21,12 +21,18 @@ import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * This is a "view" on a {@link User}'s role data, returned as an instance of {@link IRequestCache}
+ * when invoked by {@link IRequestCache#withUser(User)} or {@link IRequestCache#withUser(String)} on
+ * an instance of {@link RequestCache}.<br/>
+ * The latter overload will also resolve the {@link User} by name. <br/>
+ * Initial invocations of {@link IRequestCache#getUserNamespaceRoles()} and
+ * {@link IRequestCache#getUserRepositoryRoles()} on this object will retrieve the
+ * {@link UserNamespaceRoles} and {@link UserRepositoryRoles} respectively and cache them.<br/>
+ * Subsequent invocations of those methods on this object will use the cached data.
+ */
 public class UserRequestCache implements IRequestCache {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserRequestCache.class);
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
@@ -36,6 +42,12 @@ public class UserRequestCache implements IRequestCache {
   private Collection<UserRepositoryRoles> userRepositoryRoles = new HashSet<>();
   private User user;
 
+  /**
+   * Invoked by {@link RequestCache#withUser(String)}
+   * @param userNamespaceRoleRepository
+   * @param userRepositoryRoleRepository
+   * @param user
+   */
   protected UserRequestCache(UserNamespaceRoleRepository userNamespaceRoleRepository,
       UserRepositoryRoleRepository userRepositoryRoleRepository, User user) {
     if (null == user) {
@@ -46,6 +58,13 @@ public class UserRequestCache implements IRequestCache {
     this.user = user;
   }
 
+  /**
+   * Invoked by {@link RequestCache#withUser(String)}
+   * @param userNamespaceRoleRepository
+   * @param userRepositoryRoleRepository
+   * @param userRepository
+   * @param username
+   */
   protected UserRequestCache(UserNamespaceRoleRepository userNamespaceRoleRepository,
       UserRepositoryRoleRepository userRepositoryRoleRepository, UserRepository userRepository,
       String username) {
@@ -57,18 +76,34 @@ public class UserRequestCache implements IRequestCache {
     this.user = userRepository.findByUsername(username);
   }
 
+  /**
+   * @param user
+   * @return
+   * @throws IllegalStateException
+   */
   @Override
   public IRequestCache withUser(User user) {
-    throw new UnsupportedOperationException(
+    throw new IllegalStateException(
         "Do not invoke withUser multiple times within the same invocation chain.");
   }
 
+  /**
+   * @param username
+   * @return
+   * @throws IllegalStateException
+   */
   @Override
   public IRequestCache withUser(String username) {
-    throw new UnsupportedOperationException(
+    throw new IllegalStateException(
         "Do not invoke withUser multiple times within the same invocation chain.");
   }
 
+  /**
+   * Caches the {@link User}'s {@link UserNamespaceRoles} when invoked for the first time, and
+   * returns them.<br/>
+   * Returns the cached data when invoked furtherly within the same request.
+   * @return
+   */
   @Override
   public Collection<UserNamespaceRoles> getUserNamespaceRoles() {
     // setting UNR if not already set
@@ -78,6 +113,12 @@ public class UserRequestCache implements IRequestCache {
     return Collections.unmodifiableCollection(this.userNamespaceRoles);
   }
 
+  /**
+   * Caches the {@link User}'s {@link UserRepositoryRoles} when invoked for the first time, and
+   * returns them.<br/>
+   * Returns the cached data when invoked furtherly within the same request.
+   * @return
+   */
   @Override
   public Collection<UserRepositoryRoles> getUserRepositoryRoles() {
     // setting URR if not already set
@@ -88,6 +129,12 @@ public class UserRequestCache implements IRequestCache {
     return Collections.unmodifiableCollection(this.userRepositoryRoles);
   }
 
+  /**
+   * Caches the {@link User} when invoked for the first time, and returns it. <br/>
+   * Returns the cached {@link User} when invoked furtherly within the same request.<br/>
+   * Can be useful when the user was initially retrieved by username.
+   * @return
+   */
   @Override
   public User getUser() {
     return this.user;

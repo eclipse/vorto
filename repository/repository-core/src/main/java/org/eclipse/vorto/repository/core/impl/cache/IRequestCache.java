@@ -17,10 +17,23 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 
+/**
+ * Common interface for all {@link User} resolution, {@link UserNamespaceRoles} and
+ * {@link UserRepositoryRoles} retrieval caches. <br/>
+ * Implemented by {@link RequestCache} for the request-bound mapping, but also by
+ * {@link UserRequestCache} for {@link User}-specific windows and {@link NullUserRequestCache} for
+ * {@link User}-specific windows when the user does not exist (anymore).<br/>
+ * See {@link RequestCache} implementation for usage details.
+ */
 public interface IRequestCache {
+
   IRequestCache withUser(User user);
+
   IRequestCache withUser(String username);
+
   Collection<UserNamespaceRoles> getUserNamespaceRoles();
+
   Collection<UserRepositoryRoles> getUserRepositoryRoles();
+
   User getUser();
 }
