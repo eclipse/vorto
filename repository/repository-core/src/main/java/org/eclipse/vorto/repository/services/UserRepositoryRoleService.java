@@ -12,24 +12,19 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
 
 @Service
 public class UserRepositoryRoleService {
-
-  @Autowired
-  private UserRepository userRepository;
 
   @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
@@ -76,7 +71,7 @@ public class UserRepositoryRoleService {
    */
   @Transactional
   public void setSysadmin(String username) {
-    User user = userRepository.findByUsername(username);
+    User user = cache.withUser(username).getUser();
     if (user == null) {
       throw new IllegalArgumentException("User is null");
     }
@@ -87,14 +82,19 @@ public class UserRepositoryRoleService {
   }
 
   private void updateOrInsertSysadminRole(User user) {
-    UserRepositoryRoles roles = userRepositoryRoleRepository.findOne(user.getId());
-    if (roles == null) {
-      roles = new UserRepositoryRoles();
-      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
-      roles.setUser(user);
-    } else {
-      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
-    }
+    UserRepositoryRoles roles = cache
+        .withUser(user)
+        .getUserRepositoryRoles()
+        .stream()
+        .findAny()
+        .orElseGet(
+            () -> {
+              UserRepositoryRoles result = new UserRepositoryRoles();
+              result.setUser(user);
+              return result;
+            }
+        );
+    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
     userRepositoryRoleRepository.save(roles);
   }
 }

@@ -24,8 +24,7 @@ import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 
 /**
  * This is a "view" on a {@link User}'s role data, returned as an instance of {@link IRequestCache}
- * when invoked by {@link IRequestCache#withUser(User)} or {@link IRequestCache#withUser(String)} on
- * an instance of {@link RequestCache}.<br/>
+ * when invoked by {@link RequestCache#withUser(User)} or {@link RequestCache#withUser(String)}.<br/>
  * The latter overload will also resolve the {@link User} by name. <br/>
  * Initial invocations of {@link IRequestCache#getUserNamespaceRoles()} and
  * {@link IRequestCache#getUserRepositoryRoles()} on this object will retrieve the
@@ -44,6 +43,7 @@ public class UserRequestCache implements IRequestCache {
 
   /**
    * Invoked by {@link RequestCache#withUser(String)}
+   *
    * @param userNamespaceRoleRepository
    * @param userRepositoryRoleRepository
    * @param user
@@ -60,6 +60,7 @@ public class UserRequestCache implements IRequestCache {
 
   /**
    * Invoked by {@link RequestCache#withUser(String)}
+   *
    * @param userNamespaceRoleRepository
    * @param userRepositoryRoleRepository
    * @param userRepository
@@ -77,31 +78,10 @@ public class UserRequestCache implements IRequestCache {
   }
 
   /**
-   * @param user
-   * @return
-   * @throws IllegalStateException
-   */
-  @Override
-  public IRequestCache withUser(User user) {
-    throw new IllegalStateException(
-        "Do not invoke withUser multiple times within the same invocation chain.");
-  }
-
-  /**
-   * @param username
-   * @return
-   * @throws IllegalStateException
-   */
-  @Override
-  public IRequestCache withUser(String username) {
-    throw new IllegalStateException(
-        "Do not invoke withUser multiple times within the same invocation chain.");
-  }
-
-  /**
    * Caches the {@link User}'s {@link UserNamespaceRoles} when invoked for the first time, and
    * returns them.<br/>
    * Returns the cached data when invoked furtherly within the same request.
+   *
    * @return
    */
   @Override
@@ -117,6 +97,7 @@ public class UserRequestCache implements IRequestCache {
    * Caches the {@link User}'s {@link UserRepositoryRoles} when invoked for the first time, and
    * returns them.<br/>
    * Returns the cached data when invoked furtherly within the same request.
+   *
    * @return
    */
   @Override
@@ -133,6 +114,7 @@ public class UserRequestCache implements IRequestCache {
    * Caches the {@link User} when invoked for the first time, and returns it. <br/>
    * Returns the cached {@link User} when invoked furtherly within the same request.<br/>
    * Can be useful when the user was initially retrieved by username.
+   *
    * @return
    */
   @Override

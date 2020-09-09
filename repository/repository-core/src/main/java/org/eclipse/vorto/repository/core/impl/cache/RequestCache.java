@@ -39,19 +39,19 @@ import org.springframework.web.context.annotation.RequestScope;
  * a {@link User}'s {@link org.eclipse.vorto.repository.domain.NamespaceRole}s, or retrieves a
  * {@link User}'s {@link org.eclipse.vorto.repository.domain.RepositoryRole}s, the cache will be
  * used. <br/>
- * To avail of the cache, one must first invoke {@link IRequestCache#withUser(User)} or
- * {@link IRequestCache#withUser(String)} on an instance of {@link RequestCache}.<br/>
+ * To avail of the cache, one must first invoke {@link RequestCache#withUser(User)} or
+ * {@link RequestCache#withUser(String)} on an instance of {@link RequestCache}.<br/>
  * This will return a {@link IRequestCache} object, either a {@link UserRequestCache} if the
  * {@link User} is resolved, or a {@link NullUserRequestCache} if the {@link User} cannot be
  * resolved (e.g. has been deleted within the request). <br/>
- * The {@link IRequestCache#withUser(String)} will also resolve the entity by username and cache it
+ * The {@link RequestCache#withUser(String)} will also resolve the entity by username and cache it
  * for later invocations.<br/>
  * In turn, one can then invoke any or all of the following methods:
  * <ul>
  *   <li>
  *     {@link IRequestCache#getUser()} returns the mapped and resolved {@link User} - obviously more
- *     useful if {@link IRequestCache#withUser(String)} was invoked previously (rather than
- *     {@link IRequestCache#withUser(User)}, since that would imply the context had already
+ *     useful if {@link RequestCache#withUser(String)} was invoked previously (rather than
+ *     {@link RequestCache#withUser(User)}, since that would imply the context had already
  *     resolved the {@link User} or known about it by then).
  *   </li>
  *   <li>
@@ -99,7 +99,7 @@ import org.springframework.web.context.annotation.RequestScope;
  * cache
  * // initializes or retrieves user request cache
  * .withUser(user1)
- * // attempts to invoke "withUser" on a UserRequestCache instance: throws IllegalStateException
+ * // attempts to invoke "withUser" on a UserRequestCache instance: does not compile
  * .withUser(user2)
  * ...
  * </code>
@@ -110,7 +110,7 @@ import org.springframework.web.context.annotation.RequestScope;
  * <pre>
  * <code>
  * cache
- * // attempts to retrieve roles on the main cache without user: throws IllegalStateException
+ * // attempts to retrieve roles on the main cache without user: does not compile
  * .getUserNamespaceRoles()
  * ...
  * </code>
@@ -125,7 +125,7 @@ import org.springframework.web.context.annotation.RequestScope;
  */
 @Service
 @RequestScope
-public class RequestCache implements IRequestCache {
+public class RequestCache {
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
@@ -155,7 +155,6 @@ public class RequestCache implements IRequestCache {
    * @param user
    * @return either a {@link UserRequestCache} or a {@link NullUserRequestCache}
    */
-  @Override
   public IRequestCache withUser(User user) {
     if (null == user) {
       return new NullUserRequestCache();
@@ -171,7 +170,6 @@ public class RequestCache implements IRequestCache {
    * @param username
    * @return either a {@link UserRequestCache} or a {@link NullUserRequestCache}
    */
-  @Override
   public IRequestCache withUser(String username) {
     IRequestCache userCache = new UserRequestCache(userNamespaceRoleRepository,
         userRepositoryRoleRepository, userRepository, username);
@@ -186,7 +184,6 @@ public class RequestCache implements IRequestCache {
    * @return
    * @throws IllegalStateException
    */
-  @Override
   public Collection<UserNamespaceRoles> getUserNamespaceRoles() {
     throw new IllegalStateException("Must invoke withUser first");
   }
@@ -195,7 +192,6 @@ public class RequestCache implements IRequestCache {
    * @return
    * @throws IllegalStateException
    */
-  @Override
   public Collection<UserRepositoryRoles> getUserRepositoryRoles() {
     throw new IllegalStateException("Must invoke withUser first");
   }
@@ -204,7 +200,6 @@ public class RequestCache implements IRequestCache {
    * @return
    * @throws IllegalStateException
    */
-  @Override
   public User getUser() {
     throw new IllegalStateException("Must invoke withUser first");
   }
