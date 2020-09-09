@@ -153,11 +153,9 @@ public class BasicRepositoryUITest extends AbstractUITest {
 
 
     protected void setUpTest() {
-        mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
-                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
+        // sysadmin "user1" is configured in the profile "local-ui-test".
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
-        userRepository.save(User.create("user1", "GITHUB", null, false));
         userRepository.save(User.create("user2", "GITHUB", null, false));
     }
 }
