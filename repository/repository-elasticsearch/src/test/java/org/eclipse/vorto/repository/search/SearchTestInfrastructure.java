@@ -522,7 +522,7 @@ public final class SearchTestInfrastructure {
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
-    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+    accountService = new DefaultUserAccountService(userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
 

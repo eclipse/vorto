@@ -232,7 +232,7 @@ public abstract class UnitTestBase {
   }
 
   protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
-    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+    accountService = new DefaultUserAccountService(userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
   }

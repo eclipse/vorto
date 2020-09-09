@@ -43,24 +43,15 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
 
   private UserRepository userRepository;
 
-  private INotificationService notificationService;
-
-  private RoleService roleService;
-
   private UserNamespaceRoleService userNamespaceRoleService;
 
   public DefaultUserAccountService(@Autowired UserRepository userRepository,
-      @Autowired INotificationService notificationService, @Autowired RoleService roleService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService) {
     this.userRepository = userRepository;
-    this.notificationService = notificationService;
-    this.roleService = roleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
   private ApplicationEventPublisher eventPublisher = null;
-
-  private static final Logger LOGGER = Logger.getLogger(DefaultUserAccountService.class);
 
   /**
    * Defines the minimum validation requirement for a subject string. <br/>
