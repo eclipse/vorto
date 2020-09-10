@@ -12,10 +12,31 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
@@ -24,17 +45,6 @@ import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * This class augments the test coverage on the NamespaceController. <br/>
@@ -1079,6 +1089,25 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     )
         .andExpect(status().isOk())
         .andExpect(content().json(objectMapper.writeValueAsString(expectedNamespaces)));
+  }
+
+  @Test
+  public void verifySysadminCanAccessAllNamespaces() throws Exception {
+
+    createNamespaceSuccessfully("vorto.private.creatorNS", userModelCreator);
+
+    createNamespaceSuccessfully("vorto.private.creatorNS2", userModelCreator2);
+
+    createNamespaceSuccessfully("adminNS", userSysadmin);
+
+    repositoryServer.perform(
+        get("/rest/namespaces/all")
+            .with(userSysadmin)
+    )
+        .andExpect(status().isOk())
+        // also counts the "com.mycompany" namespace created in other tests and never cleaned up
+        // TODO better isolation
+        .andExpect(jsonPath("$", hasSize(4)));
   }
 
 }

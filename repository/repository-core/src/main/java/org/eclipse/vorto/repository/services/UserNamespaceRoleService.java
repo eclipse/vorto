@@ -1127,28 +1127,12 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         .stream()
         .anyMatch(
             urr ->
-                (urr.getRoles() & RepositoryRole.SYS_ADMIN.getRole()) == RepositoryRole.SYS_ADMIN.getRole()
+                (urr.getRoles() & RepositoryRole.SYS_ADMIN.getRole()) == RepositoryRole.SYS_ADMIN
+                    .getRole()
         )
     ) {
       return
-          cache
-              // retrieving cached target user
-              .withUser(target)
-              // getting their namespace roles
-              .getUserNamespaceRoles()
-              .stream()
-              // filtering:
-              .filter(
-                  // ... by bitwise & if roleFilter present
-                  roleFilter != null ?
-                      unr -> ((unr.getRoles() & roleFilter) == roleFilter)
-                      :
-                          // ... or not filtering otherwise
-                          unr -> true
-              )
-              // mapping to namespaces
-              .map(UserNamespaceRoles::getNamespace)
-              .collect(Collectors.toSet());
+          namespaceRepository.findAll();
     }
 
     // retrieves namespaces either filtered by role(s) or all namespaces where target has a role
