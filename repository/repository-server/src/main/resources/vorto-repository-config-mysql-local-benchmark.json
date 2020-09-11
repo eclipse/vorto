@@ -1,0 +1,55 @@
+{
+	"name": "vorto",
+	"clustering" : {
+        "clusterName" : "vorto-cluster",
+        "configuration" : "jgroups-local-config.xml",
+        "locking" : "db"
+    },
+	"workspaces": {
+		"default": "default",
+		"allowCreation": true
+	},
+	"security": {
+		"anonymous": {
+			"roles": [
+				"readonly",
+				"readwrite",
+				"admin"
+			],
+			"useOnFailedLogin": false
+		},
+		"providers": [
+			{
+				"name": "Spring Security",
+				"classname": "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
+			}
+		]
+	},
+	"storage": {
+		"persistence": {
+			"type": "db",
+			"driver": "org.mariadb.jdbc.Driver",
+			"connectionUrl": "jdbc:mysql://localhost:3306/vorto_schema?autoReconnect=true",
+			"username": "vorto",
+			"password": "vorto"
+		},
+		"binaryStorage": {
+			"type": "database",
+			"driverClass": "org.mariadb.jdbc.Driver",
+			"url": "jdbc:mysql://localhost:3306/vorto_schema?autoReconnect=true",
+			"username": "vorto",
+			"password": "vorto"
+		}
+	},
+	"sequencing": {
+		"removeDerivedContentWithOriginal": false,
+		"sequencers": {
+			"Vorto Sequencer": {
+				"classname": "org.eclipse.vorto.repository.core.impl.ModelSequencer",
+				"pathExpressions": [
+					"default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]"
+				]
+			}
+		}
+	}
+}

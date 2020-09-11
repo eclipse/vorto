@@ -49,7 +49,7 @@ import com.google.common.base.Strings;
  *
  */
 @Configuration
-@Profile(value = {"prod", "int", "local-docker", "local-dev", "local-dev-mysql"})
+@Profile(value = {"prod", "int", "local-docker", "local-dev", "local-dev-mysql", "local-benchmark-test"})
 public class ElasticSearchConfiguration {
   
   @Value("${server.config.skipSslVerification:false}")
@@ -66,6 +66,9 @@ public class ElasticSearchConfiguration {
 
   @Value("${http.proxyPassword:#{null}}")
   private String proxyPassword;
+
+  @Value("${testcontainers.es}")
+  private int esPort;
   
   private String serviceName = "es";
   
@@ -93,15 +96,15 @@ public class ElasticSearchConfiguration {
   
 
   @Bean
-  @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql" })
+  @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql","local-benchmark-test"})
   public ElasticSearchService elasticSearch() {
     return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService, namespaceRepository);
   }
   
   @Bean
-  @Profile({ "local-docker", "local-dev", "local-dev-mysql" })
+  @Profile({ "local-docker", "local-dev", "local-dev-mysql" ,"local-benchmark-test"})
   public RestHighLevelClient indexingClient() {
-    RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("localhost", 9200, "http"),
+    RestClientBuilder clientBuilder = RestClient.builder(new HttpHost("localhost", esPort, "http"),
         new HttpHost("localhost", 9201, "http"));
     
     return new RestHighLevelClient(clientBuilder);
