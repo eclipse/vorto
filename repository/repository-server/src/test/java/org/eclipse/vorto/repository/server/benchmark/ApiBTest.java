@@ -1,7 +1,21 @@
+/**
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.server.benchmark;
 
+import com.google.common.collect.Sets;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.server.ui.AuthenticationProviderMock;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -37,6 +51,9 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 import java.util.ArrayList;
+
+import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
+import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSITORY_ROLES;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles={"local-benchmark-test"})
@@ -120,7 +137,7 @@ public class ApiBTest {
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = "sysadmin")
+    @WithMockUser(username = "user1", authorities = {"sysadmin","model_viewer","model_creator","namespace_admin"})
     public void testGetModelApi() throws WorkflowException {
         createNamespaces(200);
         System.err.println("done");
@@ -153,6 +170,8 @@ public class ApiBTest {
     public void setUpTest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
+                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
     }
 
     private void createNamespaces(int numberOfNamespaces) throws WorkflowException {
