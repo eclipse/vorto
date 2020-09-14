@@ -1,0 +1,28 @@
+vortolang 1.0
+
+namespace com.test2
+version 1.0.0
+displayname "Lamp2"
+description "A lamp makes the environment bright"  
+
+functionblock Lamp2 {
+
+  status {
+    blinking as boolean "if the lamp is currently blinking or not"
+    onOff as int "if the lamp is currently off a zero (0) is set, otherwise any positive value"
+    optional dimmer as float with { readable: true, writable: true} "Proportional control, float value between 0.00 and 1.00 as a percentage."
+    optional lamp_type as string with { readable: true, writable: true} "The lamp type as a string depending on the use case."
+    optional biggerThanInt as long <MAX 999999999999999999> "Value for constraint is validated according to the property type, in this case, Long instead of Int"
+  }
+
+  events {
+    burned_out {
+			mandatory timestamp as long
+			mandatory lamp_type as string
+		}
+  }  
+
+  operations{
+    replace_lamp() "to replace a burned out lamp"
+  }  
+}

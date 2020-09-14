@@ -1110,4 +1110,21 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         .andExpect(jsonPath("$", hasSize(4)));
   }
 
+  /**
+   * This only tests that successive requests to create namespaces and models have no interference
+   * from the request-scoped cached data. Arguably it should probably be moved somewhere else.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testMultipleNSAndModelCreationAsSysadmin() throws Exception {
+    String modelId0 = "com.test.Location:1.0.0";
+    String fileName0 = "Location.fbmodel";
+    createNamespaceSuccessfully("com.test", userSysadmin);
+    createModel(userSysadmin, fileName0, modelId0);
+    String modelId1 = "com.test2.Lamp2:1.0.0";
+    String fileName1 = "Lamp2.fbmodel";
+    createNamespaceSuccessfully("com.test2", userSysadmin);
+    createModel(userSysadmin, fileName1, modelId1);
+  }
 }
