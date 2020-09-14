@@ -310,13 +310,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     }
     try {
       return userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username);
-      // TODO move sysadmin logic to UNR service
-      /**
-       * if (userRepositoryRoleService.isSysadmin(username)) {
-       *                   put.add(RepositoryRole.SYS_ADMIN);
-       *                 }
-       */
-
     } catch (DoesNotExistException dnee) {
       LOGGER.debug("User or namespace not found. ", dnee);
       return Collections.emptySet();
