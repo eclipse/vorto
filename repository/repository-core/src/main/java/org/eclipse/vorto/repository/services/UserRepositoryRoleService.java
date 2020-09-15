@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.services;
 
 import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
@@ -33,7 +33,7 @@ public class UserRepositoryRoleService {
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
   @Autowired
-  private RequestCache cache;
+  private UserRolesRequestCache cache;
 
   public IRole sysadmin() {
     return repositoryRoleRepository.find(RepositoryRole.SYS_ADMIN.getName());

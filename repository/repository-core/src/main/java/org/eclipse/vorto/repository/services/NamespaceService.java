@@ -12,11 +12,9 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +26,7 @@ import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
@@ -38,7 +37,6 @@ import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
-import org.eclipse.vorto.repository.utils.NamespaceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Performs all business logic on {@link Namespace}s.<br/>
+ * Caches {@link Namespace}s within the lifespan of a single request.<br/>
  * For operations on namespace collaborators, see {@link UserNamespaceRoleService}.
  */
 @Service
@@ -97,6 +96,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   public static final String SEARCH_FOR_PUBLIC_MODELS_FORMAT = "namespace:%s visibility:Public";
 
+  @Autowired
+  private NamespaceRequestCache cache;
+
   public NamespaceService(
       @Autowired NamespaceRepository namespaceRepository,
       @Autowired UserRepository userRepository,
@@ -121,7 +123,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @return whether the given {@link Namespace} exists.
    */
   public boolean exists(Namespace namespace) {
-    return namespaceRepository.exists(namespace.getId());
+    return cache.namespaces().stream().anyMatch(namespace::equals);
   }
 
   /**
@@ -130,7 +132,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @see NamespaceService#exists(Namespace)
    */
   public boolean exists(String namespaceName) {
-    return Optional.ofNullable(namespaceRepository.findByName(namespaceName)).isPresent();
+    return cache.namespaces().stream().anyMatch(n -> n.getName().equals(namespaceName));
   }
 
   /**
@@ -144,12 +146,11 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws DoesNotExistException
    */
   public Namespace validateNamespaceExists(String namespaceName) throws DoesNotExistException {
-    Namespace result = namespaceRepository.findByName(namespaceName);
-    // checks if namespace exists
-    if (result == null) {
-      throw new DoesNotExistException("Namespace does not exist - aborting change of ownership.");
-    }
-    return result;
+    return cache.namespace(namespaceName)
+        .orElseThrow(
+            () -> new DoesNotExistException(
+                "Namespace does not exist - aborting change of ownership.")
+        );
   }
 
   /**
@@ -231,7 +232,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
 
     // namespace collision validation
-    if (namespaceRepository.findByName(namespaceName) != null) {
+    if (cache.namespace(namespaceName).isPresent()) {
       throw new CollisionException(String
           .format("A namespace with name [%s] already exists - aborting namespace creation.",
               namespaceName));
@@ -258,6 +259,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     namespaceRepository.save(namespace);
 
     userNamespaceRoleService.setAllRoles(actor, target, namespace, true);
+
+    // making cache stale so it will load the newly created namespace upon next usage within request
+    cache.stale();
 
     // application event handling
     eventPublisher
@@ -322,7 +326,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     // finally deletes the actual namespace
     deleteModeshapeWorkspace(currentNamespace);
     namespaceRepository.delete(currentNamespace);
-
+    // making cache stale so it will reload namespaces if any further usage required within request
+    cache.stale();
     publishNamespaceDeletedEvent(actor, currentNamespace);
   }
 
@@ -348,12 +353,10 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws DoesNotExistException
    */
   public Namespace getByName(String namespaceName) throws DoesNotExistException {
-    Namespace namespace = namespaceRepository.findByName(namespaceName);
-    if (Objects.isNull(namespace)) {
-      throw new DoesNotExistException(
-          String.format("Namespace [%s] does not exist.", namespaceName));
-    }
-    return namespace;
+    return cache.namespace(namespaceName).orElseThrow(
+        () -> new DoesNotExistException(
+            String.format("Namespace [%s] does not exist.", namespaceName))
+    );
   }
 
   /**
@@ -385,30 +388,49 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   * Resolves workspace ID for the given namespace. Tries to lookup the namespace by name and returns
-   * the result, if there is one. Otherwise it filters all namespaces for ownership of the given
-   * namespace to identify the main workspace for subdomains.
+   * Resolves workspace ID for the given namespace.<br/>
+   * Tries to lookup the namespace by name and returns the result, if there is one. <br/>
+   * Otherwise, recursively attempts to resolve the namespace and return its workspace ID by
+   * removing each dot-separated component starting from the end of the namespace's name.<br/>
+   * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
+   * <ol>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite.example.octopussuiteedition} and get
+   *     its workspace ID, which fails
+   *   </li>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite.example} and get its workspace ID, which
+   *     fails again
+   *   </li>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite} and get its workspace ID, which
+   *     succeeds
+   *   </li>
+   * </ol>
    *
-   * @param namespace - the given namespace
-   * @return Optional of the workspace ID or empty Optional, if no namespace was found.
+   * @param namespace - the given namespace name
+   * @return Optional of the workspace ID or empty Optional, if no namespace was resolved.
    */
   public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
-    Optional<String> foundByFullNamespaceName = Optional
-        .ofNullable(namespaceRepository.findByName(namespace))
-        .map(Namespace::getWorkspaceId);
-    if (foundByFullNamespaceName.isPresent()) {
-      return foundByFullNamespaceName;
+    Optional<String> result = cache.namespace(namespace).map(Namespace::getWorkspaceId);
+    if (!result.isPresent()) {
+      int lastSeparator = namespace.lastIndexOf(".");
+      if (lastSeparator > 0) {
+        return resolveWorkspaceIdForNamespace(namespace.substring(0, lastSeparator));
+      } else {
+        return Optional.empty();
+      }
     }
-    return filterAllNamespacesByName(namespace).map(Namespace::getWorkspaceId);
+    return result;
   }
 
   public List<String> findAllWorkspaceIds() {
-    return Lists.newArrayList(namespaceRepository.findAll()).stream().map(Namespace::getWorkspaceId)
-        .collect(Collectors.toList());
+    return cache.namespaces().stream().map(Namespace::getWorkspaceId).collect(Collectors.toList());
   }
 
   public Set<String> findWorkspaceIdsOfPossibleReferences() {
-    Set<Namespace> visibleNamespaces = new HashSet<>(namespaceRepository.findAllPublicNamespaces());
+    Set<Namespace> visibleNamespaces = new HashSet<>(
+        cache.namespaces(NamespaceRequestCache.PUBLIC));
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     if (!userContext.isAnonymous()) {
@@ -423,7 +445,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   public Namespace findNamespaceByWorkspaceId(String workspaceId) {
-    return namespaceRepository.findByWorkspaceId(workspaceId);
+    return cache.namespace(n -> n.getWorkspaceId().equals(workspaceId)).orElse(null);
   }
 
   private void searchForPublicModelsAndFailIfAnyExist(Namespace currentNamespace)
@@ -479,14 +501,4 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     repoMgr.removeWorkspace(currentNamespace.getWorkspaceId());
   }
 
-  private Optional<Namespace> filterAllNamespacesByName(String namespace) {
-    String[] components = NamespaceUtils.components(namespace);
-    for (String component : components) {
-      Namespace ns = namespaceRepository.findByName(component);
-      if (Objects.nonNull(ns) && ns.owns(namespace)) {
-        return Optional.of(ns);
-      }
-    }
-    return Optional.empty();
-  }
 }

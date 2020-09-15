@@ -23,15 +23,15 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 
 /**
- * This is a "view" on a {@link User}'s role data, returned as an instance of {@link IRequestCache}
- * when invoked by {@link RequestCache#withUser(User)} or {@link RequestCache#withUser(String)}.<br/>
+ * This is a "view" on a {@link User}'s role data, returned as an instance of {@link IUserRequestCache}
+ * when invoked by {@link UserRolesRequestCache#withUser(User)} or {@link UserRolesRequestCache#withUser(String)}.<br/>
  * The latter overload will also resolve the {@link User} by name. <br/>
- * Initial invocations of {@link IRequestCache#getUserNamespaceRoles()} and
- * {@link IRequestCache#getUserRepositoryRoles()} on this object will retrieve the
+ * Initial invocations of {@link IUserRequestCache#getUserNamespaceRoles()} and
+ * {@link IUserRequestCache#getUserRepositoryRoles()} on this object will retrieve the
  * {@link UserNamespaceRoles} and {@link UserRepositoryRoles} respectively and cache them.<br/>
  * Subsequent invocations of those methods on this object will use the cached data.
  */
-public class UserRequestCache implements IRequestCache {
+public class UserRequestCache implements IUserRequestCache {
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
@@ -42,7 +42,7 @@ public class UserRequestCache implements IRequestCache {
   private User user;
 
   /**
-   * Invoked by {@link RequestCache#withUser(String)}
+   * Invoked by {@link UserRolesRequestCache#withUser(String)}
    *
    * @param userNamespaceRoleRepository
    * @param userRepositoryRoleRepository
@@ -59,7 +59,7 @@ public class UserRequestCache implements IRequestCache {
   }
 
   /**
-   * Invoked by {@link RequestCache#withUser(String)}
+   * Invoked by {@link UserRolesRequestCache#withUser(String)}
    *
    * @param userNamespaceRoleRepository
    * @param userRepositoryRoleRepository

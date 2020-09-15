@@ -15,7 +15,6 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
@@ -35,12 +34,11 @@ import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.UserLoginException;
-import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.PrivilegeService;
@@ -291,7 +289,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   /**
-   * This method accesses a request-scoped {@link RequestCache} bean that maps composite
+   * This method accesses a request-scoped {@link UserRolesRequestCache} bean that maps composite
    * workspace+user IDs to roles. <br/>
    * This implies values for multiple calls with same workspace ID and username are cached within
    * the current request, and expire in the next one. <br/>

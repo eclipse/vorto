@@ -34,40 +34,40 @@ import org.springframework.web.context.annotation.RequestScope;
  * the request's lifecycle. <br/>
  * <b>Usage and specifications</b>
  * <br/>
- * An instance of {@link RequestCache} is autowired to the service. <br/>
+ * An instance of {@link UserRolesRequestCache} is autowired to the service. <br/>
  * In the implementation of any method that resolves a {@link User} by username, or retrieves
  * a {@link User}'s {@link org.eclipse.vorto.repository.domain.NamespaceRole}s, or retrieves a
  * {@link User}'s {@link org.eclipse.vorto.repository.domain.RepositoryRole}s, the cache will be
  * used. <br/>
- * To avail of the cache, one must first invoke {@link RequestCache#withUser(User)} or
- * {@link RequestCache#withUser(String)} on an instance of {@link RequestCache}.<br/>
- * This will return a {@link IRequestCache} object, either a {@link UserRequestCache} if the
+ * To avail of the cache, one must first invoke {@link UserRolesRequestCache#withUser(User)} or
+ * {@link UserRolesRequestCache#withUser(String)} on an instance of {@link UserRolesRequestCache}.<br/>
+ * This will return a {@link IUserRequestCache} object, either a {@link UserRequestCache} if the
  * {@link User} is resolved, or a {@link NullUserRequestCache} if the {@link User} cannot be
  * resolved (e.g. has been deleted within the request). <br/>
- * The {@link RequestCache#withUser(String)} will also resolve the entity by username and cache it
+ * The {@link UserRolesRequestCache#withUser(String)} will also resolve the entity by username and cache it
  * for later invocations.<br/>
  * In turn, one can then invoke any or all of the following methods:
  * <ul>
  *   <li>
- *     {@link IRequestCache#getUser()} returns the mapped and resolved {@link User} - obviously more
- *     useful if {@link RequestCache#withUser(String)} was invoked previously (rather than
- *     {@link RequestCache#withUser(User)}, since that would imply the context had already
+ *     {@link IUserRequestCache#getUser()} returns the mapped and resolved {@link User} - obviously more
+ *     useful if {@link UserRolesRequestCache#withUser(String)} was invoked previously (rather than
+ *     {@link UserRolesRequestCache#withUser(User)}, since that would imply the context had already
  *     resolved the {@link User} or known about it by then).
  *   </li>
  *   <li>
- *     {@link IRequestCache#getUserNamespaceRoles()} returns a {@link Collection} (technically a
+ *     {@link IUserRequestCache#getUserNamespaceRoles()} returns a {@link Collection} (technically a
  *     {@link java.util.Set}) of existing {@link UserNamespaceRoles} associations for that user, and
  *     caches it when invoked for the first time ("lazy-loading"). Further invocations will use the
  *     cached data for the request's lifecycle.
  *   </li>
  *   <li>
- *     {@link IRequestCache#getUserRepositoryRoles()} returns a {@link Collection} (technically a
+ *     {@link IUserRequestCache#getUserRepositoryRoles()} returns a {@link Collection} (technically a
  *     {@link java.util.Set}) of existing {@link UserRepositoryRoles} associations for that user,
  *     and caches it when invoked for the first time ("lazy-loading"). Further invocations will use
  *     the cached data for the request's lifecycle.
  *   </li>
  * </ul>
- * The "main" cache (i.e. the autowired {@link RequestCache} instance) supports caching multiple
+ * The "main" cache (i.e. the autowired {@link UserRolesRequestCache} instance) supports caching multiple
  * {@link User}s and user-role associations within the same request, which can be useful in the
  * rare cases when multiple subsequent {@link User} and user roles resolutions are required within
  * the same request, e.g. in complex service methods involving both an acting {@link User} and a
@@ -116,16 +116,16 @@ import org.springframework.web.context.annotation.RequestScope;
  * </code>
  * </pre>
  * The same logic in this incorrect example applies to invocations of
- * {@link IRequestCache#getUserRepositoryRoles()} or {@link IRequestCache#getUser()}.
+ * {@link IUserRequestCache#getUserRepositoryRoles()} or {@link IUserRequestCache#getUser()}.
  * <br/>
  *
- * @see IRequestCache
+ * @see IUserRequestCache
  * @see UserRequestCache
  * @see NullUserRequestCache
  */
 @Service
 @RequestScope
-public class RequestCache {
+public class UserRolesRequestCache {
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
@@ -141,7 +141,7 @@ public class RequestCache {
    * @param userRepositoryRoleRepository
    * @param userRepository
    */
-  public RequestCache(@Autowired UserNamespaceRoleRepository userNamespaceRoleRepository,
+  public UserRolesRequestCache(@Autowired UserNamespaceRoleRepository userNamespaceRoleRepository,
       @Autowired UserRepositoryRoleRepository userRepositoryRoleRepository,
       @Autowired UserRepository userRepository) {
     this.userNamespaceRoleRepository = userNamespaceRoleRepository;
@@ -149,13 +149,13 @@ public class RequestCache {
     this.userRepository = userRepository;
   }
 
-  private Map<User, IRequestCache> cache = new ConcurrentHashMap<>();
+  private Map<User, IUserRequestCache> cache = new ConcurrentHashMap<>();
 
   /**
    * @param user
    * @return either a {@link UserRequestCache} or a {@link NullUserRequestCache}
    */
-  public IRequestCache withUser(User user) {
+  public IUserRequestCache withUser(User user) {
     if (null == user) {
       return new NullUserRequestCache();
     }
@@ -170,8 +170,8 @@ public class RequestCache {
    * @param username
    * @return either a {@link UserRequestCache} or a {@link NullUserRequestCache}
    */
-  public IRequestCache withUser(String username) {
-    IRequestCache userCache = new UserRequestCache(userNamespaceRoleRepository,
+  public IUserRequestCache withUser(String username) {
+    IUserRequestCache userCache = new UserRequestCache(userNamespaceRoleRepository,
         userRepositoryRoleRepository, userRepository, username);
     if (null == userCache.getUser()) {
       return new NullUserRequestCache();

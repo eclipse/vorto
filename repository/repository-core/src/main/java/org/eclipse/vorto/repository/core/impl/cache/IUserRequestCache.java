@@ -23,9 +23,9 @@ import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
  * Implemented by {@link UserRequestCache} for {@link User}-specific windows and
  * {@link NullUserRequestCache} for {@link User}-specific windows when the user does not exist
  * (anymore).<br/>
- * See {@link RequestCache} implementation for usage details.
+ * See {@link UserRolesRequestCache} implementation for usage details.
  */
-public interface IRequestCache {
+public interface IUserRequestCache {
 
   Collection<UserNamespaceRoles> getUserNamespaceRoles();
 

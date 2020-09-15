@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.core.impl.cache.RequestCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
@@ -83,7 +83,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   private UserService userService;
 
   @Autowired
-  private RequestCache cache;
+  private UserRolesRequestCache cache;
 
   private ApplicationEventPublisher eventPublisher;
 
@@ -183,7 +183,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   /**
    * Returns whether the given {@link User} has the given {@link IRole} on the given
    * {@link Namespace}.<br/>
-   * Cached - see {@link RequestCache}.
+   * Cached - see {@link UserRolesRequestCache}.
    *
    * @param user
    * @param namespace
@@ -252,7 +252,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   /**
    * Returns whether there is any association between the given {@link Namespace} and the given
    * {@link User}.<br/>
-   * Cached - see {@link RequestCache}.
+   * Cached - see {@link UserRolesRequestCache}.
    *
    * @param user
    * @param namespace
@@ -313,7 +313,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   /**
    * Returns all {@link IRole}s the given {@link User} has on the given {@link Namespace}.<br/>
-   * Cached - see {@link RequestCache}.
+   * Cached - see {@link UserRolesRequestCache}.
    *
    * @param user
    * @param namespace
@@ -355,7 +355,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
   /**
    * Only to be used contextually to Spring authorization integration as it artificially adds the
    * {@literal model_viewer} role, delegating context for only public models to the caller.<br/>
-   * Cached - see {@link RequestCache}.
+   * Cached - see {@link UserRolesRequestCache}.
    *
    * @param user
    * @return a set of all roles the user can have on any namespace, defaulting to {@literal model_viewer}.
@@ -779,7 +779,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * Verifies whether the given {@link User} can view the given {@link Namespace}, which always
    * yields true if the user is {@literal sysadmin}, or if the user has any role on the
    * namespace.<br/>
-   * Cached - see {@link RequestCache}.
+   * Cached - see {@link UserRolesRequestCache}.
    *
    * @param user
    * @param namespace
