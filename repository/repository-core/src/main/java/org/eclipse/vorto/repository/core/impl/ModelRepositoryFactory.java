@@ -12,40 +12,15 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.IDiagnostics;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.UserLoginException;
+import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.RoleService;
-import org.eclipse.vorto.repository.services.RoleUtil;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
@@ -57,6 +32,18 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Component("modelRepositoryFactory")
 public class ModelRepositoryFactory implements IModelRepositoryFactory,
@@ -174,6 +161,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   @Override
+  public IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper(Authentication user) {
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(user.getName()),
+        workspaceId -> getRepositoryWithoutSessionHelper(workspaceId, user));
+  }
+
+  @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
     return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(userContext.getUsername()),
         workspaceId -> getRepository(workspaceId, userContext.getAuthentication()));
@@ -236,6 +229,31 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   @Override
+  public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+      Authentication user) {
+    ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
+        this.attachmentValidator,
+        this.modelParserFactory,
+        getModelRetrievalServiceWithoutSessionHelper(user),
+        this,
+        getPolicyManager(workspaceId, user),
+        namespaceService,
+        privilegeService);
+
+    modelRepository.setRepositorySessionHelperSupplier(() -> {
+      RequestRepositorySessionHelper s =
+          new RequestRepositorySessionHelper(false, privilegeService);
+      s.setRepository(repository);
+      s.setWorkspaceId(workspaceId);
+      s.setUserRoles(getUserRoles(workspaceId, user.getName()));
+      s.setUser(user);
+      return s;
+    });
+    modelRepository.setApplicationEventPublisher(eventPublisher);
+    return modelRepository;
+  }
+
+  @Override
   public IModelRepository getRepository(IUserContext userContext) {
     return getRepository(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
@@ -254,6 +272,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   @Override
   public IModelRepository getRepositoryByModel(ModelId modelId) {
     return getRepositoryByModel(modelId, SecurityContextHolder.getContext().getAuthentication());
+  }
+
+  @Override
+  public IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId) {
+    return getRepositoryByModelWithoutSessionHelper(modelId,
+        SecurityContextHolder.getContext().getAuthentication());
   }
 
   @Override
@@ -320,8 +344,27 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
         .orElse(null);
   }
 
+  private IModelRepository getRepositoryByNamespaceWithoutSessionHelper(String namespace,
+      Authentication auth) {
+    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
+        .map(workspaceId -> getRepositoryWithoutSessionHelper(workspaceId, auth))
+        .orElse(null);
+  }
+
   private IModelRepository getRepositoryByModel(ModelId modelId, Authentication auth) {
     IModelRepository foundRepository = getRepositoryByNamespace(modelId.getNamespace(), auth);
+    if (foundRepository == null) {
+      throw new ModelNotFoundException(
+          "Namespace " + modelId.getNamespace() + " does not exist in the system.");
+    } else {
+      return foundRepository;
+    }
+  }
+
+  private IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId,
+      Authentication auth) {
+    IModelRepository foundRepository =
+        getRepositoryByNamespaceWithoutSessionHelper(modelId.getNamespace(), auth);
     if (foundRepository == null) {
       throw new ModelNotFoundException(
           "Namespace " + modelId.getNamespace() + " does not exist in the system.");

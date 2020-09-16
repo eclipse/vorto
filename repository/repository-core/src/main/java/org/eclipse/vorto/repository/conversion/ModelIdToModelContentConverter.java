@@ -12,32 +12,17 @@
  */
 package org.eclipse.vorto.repository.conversion;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveTask;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.EntityMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.EnumMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.*;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.conversion.IModelConverter;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -51,6 +36,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+
+import java.io.ByteArrayInputStream;
+import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveTask;
+import java.util.stream.Collectors;
 
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId, ModelContent> {
 
@@ -163,6 +155,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
 
   private static class ModelInfoRetrieverTask extends RecursiveTask<List<ModelInfo>> {
 
+    private static final long serialVersionUID = 3056763240970631787L;
     private List<ModelInfo> modelInfos = new ArrayList<>();
     private ModelId rootID;
     private IModelRepositoryFactory factory;
@@ -189,14 +182,18 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
       /*LOGGER.warn(String
           .format("%s%n%s%n%s%n", Thread.currentThread().getName(), requestAttributes,
               securityContext));*/
-      ModelInfo modelInfo = factory.getRepositoryByModel(rootID).getById(rootID);
+      ModelInfo modelInfo =
+          factory.getRepositoryByModelWithoutSessionHelper(rootID).getById(rootID);
       if (null != modelInfo) {
         modelInfos.add(modelInfo);
         if (modelInfo.getReferences().isEmpty()) {
           return modelInfos;
         } else {
           return ForkJoinTask.invokeAll(children(modelInfo)).stream().map(ForkJoinTask::join)
-              .flatMap(Collection::stream).collect(Collectors.toList());
+              .map(e -> {
+                e.addAll(modelInfos);
+                return e;
+              }).flatMap(Collection::stream).collect(Collectors.toList());
         }
       }
       return modelInfos;

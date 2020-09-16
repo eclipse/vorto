@@ -16,30 +16,36 @@ import org.eclipse.vorto.model.ModelId;
 import org.springframework.security.core.Authentication;
 
 public interface IModelRepositoryFactory {
-  
+
   IDiagnostics getDiagnosticsService(String tenant, Authentication user);
-  
+
   IModelPolicyManager getPolicyManager(String tenant, Authentication user);
-  
+
   IModelPolicyManager getPolicyManager(IUserContext userContext);
-  
+
   IModelRepository getRepository(String tenant, Authentication user);
-  
+
+  IModelRepository getRepositoryWithoutSessionHelper(String tenant, Authentication user);
+
   IModelRepository getRepository(IUserContext userContext);
-  
+
   IModelRepository getRepository(String tenant);
-  
+
   IModelRepository getRepositoryByNamespace(String namespace);
-  
+
   IModelRepository getRepositoryByModel(ModelId modelId);
-  
+
+  IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId);
+
   IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext);
 
   IModelRetrievalService getModelRetrievalService(Authentication user);
-  
+
+  IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper(Authentication user);
+
   IModelRetrievalService getModelRetrievalService(IUserContext userContext);
-  
+
   IModelRetrievalService getModelRetrievalService();
-  
+
   IRepositoryManager getRepositoryManager(String tenant, Authentication user);
 }
