@@ -32,17 +32,12 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveTask;
-import java.util.stream.Collectors;
 
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId, ModelContent> {
 
@@ -153,76 +148,10 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
     return workspaceReader;
   }
 
-  private static class ModelInfoRetrieverTask extends RecursiveTask<List<ModelInfo>> {
-
-    private static final long serialVersionUID = 3056763240970631787L;
-    private List<ModelInfo> modelInfos = new ArrayList<>();
-    private ModelId rootID;
-    private IModelRepositoryFactory factory;
-    private SecurityContext securityContext;
-    private RequestAttributes requestAttributes;
-
-    public ModelInfoRetrieverTask(RequestAttributes requestAttributes,
-        SecurityContext securityContext, IModelRepositoryFactory factory, ModelId rootID) {
-      this.requestAttributes = requestAttributes;
-      RequestContextHolder.setRequestAttributes(requestAttributes);
-      this.securityContext = securityContext;
-      SecurityContextHolder.setContext(securityContext);
-      this.factory = factory;
-      this.rootID = rootID;
-      /*LOGGER.warn(String
-          .format("%s%n%s%n%s%n", Thread.currentThread().getName(), requestAttributes,
-              securityContext));*/
-    }
-
-    @Override
-    protected List<ModelInfo> compute() {
-      RequestContextHolder.setRequestAttributes(requestAttributes, true);
-      SecurityContextHolder.setContext(securityContext);
-      /*LOGGER.warn(String
-          .format("%s%n%s%n%s%n", Thread.currentThread().getName(), requestAttributes,
-              securityContext));*/
-      ModelInfo modelInfo =
-          factory.getRepositoryByModelWithoutSessionHelper(rootID).getById(rootID);
-      if (null != modelInfo) {
-        modelInfos.add(modelInfo);
-        if (modelInfo.getReferences().isEmpty()) {
-          return modelInfos;
-        } else {
-          return ForkJoinTask.invokeAll(children(modelInfo)).stream().map(ForkJoinTask::join)
-              .peek(e -> e.addAll(modelInfos)).flatMap(Collection::stream)
-              .collect(Collectors.toList());
-        }
-      }
-      return modelInfos;
-    }
-
-    private Collection<ModelInfoRetrieverTask> children(ModelInfo root) {
-      return root.getReferences().stream()
-          .map(r -> new ModelInfoRetrieverTask(RequestContextHolder.getRequestAttributes(),
-              SecurityContextHolder.getContext(), factory, r)).collect(
-              Collectors.toList());
-    }
-  }
-
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
-    final List<ModelInfo> modelInfos = new ArrayList<>();
-
-    ForkJoinPool pool = ForkJoinPool.commonPool();
-    modelInfos.addAll(pool.invoke(
+    return new ArrayList<>(ForkJoinPool.commonPool().invoke(
         new ModelInfoRetrieverTask(RequestContextHolder.getRequestAttributes(),
             SecurityContextHolder.getContext(), repositoryFactory, modelId)));
-    return modelInfos;
-    /*List<ModelInfo> modelInfos = new ArrayList<>();
-
-    ModelInfo modelResource = repositoryFactory.getRepositoryByModel(modelId).getById(modelId);
-    modelInfos.add(modelResource);
-
-    for (ModelId reference : modelResource.getReferences()) {
-      modelInfos.addAll(getModelWithAllDependencies(reference));
-    }
-    return modelInfos;*/
-
   }
 
   private boolean isMappingForModel(MappingModel p, Model model) {
