@@ -758,7 +758,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     ServiceValidationUtil.validateNulls(actor.getId(), target.getId(), namespace.getId());
 
     // namespace does not exist
-    if (!namespaceRequestCache.namespace(namespace.getId()::equals).isPresent()) {
+    if (!namespaceRequestCache.namespace(namespace::equals).isPresent()) {
       throw new DoesNotExistException(
           "Namespace [%s] does not exist - aborting deletion of user roles.");
     }
