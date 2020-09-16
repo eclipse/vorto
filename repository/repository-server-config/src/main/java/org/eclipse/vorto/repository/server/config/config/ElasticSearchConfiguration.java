@@ -67,7 +67,7 @@ public class ElasticSearchConfiguration {
   @Value("${http.proxyPassword:#{null}}")
   private String proxyPassword;
 
-  @Value("${testcontainers.es}")
+  @Value("${testcontainers.es:9200}")
   private int esPort;
   
   private String serviceName = "es";

@@ -13,19 +13,19 @@
 package org.eclipse.vorto.repository.server.benchmark;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.model.ModelProperty;
-import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.*;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.server.ui.AuthenticationProviderMock;
 import org.eclipse.vorto.repository.web.VortoRepository;
+import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.api.v1.NamespaceController;
 import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.modeshape.jcr.RepositoryConfiguration;
-import org.modeshape.schematic.document.Changes;
 import org.modeshape.schematic.document.EditableDocument;
 import org.modeshape.schematic.document.Editor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -51,6 +52,9 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
 import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSITORY_ROLES;
@@ -78,6 +82,9 @@ public class ApiBTest {
 
     @Autowired
     protected ModelRepositoryController modelRepositoryController;
+
+    @Autowired
+    protected ModelController modelController;
 
     @ClassRule
     public static ElasticsearchContainer container = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:6.7.2");
@@ -117,10 +124,11 @@ public class ApiBTest {
         public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
             RepositoryConfiguration configuration = org.modeshape.jcr.RepositoryConfiguration
                     .read(new ClassPathResource(repoFile).getURL());
-
+            // edit the existing modeshape configuration and adapt the db connection and ports.
             Editor editor = configuration.edit();
             editor.setString(RepositoryConfiguration.FieldName.CONNECTION_URL, mySQLContainer.getJdbcUrl());
             EditableDocument modifiedConfig = configuration.edit().clone();
+            // no clustering
             modifiedConfig.remove("clustering");
             EditableDocument storage = modifiedConfig.getDocument("storage");
             storage.getDocument("persistence").setString("connectionUrl", mySQLContainer.getJdbcUrl());
@@ -130,7 +138,7 @@ public class ApiBTest {
             storage.getDocument("binaryStorage").setString("url", mySQLContainer.getJdbcUrl());
             storage.getDocument("binaryStorage").setString("username", mySQLContainer.getUsername());
             storage.getDocument("binaryStorage").setString("password", mySQLContainer.getPassword());
-    //TODO jgroups!
+
             modifiedConfig.setDocument("storage", storage);
             return RepositoryConfiguration.read(modifiedConfig.toString());
         }
@@ -139,12 +147,12 @@ public class ApiBTest {
     @Test
     @WithMockUser(username = "user1", authorities = {"sysadmin","model_viewer","model_creator","namespace_admin"})
     public void testGetModelApi() throws WorkflowException {
-        createNamespaces(200);
-        System.err.println("done");
+        createTestData(200);
+//        System.err.println("done");
     }
 
     /**
-     * Exposes the repository (random) port on the host system to the test container after initialization.
+     * Set the data source urls
      */
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
@@ -155,12 +163,6 @@ public class ApiBTest {
                     applicationContext, "spring.datasource.username=" + mySQLContainer.getUsername());
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
                     applicationContext, "spring.datasource.password=" + mySQLContainer.getUsername());
-//            applicationContext.getEnvironment().
-//            TestPropertyValues.of(N
-//                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-//                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-//                    "spring.datasource.password=" + postgreSQLContainer.getPassword()
-//            ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
 
@@ -174,15 +176,37 @@ public class ApiBTest {
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
     }
 
-    private void createNamespaces(int numberOfNamespaces) throws WorkflowException {
+    private void createTestData(int numberOfNamespaces) throws WorkflowException {
+        Set<ModelId> fbSet = new HashSet<>();
+
         for(int i = 0; i< numberOfNamespaces; i++) {
             namespaceController.createNamespace("test" + i);
-            createModel(i);
+            fbSet = createModelsAndFunctionBlocks(i, fbSet);
         }
     }
 
-    private void createModel(int i) throws WorkflowException {
-        modelRepositoryController.createModel("test"+i+":MyTestModel"+i+":1.1.0", ModelType.InformationModel, new ArrayList<ModelProperty>());
+    private Set<ModelId> createModelsAndFunctionBlocks(int i, Set<ModelId> fbSet) throws WorkflowException {
+
+
+
+        ResponseEntity<ModelInfo> entResponse = modelRepositoryController.createModel("test"+i+":MyTestEntity"+i+":1.1.0", ModelType.Datatype, new ArrayList<ModelProperty>());
+        ArrayList<ModelProperty> propertiesFb = new ArrayList<>();
+        propertiesFb.add(ModelProperty.Builder("ent", entResponse.getBody().getId()).multiple().build());
+        ResponseEntity<ModelInfo> fbResponse = modelRepositoryController.createModel("test"+i+":MyTestFunctionBlock"+i+":1.1.0", ModelType.Functionblock, propertiesFb);
+        fbSet.add(fbResponse.getBody().getId());
+        ArrayList<ModelProperty> properties = createPropertyList(fbSet);
+        modelRepositoryController.createModel("test"+i+":MyTestModel"+i+":1.1.0", ModelType.InformationModel, properties);
+
+        return fbSet;
+    }
+
+    private ArrayList<ModelProperty> createPropertyList(Set<ModelId> fbSet) {
+        ArrayList<ModelProperty> propertyList = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger(0);
+        fbSet.stream().forEach(modelId -> {
+            propertyList.add(ModelProperty.Builder("fb"+counter.getAndIncrement(), modelId).multiple().build());
+        });
+        return propertyList;
     }
 
 }
