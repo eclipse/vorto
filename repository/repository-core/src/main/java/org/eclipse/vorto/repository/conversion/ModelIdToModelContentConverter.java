@@ -190,10 +190,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
           return modelInfos;
         } else {
           return ForkJoinTask.invokeAll(children(modelInfo)).stream().map(ForkJoinTask::join)
-              .map(e -> {
-                e.addAll(modelInfos);
-                return e;
-              }).flatMap(Collection::stream).collect(Collectors.toList());
+              .peek(e -> e.addAll(modelInfos)).flatMap(Collection::stream)
+              .collect(Collectors.toList());
         }
       }
       return modelInfos;
