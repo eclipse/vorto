@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import javax.servlet.ServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
@@ -36,9 +35,7 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
-import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
@@ -61,11 +58,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
@@ -231,6 +226,15 @@ public abstract class UnitTestBase {
 
           @Override
           public IModelRepository getRepository(String workspaceId, Authentication user) {
+            if (user == null) {
+              return getRepository(workspaceId);
+            }
+            return super.getRepository(workspaceId, user);
+          }
+
+          @Override
+          public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+              Authentication user) {
             if (user == null) {
               return getRepository(workspaceId);
             }

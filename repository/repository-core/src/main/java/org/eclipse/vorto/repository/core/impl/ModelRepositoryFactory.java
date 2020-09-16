@@ -355,7 +355,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     return visibleWorkspaceIdSupplier;
   }
 
-  private IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+  protected IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
       Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
         this.attachmentValidator,

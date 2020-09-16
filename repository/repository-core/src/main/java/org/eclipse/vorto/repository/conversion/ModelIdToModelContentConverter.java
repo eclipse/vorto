@@ -149,7 +149,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
   }
 
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
-    return new ArrayList<>(ForkJoinPool.commonPool().invoke(
+    return new ArrayList<>(ForkJoinPool.commonPool()
+        .invoke(
         new ModelInfoRetrieverTask(RequestContextHolder.getRequestAttributes(),
             SecurityContextHolder.getContext(), repositoryFactory, modelId)));
   }
