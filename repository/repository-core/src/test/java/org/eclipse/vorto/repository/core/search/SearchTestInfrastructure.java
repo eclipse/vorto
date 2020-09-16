@@ -26,6 +26,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -37,7 +38,9 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
@@ -47,10 +50,13 @@ import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.utils.RoleProvider;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -103,6 +109,7 @@ import static org.mockito.Mockito.when;
  *
  * @author mena-bosch (refactory)
  */
+@RunWith(MockitoJUnitRunner.class)
 public final class SearchTestInfrastructure {
 
   /**
@@ -140,7 +147,16 @@ public final class SearchTestInfrastructure {
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 
   @Mock
+  protected UserNamespaceRoleRepository userNamespaceRoleRepository;
+
+  @Mock
+  protected UserRepositoryRoleRepository userRepositoryRoleRepository;
+
+  @Mock
   protected UserRepository userRepository = Mockito.mock(UserRepository.class);
+
+  protected UserRolesRequestCache userRolesRequestCache = new UserRolesRequestCache(
+      userNamespaceRoleRepository, userRepositoryRoleRepository, userRepository);
 
   @Mock
   protected AttachmentValidator attachmentValidator = Mockito
@@ -334,7 +350,7 @@ public final class SearchTestInfrastructure {
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
-    accountService = new DefaultUserAccountService(userRepository,
+    accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
 
@@ -390,7 +406,7 @@ public final class SearchTestInfrastructure {
         new DefaultWorkflowService(repositoryFactory, accountService, notificationService,
             namespaceService, userNamespaceRoleService, roleService);
 
-    MockitoAnnotations.initMocks(SearchTestInfrastructure.class);
+    MockitoAnnotations.initMocks(this);
   }
 
   private Namespace mockNamespace() {

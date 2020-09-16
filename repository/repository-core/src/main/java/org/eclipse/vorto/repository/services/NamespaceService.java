@@ -27,10 +27,10 @@ import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.services.exceptions.CollisionException;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
@@ -53,9 +53,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
 
-  private NamespaceRepository namespaceRepository;
+  public static final String NAMESPACE_SEPARATOR = ".";
 
-  private UserRepository userRepository;
+  private NamespaceRepository namespaceRepository;
 
   private UserRepositoryRoleService userRepositoryRoleService;
 
@@ -99,15 +99,16 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   @Autowired
   private NamespaceRequestCache cache;
 
+  @Autowired
+  private UserRolesRequestCache userRolesRequestCache;
+
   public NamespaceService(
       @Autowired NamespaceRepository namespaceRepository,
-      @Autowired UserRepository userRepository,
       @Autowired UserRepositoryRoleService userRepositoryRoleService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService,
       @Autowired ISearchService searchService,
       @Autowired ModelRepositoryFactory repositoryFactory) {
     this.namespaceRepository = namespaceRepository;
-    this.userRepository = userRepository;
     this.userRepositoryRoleService = userRepositoryRoleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.searchService = searchService;
@@ -285,8 +286,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   public Namespace create(String actorUsername, String targetUsername, String namespaceName)
       throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
-    User actor = userRepository.findByUsername(actorUsername);
-    User target = userRepository.findByUsername(targetUsername);
+    User actor = userRolesRequestCache.withUser(actorUsername).getUser();
+    User target = userRolesRequestCache.withUser(targetUsername).getUser();
     return create(actor, target, namespaceName);
   }
 
@@ -340,7 +341,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    */
   public void deleteNamespace(String actorUsername, String namespaceName)
       throws DoesNotExistException, OperationForbiddenException {
-    User actor = userRepository.findByUsername(actorUsername);
+    User actor = userRolesRequestCache.withUser(actorUsername).getUser();
     deleteNamespace(actor, namespaceName);
   }
 
@@ -414,7 +415,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
     Optional<String> result = cache.namespace(namespace).map(Namespace::getWorkspaceId);
     if (!result.isPresent()) {
-      int lastSeparator = namespace.lastIndexOf(".");
+      int lastSeparator = namespace.lastIndexOf(NAMESPACE_SEPARATOR);
       if (lastSeparator > 0) {
         return resolveWorkspaceIdForNamespace(namespace.substring(0, lastSeparator));
       } else {
@@ -434,7 +435,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     if (!userContext.isAnonymous()) {
-      User user = userRepository.findByUsername(userContext.getUsername());
+      User user = userRolesRequestCache.withUser(userContext.getUsername()).getUser();
       try {
         visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long) null));
       } catch (OperationForbiddenException | DoesNotExistException e) {

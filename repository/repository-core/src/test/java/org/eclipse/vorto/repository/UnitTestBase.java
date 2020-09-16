@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import javax.servlet.ServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
@@ -23,6 +24,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -34,7 +36,9 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.eclipse.vorto.repository.search.IndexingEventListener;
@@ -57,9 +61,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
@@ -74,6 +80,9 @@ public abstract class UnitTestBase {
 
   @InjectMocks
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
+
+  @InjectMocks
+  protected UserRolesRequestCache userRolesRequestCache;
 
   @Mock
   protected UserUtil userUtil;
@@ -98,6 +107,8 @@ public abstract class UnitTestBase {
 
   @Mock
   protected UserRepositoryRoleService userRepositoryRoleService;
+
+
 
   @Mock
   protected PrivilegeService privilegeService;
@@ -231,13 +242,13 @@ public abstract class UnitTestBase {
   }
 
   protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
-    accountService = new DefaultUserAccountService(userRepository,
+    accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
   }
 
   protected void mockUserService(ApplicationEventPublisher eventPublisher) {
-    userService = new UserService(userUtil, userRepository, userRepositoryRoleService,
+    userService = new UserService(userRolesRequestCache, userUtil, userRepository, userRepositoryRoleService,
         userNamespaceRoleService, notificationService);
     userService.setApplicationEventPublisher(eventPublisher);
   }

@@ -830,7 +830,6 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     collaborator.setTechnicalUser(true);
     createTechnicalUserAndAddToNamespace(namespaceName, collaborator);
 
-    assertTrue(userService.exists("my-technical-user"));
     User technicalUser = userRepository.findByUsername("my-technical-user");
     assertNotNull(technicalUser);
     assertTrue(technicalUser.isTechnicalUser());
