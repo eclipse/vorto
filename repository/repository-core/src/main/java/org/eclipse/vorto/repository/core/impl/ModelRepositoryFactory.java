@@ -229,31 +229,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   @Override
-  public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
-      Authentication user) {
-    ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
-        this.attachmentValidator,
-        this.modelParserFactory,
-        getModelRetrievalServiceWithoutSessionHelper(user),
-        this,
-        getPolicyManager(workspaceId, user),
-        namespaceService,
-        privilegeService);
-
-    modelRepository.setRepositorySessionHelperSupplier(() -> {
-      RequestRepositorySessionHelper s =
-          new RequestRepositorySessionHelper(false, privilegeService);
-      s.setRepository(repository);
-      s.setWorkspaceId(workspaceId);
-      s.setUserRoles(getUserRoles(workspaceId, user.getName()));
-      s.setUser(user);
-      return s;
-    });
-    modelRepository.setApplicationEventPublisher(eventPublisher);
-    return modelRepository;
-  }
-
-  @Override
   public IModelRepository getRepository(IUserContext userContext) {
     return getRepository(userContext.getWorkspaceId(), userContext.getAuthentication());
   }
@@ -378,5 +353,29 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       return allWorkspaceIdSupplier;
     }
     return visibleWorkspaceIdSupplier;
+  }
+
+  private IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+      Authentication user) {
+    ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
+        this.attachmentValidator,
+        this.modelParserFactory,
+        getModelRetrievalServiceWithoutSessionHelper(user),
+        this,
+        getPolicyManager(workspaceId, user),
+        namespaceService,
+        privilegeService);
+
+    modelRepository.setRepositorySessionHelperSupplier(() -> {
+      RequestRepositorySessionHelper s =
+          new RequestRepositorySessionHelper(false, privilegeService);
+      s.setRepository(repository);
+      s.setWorkspaceId(workspaceId);
+      s.setUserRoles(getUserRoles(workspaceId, user.getName()));
+      s.setUser(user);
+      return s;
+    });
+    modelRepository.setApplicationEventPublisher(eventPublisher);
+    return modelRepository;
   }
 }

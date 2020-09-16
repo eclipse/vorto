@@ -25,8 +25,6 @@ public interface IModelRepositoryFactory {
 
   IModelRepository getRepository(String tenant, Authentication user);
 
-  IModelRepository getRepositoryWithoutSessionHelper(String tenant, Authentication user);
-
   IModelRepository getRepository(IUserContext userContext);
 
   IModelRepository getRepository(String tenant);
@@ -41,6 +39,12 @@ public interface IModelRepositoryFactory {
 
   IModelRetrievalService getModelRetrievalService(Authentication user);
 
+  /**
+   * The SessionHelper is scoped to the request and to the instance of the IModelRepositoryFactory.
+   * In a multi-threaded context this will not work and cause unpredictable and failing behavior,
+   * therefore this method uses individual SessionHelpers instead. This method should only be used
+   * in a multi-threaded context of a single request.
+   */
   IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper(Authentication user);
 
   IModelRetrievalService getModelRetrievalService(IUserContext userContext);
