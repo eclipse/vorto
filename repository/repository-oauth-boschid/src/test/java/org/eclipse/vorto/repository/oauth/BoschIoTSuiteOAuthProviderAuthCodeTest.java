@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
@@ -30,10 +29,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BoschIoTSuiteOAuthProviderAuthCodeTest {
+public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest {
 
     public static final String CLIENT_ID = "client-id";
-    public static final String TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6InB1YmxpYzo5YzI0MTg0OC01MmQyLTRkM2YtYmFmOS1mNzE3OTYxMmE3YWMiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOltdLCJjbGllbnRfaWQiOiIzYTQzZmJjMC1iNjM5LTQzNmYtYWJhNC1kNzA1MTZkNDRiZDIiLCJleHAiOjE1OTcxMzMwODAsImV4dCI6e30sImlhdCI6MTU5NzEyOTQ4MCwiaXNzIjoiaHR0cHM6Ly9hY2Nlc3MuYm9zY2gtaW90LXN1aXRlLmNvbS92Mi8iLCJqdGkiOiI3YTZkNmEyMy00MmEzLTQ2OWEtOWJmNy0wYzNhNWQ2NmJmYjgiLCJuYmYiOjE1OTcxMjk0ODAsInNjcCI6WyJzZXJ2aWNlOmlvdC1odWItcHJvZDp0NTZmMDcxMjgxMzZlNDE5Y2JiNjg0ZWMzZGQ5ZDA0MDFfaHViL2Z1bGwtYWNjZXNzIiwic2VydmljZTppb3QtdGhpbmdzLWV1LTE6NTZmMDcxMjgtMTM2ZS00MTljLWJiNjgtNGVjM2RkOWQwNDAxX3RoaW5ncy9mdWxsLWFjY2VzcyJdLCJzdWIiOiIzYTQzZmJjMC1iNjM5LTQzNmYtYWJhNC1kNzA1MTZkNDRiZDIifQ.jMxGGYgCFRh9vvGyvyAssVsnE98I0nEJaTqpri7W6x4kBEc6xElW0P1adBrQPY9Ou37AEN0KmyyCOTWpu3rYbfylf-azF6G67iqkQnCXjReoxdwmRxcxluo6FNlodnl7krE96AgFXEWcuAy9KEJzDHNUAymqWpIbG7aIPmjw3JPRBXs_aADg8vSnDGL080qS44f5l3F2g6DBl1M0uUPTrrP8p2r-GfKOwRSSsPaCMIjPj36VUKKvPAhcFeIzL52zgWW2pPpNAeZjLIMC_LY6Dm5fgfyILvmmJKAvVgs8YoAOeQBPhJNyLtHw_XVxEQ1NttM8CS-2BQREDHwXdounCxoNL8Qi_jZgiLE3B6J3Ufcsgf0vBXtXmZNge_5m2_J4vzlGLRou9abVDjsDsrltPk5vR--e43FKvo7AbyQlKesfI4kbUfa9Wq00eQ2OHSpMOldvBwVElDiefd5FiGrmOhxS9M1PquBfzqCaupu_1an0BSGW-zQ6JRMtbGeBu-K9L6TF-plJHLcCo_sBN-Ay7JglKKv2wWoxwUbeYPWNeio5CIMCE6XQuSfPiCe0XEiD4QpHgkqmi_qwxLsFOP4XFovSEkkrQAuRLfxeycfv-MkL3JjKU09hxiMAwcacBbFiIvXecC4NEYvo-vuUFECCCbcp_1ChJpTqM2-OdMkVLlk";
+    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6InB1YmxpYzoxYjI2ZDEwYi1iMTZjLTQ4MDQtYmM4MC1jMWUzOWJhNTZlMjAiLCJ0eXAiOiJKV1QifQ.eyJqdGkiOiJmNjAyNGYzMy03NzQwLTQ0MmUtYWVjMC1lNTU4MzI4OTA2OTAiLCJpYXQiOjQxMjcxNzY5ODYsImV4cCI6NDEyNzE3Njk4NiwibmJmIjo0MTI3MTc2OTg2LCJpc3MiOiJodHRwczovL2FjY2Vzcy5ib3NjaC1pb3Qtc3VpdGUuY29tL3YyIiwiYXVkIjpbXSwiY2xpZW50X2lkIjoiZDc1OGEzNWUtOTRlZi00NDNmLTk2MjUtN2YwMzA5MmUyMDA1Iiwic2NwIjpbInNlcnZpY2U6aW90LWh1Yjp0ZTE3YjcyMDIwMDQ3NDRmM2E4ZWQ3ZDM2OWFkMTYyNTFfaHViL2Z1bGwtYWNjZXNzIiwic2VydmljZTppb3QtdGhpbmdzLWV1LTE6ZTE3YjcyMDItMDA0Ny00NGYzLWE4ZWQtN2QzNjlhZDE2MjUxX3RoaW5ncy9mdWxsLWFjY2VzcyIsInNlcnZpY2U6dm9ydG86dm9ydG8ucHJpdmF0ZS5lcmxlL2Z1bGwtYWNjZXNzIl0sInN1YiI6ImQ3NThhMzVlLTk0ZWYtNDQzZi05NjI1LTdmMDMwOTJlMjAwNSIsImV4dCI6e319.azKTuhvFXKDDKGvNYyzVEa8Li_YfGD4-Yv-v5YBGRB3IU0b5yGNFwJcC23FF_mL2h_6Xr4_eJ-duQ3MGJkJk9ADXeYz0izW06CuZQtiFW3joSKKN2xyyVFXy7jpk4CoPTJruQphhAHpfQH2tBiFbQZlsCqE14RPOlrqbxlORTwhOsHVQLBfRssmA1AIlvfstfbBpxKmooqwmqBoDfU-5Kmei6JJWOBos7aoTZGD-9bUbJFWUVXEGyr0VXEyr5IriAjOyY_wba7ktv89JVe4SFqIx3ueSo1vyMbulgK8r5xbt8ZkGGCPOzG6Y2t5Zmd8stTI2WXuf2TgBIoSGIhBjegHT0RGijAajdXdrB8aqTBbJjUU0hTQAfcELHnWOs7BfS6PYPa0Hfg7VqhUARV8t7BsYI6gnE7b24w_1gmb5aOGWq6WcuQ2FsE5ucNbPcYr87fT77JKEaWIXHo_NFG16UGtEC0mvSaniVKoV-KQRZzNzvJQ9r2CINzq0W_XnD1fYBb_rcO3xjILNHZXelgrcWcuOErU95oa0sqWwqwLBg4lcHVrPs-u-Y_rma7WNNdBJ3vDLVdXKXdxyusZzR2Jsjn1V1DHvKAfdu5H2le-WmA-snYyCv35TsVYqEQhwrn8L5xu7F2SkrNPjWXIp74VqQWN7gBe_LWHht4zT_afo-Iw";
 
     private BoschIoTSuiteOAuthProviderAuthCode sut;
 
@@ -48,7 +47,7 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest {
 
     @Before
     public void instantiate() {
-        sut = new BoschIoTSuiteOAuthProviderAuthCode(CLIENT_ID, configuration, userAccountService, userNamespaceRoleService);
+        sut = new BoschIoTSuiteOAuthProviderAuthCode(CLIENT_ID, publicKey(), configuration, userAccountService, userNamespaceRoleService);
     }
 
     @Test
@@ -75,10 +74,10 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest {
         assertFalse(sut.canHandle(authentication));
     }
 
-    @Test(expected = InvalidTokenException.class)
+    @Test
     public void authenticateUserNotFoundTest() {
         when(userAccountService.getUser(any())).thenReturn(null);
-        sut.authenticate(null, TOKEN);
+        assertNull(sut.authenticate(null, TOKEN));
     }
 
     @Test
@@ -93,7 +92,5 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest {
         Authentication authentication = sut.authenticate(null, TOKEN);
         assertTrue(authentication.isAuthenticated());
     }
-
-
 
 }

@@ -22,6 +22,8 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -94,6 +96,9 @@ public abstract class IntegrationTestBase {
 
   @Autowired
   protected UserService userService;
+
+  @Autowired
+  protected INotificationService notificationService;
 
   @LocalServerPort
   protected int port;

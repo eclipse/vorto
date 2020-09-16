@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import javax.servlet.Filter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,8 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+
+import javax.servlet.Filter;
 
 public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowConfiguration {
 
@@ -44,11 +45,12 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
     this.tokenService.setAuthoritiesExtractor(new UserDBAuthoritiesExtractor(getUserAttributeId()));
   }
 
-
+  @Override
   public UserInfoTokenServices getUserInfoTokenService() {
     return this.tokenService;
   }
 
+  @Override
   public Filter createFilter() {
     OAuth2RestTemplate restTemplate = createOAuthTemplate();
 
@@ -71,6 +73,7 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
   
   protected abstract AuthorizationCodeResourceDetails createDetails();
 
+  @Override
   public abstract String getFilterProcessingUrl();
 
   protected abstract String getUserAttributeId();

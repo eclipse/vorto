@@ -36,6 +36,10 @@ import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceID;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.notification.message.AddedToNamespaceMessage;
+import org.eclipse.vorto.repository.notification.message.RemovedFromNamespaceMessage;
+import org.eclipse.vorto.repository.notification.message.RolesChangedInNamespaceMessage;
 import org.eclipse.vorto.repository.repositories.NamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
@@ -52,7 +56,10 @@ import org.springframework.stereotype.Service;
 /**
  * This service reports information and manipulates user roles on namespaces.<br/>
  * It is session-scoped, as any user with administrative privileges on a namespace can change
- * other users' access to it by means of roles.
+ * other users' access to it by means of roles.<br/>
+ * Role changes or collaborator removals trigger fire-and-forget notification messages to the
+ * targeted user, through {@link INotificationService#sendNotificationAsync(org.eclipse.vorto.repository.notification.IMessage)}. <br/>
+ * Failures to send are not logged, and sending does not block.
  */
 @Service
 public class UserNamespaceRoleService implements ApplicationEventPublisherAware {
@@ -85,6 +92,9 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   @Autowired
   private UserRolesRequestCache cache;
+
+  @Autowired
+  private INotificationService notificationService;
 
   private ApplicationEventPublisher eventPublisher;
 
@@ -385,7 +395,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * Adds the given {@link IRole} to the given {@link User} on the given {@link Namespace}, as
    * acted by the {@literal actor} {@link User} if so authorized.<br/>
    * The pre-condition for authorizing this operation is that the actor is either sysadmin, or has
-   * administrative privileges on the given {@link Namespace}.
+   * administrative privileges on the given {@link Namespace}.<br/>
+   * Notifies the target user asynchronously if possible.
    *
    * @param actor
    * @param target
@@ -423,11 +434,23 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // user already has that role on that namespace, nothing to do and returning false
     if ((roles.getRoles() & role.getRole()) == role.getRole()) {
       return false;
-    } else {
-      // adding given role to user roles and returning true if persisting successful
-      roles.setRoles(roles.getRoles() + role.getRole());
-      return userNamespaceRoleRepository.save(roles) != null;
     }
+    // adding given role to user roles and returning true if persisting successful
+    roles.setRoles(roles.getRoles() + role.getRole());
+    boolean result = userNamespaceRoleRepository.save(roles) != null;
+    if (result) {
+      notificationService.sendNotificationAsync(
+          new AddedToNamespaceMessage(
+              target,
+              namespace.getName(),
+              roleUtil.toNamespaceRoles(roles.getRoles())
+                  .stream()
+                  .map(IRole::getName)
+                  .collect(Collectors.toList())
+          )
+      );
+    }
+    return result;
   }
 
   /**
@@ -459,7 +482,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * role on the namespace.<br/>
    * Will return {@literal false} for any other reason, such as: no user-namespace association
    * exists, the user did not have that role on the namespace to start with, other failures at
-   * repository-level...
+   * repository-level...<br/>
+   * Notifies the target user asynchronously if possible.
    *
    * @param actor
    * @param target
@@ -498,7 +522,20 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     } else {
       // removing given role to user roles and returning true if persisting successful
       roles.setRoles(roles.getRoles() - role.getRole());
-      return userNamespaceRoleRepository.save(roles) != null;
+      boolean result = userNamespaceRoleRepository.save(roles) != null;
+      if (result) {
+        notificationService.sendNotificationAsync(
+            new RolesChangedInNamespaceMessage(
+                target,
+                namespace.getName(),
+                roleUtil.toNamespaceRoles(roles.getRoles())
+                    .stream()
+                    .map(IRole::getName)
+                    .collect(Collectors.toList())
+            )
+        );
+      }
+      return result;
     }
   }
 
@@ -537,6 +574,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    *     {@literal namespace_admin} role on that namespace.
    *   </li>
    * </ul>
+   * <br/>
+   * Notifies the target user asynchronously if possible.
    *
    * @param actor
    * @param target
@@ -544,7 +583,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param rolesValue
    * @param newNamespace
    * @return {@literal true} if operation succeeded, {@literal false} if operation not required or failed to persist.
-   * @see UserNamespaceRoleService#setRoles(User, User, Namespace, Collection, boolean)
    */
   private boolean setRoles(User actor, User target, Namespace namespace, long rolesValue,
       boolean newNamespace)
@@ -581,7 +619,22 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     } else {
       // assigning given roles to user and returning true if persisting successful
       roles.setRoles(rolesValue);
-      return userNamespaceRoleRepository.save(roles) != null;
+      boolean result = userNamespaceRoleRepository.save(roles) != null;
+      // if saved successfully, notify the target user they have been added as collaborator to the
+      // namespace - only triggers when namespace has not just been created
+      if (result && !newNamespace) {
+        notificationService.sendNotificationAsync(
+            new AddedToNamespaceMessage(
+                target,
+                namespace.getName(),
+                roleUtil.toNamespaceRoles(roles.getRoles())
+                    .stream()
+                    .map(IRole::getName)
+                    .collect(Collectors.toList())
+            )
+        );
+      }
+      return result;
     }
   }
 
@@ -758,7 +811,12 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     userNamespaceRoleRepository.delete(rolesToDelete.get().getID());
     LOGGER.info("Deleted user-namespace role association.");
-
+    notificationService.sendNotificationAsync(
+        new RemovedFromNamespaceMessage(
+            target,
+            namespace.getName()
+        )
+    );
     return true;
   }
 

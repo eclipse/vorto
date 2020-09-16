@@ -78,9 +78,18 @@ public class AccountController {
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
 
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
     User user = accountService.getUser(ControllerUtils.sanitize(username));
     if (user != null) {
-      return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
+      // suppresses sensitive data e.g. e-mail if the queried username is not identical to the
+      // logged-on user's name
+      return new ResponseEntity<>(
+          UserDto.fromUser(
+              user, !userContext.getUsername().equals(username)
+          ),
+          HttpStatus.OK
+      );
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

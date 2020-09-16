@@ -28,13 +28,12 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
 
   private final String contextPath;
 
-
   public BoschIoTSuiteOAuthProviderConfiguration(
       @Value("${suite.oauth2.resource.userInfoUri}") String userInfoEndpointUrl,
       @Value("${suite.oauth2.client.clientId}") String clientId,
       @Value("${server.contextPath}") String contextPath) {
     super(new UserInfoTokenServices(userInfoEndpointUrl, clientId));
-    this.tokenService.setPrincipalExtractor(new EidpPrincipalExtractor());
+    this.tokenService.setPrincipalExtractor(new BoschIoTSuiteOAuthPrincipalExtractor());
     if (contextPath.endsWith("/")) {
       contextPath = contextPath.substring(0, contextPath.length() - 1);
     }
@@ -48,7 +47,7 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
 
   @Override
   protected String getUserAttributeId() {
-    return "sub";
+    return "orig_id/sub";
   }
 
   @Bean
@@ -73,7 +72,6 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
     } else {
       return request.getRequestURL().toString().replace(request.getRequestURI(), "");
     }
-
   }
 
   @Override
