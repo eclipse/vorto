@@ -12,11 +12,17 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import org.hibernate.annotations.NaturalId;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Optional;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "user", indexes = {
@@ -53,25 +59,10 @@ public class User implements Serializable {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
+  @Column(name = "created_by")
+  private Long createdBy;
+
   private String emailAddress;
-
-  public static User create(String username, String provider, String subject) {
-    return create(username, provider, subject, false);
-  }
-
-  public static User create(String username, String provider, String subject,
-      boolean isTechnicalUser) {
-    User user = new User();
-    user.setUsername(username);
-    user.setAuthenticationProviderId(provider);
-    user.setSubject(subject);
-    user.setTechnicalUser(isTechnicalUser);
-    user.setDateCreated(new Timestamp(System.currentTimeMillis()));
-    user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-    user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
-
-    return user;
-  }
 
   public Long getId() {
     return id;
@@ -151,6 +142,23 @@ public class User implements Serializable {
 
   public void setTechnicalUser(boolean isTechnicalUser) {
     this.isTechnicalUser = isTechnicalUser;
+  }
+
+  /**
+   * This accessor contains some trivial logic to not return a {@code null} value.<br/>
+   * While this is unconventional for {@link Entity} classes, it greatly simplifies the logic to
+   * always provide a default user ID for the {@literal created_by} field, which defaults to the
+   * {@link User}'s own ID when {@code null}, instead of allowing the safety mechanism to be
+   * replicated in multiple spots across the code base.
+   *
+   * @return
+   */
+  public Long getCreatedBy() {
+    return Optional.ofNullable(createdBy).orElse(id);
+  }
+
+  public void setCreatedBy(Long createdBy) {
+    this.createdBy = createdBy;
   }
 
   @Override

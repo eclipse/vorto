@@ -15,6 +15,8 @@ package org.eclipse.vorto.repository.server.ui;
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -152,12 +154,12 @@ public class BasicRepositoryUITest extends AbstractUITest {
     }
 
 
-    protected void setUpTest() {
+    protected void setUpTest() throws InvalidUserException {
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
-        userRepository.save(User.create("user1", "GITHUB", null, false));
-        userRepository.save(User.create("user2", "GITHUB", null, false));
+        userRepository.save(new UserBuilder().withName("user1").withAuthenticationProviderID("GITHUB").build());
+        userRepository.save(new UserBuilder().withName("user2").withAuthenticationProviderID("GITHUB").build());
     }
 }

@@ -15,8 +15,6 @@ begin
         # populates with default data: every user is "created by themselves" by default, including
         # technical users, since we cannot reliably verify that for already created users
         update user set user.created_by = user.id;
-        # now that the data is populated, improve validation to not null
-        alter table user modify created_by bigint(20) not null;
     end if;
 
 

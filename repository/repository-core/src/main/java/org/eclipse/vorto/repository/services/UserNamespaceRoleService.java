@@ -1010,7 +1010,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     ServiceValidationUtil.validateNulls(technicalUser);
 
     // delegates tech user creation and persistence to user service
-    userService.createOrUpdateTechnicalUser(technicalUser);
+    userService.createOrUpdateTechnicalUser(actor, technicalUser);
 
     // sets the desired namespace-roles association - authorization on namespace is
     // performed here, but failure will revert the transaction including saving the new user

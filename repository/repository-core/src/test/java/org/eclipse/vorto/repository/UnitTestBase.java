@@ -349,15 +349,14 @@ public abstract class UnitTestBase {
 
   private void mockUsers(NamespaceRole namespace_admin, NamespaceRole model_creator,
       NamespaceRole model_promoter, NamespaceRole model_publisher, NamespaceRole model_reviewer)
-      throws DoesNotExistException, OperationForbiddenException {
-    User alex = User.create("alex", "GITHUB", null);
-    alex.setId(1L);
-    User erle = User.create("erle", "GITHUB", null);
-    User admin = User.create("admin", "GITHUB", null);
-    User creator = User.create("creator", "GITHUB", null);
-    User promoter = User.create("promoter", "GITHUB", null);
-    User reviewer = User.create("reviewer", "GITHUB", null);
-    User publisher = User.create("publisher", "GITHUB", null);
+      throws DoesNotExistException, OperationForbiddenException, InvalidUserException {
+    User alex = new UserBuilder().withID(1).withName("alex").withAuthenticationProviderID("GITHUB").build();
+    User erle = new UserBuilder().withName("erle").withAuthenticationProviderID("GITHUB").build();
+    User admin = new UserBuilder().withName("admin").withAuthenticationProviderID("GITHUB").build();
+    User creator = new UserBuilder().withName("creator").withAuthenticationProviderID("GITHUB").build();
+    User promoter = new UserBuilder().withName("promoter").withAuthenticationProviderID("GITHUB").build();
+    User reviewer = new UserBuilder().withName("reviewer").withAuthenticationProviderID("GITHUB").build();
+    User publisher = new UserBuilder().withName("publisher").withAuthenticationProviderID("GITHUB").build();
 
     mockUserRepository(alex, erle, admin, creator, promoter, reviewer, publisher);
     mockUserNamespaceRoleService(namespace_admin, model_creator, model_promoter, model_publisher,
