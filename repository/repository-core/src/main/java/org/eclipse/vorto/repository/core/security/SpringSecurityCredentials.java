@@ -29,7 +29,7 @@ public class SpringSecurityCredentials implements Credentials {
 
   private Authentication authentication;
 
-  private Set<IRole> roles;
+  private Collection<IRole> roles;
 
   private PrivilegeService privilegeService;
 
@@ -40,7 +40,7 @@ public class SpringSecurityCredentials implements Credentials {
           .map(Privilege::getName)
           .anyMatch(privilegeName::equalsIgnoreCase);
 
-  public SpringSecurityCredentials(Authentication authentication, Set<IRole> roles, PrivilegeService privilegeService) {
+  public SpringSecurityCredentials(Authentication authentication, Collection<IRole> roles, PrivilegeService privilegeService) {
     this.authentication = authentication;
     this.roles = roles;
     this.privilegeService = privilegeService;
@@ -50,7 +50,7 @@ public class SpringSecurityCredentials implements Credentials {
     return authentication;
   }
 
-  public Set<IRole> getRolesInNamespace() {
+  public Collection<IRole> getRolesInNamespace() {
     return roles;
   }
 

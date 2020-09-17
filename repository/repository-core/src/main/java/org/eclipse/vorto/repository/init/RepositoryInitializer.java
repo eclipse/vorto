@@ -13,9 +13,11 @@
 package org.eclipse.vorto.repository.init;
 
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import java.util.stream.Stream;
 
 @Component
 public class RepositoryInitializer {
@@ -37,30 +38,44 @@ public class RepositoryInitializer {
   private String[] admins;
 
   @Autowired
-  private UserRepositoryRoleService userRepositoryRoleService;
+  private UserRepository userRepository;
 
   @Autowired
-  private DefaultUserAccountService userAccountService;
-
-  @Autowired
-  private ModelRepositoryFactory repositoryFactory;
+  private UserRepositoryRoleRepository userRepositoryRoleRepository;
 
   @EventListener(ApplicationReadyEvent.class)
   @Profile("!test")
   public void initRepo() {
-    Stream.of(admins).forEach(this::createAdminUser);
+    for (int id = 0; id < admins.length; id++) {
+      // ids 1-indexed
+      createAdminUser(admins[id], id + 1);
+    }
 
   }
 
-  private void createAdminUser(String username) {
-    if (!userAccountService.exists(username)) {
+  private void createAdminUser(String username, long id) {
+    if (userRepository.findByUsername(username) == null) {
       logger.info("Creating admin user: {}", username);
       User user = User.create(username, null, null);
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
-      userAccountService.saveUser(user);
+      user.setAuthenticationProviderId("GITHUB");
+      userRepository.save(user);
     }
-    userRepositoryRoleService.setSysadmin(username);
+    User user = userRepository.findByUsername(username);
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(user.getId())
+        .orElse(
+            new UserRepositoryRoles()
+        );
+    if (roles.getUser() == null) {
+      roles.setUser(user);
+    }
+    if (roles.getId() == null) {
+      roles.setId(id);
+    }
+    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
+
+    userRepositoryRoleRepository.save(roles);
   }
 
 }

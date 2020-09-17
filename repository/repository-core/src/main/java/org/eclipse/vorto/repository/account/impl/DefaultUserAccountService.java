@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import javax.transaction.Transactional;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
@@ -38,29 +39,22 @@ import org.springframework.stereotype.Service;
 @Service("userAccountService")
 public class DefaultUserAccountService implements ApplicationEventPublisherAware {
 
-  @Value("${server.admin:#{null}}")
-  private String[] admins;
-
   private UserRepository userRepository;
-
-  private INotificationService notificationService;
-
-  private RoleService roleService;
 
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  public DefaultUserAccountService(@Autowired UserRepository userRepository,
-      @Autowired INotificationService notificationService, @Autowired RoleService roleService,
+  private UserRolesRequestCache cache;
+
+  public DefaultUserAccountService(
+      @Autowired UserRolesRequestCache cache,
+      @Autowired UserRepository userRepository,
       @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    this.cache = cache;
     this.userRepository = userRepository;
-    this.notificationService = notificationService;
-    this.roleService = roleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
   private ApplicationEventPublisher eventPublisher = null;
-
-  private static final Logger LOGGER = Logger.getLogger(DefaultUserAccountService.class);
 
   /**
    * Defines the minimum validation requirement for a subject string. <br/>
@@ -84,7 +78,7 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
 
   @Transactional
   public User create(String username, String provider, String subject, boolean isTechnicalUser) {
-    if (userRepository.findByUsername(username) != null) {
+    if (cache.withUser(username).getUser() != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
 
@@ -104,11 +98,11 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
   }
 
   public boolean exists(String userId) {
-    return userRepository.findByUsername(userId) != null;
+    return cache.withUser(userId).getUser() != null;
   }
 
   public User getUser(String username) {
-    return this.userRepository.findByUsername(username);
+    return cache.withUser(username).getUser();
   }
 
   public Collection<User> findUsers(String partial) {

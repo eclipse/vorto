@@ -12,44 +12,15 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.IDiagnostics;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
-import org.eclipse.vorto.repository.core.IRepositoryManager;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.UserLoginException;
-import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
+import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.RoleService;
-import org.eclipse.vorto.repository.services.RoleUtil;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
@@ -61,6 +32,18 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Component("modelRepositoryFactory")
 public class ModelRepositoryFactory implements IModelRepositoryFactory,
@@ -105,9 +88,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   private RoleUtil roleUtil;
 
   @Autowired
-  private UserNamespaceRolesCache userNamespaceRolesCache;
-
-  @Autowired
   private UserRepository userRepository;
 
   private ApplicationEventPublisher eventPublisher = null;
@@ -136,7 +116,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
       UserNamespaceRoleService userNamespaceRoleService,
       PrivilegeService privilegeService,
       UserRepositoryRoleService userRepositoryRoleService,
-      UserNamespaceRolesCache userNamespaceRolesCache,
       UserRepository userRepository
   ) {
     this.modelSearchUtil = modelSearchUtil;
@@ -149,7 +128,6 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.privilegeService = privilegeService;
     this.userRepositoryRoleService = userRepositoryRoleService;
-    this.userNamespaceRolesCache = userNamespaceRolesCache;
     this.userRepository = userRepository;
   }
 
@@ -180,6 +158,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
     return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(user.getName()),
         workspaceId -> getRepository(workspaceId, user));
+  }
+
+  @Override
+  public IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper(Authentication user) {
+    return new ModelRetrievalService(getMatchingWorkspaceIdSupplier(user.getName()),
+        workspaceId -> getRepositoryWithoutSessionHelper(workspaceId, user));
   }
 
   @Override
@@ -266,6 +250,12 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   @Override
+  public IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId) {
+    return getRepositoryByModelWithoutSessionHelper(modelId,
+        SecurityContextHolder.getContext().getAuthentication());
+  }
+
+  @Override
   public IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext) {
     return getRepositoryByModel(modelId, userContext.getAuthentication());
   }
@@ -298,7 +288,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   /**
-   * This method accesses a request-scoped {@link UserNamespaceRolesCache} bean that maps composite
+   * This method accesses a request-scoped {@link UserRolesRequestCache} bean that maps composite
    * workspace+user IDs to roles. <br/>
    * This implies values for multiple calls with same workspace ID and username are cached within
    * the current request, and expire in the next one. <br/>
@@ -310,42 +300,29 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
    * @param username
    * @return
    */
-  private Set<IRole> getUserRoles(String workspaceId, String username) {
+  private Collection<IRole> getUserRoles(String workspaceId, String username) {
 
     if (UserContext.isAnonymous(username)) {
       return new HashSet<>();
     }
-
-    String compositeID = workspaceId.concat(username);
-
-    Set<IRole> result = userNamespaceRolesCache.get(compositeID)
-        .orElseGet(
-            () -> {
-              try {
-                Set<IRole> put = new HashSet<>(
-                    userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username)
-                );
-                if (userRepositoryRoleService.isSysadmin(username)) {
-                  put.add(RepositoryRole.SYS_ADMIN);
-                }
-                userNamespaceRolesCache.put(
-                    compositeID,
-                    put
-                );
-                return put;
-              } catch (DoesNotExistException dnee) {
-                LOGGER.debug("User or namespace not found. ", dnee);
-                return Collections.emptySet();
-              }
-            }
-        );
-    return result;
-
+    try {
+      return userNamespaceRoleService.getRolesByWorkspaceIdAndUser(workspaceId, username);
+    } catch (DoesNotExistException dnee) {
+      LOGGER.debug("User or namespace not found. ", dnee);
+      return Collections.emptySet();
+    }
   }
 
   private IModelRepository getRepositoryByNamespace(String namespace, Authentication auth) {
     return namespaceService.resolveWorkspaceIdForNamespace(namespace)
         .map(workspaceId -> getRepository(workspaceId, auth))
+        .orElse(null);
+  }
+
+  private IModelRepository getRepositoryByNamespaceWithoutSessionHelper(String namespace,
+      Authentication auth) {
+    return namespaceService.resolveWorkspaceIdForNamespace(namespace)
+        .map(workspaceId -> getRepositoryWithoutSessionHelper(workspaceId, auth))
         .orElse(null);
   }
 
@@ -359,11 +336,46 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
     }
   }
 
+  private IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId,
+      Authentication auth) {
+    IModelRepository foundRepository =
+        getRepositoryByNamespaceWithoutSessionHelper(modelId.getNamespace(), auth);
+    if (foundRepository == null) {
+      throw new ModelNotFoundException(
+          "Namespace " + modelId.getNamespace() + " does not exist in the system.");
+    } else {
+      return foundRepository;
+    }
+  }
+
   private Supplier<Collection<String>> getMatchingWorkspaceIdSupplier(String username) {
-    User user = userRepository.findByUsername(username);
-    if (Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user)) {
+    if (!UserContext.isAnonymous(username) && userRepositoryRoleService.isSysadmin(username)) {
       return allWorkspaceIdSupplier;
     }
     return visibleWorkspaceIdSupplier;
+  }
+
+  protected IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+      Authentication user) {
+    ModelRepository modelRepository = new ModelRepository(this.modelSearchUtil,
+        this.attachmentValidator,
+        this.modelParserFactory,
+        getModelRetrievalServiceWithoutSessionHelper(user),
+        this,
+        getPolicyManager(workspaceId, user),
+        namespaceService,
+        privilegeService);
+
+    modelRepository.setRepositorySessionHelperSupplier(() -> {
+      RequestRepositorySessionHelper s =
+          new RequestRepositorySessionHelper(false, privilegeService);
+      s.setRepository(repository);
+      s.setWorkspaceId(workspaceId);
+      s.setUserRoles(getUserRoles(workspaceId, user.getName()));
+      s.setUser(user);
+      return s;
+    });
+    modelRepository.setApplicationEventPublisher(eventPublisher);
+    return modelRepository;
   }
 }

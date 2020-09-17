@@ -37,11 +37,19 @@ public class UserRepositoryRoles implements Serializable {
   private Long id;
 
   @MapsId
-  @OneToOne
+  @OneToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "user_id")
   private User user;
 
   private long roles;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public User getUser() {
     return user;
