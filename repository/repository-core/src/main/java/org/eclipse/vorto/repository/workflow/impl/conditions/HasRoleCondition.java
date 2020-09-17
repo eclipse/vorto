@@ -25,18 +25,18 @@ import java.util.function.Supplier;
 
 public class HasRoleCondition extends AbstractWorkflowCondition {
 
-  private DefaultUserAccountService userRepository;
+  private DefaultUserAccountService userAccountService;
   private Supplier<IRole> roleSupplier;
 
-  public HasRoleCondition(DefaultUserAccountService userRepository, Supplier<IRole> roleSupplier, NamespaceService namespaceService, UserNamespaceRoleService userNamespaceRoleService) {
+  public HasRoleCondition(DefaultUserAccountService userAccountService, Supplier<IRole> roleSupplier, NamespaceService namespaceService, UserNamespaceRoleService userNamespaceRoleService) {
     super(namespaceService, userNamespaceRoleService);
-    this.userRepository = userRepository;
+    this.userAccountService = userAccountService;
     this.roleSupplier = roleSupplier;
   }
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
-    User foundUser = userRepository.getUser(user.getUsername());
+    User foundUser = userAccountService.getUser(user.getUsername());
     return Objects.nonNull(foundUser) && hasRole(user, foundUser, roleSupplier.get());
   }
 

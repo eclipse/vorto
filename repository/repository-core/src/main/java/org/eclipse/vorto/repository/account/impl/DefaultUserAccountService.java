@@ -12,25 +12,17 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import java.util.Arrays;
 import java.util.Collection;
 import javax.transaction.Transactional;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,23 +31,18 @@ import org.springframework.stereotype.Service;
 @Service("userAccountService")
 public class DefaultUserAccountService implements ApplicationEventPublisherAware {
 
-  @Value("${server.admin:#{null}}")
-  private String[] admins;
-
   private UserRepository userRepository;
-
-  private INotificationService notificationService;
-
-  private RoleService roleService;
 
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  public DefaultUserAccountService(@Autowired UserRepository userRepository,
-      @Autowired INotificationService notificationService, @Autowired RoleService roleService,
+  private UserRolesRequestCache cache;
+
+  public DefaultUserAccountService(
+      @Autowired UserRolesRequestCache cache,
+      @Autowired UserRepository userRepository,
       @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+    this.cache = cache;
     this.userRepository = userRepository;
-    this.notificationService = notificationService;
-    this.roleService = roleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
@@ -79,9 +66,11 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
    * @return
    * @throws
    */
-  @Transactional(rollbackOn = {IllegalArgumentException.class, IllegalStateException.class, InvalidUserException.class})
-  public User createNonTechnicalUser(String username, String provider, String subject) throws InvalidUserException {
-    if (userRepository.findByUsername(username) != null) {
+  @Transactional(rollbackOn = {IllegalArgumentException.class, IllegalStateException.class,
+      InvalidUserException.class})
+  public User createNonTechnicalUser(String username, String provider, String subject)
+      throws InvalidUserException {
+    if (cache.withUser(username).getUser() != null) {
       throw new IllegalArgumentException("User with given username already exists");
     }
     User saved = userRepository.save(
@@ -112,25 +101,12 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
     this.userRepository.save(user);
   }
 
-
-  protected void addRolesOnNamespace(Namespace namespace, User existingUser, IRole[] userRoles) {
-    User actor = userRepository
-        .findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-    Arrays.stream(userRoles).forEach(role -> {
-      try {
-        userNamespaceRoleService.addRole(actor, existingUser, namespace, role);
-      } catch (OperationForbiddenException | DoesNotExistException e) {
-        throw new IllegalStateException(e);
-      }
-    });
-  }
-
   public boolean exists(String userId) {
-    return userRepository.findByUsername(userId) != null;
+    return cache.withUser(userId).getUser() != null;
   }
 
   public User getUser(String username) {
-    return this.userRepository.findByUsername(username);
+    return cache.withUser(username).getUser();
   }
 
   public Collection<User> findUsers(String partial) {

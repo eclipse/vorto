@@ -97,8 +97,9 @@ public class AccountControllerTest extends IntegrationTestBase {
         .perform(
             put("/rest/accounts/" + USER_MODEL_CREATOR_NAME).content(testMail).with(userSysadmin))
         .andExpect(status().isOk());
-    assert (this.accountService.getUser(USER_MODEL_CREATOR_NAME).getEmailAddress()
-        .equals(testMail));
+    User user = userRepository.findByUsername(USER_MODEL_CREATOR_NAME);
+    assertNotNull(user);
+    assertEquals(testMail, user.getEmailAddress());
     this.repositoryServer
         .perform(put("/rest/accounts/doesnotexist").content(testMail).with(userSysadmin))
         .andExpect(status().isNotFound());
@@ -150,9 +151,9 @@ public class AccountControllerTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             post("/rest/accounts/createTechnicalUser")
-            .content(objectMapper.writeValueAsString(payload))
-            .contentType("application/json")
-            .with(userSysadmin)
+                .content(objectMapper.writeValueAsString(payload))
+                .contentType("application/json")
+                .with(userSysadmin)
         )
         .andExpect(status().isCreated());
 
