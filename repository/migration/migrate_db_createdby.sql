@@ -10,8 +10,8 @@ begin
     if (createdby = 0) then
         # adds the column
         alter table user add column created_by bigint(20);
-        # adds the fk
-        alter table user add constraint foreign key (created_by) references user(id);
+        # no FK as deleting a user should succeed if they have created technical users, and not
+        # automatically cascade to them either
         # populates with default data: every user is "created by themselves" by default, including
         # technical users, since we cannot reliably verify that for already created users
         update user set user.created_by = user.id;
