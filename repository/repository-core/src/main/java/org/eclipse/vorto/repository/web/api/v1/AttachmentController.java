@@ -36,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +102,48 @@ public class AttachmentController extends AbstractRepositoryController {
       return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
     }
   }
+
+  @PutMapping(value = "/{modelId:.+}/links", produces = "application/json")
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public AttachResult addLink(@ApiParam(
+      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+      required = true) @PathVariable String modelId,
+      @ApiParam(value = "The URL to be attached",
+          required = true) @RequestBody String url) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    getModelRepository(modelID).attachLink(modelID, url);
+
+    return AttachResult.success(modelID, url);
+  }
+
+  @GetMapping("/{modelId:.+}/links")
+  public Collection<String> getLinks(@ApiParam(
+      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+      required = true) @PathVariable String modelId) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    return getModelRepository(modelID).getLinks(modelID);
+  }
+
+  @DeleteMapping("/{modelId:.+}/links")
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public ResponseEntity<Void> deleteLink(
+      @ApiParam(
+          value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+          required = true) @PathVariable String modelId,
+      @ApiParam(value = "The URL to be deleted",
+          required = true) @RequestBody String url) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    getModelRepository(modelID).deleteLink(modelID, url);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
 
   // TODO: interim solution until attachment upload dialog supports Label Chooser
   private Tag[] guessTagsFromFileExtension(String fileName) {

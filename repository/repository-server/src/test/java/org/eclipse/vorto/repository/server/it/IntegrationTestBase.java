@@ -23,7 +23,6 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.impl.EmailNotificationService;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -54,6 +53,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -270,6 +270,28 @@ public abstract class IntegrationTestBase {
       request.setMethod("PUT");
       return request;
     }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+  }
+
+  protected ResultActions addLink(String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String url) throws Exception {
+    MockHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.put("/api/v1/attachments/" + modelId + "/links");
+    builder.content(url);
+    return repositoryServer.perform(builder.with(request -> {
+      request.setMethod("PUT");
+      return request;
+    }).contentType(MediaType.TEXT_PLAIN).with(user));
+  }
+
+  protected ResultActions deleteLink(String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String url) throws Exception {
+    MockHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.delete("/api/v1/attachments/" + modelId + "/links");
+    builder.content(url);
+    return repositoryServer.perform(builder.with(request -> {
+      request.setMethod("DELETE");
+      return request;
+    }).contentType(MediaType.TEXT_PLAIN).with(user));
   }
 
   protected ResultActions addAttachment(String modelId,

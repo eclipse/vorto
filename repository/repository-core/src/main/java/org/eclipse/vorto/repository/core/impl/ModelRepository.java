@@ -73,6 +73,8 @@ public class ModelRepository extends AbstractRepositoryOperation
 
   public static final String VORTO_DISPLAYNAME = "vorto:displayname";
 
+  public static final String VORTO_LINKS = "vorto:links";
+
   public static final String VORTO_NODE_TYPE = "vorto:type";
 
   public static final String VORTO_DESCRIPTION = "vorto:description";
@@ -100,6 +102,8 @@ public class ModelRepository extends AbstractRepositoryOperation
   public static final String MODE_ACCESS_CONTROLLABLE = "mode:accessControllable";
 
   public static final String ATTACHMENTS_NODE = "attachments";
+
+  public static final String LINKS_NODE = "links";
 
   private static final Function<ModelInfo, String> VERSION_COMPARATOR = m -> m.getId().getVersion();
 
@@ -775,6 +779,21 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
+  public void attachLink(ModelId modelId, String url) {
+    doInSession(session -> doAttachLinkInSession(modelId, url, session));
+  }
+
+  @Override
+  public Set<String> getLinks(ModelId modelID) {
+    return doInSession(session -> doGetLinksInSession(modelID, session));
+  }
+
+  @Override
+  public void deleteLink(ModelId modelID, String link) {
+    doInSession(session -> doDeleteLinkInSession(modelID, link, session));
+  }
+
+  @Override
   public void attachFileInElevatedSession(ModelId modelId, FileContent fileContent,
       IUserContext userContext,
       Tag... tags) throws AttachmentException {
@@ -1196,5 +1215,60 @@ public class ModelRepository extends AbstractRepositoryOperation
         resource.setReferences(referenceHelper.getReferences());
       }
     }
+  }
+
+  private boolean doAttachLinkInSession(ModelId modelId, String url, Session session) throws RepositoryException {
+    Node fileNode = getFileNode(modelId, session);
+    if (fileNode.hasProperty(VORTO_LINKS)) {
+      Property property = fileNode.getProperty(VORTO_LINKS);
+      Set<String> values = getVortoLinksPropertyValues(property);
+      values.add(url);
+      fileNode.setProperty(VORTO_LINKS, values.toArray(new String[0]), PropertyType.STRING);
+    } else {
+      fileNode.setProperty(VORTO_LINKS, new String[]{url}, PropertyType.STRING);
+    }
+    session.save();
+    return true;
+  }
+
+  private Set<String> doGetLinksInSession(ModelId modelID, Session session) throws RepositoryException {
+    Node fileNode = getFileNode(modelID, session);
+    if (fileNode.hasProperty(VORTO_LINKS)) {
+      return getVortoLinksPropertyValues(fileNode.getProperty(VORTO_LINKS));
+    }
+    return Collections.emptySet();
+  }
+
+  private Set<String> getVortoLinksPropertyValues(Property property) throws RepositoryException {
+    return Arrays.stream(property.getValues())
+        .map(this::getStringValue)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
+  }
+
+  private String getStringValue(Value v) {
+    try {
+      return v.getString();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private boolean doDeleteLinkInSession(ModelId modelID, String link, Session session) throws RepositoryException {
+    Node fileNode = getFileNode(modelID, session);
+    if (fileNode.hasProperty(VORTO_LINKS)) {
+      Property property = fileNode.getProperty(VORTO_LINKS);
+      Set<String> values = getVortoLinksPropertyValues(property);
+      values.remove(link);
+      fileNode.setProperty(VORTO_LINKS, values.toArray(new String[0]), PropertyType.STRING);
+      session.save();
+    }
+    return true;
+  }
+
+  private Node getFileNode(ModelId modelID, Session session) throws RepositoryException {
+    ModelIdHelper modelIdHelper = new ModelIdHelper(modelID);
+    Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+    return modelFolderNode.getNodes(FILE_NODES).nextNode();
   }
 }

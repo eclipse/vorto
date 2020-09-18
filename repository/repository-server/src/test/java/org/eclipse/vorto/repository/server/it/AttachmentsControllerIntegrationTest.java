@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -48,6 +51,55 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
   public void testAttachmentUpload() throws Exception {
     addAttachment(testModel.prettyName, userSysadmin, "test.json", MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
+  }
+
+  @Test
+  public void testAttachingLink() throws Exception {
+      List<String> expectedResult = new ArrayList<>();
+      String url = "https://vorto.eclipse.org";
+      String url2 = "https://vorto-dev.eclipse.org";
+      setPublic(testModel.prettyName);
+      addLink(testModel.prettyName, userModelCreator, url);
+      expectedResult.add(url);
+      repositoryServer.perform(get(
+          "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
+          .andExpect(content().json(gson.toJson(expectedResult)))
+          .andExpect(status().isOk());
+
+      addLink(testModel.prettyName, userModelCreator, url2);
+      expectedResult.add(url2);
+      repositoryServer.perform(get(
+          "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
+          .andExpect(content().json(gson.toJson(expectedResult)))
+          .andExpect(status().isOk());
+
+      deleteLink(testModel.prettyName, userModelCreator, url);
+      expectedResult.remove(url);
+
+      repositoryServer.perform(get(
+          "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
+          .andExpect(content().json(gson.toJson(expectedResult)))
+          .andExpect(status().isOk());
+
+      deleteLink(testModel.prettyName, userModelCreator, url2);
+      expectedResult.remove(url2);
+
+      repositoryServer.perform(get(
+          "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
+          .andExpect(content().json(gson.toJson(expectedResult)))
+          .andExpect(status().isOk());
+
+      deleteLink(testModel.prettyName, userSysadmin, url2)
+          .andExpect(status().isOk());
+
+      addLink("unknown:unknown:1.0.0", userSysadmin, url)
+          .andExpect(status().isNotFound());
+
+      addLink(testModel.prettyName, userModelViewer, url)
+          .andExpect(status().isUnauthorized());
+
+      deleteLink(testModel.prettyName, userModelViewer, url2)
+          .andExpect(status().isUnauthorized());
   }
 
   @Test

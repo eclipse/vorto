@@ -28,3 +28,4 @@
 - vorto:targetplatform (string)
 - vorto:tags (string) multiple
 - vorto:references (string) multiple
+- vorto:links (string) multiple
