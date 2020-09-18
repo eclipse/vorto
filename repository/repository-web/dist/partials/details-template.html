@@ -256,6 +256,19 @@
 														</button>
 													</div>
 												</dd>
+												<dt>
+													Links:
+												</dt>
+												<dd>
+													<div ng-repeat="currentLink in links">
+														<a ng-href="{{currentLink.url}}" class="pull-center" target="_blank">
+															{{currentLink.displayText}}
+														</a>
+														<button ng-hide="!hasAuthority('model_creator')" class="delete-button" ng-click="deleteLink(model.id.prettyFormat, currentLink)">
+															<i class="fa fa-close"></i>
+														</button>
+													</div>
+												</dd>
 											</dl>
 										</div>
 									</div>

@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -20,6 +22,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.refactor.ChangeSet;
 import org.eclipse.vorto.model.refactor.RefactoringTask;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.repository.core.*;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
@@ -36,6 +39,7 @@ import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.tenant.NewNamespacesNotSupersetException;
 import org.eclipse.vorto.repository.utils.ModelUtils;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -779,17 +783,17 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public void attachLink(ModelId modelId, String url) {
+  public void attachLink(ModelId modelId, ModelLink url) {
     doInSession(session -> doAttachLinkInSession(modelId, url, session));
   }
 
   @Override
-  public Set<String> getLinks(ModelId modelID) {
+  public Set<ModelLink> getLinks(ModelId modelID) {
     return doInSession(session -> doGetLinksInSession(modelID, session));
   }
 
   @Override
-  public void deleteLink(ModelId modelID, String link) {
+  public void deleteLink(ModelId modelID, ModelLink link) {
     doInSession(session -> doDeleteLinkInSession(modelID, link, session));
   }
 
@@ -1217,24 +1221,35 @@ public class ModelRepository extends AbstractRepositoryOperation
     }
   }
 
-  private boolean doAttachLinkInSession(ModelId modelId, String url, Session session) throws RepositoryException {
+  private boolean doAttachLinkInSession(ModelId modelId, ModelLink url, Session session) throws RepositoryException {
     Node fileNode = getFileNode(modelId, session);
+    ObjectMapper objectMapper = ObjectMapperFactory.getInstance();
     if (fileNode.hasProperty(VORTO_LINKS)) {
       Property property = fileNode.getProperty(VORTO_LINKS);
       Set<String> values = getVortoLinksPropertyValues(property);
-      values.add(url);
+      values.add(writeLinkObjectAsJson(url, objectMapper));
       fileNode.setProperty(VORTO_LINKS, values.toArray(new String[0]), PropertyType.STRING);
     } else {
-      fileNode.setProperty(VORTO_LINKS, new String[]{url}, PropertyType.STRING);
+      fileNode.setProperty(VORTO_LINKS, new String[]{writeLinkObjectAsJson(url, objectMapper)}, PropertyType.STRING);
     }
     session.save();
     return true;
   }
 
-  private Set<String> doGetLinksInSession(ModelId modelID, Session session) throws RepositoryException {
+  private String writeLinkObjectAsJson(ModelLink url, ObjectMapper objectMapper) throws RepositoryException {
+    try {
+      return objectMapper.writeValueAsString(url);
+    } catch (JsonProcessingException e) {
+      throw new RepositoryException("Error while writing link object to JSON", e);
+    }
+  }
+
+  private Set<ModelLink> doGetLinksInSession(ModelId modelID, Session session) throws RepositoryException {
+    ObjectMapper objectMapper = ObjectMapperFactory.getInstance();
     Node fileNode = getFileNode(modelID, session);
     if (fileNode.hasProperty(VORTO_LINKS)) {
-      return getVortoLinksPropertyValues(fileNode.getProperty(VORTO_LINKS));
+      return getVortoLinksPropertyValues(fileNode.getProperty(VORTO_LINKS)).stream()
+          .map(value -> deserializeLinkDto(objectMapper, value)).collect(Collectors.toSet());
     }
     return Collections.emptySet();
   }
@@ -1246,6 +1261,15 @@ public class ModelRepository extends AbstractRepositoryOperation
         .collect(Collectors.toSet());
   }
 
+  private ModelLink deserializeLinkDto(ObjectMapper objectMapper, String value) {
+    try {
+      return objectMapper.readValue(value, ModelLink.class);
+    } catch (IOException e) {
+      LOGGER.warn("Unable to deserialize Link: " + value, e);
+      return null;
+    }
+  }
+
   private String getStringValue(Value v) {
     try {
       return v.getString();
@@ -1254,12 +1278,13 @@ public class ModelRepository extends AbstractRepositoryOperation
     }
   }
 
-  private boolean doDeleteLinkInSession(ModelId modelID, String link, Session session) throws RepositoryException {
+  private boolean doDeleteLinkInSession(ModelId modelID, ModelLink link, Session session) throws RepositoryException {
     Node fileNode = getFileNode(modelID, session);
     if (fileNode.hasProperty(VORTO_LINKS)) {
+      ObjectMapper objectMapper = ObjectMapperFactory.getInstance();
       Property property = fileNode.getProperty(VORTO_LINKS);
       Set<String> values = getVortoLinksPropertyValues(property);
-      values.remove(link);
+      values.remove(writeLinkObjectAsJson(link, objectMapper));
       fileNode.setProperty(VORTO_LINKS, values.toArray(new String[0]), PropertyType.STRING);
       session.save();
     }

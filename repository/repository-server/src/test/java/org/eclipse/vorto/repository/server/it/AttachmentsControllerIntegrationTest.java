@@ -19,6 +19,7 @@ import com.google.gson.JsonParser;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -55,25 +56,25 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void testAttachingLink() throws Exception {
-      List<String> expectedResult = new ArrayList<>();
-      String url = "https://vorto.eclipse.org";
-      String url2 = "https://vorto-dev.eclipse.org";
+      List<ModelLink> expectedResult = new ArrayList<>();
+      ModelLink url = new ModelLink("https://vorto.eclipse.org", "A link");
+      ModelLink url2 = new ModelLink("https://vorto-dev.eclipse.org", "Another link");
       setPublic(testModel.prettyName);
-      addLink(testModel.prettyName, userModelCreator, url);
+      addLink(testModel.prettyName, userModelCreator, url).andExpect(status().isOk());
       expectedResult.add(url);
       repositoryServer.perform(get(
           "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
           .andExpect(content().json(gson.toJson(expectedResult)))
           .andExpect(status().isOk());
 
-      addLink(testModel.prettyName, userModelCreator, url2);
+      addLink(testModel.prettyName, userModelCreator, url2).andExpect(status().isOk());
       expectedResult.add(url2);
       repositoryServer.perform(get(
           "/api/v1/attachments/" + testModel.prettyName + "/links").with(userModelViewer))
           .andExpect(content().json(gson.toJson(expectedResult)))
           .andExpect(status().isOk());
 
-      deleteLink(testModel.prettyName, userModelCreator, url);
+      deleteLink(testModel.prettyName, userModelCreator, url).andExpect(status().isOk());
       expectedResult.remove(url);
 
       repositoryServer.perform(get(
@@ -81,7 +82,7 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
           .andExpect(content().json(gson.toJson(expectedResult)))
           .andExpect(status().isOk());
 
-      deleteLink(testModel.prettyName, userModelCreator, url2);
+      deleteLink(testModel.prettyName, userModelCreator, url2).andExpect(status().isOk());
       expectedResult.remove(url2);
 
       repositoryServer.perform(get(

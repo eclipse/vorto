@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.notification.INotificationService;
@@ -27,6 +28,7 @@ import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -273,25 +275,25 @@ public abstract class IntegrationTestBase {
   }
 
   protected ResultActions addLink(String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String url) throws Exception {
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url) throws Exception {
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.put("/api/v1/attachments/" + modelId + "/links");
-    builder.content(url);
+    builder.content(ObjectMapperFactory.getInstance().writeValueAsString(url));
     return repositoryServer.perform(builder.with(request -> {
       request.setMethod("PUT");
       return request;
-    }).contentType(MediaType.TEXT_PLAIN).with(user));
+    }).contentType(MediaType.APPLICATION_JSON).with(user));
   }
 
   protected ResultActions deleteLink(String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String url) throws Exception {
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url) throws Exception {
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.delete("/api/v1/attachments/" + modelId + "/links");
-    builder.content(url);
+    builder.content(ObjectMapperFactory.getInstance().writeValueAsString(url));
     return repositoryServer.perform(builder.with(request -> {
       request.setMethod("DELETE");
       return request;
-    }).contentType(MediaType.TEXT_PLAIN).with(user));
+    }).contentType(MediaType.APPLICATION_JSON).with(user));
   }
 
   protected ResultActions addAttachment(String modelId,

@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,16 +112,16 @@ public class AttachmentController extends AbstractRepositoryController {
       value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
       required = true) @PathVariable String modelId,
       @ApiParam(value = "The URL to be attached",
-          required = true) @RequestBody String url) {
+          required = true) @RequestBody ModelLink link) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    getModelRepository(modelID).attachLink(modelID, url);
+    getModelRepository(modelID).attachLink(modelID, link);
 
-    return AttachResult.success(modelID, url);
+    return AttachResult.success(modelID, link.getUrl());
   }
 
   @GetMapping("/{modelId:.+}/links")
-  public Collection<String> getLinks(@ApiParam(
+  public Collection<ModelLink> getLinks(@ApiParam(
       value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
       required = true) @PathVariable String modelId) {
 
@@ -137,7 +138,7 @@ public class AttachmentController extends AbstractRepositoryController {
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
           required = true) @PathVariable String modelId,
       @ApiParam(value = "The URL to be deleted",
-          required = true) @RequestBody String url) {
+          required = true) @RequestBody ModelLink url) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
     getModelRepository(modelID).deleteLink(modelID, url);
