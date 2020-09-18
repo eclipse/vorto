@@ -297,13 +297,13 @@ public final class SearchTestInfrastructure {
         .thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
     when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
 
-    User alex = User.create("alex", "GITHUB", null);
-    User erle = User.create("erle", "GITHUB", null);
-    User admin = User.create("admin", "GITHUB", null);
-    User creator = User.create("creator", "GITHUB", null);
-    User promoter = User.create("promoter", "GITHUB", null);
-    User reviewer = User.create("reviewer", "GITHUB", null);
-    User publisher = User.create("publisher", "GITHUB", null);
+    User alex = new UserBuilder().withName("alex").withAuthenticationProviderID("GITHUB").build();
+    User erle = new UserBuilder().withName("erle").withAuthenticationProviderID("GITHUB").build();
+    User admin = new UserBuilder().withName("admin").withAuthenticationProviderID("GITHUB").build();
+    User creator = new UserBuilder().withName("creator").withAuthenticationProviderID("GITHUB").build();
+    User promoter = new UserBuilder().withName("promoter").withAuthenticationProviderID("GITHUB").build();
+    User reviewer = new UserBuilder().withName("reviewer").withAuthenticationProviderID("GITHUB").build();
+    User publisher = new UserBuilder().withName("publisher").withAuthenticationProviderID("GITHUB").build();
 
     when(userRepository.findByUsername("alex")).thenReturn(alex);
     when(userRepository.findByUsername("erle")).thenReturn(erle);

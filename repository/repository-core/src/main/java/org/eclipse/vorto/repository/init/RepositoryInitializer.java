@@ -12,12 +12,13 @@
  */
 package org.eclipse.vorto.repository.init;
 
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,13 @@ public class RepositoryInitializer {
   private void createAdminUser(String username, long id) {
     if (userRepository.findByUsername(username) == null) {
       logger.info("Creating admin user: {}", username);
-      User user = User.create(username, null, null);
+      User user = null;
+      try {
+        user = new UserBuilder().withName(username).build();
+      } catch (InvalidUserException iue) {
+        logger.warn("Unable to create admin user - skipping.");
+        return;
+      }
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
       user.setAuthenticationProviderId("GITHUB");

@@ -80,12 +80,15 @@ public class UserService implements ApplicationEventPublisherAware {
    * @return
    * @throws InvalidUserException
    */
-  public User createOrUpdateTechnicalUser(User technicalUser) throws InvalidUserException {
+  public User createOrUpdateTechnicalUser(User actor, User technicalUser) throws InvalidUserException {
     // boilerplate null validation
     ServiceValidationUtil.validateNulls(technicalUser);
 
     // validates technical user
     userUtil.validateNewUser(technicalUser);
+
+    // sets createdby for tech user
+    technicalUser.setCreatedBy(actor.getId());
 
     // save the technical user
     User result = userRepository.save(technicalUser);
@@ -93,39 +96,6 @@ public class UserService implements ApplicationEventPublisherAware {
     if (result != null) {
       eventPublisher
           .publishEvent(new AppEvent(this, technicalUser.getUsername(), EventType.USER_ADDED));
-    }
-
-    return result;
-  }
-
-  /**
-   * This validates and persists a {@link User}, technical or not.<br/>
-   * The functionality is only meant for internal usage (e.g. in tests), therefore the acting
-   * {@link User} must have the {@literal sysadmin} repository role.
-   *
-   * @param actor
-   * @param target
-   * @return
-   * @throws InvalidUserException
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#create(String, String, String, boolean)
-   */
-  public User createOrUpdateUser(User actor, User target)
-      throws InvalidUserException, OperationForbiddenException {
-    // boilerplate null validation
-    ServiceValidationUtil.validateNulls(actor, target);
-
-    // validates technical user
-    userUtil.validateNewUser(target);
-
-    if (!userRepositoryRoleService.isSysadmin(actor)) {
-      throw new OperationForbiddenException(
-          "Acting user is not authorized to create a user - aborting operation.");
-    }
-    // save the technical user
-    User result = userRepository.save(target);
-
-    if (result != null) {
-      eventPublisher.publishEvent(new AppEvent(this, target.getId(), EventType.USER_ADDED));
     }
 
     return result;

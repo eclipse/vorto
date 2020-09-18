@@ -22,9 +22,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
@@ -120,11 +121,6 @@ public class AccountControllerTest extends IntegrationTestBase {
         .andExpect(status().isNotFound());
   }
 
-  protected IRole modelViewerRole() {
-    return roleService.findAnyByName("model_viewer")
-        .orElseThrow(() -> new IllegalStateException("Model viewer role not found."));
-  }
-
   /*
    * Test case to check if user account deletion is successful for Sys Admin role
    */
@@ -140,6 +136,35 @@ public class AccountControllerTest extends IntegrationTestBase {
 
     this.repositoryServer.perform(get("/rest/accounts/" + USER_SYSADMIN_NAME_2).with(userSysadmin))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void verifyTechnicalUserCreatedBy() throws Exception {
+    UserDto payload = UserDto.fromUser(
+        new UserBuilder()
+            .withName("theTechnicalUser")
+            .withAuthenticationProviderID("GITHUB")
+            .withAuthenticationSubject("theSubject")
+            .build()
+    );
+
+    repositoryServer
+        .perform(
+            post("/rest/accounts/createTechnicalUser")
+                .content(objectMapper.writeValueAsString(payload))
+                .contentType("application/json")
+                .with(userSysadmin)
+        )
+        .andExpect(status().isCreated());
+
+    // fetch sysadmin id
+    User sysadmin = userRepository.findByUsername(USER_SYSADMIN_NAME);
+    assertNotNull(sysadmin);
+    // compare with the tech user created by
+    User theTechnicalUser = userRepository.findByUsername("theTechnicalUser");
+    assertNotNull(theTechnicalUser);
+    assertEquals(sysadmin.getId(), theTechnicalUser.getCreatedBy());
+
   }
 
 }
