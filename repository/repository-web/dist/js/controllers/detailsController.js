@@ -49,6 +49,7 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.modelFileNames = [];
           $scope.modelEditor = null;
           $scope.attachments = [];
+          $scope.links = [];
           $scope.permission = "READ";
           $scope.encodeURIComponent = encodeURIComponent;
           $scope.newComment = {value: ""};
@@ -196,6 +197,13 @@ define(["../init/appController"], function (repositoryControllers) {
             document.getElementById("imageFile").click();
           };
 
+          $scope.getLinks = function (model) {
+              $http.get("./api/v1/attachments/" + model.id.prettyFormat + "/links")
+                  .then(function (result) {
+                      $scope.links = result.data;
+                  });
+          }
+
           $scope.getAttachments = function (model) {
             if ($rootScope.hasAuthority("sysadmin")) {
               $http.get("./api/v1/attachments/" + model.id.prettyFormat)
@@ -321,6 +329,7 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.getMappings();
                   $scope.getReferences();
                   $scope.getReferencedBy();
+                  $scope.getLinks(result.data);
                   $scope.getAttachments(result.data);
 
                   $scope.canCreateModels = false;
@@ -973,6 +982,16 @@ define(["../init/appController"], function (repositoryControllers) {
               size: "lg"
             });
           };
+          
+          $scope.deleteLink = function (modelId, link) {
+              $http.delete("./api/v1/attachments/" + modelId + "/links", {data: link, headers: {'Content-Type': 'application/json;charset=utf-8'}})
+                  .then(success => {
+                      let index = $scope.links.indexOf(link);
+                      if (index > -1) {
+                          $scope.links.splice(index, 1);
+                      }
+                  }, error => alert('error'));
+          }
 
           $scope.getUserPolicy = function () {
             $http.get('./rest/models/' + $scope.modelId + '/policy')
