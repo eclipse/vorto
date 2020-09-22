@@ -13,8 +13,11 @@
 package org.eclipse.vorto.repository.server.benchmark;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.model.*;
-import org.eclipse.vorto.repository.core.ModelInfo;
+import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.gui.action.HtmlReportGenerator;
+import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jorphan.collections.HashTree;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.server.ui.AuthenticationProviderMock;
@@ -22,7 +25,6 @@ import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.api.v1.NamespaceController;
 import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
-import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.modeshape.jcr.RepositoryConfiguration;
@@ -38,7 +40,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -48,13 +49,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.utility.MountableFile;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
 import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSITORY_ROLES;
@@ -65,8 +71,8 @@ import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSIT
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // https://github.com/spring-projects/spring-boot/issues/12280
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@ContextConfiguration(initializers = ApiBTest.Initializer.class, classes = {VortoRepository.class,ApiBTest.ModeshapeTestConfiguration.class})
-public class ApiBTest {
+@ContextConfiguration(initializers = ApiBenchmarkTest.Initializer.class, classes = {VortoRepository.class, ApiBenchmarkTest.ModeshapeTestConfiguration.class})
+public class ApiBenchmarkTest {
 
     @LocalServerPort
     protected int port;
@@ -90,15 +96,80 @@ public class ApiBTest {
     public static ElasticsearchContainer container = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:6.7.2");
 
     @ClassRule
-    public static MySQLContainer mySQLContainer = new MySQLContainer("mysql:5.6.44").withDatabaseName("vorto_schema").withPassword("vorto").withUsername("vorto");
+    public static JdbcDatabaseContainer mySQLContainer = (JdbcDatabaseContainer) new MySQLContainer("mysql:5.6.44").withDatabaseName("vorto_schema").withPassword("vorto").withUsername("vorto").withCommand("--max-allowed-packet=67108864");
 
+    // JMeter home dir
+    public static final String JMETER_HOME_DIR = "benchmarkTests";
+    // JMeter bin dir
+    public static final String JMETER_BINARY_DIR = "jmeter";
+    // Property name for the Vorto testcontainer (referenced in the testplan)
+    public static final String VORTO_PORT_PROPERTY = "vorto.port";
+    // Property name for the file name of the summary file
+    public static final String VORTO_RESULT_FILE_SUMMARY_PROPERTY = "vorto.result.file.summary";
+    // Property name for the result tree file
+    public static final String VORTO_RESULT_FILE_TREE_PROPERTY = "vorto.result.file.tree";
+    // Path string used for the benchmark tests
+    private static String BENCHMARK_PATH_STRING;
+    // JMeter engine
+    private StandardJMeterEngine myJMeterEngine = new StandardJMeterEngine();
+    // Tree representation of the test plan
+    private HashTree testPlanTree;
 
-    public static void before() {
-        System.setProperty("testcontainers.es", container.getMappedPort(9200).toString());
+    public ApiBenchmarkTest() {
     }
 
     @BeforeClass
-    public static void configureOAuthConfiguration() {
+    public static void configureOAuthConfiguration() throws URISyntaxException, IOException {
+        setSystemProperties();
+        globalJMeterConfiguration();
+    }
+
+    private static void globalJMeterConfiguration() throws URISyntaxException, IOException {
+
+        BENCHMARK_PATH_STRING = ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR).toURI().getPath();
+        // Initialize Properties
+        JMeterUtils.loadJMeterProperties(BENCHMARK_PATH_STRING + "/user.properties");
+        JMeterUtils.setJMeterHome(determineJMeterHome());
+        JMeterUtils.initLocale();
+    }
+
+    private static String determineJMeterHome() throws URISyntaxException, IOException {
+        try {
+            Path jmeterPath = Files.list(Paths.get(BENCHMARK_PATH_STRING)).filter(path -> path.toFile().isDirectory() && !path.toString().contains("report")).findAny().orElse(null);
+            return jmeterPath.resolve(JMETER_BINARY_DIR).toString();
+        }catch (Exception ex) {
+            System.err.println("unable to determine jmeter directory");
+        }
+        return "opt/JMeter";
+    }
+
+    @Before
+    public void setUpTest() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
+                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
+        configureJMeter();
+    }
+
+    /**
+     * Configure JMeter execution. Set vorto repository port and load the testplan.
+     *
+     * @throws IOException
+     */
+    private void configureJMeter() throws IOException {
+        SaveService.loadProperties();
+        // set the vorto port for jmeter test execution.
+        JMeterUtils.setProperty(VORTO_PORT_PROPERTY, Integer.toString(port));
+        // set result directory
+        JMeterUtils.setProperty(VORTO_RESULT_FILE_TREE_PROPERTY, BENCHMARK_PATH_STRING + "/resulttree.csv");
+        // set result file path
+        JMeterUtils.setProperty(VORTO_RESULT_FILE_SUMMARY_PROPERTY, BENCHMARK_PATH_STRING  + "/resultsummary.csv");
+        // load the test plan
+        testPlanTree = SaveService.loadTree(new File(ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR+"/apiCallGetModel.jmx").getFile()));
+    }
+
+    private static void setSystemProperties() {
         System.setProperty("eclipse_clientid", "foo");
         System.setProperty("eclipse_clientSecret", "foo");
         System.setProperty("github_clientid", "foo");
@@ -108,10 +179,8 @@ public class ApiBTest {
         System.setProperty("suite_clientid", "foo");
         System.setProperty("suite_clientSecret", "foo");
         System.setProperty("line.separator", "\n");
-        before();
+        System.setProperty("testcontainers.es", container.getMappedPort(9200).toString());
     }
-
-
 
     @TestConfiguration
     public static class ModeshapeTestConfiguration {
@@ -146,13 +215,13 @@ public class ApiBTest {
 
     @Test
     @WithMockUser(username = "user1", authorities = {"sysadmin","model_viewer","model_creator","namespace_admin"})
-    public void testGetModelApi() throws WorkflowException {
-        createTestData(200);
-//        System.err.println("done");
+    public void testGetModelApi() {
+        myJMeterEngine.configure(testPlanTree);
+        myJMeterEngine.run();
     }
 
     /**
-     * Set the data source urls
+     * Set the data source urls (url of the mysql testcontainer) and load the test data
      */
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
@@ -163,50 +232,48 @@ public class ApiBTest {
                     applicationContext, "spring.datasource.username=" + mySQLContainer.getUsername());
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
                     applicationContext, "spring.datasource.password=" + mySQLContainer.getUsername());
+            loadTestData();
+
+        }
+
+        /**
+         * Upload the sql file to the container, decompress it and trigger the import.
+         */
+        private void loadTestData() {
+            try {
+                mySQLContainer.copyFileToContainer(MountableFile.forClasspathResource("VortoTestcontainer3.tar.xz"), "VortoTestcontainer3.tar.xz");
+                mySQLContainer.execInContainer("bash", "-c","apt-get update && apt-get install xz-utils");
+                mySQLContainer.execInContainer("bash", "-c","tar -xf VortoTestcontainer3.tar.xz");
+                mySQLContainer.execInContainer("bash","-c","usr/bin/mysql -uvorto -pvorto vorto_schema < VortoTestcontainer3.sql");
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+                Assert.fail("Unable to load testdata.");
+            }
         }
     }
 
-
-
-    @Before
-    public void setUpTest() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-        mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
-                Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0], DEFAULT_NAMESPACE_ROLES[5], DEFAULT_NAMESPACE_ROLES[1], DEFAULT_NAMESPACE_ROLES[2], DEFAULT_NAMESPACE_ROLES[3], DEFAULT_NAMESPACE_ROLES[4], DEFAULT_REPOSITORY_ROLES[0])), "user1");
-    }
-
-    private void createTestData(int numberOfNamespaces) throws WorkflowException {
-        Set<ModelId> fbSet = new HashSet<>();
-
-        for(int i = 0; i< numberOfNamespaces; i++) {
-            namespaceController.createNamespace("test" + i);
-            fbSet = createModelsAndFunctionBlocks(i, fbSet);
+    @After
+    public void createHtmlReport() throws IOException {
+        renameJar();
+        HtmlReportGenerator generator = new HtmlReportGenerator(JMeterUtils.getProperty(VORTO_RESULT_FILE_SUMMARY_PROPERTY),BENCHMARK_PATH_STRING + "/user.properties",BENCHMARK_PATH_STRING + "/report");
+        List<String> errorList = generator.run();
+        if(!errorList.isEmpty()) {
+            System.err.println("unable to create report due to errors: ");
+            for (String error: errorList) {
+                System.err.println(error);
+            }
         }
     }
 
-    private Set<ModelId> createModelsAndFunctionBlocks(int i, Set<ModelId> fbSet) throws WorkflowException {
-
-
-
-        ResponseEntity<ModelInfo> entResponse = modelRepositoryController.createModel("test"+i+":MyTestEntity"+i+":1.1.0", ModelType.Datatype, new ArrayList<ModelProperty>());
-        ArrayList<ModelProperty> propertiesFb = new ArrayList<>();
-        propertiesFb.add(ModelProperty.Builder("ent", entResponse.getBody().getId()).multiple().build());
-        ResponseEntity<ModelInfo> fbResponse = modelRepositoryController.createModel("test"+i+":MyTestFunctionBlock"+i+":1.1.0", ModelType.Functionblock, propertiesFb);
-        fbSet.add(fbResponse.getBody().getId());
-        ArrayList<ModelProperty> properties = createPropertyList(fbSet);
-        modelRepositoryController.createModel("test"+i+":MyTestModel"+i+":1.1.0", ModelType.InformationModel, properties);
-
-        return fbSet;
+    /**
+     * Workaround to make the generator usable (jarfile name is hardcoded in
+     * org.apache.jmeter.gui.action.{@link HtmlReportGenerator})
+     *
+     * @throws IOException
+     */
+    private void renameJar() throws IOException {
+        String jMeterBin = JMeterUtils.getJMeterBinDir();
+        Path jmeterJar = Files.list(Paths.get(jMeterBin)).filter(fileName -> fileName.toString().contains("ApacheJMeter")).findAny().orElse(null);
+        Files.move(jmeterJar, Paths.get(jMeterBin).resolve("ApacheJMeter.jar"));
     }
-
-    private ArrayList<ModelProperty> createPropertyList(Set<ModelId> fbSet) {
-        ArrayList<ModelProperty> propertyList = new ArrayList<>();
-        AtomicInteger counter = new AtomicInteger(0);
-        fbSet.stream().forEach(modelId -> {
-            propertyList.add(ModelProperty.Builder("fb"+counter.getAndIncrement(), modelId).multiple().build());
-        });
-        return propertyList;
-    }
-
 }

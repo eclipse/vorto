@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">20</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">5</stringProp>
+        <stringProp name="ThreadGroup.ramp_time"></stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">JSESSIONID</stringProp>
+              <stringProp name="Header.value">${COOKIE_JSESSIONID}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="LoginOnceController" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Visit login page" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">localhost</stringProp>
+            <stringProp name="HTTPSampler.port">${__property(vorto.port)}</stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">login</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Verify login page" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-196269781">Login with Username and Password</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">16</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+              <boolProp name="ResultCollector.error_logging">false</boolProp>
+              <objProp>
+                <name>saveConfig</name>
+                <value class="SampleSaveConfiguration">
+                  <time>true</time>
+                  <latency>true</latency>
+                  <timestamp>true</timestamp>
+                  <success>true</success>
+                  <label>true</label>
+                  <code>true</code>
+                  <message>true</message>
+                  <threadName>true</threadName>
+                  <dataType>true</dataType>
+                  <encoding>false</encoding>
+                  <assertions>true</assertions>
+                  <subresults>true</subresults>
+                  <responseData>false</responseData>
+                  <samplerData>false</samplerData>
+                  <xml>false</xml>
+                  <fieldNames>true</fieldNames>
+                  <responseHeaders>false</responseHeaders>
+                  <requestHeaders>false</requestHeaders>
+                  <responseDataOnError>false</responseDataOnError>
+                  <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                  <assertionsResultsToSave>0</assertionsResultsToSave>
+                  <bytes>true</bytes>
+                  <sentBytes>true</sentBytes>
+                  <url>true</url>
+                  <threadCounts>true</threadCounts>
+                  <idleTime>true</idleTime>
+                  <connectTime>true</connectTime>
+                </value>
+              </objProp>
+              <stringProp name="filename"></stringProp>
+            </ResultCollector>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Perform login" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">username=user1&amp;password=ewer&amp;submit=Login</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">localhost</stringProp>
+            <stringProp name="HTTPSampler.port">${__property(vorto.port)}</stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">login?username=user1</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">true</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Visit welcome page" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">localhost</stringProp>
+            <stringProp name="HTTPSampler.port">${__property(vorto.port)}</stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path"></stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="1737295111">JSESSIONID</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+              <stringProp name="Assertion.test_field">Assertion.request_headers</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Api v1 models call (TestModel with 51 references)" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">${__property(vorto.port)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">api/v1/models/test50:MyTestModel50:1.1.0</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="529577998">{&quot;targetPlatformKey&quot;:null,&quot;stereotypes&quot;:[],&quot;mappingReference&quot;:null,&quot;vortolang&quot;:&quot;1.0&quot;,&quot;id&quot;:{&quot;name&quot;:&quot;MyTestModel50&quot;,&quot;namespace&quot;:&quot;test50&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test50:MyTestModel50:1.1.0&quot;},&quot;type&quot;:&quot;InformationModel&quot;,&quot;displayName&quot;:&quot;MyTestModel50&quot;,&quot;description&quot;:&quot;Information Model for MyTestModel50&quot;,&quot;category&quot;:null,&quot;fileName&quot;:&quot;MyTestModel50.infomodel&quot;,&quot;modelType&quot;:&quot;ModelInfo&quot;,&quot;references&quot;:[{&quot;name&quot;:&quot;MyTestFunctionBlock43&quot;,&quot;namespace&quot;:&quot;test43&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test43:MyTestFunctionBlock43:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock0&quot;,&quot;namespace&quot;:&quot;test0&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test0:MyTestFunctionBlock0:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock47&quot;,&quot;namespace&quot;:&quot;test47&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test47:MyTestFunctionBlock47:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock4&quot;,&quot;namespace&quot;:&quot;test4&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test4:MyTestFunctionBlock4:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock8&quot;,&quot;namespace&quot;:&quot;test8&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test8:MyTestFunctionBlock8:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock32&quot;,&quot;namespace&quot;:&quot;test32&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test32:MyTestFunctionBlock32:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock36&quot;,&quot;namespace&quot;:&quot;test36&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test36:MyTestFunctionBlock36:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock50&quot;,&quot;namespace&quot;:&quot;test50&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test50:MyTestFunctionBlock50:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock18&quot;,&quot;namespace&quot;:&quot;test18&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test18:MyTestFunctionBlock18:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock14&quot;,&quot;namespace&quot;:&quot;test14&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test14:MyTestFunctionBlock14:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock10&quot;,&quot;namespace&quot;:&quot;test10&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test10:MyTestFunctionBlock10:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock21&quot;,&quot;namespace&quot;:&quot;test21&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test21:MyTestFunctionBlock21:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock25&quot;,&quot;namespace&quot;:&quot;test25&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test25:MyTestFunctionBlock25:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock29&quot;,&quot;namespace&quot;:&quot;test29&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test29:MyTestFunctionBlock29:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock46&quot;,&quot;namespace&quot;:&quot;test46&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test46:MyTestFunctionBlock46:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock42&quot;,&quot;namespace&quot;:&quot;test42&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test42:MyTestFunctionBlock42:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock39&quot;,&quot;namespace&quot;:&quot;test39&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test39:MyTestFunctionBlock39:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock3&quot;,&quot;namespace&quot;:&quot;test3&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test3:MyTestFunctionBlock3:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock7&quot;,&quot;namespace&quot;:&quot;test7&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test7:MyTestFunctionBlock7:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock31&quot;,&quot;namespace&quot;:&quot;test31&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test31:MyTestFunctionBlock31:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock35&quot;,&quot;namespace&quot;:&quot;test35&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test35:MyTestFunctionBlock35:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock13&quot;,&quot;namespace&quot;:&quot;test13&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test13:MyTestFunctionBlock13:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock17&quot;,&quot;namespace&quot;:&quot;test17&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test17:MyTestFunctionBlock17:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock20&quot;,&quot;namespace&quot;:&quot;test20&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test20:MyTestFunctionBlock20:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock24&quot;,&quot;namespace&quot;:&quot;test24&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test24:MyTestFunctionBlock24:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock28&quot;,&quot;namespace&quot;:&quot;test28&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test28:MyTestFunctionBlock28:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock49&quot;,&quot;namespace&quot;:&quot;test49&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test49:MyTestFunctionBlock49:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock6&quot;,&quot;namespace&quot;:&quot;test6&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test6:MyTestFunctionBlock6:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock34&quot;,&quot;namespace&quot;:&quot;test34&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test34:MyTestFunctionBlock34:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock30&quot;,&quot;namespace&quot;:&quot;test30&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test30:MyTestFunctionBlock30:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock45&quot;,&quot;namespace&quot;:&quot;test45&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test45:MyTestFunctionBlock45:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock2&quot;,&quot;namespace&quot;:&quot;test2&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test2:MyTestFunctionBlock2:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock41&quot;,&quot;namespace&quot;:&quot;test41&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test41:MyTestFunctionBlock41:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock38&quot;,&quot;namespace&quot;:&quot;test38&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test38:MyTestFunctionBlock38:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock27&quot;,&quot;namespace&quot;:&quot;test27&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test27:MyTestFunctionBlock27:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock12&quot;,&quot;namespace&quot;:&quot;test12&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test12:MyTestFunctionBlock12:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock16&quot;,&quot;namespace&quot;:&quot;test16&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test16:MyTestFunctionBlock16:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock23&quot;,&quot;namespace&quot;:&quot;test23&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test23:MyTestFunctionBlock23:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock48&quot;,&quot;namespace&quot;:&quot;test48&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test48:MyTestFunctionBlock48:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock44&quot;,&quot;namespace&quot;:&quot;test44&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test44:MyTestFunctionBlock44:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock33&quot;,&quot;namespace&quot;:&quot;test33&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test33:MyTestFunctionBlock33:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock9&quot;,&quot;namespace&quot;:&quot;test9&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test9:MyTestFunctionBlock9:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock37&quot;,&quot;namespace&quot;:&quot;test37&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test37:MyTestFunctionBlock37:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock1&quot;,&quot;namespace&quot;:&quot;test1&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test1:MyTestFunctionBlock1:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock5&quot;,&quot;namespace&quot;:&quot;test5&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test5:MyTestFunctionBlock5:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock40&quot;,&quot;namespace&quot;:&quot;test40&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test40:MyTestFunctionBlock40:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock15&quot;,&quot;namespace&quot;:&quot;test15&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test15:MyTestFunctionBlock15:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock11&quot;,&quot;namespace&quot;:&quot;test11&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test11:MyTestFunctionBlock11:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock19&quot;,&quot;namespace&quot;:&quot;test19&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test19:MyTestFunctionBlock19:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock22&quot;,&quot;namespace&quot;:&quot;test22&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test22:MyTestFunctionBlock22:1.1.0&quot;},{&quot;name&quot;:&quot;MyTestFunctionBlock26&quot;,&quot;namespace&quot;:&quot;test26&quot;,&quot;version&quot;:&quot;1.1.0&quot;,&quot;prettyFormat&quot;:&quot;test26:MyTestFunctionBlock26:1.1.0&quot;}],&quot;author&quot;:&quot;user1&quot;,&quot;creationDate&quot;:&quot;2020-09-16T08:52:01.292+02:00&quot;,&quot;modificationDate&quot;:&quot;2020-09-16T08:52:01.562+02:00&quot;,&quot;lastModifiedBy&quot;:&quot;user1&quot;,&quot;hasImage&quot;:false,&quot;state&quot;:&quot;Draft&quot;,&quot;imported&quot;:false,&quot;visibility&quot;:&quot;private&quot;,&quot;referencedBy&quot;:[],&quot;platformMappings&quot;:{},&quot;released&quot;:false,&quot;fullQualifiedFileName&quot;:&quot;test50-MyTestModel50-1.1.0.infomodel&quot;}</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${__property(vorto.result.file.tree)}</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${__property(vorto.result.file.summary)}</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${__property(vorto.result.file.summary)}</stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
