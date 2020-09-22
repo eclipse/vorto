@@ -249,6 +249,7 @@
 													</div>
 												</dt>
 												<dd>
+													<div ng-show="attachments === []" style="color:#0000">X</div>
 													<div ng-repeat="attachment in attachments">
 														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
@@ -793,12 +794,15 @@
 	</div>
 	<div class="modal-body">
 			<h4>This link will be added to the model</h4>
+			<div ng-show="addingLinkFailed" class="alert alert-danger">
+				<small >Adding the link failed!</small>
+			</div>
 			<div>
 				<table>
 					<tr>
 						<td>
-							<input type="text" ng-model="modelLink" name="addLinkUrl" id="add-link" onchange="angular.element(this).scope().validateLinkUrl()">
-							<input type="text" ng-model="modelLinkText" name="addLinkText" id="add-link-text" onchange="angular.element(this).scope().validateLinkText()">
+							<label>URL: </label><input type="text" ng-model="modelLink" name="addLinkUrl" id="add-link" onchange="angular.element(this).scope().setLinkUrl()">
+							<label>Display text: </label><input type="text" ng-model="modelLinkText" name="addLinkText" id="add-link-text" onchange="angular.element(this).scope().setLinkTest()">
 						</td>
 					</tr>
 				</table>

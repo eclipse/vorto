@@ -839,14 +839,16 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.openAddLinkDialog = function (modelId) {
+              let links = $scope.links;
               let addLinkDialog = $uibModal.open({
                   animation: true,
                   templateUrl: "addLink.html",
                   size: "lg",
                   controller: function ($scope) {
                       $scope.linkToAdd = null;
-
-                      $scope.validateLinkUrl = function() {
+                      $scope.links = links;
+                      $scope.addingLinkFailed = false;
+                      $scope.setLinkUrl = function() {
                           let input = document.getElementById("add-link");
 
                           if (!$scope.linkToAdd) {
@@ -859,7 +861,7 @@ define(["../init/appController"], function (repositoryControllers) {
                           }
                       }
 
-                      $scope.validateLinkText = function() {
+                      $scope.setLinkTest = function() {
                           let input = document.getElementById("add-link-text");
 
                           if (!$scope.linkToAdd) {
@@ -877,8 +879,9 @@ define(["../init/appController"], function (repositoryControllers) {
                           $http.put("./api/v1/attachments/" + modelId + "/links", $scope.linkToAdd, header)
                               .then(success => {
                                   $scope.links.push($scope.linkToAdd);
+                                  addLinkDialog.dismiss();
                               }, error => {
-                                  alert('error');
+                                  $scope.addingLinkFailed = true;
                               });
                       }
 
@@ -891,6 +894,7 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.openDeleteLinkDialog = function(modelId, link) {
+              let links = $scope.links;
               let deleteLinkDialog = $uibModal.open({
                   templateUrl: "deleteLinkDialog.html",
                   controller: function ($scope) {
@@ -899,7 +903,7 @@ define(["../init/appController"], function (repositoryControllers) {
                       $scope.isDeleting = false;
                       $scope.successfullyDeleted = false;
                       $scope.failedToDelete = false;
-
+                      $scope.links = links;
 
                       $scope.deleteLink = function () {
                           $http.delete("./api/v1/attachments/" + $scope.modelId + "/links", {data: $scope.linkToDelete, headers: {'Content-Type': 'application/json;charset=utf-8'}})
@@ -908,7 +912,11 @@ define(["../init/appController"], function (repositoryControllers) {
                                   if (index > -1) {
                                       $scope.links.splice(index, 1);
                                   }
-                              }, error => alert('error'));
+                                  $scope.successfullyDeleted = true;
+                                  deleteLinkDialog.dismiss();
+                              }, error => {
+                                  $scope.failedToDelete = true;
+                              });
                       }
 
                       $scope.cancel = function () {
