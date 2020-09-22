@@ -37,6 +37,8 @@ import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -52,6 +54,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
 
   public static final String NAMESPACE_SEPARATOR = ".";
 
@@ -413,20 +417,42 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @return Optional of the workspace ID or empty Optional, if no namespace was resolved.
    */
   public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
-    Optional<String> result = cache.namespace(namespace).map(Namespace::getWorkspaceId);
-    if (!result.isPresent()) {
+    Optional<Namespace> actualNamespace = cache.namespace(namespace);
+    if (actualNamespace.isPresent()) {
+      String workspaceID = actualNamespace.get().getWorkspaceId();
+      LOGGER.info(
+          String.format(
+              "Resolved namespace [%s] with workspace ID [%s]",
+              namespace, workspaceID
+          )
+      );
+      return Optional.of(workspaceID);
+    } else {
       int lastSeparator = namespace.lastIndexOf(NAMESPACE_SEPARATOR);
       if (lastSeparator > 0) {
-        return resolveWorkspaceIdForNamespace(namespace.substring(0, lastSeparator));
+        String namespaceTrimmed = namespace.substring(0, lastSeparator);
+        LOGGER.info(
+            String.format(
+                "Could not resolve workspace ID for namespace [%s] - attempting with [%s]",
+                namespace, namespaceTrimmed
+            )
+        );
       } else {
+        LOGGER.warn(
+            String.format(
+                "Could not resolve workspace ID for namespace [%s], which has no further separators.",
+                namespace
+            )
+        );
         return Optional.empty();
       }
     }
-    return result;
+    return Optional.empty();
   }
 
   public List<String> findAllWorkspaceIds() {
-    return cache.namespaces().stream().map(Namespace::getWorkspaceId).collect(Collectors.toList());
+    return cache.namespaces().stream().map(Namespace::getWorkspaceId)
+        .collect(Collectors.toList());
   }
 
   public Set<String> findWorkspaceIdsOfPossibleReferences() {
