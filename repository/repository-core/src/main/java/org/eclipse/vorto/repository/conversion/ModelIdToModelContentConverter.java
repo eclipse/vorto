@@ -30,14 +30,19 @@ import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 
-public class ModelIdToModelContentConverter implements IModelConverter<ModelId,ModelContent>{
+public class ModelIdToModelContentConverter implements IModelConverter<ModelId, ModelContent> {
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ModelIdToModelContentConverter.class);
 
   private IModelRepositoryFactory repositoryFactory;
 
@@ -47,7 +52,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
   @Override
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
-    modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace()).getLatestModelVersionIfLatestTagIsSet(modelId);
+    modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace())
+        .getLatestModelVersionIfLatestTagIsSet(modelId);
     if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
       throw new ModelNotFoundException(
           String.format("Model [%s] does not exist", modelId.getPrettyFormat()), null);
@@ -59,51 +65,68 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
     result.setRoot(modelId);
 
     if (platformKey.isPresent()) {
-      final List<ModelInfo> mappingResources = repositoryFactory.getRepositoryByModel(modelId).getMappingModelsForTargetPlatform(modelId, platformKey.get(),Optional.empty());
+      final List<ModelInfo> mappingResources = repositoryFactory.getRepositoryByModel(modelId)
+          .getMappingModelsForTargetPlatform(modelId, platformKey.get(), Optional.empty());
       if (!mappingResources.isEmpty()) {
         // adding to workspace reader in order to resolve cross linking between mapping models correctly
-        mappingResources.forEach(mapping -> workspaceReader.addFile(new ByteArrayInputStream(repositoryFactory.getRepositoryByModel(mapping.getId()).getFileContent(mapping.getId(), Optional.empty()).get().getContent()), org.eclipse.vorto.model.ModelType.Mapping));
+        mappingResources.forEach(mapping -> workspaceReader.addFile(new ByteArrayInputStream(
+                repositoryFactory.getRepositoryByModel(mapping.getId())
+                    .getFileContent(mapping.getId(), Optional.empty()).get().getContent()),
+            org.eclipse.vorto.model.ModelType.Mapping));
 
         final IModelWorkspace workspace = workspaceReader.read();
         workspace.get().forEach(model -> {
-          Optional<MappingModel> mappingModel = getMappingModelForModel(mappingResources,model);
+          Optional<MappingModel> mappingModel = getMappingModelForModel(mappingResources, model);
           if (mappingModel.isPresent()) {
-            AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model), mappingModel);
+            AbstractModel createdModel = ModelDtoFactory
+                .createResource(flattenHierarchy(model), mappingModel);
             createdModel.setTargetPlatformKey(platformKey.get());
-            result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
+            result.getModels()
+                .put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+                    createdModel);
           } else {
             result.getModels().put(
-                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),ModelDtoFactory.createResource(flattenHierarchy(model),
+                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+                ModelDtoFactory.createResource(flattenHierarchy(model),
                     Optional.empty()));
           }
         });
       } else {
         final IModelWorkspace workspace = workspaceReader.read();
         workspace.get().forEach(model -> {
-          AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty());
+          AbstractModel createdModel = ModelDtoFactory
+              .createResource(flattenHierarchy(model), Optional.empty());
           createdModel.setTargetPlatformKey(platformKey.get());
-          result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
+          result.getModels()
+              .put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+                  createdModel);
         });
       }
     } else {
       final IModelWorkspace workspace = workspaceReader.read();
       workspace.get().forEach(model -> {
-        AbstractModel createdModel = ModelDtoFactory.createResource(flattenHierarchy(model), Optional.empty());
-        result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),createdModel);
+        AbstractModel createdModel = ModelDtoFactory
+            .createResource(flattenHierarchy(model), Optional.empty());
+        result.getModels()
+            .put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
+                createdModel);
       });
     }
     return result;
   }
 
-  private Optional<MappingModel> getMappingModelForModel(List<ModelInfo> mappingResources, Model model) {
-    return  mappingResources.stream().map(modelInfo -> (MappingModel)repositoryFactory.getRepositoryByModel(modelInfo.getId()).getEMFResource(modelInfo.getId()).getModel())
+  private Optional<MappingModel> getMappingModelForModel(List<ModelInfo> mappingResources,
+      Model model) {
+    return mappingResources.stream().map(
+        modelInfo -> (MappingModel) repositoryFactory.getRepositoryByModel(modelInfo.getId())
+            .getEMFResource(modelInfo.getId()).getModel())
         .filter(mappingModel -> isMappingForModel((mappingModel), model)).findFirst();
   }
 
 
   private Model flattenHierarchy(Model model) {
     if (model instanceof FunctionblockModel) {
-      return ModelConversionUtils.convertToFlatHierarchy((FunctionblockModel)model);
+      return ModelConversionUtils.convertToFlatHierarchy((FunctionblockModel) model);
     } else {
       return model;
     }
@@ -111,7 +134,7 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
 
 
   private ModelWorkspaceReader getWorkspaceForModel(final ModelId modelId) {
-    List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
+    Collection<ModelInfo> allModels = getModelWithAllDependencies(modelId);
     DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
     allModels = dm.getSorted();
 
@@ -125,23 +148,18 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
     return workspaceReader;
   }
 
-
   private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
-    List<ModelInfo> modelInfos = new ArrayList<>();
-
-    ModelInfo modelResource = repositoryFactory.getRepositoryByModel(modelId).getById(modelId);
-    modelInfos.add(modelResource);
-
-    for (ModelId reference : modelResource.getReferences()) {
-      modelInfos.addAll(getModelWithAllDependencies(reference));
-    }
-
-    return modelInfos;
+    return new ArrayList<>(ForkJoinPool.commonPool()
+        .invoke(
+        new ModelInfoRetrieverTask(RequestContextHolder.getRequestAttributes(),
+            SecurityContextHolder.getContext(), repositoryFactory, modelId)));
   }
 
   private boolean isMappingForModel(MappingModel p, Model model) {
-    final ModelId modelId = new ModelId(model.getName(),model.getNamespace(),model.getVersion());
-    return matchesMappingForModel(p,model) && p.getReferences().stream().filter(reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion()).equals(modelId)).count() > 0;
+    final ModelId modelId = new ModelId(model.getName(), model.getNamespace(), model.getVersion());
+    return matchesMappingForModel(p, model) && p.getReferences().stream().filter(
+        reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion())
+            .equals(modelId)).count() > 0;
   }
 
   private boolean matchesMappingForModel(MappingModel p, Model model) {
@@ -151,7 +169,8 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId,M
       return true;
     } else if (model instanceof Entity && p instanceof EntityMappingModel) {
       return true;
-    } else if (model instanceof org.eclipse.vorto.core.api.model.datatype.Enum && p instanceof EnumMappingModel) {
+    } else if (model instanceof org.eclipse.vorto.core.api.model.datatype.Enum
+        && p instanceof EnumMappingModel) {
       return true;
     } else {
       return false;

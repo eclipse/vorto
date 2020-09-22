@@ -48,4 +48,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   @Override
   void delete(Long aLong);
+
+  @Override
+  Collection<User> findAll();
 }

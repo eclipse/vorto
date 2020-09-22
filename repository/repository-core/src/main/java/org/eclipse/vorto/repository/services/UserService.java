@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
@@ -51,12 +52,16 @@ public class UserService implements ApplicationEventPublisherAware {
 
   private ApplicationEventPublisher eventPublisher;
 
+  private UserRolesRequestCache cache;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-  public UserService(@Autowired UserUtil userUtil, @Autowired UserRepository userRepository,
+  public UserService(@Autowired UserRolesRequestCache cache,
+      @Autowired UserUtil userUtil, @Autowired UserRepository userRepository,
       @Autowired UserRepositoryRoleService userRepositoryRoleService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService,
       @Autowired INotificationService notificationService) {
+    this.cache = cache;
     this.userUtil = userUtil;
     this.userRepository = userRepository;
     this.userRepositoryRoleService = userRepositoryRoleService;
@@ -75,12 +80,15 @@ public class UserService implements ApplicationEventPublisherAware {
    * @return
    * @throws InvalidUserException
    */
-  public User createOrUpdateTechnicalUser(User technicalUser) throws InvalidUserException {
+  public User createOrUpdateTechnicalUser(User actor, User technicalUser) throws InvalidUserException {
     // boilerplate null validation
     ServiceValidationUtil.validateNulls(technicalUser);
 
     // validates technical user
     userUtil.validateNewUser(technicalUser);
+
+    // sets createdby for tech user
+    technicalUser.setCreatedBy(actor.getId());
 
     // save the technical user
     User result = userRepository.save(technicalUser);
@@ -88,39 +96,6 @@ public class UserService implements ApplicationEventPublisherAware {
     if (result != null) {
       eventPublisher
           .publishEvent(new AppEvent(this, technicalUser.getUsername(), EventType.USER_ADDED));
-    }
-
-    return result;
-  }
-
-  /**
-   * This validates and persists a {@link User}, technical or not.<br/>
-   * The functionality is only meant for internal usage (e.g. in tests), therefore the acting
-   * {@link User} must have the {@literal sysadmin} repository role.
-   *
-   * @param actor
-   * @param target
-   * @return
-   * @throws InvalidUserException
-   * @see org.eclipse.vorto.repository.account.impl.DefaultUserAccountService#create(String, String, String, boolean)
-   */
-  public User createOrUpdateUser(User actor, User target)
-      throws InvalidUserException, OperationForbiddenException {
-    // boilerplate null validation
-    ServiceValidationUtil.validateNulls(actor, target);
-
-    // validates technical user
-    userUtil.validateNewUser(target);
-
-    if (!userRepositoryRoleService.isSysadmin(actor)) {
-      throw new OperationForbiddenException(
-          "Acting user is not authorized to create a user - aborting operation.");
-    }
-    // save the technical user
-    User result = userRepository.save(target);
-
-    if (result != null) {
-      eventPublisher.publishEvent(new AppEvent(this, target.getId(), EventType.USER_ADDED));
     }
 
     return result;
@@ -159,7 +134,7 @@ public class UserService implements ApplicationEventPublisherAware {
     // boilerplate null validation
     ServiceValidationUtil.validateNulls(actor, target);
 
-    if (!userRepository.exists(target.getId())) {
+    if (cache.withUser(target).getUser() == null) {
       LOGGER.info("Attempting to delete a user that does not exist. ");
       return false;
     }
@@ -217,10 +192,9 @@ public class UserService implements ApplicationEventPublisherAware {
     return true;
   }
 
-  // just testing
-  @javax.transaction.Transactional
+  @Transactional
   public void delete(final String userId) {
-    User userToDelete = userRepository.findByUsername(userId);
+    User userToDelete = cache.withUser(userId).getUser();
     if (userToDelete != null) {
 
       eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
@@ -241,8 +215,8 @@ public class UserService implements ApplicationEventPublisherAware {
    */
   public boolean delete(String actorUsername, String targetUsername)
       throws OperationForbiddenException, DoesNotExistException {
-    User actor = userRepository.findByUsername(actorUsername);
-    User target = userRepository.findByUsername(targetUsername);
+    User actor = cache.withUser(actorUsername).getUser();
+    User target = cache.withUser(targetUsername).getUser();
     return delete(actor, target);
   }
 
@@ -251,7 +225,7 @@ public class UserService implements ApplicationEventPublisherAware {
    * @return whether the given user name pertains to an existing user.
    */
   public boolean exists(String userName) {
-    return userRepository.findByUsername(userName) != null;
+    return cache.withUser(userName).getUser() != null;
   }
 
   @Override
