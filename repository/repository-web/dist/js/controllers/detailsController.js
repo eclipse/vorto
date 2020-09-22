@@ -838,6 +838,87 @@ define(["../init/appController"], function (repositoryControllers) {
 
           };
 
+          $scope.openAddLinkDialog = function (modelId) {
+              let addLinkDialog = $uibModal.open({
+                  animation: true,
+                  templateUrl: "addLink.html",
+                  size: "lg",
+                  controller: function ($scope) {
+                      $scope.linkToAdd = null;
+
+                      $scope.validateLinkUrl = function() {
+                          let input = document.getElementById("add-link");
+
+                          if (!$scope.linkToAdd) {
+                              $scope.linkToAdd = {
+                                  url: input.value,
+                                  displayText: null
+                              }
+                          } else {
+                              $scope.linkToAdd.url = input.value;
+                          }
+                      }
+
+                      $scope.validateLinkText = function() {
+                          let input = document.getElementById("add-link-text");
+
+                          if (!$scope.linkToAdd) {
+                              $scope.linkToAdd = {
+                                  url: null,
+                                  displayText: input.value
+                              }
+                          } else {
+                              $scope.linkToAdd.displayText = input.value;
+                          }
+                      }
+
+                      $scope.addLink = function () {
+                          let header = {"Content-Type":"application/json"}
+                          $http.put("./api/v1/attachments/" + modelId + "/links", $scope.linkToAdd, header)
+                              .then(success => {
+                                  $scope.links.push($scope.linkToAdd);
+                              }, error => {
+                                  alert('error');
+                              });
+                      }
+
+                      $scope.cancel = function () {
+                          $scope.linkToAdd = null;
+                          addLinkDialog.dismiss();
+                      };
+                  }
+              });
+          };
+
+          $scope.openDeleteLinkDialog = function(modelId, link) {
+              let deleteLinkDialog = $uibModal.open({
+                  templateUrl: "deleteLinkDialog.html",
+                  controller: function ($scope) {
+                      $scope.modelId = modelId;
+                      $scope.linkToDelete = link;
+                      $scope.isDeleting = false;
+                      $scope.successfullyDeleted = false;
+                      $scope.failedToDelete = false;
+
+
+                      $scope.deleteLink = function () {
+                          $http.delete("./api/v1/attachments/" + $scope.modelId + "/links", {data: $scope.linkToDelete, headers: {'Content-Type': 'application/json;charset=utf-8'}})
+                              .then(success => {
+                                  let index = $scope.links.indexOf($scope.linkToDelete);
+                                  if (index > -1) {
+                                      $scope.links.splice(index, 1);
+                                  }
+                              }, error => alert('error'));
+                      }
+
+                      $scope.cancel = function () {
+                          $scope.linkToDelete = null;
+                          deleteLinkDialog.dismiss();
+                      };
+                  }
+              });
+          }
+
           /*Model Attachments upload & download*/
           $scope.openUploadAttachmentDialog = function (modelId) {
             var updateAttachments = $scope.getAttachments;
@@ -983,16 +1064,6 @@ define(["../init/appController"], function (repositoryControllers) {
             });
           };
           
-          $scope.deleteLink = function (modelId, link) {
-              $http.delete("./api/v1/attachments/" + modelId + "/links", {data: link, headers: {'Content-Type': 'application/json;charset=utf-8'}})
-                  .then(success => {
-                      let index = $scope.links.indexOf(link);
-                      if (index > -1) {
-                          $scope.links.splice(index, 1);
-                      }
-                  }, error => alert('error'));
-          }
-
           $scope.getUserPolicy = function () {
             $http.get('./rest/models/' + $scope.modelId + '/policy')
             .then(

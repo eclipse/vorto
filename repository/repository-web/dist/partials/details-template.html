@@ -240,11 +240,13 @@
 													<a ng-hide="model.type === 'Mapping' || model.type === 'Datatype'" ng-href="./api/v1/generators/jsonschema/models/{{model.id.prettyFormat}}" class="pull-center">
 														<i class="fa fa-fw fa-download"></i>JSON Schema</a>
 												</dd>
-												<dt ng-show="hasAuthority('sysadmin')">
-													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
-												</dt>
-												<dt ng-show="!(hasAuthority('sysadmin'))">
-													Attachments:
+												<dt>
+													<div>Attachments:</div>
+													<div>
+														<a class="btn btn-sm btn-default pull-left" ng-hide="!hasAuthority('sysadmin')"
+														   ng-click="openUploadAttachmentDialog(model.id.prettyFormat)" role="button">
+															<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Attachment</a>
+													</div>
 												</dt>
 												<dd>
 													<div ng-repeat="attachment in attachments">
@@ -257,14 +259,20 @@
 													</div>
 												</dd>
 												<dt>
-													Links:
+													<div>Links:</div>
+													<div>
+														<a class="btn btn-sm btn-default pull-left" ng-hide="permission === 'READ' || !hasAuthority('model_creator')"
+														   ng-click="openAddLinkDialog(model.id.prettyFormat)" role="button">
+															<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Link</a>
+													</div>
+
 												</dt>
 												<dd>
 													<div ng-repeat="currentLink in links">
 														<a ng-href="{{currentLink.url}}" class="pull-center" target="_blank">
 															{{currentLink.displayText}}
 														</a>
-														<button ng-hide="!hasAuthority('model_creator')" class="delete-button" ng-click="deleteLink(model.id.prettyFormat, currentLink)">
+														<button ng-hide="!hasAuthority('model_creator')" class="delete-button" ng-click="openDeleteLinkDialog(model.id.prettyFormat, currentLink)">
 															<i class="fa fa-close"></i>
 														</button>
 													</div>
@@ -599,6 +607,30 @@
 	</div>
 </script>
 
+<!-- delete link dialog-->
+<script type="text/ng-template" id="deleteLinkDialog.html">
+	<div class="modal-header">
+		<button ng-disabled="isDeleting" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">Deleting Link</h4>
+	</div>
+	<div ng-hide="successfullyDeleted || failedToDelete" class="modal-body">Are you sure you want to delete the link
+		<i>{{linkToDelete.displayText}}</i> ?</div>
+	<div ng-show="successfullyDeleted" class="modal-body">
+		<span class="glyphicon glyphicon-ok valid"></span> Link is successfully deleted!</div>
+	<div ng-show="failedToDelete" class="modal-body">
+		<span class="glyphicon glyphicon-remove invalid"></span>
+		Failed to delete link!
+	</div>
+	<div class="modal-footer">
+		<a ng-show="!isDeleting" ng-click="deleteLink()" ng-disabled="successfullyDeleted || failedToDelete" class="btn btn-danger uploadImportButton"
+		   role="button">
+			<span class="glyphicon glyphicon-trash"></span> Delete</a>
+		<a ng-show="isDeleting" ng-disabled="isDeleting" class="btn btn-danger uploadImportButton" role="button">
+			<i class='fa fa-refresh fa-spin'></i> Delete</a>
+		<button ng-show="successfullyDeleted" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
 <!-- delete attachment dialog-->
 <script type="text/ng-template" id="deleteAttachmentDialog.html">
 	<div class="modal-header">
@@ -751,6 +783,32 @@
 			<i class='fa fa-refresh fa-spin'></i> Upload</a>
 		<button ng-hide="successfullyUploaded" ng-disable="isUploading" type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
 		<button ng-show="successfullyUploaded" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
+<!-- upload attachement modal dialog -->
+<script type="text/ng-template" id="addLink.html">
+	<div class="modal-header">
+		<h4 class="modal-title">Add Link to Model</h4>
+	</div>
+	<div class="modal-body">
+			<h4>This link will be added to the model</h4>
+			<div>
+				<table>
+					<tr>
+						<td>
+							<input type="text" ng-model="modelLink" name="addLinkUrl" id="add-link" onchange="angular.element(this).scope().validateLinkUrl()">
+							<input type="text" ng-model="modelLinkText" name="addLinkText" id="add-link-text" onchange="angular.element(this).scope().validateLinkText()">
+						</td>
+					</tr>
+				</table>
+			</div>
+			</br>
+	</div>
+	<div class="modal-footer">
+		<a ng-click="addLink()" class="btn btn-primary uploadImportButton" role="button">
+			<span class="glyphicon glyphicon-upload"></span> Add Link</a>
+		<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
 	</div>
 </script>
 
