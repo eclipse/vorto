@@ -437,6 +437,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
                 namespace, namespaceTrimmed
             )
         );
+        return resolveWorkspaceIdForNamespace(namespaceTrimmed);
       } else {
         LOGGER.warn(
             String.format(
@@ -447,7 +448,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
         return Optional.empty();
       }
     }
-    return Optional.empty();
   }
 
   public List<String> findAllWorkspaceIds() {
