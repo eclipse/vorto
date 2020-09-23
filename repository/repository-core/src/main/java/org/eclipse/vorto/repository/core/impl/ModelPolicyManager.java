@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import javax.jcr.Session;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.AccessControlPolicyIterator;
 import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
@@ -95,7 +97,13 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         AccessControlList acl = getAccessControlList(nodeToGetPolicies, acm);
         return convertAccessControlEntriesToPolicyEntries(acl);
       } catch (AccessDeniedException ex) {
-        throw new NotAuthorizedException(modelId);
+        LOGGER.warn(
+            String.format(
+              "No policy entry found for model ID [%s] with current user. Returning empty collection.",
+                modelId
+            )
+        );
+        return Collections.emptyList();
       }
     });
   }

@@ -135,3 +135,4 @@ mail:
 config:
   restrictTenant: 1 # deprecated
   privateNamespaceQuota: 1
+  requestTimeoutInSeconds: 300
