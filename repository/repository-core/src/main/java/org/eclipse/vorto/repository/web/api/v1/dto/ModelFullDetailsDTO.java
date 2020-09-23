@@ -60,6 +60,10 @@ import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
  *     {@link org.eclipse.vorto.repository.web.api.v1.AttachmentController#getAttachments(String)}
  *   </li>
  *   <li>
+ *     The model's web links as {@link ModelLink}s - see 
+ *     {@link org.eclipse.vorto.repository.web.api.v1.AttachmentController#getLinks(String)}
+ *   </li>
+ *   <li>
  *     The {@link PolicyEntry} "policies" for the querying user's interaction with the model - see
  *     {@link org.eclipse.vorto.repository.web.core.ModelRepositoryController#getPolicies(String)}
  *     and {@link org.eclipse.vorto.repository.web.core.ModelRepositoryController#getUserPolicy(String)}
@@ -87,6 +91,7 @@ public class ModelFullDetailsDTO {
   private Collection<ModelMinimalInfoDTO> references;
   private Collection<ModelMinimalInfoDTO> referencedBy;
   private Collection<Attachment> attachments;
+  private Collection<ModelLink> links;
   private Collection<PolicyEntry> policies;
   private PolicyEntry bestPolicy;
   private String encodedModelSyntax;
@@ -113,6 +118,11 @@ public class ModelFullDetailsDTO {
 
   public ModelFullDetailsDTO withAttachments(Collection<Attachment> attachments) {
     this.attachments = attachments;
+    return this;
+  }
+
+  public ModelFullDetailsDTO withLinks(Collection<ModelLink> links) {
+    this.links = links;
     return this;
   }
 
@@ -167,6 +177,14 @@ public class ModelFullDetailsDTO {
 
   public void setAttachments(Collection<Attachment> attachments) {
     this.attachments = attachments;
+  }
+
+  public Collection<ModelLink> getLinks() {
+    return links;
+  }
+
+  public void setLinks(Collection<ModelLink> links) {
+    this.links = links;
   }
 
   public Collection<PolicyEntry> getPolicies() {

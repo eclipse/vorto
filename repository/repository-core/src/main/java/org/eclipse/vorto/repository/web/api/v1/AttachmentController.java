@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +103,48 @@ public class AttachmentController extends AbstractRepositoryController {
       return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
     }
   }
+
+  @PutMapping(value = "/{modelId:.+}/links", produces = "application/json")
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public AttachResult addLink(@ApiParam(
+      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+      required = true) @PathVariable String modelId,
+      @ApiParam(value = "The URL to be attached",
+          required = true) @RequestBody ModelLink link) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    getModelRepository(modelID).attachLink(modelID, link);
+
+    return AttachResult.success(modelID, link.getUrl());
+  }
+
+  @GetMapping("/{modelId:.+}/links")
+  public Collection<ModelLink> getLinks(@ApiParam(
+      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+      required = true) @PathVariable String modelId) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    return getModelRepository(modelID).getLinks(modelID);
+  }
+
+  @DeleteMapping("/{modelId:.+}/links")
+  @PreAuthorize("hasAuthority('sysadmin') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
+  public ResponseEntity<Void> deleteLink(
+      @ApiParam(
+          value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+          required = true) @PathVariable String modelId,
+      @ApiParam(value = "The URL to be deleted",
+          required = true) @RequestBody ModelLink url) {
+
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    getModelRepository(modelID).deleteLink(modelID, url);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
 
   // TODO: interim solution until attachment upload dialog supports Label Chooser
   private Tag[] guessTagsFromFileExtension(String fileName) {

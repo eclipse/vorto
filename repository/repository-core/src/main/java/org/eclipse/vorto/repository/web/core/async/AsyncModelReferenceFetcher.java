@@ -19,7 +19,7 @@ import org.eclipse.vorto.repository.web.api.v1.dto.ModelReferenceDTO;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 /**
- * Fetches the given model's references or "referenced by" models asynchrnously, and populates the
+ * Fetches the given model's references or "referenced by" models asynchronously, and populates the
  * target {@link Collection}.
  */
 public class AsyncModelReferenceFetcher extends AsyncModelTaskRunner {

@@ -79,8 +79,10 @@ import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.Status;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelMinimalInfoDTO;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelAttachmentsFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelLinksFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelMappingsFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelReferenceFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelSyntaxFetcher;
@@ -243,6 +245,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
               .with(getModelRepositoryFactory())
       );
 
+      // fetches links
+      Collection<ModelLink> links = ConcurrentHashMap.newKeySet();
+      executor.submit(
+          new AsyncModelLinksFetcher(modelID, links)
+              .with(SecurityContextHolder.getContext())
+              .with(RequestContextHolder.getRequestAttributes())
+              .with(getModelRepositoryFactory())
+      );
+
       // fetches model syntax
       Future<String> encodedSyntaxFuture = executor.submit(
           new AsyncModelSyntaxFetcher(
@@ -294,6 +305,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           .withReferences(references)
           .withReferencedBy(referencedBy)
           .withAttachments(attachments)
+          .withLinks(links)
           .withEncodedModelSyntax(encodedSyntax)
           .withPolicies(policies);
 

@@ -108,155 +108,314 @@
 									</div>
 									<div class="col-md-9 col-xs-8 modelDet">
 										<div class="infomodel">
-											<dl class="dl-horizontal">
-												<dt>State:</dt>
-												<dd class="ng-binding">
-													<span class="state state-{{model.state}}">{{ model.state }}</span>
-												</dd>
-												<dt>ID:</dt>
-												<dd class="ng-binding">{{model.id.prettyFormat}}</dd>
-												<dt>Name:</dt>
-												<dd class="ng-binding">{{model.id.name}}</dd>
-												<dt>Description:</dt>
-												<dd class="ng-binding">{{model.description == "" ? "&nbsp;" : model.description}}</dd>
-												<dt>Display Name:</dt>
-												<dd class="ng-binding">{{model.displayName == "" ? "&nbsp;" : model.displayName}}</dd>
-												<dt>Namespace:</dt>
-												<dd class="ng-binding">{{model.id.namespace}}</dd>
-												<dt>Version:</dt>
-												<dd class="ng-binding">{{model.id.version}}</dd>
-												<dt>Visibility:</dt>
-												<dd class="ng-binding">
-													<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
-                                                </dd>
-												<dt>Created By:</dt>
-												<dd class="ng-binding">{{ model.author }}</dd>
-												<dt>Created On:</dt>
-												<dd class="ng-binding">{{ model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-												<dt>Last Modified By:</dt>
-												<dd class="ng-binding">{{ model.lastModifiedBy}}</dd>
-												<dt ng-show="model.state === 'Released'">Released Date:</dt>
-												<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Last Modified On:</dt>
-												<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
-												<dd ng-hide="model.modificationDate == null" class="ng-binding">{{ model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-												<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
-												<dt>References:</dt>
-												<dd>
-													<div ng-show="modelReferences.show">
-														<a href="" ng-click="showReferences = !showReferences">
-															<div ng-if="showReferences">
-																<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
-															<div ng-if="!showReferences">
-																<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show References</div>
-														</a>
-														<div uib-collapse="!showReferences">
-															<ul>
-																<li ng-repeat="reference in modelReferences" class="ng-scope">														
-																	<span ng-show="reference.type === 'InformationModel'">
-																		<img src="webjars/repository-web/dist/images/im.png" />
-																	</span>
-																	<span ng-show="reference.type === 'Functionblock'">
-																		<img src="webjars/repository-web/dist/images/fb.png" />
-																	</span>
-																	<span ng-show="reference.type === 'Datatype'">
-																		<img src="webjars/repository-web/dist/images/dt.png" />
-																	</span>
-																	<span ng-show="reference.type === 'Mapping'">
-																		<i class="fa fa-exchange" aria-hidden="true"></i>
-																	</span>	
-																	<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
-																	<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
-																	 <span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>																																			
-																</li>
-															</ul>
-														</div>
-													</div>
-													<div ng-hide="modelReferences.show"><i>No references</i></div>
-												</dd>
-												<dt>Used By: </dt>
-												<dd>
-													<div ng-show="modelReferencedBy.show">
-														<a href="" ng-click="showUsages = !showUsages">
-															<div ng-if="showUsages">
-																<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
-															<div ng-if="!showUsages">
-																<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Usages</div>
-														</a>
-														<div uib-collapse="!showUsages">
-															<ul>
-																<li ng-repeat="usage in modelReferencedBy" class="ng-scope">
-																	<span ng-show="usage.type === 'InformationModel'">
-																		<img src="webjars/repository-web/dist/images/im.png" />
-																	</span>
-																	<span ng-show="usage.type === 'Functionblock'">
-																		<img src="webjars/repository-web/dist/images/fb.png" />
-																	</span>
-																	<span ng-show="usage.type === 'Datatype'">
-																		<img src="webjars/repository-web/dist/images/dt.png" />
-																	</span>
-																	<span ng-show="usage.type === 'Mapping'">
-																		<i class="fa fa-exchange" aria-hidden="true"></i>
-																	</span>
-																	<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>	
-																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
-																	 <span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>														
-																</li>
-															</ul>
-														</div>
-													</div>
-													<div ng-hide="modelReferencedBy.show"><i>Not referenced by any model</i></div>
-												</dd>
-												<div ng-hide="model.type === 'Mapping' || modelMappings.length === 0">
-													<dt>Mappings: </dt>
-													<dd>
-														<div ng-show="modelMappings">
-															<a href="" ng-click="showMappings = !showMappings">
-																<div ng-if="showMappings">
-																	<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
-																<div ng-if="!showMappings">
-																	<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div>
-															</a>
-												
-															<div uib-collapse="!showMappings">
-																<ul>
-																	<li ng-repeat="mapping in modelMappings" class="ng-scope">																			
+											<table>
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+		 													<dt>State:</dt>
+		 												</td>
+		 												<td>
+															<dd class="ng-binding">
+																<span class="state state-{{model.state}}">{{ model.state }}</span>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>ID:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{model.id.prettyFormat}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Name:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{model.id.name}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Description:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{model.description == "" ? "&nbsp;" : model.description}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Display Name:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{model.displayName == "" ? "&nbsp;" : model.displayName}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Visibility:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">
+																<span class="visibility visibility-{{model.visibility}}">{{model.visibility}}</span>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Created By:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{ model.author }}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Created On:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{ model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Last Modified By:</dt>
+														</td>
+														<td>
+															<dd class="ng-binding">{{ model.lastModifiedBy}}</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt ng-show="model.state === 'Released'">Released Date:</dt>
+															<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Last Modified On:</dt>
+															<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
+														</td>
+														<td>
+															<dd ng-hide="model.modificationDate == null" class="ng-binding">{{ model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
+															<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>References:</dt>
+														</td>
+														<td>
+															<dd>
+																<div ng-show="modelReferences.show">
+																	<a href="" ng-click="showReferences = !showReferences">
+																		<div ng-if="showReferences">
+																			<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
+																		<div ng-if="!showReferences">
+																			<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show References</div>
+																	</a>
+																	<div uib-collapse="!showReferences">
+																		<ul>
+																			<li ng-repeat="reference in modelReferences" class="ng-scope">
+																		<span ng-show="reference.type === 'InformationModel'">
+																			<img src="webjars/repository-web/dist/images/im.png" />
+																		</span>
+																				<span ng-show="reference.type === 'Functionblock'">
+																			<img src="webjars/repository-web/dist/images/fb.png" />
+																		</span>
+																				<span ng-show="reference.type === 'Datatype'">
+																			<img src="webjars/repository-web/dist/images/dt.png" />
+																		</span>
+																				<span ng-show="reference.type === 'Mapping'">
+																			<i class="fa fa-exchange" aria-hidden="true"></i>
+																		</span>
+																				<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
+																				<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
+																				<span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>
+																			</li>
+																		</ul>
+																	</div>
+																</div>
+																<div ng-hide="modelReferences.show"><i>No references</i></div>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Used By: </dt>
+														</td>
+														<td>
+															<dd>
+																<div ng-show="modelReferencedBy.show">
+																	<a href="" ng-click="showUsages = !showUsages">
+																		<div ng-if="showUsages">
+																			<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
+																		<div ng-if="!showUsages">
+																			<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Usages</div>
+																	</a>
+																	<div uib-collapse="!showUsages">
+																		<ul>
+																			<li ng-repeat="usage in modelReferencedBy" class="ng-scope">
+																		<span ng-show="usage.type === 'InformationModel'">
+																			<img src="webjars/repository-web/dist/images/im.png" />
+																		</span>
+																				<span ng-show="usage.type === 'Functionblock'">
+																			<img src="webjars/repository-web/dist/images/fb.png" />
+																		</span>
+																				<span ng-show="usage.type === 'Datatype'">
+																			<img src="webjars/repository-web/dist/images/dt.png" />
+																		</span>
+																				<span ng-show="usage.type === 'Mapping'">
+																			<i class="fa fa-exchange" aria-hidden="true"></i>
+																		</span>
+																				<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
+																				<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																				<span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>
+																			</li>
+																		</ul>
+																	</div>
+																</div>
+																<div ng-hide="modelReferencedBy.show"><i>Not referenced by any model</i></div>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr ng-hide="model.type === 'Mapping' || modelMappings.length === 0">
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Mappings: </dt>
+														</td>
+														<td>
+															<dd>
+																<div ng-show="modelMappings">
+																	<a href="" ng-click="showMappings = !showMappings">
+																		<div ng-if="showMappings">
+																			<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
+																		<div ng-if="!showMappings">
+																			<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div>
+																	</a>
+
+																	<div uib-collapse="!showMappings">
+																		<ul>
+																			<li ng-repeat="mapping in modelMappings" class="ng-scope">
 																			<span>
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
-																			</span>	
-																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
-																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>
-																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
-																	</li>
-																</ul>
-															</div>
-														</div>
-														<div ng-show="modelMappings.length === 0">-</div>
-													</dd>
-												</div>
-												<dt>Downloads:</dt>
-												<dd>
-													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
-														<i class="fa fa-fw fa-download"></i>Vorto DSL</a>
-													<a ng-hide="model.type === 'Mapping' || model.type === 'Datatype'" ng-href="./api/v1/generators/jsonschema/models/{{model.id.prettyFormat}}" class="pull-center">
-														<i class="fa fa-fw fa-download"></i>JSON Schema</a>
-												</dd>
-												<dt ng-show="hasAuthority('sysadmin')">
-													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
-												</dt>
-												<dt ng-show="!(hasAuthority('sysadmin'))">
-													Attachments:
-												</dt>
-												<dd>
-													<div ng-repeat="attachment in attachments">
-														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
-															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
-														</a>
-														<button ng-hide="(!hasAuthority('sysadmin')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
-															<i class="fa fa-close"></i>
-														</button>
-													</div>
-												</dd>
-											</dl>
+																			</span>
+																				<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{mapping.id.version}}</a>
+																				<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}} {{model.id.version}}</a>
+																				(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)
+																			</li>
+																		</ul>
+																	</div>
+																</div>
+																<div ng-show="modelMappings.length === 0">-</div>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>Downloads:</dt>
+														</td>
+														<td>
+															<dd>
+																<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
+																	<i class="fa fa-fw fa-download"></i>Vorto DSL</a>
+																<a ng-hide="model.type === 'Mapping' || model.type === 'Datatype'" ng-href="./api/v1/generators/jsonschema/models/{{model.id.prettyFormat}}" class="pull-center">
+																	<i class="fa fa-fw fa-download"></i>JSON Schema</a>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>
+																<div>Attachments:</div>
+																<div>
+																	<a class="btn btn-sm btn-default pull-left" ng-hide="!hasAuthority('sysadmin')"
+																	   ng-click="openUploadAttachmentDialog(model.id.prettyFormat)" role="button">
+																		<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Attachment</a>
+																</div>
+															</dt>
+														</td>
+														<td>
+															<dd>
+																<div ng-show="attachments === []" style="color:#0000">X</div>
+																<div ng-repeat="attachment in attachments">
+																	<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
+																		{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
+																	</a>
+																	<button ng-hide="(!hasAuthority('sysadmin')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+																		<i class="fa fa-close"></i>
+																	</button>
+																</div>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+
+												<tr>
+													<dl class="dl-horizontal">
+														<td>
+															<dt>
+																<div>Links:</div>
+																<div>
+																	<a class="btn btn-sm btn-default pull-left" ng-hide="permission === 'READ' || !hasAuthority('model_creator')"
+																	   ng-click="openAddLinkDialog(model.id.prettyFormat)" role="button">
+																		<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Link</a>
+																</div>
+
+															</dt>
+														</td>
+														<td>
+															<dd>
+																<div ng-repeat="currentLink in links">
+																	<a ng-href="{{currentLink.url}}" class="pull-center" target="_blank">
+																		{{currentLink.displayText}}
+																	</a>
+																	<button ng-hide="!hasAuthority('model_creator')" class="delete-button" ng-click="openDeleteLinkDialog(model.id.prettyFormat, currentLink)">
+																		<i class="fa fa-close"></i>
+																	</button>
+																</div>
+															</dd>
+														</td>
+													</dl>
+												</tr>
+											</table>
 										</div>
 									</div>
 								</div>
@@ -586,6 +745,30 @@
 	</div>
 </script>
 
+<!-- delete link dialog-->
+<script type="text/ng-template" id="deleteLinkDialog.html">
+	<div class="modal-header">
+		<button ng-disabled="isDeleting" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">Deleting Link</h4>
+	</div>
+	<div ng-hide="successfullyDeleted || failedToDelete" class="modal-body">Are you sure you want to delete the link
+		<i>{{linkToDelete.displayText}}</i> ?</div>
+	<div ng-show="successfullyDeleted" class="modal-body">
+		<span class="glyphicon glyphicon-ok valid"></span> Link is successfully deleted!</div>
+	<div ng-show="failedToDelete" class="modal-body">
+		<span class="glyphicon glyphicon-remove invalid"></span>
+		Failed to delete link!
+	</div>
+	<div class="modal-footer">
+		<a ng-show="!isDeleting" ng-click="deleteLink()" ng-disabled="successfullyDeleted || failedToDelete" class="btn btn-danger uploadImportButton"
+		   role="button">
+			<span class="glyphicon glyphicon-trash"></span> Delete</a>
+		<a ng-show="isDeleting" ng-disabled="isDeleting" class="btn btn-danger uploadImportButton" role="button">
+			<i class='fa fa-refresh fa-spin'></i> Delete</a>
+		<button ng-show="successfullyDeleted" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
 <!-- delete attachment dialog-->
 <script type="text/ng-template" id="deleteAttachmentDialog.html">
 	<div class="modal-header">
@@ -738,6 +921,35 @@
 			<i class='fa fa-refresh fa-spin'></i> Upload</a>
 		<button ng-hide="successfullyUploaded" ng-disable="isUploading" type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
 		<button ng-show="successfullyUploaded" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
+<!-- upload attachement modal dialog -->
+<script type="text/ng-template" id="addLink.html">
+	<div class="modal-header">
+		<h4 class="modal-title">Add Link to Model</h4>
+	</div>
+	<div class="modal-body">
+			<h4>This link will be added to the model</h4>
+			<div ng-show="addingLinkFailed" class="alert alert-danger">
+				<small >Adding the link failed!</small>
+			</div>
+			<div>
+				<table>
+					<tr>
+						<td>
+							<label>URL: </label><input type="text" ng-model="modelLink" name="addLinkUrl" id="add-link" onchange="angular.element(this).scope().setLinkUrl()">
+							<label>Display text: </label><input type="text" ng-model="modelLinkText" name="addLinkText" id="add-link-text" onchange="angular.element(this).scope().setLinkTest()">
+						</td>
+					</tr>
+				</table>
+			</div>
+			</br>
+	</div>
+	<div class="modal-footer">
+		<a ng-click="addLink()" class="btn btn-primary uploadImportButton" role="button">
+			<span class="glyphicon glyphicon-upload"></span> Add Link</a>
+		<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
 	</div>
 </script>
 
