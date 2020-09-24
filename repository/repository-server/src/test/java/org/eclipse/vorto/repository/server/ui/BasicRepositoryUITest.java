@@ -28,7 +28,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
-import static org.eclipse.vorto.repository.domain.RepositoryRole.DEFAULT_REPOSITORY_ROLES;
 
 /**
  * Tests some of the basic functionality of the Vorto repository. To keep the tests independent the repository is
@@ -154,10 +153,10 @@ public class BasicRepositoryUITest extends AbstractUITest {
     }
 
 
-    protected void setUpTest() {
+    protected void setUpTest() throws InvalidUserException {
         // sysadmin "user1" is configured in the profile "local-ui-test".
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
-        userRepository.save(User.create("user2", "GITHUB", null, false));
+        userRepository.save(new UserBuilder().withName("user2").withAuthenticationProviderID("GITHUB").withAuthenticationSubject(null).setTechnicalUser(false).build());
     }
 }
