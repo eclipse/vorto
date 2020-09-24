@@ -20,3 +20,4 @@ config:
 server:
   contextPath: /
   use-forward-headers: true
+  admin: user1
