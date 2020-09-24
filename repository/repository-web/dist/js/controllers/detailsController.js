@@ -198,189 +198,12 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.getLinks = function (model) {
-              $http.get("./api/v1/attachments/" + model.id.prettyFormat + "/links")
-                  .then(function (result) {
-                      $scope.links = result.data;
-                  });
+            $http.get(
+                "./api/v1/attachments/" + model.id.prettyFormat + "/links")
+            .then(function (result) {
+              $scope.links = result.data;
+            });
           }
-
-          $scope.getAttachments = function (model) {
-            if ($rootScope.hasAuthority("sysadmin")) {
-              $http.get("./api/v1/attachments/" + model.id.prettyFormat)
-              .then(
-                  function (result) {
-                    $scope.attachments = result.data;
-                  },
-                  function (error) {
-                  }
-              );
-            } else {
-              $http.get("./api/v1/attachments/static/" + model.id.prettyFormat)
-              .then(
-                  function (result) {
-                    $scope.attachments = result.data;
-                  },
-                  function (error) {
-                  }
-              );
-            }
-
-          };
-
-          $scope.getMappings = function () {
-            $scope.modelMappings = [];
-            for (var i = 0;
-                i < Object.keys($scope.model.platformMappings).length;
-                i++) {
-
-              var id = Object.keys($scope.model.platformMappings)[i];
-              var key = $scope.model.platformMappings[id];
-              $http.get("./api/v1/models/" + id + "?key=key")
-              .then(
-                  (function (key) {
-                    return function (result) {
-                      var mapping = {
-                        "id": result.data.id,
-                        "state": result.data.state,
-                        "targetPlatform": key
-                      };
-                      $scope.modelMappings.push(mapping);
-                    }
-                  })(key),
-                  function (data) {
-                    //
-                  });
-            }
-          };
-
-          $scope.getReferences = function () {
-            references = $scope.model.references;
-            $scope.modelReferences = [];
-            $scope.modelReferences.show = false;
-            var tmpIdx = 0;
-            for (var index in references) {
-              $http.get("./api/v1/models/" + references[index].prettyFormat)
-              .then(
-                  function (result) {
-                    $scope.modelReferences[tmpIdx] = {
-                      "modelId": result.data.id.prettyFormat,
-                      "state": result.data.state,
-                      "type": result.data.type,
-                      "hasAccess": true
-                    };
-                    $scope.modelReferences.show = true;
-                    tmpIdx++;
-                  },
-                  function (error) {
-                    $scope.modelReferences[tmpIdx] = {
-                      "modelId": references[tmpIdx].prettyFormat,
-                      "state": null,
-                      "hasAccess": false
-                    };
-                    $scope.canGenerate = false;
-                    $scope.modelReferences.show = true;
-                    tmpIdx++;
-                  }
-              );
-            }
-          };
-
-          $scope.getReferencedBy = function () {
-            referencedBy = $scope.model.referencedBy;
-            $scope.modelReferencedBy = [];
-            $scope.modelReferencedBy.show = false;
-            var tmpIdx = 0;
-            for (var index in referencedBy) {
-              $http.get("./api/v1/models/" + referencedBy[index].prettyFormat)
-              .then(
-                  function (result) {
-                    $scope.modelReferencedBy[tmpIdx] = {
-                      "modelId": result.data.id.prettyFormat,
-                      "type": result.data.type,
-                      "state": result.data.state,
-                      "hasAccess": true
-                    };
-                    $scope.modelReferencedBy.show = true;
-                    tmpIdx++;
-                  },
-                  function (error) {
-                    $scope.modelReferencedBy[tmpIdx] = {
-                      "modelId": referencedBy[tmpIdx].prettyFormat,
-                      "state": null,
-                      "hasAccess": false
-                    };
-                    $scope.modelReferencedBy.show = true;
-                    tmpIdx++;
-                  }
-              );
-            }
-          };
-
-          $scope.getDetails = function (modelId) {
-            var defer = $q.defer();
-            $scope.modelIsLoading = true;
-            $http.get("./api/v1/models/" + modelId)
-            .then(
-                function (result) {
-                  $scope.model = result.data;
-                  if ($scope.model.author.length === 64) {
-                    $scope.model.author = 'other user';
-                  }
-                  $scope.getMappings();
-                  $scope.getReferences();
-                  $scope.getReferencedBy();
-                  $scope.getLinks(result.data);
-                  $scope.getAttachments(result.data);
-
-                  $scope.canCreateModels = false;
-
-
-
-                  if ($rootScope.authenticated && $rootScope.authority && $rootScope.authority.includes("model_creator")) {
-                      $scope.canCreateModels = result.data;
-
-                    $scope.getUserPolicy();
-                    $scope.getAllUserPolicies();
-                  }
-
-                  $scope.showReferences = false;
-                  $scope.showUsages = false;
-
-                  $scope.modelIsLoading = false;
-
-                  defer.resolve(result.data);
-
-                },
-                function (error) {
-                  if (error.status == 401) {
-                    $location.path('/login');
-                  } else if (error.status == 403) {
-                    $scope.errorLoading = 'No permission to access model';
-                  } else {
-                    $scope.errorLoading = error.data.message;
-                  }
-                  defer.reject(error.data.message);
-                  $scope.modelIsLoading = false;
-                }
-            );
-
-            return defer.promise;
-          };
-
-          $scope.getContent = function (modelId) {
-            $scope.loadingModel = true;
-            $http.get("./api/v1/models/" + modelId + "/file")
-            .then(
-                function (result) {
-                  $scope.modelEditor.getSession().getDocument().setValue(
-                      result.data);
-                  $scope.loadingModel = false;
-                },
-                function (error) {
-                  $scope.error = error.data.message;
-                }
-            );
-          };
 
           $scope.getPlatformGenerators = function () {
             $scope.isLoadingGenerators = true;
@@ -520,20 +343,6 @@ define(["../init/appController"], function (repositoryControllers) {
                 }
               }
             });
-          };
-
-          /*
-           * Start - Workflow
-           */
-          $scope.getWorkflowActions = function () {
-            $http.get('./rest/workflows/' + $scope.modelId + '/actions')
-            .then(
-                function (result) {
-                  $scope.workflowActions = result.data;
-                },
-                function (error) {
-                }
-            );
           };
 
           $scope.openWorkflowActionDialog = function (action) {
@@ -839,92 +648,97 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.openAddLinkDialog = function (modelId) {
-              let links = $scope.links;
-              let addLinkDialog = $uibModal.open({
-                  animation: true,
-                  templateUrl: "addLink.html",
-                  size: "lg",
-                  controller: function ($scope) {
-                      $scope.linkToAdd = null;
-                      $scope.links = links;
-                      $scope.addingLinkFailed = false;
-                      $scope.setLinkUrl = function() {
-                          let input = document.getElementById("add-link");
+            let links = $scope.links;
+            let addLinkDialog = $uibModal.open({
+              animation: true,
+              templateUrl: "addLink.html",
+              size: "lg",
+              controller: function ($scope) {
+                $scope.linkToAdd = null;
+                $scope.links = links;
+                $scope.addingLinkFailed = false;
+                $scope.setLinkUrl = function () {
+                  let input = document.getElementById("add-link");
 
-                          if (!$scope.linkToAdd) {
-                              $scope.linkToAdd = {
-                                  url: input.value,
-                                  displayText: null
-                              }
-                          } else {
-                              $scope.linkToAdd.url = input.value;
-                          }
-                      }
-
-                      $scope.setLinkTest = function() {
-                          let input = document.getElementById("add-link-text");
-
-                          if (!$scope.linkToAdd) {
-                              $scope.linkToAdd = {
-                                  url: null,
-                                  displayText: input.value
-                              }
-                          } else {
-                              $scope.linkToAdd.displayText = input.value;
-                          }
-                      }
-
-                      $scope.addLink = function () {
-                          let header = {"Content-Type":"application/json"}
-                          $http.put("./api/v1/attachments/" + modelId + "/links", $scope.linkToAdd, header)
-                              .then(success => {
-                                  $scope.links.push($scope.linkToAdd);
-                                  addLinkDialog.dismiss();
-                              }, error => {
-                                  $scope.addingLinkFailed = true;
-                              });
-                      }
-
-                      $scope.cancel = function () {
-                          $scope.linkToAdd = null;
-                          addLinkDialog.dismiss();
-                      };
+                  if (!$scope.linkToAdd) {
+                    $scope.linkToAdd = {
+                      url: input.value,
+                      displayText: null
+                    }
+                  } else {
+                    $scope.linkToAdd.url = input.value;
                   }
-              });
+                }
+
+                $scope.setLinkTest = function () {
+                  let input = document.getElementById("add-link-text");
+
+                  if (!$scope.linkToAdd) {
+                    $scope.linkToAdd = {
+                      url: null,
+                      displayText: input.value
+                    }
+                  } else {
+                    $scope.linkToAdd.displayText = input.value;
+                  }
+                }
+
+                $scope.addLink = function () {
+                  let header = {"Content-Type": "application/json"}
+                  $http.put("./api/v1/attachments/" + modelId + "/links",
+                      $scope.linkToAdd, header)
+                  .then(success => {
+                    $scope.links.push($scope.linkToAdd);
+                    addLinkDialog.dismiss();
+                  }, error => {
+                    $scope.addingLinkFailed = true;
+                  });
+                }
+
+                $scope.cancel = function () {
+                  $scope.linkToAdd = null;
+                  addLinkDialog.dismiss();
+                };
+              }
+            });
           };
 
-          $scope.openDeleteLinkDialog = function(modelId, link) {
-              let links = $scope.links;
-              let deleteLinkDialog = $uibModal.open({
-                  templateUrl: "deleteLinkDialog.html",
-                  controller: function ($scope) {
-                      $scope.modelId = modelId;
-                      $scope.linkToDelete = link;
-                      $scope.isDeleting = false;
-                      $scope.successfullyDeleted = false;
-                      $scope.failedToDelete = false;
-                      $scope.links = links;
+          $scope.openDeleteLinkDialog = function (modelId, link) {
+            let links = $scope.links;
+            let deleteLinkDialog = $uibModal.open({
+              templateUrl: "deleteLinkDialog.html",
+              controller: function ($scope) {
+                $scope.modelId = modelId;
+                $scope.linkToDelete = link;
+                $scope.isDeleting = false;
+                $scope.successfullyDeleted = false;
+                $scope.failedToDelete = false;
+                $scope.links = links;
 
-                      $scope.deleteLink = function () {
-                          $http.delete("./api/v1/attachments/" + $scope.modelId + "/links", {data: $scope.linkToDelete, headers: {'Content-Type': 'application/json;charset=utf-8'}})
-                              .then(success => {
-                                  let index = $scope.links.indexOf($scope.linkToDelete);
-                                  if (index > -1) {
-                                      $scope.links.splice(index, 1);
-                                  }
-                                  $scope.successfullyDeleted = true;
-                                  deleteLinkDialog.dismiss();
-                              }, error => {
-                                  $scope.failedToDelete = true;
-                              });
-                      }
+                $scope.deleteLink = function () {
+                  $http.delete(
+                      "./api/v1/attachments/" + $scope.modelId + "/links", {
+                        data: $scope.linkToDelete,
+                        headers: {'Content-Type': 'application/json;charset=utf-8'}
+                      })
+                  .then(success => {
+                    let index = $scope.links.indexOf($scope.linkToDelete);
+                    if (index > -1) {
+                      $scope.links.splice(index, 1);
+                    }
+                    $scope.successfullyDeleted = true;
+                    deleteLinkDialog.dismiss();
+                  }, error => {
+                    $scope.failedToDelete = true;
+                  });
+                }
 
-                      $scope.cancel = function () {
-                          $scope.linkToDelete = null;
-                          deleteLinkDialog.dismiss();
-                      };
-                  }
-              });
+                $scope.cancel = function () {
+                  $scope.linkToDelete = null;
+                  deleteLinkDialog.dismiss();
+                };
+              }
+            });
           }
 
           /*Model Attachments upload & download*/
@@ -1071,47 +885,6 @@ define(["../init/appController"], function (repositoryControllers) {
               size: "lg"
             });
           };
-          
-          $scope.getUserPolicy = function () {
-            $http.get('./rest/models/' + $scope.modelId + '/policy')
-            .then(
-                function (result) {
-                  $scope.permission = result.data.permission;
-                  if ($scope.model.state === 'InReview' || $scope.model.released
-                      === true || $rootScope.authenticated === false
-                      || $scope.permission === "READ") {
-                  }
-                },
-                function (error) {
-                  $scope.permission = "READ";
-                  if (($scope.model.state === 'InReview'
-                      || $scope.model.released
-                      === true || $rootScope.authenticated === false
-                      || $scope.permission === "READ")
-                      && !$rootScope.hasAuthority(
-                          "sysadmin")) {
-                  }
-                }
-            );
-          };
-
-          $scope.getAllUserPolicies = function () {
-            $http.get('./rest/models/' + $scope.modelId + '/policies')
-            .then(
-                function (result) {
-                  $scope.canPublishModel = result.data.some(
-                      function (e, i, a) {
-                        return e.principalId && e.principalId
-                            == "model_publisher";
-                      }
-                  );
-                },
-                function (error) {
-                  $scope.permission = "READ";
-                  $scope.canPublishModel = false;
-                }
-            );
-          };
 
           $scope.isEditingVisible = function (model) {
             return $scope.permission !== 'READ' && !model.released;
@@ -1143,17 +916,69 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.loadDetails = function () {
-            $scope.getDetails($scope.modelId).then(function (model) {
-              var editor = $scope.modelEditor;
-              if (editor == null) {
-                $scope.createEditor(model).then(function (editor) {
-                  $scope.getContent($scope.modelId, editor);
-                });
-              } else {
-                $scope.getContent($scope.modelId, editor);
-              }
-              $scope.getWorkflowActions();
-            });
+            // TODO simplify those 2 flags
+            $scope.modelIsLoading = true;
+            $scope.loadingModel = true;
+            $http.get("./rest/models/ui/" + $scope.modelId)
+            .then(
+                function (result) {
+                  // TODO add check for data
+                  $scope.model = result.data.modelInfo;
+                  if ($scope.model.author.length === 64) {
+                    $scope.model.author = 'other user';
+                  }
+                  $scope.modelMappings = result.data.mappings;
+                  $scope.modelReferences = result.data.references;
+                  if ($scope.modelReferences.length == 0) {
+                    $scope.showModelReferences = false;
+                  }
+                  $scope.modelReferencedBy = result.data.referencedBy;
+                  if ($scope.modelReferencedBy.length == 0) {
+                    $scope.showModelReferencedBy = false;
+                  }
+                  $scope.links = result.data.links;
+                  $scope.attachments = result.data.attachments;
+                  $scope.workflowActions = result.data.actions;
+
+                  if (!$scope.editor) {
+                    $scope.createEditor($scope.model).then(function (editor) {
+                      $scope.modelEditor.getSession().getDocument().setValue(
+                          atob(result.data.encodedModelSyntax)
+                      );
+                    });
+                  } else {
+                    $scope.modelEditor.getSession().getDocument().setValue(
+                        atob(result.data.encodedModelSyntax)
+                    );
+                  }
+
+                  $scope.permission =
+                      result.data.bestPolicy
+                      && result.data.bestPolicy.permission
+                      || "READ";
+                  $scope.canPublishModel = result.data.policies.some(
+                      function (e, i, a) {
+                        return e.principalId && e.principalId
+                            == "model_publisher";
+                      }
+                  );
+                  $scope.canCreateModels = $rootScope.authenticated
+                      && $rootScope.authority && $rootScope.authority.includes(
+                          "model_creator");
+
+                  $scope.modelIsLoading = false;
+                  $scope.loadingModel = false;
+                },
+                function (error) {
+                  if (error.status == 401) {
+                    $location.path('/login');
+                  } else if (error.status == 403) {
+                    $scope.errorLoading = 'No permission to access model';
+                  }
+                  $scope.modelIsLoading = false;
+                  $scope.loadingModel = false;
+                }
+            );
             $scope.getPlatformGenerators();
           };
 

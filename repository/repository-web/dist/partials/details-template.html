@@ -394,7 +394,7 @@
 															<dt>
 																<div>Links:</div>
 																<div>
-																	<a class="btn btn-sm btn-default pull-left" ng-hide="permission === 'READ' || !hasAuthority('model_creator')"
+																	<a class="btn btn-sm btn-default pull-left" ng-hide="!hasAuthority('model_creator') && !hasAuthority('sysadmin')"
 																	   ng-click="openAddLinkDialog(model.id.prettyFormat)" role="button">
 																		<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Add Link</a>
 																</div>
@@ -407,7 +407,7 @@
 																	<a ng-href="{{currentLink.url}}" class="pull-center" target="_blank">
 																		{{currentLink.displayText}}
 																	</a>
-																	<button ng-hide="!hasAuthority('model_creator')" class="delete-button" ng-click="openDeleteLinkDialog(model.id.prettyFormat, currentLink)">
+																	<button ng-hide="!hasAuthority('model_creator') && !hasAuthority('sysadmin')" class="delete-button" ng-click="openDeleteLinkDialog(model.id.prettyFormat, currentLink)">
 																		<i class="fa fa-close"></i>
 																	</button>
 																</div>
