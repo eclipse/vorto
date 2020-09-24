@@ -86,6 +86,7 @@ import org.eclipse.vorto.repository.web.core.async.AsyncModelLinksFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelMappingsFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelReferenceFetcher;
 import org.eclipse.vorto.repository.web.core.async.AsyncModelSyntaxFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncWorkflowActionsFetcher;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
@@ -239,7 +240,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       // fetches attachments
       Collection<Attachment> attachments = ConcurrentHashMap.newKeySet();
       executor.submit(
-          new AsyncModelAttachmentsFetcher(attachments, modelID)
+          new AsyncModelAttachmentsFetcher(attachments, modelID,
+              userRepositoryRoleService.isSysadmin(user.getName()))
               .with(SecurityContextHolder.getContext())
               .with(RequestContextHolder.getRequestAttributes())
               .with(getModelRepositoryFactory())
@@ -254,6 +256,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
               .with(getModelRepositoryFactory())
       );
 
+      // fetches available workflow actions
+      Collection<String> actions = ConcurrentHashMap.newKeySet();
+      executor.submit(
+          new AsyncWorkflowActionsFetcher(
+              workflowService, actions, modelID, UserContext.user(user, workspaceId)
+          )
+              .with(SecurityContextHolder.getContext())
+              .with(RequestContextHolder.getRequestAttributes())
+      );
+
       // fetches model syntax
       Future<String> encodedSyntaxFuture = executor.submit(
           new AsyncModelSyntaxFetcher(
@@ -264,6 +276,11 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           )
       );
 
+      // shuts down executor and waits for completion of tasks until configured timeout
+      // also retrieves callable content
+      executor.shutdown();
+
+      // single-threaded calls
       // fetches policies in this thread
       Collection<PolicyEntry> policies = getPolicyManager(workspaceId)
           .getPolicyEntries(modelID)
@@ -271,11 +288,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           .filter(p -> userHasPolicyEntry(p, user, workspaceId))
           .collect(Collectors.toList());
 
-      // shuts down executor and waits for completion of tasks until configured timeout
-      // also retrieves callable content
-      executor.shutdown();
-
-      // result of model syntax callable
+      // getting callables and setting executor timeout
       String encodedSyntax = null;
       try {
         // callable content
@@ -306,6 +319,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
           .withReferencedBy(referencedBy)
           .withAttachments(attachments)
           .withLinks(links)
+          .withActions(actions)
           .withEncodedModelSyntax(encodedSyntax)
           .withPolicies(policies);
 

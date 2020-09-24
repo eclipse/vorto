@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import java.util.Collection;
 import java.util.function.Predicate;
-import javax.servlet.http.HttpServletResponse;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
@@ -60,8 +59,12 @@ import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
  *     {@link org.eclipse.vorto.repository.web.api.v1.AttachmentController#getAttachments(String)}
  *   </li>
  *   <li>
- *     The model's web links as {@link ModelLink}s - see 
+ *     The model's web links as {@link ModelLink}s - see
  *     {@link org.eclipse.vorto.repository.web.api.v1.AttachmentController#getLinks(String)}
+ *   </li>
+ *   <li>
+ *     The possible "workflow actions" for this specific model and the authenticated user - see
+ *     {@link org.eclipse.vorto.repository.web.workflow.WorkflowController#getPossibleActions(String)}
  *   </li>
  *   <li>
  *     The {@link PolicyEntry} "policies" for the querying user's interaction with the model - see
@@ -75,6 +78,11 @@ import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
  *  <li>
  *    The model images, which are loaded through the {@code ng-src} directive directly in the
  *    {@literal details-template.html} UI resource.
+ *  </li>
+ *  <li>
+ *    The generators available, which are loaded independently from the model data (and are not
+ *    bound to any specific model) by
+ *    {@link org.eclipse.vorto.repository.web.api.v1.GenericGeneratorController#getRegisteredGeneratorServices(String)}
  *  </li>
  * </ul>
  */
@@ -92,6 +100,7 @@ public class ModelFullDetailsDTO {
   private Collection<ModelMinimalInfoDTO> referencedBy;
   private Collection<Attachment> attachments;
   private Collection<ModelLink> links;
+  private Collection<String> actions;
   private Collection<PolicyEntry> policies;
   private PolicyEntry bestPolicy;
   private String encodedModelSyntax;
@@ -123,6 +132,11 @@ public class ModelFullDetailsDTO {
 
   public ModelFullDetailsDTO withLinks(Collection<ModelLink> links) {
     this.links = links;
+    return this;
+  }
+
+  public ModelFullDetailsDTO withActions(Collection<String> actions) {
+    this.actions = actions;
     return this;
   }
 
@@ -185,6 +199,14 @@ public class ModelFullDetailsDTO {
 
   public void setLinks(Collection<ModelLink> links) {
     this.links = links;
+  }
+
+  public Collection<String> getActions() {
+    return actions;
+  }
+
+  public void setActions(Collection<String> actions) {
+    this.actions = actions;
   }
 
   public Collection<PolicyEntry> getPolicies() {
