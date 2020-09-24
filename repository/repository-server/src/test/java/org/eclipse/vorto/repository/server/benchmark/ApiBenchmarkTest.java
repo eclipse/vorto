@@ -126,7 +126,9 @@ public class ApiBenchmarkTest {
 
     private static void globalJMeterConfiguration() throws URISyntaxException, IOException {
 
-        BENCHMARK_PATH_STRING = ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR).toURI().getPath();
+        BENCHMARK_PATH_STRING = Paths.get(ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR).toURI()).toString();
+
+
         // Initialize Properties
         JMeterUtils.loadJMeterProperties(BENCHMARK_PATH_STRING + "/user.properties");
         JMeterUtils.setJMeterHome(determineJMeterHome());
@@ -144,7 +146,7 @@ public class ApiBenchmarkTest {
     }
 
     @Before
-    public void setUpTest() throws IOException {
+    public void setUpTest() throws IOException, URISyntaxException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         mock.setAuthorityListForUser(SpringUserUtils.toAuthorityList(
@@ -157,7 +159,7 @@ public class ApiBenchmarkTest {
      *
      * @throws IOException
      */
-    private void configureJMeter() throws IOException {
+    private void configureJMeter() throws IOException, URISyntaxException {
         SaveService.loadProperties();
         // set the vorto port for jmeter test execution.
         JMeterUtils.setProperty(VORTO_PORT_PROPERTY, Integer.toString(port));
@@ -166,7 +168,7 @@ public class ApiBenchmarkTest {
         // set result summary file path
         JMeterUtils.setProperty(VORTO_RESULT_FILE_SUMMARY_PROPERTY, BENCHMARK_PATH_STRING  + "/resultsummary.csv");
         // load the test plan
-        testPlanTree = SaveService.loadTree(new File(ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR+"/apiCallGetModel.jmx").getFile()));
+        testPlanTree = SaveService.loadTree(Paths.get(ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR+"/apiCallGetModel.jmx").toURI()).toFile());
     }
 
     private static void setSystemProperties() {
