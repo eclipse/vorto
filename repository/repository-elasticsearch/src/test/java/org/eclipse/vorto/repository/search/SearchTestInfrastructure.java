@@ -44,7 +44,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
@@ -60,10 +60,13 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.PrivilegeService;
 import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
@@ -73,10 +76,12 @@ import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -152,6 +157,7 @@ import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
  *
  * @author mena-bosch (refactory)
  */
+@RunWith(MockitoJUnitRunner.class)
 public final class SearchTestInfrastructure {
 
   /**
@@ -192,6 +198,15 @@ public final class SearchTestInfrastructure {
   protected UserRepository userRepository = Mockito.mock(UserRepository.class);
 
   @Mock
+  protected UserNamespaceRoleRepository userNamespaceRoleRepository;
+
+  @Mock
+  protected UserRepositoryRoleRepository userRepositoryRoleRepository;
+
+  protected UserRolesRequestCache userRolesRequestCache = new UserRolesRequestCache(
+      userNamespaceRoleRepository, userRepositoryRoleRepository, userRepository);
+
+  @Mock
   protected AttachmentValidator attachmentValidator = Mockito
       .mock(AttachmentValidator.class);
 
@@ -216,9 +231,6 @@ public final class SearchTestInfrastructure {
   NamespaceService namespaceService = Mockito.mock(NamespaceService.class);
 
   UserNamespaceRoleService userNamespaceRoleService = Mockito.mock(UserNamespaceRoleService.class);
-
-  protected UserNamespaceRolesCache userNamespaceRolesCache = Mockito
-      .mock(UserNamespaceRolesCache.class);
 
   NamespaceRepository namespaceRepository = Mockito.mock(NamespaceRepository.class);
 
@@ -395,13 +407,13 @@ public final class SearchTestInfrastructure {
         .thenReturn(Optional.of(new NamespaceRole(32, "namespace_admin", 7)));
     when(roleService.findAnyByName("sysadmin")).thenReturn(Optional.of(RepositoryRole.SYS_ADMIN));
 
-    User alex = User.create("alex", "GITHUB", null);
-    User erle = User.create("erle", "GITHUB", null);
-    User admin = User.create("admin", "GITHUB", null);
-    User creator = User.create("creator", "GITHUB", null);
-    User promoter = User.create("promoter", "GITHUB", null);
-    User reviewer = User.create("reviewer", "GITHUB", null);
-    User publisher = User.create("publisher", "GITHUB", null);
+    User alex = new UserBuilder().withName("alex").withAuthenticationProviderID("GITHUB").build();
+    User erle = new UserBuilder().withName("erle").withAuthenticationProviderID("GITHUB").build();
+    User admin = new UserBuilder().withName("admin").withAuthenticationProviderID("GITHUB").build();
+    User creator = new UserBuilder().withName("creator").withAuthenticationProviderID("GITHUB").build();
+    User promoter = new UserBuilder().withName("promoter").withAuthenticationProviderID("GITHUB").build();
+    User reviewer = new UserBuilder().withName("reviewer").withAuthenticationProviderID("GITHUB").build();
+    User publisher = new UserBuilder().withName("publisher").withAuthenticationProviderID("GITHUB").build();
 
     when(userRepository.findByUsername("alex")).thenReturn(alex);
     when(userRepository.findByUsername("erle")).thenReturn(erle);
@@ -473,8 +485,6 @@ public final class SearchTestInfrastructure {
 
     when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), any(User.class)))
         .thenReturn(roles);
-    // disables caching in test as it won't impact on performance
-    when(userNamespaceRolesCache.get(anyString())).thenReturn(Optional.empty());
 
     setupNamespaceMocking();
 
@@ -487,8 +497,7 @@ public final class SearchTestInfrastructure {
 
     repositoryFactory = new ModelRepositoryFactory(null,
         attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-        userNamespaceRoleService, privilegeService, userRepositoryRoleService,
-        userNamespaceRolesCache, userRepository) {
+        userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -528,7 +537,7 @@ public final class SearchTestInfrastructure {
 
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
-    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+    accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
 

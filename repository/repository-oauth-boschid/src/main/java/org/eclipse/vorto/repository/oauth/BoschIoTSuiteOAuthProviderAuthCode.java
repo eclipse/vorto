@@ -52,7 +52,7 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
   private final UserNamespaceRoleService userNamespaceRoleService;
 
 
-  private static final String ID = "BOSCH-IOT-SUITE-AUTH-CODE";
+  private static final String ID = "BOSCH-IOT-SUITE-AUTH";
 
   @Autowired
   public BoschIoTSuiteOAuthProviderAuthCode(

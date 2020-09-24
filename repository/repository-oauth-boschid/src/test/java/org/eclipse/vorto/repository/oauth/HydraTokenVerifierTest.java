@@ -16,7 +16,9 @@ import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.VerificationHelper;
+import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -36,8 +38,8 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
   @Mock
   private BoschIoTSuiteOAuthProviderConfiguration configuration;
 
-  private BoschIoTSuiteOAuthProviderAuthCode getVerifier() {
-    User user = User.create("d758a35e-94ef-443f-9625-7f03092e2005", "GITHUB", null);
+  private BoschIoTSuiteOAuthProviderAuthCode getVerifier() throws InvalidUserException {
+    User user = new UserBuilder().withName("d758a35e-94ef-443f-9625-7f03092e2005").withAuthenticationProviderID("GITHUB").build();
     DefaultUserAccountService userAccountService = Mockito.mock(DefaultUserAccountService.class);
     when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
 
@@ -56,13 +58,13 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
   }
 
   @Test
-  public void verifyValid() {
+  public void verifyValid() throws Exception {
     assertTrue(getVerifier().verify(requestModel("vorto.private.erle:Datatype1:1.0.0"),
         JwtToken.instance(jwtToken).get()));
   }
 
   @Test
-  public void verifyExpired() {
+  public void verifyExpired() throws Exception {
     assertFalse(getVerifier().verify(requestModel("vorto.private.erle:Datatype1:1.0.0"),
         JwtToken.instance(expiredToken).get()));
   }

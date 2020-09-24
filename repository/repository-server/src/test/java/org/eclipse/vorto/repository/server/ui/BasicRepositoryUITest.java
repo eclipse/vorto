@@ -15,6 +15,8 @@ package org.eclipse.vorto.repository.server.ui;
 import com.google.common.collect.Sets;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;

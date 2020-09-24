@@ -121,10 +121,15 @@ public class AccountController {
     if (accountService.getUser(oauth2User.getName()) != null) {
       return new ResponseEntity<>(false, HttpStatus.CREATED);
     }
-    LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
-
-    User createdUser = accountService
-        .create(oauth2User.getName(), getAuthenticationProvider(oauth2User), null);
+    User createdUser = null;
+    try {
+      createdUser = accountService
+          .createNonTechnicalUser(oauth2User.getName(), getAuthenticationProvider(oauth2User),
+              null);
+    }
+    catch (InvalidUserException iue) {
+      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
     SpringUserUtils.refreshSpringSecurityUser(createdUser, userNamespaceRoleService);
 
     return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -161,21 +166,24 @@ public class AccountController {
   @PostMapping(consumes = "application/json", value = "/rest/accounts/createTechnicalUser")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<OperationResult> createTechnicalUser(
-      @RequestBody @ApiParam(value = "The technical user to be created",
-          required = true) final UserDto technicalUser) {
+      @RequestBody @ApiParam(value = "The technical user to be created", required = true) final UserDto technicalUser) {
     // user exists - do nothing and return false / 200
     User existingUser = accountService.getUser(technicalUser.getUsername());
     if (existingUser != null) {
       return new ResponseEntity<>(OperationResult.success("User already exists"), HttpStatus.OK);
     }
     // user does not exist
+    // getting calling user
+    User actor = accountService.getUser(
+        UserContext.user(SecurityContextHolder.getContext().getAuthentication()).getUsername()
+    );
     try {
       // adding date fields
       technicalUser.setDateCreated(Timestamp.from(Instant.now()));
       technicalUser.setLastUpdated(Timestamp.from(Instant.now()));
       // UI will inform end-user that by creating the technical user, the terms and conditions are
       // considered to be approved
-      userService.createOrUpdateTechnicalUser(technicalUser.toUser());
+      userService.createOrUpdateTechnicalUser(actor, technicalUser.toUser());
       return new ResponseEntity<>(OperationResult.success(), HttpStatus.CREATED);
     } catch (InvalidUserException iue) {
       LOGGER.warn("Invalid technical user creation request.", iue);
@@ -209,7 +217,7 @@ public class AccountController {
       return new ResponseEntity<>((UserDto) null, HttpStatus.NOT_FOUND);
     }
     account.setEmailAddress(httpEntity.getBody());
-    accountService.saveUser(account);
+    accountService.updateUser(account);
 
     return new ResponseEntity<>(UserDto.fromUser(account), HttpStatus.OK);
   }
