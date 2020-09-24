@@ -161,9 +161,9 @@ public class ApiBenchmarkTest {
         SaveService.loadProperties();
         // set the vorto port for jmeter test execution.
         JMeterUtils.setProperty(VORTO_PORT_PROPERTY, Integer.toString(port));
-        // set result directory
+        // set result tree file path
         JMeterUtils.setProperty(VORTO_RESULT_FILE_TREE_PROPERTY, BENCHMARK_PATH_STRING + "/resulttree.csv");
-        // set result file path
+        // set result summary file path
         JMeterUtils.setProperty(VORTO_RESULT_FILE_SUMMARY_PROPERTY, BENCHMARK_PATH_STRING  + "/resultsummary.csv");
         // load the test plan
         testPlanTree = SaveService.loadTree(new File(ApiBenchmarkTest.class.getClassLoader().getResource(JMETER_HOME_DIR+"/apiCallGetModel.jmx").getFile()));
