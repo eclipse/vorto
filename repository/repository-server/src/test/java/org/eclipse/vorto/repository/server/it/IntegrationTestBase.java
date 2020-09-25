@@ -275,7 +275,8 @@ public abstract class IntegrationTestBase {
   }
 
   protected ResultActions addLink(String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url) throws Exception {
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url)
+      throws Exception {
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.put("/api/v1/attachments/" + modelId + "/links");
     builder.content(ObjectMapperFactory.getInstance().writeValueAsString(url));
@@ -286,7 +287,8 @@ public abstract class IntegrationTestBase {
   }
 
   protected ResultActions deleteLink(String modelId,
-      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url) throws Exception {
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, ModelLink url)
+      throws Exception {
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.delete("/api/v1/attachments/" + modelId + "/links");
     builder.content(ObjectMapperFactory.getInstance().writeValueAsString(url));

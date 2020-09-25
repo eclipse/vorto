@@ -525,11 +525,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Map<String, String>> newRefactoring(@PathVariable String modelId) {
-    Namespace namespace = userNamespaceRoleService
-        .resolveByNameOrParentName(ModelId.fromPrettyFormat(modelId).getNamespace());
-    Map<String, String> response = new HashMap<>();
-    response.put("namespace", namespace.getName());
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    try {
+      Namespace namespace = namespaceService
+          .getByName(ModelId.fromPrettyFormat(modelId).getNamespace());
+      Map<String, String> response = new HashMap<>();
+      response.put("namespace", namespace.getName());
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (DoesNotExistException doesNotExistException) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
   }
 
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")

@@ -390,24 +390,6 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   /**
    * Resolves workspace ID for the given namespace.<br/>
-   * Tries to lookup the namespace by name and returns the result, if there is one. <br/>
-   * Otherwise, recursively attempts to resolve the namespace and return its workspace ID by
-   * removing each dot-separated component starting from the end of the namespace's name.<br/>
-   * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
-   * <ol>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite.example.octopussuiteedition} and get
-   *     its workspace ID, which fails
-   *   </li>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite.example} and get its workspace ID, which
-   *     fails again
-   *   </li>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite} and get its workspace ID, which
-   *     succeeds
-   *   </li>
-   * </ol>
    *
    * @param namespace - the given namespace name
    * @return Optional of the workspace ID or empty Optional, if no namespace was resolved.

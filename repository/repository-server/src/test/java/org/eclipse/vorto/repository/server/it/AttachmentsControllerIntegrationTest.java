@@ -97,10 +97,10 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
           .andExpect(status().isNotFound());
 
       addLink(testModel.prettyName, userModelViewer, url)
-          .andExpect(status().isUnauthorized());
+          .andExpect(status().isForbidden());
 
       deleteLink(testModel.prettyName, userModelViewer, url2)
-          .andExpect(status().isUnauthorized());
+          .andExpect(status().isForbidden());
   }
 
   @Test
