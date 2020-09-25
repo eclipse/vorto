@@ -203,7 +203,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   public void getUserPolicy() throws Exception {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelViewer))
-        .andExpect(status().isUnauthorized());
+        .andExpect(status().isNotFound());
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userSysadmin))
         .andExpect(status().isOk());

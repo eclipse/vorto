@@ -23,15 +23,15 @@ import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenExcept
 
 public class UserHasAccessToNamespaceValidation implements IModelValidator {
 
-  private DefaultUserAccountService userRepository;
+  private DefaultUserAccountService userAccountService;
   private UserRepositoryRoleService userRepositoryRoleService;
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  public UserHasAccessToNamespaceValidation(DefaultUserAccountService userRepository,
+  public UserHasAccessToNamespaceValidation(DefaultUserAccountService userAccountService,
       UserRepositoryRoleService userRepositoryRoleService,
       UserNamespaceRoleService userNamespaceRoleService) {
     
-    this.userRepository = userRepository;
+    this.userAccountService = userAccountService;
     this.userRepositoryRoleService = userRepositoryRoleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
   }
@@ -40,11 +40,11 @@ public class UserHasAccessToNamespaceValidation implements IModelValidator {
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
 
-    if (userRepositoryRoleService.isSysadmin(userRepository.getUser(context.getUserContext().getUsername()))) {
+    if (userRepositoryRoleService.isSysadmin(userAccountService.getUser(context.getUserContext().getUsername()))) {
       return;
     }
     
-    User user = userRepository.getUser(context.getUserContext().getUsername());
+    User user = userAccountService.getUser(context.getUserContext().getUsername());
     try {
       if (userNamespaceRoleService.getNamespaces(user, user).stream().noneMatch(namespace -> namespace.owns(modelResource.getId()))) {
         throw new ValidationException("User " + user.getUsername() + " does not have access to target namespace "

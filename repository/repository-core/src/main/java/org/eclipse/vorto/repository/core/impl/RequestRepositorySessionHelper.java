@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.UserLoginException;
@@ -42,7 +43,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     private String workspaceId;
     private Authentication user;
     private Repository repository;
-    private Set<IRole> roleSet;
+    private Collection<IRole> roles;
     private Supplier<Session> internalSessionSupplier;
 
     @Autowired
@@ -117,7 +118,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
     }
 
     private Session login(String workspaceId, Authentication user) throws RepositoryException {
-        return repository.login(new SpringSecurityCredentials(user, roleSet, privilegeService), workspaceId);
+        return repository.login(new SpringSecurityCredentials(user, roles, privilegeService), workspaceId);
     }
 
     public void logoutSessionIfNotReusable(Session session) {
@@ -148,7 +149,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         this.user = user;
     }
 
-    public void setUserRoles(Set<IRole> userRoles) {
-        this.roleSet = userRoles;
+    public void setUserRoles(Collection<IRole> userRoles) {
+        this.roles = userRoles;
     }
 }

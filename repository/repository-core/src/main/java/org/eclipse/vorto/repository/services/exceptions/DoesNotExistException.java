@@ -17,7 +17,13 @@ package org.eclipse.vorto.repository.services.exceptions;
  */
 public class DoesNotExistException extends Exception {
 
+  public static final String DEFAULT_MESSAGE_FORMAT = "Namespace [%s] does not exist.";
+
   public DoesNotExistException(String message) {
     super(message);
+  }
+
+  public static DoesNotExistException withNamespace(String namespaceName) {
+    return new DoesNotExistException(String.format(DEFAULT_MESSAGE_FORMAT, namespaceName));
   }
 }

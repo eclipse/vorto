@@ -13,11 +13,14 @@
 package org.eclipse.vorto.repository.account;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
@@ -57,10 +60,10 @@ public class UserAccountServiceTest extends UnitTestBase {
   public void testCreateUserAlreadyExists() throws Exception {
     User user = setupUser("alex");
     when(userRepository.findByUsername("alex")).thenReturn(user);
-    accountService.create(user.getUsername(), "GITHUB", null);
+    accountService.createNonTechnicalUser(user.getUsername(), "GITHUB", null);
   }
 
-  private User setupUser(String username) {
-    return User.create(username, "GITHUB", null);
+  private User setupUser(String username) throws InvalidUserException {
+    return new UserBuilder().withName(username).withAuthenticationProviderID("GITHUB").build();
   }
 }

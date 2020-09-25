@@ -23,7 +23,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryEventListener;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.core.impl.cache.UserNamespaceRolesCache;
+import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -76,6 +76,9 @@ public abstract class UnitTestBase {
   @InjectMocks
   protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 
+  @InjectMocks
+  protected UserRolesRequestCache userRolesRequestCache;
+
   @Mock
   protected UserUtil userUtil;
 
@@ -100,6 +103,8 @@ public abstract class UnitTestBase {
   @Mock
   protected UserRepositoryRoleService userRepositoryRoleService;
 
+
+
   @Mock
   protected PrivilegeService privilegeService;
 
@@ -108,9 +113,6 @@ public abstract class UnitTestBase {
 
   @Mock
   protected IIndexingService indexingService;
-
-  @Mock
-  protected UserNamespaceRolesCache userNamespaceRolesCache;
 
   protected DefaultUserAccountService accountService = null;
 
@@ -193,7 +195,6 @@ public abstract class UnitTestBase {
     mockImporter(repositoryFactory);
     this.workflow = new DefaultWorkflowService(repositoryFactory, accountService,
         notificationService, namespaceService, userNamespaceRoleService, roleService);
-    mockUserNamespaceRolesCache();
   }
 
   private void mockModelParserFactory() {
@@ -211,8 +212,7 @@ public abstract class UnitTestBase {
     repositoryFactory =
         new ModelRepositoryFactory(modelSearchUtil,
             attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-            userNamespaceRoleService, privilegeService, userRepositoryRoleService,
-            userNamespaceRolesCache, userRepository) {
+            userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
 
           @Override
           public IModelRetrievalService getModelRetrievalService() {
@@ -231,26 +231,30 @@ public abstract class UnitTestBase {
             }
             return super.getRepository(workspaceId, user);
           }
+
+          @Override
+          public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
+              Authentication user) {
+            if (user == null) {
+              return getRepository(workspaceId);
+            }
+            return super.getRepository(workspaceId, user);
+          }
         };
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
     repositoryFactory.start();
   }
 
   protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
-    accountService = new DefaultUserAccountService(userRepository, notificationService, roleService,
+    accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
         userNamespaceRoleService);
     accountService.setApplicationEventPublisher(eventPublisher);
   }
 
   protected void mockUserService(ApplicationEventPublisher eventPublisher) {
-    userService = new UserService(userUtil, userRepository, userRepositoryRoleService,
+    userService = new UserService(userRolesRequestCache, userUtil, userRepository, userRepositoryRoleService,
         userNamespaceRoleService, notificationService);
     userService.setApplicationEventPublisher(eventPublisher);
-  }
-
-  // disables caching in test as it won't impact on performance
-  protected void mockUserNamespaceRolesCache() {
-    when(userNamespaceRolesCache.get(anyString())).thenReturn(Optional.empty());
   }
 
   protected void mockImporter(ModelRepositoryFactory modelRepositoryFactory) {
@@ -349,15 +353,14 @@ public abstract class UnitTestBase {
 
   private void mockUsers(NamespaceRole namespace_admin, NamespaceRole model_creator,
       NamespaceRole model_promoter, NamespaceRole model_publisher, NamespaceRole model_reviewer)
-      throws DoesNotExistException, OperationForbiddenException {
-    User alex = User.create("alex", "GITHUB", null);
-    alex.setId(1L);
-    User erle = User.create("erle", "GITHUB", null);
-    User admin = User.create("admin", "GITHUB", null);
-    User creator = User.create("creator", "GITHUB", null);
-    User promoter = User.create("promoter", "GITHUB", null);
-    User reviewer = User.create("reviewer", "GITHUB", null);
-    User publisher = User.create("publisher", "GITHUB", null);
+      throws DoesNotExistException, OperationForbiddenException, InvalidUserException {
+    User alex = new UserBuilder().withID(1).withName("alex").withAuthenticationProviderID("GITHUB").build();
+    User erle = new UserBuilder().withName("erle").withAuthenticationProviderID("GITHUB").build();
+    User admin = new UserBuilder().withName("admin").withAuthenticationProviderID("GITHUB").build();
+    User creator = new UserBuilder().withName("creator").withAuthenticationProviderID("GITHUB").build();
+    User promoter = new UserBuilder().withName("promoter").withAuthenticationProviderID("GITHUB").build();
+    User reviewer = new UserBuilder().withName("reviewer").withAuthenticationProviderID("GITHUB").build();
+    User publisher = new UserBuilder().withName("publisher").withAuthenticationProviderID("GITHUB").build();
 
     mockUserRepository(alex, erle, admin, creator, promoter, reviewer, publisher);
     mockUserNamespaceRoleService(namespace_admin, model_creator, model_promoter, model_publisher,
