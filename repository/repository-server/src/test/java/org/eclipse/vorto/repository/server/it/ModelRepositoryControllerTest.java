@@ -12,20 +12,34 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.google.common.collect.Sets;
 import java.util.Arrays;
+import java.util.Base64;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.Attachment;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelMinimalInfoDTO;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelReferenceDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
@@ -343,6 +357,9 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
    *         References (see {@link ModelFullDetailsDTO#getReferences()}
    *       </li>
    *       <li>
+   *         "Referenced by" (see {@link ModelFullDetailsDTO#getReferencedBy()})
+   *       </li>
+   *       <li>
    *         Policies (see {@link ModelFullDetailsDTO#getPolicies()} and
    *         {@link ModelFullDetailsDTO#getBestPolicy()} for the creating user, and conversely, for
    *         an extraneous user with no access.
@@ -366,7 +383,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
    */
   @Test
   public void verifyFullModelPayloadForUI() throws Exception {
-    // model names, ids and file names
+    // model names, id strings and file names
     String namespace = "com.test";
     String version = "1.0.0";
     String idFormat = "%s.%s:%s";
@@ -400,9 +417,9 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             put(String.format("/rest/namespaces/%s/users", namespace))
-            .with(userSysadmin)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
         )
         .andExpect(status().isOk());
 
@@ -419,11 +436,76 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     createModel(userModelCreator, streetLampFileName, streetLampModelID);
 
     // adds an attachment to the StreetLamp model
-    addAttachment(streetLampModelID, userModelCreator, streetLampAttachmentFileName, MediaType.APPLICATION_JSON);
+    addAttachment(streetLampModelID, userModelCreator, streetLampAttachmentFileName,
+        MediaType.APPLICATION_JSON);
 
     // adds a link to the StreetLamp model
-    addLink(streetLampModelID, userModelCreator, new ModelLink(streetLampLinkURL, streetLampLinkName));
+    ModelLink link = new ModelLink(streetLampLinkURL, streetLampLinkName);
+    addLink(streetLampModelID, userModelCreator, link);
 
+    // saves a minimal mapping specification for the street lamp model
+    Infomodel streetLampInfomodel = new Infomodel(ModelId.fromPrettyFormat(streetLampModelID));
+    streetLampInfomodel.setTargetPlatformKey("myTargetPlatform");
+    MappingSpecification mapping = new MappingSpecification(streetLampInfomodel);
+    repositoryServer
+        .perform(
+            put(String.format("/rest/mappings/specifications/%s", streetLampModelID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mapping))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+
+    // builds expected ModelFullDetailsDTO
+    ModelFullDetailsDTO expected = new ModelFullDetailsDTO()
+        .withActions(Arrays.asList("Release"))
+        .withAttachments(
+            Arrays.asList(
+                Attachment.newInstance(ModelId.fromPrettyFormat(streetLampModelID),
+                    streetLampAttachmentFileName)
+            )
+        )
+        .withEncodedModelSyntax(
+            Base64.getEncoder().encodeToString(createContent(streetLampFileName).getBytes())
+        )
+        .withLinks(
+            Arrays.asList(link)
+        )
+        .withMappings(
+            Arrays.asList(
+                ModelMinimalInfoDTO.fromModelInfo(
+                    new ModelInfo(
+                        mapping.getInfoModel().getId(),
+                        ModelType.Mapping
+                    )
+                )
+            )
+        )
+        .withModelInfo(
+            new ModelInfo(streetLampInfomodel.getId(), ModelType.InformationModel)
+        )
+        .withPolicies(
+            Arrays.asList(
+                PolicyEntry.of("model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
+                PolicyEntry.of("model_viewer", PrincipalType.Role, Permission.READ)
+            )
+        )
+        .withReferencedBy(
+            Arrays.asList(
+                ModelReferenceDTO.fromModelInfo(
+                    new ModelInfo(mapping.getInfoModel().getId(), ModelType.Mapping)
+                )
+            )
+        );
+
+    // fetches the full model for the UI
+    repositoryServer
+        .perform(
+            get(String.format("/rest/models/ui/%s", streetLampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().json(objectMapper.writeValueAsString(expected)));
     /*
     repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin));*/
   }
