@@ -943,7 +943,22 @@ define(["../init/appController"], function (repositoryControllers) {
                   if (!$scope.editor) {
                     $scope.createEditor($scope.model).then(function (editor) {
                       $scope.modelEditor.getSession().getDocument().setValue(
-                          atob(result.data.encodedModelSyntax)
+                          // support for 16 bit unicode characters
+                          decodeURIComponent(
+                              atob(result.data.encodedModelSyntax)
+                              .split('')
+                              .map(
+                                  c => {
+                                    return '%'
+                                    .concat(
+                                        ('00'.concat(
+                                            c.charCodeAt(0).toString(16)))
+                                        .slice(-2)
+                                    );
+                                  }
+                              )
+                              .join('')
+                          )
                       );
                     });
                   } else {
