@@ -12,6 +12,8 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,28 +26,20 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.collect.Sets;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
-import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelMappingDTO;
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelReferenceDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 
 public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
@@ -476,65 +470,18 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isOk());
 
-    // Need to query API for some ModelInfo fields such as creation date.
-    // basically we are comparing the REST call on the model with the part of the UI DTO
-    // that will contain it, because it is too difficult to create the expectation programmatically.
-    MvcResult result = repositoryServer
-        .perform(
-            get(
-                String.format(
-                    "/api/v1/models/%s",
-                    streetLampModelID
-                )
-            )
-                .with(userModelCreator)
-        )
-        .andReturn();
-    String modelInfoString = result.getResponse().getContentAsString();
-    ModelInfo root = objectMapper.readValue(modelInfoString, ModelInfo.class);
-
-    // builds expected ModelFullDetailsDTO
-    ModelFullDetailsDTO expected = new ModelFullDetailsDTO()
-        .withActions(Collections.emptyList())
-        .withAttachments(
-            Arrays.asList(
-                Attachment.newInstance(ModelId.fromPrettyFormat(streetLampModelID),
-                    streetLampAttachmentFileName)
-            )
-        )
-        .withEncodedModelSyntax(
-            Base64.getEncoder().encodeToString(createContentAsString(streetLampFileName).getBytes())
-        )
-        .withLinks(
-            Arrays.asList(link)
-        )
-        .withMappings(
-            Arrays.asList(
-                ModelMappingDTO.fromModelInfo(
-                    "myTargetPlatform",
-                    new ModelInfo(
-                        mapping.getInfoModel().getId(),
-                        ModelType.Mapping
-                    )
-                )
-            )
-        )
-        .withModelInfo(
-            root
-        )
-        .withPolicies(
-            Arrays.asList(
-                PolicyEntry.of("model_creator", PrincipalType.Role, Permission.FULL_ACCESS),
-                PolicyEntry.of("model_viewer", PrincipalType.Role, Permission.READ)
-            )
-        )
-        .withReferencedBy(
-            Arrays.asList(
-                ModelReferenceDTO.fromModelInfo(
-                    new ModelInfo(mapping.getInfoModel().getId(), ModelType.Mapping)
-                )
-            )
-        );
+    // expected ID of the payload mapping model
+    String mappingId = String.format(
+        "%s.%s:%sPayloadMapping:%s",
+        // root namespace
+        namespace,
+        // virtual namespace for mapping
+        streetLampModelName.toLowerCase(),
+        // mapping name part 1 matching root model
+        streetLampModelName,
+        // root model version
+        version
+    );
 
     // fetches the full model for the UI
     repositoryServer
@@ -544,7 +491,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isOk())
         // cannot test full json due to arbitrary date offsets, so checking essentials in every node
-
+        // prints some helpful representation of the result as received
         .andDo(
             mvcResult -> {
               ModelFullDetailsDTO output = objectMapper
@@ -559,13 +506,75 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
               );
             }
         )
-        // actions: present but empty
-        .andExpect(jsonPath("$.actions").exists())
-        .andExpect(jsonPath("$.actions").isEmpty())
+        // basic model info: checking some fields of id, type, author
+        .andExpect(
+            jsonPath("$.modelInfo").exists()
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.id.name").value(streetLampModelName)
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.id.namespace").value(namespace)
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.type").value("InformationModel")
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.author").value(USER_MODEL_CREATOR_NAME)
+        )
+        // mappings
+        .andExpect(
+            jsonPath("$.mappings").isNotEmpty()
+        )
+        // com.test.streetlamp:StreetLampPayloadMapping:1.0.0
+        .andExpect(
+            jsonPath("$.mappings[0].id").value(mappingId)
+        )
+        // references (only size)
+        .andExpect(
+            jsonPath("$.references", hasSize(2))
+        )
+        // referenced by
+        .andExpect(
+            jsonPath("$.referencedBy", hasSize(1))
+        )
+        .andExpect(
+            jsonPath("$.referencedBy[0].id").value(mappingId)
+        )
         // attachments: present. checking filename property of first and only attachment
         .andExpect(jsonPath("$.attachments").exists())
         .andExpect(
             jsonPath("$.attachments[0].filename").value(streetLampAttachmentFileName)
+        )
+        .andExpect(
+            jsonPath("$.attachments[0].modelId.name").value(streetLampModelName)
+        )
+        // single link exists
+        .andExpect(
+            jsonPath("$.links").exists()
+        )
+        .andExpect(
+            jsonPath("$.links[0].url").value(equalTo(link.getUrl()))
+        )
+        .andExpect(
+            jsonPath("$.links[0].displayText").value(equalTo(link.getDisplayText()))
+        )
+        // actions: present but empty
+        .andExpect(jsonPath("$.actions").exists())
+        .andExpect(jsonPath("$.actions").isEmpty())
+        // policies (only size)
+        .andExpect(
+            jsonPath("$.policies", hasSize(2))
+        )
+        // best policy: model creator with full access
+        .andExpect(
+            jsonPath("$.bestPolicy").exists()
+        )
+        .andExpect(
+            jsonPath("$.bestPolicy.principalId").value("model_creator")
+        )
+        .andExpect(
+            jsonPath("$.bestPolicy.permission").value(Permission.FULL_ACCESS.toString())
         )
         // syntax string equal to model content base-64-encoded
         .andExpect(
@@ -576,8 +585,47 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
                 )
         );
 
+    // cleanup: deletes models in reverse order of creation, then namespace
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", mappingId))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", streetLampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", lampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", addressModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", zoneModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespace))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
     // removes test-specific configuration
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+
+
   }
 
 }
