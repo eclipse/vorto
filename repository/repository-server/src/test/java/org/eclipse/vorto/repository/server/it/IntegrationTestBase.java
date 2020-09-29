@@ -260,6 +260,10 @@ public abstract class IntegrationTestBase {
     return new GsonBuilder().create().toJson(content);
   }
 
+  protected String createContentAsString(String fileName) throws Exception {
+    return IOUtils.toString(new ClassPathResource("models/" + fileName).getInputStream());
+  }
+
   protected ResultActions addAttachment(String modelId,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
       MediaType mediaType, Integer size) throws Exception {

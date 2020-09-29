@@ -17,11 +17,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.collect.Sets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
@@ -32,16 +36,20 @@ import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
-import org.eclipse.vorto.repository.web.api.v1.dto.ModelMinimalInfoDTO;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelMappingDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelReferenceDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 
 public class ModelRepositoryControllerTest extends IntegrationTestBase {
+
+  private static final Logger LOGGER = Logger.getLogger(ModelRepositoryControllerTest.class);
 
   @Autowired
   protected AttachmentValidator attachmentValidator;
@@ -383,6 +391,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
    */
   @Test
   public void verifyFullModelPayloadForUI() throws Exception {
+    // required for some extra properties in DTOs not annotated with Jackson polymorphism
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     // model names, id strings and file names
     String namespace = "com.test";
     String version = "1.0.0";
@@ -435,9 +445,19 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     // creates the StreetLamp model
     createModel(userModelCreator, streetLampFileName, streetLampModelID);
 
-    // adds an attachment to the StreetLamp model
-    addAttachment(streetLampModelID, userModelCreator, streetLampAttachmentFileName,
-        MediaType.APPLICATION_JSON);
+    // adds an attachment to the StreetLamp model (still requires sysadmin for this)
+    addAttachment(streetLampModelID, userSysadmin, streetLampAttachmentFileName,
+        MediaType.APPLICATION_JSON)
+        .andExpect(status().isOk())
+        .andExpect(content().json(
+            objectMapper.writeValueAsString(
+                AttachResult.success(
+                    ModelId.fromPrettyFormat(streetLampModelID),
+                    streetLampAttachmentFileName
+                )
+            )
+            )
+        );
 
     // adds a link to the StreetLamp model
     ModelLink link = new ModelLink(streetLampLinkURL, streetLampLinkName);
@@ -456,9 +476,26 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isOk());
 
+    // Need to query API for some ModelInfo fields such as creation date.
+    // basically we are comparing the REST call on the model with the part of the UI DTO
+    // that will contain it, because it is too difficult to create the expectation programmatically.
+    MvcResult result = repositoryServer
+        .perform(
+            get(
+                String.format(
+                    "/api/v1/models/%s",
+                    streetLampModelID
+                )
+            )
+                .with(userModelCreator)
+        )
+        .andReturn();
+    String modelInfoString = result.getResponse().getContentAsString();
+    ModelInfo root = objectMapper.readValue(modelInfoString, ModelInfo.class);
+
     // builds expected ModelFullDetailsDTO
     ModelFullDetailsDTO expected = new ModelFullDetailsDTO()
-        .withActions(Arrays.asList("Release"))
+        .withActions(Collections.emptyList())
         .withAttachments(
             Arrays.asList(
                 Attachment.newInstance(ModelId.fromPrettyFormat(streetLampModelID),
@@ -466,14 +503,15 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
             )
         )
         .withEncodedModelSyntax(
-            Base64.getEncoder().encodeToString(createContent(streetLampFileName).getBytes())
+            Base64.getEncoder().encodeToString(createContentAsString(streetLampFileName).getBytes())
         )
         .withLinks(
             Arrays.asList(link)
         )
         .withMappings(
             Arrays.asList(
-                ModelMinimalInfoDTO.fromModelInfo(
+                ModelMappingDTO.fromModelInfo(
+                    "myTargetPlatform",
                     new ModelInfo(
                         mapping.getInfoModel().getId(),
                         ModelType.Mapping
@@ -482,7 +520,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
             )
         )
         .withModelInfo(
-            new ModelInfo(streetLampInfomodel.getId(), ModelType.InformationModel)
+            root
         )
         .withPolicies(
             Arrays.asList(
@@ -505,9 +543,41 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
                 .with(userModelCreator)
         )
         .andExpect(status().isOk())
-        .andExpect(content().json(objectMapper.writeValueAsString(expected)));
-    /*
-    repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin));*/
+        // cannot test full json due to arbitrary date offsets, so checking essentials in every node
+
+        .andDo(
+            mvcResult -> {
+              ModelFullDetailsDTO output = objectMapper
+                  .readValue(mvcResult.getResponse().getContentAsString(),
+                      ModelFullDetailsDTO.class);
+              LOGGER.info(
+                  new StringBuilder("\nReceived response body:\n\n")
+                      .append(
+                          objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(output)
+                      )
+                      .toString()
+              );
+            }
+        )
+        // actions: present but empty
+        .andExpect(jsonPath("$.actions").exists())
+        .andExpect(jsonPath("$.actions").isEmpty())
+        // attachments: present. checking filename property of first and only attachment
+        .andExpect(jsonPath("$.attachments").exists())
+        .andExpect(
+            jsonPath("$.attachments[0].filename").value(streetLampAttachmentFileName)
+        )
+        // syntax string equal to model content base-64-encoded
+        .andExpect(
+            jsonPath("$.encodedModelSyntax")
+                .value(
+                    Base64.getEncoder()
+                        .encodeToString(createContentAsString(streetLampFileName).getBytes())
+                )
+        );
+
+    // removes test-specific configuration
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
   }
 
 }

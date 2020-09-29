@@ -13,11 +13,10 @@
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import java.util.Collection;
-import java.util.function.Predicate;
+import java.util.Comparator;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
-import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 
 /**
  * This DTO represents most of the details for a model, to be loaded by the UI in one REST call.
@@ -87,12 +86,6 @@ import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
  * </ul>
  */
 public class ModelFullDetailsDTO {
-
-  private static final Predicate<PolicyEntry> FULL_ACCESS = p -> p.getPermission()
-      == Permission.FULL_ACCESS;
-  private static final Predicate<PolicyEntry> MODIFY = p -> p.getPermission() == Permission.MODIFY;
-  private static final Predicate<PolicyEntry> READ = p -> p.getPermission() == Permission.READ;
-  private static final Predicate<PolicyEntry> BEST_POLICY = FULL_ACCESS.or(MODIFY).or(READ);
 
   private ModelInfo modelInfo;
   private Collection<ModelMinimalInfoDTO> mappings;
@@ -227,7 +220,11 @@ public class ModelFullDetailsDTO {
   }
 
   private PolicyEntry getBestPolicyEntryForUser() {
-    return policies.stream().filter(BEST_POLICY).findAny().orElse(null);
+    return policies
+        .stream()
+        .sorted(Comparator.comparing(p -> p.getPermission().ordinal()))
+        .findFirst()
+        .orElse(null);
   }
 
   public String getEncodedModelSyntax() {

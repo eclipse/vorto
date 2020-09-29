@@ -92,7 +92,7 @@ public class PolicyEntry {
   }
 
   public enum Permission {
-    FULL_ACCESS, READ, MODIFY;
+    FULL_ACCESS, MODIFY, READ;
 
     public boolean includes(Permission permission) {
       return this.name().equals("FULL_ACCESS")
