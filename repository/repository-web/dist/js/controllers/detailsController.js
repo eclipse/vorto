@@ -915,6 +915,28 @@ define(["../init/appController"], function (repositoryControllers) {
             dialog.run();
           };
 
+          $scope.getAttachments = function (model) {
+            if ($rootScope.hasAuthority("sysadmin")) {
+              $http.get("./api/v1/attachments/" + model.id.prettyFormat)
+              .then(
+                  function (result) {
+                    $scope.attachments = result.data;
+                  },
+                  function (error) {
+                  }
+              );
+            } else {
+              $http.get("./api/v1/attachments/static/" + model.id.prettyFormat)
+              .then(
+                  function (result) {
+                    $scope.attachments = result.data.attachments;
+                  },
+                  function (error) {
+                  }
+              );
+            }
+          };
+
           $scope.loadDetails = function () {
             $scope.modelIsLoading = true;
             $scope.loadingModel = true;
