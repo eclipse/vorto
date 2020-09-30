@@ -233,7 +233,7 @@
 														</td>
 														<td>
 															<dd>
-																<div ng-show="modelReferences.show">
+																<div ng-show="modelReferences.length > 0">
 																	<a href="" ng-click="showReferences = !showReferences">
 																		<div ng-if="showReferences">
 																			<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
@@ -255,14 +255,14 @@
 																				<span ng-show="reference.type === 'Mapping'">
 																			<i class="fa fa-exchange" aria-hidden="true"></i>
 																		</span>
-																				<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
-																				<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
+																				<div ng-if="!reference.hasAccess">{{reference.id}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
+																				<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.id}}" class="ng-binding">{{reference.id}}</a>
 																				<span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>
 																			</li>
 																		</ul>
 																	</div>
 																</div>
-																<div ng-hide="modelReferences.show"><i>No references</i></div>
+																<div ng-hide="modelReferences.length > 0"><i>No references</i></div>
 															</dd>
 														</td>
 													</dl>
@@ -275,7 +275,7 @@
 														</td>
 														<td>
 															<dd>
-																<div ng-show="modelReferencedBy.show">
+																<div ng-show="modelReferencedBy.length > 0">
 																	<a href="" ng-click="showUsages = !showUsages">
 																		<div ng-if="showUsages">
 																			<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
@@ -297,14 +297,14 @@
 																				<span ng-show="usage.type === 'Mapping'">
 																			<i class="fa fa-exchange" aria-hidden="true"></i>
 																		</span>
-																				<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
-																				<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																				<div ng-if="!usage.hasAccess">{{usage.id}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
+																				<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.id}}" class="ng-binding">{{usage.id}}</a>
 																				<span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>
 																			</li>
 																		</ul>
 																	</div>
 																</div>
-																<div ng-hide="modelReferencedBy.show"><i>Not referenced by any model</i></div>
+																<div ng-hide="modelReferencedBy.length > 0"><i>Not referenced by any model</i></div>
 															</dd>
 														</td>
 													</dl>
