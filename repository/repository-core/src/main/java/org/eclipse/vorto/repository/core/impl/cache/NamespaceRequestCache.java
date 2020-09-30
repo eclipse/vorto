@@ -17,6 +17,7 @@ import static org.eclipse.vorto.repository.services.NamespaceService.PRIVATE_NAM
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +42,8 @@ public class NamespaceRequestCache {
       .startsWith(PRIVATE_NAMESPACE_PREFIX);
 
   private Collection<Namespace> namespaces = ConcurrentHashMap.newKeySet();
+  private Map<String, Namespace> virtualNamespaces = new ConcurrentHashMap<>();
+
   private NamespaceRepository namespaceRepository;
 
   public NamespaceRequestCache(@Autowired NamespaceRepository namespaceRepository) {
@@ -97,7 +100,7 @@ public class NamespaceRequestCache {
    * The latter is useful when invoking e.g. {@link NamespaceService#getByName(String)} with
    * {@link ModelId#getNamespace()} since the latter does not trim out the "virtual" sub-namespaces.
    * <br/>
-     * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
+   * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
    * <ol>
    *   <li>
    *     Attempts to resolve {@literal com.bosch.iot.suite.example.octopussuiteedition} and get
@@ -112,23 +115,29 @@ public class NamespaceRequestCache {
    *     succeeds
    *   </li>
    * </ol>
-   * Note: this could be furtherly optimized by extracting the recursive code into a separate
-   * method that takes two parameters: the virtual namespace and the currently processed segment.
-   * If the segment is resolved to a real namespace, the virtual namespace would be put in map of
-   * namespace entity by virtual namespace string, so it could be easily retrieved without
-   * recursion next time within the same request. <br/>
-   * Also note: a very similar implementation is featured in the
-   * {@link org.eclipse.vorto.repository.services.UserNamespaceRoleService}, as the latter cannot
-   * use the {@link NamespaceService} due to circular dependencies.
+   * Note: virtual namespaces are cached within the scope of a request. <br/>
    *
    * @param name
    * @return
    */
   public Optional<Namespace> namespace(String name) {
+    // boilerplate null/empty checks
     if (Objects.isNull(name) || name.trim().isEmpty()) {
       return Optional.empty();
     }
+    // lazy population
     populateIfEmpty();
+    // lookup into virtual namespace map first
+    if (virtualNamespaces.containsKey(name)) {
+      Namespace result = virtualNamespaces.get(name);
+      LOGGER.debug(
+          String.format(
+              "Resolved virtual namespace [%s] to [%s]", name, result.getName()
+          )
+      );
+      return Optional.of(result);
+    }
+    // resolving by name equality
     Optional<Namespace> result = this.namespaces.stream().filter(n -> n.getName().equals(name))
         .findAny();
     if (result.isPresent()) {
@@ -139,25 +148,54 @@ public class NamespaceRequestCache {
       );
       return result;
     } else {
-      int lastSeparator = name.lastIndexOf(NAMESPACE_SEPARATOR);
-      if (lastSeparator > 0) {
-        String trimmed = name.substring(0, lastSeparator);
+      return resolveVirtualNamespaceRecursively(name, name);
+    }
+  }
+
+  /**
+   * Recursive part of the virtual namespace resolution strategy. <br/>
+   * Keeps the root namespace name identical along deep invocations in order to both log and
+   * cache in the virtual namespaces map, if found.
+   *
+   * @param rootNamespaceName
+   * @param currentName
+   * @return
+   */
+  private Optional<Namespace> resolveVirtualNamespaceRecursively(String rootNamespaceName,
+      String currentName) {
+    int lastSeparator = currentName.lastIndexOf(NAMESPACE_SEPARATOR);
+    if (lastSeparator > 0) {
+      String trimmed = currentName.substring(0, lastSeparator);
+      LOGGER.debug(
+          String.format(
+              "Could not resolve namespace [%s] with [%s]. Attempting with [%s]",
+              rootNamespaceName, currentName, trimmed
+          )
+      );
+      Optional<Namespace> result = namespaces.stream().filter(n -> n.getName().equals(trimmed))
+          .findAny();
+      if (result.isPresent()) {
+        // updating virtual namespace cache
+        virtualNamespaces.put(rootNamespaceName, result.get());
         LOGGER.debug(
             String.format(
-                "Could not resolve namespace [%s]. Attempting with [%s]",
-                name, trimmed
+                "Resolved namespace [%s] with [%s]", rootNamespaceName, trimmed
             )
         );
-        return namespace(trimmed);
+        return result;
+        // recursing
       } else {
-        LOGGER.warn(
-            String.format(
-                "Could not resolve namespace [%s]. No further attempts can be made",
-                name
-            )
-        );
-        return Optional.empty();
+        return resolveVirtualNamespaceRecursively(rootNamespaceName, trimmed);
       }
+      // no further namespace chunk available to recurse through - giving up
+    } else {
+      LOGGER.warn(
+          String.format(
+              "Could not resolve namespace [%s]. No further attempts can be made",
+              rootNamespaceName
+          )
+      );
+      return Optional.empty();
     }
   }
 
