@@ -916,26 +916,24 @@ define(["../init/appController"], function (repositoryControllers) {
           };
 
           $scope.loadDetails = function () {
-            // TODO simplify those 2 flags
             $scope.modelIsLoading = true;
             $scope.loadingModel = true;
             $http.get("./rest/models/ui/" + $scope.modelId)
             .then(
                 function (result) {
-                  // TODO add check for data
+                  if (!result.data) {
+                    $scope.errorLoading = 'Cannot access model';
+                    $scope.modelIsLoading = false;
+                    $scope.loadingModel = false;
+                    return;
+                  }
                   $scope.model = result.data.modelInfo;
                   if ($scope.model.author.length === 64) {
                     $scope.model.author = 'other user';
                   }
                   $scope.modelMappings = result.data.mappings;
                   $scope.modelReferences = result.data.references;
-                  if ($scope.modelReferences.length == 0) {
-                    $scope.showModelReferences = false;
-                  }
                   $scope.modelReferencedBy = result.data.referencedBy;
-                  if ($scope.modelReferencedBy.length == 0) {
-                    $scope.showModelReferencedBy = false;
-                  }
                   $scope.links = result.data.links;
                   $scope.attachments = result.data.attachments;
                   $scope.workflowActions = result.data.actions;
