@@ -12,11 +12,14 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-
-import java.util.*;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -33,7 +36,7 @@ public class ModelInfo extends AbstractModel {
   protected String visibility = "private";
   protected List<ModelId> referencedBy = new ArrayList<>();
 
-  protected Map<String,String> platformMappings = new HashMap<>();
+  protected Map<String, String> platformMappings = new HashMap<>();
 
   public ModelInfo(ModelId modelId, ModelType modelType) {
     super(modelId, modelType);
@@ -43,7 +46,8 @@ public class ModelInfo extends AbstractModel {
     this(modelId, ModelType.valueOf(type));
   }
 
-  public ModelInfo() {}
+  public ModelInfo() {
+  }
 
   public List<ModelId> getReferencedBy() {
     return referencedBy;
@@ -77,11 +81,11 @@ public class ModelInfo extends AbstractModel {
     this.modificationDate = modificationDate;
   }
 
-  public Map<String,String> getPlatformMappings() {
+  public Map<String, String> getPlatformMappings() {
     return this.platformMappings;
   }
 
-  public void setPlatformMappings(Map<String,String> platformMappings) {
+  public void setPlatformMappings(Map<String, String> platformMappings) {
     this.platformMappings = platformMappings;
   }
 
@@ -100,11 +104,11 @@ public class ModelInfo extends AbstractModel {
   public void setState(String state) {
     this.state = state;
   }
-  
+
   public String getLastModifiedBy() {
     return lastModifiedBy;
   }
-  
+
   public String getVisibility() {
     return visibility;
   }
@@ -133,25 +137,30 @@ public class ModelInfo extends AbstractModel {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     ModelInfo other = (ModelInfo) obj;
     if (id == null) {
-      if (other.id != null)
+      if (other.id != null) {
         return false;
-    } else if (!id.equals(other.id))
+      }
+    } else if (!id.equals(other.id)) {
       return false;
+    }
 
     return (type == other.type);
   }
 
   public void addPlatformMapping(String targetPlatform, ModelId mappingId) {
     if (targetPlatform != null && !targetPlatform.equals("")) {
-      this.platformMappings.put(mappingId.getPrettyFormat(),targetPlatform);
+      this.platformMappings.put(mappingId.getPrettyFormat(), targetPlatform);
     }
   }
 
@@ -161,6 +170,10 @@ public class ModelInfo extends AbstractModel {
 
   public boolean isReleased() {
     return "released".equalsIgnoreCase(this.state) || "deprecated".equalsIgnoreCase(this.state);
+  }
+
+  // for tests
+  protected void setReleased(boolean released) {
   }
 
   public Boolean getImported() {

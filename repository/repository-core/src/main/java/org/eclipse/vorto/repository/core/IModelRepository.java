@@ -12,11 +12,12 @@
  */
 package org.eclipse.vorto.repository.core;
 
-import java.util.Map;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -225,6 +226,22 @@ public interface IModelRepository {
    */
   void attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag... tags)
       throws AttachmentException;
+
+  /**
+   * Attaches a link to a model
+   */
+  void attachLink(ModelId modelId, ModelLink url);
+
+  /**
+   * Gets all links that are attached to a model
+   * @return
+   */
+  Set<ModelLink> getLinks(ModelId modelID);
+
+  /**
+   * Deletes a link from a model
+   */
+  void deleteLink(ModelId modelID, ModelLink link);
 
   void attachFileInElevatedSession(ModelId modelId, FileContent fileContent,
       IUserContext userContext,

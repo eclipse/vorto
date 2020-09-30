@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,7 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
    * 
    * @return full-qualified file name in the form of <namespace>-<name>-<version>.<extension>
    */
+  @JsonIgnore
   public String getFullQualifiedFileName() {
     return id.getPrettyFormat().replace(":", "-").replace("\\.", "_") + type.getExtension();
   }

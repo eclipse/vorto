@@ -254,7 +254,8 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
             roleName));
 
     User user = cache.withUser(username).getUser();
-    Namespace namespace = resolveByNameOrParentName(namespaceName);
+    Namespace namespace = namespaceRequestCache.namespace(namespaceName)
+        .orElseThrow(() -> DoesNotExistException.withNamespace(namespaceName));
     IRole role = namespaceRoleRepository.find(roleUtil.normalize(roleName));
 
     return hasRole(user, namespace, role);
@@ -296,31 +297,6 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     Namespace namespace = namespaceRequestCache.namespace(namespaceName)
         .orElseThrow(() -> DoesNotExistException.withNamespace(namespaceName));
     return hasAnyRole(user, namespace);
-  }
-
-  /**
-   * Recursive method that resolves the given {@code namespaceName} argument, looks for an exact
-   * match in the repository, and "moves one level up" if the exact match is not found, by
-   * searching for a namespace name minus the last {@literal .}-delimited segment. <br/>
-   * Returns {@literal null} if no match is found and no segment remains. <br/>
-   * Used in conjunction with requests containing "virtual" namespace names (or "sub-domains") that
-   * are only persisted as JCR child folder nodes, but not actual namespaces in addition to their
-   * "parent" in the relevant DB tables.
-   *
-   * @param namespaceName
-   * @return
-   */
-  public Namespace resolveByNameOrParentName(String namespaceName) {
-    return namespaceRequestCache.namespace(namespaceName).orElseGet(
-        () -> {
-          int lastSeparator = namespaceName.lastIndexOf(NAMESPACE_SEPARATOR);
-          if (lastSeparator > 0) {
-            return resolveByNameOrParentName(namespaceName.substring(0, lastSeparator));
-          } else {
-            return null;
-          }
-        }
-    );
   }
 
   /**

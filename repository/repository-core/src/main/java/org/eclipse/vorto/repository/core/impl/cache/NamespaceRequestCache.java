@@ -12,6 +12,9 @@
  */
 package org.eclipse.vorto.repository.core.impl.cache;
 
+import static org.eclipse.vorto.repository.services.NamespaceService.NAMESPACE_SEPARATOR;
+import static org.eclipse.vorto.repository.services.NamespaceService.PRIVATE_NAMESPACE_PREFIX;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -19,6 +22,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.apache.log4j.Logger;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.services.NamespaceService;
@@ -30,7 +35,10 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class NamespaceRequestCache {
 
-  public static final Predicate<Namespace> PUBLIC = n -> !n.getName().startsWith(NamespaceService.PRIVATE_NAMESPACE_PREFIX);
+  private static final Logger LOGGER = Logger.getLogger(NamespaceRequestCache.class);
+
+  public static final Predicate<Namespace> PUBLIC = n -> !n.getName()
+      .startsWith(PRIVATE_NAMESPACE_PREFIX);
 
   private Collection<Namespace> namespaces = ConcurrentHashMap.newKeySet();
   private NamespaceRepository namespaceRepository;
@@ -82,7 +90,36 @@ public class NamespaceRequestCache {
   }
 
   /**
-   * Resolves a cached {@link Namespace} by name if applicable.
+   * Resolves a cached {@link Namespace} by name if applicable.<br/>
+   * This will also attempt to resolve a "virtual" namespace string, consisting in the real
+   * namespace appended with an arbitrary number of {@literal .[sub-namespace]} strings to the
+   * root namespace.<br/>
+   * The latter is useful when invoking e.g. {@link NamespaceService#getByName(String)} with
+   * {@link ModelId#getNamespace()} since the latter does not trim out the "virtual" sub-namespaces.
+   * <br/>
+     * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
+   * <ol>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite.example.octopussuiteedition} and get
+   *     its workspace ID, which fails
+   *   </li>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite.example} and get its workspace ID, which
+   *     fails again
+   *   </li>
+   *   <li>
+   *     Attempts to resolve {@literal com.bosch.iot.suite} and get its workspace ID, which
+   *     succeeds
+   *   </li>
+   * </ol>
+   * Note: this could be furtherly optimized by extracting the recursive code into a separate
+   * method that takes two parameters: the virtual namespace and the currently processed segment.
+   * If the segment is resolved to a real namespace, the virtual namespace would be put in map of
+   * namespace entity by virtual namespace string, so it could be easily retrieved without
+   * recursion next time within the same request. <br/>
+   * Also note: a very similar implementation is featured in the
+   * {@link org.eclipse.vorto.repository.services.UserNamespaceRoleService}, as the latter cannot
+   * use the {@link NamespaceService} due to circular dependencies.
    *
    * @param name
    * @return
@@ -92,7 +129,36 @@ public class NamespaceRequestCache {
       return Optional.empty();
     }
     populateIfEmpty();
-    return this.namespaces.stream().filter(n -> n.getName().equals(name)).findAny();
+    Optional<Namespace> result = this.namespaces.stream().filter(n -> n.getName().equals(name))
+        .findAny();
+    if (result.isPresent()) {
+      LOGGER.debug(
+          String.format(
+              "Resolved namespace [%s]", name
+          )
+      );
+      return result;
+    } else {
+      int lastSeparator = name.lastIndexOf(NAMESPACE_SEPARATOR);
+      if (lastSeparator > 0) {
+        String trimmed = name.substring(0, lastSeparator);
+        LOGGER.debug(
+            String.format(
+                "Could not resolve namespace [%s]. Attempting with [%s]",
+                name, trimmed
+            )
+        );
+        return namespace(trimmed);
+      } else {
+        LOGGER.warn(
+            String.format(
+                "Could not resolve namespace [%s]. No further attempts can be made",
+                name
+            )
+        );
+        return Optional.empty();
+      }
+    }
   }
 
   /**

@@ -23,6 +23,9 @@ public class Attachment {
   private String filename;
   private List<Tag> tags = new ArrayList<>();
 
+  // for tests
+  protected Attachment() {}
+
   public static final Tag TAG_IMPORTED = new Tag("org.eclipse.vorto.tag.import", "Imported");
   public static final Tag TAG_DOCUMENTATION =
       new Tag("org.eclipse.vorto.tag.documentation", "Documentation");
