@@ -109,7 +109,7 @@ public class ApiBenchmarkTest {
     public static ElasticsearchContainer container = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:6.7.2");
 
     @ClassRule
-    public static JdbcDatabaseContainer mySQLContainer = (JdbcDatabaseContainer) new MySQLContainer("mysql:5.6.44").withDatabaseName("vorto_schema").withPassword("vorto").withUsername("vorto").withCommand("--max-allowed-packet=67108864");
+    public static JdbcDatabaseContainer mySQLContainer = (JdbcDatabaseContainer) new CustomMysqlTestContainer("mysql:5.6.44").withDatabaseName("vorto_schema").withPassword("vorto").withUsername("vorto").withCommand("--max-allowed-packet=67108864");
 
     private JUnitTestResultCollector jUnitTestResultCollector =  new JUnitTestResultCollector();
 
@@ -299,6 +299,20 @@ public class ApiBenchmarkTest {
 
         Set<String> getFailedSamplesSet() {
             return failedSamplesSet;
+        }
+    }
+
+    /**
+     * Use a different jdbc driver for the testcontainer.
+     */
+    private static class CustomMysqlTestContainer extends MySQLContainer {
+        public CustomMysqlTestContainer(String dbname) {
+            super(dbname);
+        }
+
+        @Override
+        public String getDriverClassName() {
+            return "org.mariadb.jdbc.Driver";
         }
     }
 
