@@ -104,7 +104,7 @@ define("repository", [
               redirectUri = cookieKey.replace("postLoginRedirect=", "");
             }
           });
-          document.cookie = "postLoginRedirect=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"
+          document.cookie = "postLoginRedirect=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;SameSite=Lax"
           if ("/login" === redirectUri) {
             return "/";
           }
