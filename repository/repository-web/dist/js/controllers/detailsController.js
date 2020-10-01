@@ -1005,10 +1005,18 @@ define(["../init/appController"], function (repositoryControllers) {
                   $scope.loadingModel = false;
                 },
                 function (error) {
-                  if (error.status == 401) {
-                    $location.path('/login');
-                  } else if (error.status == 403) {
-                    $scope.errorLoading = 'No permission to access model';
+                  if (error.status) {
+                    switch(error.status) {
+                      case 401:
+                        $location.path('/login');
+                        break;
+                      case 403:
+                        $scope.errorLoading = 'No permission to access model';
+                        break;
+                      case 404:
+                        $scope.errorLoading = 'Model cannot be found';
+                        break;
+                    }
                   }
                   $scope.modelIsLoading = false;
                   $scope.loadingModel = false;

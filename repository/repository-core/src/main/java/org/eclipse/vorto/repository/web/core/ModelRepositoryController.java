@@ -200,6 +200,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       // fetches model info
       ModelInfo modelInfo = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
 
+      if (Objects.isNull(modelInfo)) {
+        LOGGER.warn(
+          String.format("Model resource with id [%s] not found. ", modelId)
+        );
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      }
+
       // starts spawning threads to retrieve models etc.
       final ExecutorService executor = Executors.newCachedThreadPool();
       // fetches mappings
