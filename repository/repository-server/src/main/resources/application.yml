@@ -31,6 +31,13 @@ spring:
   http.multipart.max-file-size: 20MB
   http.multipart.max-request-size: 15MB
 
+liquibase:
+  change-log: classpath:liquibase-changeLog.xml
+
+logging:
+  level:
+    liquibase: INFO
+
 repo:
   config:
     maxModelImageSize: 32000
@@ -136,3 +143,5 @@ config:
   restrictTenant: 1 # deprecated
   privateNamespaceQuota: 1
   requestTimeoutInSeconds: 300
+
+
