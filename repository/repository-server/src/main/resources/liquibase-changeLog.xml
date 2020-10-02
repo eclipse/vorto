@@ -7,6 +7,7 @@
     <changeSet id="migrate_db_0xx_to_013_H2" author="kolotu">
         <preConditions onFail="CONTINUE">
             <dbms type="h2"/>
+            <tableExists tableName="user" />
             <not>
                 <columnExists tableName="user" columnName="subject"/>
             </not>
@@ -16,7 +17,8 @@
 
     <changeSet id="migrate_db_0xx_to_013_MariaDB" author="kolotu">
         <preConditions onFail="CONTINUE">
-            <dbms type="mariadb"/>
+            <dbms type="mariadb,mysql"/>
+            <tableExists tableName="user" />
             <not>
                 <columnExists tableName="user" columnName="subject"/>
             </not>
@@ -26,7 +28,8 @@
 
     <changeSet id="migrate_db_2018_11_09" author="kolotu">
         <preConditions onFail="CONTINUE">
-            <dbms type="mariadb"/>
+            <dbms type="mariadb,mysql"/>
+            <tableExists tableName="user" />
             <not>
                 <columnExists tableName="user" columnName="role"/>
             </not>
@@ -34,13 +37,16 @@
         <sqlFile path="/db/changelog/migration/migrate_db_2018_11_09.sql" dbms="mariadb"/>
     </changeSet>
 
-    <changeSet id="migrate_db_createdby_MariaDB" author="kolotu">
+    <changeSet id="test-createdby-procedure" author="kolotu">
         <preConditions onFail="CONTINUE">
             <not>
-                <columnExists tableName="user" columnName="created_by"/>
+                <columnExists tableName="user" columnName="created_by" />
             </not>
+            <dbms type="mariadb,mysql"/>
         </preConditions>
-        <sqlFile path="/db/changelog/migration/migrate_db_createdby.sql" dbms="mariadb"/>
+        <createProcedure procedureName="create_and_populate_createdby" path="/db/changelog/migration/createdby_procedure.sql" />
+        <sql>call create_and_populate_createdby();</sql>
+        <dropProcedure procedureName="create_and_populate_createdby" />
     </changeSet>
 
     <changeSet id="migrate_db_from_013_MariaDB_preparation" author="kolotu">
