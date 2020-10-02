@@ -44,3 +44,5 @@ spring:
     password:
     continue-on-error: false
 
+liquibase:
+  enabled: false
