@@ -28,7 +28,15 @@ public interface IModelParser {
    * @return
    */
   ModelInfo parse(InputStream is);
-  
+
+  /**
+   * builds a model resource from the given input stream without using JCR session helper
+   *
+   * @param is the actual content containing model related meta data
+   * @return
+   */
+  ModelInfo parseWithoutSessionHelper(InputStream is);
+
   /**
    * sets the workspace for the current parser to operate on
    * @param workspace

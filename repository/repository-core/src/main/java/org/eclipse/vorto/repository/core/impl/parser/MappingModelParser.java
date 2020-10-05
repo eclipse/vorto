@@ -59,4 +59,20 @@ public class MappingModelParser extends AbstractModelParser {
     
     return result;
   }
+
+  @Override
+  protected Collection<ModelId> getReferencesWithoutSessionHelper(Model model) {
+    List<ModelId> result = new ArrayList<>();
+    model.getReferences().stream().map(
+        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
+        .collect(Collectors.toList()).stream().forEach(modelId -> {
+      result.add(modelId);
+      ModelInfo _model = this.modelRepoFactory.getRepositoryByModelWithoutSessionHelper(modelId).getById(modelId);
+      if (_model != null) {
+        result.addAll(_model.getReferences());
+      }
+    });
+
+    return result;
+  }
 }

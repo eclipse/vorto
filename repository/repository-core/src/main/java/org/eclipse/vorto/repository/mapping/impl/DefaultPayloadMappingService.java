@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
@@ -48,6 +49,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.mapping.IPayloadMappingService;
+import org.eclipse.vorto.repository.mapping.async.AddReferencesAction;
 import org.eclipse.vorto.repository.utils.ModelUtils;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -55,8 +57,10 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Service
 public class DefaultPayloadMappingService implements IPayloadMappingService {
@@ -94,7 +98,34 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
 
     MappingSpecification specification = new MappingSpecification();
     specification.setInfoModel(infomodel);
+
+    /*LOGGER.info("Starting addReferencesRecursive");
+    long time = System.currentTimeMillis();
     addReferencesRecursive(infomodel, infomodel.getTargetPlatformKey());
+    LOGGER.info(
+        String.format(
+            "Finished addReferencesRecursive in %d\"",
+            (System.currentTimeMillis() - time) / 1000
+        )
+    );*/
+
+    LOGGER.info(
+        "Starting fork/join task to add reference types of the given properties to the mapping Specification"
+    );
+    long time = System.currentTimeMillis();
+    ForkJoinPool.commonPool()
+        .invoke(
+            new AddReferencesAction(
+                infomodel, infomodel.getTargetPlatformKey(), modelRepositoryFactory,
+                SecurityContextHolder.getContext(), RequestContextHolder.getRequestAttributes()
+            )
+        );
+    LOGGER.info(
+        String.format(
+            "Finished adding references in %d\"",
+            (System.currentTimeMillis() - time) / 1000
+        )
+    );
     return specification;
   }
 
@@ -252,13 +283,19 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
     return modelInfos;
   }
 
-  private boolean mappingMatchesModelId(MappingModel mappingModel, ModelInfo modelToMatchAgainst) {
-    return mappingModel.getReferences().stream().filter(
-        reference -> ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion())
-            .equals(modelToMatchAgainst.getId())).count() > 0;
+  public static boolean mappingMatchesModelId(MappingModel mappingModel,
+      ModelInfo modelToMatchAgainst) {
+    return mappingModel
+        .getReferences()
+        .stream()
+        .filter(
+            r -> ModelId.fromReference(r.getImportedNamespace(), r.getVersion())
+                .equals(modelToMatchAgainst.getId())
+        )
+        .count() > 0;
   }
 
-  private void initStereotypeIfMissing(ModelProperty property) {
+  public static void initStereotypeIfMissing(ModelProperty property) {
     if (!property.getStereotype(STEREOTYPE_SOURCE).isPresent()) {
       property.addStereotype(Stereotype.createWithXpath(EMPTY_STRING));
       unescapeMappingAttributesForStereotype(property, STEREOTYPE_FUNCTIONS);
@@ -267,14 +304,15 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
     }
   }
 
-  private void unescapeMappingAttributesForStereotype(ModelProperty property, String stereotype) {
+  public static void unescapeMappingAttributesForStereotype(ModelProperty property,
+      String stereotype) {
     if (property.getStereotype(stereotype).isPresent()) {
       property.getStereotype(stereotype).get().setAttributes(
           unescapeExpression(property.getStereotype(stereotype).get().getAttributes()));
     }
   }
 
-  private Map<String, String> unescapeExpression(Map<String, String> attributes) {
+  public static Map<String, String> unescapeExpression(Map<String, String> attributes) {
     Map<String, String> unescapedAttributes = new HashMap<String, String>(attributes.size());
     for (String key : attributes.keySet()) {
       String expression = attributes.get(key);

@@ -12,14 +12,14 @@
  */
 package org.eclipse.vorto.model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelContent {
 
   private ModelId root = null;
 
-  private Map<ModelId, IModel> models = new HashMap<ModelId, IModel>();
+  private Map<ModelId, IModel> models = new ConcurrentHashMap<>();
 
   public ModelId getRoot() {
     return root;

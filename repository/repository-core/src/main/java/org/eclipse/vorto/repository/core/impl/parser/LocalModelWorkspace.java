@@ -130,6 +130,23 @@ public class LocalModelWorkspace {
     this.modelIds.addAll(allReferences);
   }
 
+  public void loadFromRepositoryWithoutSessionHelper(Collection<ModelId> modelIds) {
+    Collection<ModelId> allReferences = modelIds;
+    allReferences.removeAll(this.modelIds);
+    allReferences.forEach(refModelId -> {
+      try {
+        repoFactory.getRepositoryByModelWithoutSessionHelper(refModelId)
+            .getFileContent(refModelId, Optional.empty()).ifPresent(refFile -> {
+          createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
+        });
+      } catch (ModelNotFoundException notFoundException) {
+        throw new ValidationException("Could not find reference "+refModelId.getPrettyFormat(), null);
+      }
+    });
+    // add references, so that they are not looked up again
+    this.modelIds.addAll(allReferences);
+  }
+
   public XtextResourceSet getResourceSet() {
     return this.resourceSet;
   }

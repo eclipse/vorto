@@ -28,7 +28,7 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
 
-class ModelInfoRetrieverTask extends RecursiveTask<List<ModelInfo>> {
+public class ModelInfoRetrieverTask extends RecursiveTask<List<ModelInfo>> {
 
     private static final long serialVersionUID = 3056763240970631787L;
     private final List<ModelInfo> modelInfos = new ArrayList<>();

@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
+import com.google.inject.Injector;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import org.eclipse.xtext.util.CancelIndicator;
 import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.IResourceValidator;
 import org.eclipse.xtext.validation.Issue;
-import com.google.inject.Injector;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -75,7 +75,8 @@ public abstract class AbstractModelParser implements IModelParser {
     }
 
     Model model = (Model) resource.getContents().get(0);
-    workspace.loadFromRepository(getReferences(model)); // always load direct references to make the model complete
+    workspace.loadFromRepository(
+        getReferences(model)); // always load direct references to make the model complete
 
     if (this.isValidationEnabled) {
       /* Execute validators */
@@ -99,6 +100,51 @@ public abstract class AbstractModelParser implements IModelParser {
       }
     }
 
+    return new ModelResource((Model) resource.getContents().get(0));
+  }
+
+  @Override
+  public ModelInfo parseWithoutSessionHelper(InputStream is) {
+    Injector injector = getInjector();
+
+    XtextResourceSet resourceSet = workspace.getResourceSet();
+
+    Resource resource = createResource(fileName, getContent(is), resourceSet)
+        .orElseThrow(() -> new ValidationException(
+            "Xtext is not able to create a resource for this model. Check if you are using the correct parser.",
+            getModelInfoFromFilename()));
+
+    if (resource.getContents().size() <= 0) {
+      throw new ValidationException(
+          "Xtext is not able to create a model out of this file. Check if the file you are using is correct.",
+          getModelInfoFromFilename());
+    }
+
+    Model model = (Model) resource.getContents().get(0);
+    workspace.loadFromRepositoryWithoutSessionHelper(getReferencesWithoutSessionHelper(
+        model)); // always load direct references to make the model complete
+
+    if (this.isValidationEnabled) {
+      /* Execute validators */
+      IResourceValidator validator = injector.getInstance(IResourceValidator.class);
+      List<Issue> issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
+      if (issues.size() > 0) {
+        List<ModelId> missingReferences = getMissingReferences(model, issues);
+        if (missingReferences.size() > 0) {
+          throw new CouldNotResolveReferenceException(
+              getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
+        } else {
+          Set<ValidationIssue> validationIssues = convertIssues(issues);
+          throw new ValidationException(collate(validationIssues), validationIssues,
+              getModelInfo(model).orElse(getModelInfoFromFilename()));
+        }
+      }
+
+      if (!resource.getErrors().isEmpty()) {
+        throw new ValidationException(resource.getErrors().get(0).getMessage(),
+            getModelInfo(model).orElse(getModelInfoFromFilename()));
+      }
+    }
 
     return new ModelResource((Model) resource.getContents().get(0));
   }
@@ -109,11 +155,21 @@ public abstract class AbstractModelParser implements IModelParser {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Identical to {@link AbstractModelParser#getReferences(Model)} unless overridden.
+   *
+   * @param model
+   * @return
+   */
+  protected Collection<ModelId> getReferencesWithoutSessionHelper(Model model) {
+    return getReferences(model);
+  }
+
   public IModelParser setWorkspace(LocalModelWorkspace workspace) {
     this.workspace = workspace;
     return this;
   }
-  
+
   public IModelParser enableValidation() {
     this.isValidationEnabled = true;
     return this;
@@ -149,8 +205,9 @@ public abstract class AbstractModelParser implements IModelParser {
 
   private Optional<String> getName(String message) {
     String[] words = message.split("\\s+");
-    if (words.length <= 0)
+    if (words.length <= 0) {
       return Optional.empty();
+    }
     String dirtyName = words[words.length - 1];
     return Optional.ofNullable(dirtyName.replaceAll("'", "").replaceAll("\\.", ""));
   }

@@ -595,6 +595,28 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
+  public ModelResource getEMFResourceWithoutSessionHelper(ModelId modelId) {
+    return doInSession(session -> {
+      try {
+        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        Node folderNode = session.getNode(modelIdHelper.getFullPath());
+        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+          LOGGER.warn("Folder Node :" + folderNode
+              + " does not have any files as children. Cannot load EMF Model.");
+          return null;
+        }
+        Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
+        Node fileItem = (Node) fileNode.getPrimaryItem();
+        InputStream is = fileItem.getProperty(JCR_DATA).getBinary().getStream();
+        IModelParser parser = modelParserFactory.getParser(fileNode.getName());
+        return (ModelResource) parser.parseWithoutSessionHelper(is);
+      } catch (AccessDeniedException e) {
+        throw new NotAuthorizedException(modelId, e);
+      }
+    });
+  }
+
+  @Override
   public void removeModel(ModelId modelId) {
     doInSession(session -> {
       try {

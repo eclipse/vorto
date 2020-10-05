@@ -103,6 +103,14 @@ public interface IModelRepository {
   ModelResource getEMFResource(ModelId modelId);
 
   /**
+   * 
+   * @param modelId
+   * @return
+   * @see IModelRepository#getEMFResource(ModelId) but not leveraging JCR session helper
+   */
+  ModelResource getEMFResourceWithoutSessionHelper(ModelId modelId);
+
+  /**
    * Saves a model resource in the repository
    *
    * @param resource
