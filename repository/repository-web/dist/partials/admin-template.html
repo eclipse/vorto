@@ -57,5 +57,9 @@
 			    </table>
 			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> No issues found in the repository.</div>
     	</uib-tab>
+		<uib-tab ng-show="hasAuthority('sysadmin')" index="2">
+			<uib-tab-heading><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>&nbsp;Modeshape Doctor</uib-tab-heading>
+			<div modeshape-doctor="" ng-controller="modeshapeDoctorController"></div>
+		</uib-tab>
   	</uib-tabset>
 </section>
