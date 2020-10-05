@@ -52,4 +52,7 @@ public interface IModelRepositoryFactory {
   IModelRetrievalService getModelRetrievalService();
 
   IRepositoryManager getRepositoryManager(String tenant, Authentication user);
+
+  IModeshapeDoctor getModeshapeDoctor(String workspaceId, Authentication user);
+
 }

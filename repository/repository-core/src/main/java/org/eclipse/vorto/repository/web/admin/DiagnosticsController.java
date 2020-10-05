@@ -12,19 +12,22 @@
  */
 package org.eclipse.vorto.repository.web.admin;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
+import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * This controller shares the same base path as {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController},
@@ -58,6 +61,25 @@ public class DiagnosticsController {
         .collect(Collectors.toList());
 
     return diagnostics;
+  }
+
+  @GetMapping(value = "modeshape/model/{modelIdString}", produces = "application/json")
+  @PreAuthorize("hasAuthority('sysadmin')")
+  public ModeshapeNodeData readNodeData(@PathVariable String modelIdString) {
+    ModelId modelId = ModelId.fromPrettyFormat(modelIdString);
+
+    String workspaceId = namespaceRepository.findAll().stream()
+        .filter(namespace -> namespace.owns(modelId.getNamespace())).map(Namespace::getWorkspaceId)
+        .findAny()
+        .orElseThrow(() -> new ModelNotFoundException("Namespace not found: " + modelIdString));
+
+    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication()).read(modelId);
+  }
+
+  @GetMapping(value = "modeshape/node/{workspaceId}", produces = "application/json")
+  @PreAuthorize("hasAuthority('sysadmin')")
+  public ModeshapeNodeData readNodeData(@PathVariable String workspaceId, @RequestParam String path) {
+    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication()).read(path);
   }
 
 }
