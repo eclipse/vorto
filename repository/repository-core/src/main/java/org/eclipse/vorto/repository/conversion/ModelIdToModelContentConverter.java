@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.conversion;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,21 +69,24 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
 
   @Override
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
-    modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace())
+    final ModelId modelIdWithLatest = repositoryFactory
+        .getRepositoryByNamespace(modelId.getNamespace())
         .getLatestModelVersionIfLatestTagIsSet(modelId);
-    if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
+    if (!repositoryFactory.getRepositoryByModel(modelIdWithLatest).exists(modelIdWithLatest)) {
       throw new ModelNotFoundException(
-          String.format("Model [%s] does not exist", modelId.getPrettyFormat()), null);
+          String.format("Model [%s] does not exist", modelIdWithLatest.getPrettyFormat()), null);
     }
 
-    ModelWorkspaceReader workspaceReader = getWorkspaceForModel(modelId);
+    ModelWorkspaceReader workspaceReader = getWorkspaceForModel(modelIdWithLatest);
 
     ModelContent result = new ModelContent();
-    result.setRoot(modelId);
+    result.setRoot(modelIdWithLatest);
 
     if (platformKey.isPresent()) {
-      final List<ModelInfo> mappingResources = repositoryFactory.getRepositoryByModel(modelId)
-          .getMappingModelsForTargetPlatform(modelId, platformKey.get(), Optional.empty());
+      final List<ModelInfo> mappingResources = repositoryFactory
+          .getRepositoryByModel(modelIdWithLatest)
+          .getMappingModelsForTargetPlatform(modelIdWithLatest, platformKey.get(),
+              Optional.empty());
 
       if (!mappingResources.isEmpty()) {
         // adding to workspace reader in order to resolve cross linking between mapping models correctly
@@ -121,19 +125,22 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
           }*/
         });
         executor.shutdown();
-        for (Future<Map.Entry<ModelId, AbstractModel>> future : futures) {
+        // iterates over futures starting with tasks already finished, and adds the mapping to the
+        // root model content
+        Comparator<Future> comp = Comparator.comparing(Future::isDone);
+        futures.stream().sorted(comp.reversed()).forEach(f -> {
           try {
-            Map.Entry<ModelId, AbstractModel> entry = future.get();
+            Map.Entry<ModelId, AbstractModel> entry = f.get();
             result.getModels().put(entry.getKey(), entry.getValue());
           } catch (InterruptedException | ExecutionException e) {
             LOGGER.error(
                 String.format(
-                    "Failed to build mapping for model [%s]]", modelId.getPrettyFormat())
+                    "Failed to build mapping for model [%s]]", modelIdWithLatest.getPrettyFormat())
                 ,
                 e
             );
           }
-        }
+        });
       } else {
         final IModelWorkspace workspace = workspaceReader.read();
         workspace.get().forEach(model -> {
@@ -158,7 +165,6 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
     return result;
   }
 
-  // TODO 2610 move this to either Callable or Runnable in its own class
   private Optional<MappingModel> getMappingModelForModel(List<ModelInfo> mappingResources,
       Model model) {
     return mappingResources.stream().map(
