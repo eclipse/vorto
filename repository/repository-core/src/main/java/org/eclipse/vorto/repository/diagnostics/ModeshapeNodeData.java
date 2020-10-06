@@ -13,33 +13,38 @@
 package org.eclipse.vorto.repository.diagnostics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ModeshapeNodeData {
 
-    private Map<String, String> properties = new HashMap<>();
+    private List<ModeshapeProperty> properties = new ArrayList<>();
 
     private String name;
+
+    private String path;
 
     private List<String> childNodeNames = new ArrayList<>();
 
     private List<ModeshapeAclEntry> aclEntryList = new ArrayList<>();
+
+    private boolean contentOnNode = false;
 
     public void setName(String name) {
         this.name = name;
     }
 
     public void addProperty(String name, String value) {
-        properties.put(name, value);
+        ModeshapeProperty property = new ModeshapeProperty();
+        property.setName(name);
+        property.setValue(value);
+        properties.add(property);
     }
 
     public void addChildNode(String nodeName) {
         childNodeNames.add(nodeName);
     }
 
-    public Map<String, String> getProperties() {
+    public List<ModeshapeProperty> getProperties() {
         return properties;
     }
 
@@ -57,5 +62,21 @@ public class ModeshapeNodeData {
 
     public void addAclEntry(ModeshapeAclEntry aclEntry) {
         this.aclEntryList.add(aclEntry);
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public boolean isContentOnNode() {
+        return contentOnNode;
+    }
+
+    public void setContentOnNode(boolean contentOnNode) {
+        this.contentOnNode = contentOnNode;
     }
 }

@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.diagnostics;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModeshapeDoctor;
 import org.eclipse.vorto.repository.core.impl.AbstractRepositoryOperation;
@@ -32,12 +33,13 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     private static final Logger LOGGER = LoggerFactory.getLogger(ModeshapeDoctor.class);
 
     @Override
-    public ModeshapeNodeData read(ModelId modelId) {
-        String path = "/" + modelId.getNamespace().replace('.', '/') + "/" + modelId.getName() + '/' + modelId.getVersion();
-        return read(path);
+    public ModeshapeNodeData readModeshapeNodeData(ModelId modelId) {
+        String path = '/' + modelId.getNamespace().replace('.', '/') + '/' + modelId.getName() + '/' + modelId.getVersion();
+        return readModeshapeNodeData(path);
     }
 
-    public ModeshapeNodeData read(String path) {
+    @Override
+    public ModeshapeNodeData readModeshapeNodeData(String path) {
         return doInSession(session -> {
             Node node = session.getNode(path);
 
@@ -45,11 +47,27 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
 
             ModeshapeNodeData data = new ModeshapeNodeData();
             data.setName(node.getName());
+            data.setPath(path);
             printChildren(node, data);
             printProperties(node, data);
             printACL(session, node, data);
 
             return data;
+        });
+    }
+
+    @Override
+    public ModeshapeContentData readModeshapeNodeContent(String path) {
+        return doInSession(session -> {
+            Node node = session.getNode(path);
+            LOGGER.info("Node name: {}", node.getName());
+            Property property = node.getProperty("jcr:data");
+            String parentName = property.getParent().getParent().getName();
+            Binary binary = property.getValue().getBinary();
+            ModeshapeContentData contentData = new ModeshapeContentData();
+            contentData.setFilename(parentName);
+            contentData.setData(IOUtils.toByteArray(binary.getStream()));
+            return contentData;
         });
     }
 
@@ -98,6 +116,9 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         while (propertyIterator.hasNext()) {
             Property property = propertyIterator.nextProperty();
             LOGGER.info("Property name: {}", property.getName());
+            if ("jcr:data".equals(property.getName())) {
+                data.setContentOnNode(true);
+            }
             printPropertyValue(property, data);
         }
     }

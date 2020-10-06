@@ -19,6 +19,9 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
         $scope.diagnosticsError = "";
         $scope.isRunningDiagnostics = false;
         $scope.hasDiagnosticsError = false;
+        $scope.modeshapeData = null;
+        $scope.modeshapePath = "/com/bosch/drx/Vehicle/1.0.0/";
+        $scope.modeshapeWorkspaceId = "295938ec91084d78bae3a4eacb033abb";
 
         $scope.diagnose = function() {
             $scope.isRunningDiagnostics = true;
@@ -42,6 +45,15 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
                         $scope.isRunningDiagnostics = false;
                     }
                 );
+        };
+
+        $scope.readModeshapeData = function (modeshapeWorkspaceId, modeshapePath) {
+            $http.get("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
+                .then(response => {
+                    $scope.modeshapeData = response.data;
+                    $scope.modeshapePath = modeshapePath;
+                    alert(JSON.stringify(response.data));
+                });
         };
 
         $scope.isReindexing = false;

@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-define(["../../init/appController"], function (repositoryControllers) {
+define(["../init/appController"], function (repositoryControllers) {
 
     repositoryControllers.controller("modeshapeDoctorController",
         ["$rootScope", "$scope", "$http", "$uibModal", "dialogConfirm",
@@ -18,17 +18,17 @@ define(["../../init/appController"], function (repositoryControllers) {
             function ($rootScope, $scope, $http, $uibModal, dialogConfirm,
                       dialogPrompt) {
 
-                $scope.modeshapePath = "";
-                $scope.updateModeshapePath = function (path) {
-                    $scope.modeshapePath = path;
-                }
-                $scope.readModeshapeNode = function() {
-                    var workspace = "295938ec91084d78bae3a4eacb033abb";
-                    $http.get("/rest/namespaces/diagnostics/modeshape/node/" + workspace + "?path=" + $scope.modeshapePath)
-                        .then(response => {
-                            alert(response.data);
-                        })
-                };
+                // $scope.modeshapePath = "";
+                // $scope.updateModeshapePath = function (path) {
+                //     $scope.modeshapePath = path;
+                // }
+                // $scope.readModeshapeNode = function() {
+                //     var workspace = "295938ec91084d78bae3a4eacb033abb";
+                //     $http.get("/rest/namespaces/diagnostics/modeshape/node/" + workspace + "?path=" + $scope.modeshapePath)
+                //         .then(response => {
+                //             alert(response.data);
+                //         });
+                // };
 
             }]);
 

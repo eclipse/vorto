@@ -12,10 +12,12 @@
  */
 package org.eclipse.vorto.repository.web.admin;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
@@ -25,6 +27,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -38,6 +43,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/rest/namespaces/diagnostics")
 public class DiagnosticsController {
+
+  private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  private static final String CONTENT_DISPOSITION = "content-disposition";
+  private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 
   @Autowired
   private IModelRepositoryFactory repoFactory;
@@ -68,18 +77,46 @@ public class DiagnosticsController {
   public ModeshapeNodeData readNodeData(@PathVariable String modelIdString) {
     ModelId modelId = ModelId.fromPrettyFormat(modelIdString);
 
-    String workspaceId = namespaceRepository.findAll().stream()
+    return namespaceRepository.findAll().stream()
         .filter(namespace -> namespace.owns(modelId.getNamespace())).map(Namespace::getWorkspaceId)
         .findAny()
+        .map(workspaceId -> loadNodeData(modelId, workspaceId))
         .orElseThrow(() -> new ModelNotFoundException("Namespace not found: " + modelIdString));
-
-    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication()).read(modelId);
   }
 
   @GetMapping(value = "modeshape/node/{workspaceId}", produces = "application/json")
   @PreAuthorize("hasAuthority('sysadmin')")
   public ModeshapeNodeData readNodeData(@PathVariable String workspaceId, @RequestParam String path) {
-    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication()).read(path);
+    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .readModeshapeNodeData(path);
+  }
+
+  @GetMapping("modeshape/node/{workspaceId}/data")
+  @PreAuthorize("hasAuthority('sysadmin')")
+  public void readNodeContentData(@PathVariable String workspaceId, @RequestParam String path, final HttpServletResponse response) {
+    ModeshapeContentData contentData = repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .readModeshapeNodeContent(path);
+
+    writeByteArrayToResponse(response, contentData);
+  }
+
+  private void writeByteArrayToResponse(HttpServletResponse response, ModeshapeContentData contentData) {
+    response.setContentType(APPLICATION_OCTET_STREAM);
+    try {
+      IOUtils.copy(new ByteArrayInputStream(contentData.getData()),
+          response.getOutputStream());
+          response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + contentData.getFilename());
+          response.flushBuffer();
+    } catch (IOException e) {
+      throw new IllegalStateException("Error writing response.", e);
+    }
+  }
+
+  private ModeshapeNodeData loadNodeData(ModelId modelId, String workspaceId) {
+    return repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .readModeshapeNodeData(modelId);
   }
 
 }

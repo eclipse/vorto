@@ -13,12 +13,15 @@
 package org.eclipse.vorto.repository.core;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
 
 public interface IModeshapeDoctor {
 
-    ModeshapeNodeData read(ModelId modelId);
+    ModeshapeNodeData readModeshapeNodeData(ModelId modelId);
 
-    ModeshapeNodeData read(String path);
+    ModeshapeNodeData readModeshapeNodeData(String path);
+
+    ModeshapeContentData readModeshapeNodeContent(String path);
 
 }
