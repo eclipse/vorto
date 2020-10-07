@@ -4,7 +4,7 @@
 
 ## 1.0.0
 
-Vorto 0.13 is a minor release providing both new features, enhancements, bug fixes and additional documentation.
+Vorto 1.0.0 is a major release providing both new features, enhancements, bug fixes and additional documentation.
 The highlights are:
 
 - Improved performance of the repository
