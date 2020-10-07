@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Information Model Editor IDE (Incubation)
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.vorto.editor.infomodel,
