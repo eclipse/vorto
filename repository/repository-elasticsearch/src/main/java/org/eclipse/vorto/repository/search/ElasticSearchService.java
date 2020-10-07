@@ -85,7 +85,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private static final String TENANT_ID = "tenantId";
 
-  private static final int MAX_SEARCH_RESULTS = 1000;
+  private static final int MAX_SEARCH_RESULTS = 10000;
 
   private static final String PUBLIC = "public";
 

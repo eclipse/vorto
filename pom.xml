@@ -54,11 +54,35 @@
 
 	<developers>
 		<developer>
+			<id>kolotu</id>
+			<name>Kevin Olotu</name>
+			<email>kevin.olotu@bosch.io</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>mena-bosch</id>
+			<name>Menahem Julien Raccah Lisei</name>
+			<email>MenahemJulien.RaccahLisei@bosch.io</email>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>t-gauss</id>
+			<name>Tobias Gauss</name>
+			<email>tobias.gauss@bosch.io</email>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
 			<id>aedelmann</id>
 			<name>Alexander Edelmann</name>
 			<email>alexander.edelmann@bosch-si.com</email>
 			<roles>
-				<role>Lead</role>
 				<role>Committer</role>
 			</roles>
 		</developer>

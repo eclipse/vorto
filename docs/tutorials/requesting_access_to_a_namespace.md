@@ -31,10 +31,18 @@ Vorto does not feature user-defined roles at this time.
 
 <hr/>
 
-> **What is a "sub-namespace"?**    
-Namespaces are expressed as dot-separated sequences of characters, reflecting some organizational hierarchy much like package names in most programming languages. 
-> Sub-namespaces are a decorative feature allowing models to be placed "one or more levels deeper" than their "parent" namespace, purely for aesthetical and organizational purposes.
+> **What is a "sub-namespace"?**   
+> 
+> Namespaces are expressed as dot-separated sequences of characters, reflecting some organizational hierarchy much like package names in most programming languages.
+> 
+> Sub-namespaces are "virtual" namespaces that allow models to be placed "one or more levels deeper" than their "parent" namespace, purely for aesthetical or organizational purposes.
+>
 > Access criteria for models are identical between a namespace and any sub-namespace it might feature. 
+>
+> It is also worth noting that sub-namespaces are the only way to create hierarchical namespaces. 
+>
+> In other words, if the namespace `com.mycompany` exists, one can only create models in `com.mycompany.examples` via a sub-namespace. 
+> However, creating another namespace called `com.mycompany.examples` is not possible. 
 
 <hr/>
 

@@ -18,6 +18,11 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 
 public class ModelInfoDto extends ModelInfo {
 
+  // for tests
+  protected ModelInfoDto() {
+
+  }
+
   private String workspaceId;
   
   public ModelInfoDto(ModelId modelId, ModelType modelType) {

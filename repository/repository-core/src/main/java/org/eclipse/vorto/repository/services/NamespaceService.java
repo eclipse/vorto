@@ -37,8 +37,6 @@ import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -54,8 +52,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class NamespaceService implements ApplicationEventPublisherAware {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceService.class);
 
   public static final String NAMESPACE_SEPARATOR = ".";
 
@@ -394,65 +390,25 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   /**
    * Resolves workspace ID for the given namespace.<br/>
-   * Tries to lookup the namespace by name and returns the result, if there is one. <br/>
-   * Otherwise, recursively attempts to resolve the namespace and return its workspace ID by
-   * removing each dot-separated component starting from the end of the namespace's name.<br/>
-   * For instance, when given {@literal com.bosch.iot.suite.example.octopussuiteedition}:
-   * <ol>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite.example.octopussuiteedition} and get
-   *     its workspace ID, which fails
-   *   </li>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite.example} and get its workspace ID, which
-   *     fails again
-   *   </li>
-   *   <li>
-   *     Attempts to resolve {@literal com.bosch.iot.suite} and get its workspace ID, which
-   *     succeeds
-   *   </li>
-   * </ol>
    *
    * @param namespace - the given namespace name
    * @return Optional of the workspace ID or empty Optional, if no namespace was resolved.
    */
   public Optional<String> resolveWorkspaceIdForNamespace(String namespace) {
-    Optional<Namespace> actualNamespace = cache.namespace(namespace);
-    if (actualNamespace.isPresent()) {
-      String workspaceID = actualNamespace.get().getWorkspaceId();
-      LOGGER.info(
-          String.format(
-              "Resolved namespace [%s] with workspace ID [%s]",
-              namespace, workspaceID
-          )
-      );
-      return Optional.of(workspaceID);
-    } else {
+    Optional<String> result = cache.namespace(namespace).map(Namespace::getWorkspaceId);
+    if (!result.isPresent()) {
       int lastSeparator = namespace.lastIndexOf(NAMESPACE_SEPARATOR);
       if (lastSeparator > 0) {
-        String namespaceTrimmed = namespace.substring(0, lastSeparator);
-        LOGGER.info(
-            String.format(
-                "Could not resolve workspace ID for namespace [%s] - attempting with [%s]",
-                namespace, namespaceTrimmed
-            )
-        );
-        return resolveWorkspaceIdForNamespace(namespaceTrimmed);
+        return resolveWorkspaceIdForNamespace(namespace.substring(0, lastSeparator));
       } else {
-        LOGGER.warn(
-            String.format(
-                "Could not resolve workspace ID for namespace [%s], which has no further separators.",
-                namespace
-            )
-        );
         return Optional.empty();
       }
     }
+    return result;
   }
 
   public List<String> findAllWorkspaceIds() {
-    return cache.namespaces().stream().map(Namespace::getWorkspaceId)
-        .collect(Collectors.toList());
+    return cache.namespaces().stream().map(Namespace::getWorkspaceId).collect(Collectors.toList());
   }
 
   public Set<String> findWorkspaceIdsOfPossibleReferences() {

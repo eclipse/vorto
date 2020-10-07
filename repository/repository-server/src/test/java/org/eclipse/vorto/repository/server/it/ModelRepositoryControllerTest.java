@@ -12,18 +12,38 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.Base64;
+import org.apache.log4j.Logger;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 public class ModelRepositoryControllerTest extends IntegrationTestBase {
+
+  private static final Logger LOGGER = Logger.getLogger(ModelRepositoryControllerTest.class);
 
   @Autowired
   protected AttachmentValidator attachmentValidator;
@@ -58,6 +78,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
    * actual image file name is returned).<br/>
    * Here, we only check that there is indeed an image once it's been added - twice. <br/>
    * More thorough tests are added at repository level.
+   *
    * @throws Exception
    */
   @Test
@@ -67,7 +88,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isOk());
-    createImage("model_image.png", testModel.prettyName, userSysadmin).andExpect(status().isCreated());
+    createImage("model_image.png", testModel.prettyName, userSysadmin)
+        .andExpect(status().isCreated());
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/images").with(userSysadmin))
         .andExpect(status().isOk());
@@ -77,17 +99,20 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
    * Contrary to the attachment controller, which is API v.1 and cannot be changed, we can
    * respond with a specific status in the ModelRepositoryController when an attachment is too
    * large.
+   *
    * @throws Exception
    */
   @Test
   public void uploadModelImageSizeTooLarge() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin, (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin,
+        (attachmentValidator.getMaxFileSizeSetting() + 1) * 1024 * 1024)
         .andExpect(status().isPayloadTooLarge());
   }
 
   @Test
   public void uploadModelImageSizeReasonable() throws Exception {
-    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin, (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
+    createImage("stock_coffee.jpg", testModel.prettyName, userSysadmin,
+        (attachmentValidator.getMaxFileSizeSetting() - 1) * 1024 * 1024)
         .andExpect(status().isCreated());
   }
 
@@ -105,8 +130,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
             .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isConflict());
     repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin));
-
-
   }
 
   @Test
@@ -114,12 +137,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     TestModel testModel = TestModel.TestModelBuilder.aTestModel().build();
     testModel.createModel(repositoryServer, userSysadmin);
     repositoryServer.perform(post("/rest/models/" + testModel.prettyName + "/versions/1.0.1")
-        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
     repositoryServer.perform(post("/rest/models/com.test1:Location:1.0.0/versions/1.0.1")
-        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+        .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
     repositoryServer.perform(delete("/rest/models/" + testModel.prettyName).with(userSysadmin));
-
-
   }
 
   @Test
@@ -148,29 +171,24 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     // delete non existent model
     repositoryServer.perform(delete("/rest/models/com.test:ASDASD:0.0.1").with(userSysadmin))
         .andExpect(status().isNotFound());
-
-
   }
 
   @Test
   public void getUserModels() throws Exception {
     this.repositoryServer.perform(get("/rest/models/mine/download").with(userSysadmin))
         .andExpect(status().isOk());
-
-
   }
 
   @Test
   public void downloadMappingsForPlatform() throws Exception {
     this.repositoryServer
         .perform(
-            get("/rest/models/" + testModel.prettyName + "/download/mappings/test").with(userSysadmin))
+            get("/rest/models/" + testModel.prettyName + "/download/mappings/test")
+                .with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer
         .perform(get("/rest/models/com.test:Test1:1.0.0/download/mappings/test").with(userSysadmin))
         .andExpect(status().isNotFound());
-
-
   }
 
   @Test
@@ -181,8 +199,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(get("/rest/models/test:Test123:1.0.0/diagnostics").with(userSysadmin))
         .andExpect(status().isNotFound());
-
-
   }
 
   @Test
@@ -193,10 +209,9 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/policies").with(userModelCreator))
         .andExpect(status().isOk());
-    this.repositoryServer.perform(get("/rest/models/test:Test123:1.0.0/policies").with(userSysadmin))
+    this.repositoryServer
+        .perform(get("/rest/models/test:Test123:1.0.0/policies").with(userSysadmin))
         .andExpect(status().isNotFound());
-
-
   }
 
   @Test
@@ -210,14 +225,13 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator))
         .andExpect(status().isOk());
-
-
   }
 
   @Test
   public void addValidPolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME
+            + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
@@ -227,14 +241,13 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .perform(get("/rest/models/" + testModel.prettyName + "/policy").with(userModelCreator))
         .andExpect(result -> result.getResponse().getContentAsString().contains(
             "{\"principalId\":\"user3\",\"principalType\":\"User\",\"permission\":\"READ\",\"adminPolicy\":false}"));
-
-
   }
 
   @Test
   public void editOwnPolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME
+            + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Try changing current user policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
@@ -256,7 +269,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void removePolicyEntry() throws Exception {
     String json =
-        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
+        "{\"principalId\":\"" + USER_MODEL_CREATOR_NAME
+            + "\", \"principalType\": \"User\", \"permission\":\"READ\"}";
     // Valid creation of policy
     this.repositoryServer
         .perform(put("/rest/models/" + testModel.prettyName + "/policies")
@@ -264,7 +278,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isOk());
     repositoryServer
         .perform(
-            delete("/rest/models/" + testModel.prettyName + "/policies/user2/User").with(userSysadmin))
+            delete("/rest/models/" + testModel.prettyName + "/policies/user2/User")
+                .with(userSysadmin))
         .andExpect(status().isOk());
   }
 
@@ -276,7 +291,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userSysadmin))
         .andExpect(status().isForbidden());
-
   }
 
   /*
@@ -288,6 +302,329 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(post("/rest/models/" + testModel.prettyName + "/makePublic").with(userModelViewer))
         .andExpect(status().isUnauthorized());
+  }
+
+  /**
+   * This test performs the following:
+   * <ol>
+   *   <li>
+   *     Creates the {@literal com.test} namespace with a sysadmin user, to hold the models.
+   *   </li>
+   *   <li>
+   *     Adds a non-sysadmin user with {@literal model_creator} role to the {@literal com.test}
+   *     namespace.
+   *   </li>
+   *   <li>
+   *     Creates a "Zone" datatype model from the corresponding file resource.
+   *   </li>
+   *   <li>
+   *     Creates a "Lamp" functionblock model from the corresponding file resource.
+   *   </li>
+   *   <li>
+   *     Creates an "Address" functionblock model from the corresponding file resource.
+   *   </li>
+   *   <li>
+   *     Creates a "StreetLamp" model from the corresponding file resource, using the above
+   *     functionblocks as dependencies.
+   *   </li>
+   *   <li>
+   *     Adds an attachment to the "StreetLamp" model.
+   *   </li>
+   *   <li>
+   *     Adds a link to the "StreetLamp" model.
+   *   </li>
+   *   <li>
+   *     Adds a mapping to the "StreetLamp" model.
+   *   </li>
+   *   <li>
+   *     Loads the "StreetLamp" model with the REST call used by the UI, and verifies / validates:
+   *     <ul>
+   *       <li>
+   *         Basic {@link org.eclipse.vorto.repository.core.ModelInfo} properties.
+   *       </li>
+   *       <li>
+   *         The Base64-encoded model syntax
+   *         (see {@link ModelFullDetailsDTO#getEncodedModelSyntax()})
+   *       </li>
+   *       <li>
+   *         Mapping (see {@link ModelFullDetailsDTO#getMappings()}).
+   *       </li>
+   *       <li>
+   *         Attachment (see {@link ModelFullDetailsDTO#getAttachments()}
+   *       </li>
+   *       <li>
+   *         Link (see {@link ModelFullDetailsDTO#getLinks()}
+   *       </li>
+   *       <li>
+   *         References (see {@link ModelFullDetailsDTO#getReferences()}
+   *       </li>
+   *       <li>
+   *         "Referenced by" (see {@link ModelFullDetailsDTO#getReferencedBy()})
+   *       </li>
+   *       <li>
+   *         Policies (see {@link ModelFullDetailsDTO#getPolicies()} and
+   *         {@link ModelFullDetailsDTO#getBestPolicy()} for the creating user, and conversely, for
+   *         an extraneous user with no access.
+   *       </li>
+   *       <li>
+   *         Workflow actions (see {@link ModelFullDetailsDTO#getActions()} for the creating user,
+   *         and conversely, for an extraneous user with no access.
+   *       </li>
+   *     </ul>
+   *   </li>
+   *   <li>
+   *     Loads the "Lamp" functionblock model with the REST call used by the UI, and verifies the
+   *     "referenced by" node (see {@link ModelFullDetailsDTO#getReferencedBy()}.
+   *   </li>
+   *   <li>
+   *     Finally, cleans up and deletes all 4 models, then the namespace.
+   *   </li>
+   * </ol>
+   *
+   * @throws Exception
+   */
+  @Test
+  public void verifyFullModelPayloadForUI() throws Exception {
+    // required for some extra properties in DTOs not annotated with Jackson polymorphism
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    // model names, id strings and file names
+    String namespace = "com.test";
+    String version = "1.0.0";
+    String idFormat = "%s.%s:%s";
+    String zoneModelName = "Zone";
+    String zoneModelID = String.format(idFormat, namespace, zoneModelName, version);
+    String zoneFileName = zoneModelName.concat(".type");
+    String lampModelName = "Lamp";
+    String lampModelID = String.format(idFormat, namespace, lampModelName, version);
+    String lampFileName = lampModelName.concat(".fbmodel");
+    String addressModelName = "Address";
+    String addressModelID = String.format(idFormat, namespace, addressModelName, version);
+    String addressFileName = addressModelName.concat(".fbmodel");
+    String streetLampModelName = "StreetLamp";
+    String streetLampModelID = String.format(idFormat, namespace, streetLampModelName, version);
+    String streetLampFileName = streetLampModelName.concat(".infomodel");
+    String streetLampAttachmentFileName = "StreetLampAttachment.json";
+    String streetLampLinkURL = "https://vorto.eclipse.org/";
+    String streetLampLinkName = "Vorto";
+
+    // creates the namespace as sysadmin
+    createNamespaceSuccessfully(namespace, userSysadmin);
+
+    // creates the collaborator payload to add userModelCreator to the namespace
+    Collaborator userModelCreatorCollaborator = new Collaborator();
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
+    userModelCreatorCollaborator.setRoles(Arrays.asList("model_viewer", "model_creator"));
+    userModelCreatorCollaborator.setTechnicalUser(false);
+    userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+
+    // allows creator rights to userCreator on namespace
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s/users", namespace))
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userModelCreatorCollaborator))
+        )
+        .andExpect(status().isOk());
+
+    // creates the Zone model
+    createModel(userModelCreator, zoneFileName, zoneModelID);
+
+    // creates the Lamp model
+    createModel(userModelCreator, lampFileName, lampModelID);
+
+    // creates the Address model
+    createModel(userModelCreator, addressFileName, addressModelID);
+
+    // creates the StreetLamp model
+    createModel(userModelCreator, streetLampFileName, streetLampModelID);
+
+    // adds an attachment to the StreetLamp model (still requires sysadmin for this)
+    addAttachment(streetLampModelID, userSysadmin, streetLampAttachmentFileName,
+        MediaType.APPLICATION_JSON)
+        .andExpect(status().isOk())
+        .andExpect(content().json(
+            objectMapper.writeValueAsString(
+                AttachResult.success(
+                    ModelId.fromPrettyFormat(streetLampModelID),
+                    streetLampAttachmentFileName
+                )
+            )
+            )
+        );
+
+    // adds a link to the StreetLamp model
+    ModelLink link = new ModelLink(streetLampLinkURL, streetLampLinkName);
+    addLink(streetLampModelID, userModelCreator, link);
+
+    // saves a minimal mapping specification for the street lamp model
+    Infomodel streetLampInfomodel = new Infomodel(ModelId.fromPrettyFormat(streetLampModelID));
+    streetLampInfomodel.setTargetPlatformKey("myTargetPlatform");
+    MappingSpecification mapping = new MappingSpecification(streetLampInfomodel);
+    repositoryServer
+        .perform(
+            put(String.format("/rest/mappings/specifications/%s", streetLampModelID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mapping))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+
+    // expected ID of the payload mapping model
+    String mappingId = String.format(
+        "%s.%s:%sPayloadMapping:%s",
+        // root namespace
+        namespace,
+        // virtual namespace for mapping
+        streetLampModelName.toLowerCase(),
+        // mapping name part 1 matching root model
+        streetLampModelName,
+        // root model version
+        version
+    );
+
+    // fetches the full model for the UI
+    repositoryServer
+        .perform(
+            get(String.format("/rest/models/ui/%s", streetLampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk())
+        // cannot test full json due to arbitrary date offsets, so checking essentials in every node
+        // prints some helpful representation of the result as received
+        .andDo(
+            mvcResult -> {
+              ModelFullDetailsDTO output = objectMapper
+                  .readValue(mvcResult.getResponse().getContentAsString(),
+                      ModelFullDetailsDTO.class);
+              LOGGER.info(
+                  new StringBuilder("\nReceived response body:\n\n")
+                      .append(
+                          objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(output)
+                      )
+                      .toString()
+              );
+            }
+        )
+        // basic model info: checking some fields of id, type, author
+        .andExpect(
+            jsonPath("$.modelInfo").exists()
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.id.name").value(streetLampModelName)
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.id.namespace").value(namespace)
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.type").value("InformationModel")
+        )
+        .andExpect(
+            jsonPath("$.modelInfo.author").value(USER_MODEL_CREATOR_NAME)
+        )
+        // mappings
+        .andExpect(
+            jsonPath("$.mappings").isNotEmpty()
+        )
+        // com.test.streetlamp:StreetLampPayloadMapping:1.0.0
+        .andExpect(
+            jsonPath("$.mappings[0].id").value(mappingId)
+        )
+        // references (only size)
+        .andExpect(
+            jsonPath("$.references", hasSize(2))
+        )
+        // referenced by
+        .andExpect(
+            jsonPath("$.referencedBy", hasSize(1))
+        )
+        .andExpect(
+            jsonPath("$.referencedBy[0].id").value(mappingId)
+        )
+        // attachments: present. checking filename property of first and only attachment
+        .andExpect(jsonPath("$.attachments").exists())
+        .andExpect(
+            jsonPath("$.attachments[0].filename").value(streetLampAttachmentFileName)
+        )
+        .andExpect(
+            jsonPath("$.attachments[0].modelId.name").value(streetLampModelName)
+        )
+        // single link exists
+        .andExpect(
+            jsonPath("$.links").exists()
+        )
+        .andExpect(
+            jsonPath("$.links[0].url").value(equalTo(link.getUrl()))
+        )
+        .andExpect(
+            jsonPath("$.links[0].displayText").value(equalTo(link.getDisplayText()))
+        )
+        // actions: present but empty
+        .andExpect(jsonPath("$.actions").exists())
+        .andExpect(jsonPath("$.actions").isEmpty())
+        // policies (only size)
+        .andExpect(
+            jsonPath("$.policies", hasSize(2))
+        )
+        // best policy: model creator with full access
+        .andExpect(
+            jsonPath("$.bestPolicy").exists()
+        )
+        .andExpect(
+            jsonPath("$.bestPolicy.principalId").value("model_creator")
+        )
+        .andExpect(
+            jsonPath("$.bestPolicy.permission").value(Permission.FULL_ACCESS.toString())
+        )
+        // syntax string equal to model content base-64-encoded
+        .andExpect(
+            jsonPath("$.encodedModelSyntax")
+                .value(
+                    Base64.getEncoder()
+                        .encodeToString(createContentAsString(streetLampFileName).getBytes())
+                )
+        );
+
+    // cleanup: deletes models in reverse order of creation, then namespace
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", mappingId))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", streetLampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", lampModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", addressModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", zoneModelID))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isOk());
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespace))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+    // removes test-specific configuration
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+
 
   }
 
