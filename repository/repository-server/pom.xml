@@ -270,7 +270,40 @@
 			<version>${selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+		<!-- benchmark tests -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- dependencies for benchmark tests -->
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_java</artifactId>
+			<version>5.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_http</artifactId>
+			<version>5.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_functions</artifactId>
+			<version>5.3</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 
 	<build>
 		<resources>
@@ -348,6 +381,39 @@
 				</plugins>
 			</build>
 		</profile>
+		<!-- benchmark tests -->
+		<profile>
+			<id>benchmark-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.lazerycode.jmeter</groupId>
+						<artifactId>jmeter-maven-plugin</artifactId>
+						<version>3.1.1</version>
+						<executions>
+							<!-- Generate JMeter configuration -->
+							<execution>
+								<id>configuration</id>
+								<goals>
+									<goal>configure</goal>
+								</goals>
+								<phase>generate-test-sources</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<projectBuildDirectory>${build.testOutputDirectory}/benchmarkTests</projectBuildDirectory>
+							<jmeterArtifacts>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter:5.3</jmeterArtifact>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_config:5.3</jmeterArtifact>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_core:5.3</jmeterArtifact>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_functions:5.3</jmeterArtifact>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_http:5.3</jmeterArtifact>
+								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_java:5.3</jmeterArtifact>
+							</jmeterArtifacts>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-
 </project>
