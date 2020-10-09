@@ -51,7 +51,6 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
             getChildNodes(node, data);
             getProperties(node, data);
             getACL(session, node, data);
-
             return data;
         });
     }
@@ -65,6 +64,26 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
             String parentName = property.getParent().getParent().getName();
             Binary binary = property.getValue().getBinary();
             return new ModeshapeContentData(parentName, IOUtils.toByteArray(binary.getStream()));
+        });
+    }
+
+    @Override
+    public void deleteModeshapeNode(String path) {
+        doInSession(session -> {
+            Node node = session.getNode(path);
+            node.remove();
+            session.save();
+            return null;
+        });
+    }
+
+    @Override
+    public void setPropertyOnNode(String path, ModeshapeProperty property) {
+        doInSession(session -> {
+            Node node = session.getNode(path);
+            node.setProperty(property.getName(), property.getValue());
+            session.save();
+            return null;
         });
     }
 

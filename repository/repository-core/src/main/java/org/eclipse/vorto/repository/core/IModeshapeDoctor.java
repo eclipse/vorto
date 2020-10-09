@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeProperty;
 
 public interface IModeshapeDoctor {
 
@@ -24,4 +25,7 @@ public interface IModeshapeDoctor {
 
     ModeshapeContentData readModeshapeNodeContent(String path);
 
+    void deleteModeshapeNode(String path);
+
+    void setPropertyOnNode(String path, ModeshapeProperty property);
 }

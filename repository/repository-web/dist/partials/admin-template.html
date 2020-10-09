@@ -159,7 +159,7 @@
 					<a class="btn btn-primary" ng-disabled="!modeshapeData.contentOnNode" type="button" href="/rest/namespaces/diagnostics/modeshape/node/{{modeshapeWorkspaceId}}/data?path={{modeshapePath}}">
 						Download JCR Data
 					</a>
-					<button class="btn btn-danger" type="button" ng-click="alert('not implemented')">
+					<button class="btn btn-danger" type="button" ng-click="deleteModeshapeNode(modeshapeWorkspaceId, modeshapePath)">
 						Delete Node {{modeshapeData.name}}
 					</button>
 				</div>

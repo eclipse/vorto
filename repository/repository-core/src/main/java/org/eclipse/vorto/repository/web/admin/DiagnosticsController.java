@@ -16,9 +16,11 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IModeshapeDoctor;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeProperty;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,24 @@ public class DiagnosticsController {
         .readModeshapeNodeContent(path);
 
     writeByteArrayToResponse(response, contentData);
+  }
+
+  @DeleteMapping("modeshape/node/{workspaceId}")
+  @PreAuthorize("hasAuthority('sysadmin')")
+  public void deleteNode(@PathVariable String workspaceId, @RequestParam String path) {
+    repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .deleteModeshapeNode(path);
+  }
+
+  @PutMapping("modeshape/node/{workspaceId}")
+  public ModeshapeNodeData setNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
+      @RequestBody ModeshapeProperty property) {
+
+    IModeshapeDoctor doctor = repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication());
+    doctor.setPropertyOnNode(path, property);
+    return doctor.readModeshapeNodeData(path);
   }
 
   private void writeByteArrayToResponse(HttpServletResponse response, ModeshapeContentData contentData) {

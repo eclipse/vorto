@@ -52,7 +52,24 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
                 .then(response => {
                     $scope.modeshapeData = response.data;
                     $scope.modeshapePath = modeshapePath;
-                    alert(JSON.stringify(response.data));
+                }).catch(error => {
+                    alert(error);
+            });
+        };
+
+        $scope.deleteModeshapeNode = function (modeshapeWorkspaceId, modeshapePath) {
+            $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
+                .then(response => {
+                    if (response.status !== 200) {
+                        alert('Could not delete node. Status: ' + response.status);
+                    }
+                }, error => {
+                    $scope.modeshapeData = null;
+                    if (error.status === 404) {
+                        alert('Node not found.')
+                    } else {
+                        alert('Could not delete node. Status code: ' + error.status);
+                    }
                 });
         };
 
