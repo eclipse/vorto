@@ -131,9 +131,7 @@ define(["../init/appController"], function (repositoryControllers) {
                 function (result) {
                   $scope.isLoading = false;
                   $scope.message = result.data.message;
-                  if (result.data.valid) {
-                    $scope.loadDetails();
-                  } else {
+                  if (!result.data.valid) {
                     $scope.validationIssues = result.data.validationIssues;
                   }
                 },
