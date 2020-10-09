@@ -34,9 +34,7 @@ public class ModeshapeNodeData {
     }
 
     public void addProperty(String name, String value) {
-        ModeshapeProperty property = new ModeshapeProperty();
-        property.setName(name);
-        property.setValue(value);
+        ModeshapeProperty property = new ModeshapeProperty(name, value);
         properties.add(property);
     }
 

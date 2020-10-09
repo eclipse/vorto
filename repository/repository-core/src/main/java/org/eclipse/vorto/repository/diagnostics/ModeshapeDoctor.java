@@ -43,14 +43,14 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         return doInSession(session -> {
             Node node = session.getNode(path);
 
-            LOGGER.info("Node name: {}", node.getName());
+            LOGGER.debug("Reading Modeshape node data: {}", path);
 
             ModeshapeNodeData data = new ModeshapeNodeData();
             data.setName(node.getName());
             data.setPath(path);
-            printChildren(node, data);
-            printProperties(node, data);
-            printACL(session, node, data);
+            getChildNodes(node, data);
+            getProperties(node, data);
+            getACL(session, node, data);
 
             return data;
         });
@@ -60,18 +60,15 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public ModeshapeContentData readModeshapeNodeContent(String path) {
         return doInSession(session -> {
             Node node = session.getNode(path);
-            LOGGER.info("Node name: {}", node.getName());
+            LOGGER.debug("Getting Modeshape content: {}", path);
             Property property = node.getProperty("jcr:data");
             String parentName = property.getParent().getParent().getName();
             Binary binary = property.getValue().getBinary();
-            ModeshapeContentData contentData = new ModeshapeContentData();
-            contentData.setFilename(parentName);
-            contentData.setData(IOUtils.toByteArray(binary.getStream()));
-            return contentData;
+            return new ModeshapeContentData(parentName, IOUtils.toByteArray(binary.getStream()));
         });
     }
 
-    private void printACL(Session session, Node node, ModeshapeNodeData data)
+    private void getACL(Session session, Node node, ModeshapeNodeData data)
         throws RepositoryException {
         AccessControlManager accessControlManager = session.getAccessControlManager();
         AccessControlPolicyIterator it = accessControlManager.getApplicablePolicies(node.getPath());
@@ -83,8 +80,6 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         }
 
         for (int i = 0; i < acl.getAccessControlEntries().length; i++) {
-            LOGGER.info("ACL Entry {} principal: {}", i, acl.getAccessControlEntries()[i].getPrincipal().getName());
-            LOGGER.info("ACL Entry {} principal: {}", i, concatPrivileges(acl.getAccessControlEntries()[i].getPrivileges()));
             ModeshapeAclEntry aclEntry = new ModeshapeAclEntry();
             aclEntry.setPrincipal(acl.getAccessControlEntries()[i].getPrincipal().getName());
             aclEntry.setPrivileges(transformToPrivilegeList(acl.getAccessControlEntries()[i].getPrivileges()));
@@ -96,41 +91,35 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         return Arrays.stream(privileges).map(Privilege::getName).collect(Collectors.toList());
     }
 
-    private String concatPrivileges(Privilege[] privileges) {
-        StringBuilder sb = new StringBuilder();
-        Arrays.stream(privileges).forEach(privilege -> sb.append(privilege.getName()));
-        return sb.toString();
-    }
-
-    private  void printChildren(Node node, ModeshapeNodeData data) throws RepositoryException {
+    private void getChildNodes(Node node, ModeshapeNodeData data) throws RepositoryException {
         NodeIterator nodeIterator = node.getNodes();
         while (nodeIterator.hasNext()) {
             Node childNode = nodeIterator.nextNode();
-            LOGGER.info("Child node name: {}", childNode.getName());
+            LOGGER.debug("Child node name: {}", childNode.getName());
             data.addChildNode(childNode.getName());
         }
     }
 
-    private void printProperties(Node node, ModeshapeNodeData data) throws RepositoryException {
+    private void getProperties(Node node, ModeshapeNodeData data) throws RepositoryException {
         PropertyIterator propertyIterator = node.getProperties();
         while (propertyIterator.hasNext()) {
             Property property = propertyIterator.nextProperty();
-            LOGGER.info("Property name: {}", property.getName());
+            LOGGER.debug("Property name: {}", property.getName());
             if ("jcr:data".equals(property.getName())) {
                 data.setContentOnNode(true);
             }
-            printPropertyValue(property, data);
+            getPropertyValue(property, data);
         }
     }
 
-    private void printPropertyValue(Property property, ModeshapeNodeData data) throws RepositoryException {
+    private void getPropertyValue(Property property, ModeshapeNodeData data) throws RepositoryException {
         if (property.isMultiple()) {
             for (Value value : property.getValues()) {
-                LOGGER.info("Property multi-value: {}", value);
+                LOGGER.debug("Property multi-value: {}", value);
                 data.addProperty(property.getName(), value.toString());
             }
         } else {
-            LOGGER.info("Property value: {}", property.getValue());
+            LOGGER.debug("Property value: {}", property.getValue());
             data.addProperty(property.getName(), property.getValue().toString());
         }
     }
