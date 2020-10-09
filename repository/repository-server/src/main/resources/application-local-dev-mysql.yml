@@ -38,7 +38,7 @@ server:
   port: 8080
   contextPath: /
   use-forward-headers: true
-  admin: aedelmann,erlemantos,kolotu,mena-bosch,t-gauss
+  admin: aedelmann,erlemantos,kolotu,mena-bosch,t-gauss,c-kersten
 
 eidp_clientid: 123
 eidp_secret: 123
