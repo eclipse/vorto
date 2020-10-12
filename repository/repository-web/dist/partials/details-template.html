@@ -456,6 +456,9 @@
 											<small><i class="fa fa-fw fa-info"></i> Use Ctrl + Space for Content Assist</small>
 										</div>
 										<div class="row">
+											<div ng-if="message.severity === 'INFO'" class="alert alert-info">
+												<span><i class="fa fa-fw fa-info"></i> Model saved successfully</span>
+											</div>
 											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger">
 												<span ng-if="validationIssues == null || validationIssues.length <= 0"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</span>
 												<p ng-if="validationIssues != null && validationIssues.length > 0" ng-repeat="issue in validationIssues">

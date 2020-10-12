@@ -1006,7 +1006,7 @@ define(["../init/appController"], function (repositoryControllers) {
                 },
                 function (error) {
                   if (error.status) {
-                    switch(error.status) {
+                    switch (error.status) {
                       case 401:
                         $location.path('/login');
                         break;
