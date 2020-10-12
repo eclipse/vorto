@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2020 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License 2.0 which is available at
+# https://www.eclipse.org/legal/epl-2.0
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+repo:
+  configFile: vorto-repository-config-mysql-local-benchmark.json
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/vorto_schema?autoReconnect=true
+    username: vorto
+    password: vorto
+    driver-class-name: org.mariadb.jdbc.Driver
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    wait_timeout: 180
+    validationInterval: 60
+    validationQuery: SELECT 1
+
+config:
+  restrictTenant: 2
+
+server:
+  contextPath: /
+  use-forward-headers: true
+  admin: user1

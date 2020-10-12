@@ -99,17 +99,6 @@ public abstract class AbstractUITest {
         chrome.getWebDriver().manage().deleteAllCookies();
     }
 
-    @Configuration
-    @Profile("test")
-    public static class TestConfig {
-
-        @Bean
-        public static PropertySourcesPlaceholderConfigurer properties() {
-            return new PropertySourcesPlaceholderConfigurer();
-        }
-
-    }
-
     private void setRootUrl() throws Exception {
         rootUrl = String.format("http://host.testcontainers.internal:%d", port);
         chrome.getWebDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

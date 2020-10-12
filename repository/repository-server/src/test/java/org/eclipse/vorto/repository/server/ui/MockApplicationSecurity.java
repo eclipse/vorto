@@ -26,7 +26,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
  * Security configuration for UI Testing. Bypass the oauth2 authentication by enabling a simple form login and a Mock
  * authentication provider.
  */
-@Profile("local-ui-test")
+@Profile({"local-ui-test", "local-benchmark-test"})
 @Configuration
 public class MockApplicationSecurity extends WebSecurityConfigurerAdapter {
 
