@@ -131,7 +131,9 @@ define(["../init/appController"], function (repositoryControllers) {
                 function (result) {
                   $scope.isLoading = false;
                   $scope.message = result.data.message;
-                  if (!result.data.valid) {
+                  if (result.data.valid) {
+                    $scope.loadDetails();
+                  } else {
                     $scope.validationIssues = result.data.validationIssues;
                   }
                 },
@@ -1004,7 +1006,7 @@ define(["../init/appController"], function (repositoryControllers) {
                 },
                 function (error) {
                   if (error.status) {
-                    switch(error.status) {
+                    switch (error.status) {
                       case 401:
                         $location.path('/login');
                         break;
