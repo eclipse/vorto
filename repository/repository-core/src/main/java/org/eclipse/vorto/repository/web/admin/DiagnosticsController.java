@@ -111,7 +111,7 @@ public class DiagnosticsController {
         .deleteModeshapeNode(path);
   }
 
-  @PutMapping("modeshape/node/{workspaceId}")
+  @PutMapping("modeshape/node/{workspaceId}/property")
   public ModeshapeNodeData setNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeProperty property) {
 
@@ -120,6 +120,16 @@ public class DiagnosticsController {
     doctor.setPropertyOnNode(path, property);
     return doctor.readModeshapeNodeData(path);
   }
+
+  @DeleteMapping("modeshape/node/{workspaceId}/property")
+  public void deleteNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
+      @RequestBody ModeshapeProperty property) {
+
+    repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .deletePropertyOnNode(path, property);
+  }
+
 
   private void writeByteArrayToResponse(HttpServletResponse response, ModeshapeContentData contentData) {
     response.setContentType(APPLICATION_OCTET_STREAM);

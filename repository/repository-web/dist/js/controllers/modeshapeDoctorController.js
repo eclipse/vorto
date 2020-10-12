@@ -18,17 +18,91 @@ define(["../init/appController"], function (repositoryControllers) {
             function ($rootScope, $scope, $http, $uibModal, dialogConfirm,
                       dialogPrompt) {
 
-                // $scope.modeshapePath = "";
-                // $scope.updateModeshapePath = function (path) {
-                //     $scope.modeshapePath = path;
-                // }
-                // $scope.readModeshapeNode = function() {
-                //     var workspace = "295938ec91084d78bae3a4eacb033abb";
-                //     $http.get("/rest/namespaces/diagnostics/modeshape/node/" + workspace + "?path=" + $scope.modeshapePath)
-                //         .then(response => {
-                //             alert(response.data);
-                //         });
-                // };
+                $scope.modeshapeData = null;
+                $scope.modeshapePath = "/com/bosch/drx/Vehicle/1.0.3/";
+                $scope.modeshapeWorkspaceId = "295938ec91084d78bae3a4eacb033abb";
+
+                $scope.readModeshapeData = function (modeshapeWorkspaceId, modeshapePath) {
+                    $http.get("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
+                        .then(response => {
+                            $scope.modeshapeData = response.data;
+                            $scope.modeshapePath = modeshapePath;
+                        }).catch(error => {
+                        alert(error);
+                    });
+                };
+
+                $scope.deleteModeshapeNode = function (modeshapeWorkspaceId, modeshapePath) {
+                    if (confirm("Are you sure you want to delete " + modeshapePath + "?")) {
+                        $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
+                            .then(response => {
+                                if (response.status !== 200) {
+                                    alert('Could not delete node. Status: ' + response.status);
+                                }
+                                $scope.modeshapeData = null;
+                            }, error => {
+                                $scope.modeshapeData = null;
+                                if (error.status === 404) {
+                                    alert('Node not found.')
+                                } else {
+                                    alert('Could not delete node. Status code: ' + error.status);
+                                }
+                            });
+                    }
+                };
+
+                $scope.deleteModeshapeNodeProperty = function (modeshapeWorkspaceId, modeshapePath, propertyName) {
+                    if (confirm("Are you sure you want to delete property: " + propertyName + " on node: " + modeshapePath + "?")) {
+                        let body = {
+                            data: {
+                                name: propertyName
+                            },
+                            headers: {
+                                "Content-Type": "application/json;charset=utf-8"
+                            }
+                        };
+
+                        $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/property?path=" + modeshapePath, body)
+                            .then(response => {
+                                $scope.readModeshapeData(modeshapeWorkspaceId, modeshapePath);
+                            }, error => {
+                                $scope.modeshapeData = null;
+                            });
+                    }
+                };
+
+                $scope.openEditModeshapePropertyDialog = function (modeshapeWorkspaceId, modeshapePath, propertyName, propertyValue) {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: "webjars/repository-web/dist/partials/admin/editModeshapeProperty.html",
+                        size: "lg",
+                        controller: function ($scope) {
+                            $scope.propertyName = propertyName;
+                            $scope.propertyValue = propertyValue;
+                            $scope.setModeshapeProperty = function () {
+                                let body = {
+                                    "name" : $scope.propertyName,
+                                    "value" : $scope.propertyValue
+                                };
+                                $http.put("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/property?path=" + modeshapePath, body)
+                                    .then(response => {
+                                        $scope.modeshapeData = response.data;
+                                        $scope.modeshapePath = modeshapePath;
+                                    }).catch(error => {
+                                    alert(error);
+                                });
+                            }
+                        },
+                        resolve: {
+                            modal: function () {
+                                return true;
+                            }
+                        },
+                        backdrop: 'static'
+                    });
+                };
+
+
 
             }]);
 

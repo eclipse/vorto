@@ -28,4 +28,7 @@ public interface IModeshapeDoctor {
     void deleteModeshapeNode(String path);
 
     void setPropertyOnNode(String path, ModeshapeProperty property);
+
+    void deletePropertyOnNode(String path, ModeshapeProperty property);
+
 }

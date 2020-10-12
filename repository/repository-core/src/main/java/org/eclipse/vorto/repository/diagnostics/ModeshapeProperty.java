@@ -18,6 +18,10 @@ public class ModeshapeProperty {
 
     private String value;
 
+    public ModeshapeProperty() {
+
+    }
+
     public ModeshapeProperty(String name, String value) {
         this.name = name;
         this.value = value;

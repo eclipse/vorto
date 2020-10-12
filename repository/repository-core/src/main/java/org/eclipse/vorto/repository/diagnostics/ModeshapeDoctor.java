@@ -87,6 +87,17 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         });
     }
 
+    @Override
+    public void deletePropertyOnNode(String path, ModeshapeProperty property) {
+        doInSession(session -> {
+            session.getNode(path)
+                .getProperty(property.getName())
+                .remove();
+            session.save();
+            return null;
+        });
+    }
+
     private void getACL(Session session, Node node, ModeshapeNodeData data)
         throws RepositoryException {
         AccessControlManager accessControlManager = session.getAccessControlManager();
