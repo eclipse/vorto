@@ -30,14 +30,12 @@
         <preConditions onFail="CONTINUE">
             <dbms type="mariadb,mysql"/>
             <tableExists tableName="user" />
-            <not>
-                <columnExists tableName="user" columnName="role"/>
-            </not>
+            <columnExists tableName="user" columnName="role"/>
         </preConditions>
         <sqlFile path="/db/changelog/scripts/migrate_db_2018_11_09.sql" dbms="mariadb"/>
     </changeSet>
 
-    <changeSet id="test-createdby-procedure" author="kolotu">
+    <changeSet id="createdby-procedure" author="kolotu">
         <preConditions onFail="CONTINUE">
             <not>
                 <columnExists tableName="user" columnName="created_by" />
@@ -49,7 +47,7 @@
         <dropProcedure procedureName="create_and_populate_createdby" />
     </changeSet>
 
-    <changeSet id="migrate_db_from_013_MariaDB_preparation" author="kolotu">
+    <changeSet id="migrate_db_from_013_MariaDB_preparation" authgor="kolotu">
         <preConditions onFail="CONTINUE">
             <not>
                 <tableExists tableName="privileges" />
@@ -57,14 +55,5 @@
         </preConditions>
         <sqlFile path="/db/changelog/scripts/migrate_db_from_013_MariaDB_preparation.sql" dbms="mariadb"/>
     </changeSet>
-
-    <!-- Just for experimenting with Liquibase, delete before merging -->
-    <changeSet author="kolotu" id="example-change-1" context="experimental">
-        <addColumn tableName="user">
-            <column name="address" type="varchar(255)" />
-        </addColumn>
-    </changeSet>
-
-    <!-- End of experimental section -->
 
 </databaseChangeLog>
