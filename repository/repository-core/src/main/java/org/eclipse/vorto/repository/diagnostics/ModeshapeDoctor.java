@@ -20,12 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import javax.jcr.security.AccessControlList;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.AccessControlPolicyIterator;
-import javax.jcr.security.Privilege;
+import javax.jcr.security.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ModeshapeDoctor extends AbstractRepositoryOperation implements IModeshapeDoctor {
@@ -88,6 +86,16 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     }
 
     @Override
+    public void setAclEntryOnNode(String path, ModeshapeAclEntry aclEntry) {
+        doInSession(session -> {
+            Node node = session.getNode(path);
+            setACL(session, node, aclEntry);
+            session.save();
+            return null;
+        });
+    }
+
+    @Override
     public void deletePropertyOnNode(String path, ModeshapeProperty property) {
         doInSession(session -> {
             session.getNode(path)
@@ -98,7 +106,37 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         });
     }
 
+    @Override
+    public void deleteACLOnNode(String path, ModeshapeAclEntry aclEntry) {
+        doInSession(session -> {
+            Node node = session.getNode(path);
+            AccessControlList acl = getAccessControlList(session, node);
+            Optional<AccessControlEntry> existingEntry = Arrays.stream(acl.getAccessControlEntries())
+                .filter(entry -> entry.getPrincipal().getName().equals(aclEntry.getPrincipal()))
+                .findAny();
+
+            if (existingEntry.isPresent()) {
+                acl.removeAccessControlEntry(existingEntry.get());
+            }
+            session.save();
+
+            return null;
+        });
+    }
+
     private void getACL(Session session, Node node, ModeshapeNodeData data)
+        throws RepositoryException {
+
+        AccessControlList acl = getAccessControlList(session, node);
+        for (int i = 0; i < acl.getAccessControlEntries().length; i++) {
+            ModeshapeAclEntry aclEntry = new ModeshapeAclEntry();
+            aclEntry.setPrincipal(acl.getAccessControlEntries()[i].getPrincipal().getName());
+            aclEntry.setPrivileges(transformToPrivilegeList(acl.getAccessControlEntries()[i].getPrivileges()));
+            data.addAclEntry(aclEntry);
+        }
+    }
+
+    private AccessControlList getAccessControlList(Session session, Node node)
         throws RepositoryException {
         AccessControlManager accessControlManager = session.getAccessControlManager();
         AccessControlPolicyIterator it = accessControlManager.getApplicablePolicies(node.getPath());
@@ -108,13 +146,18 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         } else {
             acl = (AccessControlList) accessControlManager.getPolicies(node.getPath())[0];
         }
+        return acl;
+    }
 
-        for (int i = 0; i < acl.getAccessControlEntries().length; i++) {
-            ModeshapeAclEntry aclEntry = new ModeshapeAclEntry();
-            aclEntry.setPrincipal(acl.getAccessControlEntries()[i].getPrincipal().getName());
-            aclEntry.setPrivileges(transformToPrivilegeList(acl.getAccessControlEntries()[i].getPrivileges()));
-            data.addAclEntry(aclEntry);
+    private void setACL(Session session, Node node, ModeshapeAclEntry aclEntry) throws RepositoryException {
+        AccessControlList acl = getAccessControlList(session, node);
+        Optional<AccessControlEntry> existingEntry = Arrays.stream(acl.getAccessControlEntries())
+            .filter(entry -> entry.getPrincipal().getName().equals(aclEntry.getPrincipal()))
+            .findAny();
+        if (existingEntry.isPresent()) {
+            acl.removeAccessControlEntry(existingEntry.get());
         }
+        throw new IllegalStateException("not implemented");
     }
 
     private List<String> transformToPrivilegeList(Privilege[] privileges) {

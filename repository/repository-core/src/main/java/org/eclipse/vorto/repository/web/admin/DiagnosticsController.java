@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModeshapeDoctor;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeAclEntry;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeProperty;
@@ -121,6 +122,25 @@ public class DiagnosticsController {
     return doctor.readModeshapeNodeData(path);
   }
 
+  @PutMapping("modeshape/node/{workspaceId}/acl")
+  public ModeshapeNodeData setAclEntry(@PathVariable String workspaceId, @RequestParam String path,
+      @RequestBody ModeshapeAclEntry aclEntry) {
+
+    IModeshapeDoctor doctor = repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication());
+    doctor.setAclEntryOnNode(path, aclEntry);
+    return doctor.readModeshapeNodeData(path);
+  }
+
+  @DeleteMapping("modeshape/node/{workspaceId}/acl")
+  public void deleteNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
+      @RequestBody ModeshapeAclEntry aclEntry) {
+
+    repoFactory
+        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .deleteACLOnNode(path, aclEntry);
+  }
+
   @DeleteMapping("modeshape/node/{workspaceId}/property")
   public void deleteNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeProperty property) {
@@ -129,7 +149,6 @@ public class DiagnosticsController {
         .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
         .deletePropertyOnNode(path, property);
   }
-
 
   private void writeByteArrayToResponse(HttpServletResponse response, ModeshapeContentData contentData) {
     response.setContentType(APPLICATION_OCTET_STREAM);

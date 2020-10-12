@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.core;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeAclEntry;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeContentData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeNodeData;
 import org.eclipse.vorto.repository.diagnostics.ModeshapeProperty;
@@ -29,6 +30,10 @@ public interface IModeshapeDoctor {
 
     void setPropertyOnNode(String path, ModeshapeProperty property);
 
+    void setAclEntryOnNode(String path, ModeshapeAclEntry aclEntry);
+
     void deletePropertyOnNode(String path, ModeshapeProperty property);
+
+    void deleteACLOnNode(String path, ModeshapeAclEntry aclEntry);
 
 }

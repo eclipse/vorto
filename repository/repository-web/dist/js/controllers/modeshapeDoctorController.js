@@ -71,6 +71,26 @@ define(["../init/appController"], function (repositoryControllers) {
                     }
                 };
 
+                $scope.deleteModeshapeNodeACL = function (modeshapeWorkspaceId, modeshapePath, principalName) {
+                    if (confirm("Are you sure you want to delete the ACL entry for: " + principalName + " on node: " + modeshapePath + "?")) {
+                        let body = {
+                            data: {
+                                principal: principalName
+                            },
+                            headers: {
+                                "Content-Type": "application/json;charset=utf-8"
+                            }
+                        };
+
+                        $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/acl?path=" + modeshapePath, body)
+                            .then(response => {
+                                $scope.readModeshapeData(modeshapeWorkspaceId, modeshapePath);
+                            }, error => {
+                                $scope.modeshapeData = null;
+                            });
+                    }
+                };
+
                 $scope.openEditModeshapePropertyDialog = function (modeshapeWorkspaceId, modeshapePath, propertyName, propertyValue) {
                     var modalInstance = $uibModal.open({
                         animation: true,
@@ -102,8 +122,36 @@ define(["../init/appController"], function (repositoryControllers) {
                     });
                 };
 
-
-
+                $scope.openEditModeshapeACLDialog = function (modeshapeWorkspaceId, modeshapePath, propertyName, propertyValue) {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: "webjars/repository-web/dist/partials/admin/editModeshapeACL.html",
+                        size: "lg",
+                        controller: function ($scope) {
+                            $scope.propertyName = propertyName;
+                            $scope.propertyValue = propertyValue;
+                            $scope.setModeshapeProperty = function () {
+                                let body = {
+                                    principal : $scope.aclPrincipal,
+                                    privileges : $scope.aclPrivileges
+                                };
+                                $http.put("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/acl?path=" + modeshapePath, body)
+                                    .then(response => {
+                                        $scope.modeshapeData = response.data;
+                                        $scope.modeshapePath = modeshapePath;
+                                    }).catch(error => {
+                                    alert(error);
+                                });
+                            }
+                        },
+                        resolve: {
+                            modal: function () {
+                                return true;
+                            }
+                        },
+                        backdrop: 'static'
+                    });
+                };
             }]);
 
     repositoryControllers.directive("modeshapeDoctor", function () {
