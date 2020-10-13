@@ -27,6 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -72,6 +78,15 @@ import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.Status;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelMinimalInfoDTO;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelAttachmentsFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelLinksFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelMappingsFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelReferenceFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncModelSyntaxFetcher;
+import org.eclipse.vorto.repository.web.core.async.AsyncWorkflowActionsFetcher;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
@@ -79,6 +94,7 @@ import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,6 +109,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -129,7 +146,224 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
+  @Value("${config.requestTimeoutInSeconds:#{300}}")
+  private int requestTimeoutInSeconds;
+
   private static final Logger LOGGER = Logger.getLogger(ModelRepositoryController.class);
+
+  /**
+   * Fetches all data required to populate the returned {@link ModelFullDetailsDTO} (see class docs
+   * for details), in addition the model's "file" contents as file added to the response.<br/>
+   * Following error cases apply:
+   * <ul>
+   *   <li>
+   *     If {@link ModelId#fromPrettyFormat(String)} fails throwing {@link IllegalArgumentException},
+   *     returns {@code null} with status {@link HttpStatus#NOT_FOUND}.
+   *   </li>
+   *   <li>
+   *     If {@link ModelRepositoryController#getWorkspaceId(String)} fails throwing
+   *     {@link FatalModelRepositoryException}, returns {@code null} with status
+   *     {@link HttpStatus#NOT_FOUND}.
+   *   </li>
+   *   <li>
+   *     If any operation such as:
+   *     <ul>
+   *       <li>
+   *         {@link IModelRepository#getByIdWithPlatformMappings(ModelId)}
+   *       </li>
+   *       <li>
+   *         {@link IModelRepository#getAttachments(ModelId)}
+   *       </li>
+   *       <li>
+   *         {@link IModelPolicyManager#getPolicyEntries(ModelId)}
+   *       </li>
+   *     </ul>
+   *     ... fails throwing {@link NotAuthorizedException}, returns {@code null} with status
+   *     {@link HttpStatus#FORBIDDEN};
+   *   </li>
+   * </ul>
+   *
+   * @param modelId
+   * @return
+   */
+  @GetMapping("/ui/{modelId:.+}")
+  public ResponseEntity<ModelFullDetailsDTO> getModelForUI(@PathVariable String modelId,
+      final HttpServletResponse response) {
+
+    try {
+      // resolve user
+      Authentication user = SecurityContextHolder.getContext().getAuthentication();
+      // resolve model ID
+      ModelId modelID = ModelId.fromPrettyFormat(modelId);
+      // resolve ModeShape workspace ID
+      String workspaceId = getWorkspaceId(modelId);
+      // fetches model info
+      ModelInfo modelInfo = getModelRepository(modelID).getByIdWithPlatformMappings(modelID);
+
+      if (Objects.isNull(modelInfo)) {
+        LOGGER.warn(
+          String.format("Model resource with id [%s] not found. ", modelId)
+        );
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      }
+
+      // starts spawning threads to retrieve models etc.
+      final ExecutorService executor = Executors.newCachedThreadPool();
+      // fetches mappings
+      Collection<ModelMinimalInfoDTO> mappings = ConcurrentHashMap.newKeySet();
+      modelInfo.getPlatformMappings().entrySet().stream()
+          .forEach(
+              e -> {
+                executor.submit(
+                    new AsyncModelMappingsFetcher(mappings, e)
+                        .with(SecurityContextHolder.getContext())
+                        .with(RequestContextHolder.getRequestAttributes())
+                        .with(getModelRepositoryFactory())
+                );
+              }
+          );
+      // fetches references from model ids built with the root ModelInfo
+      Collection<ModelMinimalInfoDTO> references = ConcurrentHashMap.newKeySet();
+      modelInfo.getReferences().stream().forEach(
+          id ->
+              executor.submit(
+                  new AsyncModelReferenceFetcher(references, id)
+                      .with(SecurityContextHolder.getContext())
+                      .with(RequestContextHolder.getRequestAttributes())
+                      .with(getModelRepositoryFactory())
+              )
+      );
+      // fetches referenced by
+      Collection<ModelMinimalInfoDTO> referencedBy = ConcurrentHashMap.newKeySet();
+      modelInfo.getReferencedBy().stream().forEach(
+          id ->
+              executor.submit(
+                  new AsyncModelReferenceFetcher(referencedBy, id)
+                      .with(SecurityContextHolder.getContext())
+                      .with(RequestContextHolder.getRequestAttributes())
+                      .with(getModelRepositoryFactory())
+              )
+      );
+      // fetches attachments
+      Collection<Attachment> attachments = ConcurrentHashMap.newKeySet();
+      executor.submit(
+          new AsyncModelAttachmentsFetcher(attachments, modelID,
+              userRepositoryRoleService.isSysadmin(user.getName()))
+              .with(SecurityContextHolder.getContext())
+              .with(RequestContextHolder.getRequestAttributes())
+              .with(getModelRepositoryFactory())
+      );
+
+      // fetches links
+      Collection<ModelLink> links = ConcurrentHashMap.newKeySet();
+      executor.submit(
+          new AsyncModelLinksFetcher(modelID, links)
+              .with(SecurityContextHolder.getContext())
+              .with(RequestContextHolder.getRequestAttributes())
+              .with(getModelRepositoryFactory())
+      );
+
+      // fetches available workflow actions
+      Collection<String> actions = ConcurrentHashMap.newKeySet();
+      executor.submit(
+          new AsyncWorkflowActionsFetcher(
+              workflowService, actions, modelID, UserContext.user(user, workspaceId)
+          )
+              .with(SecurityContextHolder.getContext())
+              .with(RequestContextHolder.getRequestAttributes())
+      );
+
+      // fetches model syntax
+      Future<String> encodedSyntaxFuture = executor.submit(
+          new AsyncModelSyntaxFetcher(
+              modelID,
+              SecurityContextHolder.getContext(),
+              RequestContextHolder.getRequestAttributes(),
+              getModelRepositoryFactory()
+          )
+      );
+
+      // shuts down executor and waits for completion of tasks until configured timeout
+      // also retrieves callable content
+      executor.shutdown();
+
+      // single-threaded calls
+      // fetches policies in this thread
+      Collection<PolicyEntry> policies = getPolicyManager(workspaceId)
+          .getPolicyEntries(modelID)
+          .stream()
+          .filter(p -> userHasPolicyEntry(p, user, workspaceId))
+          .collect(Collectors.toList());
+
+      // getting callables and setting executor timeout
+      String encodedSyntax = null;
+      try {
+        // callable content
+        encodedSyntax = encodedSyntaxFuture.get();
+        // timeout
+        if (!executor.awaitTermination(requestTimeoutInSeconds, TimeUnit.SECONDS)) {
+          LOGGER.warn(
+              String.format(
+                  "Requesting UI data for model ID [%s] took over [%d] seconds and programmatically timed out.",
+                  modelID, requestTimeoutInSeconds
+              )
+          );
+          return new ResponseEntity<>(null, HttpStatus.GATEWAY_TIMEOUT);
+        }
+      } catch (InterruptedException ie) {
+        LOGGER.error("Awaiting executor termination was interrupted.");
+        return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+      } catch (ExecutionException ee) {
+        LOGGER.error("Failed to retrieve and encode model syntax asynchronously");
+        return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+      }
+
+      // builds DTO
+      ModelFullDetailsDTO dto = new ModelFullDetailsDTO()
+          .withModelInfo(modelInfo)
+          .withMappings(mappings)
+          .withReferences(references)
+          .withReferencedBy(referencedBy)
+          .withAttachments(attachments)
+          .withLinks(links)
+          .withActions(actions)
+          .withEncodedModelSyntax(encodedSyntax)
+          .withPolicies(policies);
+
+      return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+    // could not resolve "pretty format" for given model ID
+    catch (IllegalArgumentException iae) {
+      LOGGER.warn(
+          String.format(
+              "Could not resolve given model ID [%s]",
+              modelId
+          ),
+          iae
+      );
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    // could not find namespace to resolve workspace ID from
+    catch (FatalModelRepositoryException fmre) {
+      LOGGER.warn(
+          String.format(
+              "Could not resolve workspace ID from namespace inferred by model ID [%s]",
+              modelId
+          ),
+          fmre
+      );
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    } catch (NotAuthorizedException nae) {
+      LOGGER.warn(
+          String.format(
+              "Could not authorize fetching data from given model ID [%s] for calling user",
+              modelId
+          ),
+          nae
+      );
+      return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    }
+  }
 
   @ApiOperation(value = "Returns the image of a vorto model")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Wrong input"),
@@ -298,11 +532,16 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Map<String, String>> newRefactoring(@PathVariable String modelId) {
-    Namespace namespace = userNamespaceRoleService
-        .resolveByNameOrParentName(ModelId.fromPrettyFormat(modelId).getNamespace());
-    Map<String, String> response = new HashMap<>();
-    response.put("namespace", namespace.getName());
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    try {
+      Namespace namespace = namespaceService
+          .getByName(ModelId.fromPrettyFormat(modelId).getNamespace());
+      Map<String, String> response = new HashMap<>();
+      response.put("namespace", namespace.getName());
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (DoesNotExistException doesNotExistException) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
   }
 
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
@@ -584,7 +823,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     String namespace = ModelId.fromPrettyFormat(modelId).getNamespace();
     return namespaceService.resolveWorkspaceIdForNamespace(namespace)
         .orElseThrow(() -> new FatalModelRepositoryException(
-            "Namespace " + namespace + " could not be found.", null));
+            String.format("Namespace [%s] could not be found.", namespace), null));
   }
 
   private IDiagnostics getDiagnosticService(final String tenantId) {

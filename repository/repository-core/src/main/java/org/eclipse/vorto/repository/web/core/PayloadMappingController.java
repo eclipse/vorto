@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.mapping.engine.decoder.CSVDeserializer;
 import org.eclipse.vorto.mapping.engine.decoder.IPayloadDeserializer;
 import org.eclipse.vorto.mapping.engine.decoder.JSONDeserializer;
@@ -37,7 +38,8 @@ import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.mapping.IPayloadMappingService;
-import org.eclipse.vorto.repository.repositories.NamespaceRepository;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestContentType;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -61,11 +63,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest/mappings/specifications")
 public class PayloadMappingController extends AbstractRepositoryController {
 
+  private static final Logger LOGGER = Logger.getLogger(PayloadMappingController.class);
+
   @Autowired
   private IPayloadMappingService mappingService;
 
   @Autowired
-  private NamespaceRepository namespaceRepository;
+  private NamespaceService namespaceService;
 
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -133,16 +137,27 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @PreAuthorize("hasAuthority('model_creator')")
   public void saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
       @PathVariable String modelId) {
-    Namespace namespace = namespaceRepository
-        .findByName(ModelId.fromPrettyFormat(modelId).getNamespace());
-    IUserContext userContext;
-    if (namespace != null) {
-      userContext = UserContext
-          .user(SecurityContextHolder.getContext().getAuthentication(), namespace.getWorkspaceId());
-    } else {
-      userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    try {
+      String namespaceName = ModelId.fromPrettyFormat(modelId).getNamespace();
+      Namespace namespace = namespaceService.getByName(namespaceName);
+      if (null == namespace) {
+        LOGGER.error(
+            String.format("Namespace [%s] not found", namespaceName)
+        );
+        return;
+      }
+      IUserContext userContext;
+      if (namespace != null) {
+        userContext = UserContext
+            .user(SecurityContextHolder.getContext().getAuthentication(),
+                namespace.getWorkspaceId());
+      } else {
+        userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+      }
+      this.mappingService.saveSpecification(mappingSpecification, userContext);
+    } catch (DoesNotExistException dnee) {
+      LOGGER.error(dnee);
     }
-    this.mappingService.saveSpecification(mappingSpecification, userContext);
   }
 
   @ApiResponses(

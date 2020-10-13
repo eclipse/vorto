@@ -391,8 +391,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           };
 
           $scope.isInvalid = function () {
-            return
-            $scope.namespace.admins.length <= 0;
+            return $scope.namespace.admins.length <= 0;
           };
 
           $scope.removeAdmin = function (admin) {

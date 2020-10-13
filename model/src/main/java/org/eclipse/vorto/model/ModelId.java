@@ -127,6 +127,9 @@ public class ModelId implements IReferenceType {
     return namespace + ":" + name + ":" + version;
   }
 
+  // for tests
+  protected void setPrettyFormat(String prettyFormat) {}
+
   private static interface ModelIdParser {
     boolean canHandle(String modelId);
 

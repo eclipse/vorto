@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.nio.file.Files;
 import java.util.List;
 import org.eclipse.vorto.model.ModelType;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -42,6 +43,14 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
         .readAllLines(new ClassPathResource("origins/valid_origins.txt").getFile().toPath());
     testInvalidOrigins = Files
         .readAllLines(new ClassPathResource("origins/invalid_origins.txt").getFile().toPath());
+  }
+
+  private void deleteNamespaceNoChecks(String namespaceName) throws Exception {
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespaceName))
+                .with(userSysadmin)
+        );
   }
 
   @Test
@@ -91,6 +100,7 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   @Test
   public void testDELETERequestsValid() throws Exception {
     TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+    deleteNamespaceNoChecks(newModel.namespace);
     createNamespaceSuccessfully(newModel.namespace, userSysadmin);
     addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
     for (String origin : testValidOrigins) {
@@ -118,6 +128,7 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   public void testPOSTRequestsValid() throws Exception {
     for (String origin : testValidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      deleteNamespaceNoChecks(newModel.namespace);
       createNamespaceSuccessfully(newModel.namespace, userSysadmin);
       addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(
@@ -133,6 +144,7 @@ public class CORSRequestIntegrationTest extends IntegrationTestBase {
   public void testPOSTRequestsInvalid() throws Exception {
     for (String origin : testInvalidOrigins) {
       TestModel newModel = TestModel.TestModelBuilder.aTestModel().build();
+      deleteNamespaceNoChecks(newModel.namespace);
       createNamespaceSuccessfully(newModel.namespace, userSysadmin);
       addCollaboratorToNamespace(newModel.namespace, userModelCreatorCollaborator());
       repositoryServer.perform(

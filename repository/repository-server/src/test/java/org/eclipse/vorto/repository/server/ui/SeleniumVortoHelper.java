@@ -97,6 +97,8 @@ public class SeleniumVortoHelper {
      */
     public void openManageTab() {
         webDriver.get(rootUrl);
+        // check for loading finished state
+        webDriver.findElementByXPath("//div[@id='searchResult']/div[not(contains(@class,'ng-hide'))]");
         WebElement manageLink = webDriver.findElementByXPath("//a[@href='./#/manage']");
         // workaround for unstable "click()"
         manageLink.sendKeys(Keys.ENTER);

@@ -20,7 +20,7 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<name>Vorto Parent</name>
 
@@ -54,11 +54,35 @@
 
 	<developers>
 		<developer>
+			<id>kolotu</id>
+			<name>Kevin Olotu</name>
+			<email>kevin.olotu@bosch.io</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>mena-bosch</id>
+			<name>Menahem Julien Raccah Lisei</name>
+			<email>MenahemJulien.RaccahLisei@bosch.io</email>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>t-gauss</id>
+			<name>Tobias Gauss</name>
+			<email>tobias.gauss@bosch.io</email>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
 			<id>aedelmann</id>
 			<name>Alexander Edelmann</name>
 			<email>alexander.edelmann@bosch-si.com</email>
 			<roles>
-				<role>Lead</role>
 				<role>Committer</role>
 			</roles>
 		</developer>
@@ -275,6 +299,7 @@
 					<excludes>
 						<exclude>**/AllTests.java</exclude>
 						<exclude>**/*UITest.java</exclude>
+						<exclude>**/*BenchmarkTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -536,6 +561,25 @@
 							</excludes>
 							<includes>
 								<include>**/*UITest.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>benchmark-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>none</exclude>
+							</excludes>
+							<includes>
+								<include>**/*BenchmarkTest.java</include>
 							</includes>
 						</configuration>
 					</plugin>
