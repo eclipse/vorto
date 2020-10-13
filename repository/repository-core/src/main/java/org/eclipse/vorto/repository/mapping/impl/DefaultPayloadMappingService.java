@@ -99,17 +99,7 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
     MappingSpecification specification = new MappingSpecification();
     specification.setInfoModel(infomodel);
 
-    /*LOGGER.info("Starting addReferencesRecursive");
-    long time = System.currentTimeMillis();
-    addReferencesRecursive(infomodel, infomodel.getTargetPlatformKey());
-    LOGGER.info(
-        String.format(
-            "Finished addReferencesRecursive in %d\"",
-            (System.currentTimeMillis() - time) / 1000
-        )
-    );*/
-
-    LOGGER.info(
+    LOGGER.debug(
         "Starting fork/join task to add reference types of the given properties to the mapping Specification"
     );
     long time = System.currentTimeMillis();
@@ -120,7 +110,7 @@ public class DefaultPayloadMappingService implements IPayloadMappingService {
                 SecurityContextHolder.getContext(), RequestContextHolder.getRequestAttributes()
             )
         );
-    LOGGER.info(
+    LOGGER.debug(
         String.format(
             "Finished adding references in %d\"",
             (System.currentTimeMillis() - time) / 1000

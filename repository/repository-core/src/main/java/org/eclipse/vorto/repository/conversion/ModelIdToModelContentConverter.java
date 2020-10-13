@@ -109,20 +109,6 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
                       mappingResources, platformKey)
               )
           );
-          /*Optional<MappingModel> mappingModel = getMappingModelForModel(mappingResources, model);
-          if (mappingModel.isPresent()) {
-            AbstractModel createdModel = ModelDtoFactory
-                .createResource(flattenHierarchy(model), mappingModel);
-            createdModel.setTargetPlatformKey(platformKey.get());
-            result.getModels()
-                .put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                    createdModel);
-          } else {
-            result.getModels().put(
-                new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
-                ModelDtoFactory.createResource(flattenHierarchy(model),
-                    Optional.empty()));
-          }*/
         });
         executor.shutdown();
         // iterates over futures starting with tasks already finished, and adds the mapping to the
