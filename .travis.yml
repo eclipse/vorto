@@ -145,6 +145,7 @@ jobs:
       branches:
         only:
           - development
+          - sonarcloud_travis
       addons:
         sonarcloud:
           organization: "vortodev"
