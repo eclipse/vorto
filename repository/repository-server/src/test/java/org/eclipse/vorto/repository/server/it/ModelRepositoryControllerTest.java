@@ -304,6 +304,22 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isUnauthorized());
   }
 
+  @Test
+  public void createDatatypeWithBooleanDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasBooleanDefaultConstraint.type", "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0" );
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+
+  }
+
   /**
    * This test performs the following:
    * <ol>

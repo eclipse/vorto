@@ -1,0 +1,9 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.examples.type
+version 1.0.0
+
+entity HasBooleanDefaultConstraint {
+	mandatory boo as boolean <DEFAULT false>
+	blah as boolean <DEFAULT true>
+}
