@@ -140,3 +140,16 @@ jobs:
           skip_cleanup: true
           on:
             branch: development
+    - stage: analysis
+      name: "Static Code Analysis"
+      branches:
+        only:
+          - development
+      addons:
+        sonarcloud:
+          organization: "vortodev"
+          token:
+            secure: $SONARCLOUD_TOKEN
+      script:
+        - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=vortodev_vorto
+
