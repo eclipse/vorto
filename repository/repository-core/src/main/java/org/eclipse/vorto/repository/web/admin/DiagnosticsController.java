@@ -138,7 +138,7 @@ public class DiagnosticsController {
 
     repoFactory
         .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
-        .deleteACLOnNode(path, aclEntry);
+        .deleteAclEntryOnNode(path, aclEntry);
   }
 
   @DeleteMapping("modeshape/node/{workspaceId}/property")

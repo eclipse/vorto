@@ -122,14 +122,14 @@ define(["../init/appController"], function (repositoryControllers) {
                     });
                 };
 
-                $scope.openEditModeshapeACLDialog = function (modeshapeWorkspaceId, modeshapePath, propertyName, propertyValue) {
+                $scope.openEditModeshapeACLDialog = function (modeshapeWorkspaceId, modeshapePath, aclPrincipal, aclPrivileges) {
                     var modalInstance = $uibModal.open({
                         animation: true,
                         templateUrl: "webjars/repository-web/dist/partials/admin/editModeshapeACL.html",
                         size: "lg",
                         controller: function ($scope) {
-                            $scope.propertyName = propertyName;
-                            $scope.propertyValue = propertyValue;
+                            $scope.aclPrincipal = aclPrincipal;
+                            $scope.aclPrivileges = aclPrivileges;
                             $scope.setModeshapeProperty = function () {
                                 let body = {
                                     principal : $scope.aclPrincipal,

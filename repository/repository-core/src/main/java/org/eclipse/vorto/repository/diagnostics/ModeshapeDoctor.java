@@ -16,11 +16,13 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModeshapeDoctor;
 import org.eclipse.vorto.repository.core.impl.AbstractRepositoryOperation;
+import org.modeshape.jcr.security.SimplePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.security.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,9 +42,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public ModeshapeNodeData readModeshapeNodeData(String path) {
         return doInSession(session -> {
             Node node = session.getNode(path);
-
             LOGGER.debug("Reading Modeshape node data: {}", path);
-
             ModeshapeNodeData data = new ModeshapeNodeData();
             data.setName(node.getName());
             data.setPath(path);
@@ -107,19 +107,17 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     }
 
     @Override
-    public void deleteACLOnNode(String path, ModeshapeAclEntry aclEntry) {
+    public void deleteAclEntryOnNode(String path, ModeshapeAclEntry aclEntry) {
         doInSession(session -> {
             Node node = session.getNode(path);
-            AccessControlList acl = getAccessControlList(session, node);
-            Optional<AccessControlEntry> existingEntry = Arrays.stream(acl.getAccessControlEntries())
-                .filter(entry -> entry.getPrincipal().getName().equals(aclEntry.getPrincipal()))
-                .findAny();
-
+            AccessControlManager accessControlManager = session.getAccessControlManager();
+            AccessControlList acl = getAccessControlList(node, accessControlManager);
+            Optional<AccessControlEntry> existingEntry = getAccessControlEntry(aclEntry, acl);
             if (existingEntry.isPresent()) {
                 acl.removeAccessControlEntry(existingEntry.get());
             }
+            accessControlManager.setPolicy(path, acl);
             session.save();
-
             return null;
         });
     }
@@ -127,18 +125,20 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     private void getACL(Session session, Node node, ModeshapeNodeData data)
         throws RepositoryException {
 
-        AccessControlList acl = getAccessControlList(session, node);
+        AccessControlManager accessControlManager = session.getAccessControlManager();
+        AccessControlList acl = getAccessControlList(node, accessControlManager);
         for (int i = 0; i < acl.getAccessControlEntries().length; i++) {
             ModeshapeAclEntry aclEntry = new ModeshapeAclEntry();
             aclEntry.setPrincipal(acl.getAccessControlEntries()[i].getPrincipal().getName());
-            aclEntry.setPrivileges(transformToPrivilegeList(acl.getAccessControlEntries()[i].getPrivileges()));
+            aclEntry.setPrivileges(transformToPrivilegeList(acl.getAccessControlEntries()[i]
+                .getPrivileges()));
             data.addAclEntry(aclEntry);
         }
     }
 
-    private AccessControlList getAccessControlList(Session session, Node node)
+    private AccessControlList getAccessControlList(Node node, AccessControlManager accessControlManager)
         throws RepositoryException {
-        AccessControlManager accessControlManager = session.getAccessControlManager();
+
         AccessControlPolicyIterator it = accessControlManager.getApplicablePolicies(node.getPath());
         AccessControlList acl;
         if (it.hasNext()) {
@@ -149,15 +149,30 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         return acl;
     }
 
-    private void setACL(Session session, Node node, ModeshapeAclEntry aclEntry) throws RepositoryException {
-        AccessControlList acl = getAccessControlList(session, node);
-        Optional<AccessControlEntry> existingEntry = Arrays.stream(acl.getAccessControlEntries())
-            .filter(entry -> entry.getPrincipal().getName().equals(aclEntry.getPrincipal()))
-            .findAny();
+    private void setACL(Session session, Node node, ModeshapeAclEntry aclEntry)
+        throws RepositoryException {
+
+        AccessControlManager accessControlManager = session.getAccessControlManager();
+        AccessControlList acl = getAccessControlList(node, accessControlManager);
+        Optional<AccessControlEntry> existingEntry = getAccessControlEntry(aclEntry, acl);
         if (existingEntry.isPresent()) {
             acl.removeAccessControlEntry(existingEntry.get());
         }
-        throw new IllegalStateException("not implemented");
+        List<Privilege> privileges = new ArrayList<>();
+        for (String privilege : aclEntry.getPrivileges()) {
+            privileges.add(accessControlManager.privilegeFromName(privilege));
+        }
+        acl.addAccessControlEntry(SimplePrincipal.newInstance(aclEntry.getPrincipal()), privileges.toArray(new Privilege[]{}));
+        accessControlManager.setPolicy(node.getPath(), acl);
+        session.save();
+    }
+
+    private Optional<AccessControlEntry> getAccessControlEntry(ModeshapeAclEntry aclEntry,
+        AccessControlList acl) throws RepositoryException {
+
+        return Arrays.stream(acl.getAccessControlEntries())
+            .filter(entry -> entry.getPrincipal().getName().equals(aclEntry.getPrincipal()))
+            .findAny();
     }
 
     private List<String> transformToPrivilegeList(Privilege[] privileges) {
@@ -185,7 +200,9 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
         }
     }
 
-    private void getPropertyValue(Property property, ModeshapeNodeData data) throws RepositoryException {
+    private void getPropertyValue(Property property, ModeshapeNodeData data)
+        throws RepositoryException {
+
         if (property.isMultiple()) {
             for (Value value : property.getValues()) {
                 LOGGER.debug("Property multi-value: {}", value);

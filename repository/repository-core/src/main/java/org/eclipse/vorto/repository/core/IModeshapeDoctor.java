@@ -34,6 +34,6 @@ public interface IModeshapeDoctor {
 
     void deletePropertyOnNode(String path, ModeshapeProperty property);
 
-    void deleteACLOnNode(String path, ModeshapeAclEntry aclEntry);
+    void deleteAclEntryOnNode(String path, ModeshapeAclEntry aclEntry);
 
 }
