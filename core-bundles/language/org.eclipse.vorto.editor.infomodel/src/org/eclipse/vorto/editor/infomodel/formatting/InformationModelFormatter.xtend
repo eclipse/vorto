@@ -29,11 +29,11 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 		//Basic information
 		c.setLinewrap(1).after(dsl.modelReferenceAccess.group)
 		c.setLinewrap(2).before(dsl.findKeywords("namespace").get(0))
-		c.setLinewrap(1).after(dsl.informationModelAccess.namespaceAssignment_4)
-		c.setLinewrap(1).after(dsl.informationModelAccess.versionAssignment_6)
-		c.setLinewrap(1).after(dsl.informationModelAccess.displaynameAssignment_7_0_1)
-		c.setLinewrap(1).after(dsl.informationModelAccess.descriptionAssignment_7_1_1)
-		c.setLinewrap(1).after(dsl.informationModelAccess.categoryAssignment_7_2_1)
+		c.setLinewrap(1).after(dsl.informationModelAccess.namespaceAssignment_3)
+		c.setLinewrap(1).after(dsl.informationModelAccess.versionAssignment_5)
+		c.setLinewrap(1).after(dsl.informationModelAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(dsl.informationModelAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(dsl.informationModelAccess.categoryAssignment_6_2_1)
 		
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)

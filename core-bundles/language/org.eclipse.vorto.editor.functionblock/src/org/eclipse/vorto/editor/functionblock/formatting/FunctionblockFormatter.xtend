@@ -27,11 +27,11 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)
 		c.setLinewrap(2).before(f.findKeywords("namespace").get(0))
-		c.setLinewrap(1).after(f.functionblockModelAccess.namespaceAssignment_3)
-		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_5)
-		c.setLinewrap(1).after(f.functionblockModelAccess.displaynameAssignment_6_0_1)
-		c.setLinewrap(1).after(f.functionblockModelAccess.descriptionAssignment_6_1_1)
-		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_6_2_1)
+		c.setLinewrap(1).after(f.functionblockModelAccess.namespaceAssignment_2)
+		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_4)
+		c.setLinewrap(1).after(f.functionblockModelAccess.displaynameAssignment_5_0_1)
+		c.setLinewrap(1).after(f.functionblockModelAccess.descriptionAssignment_5_1_1)
+		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_5_2_1)
 		
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)

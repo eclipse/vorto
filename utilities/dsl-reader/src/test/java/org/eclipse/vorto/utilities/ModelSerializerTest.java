@@ -108,8 +108,17 @@ public class ModelSerializerTest {
     final Map<Object, Object> optionsMap = SaveOptions.newBuilder().format().getOptions().toOptionsMap();
     optionsMap.put(XtextResource.OPTION_ENCODING, StandardCharsets.UTF_8);
     resource.save(baos,optionsMap);
-    
-    assertTrue(equalsIgnoreNewlineStyle(IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("dsls/expected_saved_entity.type")),new String(baos.toByteArray(),StandardCharsets.UTF_8)));    
+    String expected = new String(baos.toByteArray(),StandardCharsets.UTF_8);
+    assertTrue(
+        equalsIgnoreNewlineStyle(
+            IOUtils.toString(
+                Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                    "dsls/expected_saved_entity.type"
+                )
+            ),
+            expected
+        )
+    );
   }
   
   @Test

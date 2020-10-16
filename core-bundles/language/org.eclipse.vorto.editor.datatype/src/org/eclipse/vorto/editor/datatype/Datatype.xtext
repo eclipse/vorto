@@ -32,7 +32,7 @@ Type:
 ;
 
 Entity:
-   'vortolang' lang=VortoLangVersion
+   'vortolang 1.0'
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    
@@ -48,7 +48,7 @@ Entity:
 ;
 
 Enum:
-   'vortolang' lang=VortoLangVersion
+   'vortolang 1.0'
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    
@@ -88,10 +88,6 @@ enum BooleanPropertyAttributeType:
   readable = 'readable' |
   writable = 'writable' |
   eventable = 'eventable'
-;
-
-enum VortoLangVersion: 
-	version1 = '1.0'
 ;
 
 EnumLiteralPropertyAttribute:
@@ -155,7 +151,7 @@ terminal SIGNEDINT :
 	'-'INT
 ;
 
-terminal FLOAT: ('-')?INT'.'INT;
+terminal FLOAT: ('^')?('-')?INT'.'INT;
 
 terminal DATE: 
 	('0'..'9')('0'..'9')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')

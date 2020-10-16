@@ -49,25 +49,25 @@ class MappingFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)
 		
 		c.setLinewrap(2).before(f.functionBlockMappingModelAccess.findKeywords("namespace").get(0))	
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.namespaceAssignment_4);
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.versionAssignment_6);
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.displaynameAssignment_7_0_1)
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.descriptionAssignment_7_1_1)
-		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.categoryAssignment_7_2_1)	
-			
-		c.setLinewrap(2).before(f.entityMappingModelAccess.findKeywords("namespace").get(0))	
-		c.setLinewrap(1).after(f.entityMappingModelAccess.namespaceAssignment_4);
-		c.setLinewrap(1).after(f.entityMappingModelAccess.versionAssignment_6);	
-		c.setLinewrap(1).after(f.entityMappingModelAccess.displaynameAssignment_7_0_1)
-		c.setLinewrap(1).after(f.entityMappingModelAccess.descriptionAssignment_7_1_1)
-		c.setLinewrap(1).after(f.entityMappingModelAccess.categoryAssignment_7_2_1)	
-		
-		c.setLinewrap(2).before(f.enumMappingModelAccess.findKeywords("namespace").get(0))	
-		c.setLinewrap(1).after(f.enumMappingModelAccess.namespaceAssignment_4);
-		c.setLinewrap(1).after(f.enumMappingModelAccess.versionAssignment_6);
-		c.setLinewrap(1).after(f.enumMappingModelAccess.displaynameAssignment_7_0_1)
-		c.setLinewrap(1).after(f.enumMappingModelAccess.descriptionAssignment_7_1_1)
-		c.setLinewrap(1).after(f.enumMappingModelAccess.categoryAssignment_7_2_1)	
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.namespaceAssignment_3);
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.versionAssignment_5);
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(f.functionBlockMappingModelAccess.categoryAssignment_6_2_1)
+
+		c.setLinewrap(2).before(f.entityMappingModelAccess.findKeywords("namespace").get(0))
+		c.setLinewrap(1).after(f.entityMappingModelAccess.namespaceAssignment_3);
+		c.setLinewrap(1).after(f.entityMappingModelAccess.versionAssignment_5);
+		c.setLinewrap(1).after(f.entityMappingModelAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(f.entityMappingModelAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(f.entityMappingModelAccess.categoryAssignment_6_2_1)
+
+		c.setLinewrap(2).before(f.enumMappingModelAccess.findKeywords("namespace").get(0))
+		c.setLinewrap(1).after(f.enumMappingModelAccess.namespaceAssignment_3);
+		c.setLinewrap(1).after(f.enumMappingModelAccess.versionAssignment_5);
+		c.setLinewrap(1).after(f.enumMappingModelAccess.displaynameAssignment_6_0_1)
+		c.setLinewrap(1).after(f.enumMappingModelAccess.descriptionAssignment_6_1_1)
+		c.setLinewrap(1).after(f.enumMappingModelAccess.categoryAssignment_6_2_1)
 				
 		c.setLinewrap(1).after(f.modelReferenceAccess.versionAssignment_3);	
 									

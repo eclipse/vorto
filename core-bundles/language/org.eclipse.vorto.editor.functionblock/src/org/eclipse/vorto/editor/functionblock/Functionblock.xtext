@@ -17,7 +17,7 @@ import "http://www.eclipse.org/vorto/metamodel/Functionblock"
 import "http://www.eclipse.org/vorto/metamodel/Model" as model 
 
 FunctionblockModel:
-	'vortolang' lang=VortoLangVersion
+	'vortolang 1.0'
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     (

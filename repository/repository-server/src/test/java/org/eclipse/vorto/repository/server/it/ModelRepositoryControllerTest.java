@@ -309,7 +309,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     // creates namespace
     createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
     // creates model with constraint
-    createModel(userSysadmin, "HasBooleanDefaultConstraint.type", "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0" );
+    createModel(userSysadmin, "HasBooleanDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0");
     // cleans up
     repositoryServer
         .perform(
@@ -317,7 +318,22 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
                 .with(userSysadmin)
         )
         .andExpect(status().isNoContent());
+  }
 
+  @Test
+  public void createDatatypeWithFloatDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasFloatDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasFloatDefaultConstraint:1.0.1");
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
   }
 
   /**
