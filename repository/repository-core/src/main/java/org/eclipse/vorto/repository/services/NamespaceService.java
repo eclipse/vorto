@@ -181,8 +181,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    *     The user is {@code null}, has a {@code null} user name, or does not exist.
    *   </li>
    *   <li>
-   *     The namespace name is {@code null}, empty, does not conform to naming standards (lowercase
-   *     ASCII alphanumerics, dots as separators, underscores allowed).
+   *     The namespace name is {@code null}, empty, does not conform to naming standards (ASCII
+   *     alphanumerics, dots as separators, underscores allowed).
    *   </li>
    *   <li>
    *     A namespace with that name already exists.
@@ -197,6 +197,8 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    *     A sysadmin creates an official namespace for any user, including themselves.
    *   </li>
    * </ol>
+   * <b>Note:</b> while upper-case characters <i>are</i> allowed, the namespace name itself is
+   * persisted lower-case. <br/>
    * This method only deals with creating namespaces. <br/>
    *
    * @param actor
@@ -253,9 +255,9 @@ public class NamespaceService implements ApplicationEventPublisherAware {
       verifyPrivateNamespaceQuota(actor, target);
     }
 
-    // persists the new namespace
+    // persists the new namespace - to lower case, with a new random JCR workspace ID
     Namespace namespace = new Namespace();
-    namespace.setName(namespaceName);
+    namespace.setName(namespaceName.toLowerCase());
     namespace.setWorkspaceId(UUID.randomUUID().toString().replace("-", ""));
     namespaceRepository.save(namespace);
 
