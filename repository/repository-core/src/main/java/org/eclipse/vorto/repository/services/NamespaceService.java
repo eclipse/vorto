@@ -81,7 +81,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    *   </li>
    * </ul>
    */
-  public static final Pattern VALID_NAMESPACE_NAME = Pattern.compile("[\\w\\d_]+(\\.[\\w\\d_]+)*");
+  public static final Pattern VALID_NAMESPACE_NAME = Pattern.compile("\\w+(\\.\\w+)*");
 
   /**
    * Defines the prefix all private namespaces have
