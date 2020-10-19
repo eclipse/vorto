@@ -122,15 +122,30 @@ define(["../init/appController"], function (repositoryControllers) {
                     });
                 };
 
-                $scope.openEditModeshapeACLDialog = function (modeshapeWorkspaceId, modeshapePath, aclPrincipal, aclPrivileges) {
+                $scope.openEditModeshapeACLDialog = function (modeshapeWorkspaceId, modeshapePath, aclEntry) {
                     var modalInstance = $uibModal.open({
                         animation: true,
                         templateUrl: "webjars/repository-web/dist/partials/admin/editModeshapeACL.html",
                         size: "lg",
                         controller: function ($scope) {
-                            $scope.aclPrincipal = aclPrincipal;
-                            $scope.aclPrivileges = aclPrivileges;
-                            $scope.setModeshapeProperty = function () {
+                            $scope.aclPrincipal = aclEntry.principal;
+                            $scope.aclPrivileges = aclEntry.privileges;
+
+                            $scope.addPrivilege = function (privilegeToAdd) {
+                                if (privilegeToAdd) {
+                                    $scope.aclPrivileges.push(privilegeToAdd);
+                                }
+                            };
+
+                            $scope.removePrivilege = function (privilegeToRemove) {
+                                if (privilegeToRemove) {
+                                    $scope.aclPrivileges = $scope.aclPrivileges.filter(function (value, index, arr) {
+                                        return value !== privilegeToRemove;
+                                    });
+                                }
+                            };
+
+                            $scope.setModeshapeAclEntry = function () {
                                 let body = {
                                     principal : $scope.aclPrincipal,
                                     privileges : $scope.aclPrivileges
