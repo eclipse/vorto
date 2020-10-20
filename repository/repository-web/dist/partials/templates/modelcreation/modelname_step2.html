@@ -1,43 +1,68 @@
 <div class="modal-body">
-	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-	<label>
-		Specify namespace, name and version for the {{modelType}}
-	</label>
-	<form name="createModelForm" novalidate>
-		<div class="form-group">
-	    	<label>Namespace</label>
-	    	<div class="row">
-	    		<div class="col-sm-6">
-	    			<select class="form-control" id="namespaceRoot" ng-model="namespaceRoot" ng-options="item.name for item in userNamespaces" required>
-	    				<option value="">-- Select namespace --</option>
-	    			</select>
-	    		</div>
-	    		<div class="col-sm-6">
-	    			<div class="input-group">
-						<span class="input-group-addon"><strong>.</strong></span>
-						<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^\w+(\.\w+)*$/" placeholder="sub-domain">
-						<div class="invalid-input" ng-show="createModelForm.modelNamespace.$error.pattern">Sub-domains are made of alphanumeric sequences including underscores, optionally separated by dots.</div>
-					</div>
-	    		</div>
-	    	</div>
-		</div>
-		<div class="form-group">
-			   	<label>Name</label>
-		        <input type="text" class="form-control" name="modelName" ng-model="modelName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
-		        <div class="invalid-input" ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
-		</div>
-		<div class="form-group">
-		    	<label>Version</label>
-		        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
-				<div class="invalid-input" ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
-		</div>
-	</form>
+  <div ng-if="errorMessage != null" class="alert alert-danger"><i
+      class="fa fa-exclamation-triangle"></i> {{errorMessage}}
+  </div>
+  <label>
+    Specify namespace, name and version for the {{modelType}}
+  </label>
+  <form name="createModelForm" novalidate>
+    <div class="form-group">
+      <label>Namespace</label>
+      <div class="row">
+        <div class="col-sm-6">
+          <select class="form-control" id="namespaceRoot" ng-model="namespaceRoot"
+                  ng-options="item.name for item in userNamespaces" required>
+            <option value="">-- Select namespace --</option>
+          </select>
+        </div>
+        <div class="col-sm-6">
+          <div class="input-group">
+            <span class="input-group-addon"><strong>.</strong></span>
+            <input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend"
+                   ng-pattern="/^(?!\d)\w+(\.(?!\d)\w+)*$/" placeholder="sub-domain"></input>
+          </div>
+          <div class="invalid-input" ng-show="createModelForm.modelNamespace.$error.pattern">
+            Sub-domains are made of alphanumeric sequences including underscores, optionally
+            separated by dots. A segment cannot start with a digit.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" class="form-control" name="modelName" ng-model="modelName"
+             ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
+      <div class="invalid-input" ng-show="createModelForm.modelName.$error.pattern">Please enter a
+        valid model name. Example: DistanceSensor
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Version</label>
+      <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion"
+             ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
+      <div class="invalid-input" ng-show="createModelForm.modelVersion.$error.pattern">Please enter
+        a valid model version. Example: 1.0.0
+      </div>
+    </div>
+  </form>
 </div>
 <div class="modal-footer">
-	<div class="align-right">
-		<button ng-if="modelType === 'InformationModel'" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="next('step3', modelType, namespaceRoot, namespaceAppend, modelName, modelVersion)">Next</button>
-	    <button ng-if="modelType !== 'InformationModel' && !isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)">Create</button>
-	    <button ng-if="modelType !== 'InformationModel' && isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
-	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	</div>
+  <div class="align-right">
+    <button ng-if="modelType === 'InformationModel'" class="btn btn-primary" type="button"
+            ng-disabled="isLoading || createModelForm.$invalid"
+            ng-click="next('step3', modelType, namespaceRoot, namespaceAppend, modelName, modelVersion)">
+      Next
+    </button>
+    <button ng-if="modelType !== 'InformationModel' && !isLoading" class="btn btn-primary"
+            type="button" ng-disabled="isLoading || createModelForm.$invalid"
+            ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)">
+      Create
+    </button>
+    <button ng-if="modelType !== 'InformationModel' && isLoading" class="btn btn-primary"
+            type="button" ng-disabled="isLoading || createModelForm.$invalid"
+            ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)">
+      <i class="fa fa-refresh fa-spin"></i>&nbsp;Create
+    </button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+  </div>
 </div>

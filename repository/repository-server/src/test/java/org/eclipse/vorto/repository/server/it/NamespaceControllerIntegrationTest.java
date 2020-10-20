@@ -85,7 +85,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    */
   @Test
   public void testNSCreationWithUppercaseCharacters() throws Exception {
-    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.0FFICIA1";
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
     repositoryServer
         .perform(
             put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
@@ -124,14 +124,14 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    */
   @Test
   public void produceNamespaceCollisionDueToCaseInsensitivity() throws Exception {
-    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.0FFICIA1";
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
     repositoryServer
         .perform(
             put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
                 .contentType("application/json").with(userSysadmin)
         )
         .andExpect(status().isCreated());
-    String sameNamespaceWithDifferentUCChars = "COM.some_Other_Company.0fficia1";
+    String sameNamespaceWithDifferentUCChars = "COM.some_Other_Company.officia1";
     repositoryServer
         .perform(
             put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
@@ -159,7 +159,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    */
   @Test
   public void getCollaboratorsWithDifferentCasing() throws Exception {
-    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.0FFICIA1";
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
     repositoryServer
         .perform(
             put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
@@ -167,7 +167,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
         )
         .andExpect(status().isCreated());
 
-    String differentCasing = "CoM.sOME_oThEr_CoMpAnY.0FfIcIa1";
+    String differentCasing = "CoM.sOME_oThEr_CoMpAnY.oFfIcIa1";
     repositoryServer
         .perform(
             get(String.format("/rest/namespaces/%s/users", differentCasing))

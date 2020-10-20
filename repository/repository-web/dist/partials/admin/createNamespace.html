@@ -31,9 +31,9 @@
 				<label>Specify namespace</label>
 				<div class="input-group">
 					<span  ng-if="!namespace.sysAdmin" class="input-group-addon">{{ namespace.prefixText }}</span>
-					<input type="text" name="namespace" ng-pattern="/^\w+(\.\w+)*$/" ng-model="namespace.name" placeholder="{{user}}" class="form-control" required>
+					<input type="text" name="namespace" ng-pattern="/^(?!\d)\w+(\.(?!\d)\w+)*$/" ng-model="namespace.name" placeholder="{{user}}" class="form-control" required>
 				</div>
-				<div class="invalid-input" ng-show="namespaceForm.namespace.$error.pattern">Namespaces are made of alphanumeric sequences including underscores, optionally separated by dots</div>
+				<div class="invalid-input" ng-show="namespaceForm.namespace.$error.pattern">Namespaces are made of alphanumeric sequences including underscores, optionally separated by dots. A segment cannot start with a digit.</div>
 			 </div>   
 		</form>
 	</div>

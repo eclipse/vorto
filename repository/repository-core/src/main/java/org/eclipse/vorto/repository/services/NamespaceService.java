@@ -81,7 +81,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    *   </li>
    * </ul>
    */
-  public static final Pattern VALID_NAMESPACE_NAME = Pattern.compile("\\w+(\\.\\w+)*");
+  public static final Pattern VALID_NAMESPACE_NAME = Pattern.compile("^[\\w&&[^\\d]]\\w*(\\.[\\w&&[^\\d]]\\w*)*");
 
   /**
    * Defines the prefix all private namespaces have
@@ -228,11 +228,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     }
 
     // pattern-based namespace name validation
-    if (!VALID_NAMESPACE_NAME.matcher(namespaceName).matches()) {
-      throw new NameSyntaxException(String
-          .format("[%s] is not a valid namespace name - aborting namespace creation.",
-              namespaceName));
-    }
+    ServiceValidationUtil.validateNamespaceName(namespaceName);
 
     // namespace collision validation
     if (cache.namespace(namespaceName).isPresent()) {
