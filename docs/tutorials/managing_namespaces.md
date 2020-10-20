@@ -77,6 +77,7 @@ The Vorto namespace notation follows a strict set of rules.
   	ID ('.' ID)*
   ;</code></pre>
   Source: [Datatype.xtext](https://github.com/eclipse/vorto/blob/master/core-bundles/language/org.eclipse.vorto.editor.datatype/src/org/eclipse/vorto/editor/datatype/Datatype.xtext)
+  <br/><br/>
   The ID terminal is derived from Xtext's own definition:
   <pre><code>terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;</code></pre>
   Source: [Terminals.xtext](https://github.com/eclipse/xtext-core/blob/master/org.eclipse.xtext/src/org/eclipse/xtext/common/Terminals.xtext)
@@ -113,5 +114,6 @@ Namespace | Valid? | Explanation
 `vorto.private.MY_NAMESPACE` | yes | Every segment is a plain-ASCII/underscore sequence, dot-separated. <br/><br/>**Note**: namespaces are automatically lower-cased when saved, so Vorto will save `vorto.private.my_namespace` |
 `vorto.private._johndoe1234` | yes | Every segment is a plain-ASCII/digit/underscore sequence, dot-separated |
 `org.eclipse.vorto.4ever` | no | One segment starts with a digit |
+`vorto.private.mynamespace.` | no | Trailing dot in last segment |
 `jp.私.の.名前空間` | no | Characters out of ASCII range |
 `vorto.private.my namespace` | no | Segment contains whitespace | 
