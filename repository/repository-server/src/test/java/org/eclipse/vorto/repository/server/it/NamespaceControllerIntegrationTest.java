@@ -79,6 +79,114 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
   }
 
   /**
+   * Creating a namespace with uppercase characters will succeed, but it will be lowercased. <br/>
+   * Also uses underscores in namespaces.
+   * @throws Exception
+   */
+  @Test
+  public void testNSCreationWithUppercaseCharacters() throws Exception {
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            get(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value(namespaceWithUppercaseCharacters.toLowerCase()));
+
+    // cleanup
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * While upper case characters are allowed while creating a namespace, its name will be lowercased
+   * in the back-end upon persisting. <br/>
+   * Therefore, trying to create two namespaces with the same name save for case will cause a
+   * collision and fail.<br/>
+   * The cleanup phase of this test that deletes the namespace also references it by the second
+   * notation, thus ensuring that one can delete a namespace by name even if the name is not
+   * lowercase, as it was persisted.<br/>
+   * Also uses underscores in namespaces.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void produceNamespaceCollisionDueToCaseInsensitivity() throws Exception {
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isCreated());
+    String sameNamespaceWithDifferentUCChars = "COM.some_Other_Company.officia1";
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isConflict());
+
+    // cleanup with a twist: tries to clean up by referencing the namespace name with different
+    // casing
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+
+  }
+
+  /**
+   * This verifies that getting the collaborator of a namespace referenced with non-lowercase
+   * notation still resolves the namespace as lowercase, as it was persisted upon creation.<br/>
+   * Also uses underscores in namespaces.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void getCollaboratorsWithDifferentCasing() throws Exception {
+    String namespaceWithUppercaseCharacters = "com.Some_Other_Company.OFFICIA1";
+    repositoryServer
+        .perform(
+            put(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isCreated());
+
+    String differentCasing = "CoM.sOME_oThEr_CoMpAnY.oFfIcIa1";
+    repositoryServer
+        .perform(
+            get(String.format("/rest/namespaces/%s/users", differentCasing))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$", hasSize(1)));
+
+    // cleanup
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespaceWithUppercaseCharacters))
+                .contentType("application/json").with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
    * Uses an empty namespace name after trimming
    *
    * @throws Exception
@@ -715,8 +823,8 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     userModelCreatorCollaboratorAsUserSysadmin.setRoles(ownerRoles);
     userModelCreatorNSUsers.add(userModelCreatorCollaboratorAsUserSysadmin);
 
-    // creating namespace for userModelCreator
-    NamespaceDto userModelCreatorNS = new NamespaceDto("vorto.private.myNamespace",
+    // creating namespace for userModelCreator - lowercased ns name
+    NamespaceDto userModelCreatorNS = new NamespaceDto("vorto.private.myNamespace".toLowerCase(),
         userModelCreatorNSUsers, userModelCreatorNSAdmins);
 
     // creating userModelCreator2 as a Collaborator object
@@ -742,8 +850,8 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     userModelCreator2NSUsers.add(userModelCreator2CollaboratorAsUserSysadmin);
     userModelCreator2NSUsers.add(userModelCreatorCollaborator);
 
-    // creating ns for userModelCreator2
-    NamespaceDto userModelCreator2NS = new NamespaceDto("vorto.private.myNamespace2",
+    // creating ns for userModelCreator2 - namespace name lowercased
+    NamespaceDto userModelCreator2NS = new NamespaceDto("vorto.private.myNamespace2".toLowerCase(),
         userModelCreator2NSUsers, userModelCreator2NSAdmins);
 
     // adding both ns to expected collection

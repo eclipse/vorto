@@ -309,7 +309,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     // creates namespace
     createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
     // creates model with constraint
-    createModel(userSysadmin, "HasBooleanDefaultConstraint.type", "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0" );
+    createModel(userSysadmin, "HasBooleanDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0");
     // cleans up
     repositoryServer
         .perform(
@@ -642,6 +643,50 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
 
+  }
+
+  /**
+   * This verifies that an API call for a model is case-insensitive with regards to the part of its
+   * ID that represents the namespace.<br/>
+   * In other words, namespaces are case-insensitive both when manipulating the namespace itself,
+   * and when using the namespace as part of an ID to represent a model.<br/>
+   * Tests the REST call for the UI payload.
+   *
+   * @throws Exception
+   * @see ModelControllerIntegrationTest#resolveModelWithCaseInsensitiveNamespace() for API V1 payloads.
+   */
+  @Test
+  public void resolveModelWithCaseInsensitiveNamespace() throws Exception {
+    String namespace = "com.Some_Other_Company.oFFICIA1";
+    createNamespaceSuccessfully(namespace, userSysadmin);
+    String id = String.format("%s.ModelIDCaseInsensitiveTest:1.0.0", namespace);
+    createModel(
+        userSysadmin,
+        "ModelIDCaseInsensitiveTest.type",
+        id
+    );
+    repositoryServer
+        .perform(
+            get(String.format("/rest/models/ui/%s", id))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.modelInfo.id.namespace", equalTo(namespace.toLowerCase())));
+
+    // cleanup
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", id))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isOk());
+
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespace))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
   }
 
 }
