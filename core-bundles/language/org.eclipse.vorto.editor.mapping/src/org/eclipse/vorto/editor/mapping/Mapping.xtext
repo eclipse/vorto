@@ -10,20 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-/*******************************************************************************
-* Copyright (c) 2015 Bosch Software Innovations GmbH and others.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* and Eclipse Distribution License v1.0 which accompany this distribution.
-*
-* The Eclipse Public License is available at
-* http://www.eclipse.org/legal/epl-v10.html
-* The Eclipse Distribution License is available at
-* http://www.eclipse.org/org/documents/edl-v10.php.
-*
-* Contributors:
-* Bosch Software Innovations GmbH - Please refer to git log
-*******************************************************************************/
+
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/vorto/metamodel/Mapping"
@@ -40,10 +27,14 @@ DataTypeMappingModel:
 	EntityMappingModel | EnumMappingModel	
 ;
 
+terminal VortolangVersion:
+  '1.0'
+;
+
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingModel:
 	{InfoModelMappingModel}
-	'vortolang' lang=VortoLangVersion
+	'vortolang' lang=VortolangVersion type=[VortolangVersion]
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -79,7 +70,7 @@ InfoModelAttributeSource:
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMappingModel:
 	{FunctionBlockMappingModel}
-	'vortolang' lang=VortoLangVersion
+	'vortolang' lang=VortolangVersion type=[VortolangVersion]
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -90,10 +81,6 @@ FunctionBlockMappingModel:
 			'targetplatform' targetPlatform = ID	
 			(rules +=FunctionBlockMappingRule)*
 	'}'	
-;
-
-enum VortoLangVersion returns model::VortoLangVersion:
-	version1 = '1.0'
 ;
 
 ModelReference returns model::ModelReference:
@@ -143,7 +130,7 @@ EventSource:
 /*----------------------Start Entity Mapping Definition---------------------------*/
 EntityMappingModel:
 	{EntityMappingModel}
-	'vortolang' lang=VortoLangVersion
+	'vortolang' lang=VortolangVersion type=[VortolangVersion]
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -179,7 +166,7 @@ EntityAttributeSource:
 /*----------------------Start Enum Mapping Definition---------------------------*/
 EnumMappingModel:
 	{EnumMappingModel}
-	'vortolang' lang=VortoLangVersion
+	'vortolang' lang=VortolangVersion type=[VortolangVersion]
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
