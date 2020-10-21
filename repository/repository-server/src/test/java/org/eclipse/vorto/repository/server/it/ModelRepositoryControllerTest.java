@@ -658,7 +658,6 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   @Test
   public void resolveModelWithCaseInsensitiveNamespace() throws Exception {
     String namespace = "com.Some_Other_Company.oFFICIA1";
-    //String namespace = "com.some_other_company.official";
     createNamespaceSuccessfully(namespace, userSysadmin);
     String id = String.format("%s.ModelIDCaseInsensitiveTest:1.0.0", namespace);
     createModel(
