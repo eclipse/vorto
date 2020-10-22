@@ -1,0 +1,10 @@
+# the one and only
+org.eclipse.vorto
+# upper-case letters are ok, but they will be lowercased when persisting
+com.FOO.BAR
+# digits are ok as long as they are not at the start of a segment
+co.uk.a.b1.c234
+# underscores are ok
+vorto.private.a_bc_4
+org.eclipse.vorto._deprecated
+com.mycompany.endsWithAnUnderscore_

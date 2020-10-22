@@ -1,0 +1,8 @@
+vortolang 1.0
+
+namespace com.some_other_company.officia1
+version 1.0.0
+
+entity ModelIDCaseInsensitiveTest {
+	boo as boolean <DEFAULT false>
+}
