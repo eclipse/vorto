@@ -37,7 +37,7 @@ Type:
 ;
 
 Entity:
-   'vortolang' lang=VortolangVersion type=[VortolangVersion]
+   'vortolang' lang=FLOAT
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    

@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace org.eclipse.vorto.examples.type
+version 1.0.1
+
+entity HasFloatDefaultConstraint {
+	foo0 as float <DEFAULT 0.0>
+	foo1 as float <DEFAULT 0.1>
+	foo3 as float <DEFAULT 1.1>
+	foo4 as float <DEFAULT 2.3456789>
+	foo5 as float <DEFAULT 345.6789>
+	foo2 as float <DEFAULT 1.0>
+}

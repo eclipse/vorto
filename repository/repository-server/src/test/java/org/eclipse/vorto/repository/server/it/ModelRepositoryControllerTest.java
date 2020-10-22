@@ -304,6 +304,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isUnauthorized());
   }
 
+  /**
+   * This verifies that the {@literal DEFAULT} constraint applied to boolean types does not
+   * prevent model parsing.
+   *
+   * @throws Exception
+   */
   @Test
   public void createDatatypeWithBooleanDefaultConstraint() throws Exception {
     // creates namespace
@@ -321,6 +327,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
 
   }
 
+  /**
+   * This verifies that a value (e.g. of {@literal 1.0}) in a float type constraint is not shadowed by
+   * the Vortolang version value (typically also {@literal 1.0}).
+   *
+   * @throws Exception
+   */
   @Test
   public void createDatatypeWithFloatDefaultConstraint() throws Exception {
     // creates namespace
@@ -337,6 +349,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isNoContent());
   }
 
+  /**
+   * This verifies that a non-supported Vortolang version (anything {@literal != 1.0} at the time
+   * of writing) prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
   @Test
   public void createDatatypeWithUnsupportedVortolangVersion() throws Exception {
     // creates namespace
@@ -367,6 +385,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isNoContent());
   }
 
+  /**
+   * This verifies that a malformed vortolang version declaration (e.g. {@literal 0.blah})
+   * prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
   @Test
   public void createDatatypeWithMalformedVortolangVersion() throws Exception {
     // creates namespace

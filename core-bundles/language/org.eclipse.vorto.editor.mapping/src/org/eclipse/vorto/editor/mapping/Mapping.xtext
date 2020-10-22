@@ -27,10 +27,6 @@ DataTypeMappingModel:
 	EntityMappingModel | EnumMappingModel	
 ;
 
-terminal VortolangVersion:
-  '1.0'
-;
-
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingModel:
 	{InfoModelMappingModel}
