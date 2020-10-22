@@ -95,6 +95,7 @@ public abstract class BuilderUtils {
   }
 
   public abstract static class ModelBuilder<T extends Model> {
+
     protected T model;
 
     public ModelBuilder(T model) {

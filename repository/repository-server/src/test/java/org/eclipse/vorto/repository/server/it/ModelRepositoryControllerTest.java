@@ -309,7 +309,8 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     // creates namespace
     createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
     // creates model with constraint
-    createModel(userSysadmin, "HasBooleanDefaultConstraint.type", "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0" );
+    createModel(userSysadmin, "HasBooleanDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0");
     // cleans up
     repositoryServer
         .perform(
@@ -318,6 +319,82 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isNoContent());
 
+  }
+
+  @Test
+  public void createDatatypeWithFloatDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasFloatDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasFloatDefaultConstraint:1.0.1");
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void createDatatypeWithUnsupportedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("UnsupportedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("UnsupportedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void createDatatypeWithMalformedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("MalformedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MalformedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
   }
 
   /**

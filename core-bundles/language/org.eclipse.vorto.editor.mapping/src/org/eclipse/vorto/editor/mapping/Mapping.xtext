@@ -34,7 +34,7 @@ terminal VortolangVersion:
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingModel:
 	{InfoModelMappingModel}
-	'vortolang' lang=VortolangVersion type=[VortolangVersion]
+	'vortolang' lang=FLOAT
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -70,7 +70,7 @@ InfoModelAttributeSource:
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMappingModel:
 	{FunctionBlockMappingModel}
-	'vortolang' lang=VortolangVersion type=[VortolangVersion]
+	'vortolang' lang=FLOAT
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -130,7 +130,7 @@ EventSource:
 /*----------------------Start Entity Mapping Definition---------------------------*/
 EntityMappingModel:
 	{EntityMappingModel}
-	'vortolang' lang=VortolangVersion type=[VortolangVersion]
+	'vortolang' lang=FLOAT
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -166,7 +166,7 @@ EntityAttributeSource:
 /*----------------------Start Enum Mapping Definition---------------------------*/
 EnumMappingModel:
 	{EnumMappingModel}
-	'vortolang' lang=VortolangVersion type=[VortolangVersion]
+	'vortolang' lang=FLOAT
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     ((('displayname' displayname=STRING)?) & 
@@ -225,3 +225,7 @@ CATEGORY: ID ('/' ID)*;
 /*----------------------End Target Element Definition---------------------------*/
 
 enum ModelAttribute: name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
+
+terminal FLOAT:
+  ('-')?INT'.'INT
+;

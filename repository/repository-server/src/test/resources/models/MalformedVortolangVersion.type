@@ -1,0 +1,8 @@
+vortolang 0.foo
+
+namespace org.eclipse.vorto.examples.type
+version 1.0.0
+
+entity MalformedVortolangVersion {
+
+}

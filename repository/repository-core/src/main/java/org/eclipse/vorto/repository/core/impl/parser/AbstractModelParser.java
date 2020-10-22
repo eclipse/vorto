@@ -66,12 +66,12 @@ public abstract class AbstractModelParser implements IModelParser {
     Resource resource = createResource(fileName, getContent(is), resourceSet)
         .orElseThrow(() -> new ValidationException(
             "Xtext is not able to create a resource for this model. Check if you are using the correct parser.",
-            getModelInfoFromFilename()));
+            getModelInfoFromFilename(fileName)));
 
     if (resource.getContents().size() <= 0) {
       throw new ValidationException(
           "Xtext is not able to create a model out of this file. Check if the file you are using is correct.",
-          getModelInfoFromFilename());
+          getModelInfoFromFilename(fileName));
     }
 
     Model model = (Model) resource.getContents().get(0);
@@ -85,20 +85,23 @@ public abstract class AbstractModelParser implements IModelParser {
         List<ModelId> missingReferences = getMissingReferences(model, issues);
         if (missingReferences.size() > 0) {
           throw new CouldNotResolveReferenceException(
-              getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
+              getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)), missingReferences);
         } else {
           Set<ValidationIssue> validationIssues = convertIssues(issues);
           throw new ValidationException(collate(validationIssues), validationIssues,
-              getModelInfo(model).orElse(getModelInfoFromFilename()));
+              getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)));
         }
       }
 
       if (!resource.getErrors().isEmpty()) {
         throw new ValidationException(resource.getErrors().get(0).getMessage(),
-            getModelInfo(model).orElse(getModelInfoFromFilename()));
+            getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)));
       }
     }
 
+    // adds Vortolang version validation - will throw ValidationException if the Vortolang version
+    // is in the supported format, but not supported as a value
+    SupportedVortolangVersions.validate(model, fileName);
 
     return new ModelResource((Model) resource.getContents().get(0));
   }
@@ -155,7 +158,7 @@ public abstract class AbstractModelParser implements IModelParser {
     return Optional.ofNullable(dirtyName.replaceAll("'", "").replaceAll("\\.", ""));
   }
 
-  private Optional<ModelInfo> getModelInfo(Model model) {
+  public static Optional<ModelInfo> getModelInfo(Model model, String fileName) {
     if (model == null || model.getName() == null || model.getNamespace() == null
         || model.getVersion() == null) {
       return Optional.empty();
@@ -206,11 +209,11 @@ public abstract class AbstractModelParser implements IModelParser {
     return baos.toByteArray();
   }
 
-  private ModelInfo getModelInfoFromFilename() {
-    return new ModelInfo(parseModelIdFromFileName(), ModelType.fromFileName(fileName));
+  public static ModelInfo getModelInfoFromFilename(String fileName) {
+    return new ModelInfo(parseModelIdFromFileName(fileName), ModelType.fromFileName(fileName));
   }
 
-  private ModelId parseModelIdFromFileName() {
+  public static ModelId parseModelIdFromFileName(String fileName) {
     String pureFileName =
         fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
     ModelId modelId = new ModelId();
