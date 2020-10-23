@@ -22,5 +22,5 @@ spring:
   jpa:
     show-sql: true
     generate-ddl: true
-  hibernate:
-    ddl-auto: validate
+    hibernate:
+      ddl-auto: none
