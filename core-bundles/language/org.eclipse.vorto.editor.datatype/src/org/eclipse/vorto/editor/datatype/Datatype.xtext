@@ -28,10 +28,6 @@ QualifiedName:
 	ID ('.' ID)*
 ;
 
-VortolangVersion:
-  '1.0'
-;
-
 Type:
 	Entity | Enum
 ;
@@ -53,7 +49,7 @@ Entity:
 ;
 
 Enum:
-   'vortolang' lang=VortolangVersion type=[VortolangVersion]
+   'vortolang' lang=FLOAT
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    
