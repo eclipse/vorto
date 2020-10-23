@@ -17,13 +17,8 @@ services:
     depends_on:
       - "db"
     image: eclipsevorto/vorto-repo
-    build:
-      context: .
-      dockerfile: docker/Repository_Dockerfile
-      args:
-        JAR_FILE:  repository/repository-server/target/infomodelrepository.jar
-        http_proxy: $http_proxy
-        https_proxy: $https_proxy
+    volumes:
+      - ~/.vorto:/root/.vorto
     ports:
       - "8080:8080"
     env_file:
@@ -31,6 +26,8 @@ services:
     networks:
       - backend
   db:
+    volumes:
+       - /opt/mysql_data:/var/lib/mysql
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
