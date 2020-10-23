@@ -1,8 +1,11 @@
-from os import getenv
-from subprocess import check_call
-import json, sys, yaml
-from pathlib import Path
 import argparse
+import json
+import sys
+import yaml
+from os import getenv
+from pathlib import Path
+from subprocess import check_call
+
 
 def proxy_url_to_java(proxy_url):
     user = None
@@ -53,6 +56,9 @@ def main():
     #Things that can be defaulted
     args.update({"server.port": getenv("VORTO_PORT", 8080)})
     args.update({"server.contextPath": getenv("CONTEXT_PATH", "/")})
+    args.update({"server.config.generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
+    args.update({"suite_clientid": "123"})
+    args.update({"suite_clientSecret": "123"})
     args.update({"server.config.generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
     if getenv("GENERATOR_PASSWORD"):
         args.update({"server.config.generatorPassword": getenv("GENERATOR_PASSWORD")})
