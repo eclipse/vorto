@@ -69,6 +69,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public void deleteModeshapeNode(String path) {
         doInSession(session -> {
             Node node = session.getNode(path);
+            LOGGER.debug("Deleting Modeshape node: {}", path);
             node.remove();
             session.save();
             return null;
@@ -79,6 +80,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public void setPropertyOnNode(String path, ModeshapeProperty property) {
         doInSession(session -> {
             Node node = session.getNode(path);
+            LOGGER.debug("Setting property {} with value {} on Modeshape node: {}", property.getName(), property.getValue(), path);
             node.setProperty(property.getName(), property.getValue());
             session.save();
             return null;
@@ -89,6 +91,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public void setAclEntryOnNode(String path, ModeshapeAclEntry aclEntry) {
         doInSession(session -> {
             Node node = session.getNode(path);
+            LOGGER.debug("Setting ACL entry for principal {} with permissions {} on Modeshape node: {}", aclEntry.getPrincipal(), aclEntry.getPrivileges(), path);
             setACL(session, node, aclEntry);
             session.save();
             return null;
@@ -98,6 +101,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     @Override
     public void deletePropertyOnNode(String path, ModeshapeProperty property) {
         doInSession(session -> {
+            LOGGER.debug("Deleting property {} on Modeshape node: {}", property.getName(), path);
             session.getNode(path)
                 .getProperty(property.getName())
                 .remove();
@@ -110,6 +114,7 @@ public class ModeshapeDoctor extends AbstractRepositoryOperation implements IMod
     public void deleteAclEntryOnNode(String path, ModeshapeAclEntry aclEntry) {
         doInSession(session -> {
             Node node = session.getNode(path);
+            LOGGER.debug("Deleting ACL entry for principal {} on Modeshape node: {}", aclEntry.getPrincipal(), path);
             AccessControlManager accessControlManager = session.getAccessControlManager();
             AccessControlList acl = getAccessControlList(node, accessControlManager);
             Optional<AccessControlEntry> existingEntry = getAccessControlEntry(aclEntry, acl);
