@@ -846,16 +846,19 @@
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 	
 	<div class="alert alert-info">
-		The change of the namespace and name will automatically update all references as well.
+		The change of the sub-namespace and name will automatically update all references as well.
 	</div>
 	<form name="refactorForm" novalidate>
 			  <div class="form-group">
 			   	<label>New Namespace</label>
 			   	<div class="input-group">
 		        	<span class="input-group-addon">{{ defaultNamespace }}.</span>
-					<input type="text" name="namespace" ng-pattern="/^(?!namespace)(?:^[a-zA-Z0-9]+|[a-zA-Z0-9]+\.(?!namespace)[a-zA-Z]+[0-9]*)+$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control">
+					<input type="text" name="namespace" ng-pattern="/^(?!\d)\w+(\.(?!\d)\w+)*$/" ng-model="newNamespaceSuffix" placeholder="New namespace" class="form-control">
 				</div>
-			  	<div class="invalid-input" ng-show="refactorForm.namespace.$error.pattern">Namespace must not contain any special characters.</div>
+			  	<div class="invalid-input" ng-show="refactorForm.namespace.$error.pattern">
+						Sub-domains are made of alphanumeric sequences including underscores, optionally
+						separated by dots. A segment cannot start with a digit.
+					</div>
 			  </div>
 			  
 			   <div class="form-group">
