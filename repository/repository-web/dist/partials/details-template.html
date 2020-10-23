@@ -426,6 +426,10 @@
 											<div class="col-sm-3">
 												<label ng-show="canCreateModels" class="ng-binding">Model Editor</label>
 												<label ng-show="!canCreateModels" class="ng-binding">Model Preview</label>
+												<div>
+													<small style="color:#999">Copyright owned by the author</small>
+													<br>
+												</div>
 											</div>
 											<div ng-hide="model.imported && !(hasAuthority('sysadmin'))  && !model.released"
 											    class="col-sm-9">
