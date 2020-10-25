@@ -800,6 +800,37 @@ paths:
           description: The request could not be completed, resource not found.
       deprecated: false
 
+  '/attachments/{modelId}/links':
+    get:
+      tags:
+      - Attachments
+      summary: Retrieve links attached to a model.
+      description: Returns list of links related to a model identified using its `modelId`. If you want to retrieve the list of attachments for an unpublished or private model, you must login.
+      operationId: ListAllLinksForAModel
+      parameters:
+      - name: modelId
+        in: path
+        description: The identifier of the vorto model in *namespace.name:version* format, e.g. com.bosch.bcds:XDK:2.0.0
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successfully retrieved links
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attachment'
+                description: Successfully retrieved links
+        404:
+          description: The request could not be completed, resource not found.
+      deprecated: false
+
 components:
   schemas:
     Collaborator:
