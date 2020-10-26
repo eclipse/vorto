@@ -22,9 +22,6 @@
   <foreignModel>Model.ecore</foreignModel>
   <genPackages prefix="Model" basePackage="org.eclipse.vorto.core.api.model" disposableProviderFactory="true"
       ecorePackage="Model.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Model.ecore#//VortoLangVersion">
-      <genEnumLiterals ecoreEnumLiteral="Model.ecore#//VortoLangVersion/version1"/>
-    </genEnums>
     <genClasses image="false" ecoreClass="Model.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>

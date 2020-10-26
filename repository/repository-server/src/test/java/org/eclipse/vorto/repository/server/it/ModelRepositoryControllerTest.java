@@ -304,6 +304,12 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isUnauthorized());
   }
 
+  /**
+   * This verifies that the {@literal DEFAULT} constraint applied to boolean types does not
+   * prevent model parsing.
+   *
+   * @throws Exception
+   */
   @Test
   public void createDatatypeWithBooleanDefaultConstraint() throws Exception {
     // creates namespace
@@ -319,6 +325,100 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isNoContent());
 
+  }
+
+  /**
+   * This verifies that a value (e.g. of {@literal 1.0}) in a float type constraint is not shadowed by
+   * the Vortolang version value (typically also {@literal 1.0}).
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithFloatDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasFloatDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasFloatDefaultConstraint:1.0.1");
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * This verifies that a non-supported Vortolang version (anything {@literal != 1.0} at the time
+   * of writing) prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithUnsupportedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("UnsupportedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("UnsupportedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * This verifies that a malformed vortolang version declaration (e.g. {@literal 0.blah})
+   * prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithMalformedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("MalformedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MalformedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
   }
 
   /**
