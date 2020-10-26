@@ -19,6 +19,8 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
 
 class AccordinglyValueValidator extends ConstraintValueValidator {
+
+  val BOOLEAN_VALUES = #["true", "TRUE", "false", "FALSE", "\"true\"", "\"TRUE\"", "\"false\"", "\"FALSE\""]
 	
 	override evaluateValueType(PrimitiveType type, Constraint constraint) {
 		var rawValue = constraint.constraintValues
@@ -41,10 +43,10 @@ class AccordinglyValueValidator extends ConstraintValueValidator {
 						return false
 					}	
 				case 'boolean' :
-					if(rawValue.equalsIgnoreCase("\"true\"") || rawValue.equalsIgnoreCase("\"false\"")) {
+					if(BOOLEAN_VALUES.contains(rawValue)) {
 						return true
 					} else {
-						this.setErrorMessage(DatatypeSystemMessage.ERROR_CONSTRAINT_VALUE_SHORT)
+						this.setErrorMessage(DatatypeSystemMessage.ERROR_CONSTRAINT_VALUE_BOOLEAN)
 						return false
 					}
 				case 'short' :

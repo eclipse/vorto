@@ -1,0 +1,6 @@
+# trailing separator
+org.eclipse.vorto.
+# segment starting with digit
+com.vorto.4ever
+# non-ASCII chars
+jp.私.の.名前空間

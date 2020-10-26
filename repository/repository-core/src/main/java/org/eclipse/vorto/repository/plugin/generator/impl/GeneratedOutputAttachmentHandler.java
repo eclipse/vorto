@@ -12,26 +12,20 @@
  */
 package org.eclipse.vorto.repository.plugin.generator.impl;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
+import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.Attachment;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.Tag;
-import org.eclipse.vorto.repository.core.impl.PrivilegedUserContextProvider;
-import org.eclipse.vorto.repository.plugin.generator.GeneratedOutput;
-import org.eclipse.vorto.repository.plugin.generator.GeneratorPluginConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author kolotu This class handles the querying and the saving of attachments that contain the
@@ -86,7 +80,7 @@ public class GeneratedOutputAttachmentHandler {
 
     List<Attachment> attachments = repository
         .getAttachmentsByTags(modelInfo.getId(),
-            Sets.newHashSet(
+            Lists.newArrayList(
                 GeneratedOutputAttachmentHandler.tagsForRequest(plugin, requestParams)));
     if (Objects.nonNull(attachments)) {
       return attachments.stream()

@@ -295,7 +295,7 @@ public interface IModelRepository {
    * @param tags
    * @return
    */
-  List<Attachment> getAttachmentsByTags(ModelId modelId, Set<Tag> tags)
+  List<Attachment> getAttachmentsByTags(ModelId modelId, List<Tag> tags)
       throws NotAuthorizedException;
 
   /**
