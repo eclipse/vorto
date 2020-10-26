@@ -14,18 +14,18 @@
 openapi: 3.0.0
 info:
   title: Eclipse Vorto Repository API
-  description: |-
+  description: |- 
     The Eclipse Vorto Repository API allows you to interact with models managed by the Repository.
   contact:
     name: Eclipse Vorto Team
     url: https://www.eclipse.org/vorto
     email: vorto-development@bosch-si.com
   version: '1.0'
-
+  
 servers:
 - url: https://vorto.eclipse.org/api/v1
   description: Eclipse Vorto Repository
-
+  
 tags:
   - name: Models
     description: Explore models
@@ -39,14 +39,14 @@ tags:
     description: Import models to be managed in the Repository
   - name: Namespaces
     description: Manage namespaces and collaborators
-
+    
 security:
   - BearerAuth: []
-
+    
 paths:
   '/namespaces':
     get:
-      tags:
+      tags: 
       - Namespaces
       summary: Get all namespaces where the current user is a collaborator
       description: "A list of all namespaces for which the user is a collaborator."
@@ -64,7 +64,7 @@ paths:
           description: 'Request is invalid'
   '/namespaces/{namespace}':
     get:
-      tags:
+      tags: 
       - Namespaces
       summary: Get namespace information for which the current user is a collaborator
       description: "All information pertaining to the namespace."
@@ -130,7 +130,7 @@ paths:
           description: 'Request is invalid'
   '/importers':
     get:
-      tags:
+      tags: 
       - Importers
       summary: A list of all supported importers
       description: "A list of all supported importer plugins."
@@ -145,11 +145,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/ImporterInfo'
     post:
-      tags:
+      tags: 
       - Importers
       summary: Upload and validates Vorto Models or other supported device description files.
       description: "Upload and validates Vorto Models or other supported device description files. If validation was successful, a upload handle is returned, that is needed to perform the actual check-in. You need to have 'CREATOR' permission to import models."
-      parameters:
+      parameters: 
       - name: targetNamespace
         in: query
         description: Target namespace of the models to be imported
@@ -181,11 +181,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/UploadResult'
     put:
-      tags:
+      tags: 
       - Importers
       summary: Performs the actual check in of the model(s) to the Repository
       description: "Performs the actual import of the model(s) to the Repository. Once imported, they are saved and managed in DRAFT state. You need to have 'CREATOR' permission to import model."
-      parameters:
+      parameters: 
       - name: targetNamespace
         in: query
         description: Target namespace of the models to be imported
@@ -361,7 +361,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/generators/{serviceKey}/models/{modelId}':
 
     get:
@@ -401,7 +401,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/openapi/models/{modelId}':
     get:
       tags:
@@ -439,7 +439,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/openapi':
     get:
       tags:
@@ -458,7 +458,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/boschiotsuite/models/{modelId}/connectivity':
     get:
       tags:
@@ -496,7 +496,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/boschiotsuite/models/{modelId}/provision':
     get:
       tags:
@@ -526,7 +526,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/boschiotsuite':
     get:
       tags:
@@ -545,7 +545,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/eclipsehono/models/{modelId}/connectivity':
     get:
       tags:
@@ -583,7 +583,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/eclipsehono':
     get:
       tags:
@@ -602,7 +602,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/eclipseditto/models/{modelId}':
     get:
       tags:
@@ -632,7 +632,7 @@ paths:
         404:
           description: The request could not be completed, resource not found.
       deprecated: false
-
+      
   '/plugins/generators/eclipseditto':
     get:
       tags:
@@ -837,7 +837,7 @@ components:
       title: Collaborator
       type: object
       properties:
-        userId:
+        userId: 
           description: UserId of collaborator
           type: string
         providerId:
@@ -860,7 +860,7 @@ components:
       title: Namespace
       type: object
       properties:
-        name:
+        name: 
           description: Name of namespace
           type: string
         collaborators:
@@ -939,7 +939,7 @@ components:
             - ERROR
             - WARNING
             - INFO
-          type: string
+          type: string 
     ModelInfo:
       title: ModelInfo
       type: object
@@ -1003,7 +1003,7 @@ components:
             $ref: '#/components/schemas/Model'
         root:
           $ref: '#/components/schemas/ModelId'
-
+    
     BaseModel:
       title: BaseModel
       type: object
@@ -1034,7 +1034,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ModelId'
-
+    
     Model:
       title: Model
       type: object
@@ -1047,7 +1047,7 @@ components:
         - $ref: '#/components/schemas/Infomodel'
       discriminator:
         propertyName: modelType
-
+    
     EnumModel:
       title: EnumModel
       allOf:
@@ -1058,7 +1058,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/EnumLiteral'
-
+              
     EnumLiteral:
       title: EnumLiteral
       type: object
@@ -1067,7 +1067,7 @@ components:
           type: string
         parent:
           $ref: '#/components/schemas/ModelId'
-
+          
     EntityModel:
       title: EntityModel
       allOf:
@@ -1078,7 +1078,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ModelProperty'
-
+              
     ModelProperty:
       title: ModelProperty
       type: object
@@ -1190,7 +1190,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Operation'
-
+              
     ModelEvent:
       title: ModelEvent
       type: object
@@ -1201,7 +1201,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ModelProperty'
-
+            
     Operation:
       title: Operation
       type: object
@@ -1226,7 +1226,7 @@ components:
             $ref: '#/components/schemas/Param'
         breakable:
           type: boolean
-
+          
     ReturnType:
       title: ReturnType
       type: object
@@ -1237,7 +1237,7 @@ components:
           type: boolean
         multiple:
           type: boolean
-
+          
     Param:
       title: Param
       type: object
@@ -1266,7 +1266,7 @@ components:
           type: boolean
         multiple:
           type: boolean
-
+    
     Infomodel:
       title: Infomodel
       allOf:
@@ -1277,7 +1277,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ModelProperty'
-
+    
     ConstraintType:
       title: ConstraintType
       enum:
@@ -1291,7 +1291,7 @@ components:
       - NULLABLE
       type: string
       example: MIN
-
+    
     Stereotype:
       title: Stereotype
       type: object
@@ -1388,7 +1388,7 @@ components:
       - true
       type: string
       example: false
-
+      
     orderBy:
       title: orderBy
       enum:
@@ -1397,19 +1397,19 @@ components:
       - production
       type: string
       example: demo
-
+      
     language:
       title: language
       enum:
         - python
         - arduino
         - java
-
+        
     digitaltwin:
       title: Digital Twin Service
       enum:
         - boschiotthings
-
+        
     ModelType:
       title: ModelType
       enum:
