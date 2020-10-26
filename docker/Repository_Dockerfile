@@ -10,7 +10,8 @@ RUN apt-get install -y python3 python3-yaml wget
 RUN wget -P /code/lib https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/2.3.0/mariadb-java-client-2.3.0.jar
 ADD ./${JAR_FILE} /code/infomodelrepository.jar
 ADD ./docker/scripts/run.py /code
-ADD ./docker/mysql_spring.yml /code
+ADD ./docker/config/application.yml /code/config/
+ADD ./docker/config/vorto-repository-config-mysql.json /code/config/
 ADD ./docker/scripts/wait-for-it.sh /code
 RUN chmod +x wait-for-it.sh
 CMD ["/bin/bash", "/code/wait-for-it.sh", "-t", "120", "db:3306",  "--", "/usr/bin/python3", "/code/run.py"]
