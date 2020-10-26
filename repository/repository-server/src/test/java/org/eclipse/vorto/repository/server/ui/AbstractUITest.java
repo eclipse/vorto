@@ -62,14 +62,9 @@ public abstract class AbstractUITest {
 
     @Rule
     public BrowserWebDriverContainer chrome =
-            new BrowserWebDriverContainer()
-                    .withRecordingMode(VncRecordingMode.SKIP, new File("./target/"))
-                    .withCapabilities(DesiredCapabilities.chrome());
-    /*@Rule
-    public BrowserWebDriverContainer chrome =
         new BrowserWebDriverContainer()
             .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING, new File("./target/"))
-            .withCapabilities(DesiredCapabilities.chrome());*/
+            .withCapabilities(DesiredCapabilities.chrome());
 
     @BeforeClass
     public static void configureOAuthConfiguration() {
