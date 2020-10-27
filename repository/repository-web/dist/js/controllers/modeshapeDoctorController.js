@@ -19,8 +19,8 @@ define(["../init/appController"], function (repositoryControllers) {
                       dialogPrompt) {
 
                 $scope.modeshapeData = null;
-                $scope.modeshapePath = "/com/bosch/drx/Vehicle/1.0.3/";
-                $scope.modeshapeWorkspaceId = "295938ec91084d78bae3a4eacb033abb";
+                $scope.modeshapePath = "";
+                $scope.modeshapeWorkspaceId = "";
 
                 $scope.readModeshapeData = function (modeshapeWorkspaceId, modeshapePath) {
                     $http.get("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
@@ -28,7 +28,7 @@ define(["../init/appController"], function (repositoryControllers) {
                             $scope.modeshapeData = response.data;
                             $scope.modeshapePath = modeshapePath;
                         }).catch(error => {
-                        alert(error);
+                        alert("Error reading modeshape node");
                     });
                 };
 
@@ -109,7 +109,7 @@ define(["../init/appController"], function (repositoryControllers) {
                                         $scope.modeshapeData = response.data;
                                         $scope.modeshapePath = modeshapePath;
                                     }).catch(error => {
-                                    alert(error);
+                                    alert("Error updating modeshape node");
                                 });
                             }
                         },
@@ -155,7 +155,7 @@ define(["../init/appController"], function (repositoryControllers) {
                                         $scope.modeshapeData = response.data;
                                         $scope.modeshapePath = modeshapePath;
                                     }).catch(error => {
-                                    alert(error);
+                                    alert("Error updating ACL");
                                 });
                             }
                         },
