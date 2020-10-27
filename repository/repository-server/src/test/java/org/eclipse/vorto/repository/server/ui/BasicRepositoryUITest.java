@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
@@ -25,7 +24,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
@@ -101,7 +99,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
         // there should be no create button before logging in.
         List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver().findElementsByXPath("//a[@ng-click='openCreateModelDialog()']");
-        Assert.assertTrue(createModelButtonList.isEmpty()||!createModelButtonList.get(0).isDisplayed());
+        Assert.assertTrue(createModelButtonList.isEmpty());
         // create a namespace (reuse existing test)
         testCreateNamespace();
         // now the create button should be available
