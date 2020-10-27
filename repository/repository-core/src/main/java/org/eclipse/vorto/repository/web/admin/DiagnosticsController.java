@@ -113,6 +113,7 @@ public class DiagnosticsController {
   }
 
   @PutMapping("modeshape/node/{workspaceId}/property")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ModeshapeNodeData setNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeProperty property) {
 
@@ -123,6 +124,7 @@ public class DiagnosticsController {
   }
 
   @PutMapping("modeshape/node/{workspaceId}/acl")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public ModeshapeNodeData setAclEntry(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeAclEntry aclEntry) {
 
@@ -133,6 +135,7 @@ public class DiagnosticsController {
   }
 
   @DeleteMapping("modeshape/node/{workspaceId}/acl")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public void deleteNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeAclEntry aclEntry) {
 
@@ -142,6 +145,7 @@ public class DiagnosticsController {
   }
 
   @DeleteMapping("modeshape/node/{workspaceId}/property")
+  @PreAuthorize("hasAuthority('sysadmin')")
   public void deleteNodeProperty(@PathVariable String workspaceId, @RequestParam String path,
       @RequestBody ModeshapeProperty property) {
 
