@@ -25,6 +25,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
@@ -100,7 +101,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
         RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
         // there should be no create button before logging in.
         List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver().findElementsByXPath("//a[@ng-click='openCreateModelDialog()']");
-        Assert.assertTrue(createModelButtonList.isEmpty());
+        Assert.assertTrue(createModelButtonList.isEmpty()||!createModelButtonList.get(0).isDisplayed());
         // create a namespace (reuse existing test)
         testCreateNamespace();
         // now the create button should be available
@@ -116,6 +117,20 @@ public class BasicRepositoryUITest extends AbstractUITest {
         remoteWebDriver.findElementByXPath("//button[text()='Create']").click();
         // wait for the model details dialog to show up.
         remoteWebDriver.findElementByXPath("//dd[@class='ng-binding' and .='" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + "']");
+    }
+
+    /**
+     * Tests if the save model notification is displayed correctly.
+     */
+    @Test
+    public void testSaveModelNotification() {
+       testCreateInfoModel();
+       // fullscreen to make save button visible
+        this.seleniumVortoHelper.getRemoteWebDriver().manage().window().fullscreen();
+       //find the save button and click it to trigger notification
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@ng-click='saveModel()']").click();
+        // make sure the success message is displayed (wait a little longer)
+        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//span[contains(.,'Model saved successfully')]");
     }
 
     /**
