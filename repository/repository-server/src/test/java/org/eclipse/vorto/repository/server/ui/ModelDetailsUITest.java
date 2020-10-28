@@ -13,98 +13,52 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * This class groups all tests scoped to the model details UI.
  */
 public class ModelDetailsUITest extends AbstractUITest {
 
+  /**
+   * The ace editor is rendered as div and span elements, which seems to make it impossible to
+   * invoke click and sendKeys methods on its elements. <br/>
+   * This hack infers the AngularJS scope from a specific DOM element (here, the editor's content
+   * div), then retrieves the actual editor as a Javascript variable programmatically and injects
+   * the desired value into it.
+   */
+  public static final String SET_EDITOR_SYNTAX_FORMAT = "angular.element(document.getElementsByClassName('ace_content')[0]).scope().modelEditor.getSession().getDocument().setValue('%s')";
+
   @Override
   protected void setUpTest() throws Exception {
 
   }
 
-  /**
-   * This performs the following:
-   * <ol>
-   *   <li>
-   *     Log in with the sysadmin user
-   *   </li>
-   *   <li>
-   *     Creates a namespace with that user
-   *   </li>
-   *   <li>
-   *     Navigates to the welcome page and accepts cookies
-   *   </li>
-   *   <li>
-   *     Creates a model (still with the sysadmin user)
-   *   </li>
-   *   <li>
-   *     Scrolls down the page to "see" the save button
-   *   </li>
-   *   <li>
-   *     Saves that model with no change
-   *   </li>
-   *   <li>
-   *     Waits for the success message to be visible / fails if it isn't in a small amount of time
-   *   </li>
-   * </ol>
-   * @throws Exception
-   */
   @Test
-  public void verifySuccessMessageUponSavingModel() throws Exception {
-    RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
-    seleniumVortoHelper.loginWithUser("user1", "pass");
-
-    // create a namespace (reuse existing test) - TODO generalize and put in abstract instead of basic
-    this.seleniumVortoHelper.loginWithUser("user1", "pass");
-    this.seleniumVortoHelper.createNamespace(
-        SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
-
-    // check if the namespace was created successfully.
-    this.seleniumVortoHelper.openManageNamespacesTab();
-    this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath(
-        "//td/div[@class='ng-binding' and contains(.,'"
-            + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX
-            + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
-    seleniumVortoHelper.gotoWelcomePage();
-    // dismisses cookie consent, since selenium claims the button in the banner would be overlapping with the save button
-    // (maybe caused by resolution during test?)
-    seleniumVortoHelper.allowCookies();
-
-    remoteWebDriver.findElementByXPath("//a[@ng-click='openCreateModelDialog()']").click();
-    remoteWebDriver.findElementByXPath("//input[@name='modelType' and @value='InformationModel']")
-        .click();
-    remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
-    Select namespaceComboBox = new Select(
-        remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
-    namespaceComboBox.selectByVisibleText(
-        SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
-    WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
-    modelNameTextField.sendKeys(SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL);
-    remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
-    remoteWebDriver.findElementByXPath("//button[text()='Create']").click();
-    // wait for the model details dialog to show up.
-    remoteWebDriver.findElementByXPath(
-        "//dd[@class='ng-binding' and .='" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + "']");
-
-    WebElement saveButton = remoteWebDriver
-        .findElementByXPath("//a[@class='btn btn-sm btn-primary pull-right']");
-    // scrolls down the page to see the button
-    remoteWebDriver.executeScript("arguments[0].scrollIntoView();", saveButton);
-    // saves the model - no change but button enabled and will perform a back-end save
-    saveButton.click();
-
-    // waits a few seconds, then checks if the message is visible
-    WebDriverWait wait = new WebDriverWait(remoteWebDriver, 5);
-    wait.until(ExpectedConditions
-        .visibilityOfElementLocated(By.xpath("//span[text() = ' Model saved successfully']")));
-
+  public void testSaveModelSuccessfulNotification() {
+    testCreateInfoModel();
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    // fullscreen to make save button visible
+    driver.manage().window().fullscreen();
+    //find the save button and click it to trigger notification
+    driver.findElementByXPath("//a[@ng-click='saveModel()']").click();
+    // make sure the success message is displayed (wait a little longer)
+    driver.findElementByXPath("//span[contains(.,'Model saved successfully')]");
   }
+
+  @Test
+  public void testSaveModelErrorNotification() {
+    testCreateInfoModel();
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    // going full screen
+    driver.manage().window().fullscreen();
+    WebElement textArea = driver.findElementByXPath("//div[@class='ace_content']");
+    driver.executeScript("arguments[0].scrollIntoView();", textArea);
+    driver.executeScript(
+        String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax")
+    );
+    // TODO error message
+  }
+
 }

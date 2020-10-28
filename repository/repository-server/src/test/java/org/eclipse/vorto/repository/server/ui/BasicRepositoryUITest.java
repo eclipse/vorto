@@ -85,11 +85,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
      */
     @Test
     public void testCreateNamespace() {
-        this.seleniumVortoHelper.loginWithUser("user1", "pass");
-        this.seleniumVortoHelper.createNamespace( SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
-        this.seleniumVortoHelper.openManageNamespacesTab();
-        // check if the namespace was created successfully.
-        this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//td/div[@class='ng-binding' and contains(.,'" + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
+        super.testCreateNamespace();
     }
 
     /**
@@ -97,25 +93,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
      */
     @Test
     public void testCreateInfoModel() {
-        RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
-        // there should be no create button before logging in.
-        List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver().findElementsByXPath("//a[@ng-click='openCreateModelDialog()']");
-        Assert.assertTrue(createModelButtonList.isEmpty());
-        // create a namespace (reuse existing test)
-        testCreateNamespace();
-        // now the create button should be available
-        this.seleniumVortoHelper.gotoWelcomePage();
-        remoteWebDriver.findElementByXPath("//a[@ng-click='openCreateModelDialog()']").click();
-        remoteWebDriver.findElementByXPath("//input[@name='modelType' and @value='InformationModel']").click();
-        remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
-        Select namespaceComboBox = new Select(remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
-        namespaceComboBox.selectByVisibleText(SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
-        WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
-        modelNameTextField.sendKeys(SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL);
-        remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
-        remoteWebDriver.findElementByXPath("//button[text()='Create']").click();
-        // wait for the model details dialog to show up.
-        remoteWebDriver.findElementByXPath("//dd[@class='ng-binding' and .='" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + "']");
+        super.testCreateInfoModel();
     }
 
     /**
@@ -159,4 +137,5 @@ public class BasicRepositoryUITest extends AbstractUITest {
                 Sets.newHashSet(DEFAULT_NAMESPACE_ROLES[0])), "user2");
         userRepository.save(new UserBuilder().withName("user2").withAuthenticationProviderID("GITHUB").withAuthenticationSubject(null).setTechnicalUser(false).build());
     }
+
 }
