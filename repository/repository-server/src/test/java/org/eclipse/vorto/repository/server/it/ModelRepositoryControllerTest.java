@@ -789,4 +789,87 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
         .andExpect(status().isNoContent());
   }
 
+  /**
+   * Minimal coverage for model with malformed vortolang (missing a value for namespace). <br/>
+   * The parsing behavior is slightly different between models created for integration tests and
+   * models created in real life through REST/UI insofar as the parsing here fails early and no
+   * list of {@link org.eclipse.emf.ecore.EObject} can be retrieved from the resource's contents
+   * in the {@link org.eclipse.vorto.repository.core.impl.parser.AbstractModelParser} at test time,
+   * meaning the failure to parse occurs earlier and displays a generic "Xtext cannot parse..."
+   * message.<br/>
+   * Conversely when saving a similar model in the UI, the parser will create the
+   * {@link org.eclipse.emf.ecore.EObject}, but then populate the
+   * {@link org.eclipse.vorto.core.api.model.model.Model} with {@code null} values when parsing
+   * failed, which will require an additional validation and return more elaborate error messages.
+   * <br/>
+   * Bottomline, only checking for bad response status here.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createModelMissingNamespace() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MissingNamespace:1.0.0/"
+                + ModelType.fromFileName("MissingNamespace.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MissingNamespace:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MissingNamespace.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * See {@link ModelRepositoryControllerTest#createModelMissingNamespace()} for rationale on
+   * testing strategy.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createModelMissingVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MissingVersion:1.0.0/"
+                + ModelType.fromFileName("MissingVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MissingVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MissingVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
 }
