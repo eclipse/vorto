@@ -13,7 +13,6 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
@@ -22,10 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.List;
 
 import static org.eclipse.vorto.repository.domain.NamespaceRole.DEFAULT_NAMESPACE_ROLES;
 
@@ -93,7 +89,7 @@ public class BasicRepositoryUITest extends AbstractUITest {
      */
     @Test
     public void testCreateInfoModel() {
-        super.testCreateInfoModel();
+        super.testCreateModel();
     }
 
     /**

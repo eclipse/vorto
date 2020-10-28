@@ -14,8 +14,11 @@ package org.eclipse.vorto.repository.server.ui;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
+import org.eclipse.vorto.repository.server.ui.util.CreateNamespaceParams;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,6 +43,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+import org.testcontainers.shaded.org.bouncycastle.asn1.cmp.CMPCertificate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles = {"local-ui-test"})
@@ -116,19 +120,49 @@ public abstract class AbstractUITest {
   // methods below constitute basic tests on their own, but can also be conveniently reused by
   // more elaborate tests
 
-  public void testCreateNamespace() {
-    this.seleniumVortoHelper.loginWithUser("user1", "pass");
-    this.seleniumVortoHelper.createNamespace(
-        SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+  /**
+   * Creates a namespace with the given {@link CreateNamespaceParams} or
+   * {@link CreateNamespaceParams#DEFAULT} if none specified. <br/>
+   * Verifies the lower-cased namespace is returned by the UI as created.
+   *
+   * @param params
+   */
+  public void testCreateNamespace(CreateNamespaceParams... params) {
+    CreateNamespaceParams usedParams = null;
+    if (Objects.isNull(params) || params.length == 0) {
+      usedParams = CreateNamespaceParams.defaults();
+    } else {
+      usedParams = params[0];
+    }
+    this.seleniumVortoHelper.loginWithUser(usedParams.getUsername(), usedParams.getPassword());
+    this.seleniumVortoHelper.createNamespace(usedParams.getNamespaceName());
     this.seleniumVortoHelper.openManageNamespacesTab();
     // check if the namespace was created successfully.
     this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath(
-        "//td/div[@class='ng-binding' and contains(.,'"
-            + SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX
-            + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE + "')]");
+        String.format(
+            "//td/div[@class='ng-binding' and contains(.,'%s')]",
+            usedParams.getNamespaceName().toLowerCase()
+        )
+    );
+
   }
 
-  public void testCreateInfoModel() {
+  /**
+   * Creates a model with the desired {@link CreateModelParams}, or {@link CreateModelParams#DEFAULT}
+   * if none given. <br/>
+   * TODO verify the UI logic differences between creating an information model and easier models.
+   * <br/>
+   * Verifies the namespace is lower-cased by the UI when returned.
+   *
+   * @param params
+   */
+  public void testCreateModel(CreateModelParams... params) {
+    CreateModelParams usedParams;
+    if (Objects.isNull(params) || params.length == 0) {
+      usedParams = CreateModelParams.defaults();
+    } else {
+      usedParams = params[0];
+    }
     RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
     // there should be no create button before logging in.
     List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver()
@@ -139,20 +173,28 @@ public abstract class AbstractUITest {
     // now the create button should be available
     this.seleniumVortoHelper.gotoWelcomePage();
     remoteWebDriver.findElementByXPath("//a[@ng-click='openCreateModelDialog()']").click();
-    remoteWebDriver.findElementByXPath("//input[@name='modelType' and @value='InformationModel']")
+    remoteWebDriver.findElementByXPath(
+        String.format(
+            "//input[@name='modelType' and @value='%s']",
+            usedParams.getType()
+        )
+    )
         .click();
     remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
     Select namespaceComboBox = new Select(
         remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
-    namespaceComboBox.selectByVisibleText(
-        SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE);
+    namespaceComboBox.selectByVisibleText(usedParams.getNamespaceName().toLowerCase());
     WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
-    modelNameTextField.sendKeys(SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL);
+    modelNameTextField.sendKeys(usedParams.getName());
     remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
     remoteWebDriver.findElementByXPath("//button[text()='Create']").click();
     // wait for the model details dialog to show up.
     remoteWebDriver.findElementByXPath(
-        "//dd[@class='ng-binding' and .='" + SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL + "']");
+        String.format(
+            "//dd[@class='ng-binding' and .='%s']",
+            usedParams.getName()
+        )
+    );
   }
 
 }

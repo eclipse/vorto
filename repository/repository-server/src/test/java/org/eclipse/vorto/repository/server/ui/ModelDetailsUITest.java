@@ -40,7 +40,7 @@ public class ModelDetailsUITest extends AbstractUITest {
 
   @Test
   public void testSaveModelSuccessfulNotification() {
-    testCreateInfoModel();
+    testCreateModel();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // fullscreen to make save button visible
     driver.manage().window().fullscreen();
@@ -52,7 +52,7 @@ public class ModelDetailsUITest extends AbstractUITest {
 
   @Test
   public void testSaveModelErrorNotification() {
-    testCreateInfoModel();
+    testCreateModel();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // going full screen
     driver.manage().window().fullscreen();
