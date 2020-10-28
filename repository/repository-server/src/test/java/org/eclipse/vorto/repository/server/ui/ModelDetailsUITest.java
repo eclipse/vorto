@@ -13,8 +13,11 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * This class groups all tests scoped to the model details UI.
@@ -55,10 +58,23 @@ public class ModelDetailsUITest extends AbstractUITest {
     driver.manage().window().fullscreen();
     WebElement textArea = driver.findElementByXPath("//div[@class='ace_content']");
     driver.executeScript("arguments[0].scrollIntoView();", textArea);
+    // changes the editor's text via Javascript
     driver.executeScript(
         String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax")
     );
-    // TODO error message
+    //find the save button and click it to trigger notification
+    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
+    driver.executeScript("arguments[0].scrollIntoView();", saveButton);
+    saveButton.click();
+    WebDriverWait waitForErrorMessage = new WebDriverWait(driver, 10);
+    // verifies a div "Cannot parse model" is visible
+    // note: this does not seem to work with an xpath selector by class (alert / alert-danger) on
+    // the outer div, which makes this test a bit brittle (e.g. if the message changes)
+    waitForErrorMessage.until(
+        ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//span[contains(., 'Cannot parse model')]")
+        )
+    );
   }
 
 }
