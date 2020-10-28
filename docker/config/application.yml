@@ -11,16 +11,29 @@
 # SPDX-License-Identifier: EPL-2.0
 #
 
+server:
+  contextPath: /
+
+repo:
+  configFile: vorto-repository-config-mysql.json
+  attachment:
+    allowed:
+      extension:
+
 spring:
   datasource:
     testWhileIdle: true
     timeBetweenEvictionRunsMillis: 60000
     wait_timeout: 180
-    validationInterval: 60
+    validationInterval: 60    
     validationQuery: SELECT 1
     driver-class-name: org.mariadb.jdbc.Driver
+    url:
+    username:
+    password:
   jpa:
-    show-sql: true
+    show-sql: false
     generate-ddl: true
     hibernate:
       ddl-auto: none
+

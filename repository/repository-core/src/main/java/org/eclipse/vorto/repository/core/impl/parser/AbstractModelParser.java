@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
+import com.google.common.base.Strings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
@@ -66,16 +68,18 @@ public abstract class AbstractModelParser implements IModelParser {
     Resource resource = createResource(fileName, getContent(is), resourceSet)
         .orElseThrow(() -> new ValidationException(
             "Xtext is not able to create a resource for this model. Check if you are using the correct parser.",
-            getModelInfoFromFilename()));
+            getModelInfoFromFilename(fileName)));
 
     if (resource.getContents().size() <= 0) {
       throw new ValidationException(
           "Xtext is not able to create a model out of this file. Check if the file you are using is correct.",
-          getModelInfoFromFilename());
+          getModelInfoFromFilename(fileName));
     }
 
     Model model = (Model) resource.getContents().get(0);
-    workspace.loadFromRepository(getReferences(model)); // always load direct references to make the model complete
+
+    workspace.loadFromRepository(
+        getReferences(model)); // always load direct references to make the model complete
 
     if (this.isValidationEnabled) {
       /* Execute validators */
@@ -85,22 +89,64 @@ public abstract class AbstractModelParser implements IModelParser {
         List<ModelId> missingReferences = getMissingReferences(model, issues);
         if (missingReferences.size() > 0) {
           throw new CouldNotResolveReferenceException(
-              getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
+              getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)),
+              missingReferences);
         } else {
           Set<ValidationIssue> validationIssues = convertIssues(issues);
           throw new ValidationException(collate(validationIssues), validationIssues,
-              getModelInfo(model).orElse(getModelInfoFromFilename()));
+              getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)));
         }
       }
 
       if (!resource.getErrors().isEmpty()) {
         throw new ValidationException(resource.getErrors().get(0).getMessage(),
-            getModelInfo(model).orElse(getModelInfoFromFilename()));
+            getModelInfo(model, fileName).orElse(getModelInfoFromFilename(fileName)));
       }
     }
 
+    // adds Vortolang version validation - will throw ValidationException if the Vortolang version
+    // is in the supported format, but not supported as a value
+    SupportedVortolangVersions.validate(model, fileName);
 
-    return new ModelResource((Model) resource.getContents().get(0));
+    // validating model properties after other validations
+    validateModel(model, fileName);
+
+    return new ModelResource(model);
+  }
+
+  /**
+   * Checks that crucial model fields have a value. <br/>
+   * If any doesn't, throws {@link ValidationException}.<br/>
+   * The exception thrown can have suppressed {@link ValidationException}s for any field missing.
+   *
+   * @param model
+   * @param fileName
+   * @throws ValidationException
+   */
+  public static final void validateModel(Model model, String fileName) throws ValidationException {
+    ModelInfo modelInfo = AbstractModelParser.getModelInfo(model, fileName)
+        .orElse(AbstractModelParser.getModelInfoFromFilename(fileName));
+    ValidationException root = new ValidationException("Cannot parse model", modelInfo);
+    boolean valid = true;
+    if (Strings.isNullOrEmpty(model.getLang())) {
+      valid = false;
+      root.addSuppressed(new ValidationException("Cannot parse Vortolang version", modelInfo));
+    }
+    if (Strings.isNullOrEmpty(model.getName())) {
+      valid = false;
+      root.addSuppressed(new ValidationException("Cannot parse model name", modelInfo));
+    }
+    if (Strings.isNullOrEmpty(model.getNamespace())) {
+      valid = false;
+      root.addSuppressed(new ValidationException("Cannot parse model namespace", modelInfo));
+    }
+    if (Strings.isNullOrEmpty(model.getVersion())) {
+      valid = false;
+      root.addSuppressed(new ValidationException("Cannot parse model version", modelInfo));
+    }
+    if (!valid) {
+      throw root;
+    }
   }
 
   protected Collection<ModelId> getReferences(Model model) {
@@ -113,7 +159,7 @@ public abstract class AbstractModelParser implements IModelParser {
     this.workspace = workspace;
     return this;
   }
-  
+
   public IModelParser enableValidation() {
     this.isValidationEnabled = true;
     return this;
@@ -149,13 +195,14 @@ public abstract class AbstractModelParser implements IModelParser {
 
   private Optional<String> getName(String message) {
     String[] words = message.split("\\s+");
-    if (words.length <= 0)
+    if (words.length <= 0) {
       return Optional.empty();
+    }
     String dirtyName = words[words.length - 1];
     return Optional.ofNullable(dirtyName.replaceAll("'", "").replaceAll("\\.", ""));
   }
 
-  private Optional<ModelInfo> getModelInfo(Model model) {
+  public static Optional<ModelInfo> getModelInfo(Model model, String fileName) {
     if (model == null || model.getName() == null || model.getNamespace() == null
         || model.getVersion() == null) {
       return Optional.empty();
@@ -206,11 +253,11 @@ public abstract class AbstractModelParser implements IModelParser {
     return baos.toByteArray();
   }
 
-  private ModelInfo getModelInfoFromFilename() {
-    return new ModelInfo(parseModelIdFromFileName(), ModelType.fromFileName(fileName));
+  public static ModelInfo getModelInfoFromFilename(String fileName) {
+    return new ModelInfo(parseModelIdFromFileName(fileName), ModelType.fromFileName(fileName));
   }
 
-  private ModelId parseModelIdFromFileName() {
+  public static ModelId parseModelIdFromFileName(String fileName) {
     String pureFileName =
         fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
     ModelId modelId = new ModelId();

@@ -14,7 +14,7 @@ pipeline {
             githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING'
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
-                maven: 'maven-latest',
+                maven: 'mvn3',
                 mavenLocalRepo: '.repository') {
 
                     sh 'mvn -P coverage clean install'
@@ -37,9 +37,9 @@ pipeline {
             steps{
                 withMaven(
                     // Maven installation declared in the Jenkins "Global Tool Configuration"
-                    maven: 'maven-latest',
+                    maven: 'mvn3',
                     mavenLocalRepo: '.repository') {
-                  withCredentials([string(credentialsId: 'sonarcloud', variable: 'TOKEN')]) {
+                  withCredentials([string(credentialsId: 'sonarcloud-vortodev', variable: 'TOKEN')]) {
                     sh 'mvn -P coverage -Dsonar.projectKey=vorto -Dsonar.organization=vortodev -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.coverage.jacoco.xmlReportPaths=jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml -Dsonar.language=java -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development sonar:sonar'
                   }
                 }
@@ -54,7 +54,7 @@ pipeline {
           stage("CLMScan Vorto-repository"){
             steps{
                 withMaven(
-                    maven: 'maven-latest',
+                    maven: 'mvn3',
                     mavenLocalRepo: '.repository') {
                   withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
@@ -77,33 +77,6 @@ pipeline {
             post{
               failure{
                 githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE'
-              }
-            }
-          }
-          stage("AVScan infomodelrepository"){
-            steps{
-                // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
-                dir('avscan_infomodel') {
-                  //copy files over to the new maven folder to run AntiVirus Scans
-                  git url: "https://github.com/eclipsevorto-jenkins/vorto_compliance_jenkins.git"
-                    sh 'cp ../repository/repository-server/target/infomodelrepository.jar ./'
-                }
-              withMaven(
-                  maven: 'maven-latest',
-                  mavenLocalRepo: '.repository') {
-                sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
-                  withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                  withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
-                  }
-                      s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'vorto-pr-artifacts', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
-                  }
-              }
-              githubNotify context: 'Repository - Virus Scan', description: 'Scan Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/vorto-pr-artifacts/avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html"
-            }
-            post{
-              failure{
-                githubNotify context: 'Repository - Virus Scan', description: 'Scan Failed',  status: 'FAILURE'
               }
             }
           }

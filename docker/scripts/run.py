@@ -1,8 +1,11 @@
-from os import getenv
-from subprocess import check_call
-import json, sys, yaml
-from pathlib import Path
 import argparse
+import json
+import sys
+import yaml
+from os import getenv
+from pathlib import Path
+from subprocess import check_call
+
 
 def proxy_url_to_java(proxy_url):
     user = None
@@ -53,6 +56,9 @@ def main():
     #Things that can be defaulted
     args.update({"server.port": getenv("VORTO_PORT", 8080)})
     args.update({"server.contextPath": getenv("CONTEXT_PATH", "/")})
+    args.update({"server.config.generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
+    args.update({"suite_clientid": "123"})
+    args.update({"suite_clientSecret": "123"})
     args.update({"server.config.generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
     if getenv("GENERATOR_PASSWORD"):
         args.update({"server.config.generatorPassword": getenv("GENERATOR_PASSWORD")})
@@ -123,12 +129,13 @@ def main():
                 sys.exit(1)
 
         if datasource == "mysql":
-            with open("./mysql_spring.yml") as yaml_file:
+            with open("./config/application.yml") as yaml_file:
                 yaml_data = yaml.safe_load(yaml_file.read())
             spring_application.update(yaml_data)
             args.update({"spring.datasource.url": getenv("MYSQL_URL", "jdbc:mysql://db:3306/vorto")})
             args.update({"spring.datasource.username": getenv("MYSQL_USER", "root")})
             args.update({"spring.datasource.password": getenv("MYSQL_ROOT_PASSWORD")})
+            args.update({"spring.datasource.driver-class-name": "org.mariadb.jdbc.Driver"})
     #generator settings
     if is_generator:
         if getenv("SERVICE_URL"):

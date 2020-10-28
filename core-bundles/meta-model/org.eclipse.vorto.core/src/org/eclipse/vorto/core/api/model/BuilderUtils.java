@@ -45,7 +45,6 @@ import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
-import org.eclipse.vorto.core.api.model.model.VortoLangVersion;
 
 public abstract class BuilderUtils {
 
@@ -96,6 +95,7 @@ public abstract class BuilderUtils {
   }
 
   public abstract static class ModelBuilder<T extends Model> {
+
     protected T model;
 
     public ModelBuilder(T model) {
@@ -125,10 +125,9 @@ public abstract class BuilderUtils {
       return this;
     }
 
+    // no validation here
     public ModelBuilder<T> withVortolang(String lang) {
-      if ("1.0".equals(lang)) {
-        model.setLang(VortoLangVersion.VERSION1);
-      }
+      model.setLang(lang);
       return this;
     }
     
