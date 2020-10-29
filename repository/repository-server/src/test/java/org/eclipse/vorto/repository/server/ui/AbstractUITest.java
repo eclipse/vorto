@@ -16,9 +16,14 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.assertj.core.util.Strings;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
+import org.eclipse.vorto.repository.server.ui.util.CreateModelResultHandler;
 import org.eclipse.vorto.repository.server.ui.util.CreateNamespaceParams;
+import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
+import org.eclipse.vorto.repository.server.ui.util.RenameModelResultHandler;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +33,9 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -43,7 +50,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
-import org.testcontainers.shaded.org.bouncycastle.asn1.cmp.CMPCertificate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles = {"local-ui-test"})
@@ -96,7 +102,7 @@ public abstract class AbstractUITest {
 
   private void setRootUrl() throws Exception {
     rootUrl = String.format("http://host.testcontainers.internal:%d", port);
-    chrome.getWebDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    chrome.getWebDriver().manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
     this.seleniumVortoHelper = new SeleniumVortoHelper(chrome.getWebDriver(), rootUrl);
   }
 
@@ -152,11 +158,11 @@ public abstract class AbstractUITest {
    * if none given. <br/>
    * TODO verify the UI logic differences between creating an information model and easier models.
    * <br/>
-   * Verifies the namespace is lower-cased by the UI when returned.
+   * On success, verifies the namespace is lower-cased by the UI when returned.
    *
    * @param params
    */
-  public void testCreateModel(CreateModelParams... params) {
+  public CreateModelResultHandler createModel(CreateModelParams... params) {
     CreateModelParams usedParams;
     if (Objects.isNull(params) || params.length == 0) {
       usedParams = CreateModelParams.defaults();
@@ -183,18 +189,89 @@ public abstract class AbstractUITest {
     remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
     Select namespaceComboBox = new Select(
         remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
-    namespaceComboBox.selectByVisibleText(usedParams.getNamespaceName().toLowerCase());
+    namespaceComboBox.selectByVisibleText(usedParams.getNamespace().toLowerCase());
     WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
     modelNameTextField.sendKeys(usedParams.getName());
-    remoteWebDriver.findElementByXPath("//button[contains(@ng-click,'next(')]").click();
-    remoteWebDriver.findElementByXPath("//button[text()='Create']").click();
-    // wait for the model details dialog to show up.
-    remoteWebDriver.findElementByXPath(
-        String.format(
-            "//dd[@class='ng-binding' and .='%s']",
-            usedParams.getName()
-        )
+    // sub-ns
+    if (!Strings.isNullOrEmpty(usedParams.getSubNamespace())) {
+      // this is actually the sub-namespace text field
+      remoteWebDriver.findElementByName("modelNamespace").sendKeys(usedParams.getSubNamespace());
+    }
+
+    return new CreateModelResultHandler(remoteWebDriver, usedParams);
+
+  }
+
+  /**
+   * This does the following:
+   * <ol>
+   *   <li>
+   *     Loads the model's details page for the given {@link ModelId}
+   *   </li>
+   *   <li>
+   *     Goes fullscreen
+   *   </li>
+   *   <li>
+   *     Clicks the {@literal Rename} button
+   *   </li>
+   *   <li>
+   *     Clears the new sub-namespace input and fills with data from given {@link RenameModelParams}
+   *   </li>
+   *   <li>
+   *     Clears the new name input and fills with data from given {@link RenameModelParams}
+   *   </li>
+   *   <li>
+   *     Returns the {@link RenameModelResultHandler} associated with this action.
+   *   </li>
+   * </ol>
+   *
+   * @param id
+   * @param params
+   * @return
+   */
+  public RenameModelResultHandler renameModel(ModelId id, RenameModelParams params) {
+    loadModelDetailsUI(id);
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    driver.manage().window().fullscreen();
+    driver.findElementByXPath("//a[contains(., 'Rename')]").click();
+    // this is the sub-namespace text input, contrary to the advertised tag name
+    driver.findElementsByName("namespace").get(0).clear();
+    driver.findElementsByName("namespace").get(0).sendKeys(params.getNewSubNamespace());
+    driver.findElementsByName("name").get(0).clear();
+    driver.findElementsByName("name").get(0).sendKeys(params.getNewName());
+    return new RenameModelResultHandler(driver, params);
+  }
+
+  /**
+   * This does the following:
+   * <ol>
+   *   <li>
+   *     Navigates to the model details UI page for that model ID
+   *   </li>
+   *   <li>
+   *     Goes fullscreen
+   *   </li>
+   *   <li>
+   *     Waits for the model to load, and verifies it is loaded by checking the {@code h2} element
+   *     of the DOM bearing the model's name as a title.
+   *   </li>
+   * </ol>
+   *
+   * @param id
+   */
+  public void loadModelDetailsUI(ModelId id) {
+    seleniumVortoHelper.goToModelDetails(id.getPrettyFormat());
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    driver.manage().window().fullscreen();
+    // loading a model through the UI can take a long time - giving it 5 mins and fetching the
+    // h2 header with the model name
+    WebDriverWait waitForDetailsLoading = new WebDriverWait(driver, 300);
+    waitForDetailsLoading.until(
+        ExpectedConditions
+            .visibilityOf(
+                driver.findElementByXPath(String.format("//h2[contains(., '%s')]", id.getName())))
     );
+
   }
 
 }

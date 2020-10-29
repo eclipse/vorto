@@ -13,7 +13,9 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import com.google.common.collect.Sets;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.junit.Assert;
@@ -89,7 +91,34 @@ public class BasicRepositoryUITest extends AbstractUITest {
      */
     @Test
     public void testCreateInfoModel() {
-        super.testCreateModel();
+        super.createModel().succeed();
+    }
+
+    @Test
+    public void testCreateFunctionblock() {
+        CreateModelParams params = new CreateModelParams()
+            .withName(CreateModelParams.defaults().getName())
+            .withNamespace(CreateModelParams.defaults().getNamespace())
+            .withType(ModelType.Functionblock.name());
+        createModel(params).succeed();
+    }
+
+    @Test
+    public void testCreateDatatype() {
+        CreateModelParams params = new CreateModelParams()
+            .withName(CreateModelParams.defaults().getName())
+            .withNamespace(CreateModelParams.defaults().getNamespace())
+            .withType(ModelType.Datatype.name());
+        createModel(params).succeed();
+    }
+
+    @Test
+    public void testCreateMapping() {
+        CreateModelParams params = new CreateModelParams()
+            .withName(CreateModelParams.defaults().getName())
+            .withNamespace(CreateModelParams.defaults().getNamespace())
+            .withType(ModelType.Mapping.name());
+        createModel(params).succeed();
     }
 
     /**

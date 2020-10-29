@@ -12,6 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
+import static org.junit.Assert.assertTrue;
+
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
+import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -40,19 +45,25 @@ public class ModelDetailsUITest extends AbstractUITest {
 
   @Test
   public void testSaveModelSuccessfulNotification() {
-    testCreateModel();
+    createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // fullscreen to make save button visible
     driver.manage().window().fullscreen();
     //find the save button and click it to trigger notification
     driver.findElementByXPath("//a[@ng-click='saveModel()']").click();
     // make sure the success message is displayed (wait a little longer)
-    driver.findElementByXPath("//span[contains(.,'Model saved successfully')]");
+    // waits 5 minutes max for model saving
+    WebDriverWait wait = new WebDriverWait(driver, 300);
+    wait.until(
+        ExpectedConditions.visibilityOf(
+            driver.findElementByXPath("//span[contains(.,'Model saved successfully')]")
+        )
+    );
   }
 
   @Test
   public void testSaveModelErrorNotification() {
-    testCreateModel();
+    createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // going full screen
     driver.manage().window().fullscreen();
@@ -75,6 +86,83 @@ public class ModelDetailsUITest extends AbstractUITest {
             By.xpath("//span[contains(., 'Cannot parse model')]")
         )
     );
+  }
+
+  @Test
+  public void testCreateModelWithBadSubNS() {
+    CreateModelParams params = new CreateModelParams()
+        .withName(CreateModelParams.defaults().getName())
+        .withNamespace(CreateModelParams.defaults().getNamespace())
+        .withType(CreateModelParams.defaults().getType().name())
+        .withSubnamespace("1ncorrect.$ubNamespace");
+    createModel(params).fail();
+    // additional check for validation hint
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    assertTrue(
+        driver.findElementByXPath("//div[@class='invalid-input']").isDisplayed()
+    );
+  }
+
+  @Test
+  public void testCreateModelWithCapitalizedSubNS() {
+    CreateModelParams params = new CreateModelParams()
+        .withName(CreateModelParams.defaults().getName())
+        // uppercases the default namespace
+        .withNamespace(CreateModelParams.defaults().getNamespace().toUpperCase())
+        .withType(CreateModelParams.defaults().getType().name());
+    // this will check the namespace is lowercased when redirected to the model details after creating
+    createModel(params).succeed();
+  }
+
+  /**
+   * This creates a model, then tests that loading it in the UI with a capitalized namespace
+   * still returns the right model. <br/>
+   * Moreover, test that the model's namespace displayed in ID field is lower-cased.
+   */
+  @Test
+  public void testLoadModelWithCapitalizedNS() {
+    createModel().succeed();
+    ModelId id = new ModelId(CreateModelParams.defaults().getName(), CreateModelParams.defaults()
+        .getNamespace().toUpperCase(), "1.0.0");
+    loadModelDetailsUI(id);
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    // ModelId#getPrettyFormat will return the namespace lowercased
+    driver.findElementByXPath(String.format("//dd[contains(., '%s')]", id.getPrettyFormat()));
+  }
+
+  /**
+   * This creates the garden-variety model, then renames it with a bad sub-namespace notation.
+   */
+  @Test
+  public void testRenameModelWithBadSubNS() {
+    createModel().succeed();
+    ModelId id = new ModelId(CreateModelParams.defaults().getName(), CreateModelParams.defaults()
+        .getNamespace(), "1.0.0");
+    RenameModelParams params = new RenameModelParams()
+        // no name change
+        .withNewName(CreateModelParams.defaults().getName())
+        .withNewSubNamespace("bad.7ubNamespace");
+    renameModel(id, params).fail();
+    // additional check for validation hint
+    RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
+    assertTrue(
+        driver.findElementByXPath("//div[@class='invalid-input']").isDisplayed()
+    );
+  }
+
+  /**
+   * This creates the default model, then renames it by adding a sub-namespace that's capitalized.
+   */
+  @Test
+  public void testRenameModelWithCapitalizedSubNS() {
+    createModel().succeed();
+    ModelId id = new ModelId(CreateModelParams.defaults().getName(), CreateModelParams.defaults()
+        .getNamespace(), "1.0.0");
+    RenameModelParams params = new RenameModelParams()
+        // no name change
+        .withNewName(CreateModelParams.defaults().getName())
+        .withNewSubNamespace("VALID.SUB_N4MESPACE1");
+    renameModel(id, params).succeed();
   }
 
 }

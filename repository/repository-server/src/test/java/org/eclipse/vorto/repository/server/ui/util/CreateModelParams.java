@@ -22,31 +22,56 @@ import org.eclipse.vorto.repository.server.ui.SeleniumVortoHelper;
 public class CreateModelParams {
 
   private String name;
+  private String subNamespace;
   private ModelType type;
-  private String namespaceName;
+  private String namespace;
 
   public static final CreateModelParams DEFAULT = new CreateModelParams(
       SeleniumVortoHelper.USER1_EMPTY_INFO_MODEL,
       ModelType.InformationModel.name(),
-      SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE
+      SeleniumVortoHelper.PRIVATE_NAMESPACE_PREFIX + SeleniumVortoHelper.USER1_PRIVATE_NAMESPACE,
+      ""
   );
 
   public CreateModelParams() {
   }
 
-  public CreateModelParams(String name, String type, String namespaceName) {
+  public CreateModelParams(String name, String type, String namespace, String subNamespace) {
     this.name = name;
     this.type = ModelType.valueOf(type);
     if (Objects.isNull(this.type)) {
       throw new IllegalArgumentException(String.format("Invalid model type [%s]", type));
     }
-    this.namespaceName = namespaceName;
+    this.namespace = namespace;
+    this.subNamespace = subNamespace;
   }
 
   public static CreateModelParams defaults() {
     return DEFAULT;
   }
 
+  public CreateModelParams withName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public CreateModelParams withType(String type) {
+    this.type = ModelType.valueOf(type);
+    if (Objects.isNull(this.type)) {
+      throw new IllegalArgumentException(String.format("Invalid model type [%s]", type));
+    }
+    return this;
+  }
+
+  public CreateModelParams withNamespace(String namespace) {
+    this.namespace = namespace;
+    return this;
+  }
+
+  public CreateModelParams withSubnamespace(String subNamespace) {
+    this.subNamespace = subNamespace;
+    return this;
+  }
 
   public String getName() {
     return name;
@@ -64,11 +89,19 @@ public class CreateModelParams {
     this.type = type;
   }
 
-  public String getNamespaceName() {
-    return namespaceName;
+  public String getNamespace() {
+    return namespace;
   }
 
-  public void setNamespaceName(String namespaceName) {
-    this.namespaceName = namespaceName;
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
+  public String getSubNamespace() {
+    return subNamespace;
+  }
+
+  public void setSubNamespace(String subNamespace) {
+    this.subNamespace = subNamespace;
   }
 }

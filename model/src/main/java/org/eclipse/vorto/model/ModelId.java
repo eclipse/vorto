@@ -69,7 +69,7 @@ public class ModelId implements IReferenceType {
   }
 
   public void setNamespace(String namespace) {
-    this.namespace = namespace;
+    this.namespace = namespace.toLowerCase();
   }
 
   public String getVersion() {
