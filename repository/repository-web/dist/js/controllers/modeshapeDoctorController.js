@@ -21,14 +21,16 @@ define(["../init/appController"], function (repositoryControllers) {
                 $scope.modeshapeData = null;
                 $scope.modeshapePath = "";
                 $scope.modeshapeWorkspaceId = "";
+                $scope.error = null;
 
                 $scope.readModeshapeData = function (modeshapeWorkspaceId, modeshapePath) {
                     $http.get("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
                         .then(response => {
                             $scope.modeshapeData = response.data;
                             $scope.modeshapePath = modeshapePath;
+                            $scope.error = null;
                         }).catch(error => {
-                        alert("Error reading modeshape node");
+                            $scope.error = {message: "Could not load node.", stack: error};
                     });
                 };
 
@@ -40,13 +42,10 @@ define(["../init/appController"], function (repositoryControllers) {
                                     alert('Could not delete node. Status: ' + response.status);
                                 }
                                 $scope.modeshapeData = null;
+                                $scope.error = null;
                             }, error => {
                                 $scope.modeshapeData = null;
-                                if (error.status === 404) {
-                                    alert('Node not found.')
-                                } else {
-                                    alert('Could not delete node. Status code: ' + error.status);
-                                }
+                                $scope.error = {message: "Could not delete node.", stack: error};
                             });
                     }
                 };
@@ -65,8 +64,10 @@ define(["../init/appController"], function (repositoryControllers) {
                         $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/property?path=" + modeshapePath, body)
                             .then(response => {
                                 $scope.readModeshapeData(modeshapeWorkspaceId, modeshapePath);
+                                $scope.error = null;
                             }, error => {
                                 $scope.modeshapeData = null;
+                                $scope.error = {message: "Could not load property.", stack: error};
                             });
                     }
                 };
@@ -85,8 +86,10 @@ define(["../init/appController"], function (repositoryControllers) {
                         $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "/acl?path=" + modeshapePath, body)
                             .then(response => {
                                 $scope.readModeshapeData(modeshapeWorkspaceId, modeshapePath);
+                                $scope.error = null;
                             }, error => {
                                 $scope.modeshapeData = null;
+                                $scope.error = {message: "Could not load ACL entry.", stack: error};
                             });
                     }
                 };
@@ -108,8 +111,9 @@ define(["../init/appController"], function (repositoryControllers) {
                                     .then(response => {
                                         $scope.modeshapeData = response.data;
                                         $scope.modeshapePath = modeshapePath;
+                                        $scope.error = null;
                                     }).catch(error => {
-                                    alert("Error updating modeshape node");
+                                        $scope.error = {message: "Error updating modeshape node.", stack: error};
                                 });
                             }
                         },
@@ -154,8 +158,9 @@ define(["../init/appController"], function (repositoryControllers) {
                                     .then(response => {
                                         $scope.modeshapeData = response.data;
                                         $scope.modeshapePath = modeshapePath;
+                                        $scope.error = null;
                                     }).catch(error => {
-                                    alert("Error updating ACL");
+                                    $scope.error = {message: "Error updating ACL.", stack: error};
                                 });
                             }
                         },

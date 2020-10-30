@@ -17,6 +17,10 @@
     </tr>
 </table>
 <a ng-click="readModeshapeData(modeshapeWorkspaceId, modeshapePath)" class="btn btn-primary"> Read Modeshape Data</a>
+<div ng-show="error" class="alert alert-danger" role="alert">
+    Error message: {{error.message}} <br>
+    Error stack: {{error.stack}}
+</div>
 <div ng-show="modeshapeData">
     <h2>Node Coordinates</h2>
     <div>
