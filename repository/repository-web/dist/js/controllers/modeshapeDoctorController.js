@@ -38,9 +38,6 @@ define(["../init/appController"], function (repositoryControllers) {
                     if (confirm("Are you sure you want to delete " + modeshapePath + "?")) {
                         $http.delete("/rest/namespaces/diagnostics/modeshape/node/" + modeshapeWorkspaceId + "?path=" + modeshapePath)
                             .then(response => {
-                                if (response.status !== 200) {
-                                    alert('Could not delete node. Status: ' + response.status);
-                                }
                                 $scope.modeshapeData = null;
                                 $scope.error = null;
                             }, error => {
