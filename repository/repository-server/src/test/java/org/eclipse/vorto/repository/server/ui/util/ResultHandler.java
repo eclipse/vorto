@@ -18,7 +18,8 @@ package org.eclipse.vorto.repository.server.ui.util;
  */
 public interface ResultHandler {
 
-  void succeed();
-  void fail();
+    void succeed();
+
+    void fail();
 
 }

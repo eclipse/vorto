@@ -16,39 +16,40 @@ package org.eclipse.vorto.repository.server.ui.util;
  * Utility builder with model renaming parametrization
  */
 public class RenameModelParams {
-  private String newSubNamespace;
-  private String newName;
+    private String newSubNamespace;
+    private String newName;
 
-  public RenameModelParams() {}
+    public RenameModelParams() {
+    }
 
-  public RenameModelParams(String newSubNamespace, String newName) {
-    this.newSubNamespace = newSubNamespace;
-    this.newName = newName;
-  }
+    public RenameModelParams(String newSubNamespace, String newName) {
+        this.newSubNamespace = newSubNamespace;
+        this.newName = newName;
+    }
 
-  public RenameModelParams withNewSubNamespace(String newSubNamespace) {
-    this.newSubNamespace = newSubNamespace;
-    return this;
-  }
+    public RenameModelParams withNewSubNamespace(String newSubNamespace) {
+        this.newSubNamespace = newSubNamespace;
+        return this;
+    }
 
-  public RenameModelParams withNewName(String newName) {
-    this.newName = newName;
-    return this;
-  }
+    public RenameModelParams withNewName(String newName) {
+        this.newName = newName;
+        return this;
+    }
 
-  public String getNewSubNamespace() {
-    return newSubNamespace;
-  }
+    public String getNewSubNamespace() {
+        return newSubNamespace;
+    }
 
-  public void setNewSubNamespace(String newSubNamespace) {
-    this.newSubNamespace = newSubNamespace;
-  }
+    public void setNewSubNamespace(String newSubNamespace) {
+        this.newSubNamespace = newSubNamespace;
+    }
 
-  public String getNewName() {
-    return newName;
-  }
+    public String getNewName() {
+        return newName;
+    }
 
-  public void setNewName(String newName) {
-    this.newName = newName;
-  }
+    public void setNewName(String newName) {
+        this.newName = newName;
+    }
 }
