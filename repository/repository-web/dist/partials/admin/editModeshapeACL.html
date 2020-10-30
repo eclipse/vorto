@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit Modeshape Node Property</h4>
+</div>
+<div class="modal-body">
+    <div ng-if="error == true" class="row alert alert-danger table-cell" style="text-align:center">Error.<br/></div>
+
+    <div class="row" style="height: 10px;"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div ng-repeat="privilege in aclPrivileges">
+                <div id="{{privilege}}">
+                    <label>{{privilege}}
+                        <button class="delete-button" ng-click="removePrivilege(privilege)">
+                            <i class="fa fa-close"></i>
+                        </button>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label>
+                    <input type="text" id="new-privilege" ng-model="newPrivilege">
+                </label>
+                <button type="button" class="btn btn-default" ng-click="addPrivilege(newPrivilege)">Add privilege</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" ng-click="$dismiss()">Close</button>
+    <button type="button" class="btn btn-primary pull-right" ng-click="setModeshapeAclEntry(aclPrincipal, aclPrivileges);$dismiss()">Save</button>
+</div>

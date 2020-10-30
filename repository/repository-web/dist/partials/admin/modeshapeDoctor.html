@@ -1,0 +1,116 @@
+<h1>Modeshape Doctor</h1>
+<div>
+    <h2 style="color: red"><i class="fa fa-exclamation-triangle"></i>Warning! Use the write/delete functions with caution!<i class="fa fa-exclamation-triangle"></i></h2>
+    <h4>Known limitations:</h4>
+    <ul>
+        <li>Writing values on multi-value properties is not supported.</li>
+    </ul>
+</div>
+<table class="table table-condensed">
+    <tr>
+        <td class="col-md-3"><label>Workspace ID:</label></td>
+        <td class="col-md-7"><input type="text" ng-model="modeshapeWorkspaceId" style="width: 100%"></td>
+    </tr>
+    <tr>
+        <td class="col-md-3"><label>Modeshape Path (must end with /): </label></td>
+        <td class="col-md-7"><input type="text" ng-model="modeshapePath" style="width: 100%"></td>
+    </tr>
+</table>
+<a ng-click="readModeshapeData(modeshapeWorkspaceId, modeshapePath)" class="btn btn-primary"> Read Modeshape Data</a>
+<div ng-show="error" class="alert alert-danger" role="alert">
+    Error message: {{error.message}} <br>
+    Error stack: {{error.stack}}
+</div>
+<div ng-show="modeshapeData">
+    <h2>Node Coordinates</h2>
+    <div>
+        Node Name: {{modeshapeData.name}}<br>
+        Path: {{modeshapeData.path}}
+    </div>
+    <h2>Properties</h2>
+    <table class="table table-bordered table-striped table-condensed" ng-show="modeshapeData.properties">
+        <thead>
+        <tr>
+            <th class="col-md-3">Property</th>
+            <th class="col-md-7">Value</th>
+            <th class="col-md-2">Actions</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="property in modeshapeData.properties">
+        <tr>
+            <td class="col-md-3">
+                <div>
+                    {{property.name}}
+                </div>
+            </td>
+            <td class="col-md-7">
+                <div>
+                    {{property.value}}
+                </div>
+            </td>
+            <td class="col-md-2">
+                <div>
+                    <a ng-click="deleteModeshapeNodeProperty(modeshapeWorkspaceId, modeshapePath, property.name)" data-toggle="tooltip" data-placement="bottom"
+                       title="Delete Property">
+                        <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                    </a>&nbsp;&nbsp;
+                    <a ng-click="openEditModeshapePropertyDialog(modeshapeWorkspaceId, modeshapePath, property.name, property.value)" data-toggle="tooltip" data-placement="bottom"
+                       title="Edit Property">
+                        <i class="fa fa-edit fa-2x" aria-hidden="true"></i>
+                    </a>&nbsp;&nbsp;
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Access Control Lists</h2>
+    <table class="table table-bordered table-striped table-condensed" ng-show="modeshapeData.aclEntryList">
+        <thead>
+        <tr>
+            <th class="col-md-3">Principal</th>
+            <th class="col-md-7">Privileges</th>
+            <th class="col-md-2">Actions</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="aclEntry in modeshapeData.aclEntryList">
+        <tr>
+            <td class="col-md-3">
+                <div>
+                    {{aclEntry.principal}}
+                </div>
+            </td>
+            <td class="col-md-7">
+                <div>
+                    {{aclEntry.privileges}}
+                </div>
+            </td>
+            <td class="col-md-2">
+                <div>
+                    <a ng-click="deleteModeshapeNodeACL(modeshapeWorkspaceId, modeshapePath, aclEntry.principal)" data-toggle="tooltip" data-placement="bottom"
+                       title="Delete ACL Entry">
+                        <i class="fa fa-trash fa-2x" aria-hidden="true"></i>
+                    </a>&nbsp;&nbsp;
+                    <a ng-click="openEditModeshapeACLDialog(modeshapeWorkspaceId, modeshapePath, aclEntry)" data-toggle="tooltip" data-placement="bottom"
+                       title="Edit ACL Entry">
+                        <i class="fa fa-edit fa-2x" aria-hidden="true"></i>
+                    </a>&nbsp;&nbsp;&nbsp;
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Child Nodes</h2>
+    <div ng-repeat="child in modeshapeData.childNodeNames"><a ng-click="readModeshapeData(modeshapeWorkspaceId, modeshapePath + child + '/')">{{child}}</a></div>
+
+    <h2>Nope Operations</h2>
+    <div>
+        <a class="btn btn-primary" ng-disabled="!modeshapeData.contentOnNode" type="button" href="/rest/namespaces/diagnostics/modeshape/node/{{modeshapeWorkspaceId}}/data?path={{modeshapePath}}">
+            Download JCR Data
+        </a>
+        <button class="btn btn-danger" type="button" ng-click="deleteModeshapeNode(modeshapeWorkspaceId, modeshapePath)">
+            Delete Node {{modeshapeData.name}}
+        </button>
+    </div>
+</div>

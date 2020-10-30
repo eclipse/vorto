@@ -25,7 +25,8 @@ define([
     '../controllers/manage/namespaceManagement',
     '../controllers/manage/namespaceUserManagement',
     '../controllers/requestAccessToNamespaceController',
-    '../controllers/createTechnicalUserController'
+    '../controllers/createTechnicalUserController',
+    '../controllers/modeshapeDoctorController'
 ], function () {
 
 });
