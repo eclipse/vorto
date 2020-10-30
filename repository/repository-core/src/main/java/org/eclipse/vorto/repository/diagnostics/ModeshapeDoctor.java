@@ -12,6 +12,24 @@
  */
 package org.eclipse.vorto.repository.diagnostics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.security.AccessControlEntry;
+import javax.jcr.security.AccessControlList;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.AccessControlPolicyIterator;
+import javax.jcr.security.Privilege;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModeshapeDoctor;
@@ -20,21 +38,13 @@ import org.modeshape.jcr.security.SimplePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
-import javax.jcr.security.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 public class ModeshapeDoctor extends AbstractRepositoryOperation implements IModeshapeDoctor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModeshapeDoctor.class);
 
     @Override
     public ModeshapeNodeData readModeshapeNodeData(ModelId modelId) {
-        String path = '/' + modelId.getNamespace().replace('.', '/') + '/' + modelId.getName() + '/' + modelId.getVersion();
+        String path = String.format("/%s/%s/%s", modelId.getNamespace().replace('.', '/'), modelId.getName(), modelId.getVersion());
         return readModeshapeNodeData(path);
     }
 
