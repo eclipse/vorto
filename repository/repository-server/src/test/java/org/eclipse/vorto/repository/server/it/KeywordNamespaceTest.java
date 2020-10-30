@@ -12,13 +12,13 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import org.eclipse.vorto.model.ModelType;
-import org.junit.Test;
-import org.springframework.http.MediaType;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.eclipse.vorto.model.ModelType;
+import org.junit.Test;
+import org.springframework.http.MediaType;
 
 public class KeywordNamespaceTest extends IntegrationTestBase {
 
@@ -27,6 +27,22 @@ public class KeywordNamespaceTest extends IntegrationTestBase {
         String modelId = "com.status.fault.events.operations.breakable.category.configuration.description:Location2:1.0.0";
         String fileName = "Location2.fbmodel";
         createNamespaceSuccessfully("com.status.fault", userSysadmin);
+        repositoryServer
+            .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+                .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+        repositoryServer
+            .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+                .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isConflict());
+        repositoryServer.perform(delete("/rest/models/" + modelId).with(userSysadmin));
+    }
+
+    @Test
+    public void createModelWithUpperCaseKeywordInNamespace() throws Exception {
+        String modelId = "com.status.dateTime:Location3:1.0.0";
+        String fileName = "Location3.fbmodel";
+        createNamespaceSuccessfully("com.status.dateTime", userSysadmin);
         repositoryServer
             .perform(post("/rest/models/" + modelId + "/" + ModelType.fromFileName(fileName))
                 .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
