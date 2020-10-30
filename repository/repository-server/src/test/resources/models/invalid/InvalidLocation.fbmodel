@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace com.test.functionblocks
+version 1.0.0
+displayname "InvalidLocation"
+description "Functionblock for Location"
+
+functionblock InvalidLocation {
+	
+	configuration {
+	
+	}
+	
+	status {
+	  mandatory x as float "Tracks the x axis"
+	  mandatory y as float "Tracks the y axis"
+	  mandatory z as float "Tracks the z axis"	
+	}
+
+}

@@ -4,3 +4,13 @@ org.eclipse.vorto.
 com.vorto.4ever
 # non-ASCII chars
 jp.私.の.名前空間
+# usage of reserved keywords
+com.functionblocks
+com.infomodel
+com.mandatory
+com.namespace
+com.optional
+com.version
+com.dictionary
+com.extension
+com.functionblock

@@ -12,14 +12,17 @@
  */
 package org.eclipse.vorto.repository.services;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
 import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.IllegalNamespacePartials;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Utility class with boilerplate validation code for services.
@@ -40,6 +43,12 @@ public class ServiceValidationUtil {
     if (!NamespaceService.VALID_NAMESPACE_NAME.matcher(namespaceName).matches()) {
       throw new NameSyntaxException(String
           .format("[%s] is not a valid namespace name - aborting namespace creation.",
+              namespaceName));
+    }
+
+    if (Arrays.stream(namespaceName.split("\\.")).anyMatch(IllegalNamespacePartials.PARTIALS::contains)) {
+      throw new NameSyntaxException(String
+          .format("[%s] contains a reserved keyword - aborting namespace creation.",
               namespaceName));
     }
   }
