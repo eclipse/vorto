@@ -40,7 +40,7 @@ pipeline {
                     maven: 'mvn3',
                     mavenLocalRepo: '.repository') {
                   withCredentials([string(credentialsId: 'sonarcloud-vortodev', variable: 'TOKEN')]) {
-                    sh 'mvn -P coverage -Dsonar.projectKey=vorto -Dsonar.organization=vortodev -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.coverage.jacoco.xmlReportPaths=jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml -Dsonar.language=java -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -sonar.pullrequest.base=development sonar:sonar'
+                    sh 'mvn -P coverage -Dsonar.projectKey=vorto -Dsonar.organization=vortodev -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$TOKEN -Dsonar.dynamicAnalysis=reuseReports -Dsonar.java.coveragePlugin=jacoco -Dsonar.coverage.jacoco.xmlReportPaths=jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml -Dsonar.language=java -Dsonar.pullrequest.branch=$BRANCH_NAME -Dsonar.pullrequest.key=$CHANGE_ID -Dsonar.pullrequest.base=development sonar:sonar'
                   }
                 }
               githubNotify context: 'SonarCloud', description: 'SonarCloud Scan Completed',  status: 'SUCCESS', targetUrl: "https://sonarcloud.io/project/issues?id=vorto&pullRequest=${CHANGE_ID}&resolved=false"
