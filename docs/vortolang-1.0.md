@@ -152,7 +152,22 @@ An `Information Model` describes a complete digital twin, such as a physical dev
     functionblockProperty: 
     	('mandatory' | 'optional')? ('multiple')? ID 'as' [FunctionBlock::ID | qualifiedName] (description)?
 
-    qualifiedName: ID ('.' ID)*;
+    qualifiedName:
+    	NamespaceID ('.' NamespaceID)*;
+    	
+    NamespaceID:
+        ID | REUSABLEKEYWORD;
+    
+    KEYWORD:
+    	NONREUSABLEKEYORD | REUSABLEKEYWORD;
+    
+    NONREUSABLEKEYORD:
+        'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+        'version' | 'dictionary' | 'extension' | 'functionblock';
+    
+    REUSABLEKEYWORD:
+        'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+        'description';
 
     version : int('.' int)*('-'ID)?;
 
@@ -345,7 +360,23 @@ A Function Block describes related capabilities that are implemented by a digita
 		'}'	
     ;
 
-    qualifiedName: ID ('.' ID)*;
+    qualifiedName:
+        NamespaceID ('.' NamespaceID)*;
+        
+    NamespaceID:
+        ID | REUSABLEKEYWORD;
+    
+    KEYWORD:
+        NONREUSABLEKEYORD | REUSABLEKEYWORD;
+    
+    NONREUSABLEKEYORD:
+        'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+        'version' | 'dictionary' | 'extension' | 'functionblock';
+    
+    REUSABLEKEYWORD:
+        'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+        'description';
+            
     version : int('.' int)*('-'ID)?;
     ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 	modelReference: 'using' qualifiedName ';' version;
@@ -648,7 +679,23 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		'}'	
     ;
 
-    qualifiedName: ID ('.' ID)*;
+    qualifiedName:
+        NamespaceID ('.' NamespaceID)*;
+        
+    NamespaceID:
+        ID | REUSABLEKEYWORD;
+    
+    KEYWORD:
+        NONREUSABLEKEYORD | REUSABLEKEYWORD;
+    
+    NONREUSABLEKEYORD:
+        'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+        'version' | 'dictionary' | 'extension' | 'functionblock';
+    
+    REUSABLEKEYWORD:
+        'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+        'description';
+        
     version : int('.' int)*('-'ID)?;
     ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 	description: STRING
@@ -773,7 +820,23 @@ An `enum` is an enumeration of values of the same type similar to an *enum* in J
 		'}'	
     ;
 
-    qualifiedName: ID ('.' ID)*;
+    qualifiedName:
+        NamespaceID ('.' NamespaceID)*;
+        
+    NamespaceID:
+        ID | REUSABLEKEYWORD;
+    
+    KEYWORD:
+        NONREUSABLEKEYORD | REUSABLEKEYWORD;
+    
+    NONREUSABLEKEYORD:
+        'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+        'version' | 'dictionary' | 'extension' | 'functionblock';
+    
+    REUSABLEKEYWORD:
+        'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+        'description';
+            
     version : int('.' int)*('-'ID)?;
     ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 	modelReference: 'using' qualifiedName ';' version;
@@ -940,7 +1003,23 @@ specific platform.
         
         ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
         version : int('.' int)*('-'ID)?;
-        qualifiedName: ID ('.' ID)*;
+        qualifiedName:
+            NamespaceID ('.' NamespaceID)*;
+            
+        NamespaceID:
+            ID | REUSABLEKEYWORD;
+        
+        KEYWORD:
+            NONREUSABLEKEYORD | REUSABLEKEYWORD;
+        
+        NONREUSABLEKEYORD:
+            'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+            'version' | 'dictionary' | 'extension' | 'functionblock';
+        
+        REUSABLEKEYWORD:
+            'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+            'description';
+            
         modelReference: 'using' qualifiedName ';' version;
         MappingInstruction: 'from' ID to ID 'with '{' MappingProperty (',' MappingProperty)* '}'
         MappingProperty: ID ':' '"'string'"'
