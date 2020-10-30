@@ -34,7 +34,7 @@ import java.util.Map;
  * A mock authentication provider which excepts all usernames and passwords. The granted authorities for a specific
  * test user can be configured.
  */
-@Profile("local-ui-test")
+@Profile({"local-ui-test","local-benchmark-test"})
 @Primary
 @Service
 public class AuthenticationProviderMock implements AuthenticationProvider {

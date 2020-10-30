@@ -12,6 +12,7 @@
  */
 grammar org.eclipse.vorto.editor.datatype.Datatype with org.eclipse.xtext.common.Terminals
 
+/*import "http://www.eclipse.org/emf/2002/Ecore" as ecore*/
 import "http://www.eclipse.org/vorto/metamodel/Datatype"
 import "http://www.eclipse.org/vorto/metamodel/Model"
 
@@ -32,7 +33,7 @@ Type:
 ;
 
 Entity:
-   'vortolang' lang=VortoLangVersion
+   'vortolang' lang=FLOAT
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    
@@ -48,7 +49,7 @@ Entity:
 ;
 
 Enum:
-   'vortolang' lang=VortoLangVersion
+   'vortolang' lang=FLOAT
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    
@@ -88,10 +89,6 @@ enum BooleanPropertyAttributeType:
   readable = 'readable' |
   writable = 'writable' |
   eventable = 'eventable'
-;
-
-enum VortoLangVersion: 
-	version1 = '1.0'
 ;
 
 EnumLiteralPropertyAttribute:
@@ -155,7 +152,7 @@ terminal SIGNEDINT :
 	'-'INT
 ;
 
-terminal FLOAT: ('-')?INT'.'INT;
+terminal FLOAT: ('^')?('-')?INT'.'INT;
 
 terminal DATE: 
 	('0'..'9')('0'..'9')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')

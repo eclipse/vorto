@@ -1,0 +1,8 @@
+vortolang 1.0
+
+namespace
+version 1.0.0
+
+entity MissingNamespace {
+
+}

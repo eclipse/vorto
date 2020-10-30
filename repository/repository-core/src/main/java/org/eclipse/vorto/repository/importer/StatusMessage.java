@@ -12,6 +12,9 @@
  */
 package org.eclipse.vorto.repository.importer;
 
+import com.google.common.base.Strings;
+import java.util.Arrays;
+
 public class StatusMessage {
 
   private String message;
@@ -23,7 +26,43 @@ public class StatusMessage {
     this.severity = severity;
   }
 
-  protected StatusMessage() {}
+  /**
+   * Derives the message from the given {@link Exception} by using its message as main message, but
+   * also aggregating messages from suppressed {@link Exception}s is any.
+   *
+   * @param exception
+   * @param severity
+   */
+  public StatusMessage(Exception exception, MessageSeverity severity) {
+    super();
+    this.severity = severity;
+    if (exception.getSuppressed().length == 0) {
+      this.setMessage(exception.getMessage());
+    } else {
+      String newLine = System.getProperty("line.separator");
+      StringBuilder message = new StringBuilder(exception.getMessage());
+      message.append(newLine).append("[Details:").append(newLine);
+      Arrays.stream(exception.getSuppressed())
+          .forEach(
+              s -> {
+                String suppressedMessage = s.getMessage();
+                if (!Strings.isNullOrEmpty(suppressedMessage)) {
+                  message.append(suppressedMessage).append("; ").append(newLine);
+                }
+              }
+          );
+      // last "; "
+      int lastIndexOfSuppressedSeparator = message.lastIndexOf("; ");
+      if (lastIndexOfSuppressedSeparator > 0) {
+        message.delete(lastIndexOfSuppressedSeparator, message.length());
+      }
+      message.append("]");
+      this.setMessage(message.toString());
+    }
+  }
+
+  protected StatusMessage() {
+  }
 
   public String getMessage() {
     return message;
@@ -57,23 +96,28 @@ public class StatusMessage {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     StatusMessage other = (StatusMessage) obj;
     if (message == null) {
-      if (other.message != null)
+      if (other.message != null) {
         return false;
-    } else if (!message.equals(other.message))
+      }
+    } else if (!message.equals(other.message)) {
       return false;
-    if (severity != other.severity)
+    }
+    if (severity != other.severity) {
       return false;
+    }
     return true;
   }
-
 
 
 }

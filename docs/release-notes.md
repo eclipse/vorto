@@ -2,34 +2,43 @@
 
 <br />
 
-## 0.13
+## 1.0.0
 
-Vorto 0.13 is a minor release providing both new features, enhancements, bug fixes and additional documentation.
+Vorto 1.0.0 is a major release providing both new features, enhancements, bug fixes and additional documentation.
 The highlights are:
 
+- Improved performance of the repository
 - Improved functionality and usability for model search
 - Improved user experience for generators
 - Enhanced handling of authentication mechanisms as intermediary step towards Vorto being authentication provider
  agnostics in further releases
- 
+
  **Bugfixes**
- 
-- [#2243](https://github.com/eclipse/vorto/issues/2243) Bugfix: users with no "publish" permission can no longer see the "publish" button on a model's details
-- [#2057](https://github.com/eclipse/vorto/issues/2057) Bugfix: reliability fixes in "isMultiplicity" property for
+
+- [#2570](https://github.com/eclipse/vorto/issues/2570) LATEST API fails on /api/v1/models/<modelId>/file
+- [#2549](https://github.com/eclipse/vorto/issues/2549) Models found count is not accurate, because it's capped at 1000
+- [#2555](https://github.com/eclipse/vorto/issues/2555) Loading model details also triggers diagnostics for that model if the user is sysadmin
+- [#2454](https://github.com/eclipse/vorto/issues/2454) Hono Generator doesn't create getter/setter for Maps
+- [#2243](https://github.com/eclipse/vorto/issues/2243) users with no "publish" permission can no longer see the "publish" button on a model's details
+- [#2057](https://github.com/eclipse/vorto/issues/2057) reliability fixes in "isMultiplicity" property for
  generator API
-- [#2114](https://github.com/eclipse/vorto/issues/2114) Bugfix: improved logic for attachment validation
-- [#2168](https://github.com/eclipse/vorto/issues/2168) Bugfix: improved handling of Content-Disposition header for lambda generators
-- [#2172](https://github.com/eclipse/vorto/issues/2172) Bugfix: entities no longer at risk of generating duplicate mapping keys for OpenAPI generator
+- [#2114](https://github.com/eclipse/vorto/issues/2114) improved logic for attachment validation
+- [#2168](https://github.com/eclipse/vorto/issues/2168) improved handling of Content-Disposition header for lambda generators
+- [#2172](https://github.com/eclipse/vorto/issues/2172) entities no longer at risk of generating duplicate mapping keys for OpenAPI generator
 
 
 **Improvements**
 
-- [#1878](https://github.com/eclipse/vorto/issues/1878) Feature: REST API for models allows accessing latest model version by specifying "latest" instead of a
- specific
- version
+- [#2611](https://github.com/eclipse/vorto/issues/2611), [#2599](https://github.com/eclipse/vorto/issues/2599), [#2589](https://github.com/eclipse/vorto/issues/2589), [#2562](https://github.com/eclipse/vorto/issues/2562), [#2559](https://github.com/eclipse/vorto/issues/2559), [#2552](https://github.com/eclipse/vorto/issues/2552), [#2472](https://github.com/eclipse/vorto/issues/2472), [#2558](https://github.com/eclipse/vorto/issues/2558) Performance improvements
+- [#2615](https://github.com/eclipse/vorto/issues/2615) Secure post-login cookie with SameSite attribute
+- [#2503](https://github.com/eclipse/vorto/issues/2503) Add a "createdBy" field to the user table
+- [#2432](https://github.com/eclipse/vorto/issues/2432) Upgrade jQuery to latest version (CVE-2020-11022, CVE-2020-11023)
+- [#2423](https://github.com/eclipse/vorto/issues/2423) Update tomcat-embed-core to 8.5.55
+- [#2377](https://github.com/eclipse/vorto/issues/2377) Update Elasticsearch to version 6.8.8
+- [#1878](https://github.com/eclipse/vorto/issues/1878) Feature: REST API for models allows accessing latest model version by specifying "latest" instead of a specific version
 - [#1735](https://github.com/eclipse/vorto/issues/1735), [#2154](https://github.com/eclipse/vorto/issues/2154) Feature: web UI user is warned when session about to expire, and prevented from performing any non
 -applicable operation when session is expired
-- [#2269](https://github.com/eclipse/vorto/issues/) Enhancement: "requestBodyOnly" option for the Bosch IoT Suite Generator added to the UI 
+- [#2269](https://github.com/eclipse/vorto/issues/) Enhancement: "requestBodyOnly" option for the Bosch IoT Suite Generator added to the UI
 - [#2028](https://github.com/eclipse/vorto/issues/2028), [#2030](https://github.com/eclipse/vorto/issues/2030), [#2035](https://github.com/eclipse/vorto/issues/) Enhancement: improved tutorial documentation for mapping pipeline
 - [#1833](https://github.com/eclipse/vorto/issues/1833), [#2046](https://github.com/eclipse/vorto/issues/2046), [#2217](https://github.com/eclipse/vorto/issues/2217), [#2221](https://github.com/eclipse/vorto/issues/2221), [#2229](https://github.com/eclipse/vorto/issues/2229), [#2132](https://github.com/eclipse/vorto/issues/2132), [#2137](https://github.com/eclipse/vorto/issues/2137), [#2242](https://github.com/eclipse/vorto/issues/2242) Enhancement: improved model search syntax by
  adding
@@ -37,7 +46,7 @@ The highlights are:
 - [#2206](https://github.com/eclipse/vorto/issues/2206) Feature: added custom error page for unhandled exceptions
 - [#2191](https://github.com/eclipse/vorto/issues/2191) Enhancement: presentational improvements in namespace collaborator management
 - [#2088](https://github.com/eclipse/vorto/issues/2088), [#2208](https://github.com/eclipse/vorto/issues/2208) Feature: namespace managers can now add non-existing users as technical users, by providing a user ID
- and a subject, and selecting an oauth provider 
+ and a subject, and selecting an oauth provider
 - [#1930](https://github.com/eclipse/vorto/issues/1930) Enhancement: improved Oauth support for technical users
 - [#2058](https://github.com/eclipse/vorto/issues/2058) Enhancement: improved reliability of "event" and "operation" syntactical block handling
 - [#1929](https://github.com/eclipse/vorto/issues/1929) Feature: Vorto repository can now run in cluster mode for high availability
@@ -105,7 +114,7 @@ The highlights are:
 
 ## 0.12
 
-This version primarily focuses on stability, performance as well as UX. 
+This version primarily focuses on stability, performance as well as UX.
 
 ### New Features
 
@@ -151,7 +160,7 @@ With this release, the Vorto Payload Mapping Engine now supports the mapping to
 - OpenAPI Generator, creating invalid spec for FB with only operations
 - Arduino Generator creating invalid code for properties with name "value"
 - CORS problem when using the Vorto Repository Swagger API documentation
-- Repository UI Layout for browsers with lower resolution 
+- Repository UI Layout for browsers with lower resolution
 - Vorto Function Block Selector during model creation showing all released functionblocks instead of only org.eclipse.vorto.*
 - Fixed security vulnerabilities during file upload
 
@@ -162,7 +171,7 @@ With this release, the Vorto Payload Mapping Engine now supports the mapping to
 
 <br />
 
-## 0.11 
+## 0.11
 
 With the release of **Eclipse Vorto 0.11**, we are introducing **essential improvements** that guarantee you full control over your models and their release process.
 
@@ -189,7 +198,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 - Vortolang 1.0, the IoT language for Digital Twins
 - Multi - Tenancy, which lets users manage their own namespace(s) and collaborators via a self-service UI
-- Model visibility of Vorto Models to change models access from private to public 
+- Model visibility of Vorto Models to change models access from private to public
 - Log-in with Github and Bosch ID OAuth Provider
 - Many stabilization and performance fixes
 
@@ -230,7 +239,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 <br />
 
-## 0.10 
+## 0.10
 
 ### New Features
 
@@ -268,12 +277,12 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 **Fixes and Enhancements**
 
 * Model Confidentiality & Permission Enhancement: By default, all models are private and only visible & modifiable by the respective model owner. However, model owners can grant READ permissions to other users, so that they can review give feedback.
-* Simplified Java Repository Client, deprecating the old Java Client. 
+* Simplified Java Repository Client, deprecating the old Java Client.
 * Simplified Eclipse Vorto Plugins, allowing to create Vorto Models using the Eclipse IDE.  
 * Various Bug-fixes
- 
+
 <br />
- 
+
 ## 0.10.0 milestone 10
 
 **Fixes and Enhancements**
@@ -301,8 +310,8 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 * Email Notifications for Workflow actions, e.g. Pending Reviews, as well as comments
 * Added more advanced Vorto DSL Validator Checks when importing Vorto Models or when creating/editing models via the Vorto Web Editor
-* Various Bugfixes 
-* Generator Plugin SDK, which allows to build and deploy Vorto Generator plugins as standalone (micro)services and hook them into the Vorto repository. 
+* Various Bugfixes
+* Generator Plugin SDK, which allows to build and deploy Vorto Generator plugins as standalone (micro)services and hook them into the Vorto repository.
 
 <br />
 
@@ -311,7 +320,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 **Fixes and Enhancements**
 
 * Anonymous read-access to Vorto Models
-* Payload Mapping Specification Editor, which allows to simply create & test device payload mapping specifications 
+* Payload Mapping Specification Editor, which allows to simply create & test device payload mapping specifications
 
 <br />
 
@@ -319,7 +328,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 **Fixes and Enhancements**
 
-* Support for Vorto DSL Configuration properties in Bosch IoT Suite Generators (incl. Eclipse Hono) 
+* Support for Vorto DSL Configuration properties in Bosch IoT Suite Generators (incl. Eclipse Hono)
 * Security Fixes, such as XXE when uploading malicious LwM2M XMLs
 * UX related Improvements  
 
@@ -364,9 +373,9 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 
 
 **API Changes**
- 
+
 - Vorto Code Generators must now implement `org.eclipse.vorto.codegen.api.IVortoCodeGenerator.getInfo()` that give more meta information about the specific Code Generator. This information is used by Vorto to provide a Generator Configuration UI automatically.
-- The Vorto Repository REST - API for publishing models is now secured exclusively with OAuth2 token - based authentication. 
+- The Vorto Repository REST - API for publishing models is now secured exclusively with OAuth2 token - based authentication.
 	> It is now only possibly to publish models to the Vorto Repository via the Vorto Repository Web UI !
 
 <br />
@@ -475,4 +484,3 @@ In order to inspire you to build you own generator for your platform, we impleme
 A **Command Line Interface Tool** lets you explore information models, checkin new information models as well as generate code for a selected IoT platform.
 
 ![Vorto CLI Tool](/images/release_notes/0.9.x/vorto_features_cli_tool.png)
-

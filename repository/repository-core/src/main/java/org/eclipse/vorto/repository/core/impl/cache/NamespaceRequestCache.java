@@ -32,6 +32,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
+/**
+ * Caches namespace and virtual namespace resolution within the scope of a single request. <br/>
+ * <b>All namespaces are lowercased for comparison</b>. <br/>
+ * All virtual namespace mappings are also lowercased.
+ */
 @Service
 @RequestScope
 public class NamespaceRequestCache {
@@ -127,6 +132,7 @@ public class NamespaceRequestCache {
     }
     // lazy population
     populateIfEmpty();
+
     // lookup into virtual namespace map first
     if (virtualNamespaces.containsKey(name)) {
       Namespace result = virtualNamespaces.get(name);
@@ -138,7 +144,7 @@ public class NamespaceRequestCache {
       return Optional.of(result);
     }
     // resolving by name equality
-    Optional<Namespace> result = this.namespaces.stream().filter(n -> n.getName().equals(name))
+    Optional<Namespace> result = this.namespaces.stream().filter(n -> n.getName().equalsIgnoreCase(name))
         .findAny();
     if (result.isPresent()) {
       LOGGER.debug(
@@ -148,7 +154,7 @@ public class NamespaceRequestCache {
       );
       return result;
     } else {
-      return resolveVirtualNamespaceRecursively(name, name);
+      return resolveVirtualNamespaceRecursively(name.toLowerCase(), name.toLowerCase());
     }
   }
 

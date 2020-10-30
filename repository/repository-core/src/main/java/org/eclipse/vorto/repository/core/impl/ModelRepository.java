@@ -987,8 +987,9 @@ public class ModelRepository extends AbstractRepositoryOperation
   }
 
   @Override
-  public List<Attachment> getAttachmentsByTags(final ModelId modelId, final Set<Tag> tag) {
+  public List<Attachment> getAttachmentsByTags(final ModelId modelId, final List<Tag> tag) {
     return getAttachments(modelId).stream()
+        .filter(attachment -> attachment.getTags().size() == tag.size())
         .filter(attachment -> attachment.getTags().containsAll(tag))
         .collect(Collectors.toList());
   }

@@ -67,6 +67,7 @@ public class RepositoryInitializer {
       // TODO : set to be configurable from configuration file
       user.setEmailAddress("vorto-dev@bosch-si.com");
       user.setAuthenticationProviderId("GITHUB");
+      user.setTechnicalUser(false);
       userRepository.save(user);
     }
     User user = userRepository.findByUsername(username);

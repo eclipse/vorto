@@ -12,14 +12,14 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
+import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 
 /**
  * Utility class with boilerplate validation code for services.
@@ -28,6 +28,20 @@ public class ServiceValidationUtil {
 
   private ServiceValidationUtil() {
     // this class contains only static methods/
+  }
+
+  /**
+   * Validates a namespace name based on the {@link NamespaceService#VALID_NAMESPACE_NAME} pattern.
+   *
+   * @param namespaceName
+   * @throws NameSyntaxException
+   */
+  public static void validateNamespaceName(String namespaceName) throws NameSyntaxException {
+    if (!NamespaceService.VALID_NAMESPACE_NAME.matcher(namespaceName).matches()) {
+      throw new NameSyntaxException(String
+          .format("[%s] is not a valid namespace name - aborting namespace creation.",
+              namespaceName));
+    }
   }
 
   /**
@@ -164,7 +178,8 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateUser(User)
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    */
-  public static void validate(User actor, User target, Namespace namespace) throws DoesNotExistException {
+  public static void validate(User actor, User target, Namespace namespace)
+      throws DoesNotExistException {
     validateUser(actor);
     validateUser(target);
     validateNamespace(namespace);
@@ -179,7 +194,8 @@ public class ServiceValidationUtil {
    * @see ServiceValidationUtil#validateNamespace(Namespace)
    * @see ServiceValidationUtil#validateRole(IRole)
    */
-  public static void validate(User user, Namespace namespace, IRole role) throws DoesNotExistException {
+  public static void validate(User user, Namespace namespace, IRole role)
+      throws DoesNotExistException {
     validateUser(user);
     validateNamespace(namespace);
     validateRole(role);

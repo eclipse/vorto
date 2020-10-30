@@ -305,6 +305,123 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
   }
 
   /**
+   * This verifies that the {@literal DEFAULT} constraint applied to boolean types does not
+   * prevent model parsing.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithBooleanDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasBooleanDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasBooleanDefaultConstraint:1.0.0");
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+
+  }
+
+  /**
+   * This verifies that a value (e.g. of {@literal 1.0}) in a float type constraint is not shadowed by
+   * the Vortolang version value (typically also {@literal 1.0}).
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithFloatDefaultConstraint() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+    createModel(userSysadmin, "HasFloatDefaultConstraint.type",
+        "org.eclipse.vorto.examples.type.HasFloatDefaultConstraint:1.0.1");
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * This verifies that a non-supported Vortolang version (anything {@literal != 1.0} at the time
+   * of writing) prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithUnsupportedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("UnsupportedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.UnsupportedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("UnsupportedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * This verifies that a malformed vortolang version declaration (e.g. {@literal 0.blah})
+   * prevents Vorto from saving a model with content.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createDatatypeWithMalformedVortolangVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0/"
+                + ModelType.fromFileName("MalformedVortolangVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MalformedVortolangVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MalformedVortolangVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
    * This test performs the following:
    * <ol>
    *   <li>
@@ -626,6 +743,133 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
 
+  }
+
+  /**
+   * This verifies that an API call for a model is case-insensitive with regards to the part of its
+   * ID that represents the namespace.<br/>
+   * In other words, namespaces are case-insensitive both when manipulating the namespace itself,
+   * and when using the namespace as part of an ID to represent a model.<br/>
+   * Tests the REST call for the UI payload.
+   *
+   * @throws Exception
+   * @see ModelControllerIntegrationTest#resolveModelWithCaseInsensitiveNamespace() for API V1 payloads.
+   */
+  @Test
+  public void resolveModelWithCaseInsensitiveNamespace() throws Exception {
+    String namespace = "com.Some_Other_Company.oFFICIA1";
+    createNamespaceSuccessfully(namespace, userSysadmin);
+    String id = String.format("%s.ModelIDCaseInsensitiveTest:1.0.0", namespace);
+    createModel(
+        userSysadmin,
+        "ModelIDCaseInsensitiveTest.type",
+        id
+    );
+    repositoryServer
+        .perform(
+            get(String.format("/rest/models/ui/%s", id))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.modelInfo.id.namespace", equalTo(namespace.toLowerCase())));
+
+    // cleanup
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/models/%s", id))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isOk());
+
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", namespace))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * Minimal coverage for model with malformed vortolang (missing a value for namespace). <br/>
+   * The parsing behavior is slightly different between models created for integration tests and
+   * models created in real life through REST/UI insofar as the parsing here fails early and no
+   * list of {@link org.eclipse.emf.ecore.EObject} can be retrieved from the resource's contents
+   * in the {@link org.eclipse.vorto.repository.core.impl.parser.AbstractModelParser} at test time,
+   * meaning the failure to parse occurs earlier and displays a generic "Xtext cannot parse..."
+   * message.<br/>
+   * Conversely when saving a similar model in the UI, the parser will create the
+   * {@link org.eclipse.emf.ecore.EObject}, but then populate the
+   * {@link org.eclipse.vorto.core.api.model.model.Model} with {@code null} values when parsing
+   * failed, which will require an additional validation and return more elaborate error messages.
+   * <br/>
+   * Bottomline, only checking for bad response status here.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createModelMissingNamespace() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MissingNamespace:1.0.0/"
+                + ModelType.fromFileName("MissingNamespace.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MissingNamespace:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MissingNamespace.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
+  }
+
+  /**
+   * See {@link ModelRepositoryControllerTest#createModelMissingNamespace()} for rationale on
+   * testing strategy.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void createModelMissingVersion() throws Exception {
+    // creates namespace
+    createNamespaceSuccessfully("org.eclipse.vorto.examples.type", userSysadmin);
+    // creates model with constraint
+
+    repositoryServer
+        .perform(post(
+            "/rest/models/org.eclipse.vorto.examples.type.MissingVersion:1.0.0/"
+                + ModelType.fromFileName("MissingVersion.type"))
+            .with(userSysadmin).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+
+    repositoryServer
+        .perform(
+            put("/rest/models/org.eclipse.vorto.examples.type.MissingVersion:1.0.0")
+                .with(userSysadmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createContent("MissingVersion.type")))
+        .andExpect(status().isBadRequest());
+
+    // cleans up
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/namespaces/%s", "org.eclipse.vorto.examples.type"))
+                .with(userSysadmin)
+        )
+        .andExpect(status().isNoContent());
   }
 
 }

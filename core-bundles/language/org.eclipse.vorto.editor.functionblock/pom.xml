@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>language</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>

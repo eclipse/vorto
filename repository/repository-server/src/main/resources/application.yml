@@ -15,7 +15,7 @@ server:
   port: 8080
   contextPath: /infomodelrepository
   use-forward-headers: true
-  admin: aedelmann, erlemantos, kolotu, t-gauss, mena-bosch
+  admin: aedelmann, erlemantos, kolotu, t-gauss, mena-bosch, c-kersten
   config:
     authenticatedSearchMode: false
     generatorUser: generator
