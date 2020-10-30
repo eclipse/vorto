@@ -1,0 +1,59 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="migrate_db_0xx_to_013_H2" author="kolotu">
+        <preConditions onFail="CONTINUE">
+            <dbms type="h2"/>
+            <tableExists tableName="user" />
+            <not>
+                <columnExists tableName="user" columnName="subject"/>
+            </not>
+        </preConditions>
+        <sqlFile path="/db/changelog/scripts/migrate_db_0xx_to_013_H2.sql" dbms="h2"/>
+    </changeSet>
+
+    <changeSet id="migrate_db_0xx_to_013_MariaDB" author="kolotu">
+        <preConditions onFail="CONTINUE">
+            <dbms type="mariadb,mysql"/>
+            <tableExists tableName="user" />
+            <not>
+                <columnExists tableName="user" columnName="subject"/>
+            </not>
+        </preConditions>
+        <sqlFile path="/db/changelog/scripts/migrate_db_0xx_to_013_MariaDB.sql" dbms="mariadb"/>
+    </changeSet>
+
+    <changeSet id="migrate_db_2018_11_09" author="kolotu">
+        <preConditions onFail="CONTINUE">
+            <dbms type="mariadb,mysql"/>
+            <tableExists tableName="user" />
+            <columnExists tableName="user" columnName="role"/>
+        </preConditions>
+        <sqlFile path="/db/changelog/scripts/migrate_db_2018_11_09.sql" dbms="mariadb"/>
+    </changeSet>
+
+    <changeSet id="createdby-procedure" author="kolotu">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <columnExists tableName="user" columnName="created_by" />
+            </not>
+            <dbms type="mariadb,mysql"/>
+        </preConditions>
+        <createProcedure procedureName="create_and_populate_createdby" path="/db/changelog/scripts/createdby_procedure.sql" />
+        <sql>call create_and_populate_createdby();</sql>
+        <dropProcedure procedureName="create_and_populate_createdby" />
+    </changeSet>
+
+    <changeSet id="migrate_db_from_013_MariaDB_preparation" authgor="kolotu">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="privileges" />
+            </not>
+        </preConditions>
+        <sqlFile path="/db/changelog/scripts/migrate_db_from_013_MariaDB_preparation.sql" dbms="mariadb"/>
+    </changeSet>
+
+</databaseChangeLog>

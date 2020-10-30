@@ -21,3 +21,6 @@ server:
   contextPath: /
   use-forward-headers: true
   admin: user1
+
+liquibase:
+  enabled: false
