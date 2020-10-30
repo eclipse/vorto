@@ -20,10 +20,13 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.comment.ICommentService;
+import org.eclipse.vorto.repository.comment.impl.DefaultCommentService;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,5 +86,24 @@ public class CommentController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  /**
+   * For details on authorization, see {@link DefaultCommentService#deleteComment(String, long)}
+   *
+   * @param id
+   * @return
+   */
+  @DeleteMapping("/{id:\\d+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> deleteComment(@PathVariable long id) {
+    IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    try {
+      commentService.deleteComment(context.getUsername(), id);
+      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+  }
 
 }

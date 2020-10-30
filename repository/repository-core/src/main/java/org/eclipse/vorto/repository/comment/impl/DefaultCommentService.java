@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.comment.impl;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.jcr.PathNotFoundException;
@@ -27,11 +28,14 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,16 +55,20 @@ public class DefaultCommentService implements ICommentService {
 
   private NamespaceService namespaceService;
 
+  private UserNamespaceRoleService userNamespaceRoleService;
+
   public DefaultCommentService(@Autowired ModelRepositoryFactory modelRepositoryFactory,
       @Autowired INotificationService notificationService,
       @Autowired CommentRepository commentRepository,
       @Autowired DefaultUserAccountService defaultUserAccountService,
-      @Autowired NamespaceService namespaceService) {
+      @Autowired NamespaceService namespaceService,
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
     this.modelRepositoryFactory = modelRepositoryFactory;
     this.notificationService = notificationService;
     this.commentRepository = commentRepository;
     this.accountService = defaultUserAccountService;
     this.namespaceService = namespaceService;
+    this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
   public void createComment(Comment comment) throws DoesNotExistException {
@@ -145,5 +153,60 @@ public class DefaultCommentService implements ICommentService {
 
   public void setNotificationService(INotificationService notificationService) {
     this.notificationService = notificationService;
+  }
+
+  /**
+   * Deletes the given comment, provided that either:
+   * <ul>
+   *   <li>
+   *     The user requesting is the same user who wrote the comment (comparison by username)
+   *   </li>
+   *   <li>
+   *     The user requesting has the {@literal namespace_admin} role on the namespace where the
+   *     commented model is stored.
+   *   </li>
+   * </ul>
+   * @param username
+   * @param id
+   * @throws OperationForbiddenException
+   * @throws DoesNotExistException
+   */
+  @Override
+  public void deleteComment(String username, long id)
+      throws OperationForbiddenException, DoesNotExistException {
+
+    Comment comment = commentRepository.findOne(id);
+
+    if (Objects.isNull(comment)) {
+      throw new DoesNotExistException(
+          String.format(
+              "Comment with id [%s] not found", id
+          )
+      );
+    }
+
+    authorizeCommentRemoval(username, comment);
+
+    commentRepository.delete(comment.getId());
+  }
+
+  private void authorizeCommentRemoval(String username, Comment comment)
+      throws OperationForbiddenException, DoesNotExistException {
+    String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
+
+    if (!username.equals(comment.getAuthor())) {
+
+      if (!userNamespaceRoleService
+          .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName())) {
+
+        throw new OperationForbiddenException(
+            String.format(
+                "Cannot delete comment [%s] - user requesting is neither the author nor is namespace_admin on namespace [%s]",
+                comment.getId(),
+                namespace
+            )
+        );
+      }
+    }
   }
 }

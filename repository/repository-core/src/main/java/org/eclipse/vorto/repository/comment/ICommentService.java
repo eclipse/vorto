@@ -15,17 +15,28 @@ package org.eclipse.vorto.repository.comment;
 import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public interface ICommentService {
 
-  public void createComment(Comment comment) throws Exception;
+  void createComment(Comment comment) throws Exception;
 
-  public List<Comment> getCommentsforModelId(ModelId modelId);
+  List<Comment> getCommentsforModelId(ModelId modelId);
 
-  public List<Comment> getCommentsByAuthor(String author);
+  List<Comment> getCommentsByAuthor(String author);
 
-  public void saveComment(Comment comment);
+  /**
+   * Deletes the comment
+   *
+   * @param id
+   * @param username
+   */
+  void deleteComment(String username, long id)
+      throws OperationForbiddenException, DoesNotExistException;
+
+  void saveComment(Comment comment);
 }
