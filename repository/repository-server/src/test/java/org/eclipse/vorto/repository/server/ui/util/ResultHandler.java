@@ -10,14 +10,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server.ui;
+package org.eclipse.vorto.repository.server.ui.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ * Represents the expected result from an action.<br/> Implementors will perform the necessary
+ * verifications on the UI for both scenarios.
+ */
+public interface ResultHandler {
 
-@RunWith(Suite.class)
-@SuiteClasses({BasicRepositoryUITest.class, ModelDetailsUITest.class})
-public class AllTests {
+  void succeed();
+
+  void fail();
 
 }
