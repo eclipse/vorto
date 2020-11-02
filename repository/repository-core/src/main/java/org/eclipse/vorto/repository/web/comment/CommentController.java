@@ -17,17 +17,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.comment.impl.DefaultCommentService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
-import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
-import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
+import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +57,14 @@ public class CommentController {
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
   @PreAuthorize("hasAuthority('model_viewer')")
-  public List<Comment> getCommentsforModelId(
+  public List<CommentDTO> getCommentsforModelId(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
+
+
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
     Optional<String> maybeWorkspaceId = namespaceService
         .resolveWorkspaceIdForNamespace(modelID.getNamespace());
     if (!maybeWorkspaceId.isPresent()) {
@@ -72,15 +74,13 @@ public class CommentController {
     }
 
     return commentService.getCommentsforModelId(modelID).stream()
-        .map(comment -> ModelDtoFactory.createDto(comment,
-            UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(),
-                maybeWorkspaceId.get())))
+        .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
         .collect(Collectors.toList());
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
   @PreAuthorize("hasAuthority('model_viewer')")
-  public ResponseEntity<Void> addCommentToModel(@RequestBody @Valid Comment comment)
+  public ResponseEntity<Void> addCommentToModel(@RequestBody CommentDTO comment)
       throws Exception {
     commentService.createComment(comment);
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -97,10 +97,11 @@ public class CommentController {
   public ResponseEntity<Void> deleteComment(@PathVariable long id) {
     IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
     try {
-      commentService.deleteComment(context.getUsername(), id);
-      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-    } catch (OperationForbiddenException ofe) {
-      return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+      if (commentService.deleteComment(context.getUsername(), id)) {
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+      } else {
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+      }
     } catch (DoesNotExistException dnee) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }

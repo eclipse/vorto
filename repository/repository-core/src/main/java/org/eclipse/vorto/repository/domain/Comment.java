@@ -38,9 +38,6 @@ public class Comment {
   @NotNull
   private String author;
 
-  private String firstname;
-  private String lastname;
-
   @NotNull
   private String content;
 
@@ -92,28 +89,20 @@ public class Comment {
     this.createdOn = formattedDate;
   }
 
+  /**
+   * For DTO conversion.
+   * @param date
+   */
+  public void setDateAsString(String date) {
+    this.createdOn = date;
+  }
+
   public String getAuthor() {
     return this.author;
   }
 
   public void setAuthor(String author) {
     this.author = author;
-  }
-
-  public String getFirstname() {
-    return firstname;
-  }
-
-  public void setFirstname(String firstname) {
-    this.firstname = firstname;
-  }
-
-  public String getLastname() {
-    return lastname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
   }
 
 }

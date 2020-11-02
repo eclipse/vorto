@@ -28,7 +28,6 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.domain.Comment;
-import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
@@ -36,6 +35,9 @@ import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DefaultCommentService implements ICommentService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCommentService.class);
 
   private IModelRepositoryFactory modelRepositoryFactory;
 
@@ -71,9 +75,9 @@ public class DefaultCommentService implements ICommentService {
     this.userNamespaceRoleService = userNamespaceRoleService;
   }
 
-  public void createComment(Comment comment) throws DoesNotExistException {
+  public void createComment(CommentDTO dto) throws DoesNotExistException {
 
-    final ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
+    final ModelId id = ModelId.fromPrettyFormat(dto.getModelId());
 
     Optional<String> workspaceId = namespaceService
         .resolveWorkspaceIdForNamespace(id.getNamespace());
@@ -85,10 +89,13 @@ public class DefaultCommentService implements ICommentService {
     IModelRepository modelRepo = modelRepositoryFactory
         .getRepository(workspaceId.get());
 
+    Comment comment = new Comment();
+
     if (modelRepo.exists(id)) {
-      comment.setAuthor(comment.getAuthor());
+      comment.setAuthor(dto.getAuthor());
       comment.setModelId(id.getPrettyFormat());
       comment.setDate(new Date());
+      comment.setContent(dto.getContent());
       commentRepository.save(comment);
 
       notifyAllCommentAuthors(comment, modelRepo.getById(id));
@@ -172,8 +179,7 @@ public class DefaultCommentService implements ICommentService {
    * @throws DoesNotExistException
    */
   @Override
-  public void deleteComment(String username, long id)
-      throws OperationForbiddenException, DoesNotExistException {
+  public boolean deleteComment(String username, long id) throws DoesNotExistException {
 
     Comment comment = commentRepository.findOne(id);
 
@@ -185,28 +191,31 @@ public class DefaultCommentService implements ICommentService {
       );
     }
 
-    authorizeCommentRemoval(username, comment);
+    if (canDelete(username, comment)) {
+      commentRepository.delete(comment.getId());
+      return true;
+    }
+    else {
+      LOGGER.warn("User cannot delete comment with id [%s]", id);
+      return false;
+    }
 
-    commentRepository.delete(comment.getId());
   }
 
-  private void authorizeCommentRemoval(String username, Comment comment)
-      throws OperationForbiddenException, DoesNotExistException {
+  @Override
+  public boolean canDelete(String username, Comment comment) {
     String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
 
-    if (!username.equals(comment.getAuthor())) {
-
-      if (!userNamespaceRoleService
-          .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName())) {
-
-        throw new OperationForbiddenException(
-            String.format(
-                "Cannot delete comment [%s] - user requesting is neither the author nor is namespace_admin on namespace [%s]",
-                comment.getId(),
-                namespace
-            )
-        );
+    if (username.equals(comment.getAuthor())) {
+      return true;
+    } else {
+      try {
+        return userNamespaceRoleService
+            .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName());
+      } catch (DoesNotExistException dnee) {
+        return false;
       }
     }
   }
+
 }

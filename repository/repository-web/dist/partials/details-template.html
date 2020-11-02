@@ -483,7 +483,7 @@
 							</div>
 						</div>
     			</uib-tab>
-    			<uib-tab index="1" ng-click="getCommentsForModelId(model.id.prettyFormat)">
+    			<uib-tab ng-if="!modelIsLoading" index="1" ng-click="getCommentsForModelId(model.id.prettyFormat)">
     				<uib-tab-heading>
     					<i class="fa fa-comment"></i> Comments</span>
 					</uib-tab-heading>
@@ -499,6 +499,7 @@
 											<a href="#/login">Sign In</a> to write a comment!
 										</h3>
 										<div class="box-footer">
+											<div id="cannotDeleteComment" ng-if="cannotDeleteComment" class="alert alert-danger">Cannot delete this comment. Please reload the page and try again.</div>
 											<div class="input-group group">
 												<textarea class="form-control comment" style="height: 100px;" placeholder="Type comment ..." ng-model="newComment.value" ng-disabled="!authenticated">
 												</textarea>
@@ -518,10 +519,11 @@
 													<i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}} (server time)
 												</span>
 											</div>
+
 											<!-- /.vorto-chat-info -->
 											<div class="vorto-chat-text">
+												<span ng-if="authenticated && comment.canDelete" ng-click="deleteComment(comment.id)" class="pull-right fa fa-trash-o" style="cursor:pointer" ></span>
 												<pre class="chat">{{comment.content}}</pre>
-
 											</div>
 											<!-- /.vorto-chat-text -->
 										</div>
