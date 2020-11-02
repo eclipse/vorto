@@ -47,7 +47,7 @@
         <dropProcedure procedureName="create_and_populate_createdby" />
     </changeSet>
 
-    <changeSet id="migrate_db_from_013_MariaDB_preparation" authgor="kolotu">
+    <changeSet id="migrate_db_from_013_MariaDB_preparation" author="kolotu">
         <preConditions onFail="CONTINUE">
             <not>
                 <tableExists tableName="privileges" />
