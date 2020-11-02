@@ -25,7 +25,7 @@ ModelReference:
 ;
 
 QualifiedName:
-	ID ('.' ID)*
+	NamespaceID ('.' NamespaceID)*
 ;
 
 Type:
@@ -143,10 +143,20 @@ CATEGORY: ID ('/' ID)*;
 
 ValidID: ID | KEYWORD;
 
+NamespaceID:
+    ID | REUSABLEKEYWORD;
+
 KEYWORD:
-	'breakable' | 'category' | 'configuration' | 'dateTime' | 'description' | 'dictionary' | 'displayname' | 'events' |
-	'extension' | 'fault' | 'functionblock' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'operations' |
-	'optional' | 'status' | 'version';
+	NONREUSABLEKEYORD | REUSABLEKEYWORD;
+
+NONREUSABLEKEYORD:
+    'dateTime' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'optional' |
+    'version' | 'dictionary' | 'extension' | 'functionblock';
+
+REUSABLEKEYWORD:
+    'fault' | 'status' | 'events' | 'operations' | 'breakable' | 'category' | 'configuration' |
+    'description';
+
 
 terminal SIGNEDINT :
 	'-'INT

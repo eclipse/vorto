@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h4 class="modal-title">Edit Modeshape Node Property</h4>
+</div>
+<div class="modal-body">
+    <div ng-if="error == false" class="row alert alert-danger table-cell" style="text-align:center">Error.<br/></div>
+
+    <div class="row" style="height: 10px;"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <label>Property name:
+                <input type="text" disabled="true" ng-model="propertyName" />
+            </label>
+            <label>Property value:
+                <input type="text" ng-model="propertyValue">
+            </label>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" ng-click="$dismiss()">Close</button>
+    <button type="button" class="btn btn-primary pull-right" ng-click="setModeshapeProperty(propertyName, propertyValue);$dismiss()">Save</button>
+</div>

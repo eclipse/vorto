@@ -44,6 +44,8 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
                 );
         };
 
+
+
         $scope.isReindexing = false;
         $scope.hasIndexingError = false;
         $scope.hasIndexingResult = false;

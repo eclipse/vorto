@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({BasicRepositoryUITest.class})
+@SuiteClasses({BasicRepositoryUITest.class, ModelDetailsUITest.class})
 public class AllTests {
 
 }

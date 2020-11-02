@@ -19,6 +19,7 @@ import java.util.List;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelId implements IReferenceType {
+
   private String name;
   private String namespace;
   private String version;
@@ -26,7 +27,8 @@ public class ModelId implements IReferenceType {
   private static final List<ModelIdParser> parsers =
       Arrays.asList(new ModelIdParserOld(), new ModelIdParserNew());
 
-  public ModelId() {}
+  public ModelId() {
+  }
 
   public ModelId(String name, String namespace, String version) {
     super();
@@ -69,7 +71,7 @@ public class ModelId implements IReferenceType {
   }
 
   public void setNamespace(String namespace) {
-    this.namespace = namespace;
+    this.namespace = namespace.toLowerCase();
   }
 
   public String getVersion() {
@@ -98,28 +100,37 @@ public class ModelId implements IReferenceType {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     ModelId other = (ModelId) obj;
     if (name == null) {
-      if (other.name != null)
+      if (other.name != null) {
         return false;
-    } else if (!name.equals(other.name))
+      }
+    } else if (!name.equals(other.name)) {
       return false;
+    }
     if (namespace == null) {
-      if (other.namespace != null)
+      if (other.namespace != null) {
         return false;
-    } else if (!namespace.equals(other.namespace))
+      }
+    } else if (!namespace.equals(other.namespace)) {
       return false;
+    }
     if (version == null) {
-      if (other.version != null)
+      if (other.version != null) {
         return false;
-    } else if (!version.equals(other.version))
+      }
+    } else if (!version.equals(other.version)) {
       return false;
+    }
     return true;
   }
 
@@ -128,13 +139,16 @@ public class ModelId implements IReferenceType {
   }
 
   // for tests
-  protected void setPrettyFormat(String prettyFormat) {}
+  protected void setPrettyFormat(String prettyFormat) {
+  }
 
   private static interface ModelIdParser {
+
     boolean canHandle(String modelId);
 
     ModelId parse(String modelId);
   }
+
 
   public static class ModelIdParserNew implements ModelIdParser {
 
@@ -149,6 +163,7 @@ public class ModelId implements IReferenceType {
       return new ModelId(tripleParts[1], tripleParts[0], tripleParts[2]);
     }
   }
+
 
   public static class ModelIdParserOld implements ModelIdParser {
 

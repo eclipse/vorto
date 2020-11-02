@@ -71,11 +71,14 @@ The Vorto namespace notation follows a strict set of rules.
   - Digits
   - Underscores ("_")
 - The first character of a sequence cannot be a digit
-- This format is better summarized by the `QualifiedName` parsing rule of the Vortolang 1.0 grammar:
+- Certain keywords of vortolang cannot be used as namespace fragments. 
+  - The keywords that are illegal in namespaces are listed in the `NONREUSABLEKEYORD` parsing rule
+  in the Vortolang 1.0 grammar: [Datatype.xtext](https://github.com/eclipse/vorto/blob/master/core-bundles/language/org.eclipse.vorto.editor.datatype/src/org/eclipse/vorto/editor/datatype/Datatype.xtext)
+- This format is better summarized by the `NamespaceID` parsing rule of the Vortolang 1.0 grammar:
   
   <pre><code>QualifiedName:
-  	ID ('.' ID)*
-  ;</code></pre>
+    NamespaceID ('.' NamespaceID)*
+    ;</code></pre>
   Source: [Datatype.xtext](https://github.com/eclipse/vorto/blob/master/core-bundles/language/org.eclipse.vorto.editor.datatype/src/org/eclipse/vorto/editor/datatype/Datatype.xtext)
   <br/><br/>
   The ID terminal is derived from Xtext's own definition:

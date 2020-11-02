@@ -16,3 +16,6 @@ repo:
 
 config:
   restrictTenant: 2
+
+liquibase:
+  enabled: false

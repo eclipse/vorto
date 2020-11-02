@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.diagnostics.ModeshapeDoctor;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.*;
@@ -195,6 +196,13 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
         .setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
     repoManager.setDefaultSessionSupplier(defaultWorkspaceSessionSupplier(user));
     return repoManager;
+  }
+
+  @Override
+  public IModeshapeDoctor getModeshapeDoctor(String workspaceId, Authentication user) {
+    ModeshapeDoctor doctor = new ModeshapeDoctor();
+    doctor.setRepositorySessionHelperSupplier(namedWorkspaceSessionSupplier(workspaceId, user));
+    return doctor;
   }
 
   @Override
