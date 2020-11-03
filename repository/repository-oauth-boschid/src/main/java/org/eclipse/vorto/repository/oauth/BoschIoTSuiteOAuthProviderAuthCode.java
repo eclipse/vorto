@@ -12,6 +12,18 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import static org.eclipse.vorto.repository.oauth.BoschIDOAuthProvider.JWT_CLIENT_ID;
+
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
@@ -27,13 +39,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.PublicKey;
-import java.util.*;
-import java.util.function.Supplier;
-
-import static org.eclipse.vorto.repository.oauth.BoschIDOAuthProvider.JWT_CLIENT_ID;
 
 @Component
 public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
@@ -137,7 +142,14 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
       return false;
     }
 
-    return true;
+    return hasVortoScope(jwtToken);
+  }
+
+  private boolean hasVortoScope(JwtToken jwtToken) {
+    return Optional.ofNullable(jwtToken.getPayloadMap().get("scp"))
+        .map(list -> (List<String>) list)
+        .map(list -> list.contains("service:vorto"))
+        .orElse(false);
   }
 
   private boolean verifyAlgorithm(JwtToken jwtToken) {

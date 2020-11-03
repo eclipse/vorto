@@ -12,30 +12,47 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import java.math.BigInteger;
+import java.security.KeyFactory;
 import java.security.PublicKey;
-import java.util.Base64;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.mockito.Mockito;
+import sun.misc.BASE64Decoder;
 
 public class AbstractVerifierTest {
   
-  private final BigInteger modulo = new BigInteger("830538811735408314582621539553070162825329511473749520960071842512888154583661329578856501388691328580504356783061328026508874276684641498258143084761635564016833992631306882144953234242988258892822611594333968077284902649586411908621597793340752603085124372671862634388266258413310517372674079274553870093252755141756170435363293975128993814361895755615458479647933744804040235768892963491228647623874059178600644686133883859540472149350623949509708609454530204501429551624718164222191973302614187673550205993013414740838695954934129529036627714028824333507464386064437170296361570229468678245951548693673563799080713669059443095743583743206041381189780897243809909360939809588196952428535684629017896004490061234079460078438775041303425320658850058863736452913325588120245329910765148185775202514654754633362916460109862442581443593980114680213039061721167744518772243359704401228544384233413625885686192673912365645103750571555793433569142815053494544430670334028950249448318200460086175661007125340740752231580985757635832323998046254817494457485681348394265446594066165808012158600041431797148481761875796401724531491309057513937955912409183564779996713266437433533783642657738476318101266488457712636171984437330161744271904413");
-  
   protected Supplier<Map<String, PublicKey>> publicKey() {
     return () -> {
-      Map<String, PublicKey> pubKey = new HashMap<String, PublicKey>();
-      pubKey.put("public:1b26d10b-b16c-4804-bc80-c1e39ba56e20", 
-          PublicKeyHelper.toPublicKey(Base64.getUrlEncoder().encodeToString(modulo.toByteArray()), 
-              "AQAB"));
+      Map<String, PublicKey> pubKey = new HashMap<>();
+      pubKey.put("public:1b26d10b-b16c-4804-bc80-c1e39ba56e20",
+          createPublicKey());
       return pubKey;
     };
   }
-  
+
+  private PublicKey createPublicKey() {
+    try {
+      String publicKeyPEM = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnzyis1ZjfNB0bBgKFMSv\n"
+          + "vkTtwlvBsaJq7S5wA+kzeVOVpVWwkWdVha4s38XM/pa/yr47av7+z3VTmvDRyAHc\n"
+          + "aT92whREFpLv9cj5lTeJSibyr/Mrm/YtjCZVWgaOYIhwrXwKLqPr/11inWsAkfIy\n"
+          + "tvHWTxZYEcXLgAXFuUuaS3uF9gEiNQwzGTU1v0FqkqTBr4B8nW3HCN47XUu0t8Y0\n"
+          + "e+lf4s4OxQawWD79J9/5d3Ry0vbV3Am1FtGJiJvOwRsIfVChDpYStTcHTCMqtvWb\n"
+          + "V6L11BWkpzGXSW4Hv43qa+GSYOD2QU68Mb59oSk2OB+BtOLpJofmbGEGgvmwyCI9\n"
+          + "MwIDAQAB";
+
+      BASE64Decoder base64Decoder = new BASE64Decoder();
+      byte[] publicKeyBytes = base64Decoder.decodeBuffer(publicKeyPEM);
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      return keyFactory.generatePublic(keySpec);
+    } catch (Exception e) {
+      throw new IllegalStateException("Public key creation failed.");
+    }
+  }
+
   protected HttpServletRequest requestModel(String modelId) {
     HttpServletRequest httpRequest = Mockito.mock(HttpServletRequest.class);
     Mockito.when(httpRequest.getRequestURI()).thenReturn("/infomodelrepository/api/v1/models/" + modelId);
