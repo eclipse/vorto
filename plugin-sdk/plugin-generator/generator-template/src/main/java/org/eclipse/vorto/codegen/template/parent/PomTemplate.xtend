@@ -46,8 +46,8 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<xtext.version>2.9.0</xtext.version>
 				<vorto.version>0.10.0.M8</vorto.version>
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<maven.compiler.source>1.8</maven.compiler.source>
-				<maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.source>11</maven.compiler.source>
+				<maven.compiler.target>11</maven.compiler.target>
 				<spring.boot.version>1.5.12.RELEASE</spring.boot.version>
 			</properties>
 		
@@ -132,7 +132,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<profile>
 					<id>doclint-java8-disable</id>
 					<activation>
-						<jdk>[1.8,)</jdk>
+						<jdk>[11,)</jdk>
 					</activation>
 					<properties>
 						<javadoc.opts>-Xdoclint:none</javadoc.opts>

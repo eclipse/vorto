@@ -26,7 +26,7 @@ Require-Bundle: org.eclipse.xtext.ide,
  org.eclipse.xtend.lib;resolution:=optional,
  org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.datatype,org.eclipse.vorto.ed
  itor.datatype.converter,org.eclipse.vorto.editor.datatype.formatting,
  org.eclipse.vorto.editor.datatype.generator,org.eclipse.vorto.editor.

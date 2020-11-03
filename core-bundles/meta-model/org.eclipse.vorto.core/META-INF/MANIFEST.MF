@@ -26,7 +26,7 @@ Require-Bundle: org.eclipse.xtext.ide,
  org.objectweb.asm;bundle-version="[7.0.0,7.1.0)";resolution:=optional,
  org.eclipse.xtend.lib;resolution:=optional,
  org.eclipse.xtext.xbase.lib
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.core.api.model.datatype,
  org.eclipse.vorto.core.api.model.datatype.impl,

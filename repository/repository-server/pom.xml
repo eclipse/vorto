@@ -407,7 +407,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<projectBuildDirectory>${build.testOutputDirectory}/benchmarkTests</projectBuildDirectory>
+							<projectBuildDirectory>${project.build.testOutputDirectory}/benchmarkTests</projectBuildDirectory>
 							<jmeterArtifacts>
 								<jmeterArtifact>org.apache.jmeter:ApacheJMeter:5.3</jmeterArtifact>
 								<jmeterArtifact>org.apache.jmeter:ApacheJMeter_config:5.3</jmeterArtifact>

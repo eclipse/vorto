@@ -25,7 +25,7 @@ Require-Bundle: org.eclipse.vorto.editor.mapping;visibility:=reexport,
  org.eclipse.vorto.editor.functionblock.ide,
  org.eclipse.vorto.editor.functionblock.ui
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.mapping.ui.quickfix,
  org.eclipse.vorto.editor.mapping.ui.contentassist,
  org.eclipse.vorto.editor.mapping.ui.internal

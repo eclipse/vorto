@@ -23,7 +23,7 @@ Require-Bundle: org.eclipse.xtext.ui,
  org.eclipse.vorto.editor.datatype.ui,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.functionblock.ide
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.functionblock.ui,org.eclipse.
  vorto.editor.functionblock.ui.contentassist,org.eclipse.vorto.editor.
  functionblock.ui.internal,org.eclipse.vorto.editor.functionblock.ui.q
