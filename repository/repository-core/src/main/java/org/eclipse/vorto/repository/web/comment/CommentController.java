@@ -15,16 +15,21 @@ package org.eclipse.vorto.repository.web.comment;
 import io.swagger.annotations.ApiParam;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelVisibility;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.comment.impl.DefaultCommentService;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,38 +57,78 @@ public class CommentController {
   @Autowired
   private NamespaceService namespaceService;
 
+  @Autowired
+  private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private ModelRepositoryFactory modelRepositoryFactory;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
 
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  @PreAuthorize("hasAuthority('model_viewer')")
-  public List<CommentDTO> getCommentsforModelId(
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<List<CommentDTO>> getCommentsforModelId(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
 
-
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
     IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
 
-    Optional<String> maybeWorkspaceId = namespaceService
-        .resolveWorkspaceIdForNamespace(modelID.getNamespace());
-    if (!maybeWorkspaceId.isPresent()) {
-      LOGGER.error(
-          String.format("Namespace [%s] does not exist.", modelID.getNamespace()));
-      return Collections.emptyList();
+    // this fetches the model and infers whether it is public
+    // if so, the rest of the authorization is bypassed
+    // can still fail authorization is the model itself is not visible to the user
+    try {
+      ModelInfo resource = modelRepositoryFactory.getRepositoryByModel(modelID)
+          .getByIdWithPlatformMappings(modelID);
+      if (resource.getVisibility().equalsIgnoreCase(ModelVisibility.Public.name())) {
+        return new ResponseEntity<>(
+            commentService.getCommentsforModelId(modelID).stream()
+                .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
+                .collect(Collectors.toList()),
+            HttpStatus.OK
+        );
+      }
+    }
+    catch (NotAuthorizedException nae) {
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.FORBIDDEN);
     }
 
-    return commentService.getCommentsforModelId(modelID).stream()
-        .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
-        .collect(Collectors.toList());
+    try {
+      if (userNamespaceRoleService.hasAnyRole(context.getUsername(), modelID.getNamespace())) {
+        return new ResponseEntity<>(
+            commentService.getCommentsforModelId(modelID).stream()
+            .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
+            .collect(Collectors.toList()),
+            HttpStatus.OK
+        );
+      }
+      else {
+        return new ResponseEntity<>(Collections.emptyList(), HttpStatus.FORBIDDEN);
+      }
+    }
+    catch (DoesNotExistException dnee) {
+      LOGGER.warn(
+          String.format("Namespace [%s] does not exist.", modelID.getNamespace())
+      );
+      return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
+    }
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-  @PreAuthorize("hasAuthority('model_viewer')")
-  public ResponseEntity<Void> addCommentToModel(@RequestBody CommentDTO comment)
-      throws Exception {
-    commentService.createComment(comment);
-    return new ResponseEntity<>(HttpStatus.CREATED);
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> addCommentToModel(@RequestBody CommentDTO comment) {
+
+    IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+
+    try {
+      commentService.createComment(context.getUsername(), comment);
+      return new ResponseEntity<>(HttpStatus.CREATED);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    } catch (DoesNotExistException dnee) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
   }
 
   /**

@@ -61,6 +61,29 @@ public class TestModel {
     return this.id;
   }
 
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public String getModelName() {
+    return modelName;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public String getPrettyName() {
+    return prettyName;
+  }
+
+  public String getTargetPlatform() {
+    return targetPlatform;
+  }
 
   public static final class TestModelBuilder {
     private String namespace = "com.mycompany." + TestUtils.createRandomString(10).toLowerCase();

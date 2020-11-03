@@ -28,7 +28,8 @@ public class CommentAnonymizationListener implements ApplicationListener<AppEven
   
   @Override
   public void onApplicationEvent(AppEvent event) {
-    if (event.getEventType() == EventType.USER_DELETED) {
+    EventType type = event.getEventType();
+    if (type == EventType.USER_DELETED || type == EventType.USER_REMOVED_FROM_NAMESPACE) {
       String userId = (String) event.getSubject();
       
       commentRepository.findByAuthor(userId).forEach(comment -> {

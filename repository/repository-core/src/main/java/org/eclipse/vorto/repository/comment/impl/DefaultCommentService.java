@@ -33,6 +33,7 @@ import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
@@ -61,23 +62,35 @@ public class DefaultCommentService implements ICommentService {
 
   private UserNamespaceRoleService userNamespaceRoleService;
 
+  private UserRepositoryRoleService userRepositoryRoleService;
+
   public DefaultCommentService(@Autowired ModelRepositoryFactory modelRepositoryFactory,
       @Autowired INotificationService notificationService,
       @Autowired CommentRepository commentRepository,
       @Autowired DefaultUserAccountService defaultUserAccountService,
       @Autowired NamespaceService namespaceService,
-      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired UserRepositoryRoleService userRepositoryRoleService) {
     this.modelRepositoryFactory = modelRepositoryFactory;
     this.notificationService = notificationService;
     this.commentRepository = commentRepository;
     this.accountService = defaultUserAccountService;
     this.namespaceService = namespaceService;
     this.userNamespaceRoleService = userNamespaceRoleService;
+    this.userRepositoryRoleService = userRepositoryRoleService;
   }
 
-  public void createComment(CommentDTO dto) throws DoesNotExistException {
+  public void createComment(String username, CommentDTO dto) throws DoesNotExistException, OperationForbiddenException {
 
     final ModelId id = ModelId.fromPrettyFormat(dto.getModelId());
+
+    if (!canCreate(username, dto)) {
+      throw new OperationForbiddenException(
+          String.format(
+              "User cannot create a comment for model ID [%s]", id.getPrettyFormat()
+          )
+      );
+    }
 
     Optional<String> workspaceId = namespaceService
         .resolveWorkspaceIdForNamespace(id.getNamespace());
@@ -94,7 +107,7 @@ public class DefaultCommentService implements ICommentService {
     if (modelRepo.exists(id)) {
       comment.setAuthor(dto.getAuthor());
       comment.setModelId(id.getPrettyFormat());
-      comment.setDate(new Date());
+      comment.setDate(DATE_FORMAT.format(new Date()));
       comment.setContent(dto.getContent());
       commentRepository.save(comment);
 
@@ -202,6 +215,12 @@ public class DefaultCommentService implements ICommentService {
 
   }
 
+  /**
+   *
+   * @param username
+   * @param comment
+   * @return
+   */
   @Override
   public boolean canDelete(String username, Comment comment) {
     String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
@@ -210,12 +229,35 @@ public class DefaultCommentService implements ICommentService {
       return true;
     } else {
       try {
-        return userNamespaceRoleService
-            .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName());
+        if (userNamespaceRoleService
+            .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName())) {
+          return true;
+        } else {
+          return userRepositoryRoleService.isSysadmin(username);
+        }
       } catch (DoesNotExistException dnee) {
         return false;
       }
     }
   }
 
+  /**
+   *
+   * @param username
+   * @param comment
+   * @return
+   */
+  @Override
+  public boolean canCreate(String username, Comment comment) {
+    String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
+    try {
+      if (userNamespaceRoleService.hasAnyRole(username, namespace)) {
+        return true;
+      } else {
+        return userRepositoryRoleService.isSysadmin(username);
+      }
+    } catch (DoesNotExistException dnee) {
+      return false;
+    }
+  }
 }

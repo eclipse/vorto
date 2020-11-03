@@ -37,7 +37,7 @@ public class CommentDTO extends Comment {
     CommentDTO dto = new CommentDTO();
     dto.setAuthor(comment.getAuthor());
     dto.setContent(comment.getContent());
-    dto.setDateAsString(comment.getDate());
+    dto.setDate(comment.getDate());
     dto.setId(comment.getId());
     dto.setModelId(comment.getModelId());
     dto.setCanDelete(service.canDelete(username, comment));

@@ -13,6 +13,8 @@
 package org.eclipse.vorto.repository.services;
 
 import com.google.common.collect.Sets;
+import org.eclipse.vorto.repository.core.events.AppEvent;
+import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
 import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.*;
@@ -455,6 +457,12 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                     .collect(Collectors.toList())
             )
         );
+        // sends user removed event for comment anonymization if no roles left
+        if (roles.getRoles() == 0l) {
+          eventPublisher.publishEvent(
+              new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
+          );
+        }
       }
       return result;
     }
@@ -542,6 +550,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     return setRoles(actor, target, namespace,
         namespaceRoleRepository.findAll().stream().map(r -> (IRole) r).collect(
             Collectors.toSet()), newNamespace);
+
   }
 
   /**
@@ -647,6 +656,10 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
             target,
             namespace.getName()
         )
+    );
+    // Sends event (for comment anonymization)
+    eventPublisher.publishEvent(
+        new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
     );
     return true;
   }
@@ -1328,6 +1341,12 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
                     .collect(Collectors.toList())
             )
         );
+        // sends user removed event for comment anonymization if no roles left
+        if (roles.getRoles() == 0l) {
+          eventPublisher.publishEvent(
+              new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
+          );
+        }
       }
       return result;
     }
