@@ -175,13 +175,23 @@ public class CommentControllerTest extends IntegrationTestBase {
    *    Creates a test namespace and model as {@literal userModelCreator}
    *   </li>
    *   <li>
-   *    Assigns {@literal userModelCreator} as {@literal namespace_admin}
+   *    Creates a test namespace and model as {@literal userModelCreator2}
    *   </li>
    *   <li>
-   *    Assigns {@literal userModelCreator2} as {@literal model_viewer}
+   *    Assigns {@literal userModelCreator} as {@literal namespace_admin} in their own namespace
    *   </li>
    *   <li>
-   *     Creates a comment as {@literal userModelCreator2}
+   *    Assigns {@literal userModelCreator2} as {@literal model_viewer} in
+   *    {@literal userModelCreator}'s namespace
+   *   </li>
+   *   <li>
+   *    Assigns {@literal userModelCreator2} as {@literal namespace_admin} in their own namespace
+   *   </li>
+   *   <li>
+   *     Creates a comment as {@literal userModelCreator2} in {@literal userModelCreator}'s namespace
+   *   </li>
+   *   <li>
+   *     Creates a comment as {@literal userModelCreator2} in their own namespace
    *   </li>
    *   <li>
    *     Removes {@literal userModelCreator2} from the namespace as {@literal userModelCreator}
@@ -190,7 +200,13 @@ public class CommentControllerTest extends IntegrationTestBase {
    *     Fetches the comments for the model's ID as {@literal userModelCreator}
    *   </li>
    *   <li>
-   *     Verifies there is one comment and the author is anonymous
+   *     Verifies there is one comment on {@literal userModelCreator}'s model and the author is now
+   *     anonymous (because {@literal userModelCreator2} has no roles anymore on the namespace)
+   *   </li>
+   *   <li>
+   *     Verifies there is one comment on {@literal userModelCreator2}'s model and the comment has
+   *     <b>not</b> been anonymized, since {@literal userModelCreator2} still has roles in their
+   *     own namespace.
    *   </li>
    * </ol>
    *
@@ -201,6 +217,13 @@ public class CommentControllerTest extends IntegrationTestBase {
     // creates random namespace and test model
     TestModel userCreatorModel = TestModelBuilder.aTestModel().build();
     userCreatorModel.createModel(repositoryServer, userModelCreator);
+
+    // creates specific namespace (to avoid overlapping with base namespace) and test model
+    String userCreator2Namespace = "vorto.private.usercreator2";
+    TestModel userCreator2Model = new TestModelBuilder()
+        .withNamespace(userCreator2Namespace).build();
+    createNamespaceSuccessfully(userCreator2Namespace, userModelCreator2);
+    userCreator2Model.createModel(repositoryServer, userModelCreator2);
 
     // assigns userModelCreator with namespace admin role on namespace
     // (this is not done automatically by TestModel#createModel)
@@ -215,13 +238,23 @@ public class CommentControllerTest extends IntegrationTestBase {
     // assigns other user with read/comment permission on namespace
     Collaborator userModelCreator2Collaborator = new Collaborator();
     userModelCreator2Collaborator.setUserId(USER_MODEL_CREATOR_NAME_2);
-    Set<String> userModelCreatorCollaborator2Roles = new HashSet<>();
-    userModelCreatorCollaborator2Roles.add("model_viewer");
-    userModelCreator2Collaborator.setRoles(userModelCreatorCollaborator2Roles);
+    Set<String> userModelCreator2CollaboratorRoles = new HashSet<>();
+    userModelCreator2CollaboratorRoles.add("model_viewer");
+    userModelCreator2Collaborator.setRoles(userModelCreator2CollaboratorRoles);
 
     addCollaboratorToNamespace(userCreatorModel.getNamespace(), userModelCreator2Collaborator);
 
-    // writes a comment on the model as user creator 2
+    // assigns other user with read/comment permission on namespace
+    Collaborator userModelCreator2CollaboratorAdmin = new Collaborator();
+    userModelCreator2CollaboratorAdmin.setUserId(USER_MODEL_CREATOR_NAME_2);
+    Set<String> userModelCreator2CollaboratorAdminRoles = new HashSet<>();
+    userModelCreator2CollaboratorAdminRoles.add("namespace_admin");
+    userModelCreator2CollaboratorAdmin.setRoles(userModelCreator2CollaboratorAdminRoles);
+
+    addCollaboratorToNamespace(userCreator2Model.getNamespace(),
+        userModelCreator2CollaboratorAdmin);
+
+    // writes a comment on userCreator's model as user creator 2
     CommentDTO userComment0 = new CommentDTO();
     userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
     userComment0.setContent("A comment from userModelCreator2");
@@ -236,6 +269,21 @@ public class CommentControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isCreated());
 
+    // writes a comment on userCreator2 model as user creator 2
+    CommentDTO userComment1 = new CommentDTO();
+    userComment1.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment1.setContent("A comment from userModelCreator2 on my own model");
+    userComment1.setDate(ICommentService.DATE_FORMAT.format(new Date()));
+    userComment1.setModelId(userCreator2Model.getId().getPrettyFormat());
+    repositoryServer
+        .perform(
+            post("/rest/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userComment1))
+                .with(userModelCreator2)
+        )
+        .andExpect(status().isCreated());
+
     // removes userModelCreator2 from namespace as userModelCreator
     repositoryServer
         .perform(
@@ -245,7 +293,7 @@ public class CommentControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isOk());
 
-    // fetches and tests comments for the model ID
+    // fetches and tests comments for userCreator's model ID
     repositoryServer
         .perform(
             get(String.format("/rest/comments/%s", userCreatorModel.getId().getPrettyFormat()))
@@ -259,6 +307,22 @@ public class CommentControllerTest extends IntegrationTestBase {
         )
         .andExpect(
             jsonPath("$[0].author").value(User.USER_ANONYMOUS)
+        );
+
+    // fetches and tests comments for userCreator2's model ID
+    repositoryServer
+        .perform(
+            get(String.format("/rest/comments/%s", userCreator2Model.getId().getPrettyFormat()))
+                .with(userModelCreator2)
+        )
+        .andExpect(
+            jsonPath("$").isArray()
+        )
+        .andExpect(
+            jsonPath("$", hasSize(1))
+        )
+        .andExpect(
+            jsonPath("$[0].author").value(USER_MODEL_CREATOR_NAME_2)
         );
 
   }
@@ -314,6 +378,7 @@ public class CommentControllerTest extends IntegrationTestBase {
   /**
    * Tests that comments on a public model are visible regardless of other authorization rules, as
    * long as the requesting user is logged on.
+   *
    * @throws Exception
    */
   @Test

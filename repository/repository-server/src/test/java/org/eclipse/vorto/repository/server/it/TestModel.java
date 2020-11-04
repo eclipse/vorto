@@ -91,7 +91,7 @@ public class TestModel {
     private String description = "InformationModel for " + modelName;
     private String version = "1.0.0";
 
-    private TestModelBuilder() {}
+    public TestModelBuilder() {}
 
     public static TestModelBuilder aTestModel() {
       return new TestModelBuilder();

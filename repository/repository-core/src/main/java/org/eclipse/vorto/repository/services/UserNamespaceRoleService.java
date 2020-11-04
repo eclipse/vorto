@@ -460,7 +460,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         // sends user removed event for comment anonymization if no roles left
         if (roles.getRoles() == 0l) {
           eventPublisher.publishEvent(
-              new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
+              new AppEvent(this, roles, EventType.USER_REMOVED_FROM_NAMESPACE)
           );
         }
       }
@@ -659,7 +659,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     );
     // Sends event (for comment anonymization)
     eventPublisher.publishEvent(
-        new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
+        new AppEvent(this, rolesToDelete.get(), EventType.USER_REMOVED_FROM_NAMESPACE)
     );
     return true;
   }
@@ -1344,7 +1344,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
         // sends user removed event for comment anonymization if no roles left
         if (roles.getRoles() == 0l) {
           eventPublisher.publishEvent(
-              new AppEvent(this, target.getUsername(), EventType.USER_REMOVED_FROM_NAMESPACE)
+              new AppEvent(this, roles, EventType.USER_REMOVED_FROM_NAMESPACE)
           );
         }
       }
