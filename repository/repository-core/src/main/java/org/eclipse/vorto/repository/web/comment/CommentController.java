@@ -26,6 +26,7 @@ import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
@@ -61,6 +62,9 @@ public class CommentController {
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
+  private UserRepositoryRoleService userRepositoryRoleService;
+
+  @Autowired
   private ModelRepositoryFactory modelRepositoryFactory;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
@@ -94,7 +98,10 @@ public class CommentController {
     }
 
     try {
-      if (userNamespaceRoleService.hasAnyRole(context.getUsername(), modelID.getNamespace())) {
+      if (
+          userRepositoryRoleService.isSysadmin(context.getUsername()) ||
+          userNamespaceRoleService.hasAnyRole(context.getUsername(), modelID.getNamespace())
+      ) {
         return new ResponseEntity<>(
             commentService.getCommentsforModelId(modelID).stream()
             .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))

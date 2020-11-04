@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.jcr.PathNotFoundException;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelVisibility;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -251,10 +252,19 @@ public class DefaultCommentService implements ICommentService {
   public boolean canCreate(String username, Comment comment) {
     String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
     try {
-      if (userNamespaceRoleService.hasAnyRole(username, namespace)) {
+      // sysadmin?
+      if (userRepositoryRoleService.isSysadmin(username)) {
         return true;
+        // has role in namespace?
+      } else if (userNamespaceRoleService.hasAnyRole(username, namespace)) {
+        return true;
+        // is model public?
       } else {
-        return userRepositoryRoleService.isSysadmin(username);
+        ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
+        ModelInfo model = modelRepositoryFactory
+            .getRepositoryByModel(id)
+            .getById(id);
+        return model.getVisibility().equalsIgnoreCase(ModelVisibility.Public.name());
       }
     } catch (DoesNotExistException dnee) {
       return false;

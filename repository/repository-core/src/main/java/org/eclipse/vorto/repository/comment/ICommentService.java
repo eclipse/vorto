@@ -65,8 +65,19 @@ public interface ICommentService {
   boolean canDelete(String username, Comment comment);
 
   /**
-   * Authorizes a user to create a comment if the user has any role on the target namespace or
-   * is {@literal sysadmin}.
+   * Authorizes a user to create a comment if either of the following conditions applies:
+   * <ul>
+   *   <li>
+   *     The user is {@literal sysadmin}
+   *   </li>
+   *   <li>
+   *     The user has any role on the target namespace
+   *   </li>
+   *   <li>
+   *     The model is public
+   *   </li>
+   * </ul>
+   *
    * @param username
    * @param comment
    * @return

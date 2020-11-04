@@ -452,4 +452,128 @@ public class CommentControllerTest extends IntegrationTestBase {
             status().isOk()
         );
   }
+
+  /**
+   * Tests that comments on a public model can be written by anybody, as
+   * long as the requesting user is logged on.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCanWriteAndDeleteCommentsOnPublicModel() throws Exception {
+    // creates random namespace and test model
+    TestModel model = TestModelBuilder.aTestModel().build();
+    model.createModel(repositoryServer, userModelCreator);
+
+    // assigns userModelCreator with namespace admin role on namespace
+    // (this is not done automatically by TestModel#createModel)
+    Collaborator userModelCreatorCollaborator = new Collaborator();
+    userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
+    userModelCreatorCollaboratorRoles.add("namespace_admin");
+    userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
+
+    addCollaboratorToNamespace(model.getNamespace(), userModelCreatorCollaborator);
+
+    // releases, approves, then publishes the model as sysadmin (shortcut to pre-authorization in
+    // WorkflowController)
+    repositoryServer
+        .perform(
+            put(String.format("/rest/workflows/%s/actions/Release", model.getPrettyName()))
+                .with(userSysadmin)
+        )
+        .andExpect(
+            status().isOk()
+        );
+
+    // releases, approves, then publishes the model
+    repositoryServer
+        .perform(
+            put(String.format("/rest/workflows/%s/actions/Approve", model.getPrettyName()))
+                .with(userSysadmin)
+        )
+        .andExpect(
+            status().isOk()
+        );
+
+    repositoryServer
+        .perform(
+            post(String.format("/rest/models/%s/makePublic", model.getPrettyName()))
+                .with(userSysadmin)
+        )
+        .andExpect(
+            status().isOk()
+        );
+
+    // writes a comment on the model as user creator2
+    CommentDTO userComment0 = new CommentDTO();
+    userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment0.setContent("A comment from userModelCreator2");
+    userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
+    userComment0.setModelId(model.getId().getPrettyFormat());
+    repositoryServer
+        .perform(
+            post("/rest/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userComment0))
+                .with(userModelCreator2)
+        )
+        .andExpect(status().isCreated());
+
+    // deletes the comment only 1 persisted so ID is 1
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/comments/%s", 1))
+                .with(userModelCreator2)
+        )
+        .andExpect(
+            status().isNoContent()
+        );
+  }
+
+  /**
+   * This ensures that comments on a private namespace on a draft model are visible for sysamdins.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCanViewAnyCommentAsSysadmin() throws Exception {
+    // creates private namespace and test model
+    String userCreatorNamespace = "vorto.private.usercreator";
+    TestModel model = new TestModelBuilder()
+        .withNamespace(userCreatorNamespace).build();
+    createNamespaceSuccessfully(userCreatorNamespace, userModelCreator);
+    model.createModel(repositoryServer, userModelCreator);
+
+    // writes a comment on the model as user creator
+    CommentDTO userComment0 = new CommentDTO();
+    userComment0.setAuthor(USER_MODEL_CREATOR_NAME);
+    userComment0.setContent("A comment from userModelCreator");
+    userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
+    userComment0.setModelId(model.getId().getPrettyFormat());
+    repositoryServer
+        .perform(
+            post("/rest/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userComment0))
+                .with(userModelCreator)
+        )
+        .andExpect(status().isCreated());
+
+    // fetches and tests comments for the model ID, as sysadmin
+    repositoryServer
+        .perform(
+            get(String.format("/rest/comments/%s", model.getId().getPrettyFormat()))
+                .with(userSysadmin)
+        )
+        .andExpect(
+            jsonPath("$").isArray()
+        )
+        .andExpect(
+            jsonPath("$", hasSize(1))
+        )
+        .andExpect(
+            jsonPath("$[0].author").value(USER_MODEL_CREATOR_NAME)
+        );
+  }
 }
