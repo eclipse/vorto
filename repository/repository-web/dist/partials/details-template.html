@@ -486,8 +486,14 @@
     			<uib-tab ng-if="!modelIsLoading" index="1" ng-click="getCommentsForModelId(model.id.prettyFormat)">
     				<uib-tab-heading>
     					<i class="fa fa-comment"></i> Comments</span>
-					</uib-tab-heading>
+						</uib-tab-heading>
 					<div class="row ">
+							<div class="overlay" ng-show="isLoadingComments">
+								<div style="display: table-cell;vertical-align: middle;">
+									<i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+									<span style="font-size: xx-large">&nbsp;Loading comments...</span>
+								</div>
+							</div>
 							<!-- Left col -->
 							<section class="col-md-12 connectedSortable">
 								<!-- Chat box -->
