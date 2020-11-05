@@ -400,7 +400,7 @@ public final class SearchTestInfrastructure {
 
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     RestClientBuilder clientBuilder = RestClient.builder(
-        new HttpHost("localhost", this.elasticSearch.getMappedPort(9200), "http")
+        new HttpHost(this.elasticSearch.getContainerIpAddress(), this.elasticSearch.getMappedPort(9200), "http")
     );
     searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder),
         repositoryFactory, userNamespaceRoleService, namespaceRepository);
