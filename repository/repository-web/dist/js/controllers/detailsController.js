@@ -23,6 +23,8 @@ define(["../init/appController"], function (repositoryControllers) {
             $window, $timeout, openCreateModelDialog,
             confirmPublish, sessionTimeoutService) {
 
+          $scope.cannotDeleteComment = false;
+          $scope.isLoadingComments = false;
           $scope.model = [];
           $scope.aclEntries = [];
           $scope.platformGeneratorMatrix = null;
@@ -262,16 +264,37 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.comments = [];
           $authority = $rootScope.authority;
 
-          $scope.getCommentsForModelId = function (modelId) {
+          $scope.deleteComment = function(id) {
+            $scope.isLoadingComments = true;
+            $http.delete('./rest/comments/' + id)
+            .then(
+                function(result) {
+                  // soft-removes the comment without reloading all comments
+                  $scope.comments = $scope.comments.filter(c => c.id !== id);
+                  $scope.isLoadingComments = false;
+                },
+                function(error) {
+                  $scope.cannotDeleteComment = true;
+                  $scope.isLoadingComments = false;
+                  let warning = document.getElementById("cannotDeleteComment");
+                  if (warning) {
+                    warning.scrollIntoView();
+                  }
+                }
+            );
+          }
 
+          $scope.getCommentsForModelId = function (modelId) {
+            $scope.isLoadingComments = true;
             $http.get('./rest/comments/' + modelId)
             .then(
                 function (result) {
                   $scope.comments = result.data;
                   $scope.comments.reverse();
+                  $scope.isLoadingComments = false;
                 },
                 function (error) {
-
+                  $scope.isLoadingComments = false;
                   if (error.status == 403) {
                     $rootScope.error = "Operation is Forbidden";
                   } else if (error.status == 401) {
