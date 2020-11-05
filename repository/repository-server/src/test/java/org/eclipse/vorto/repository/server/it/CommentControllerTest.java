@@ -20,18 +20,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.vorto.repository.comment.ICommentService;
+import org.eclipse.vorto.repository.comment.impl.CommentRepository;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.server.it.TestModel.TestModelBuilder;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
+import org.junit.After;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 public class CommentControllerTest extends IntegrationTestBase {
+
+  @Autowired
+  private CommentRepository commentRepository;
 
   /**
    * This performs the following:
@@ -520,10 +530,37 @@ public class CommentControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isCreated());
 
-    // deletes the comment only 1 persisted so ID is 1
+    // fetches the comment to infer the id
+    final AtomicLong idContainer = new AtomicLong();
     repositoryServer
         .perform(
-            delete(String.format("/rest/comments/%s", 1))
+            get(String.format("/rest/comments/%s", model.getId().getPrettyFormat()))
+            .with(userModelCreator2)
+        )
+        .andDo(
+            rh -> {
+              List<CommentDTO> list = objectMapper
+                  .readValue(
+                      rh.getResponse().getContentAsString(),
+                      new TypeReference<List<CommentDTO>>() {}
+                  );
+              CommentDTO comment = list
+                  .stream()
+                  .filter(
+                      c -> c.getModelId().equals(model.getId().getPrettyFormat())
+                          && c.getAuthor().equals(USER_MODEL_CREATOR_NAME_2)
+                  )
+                  .findFirst()
+                  .get();
+              idContainer.set(comment.getId());
+            }
+        );
+
+
+    // deletes the comment
+    repositoryServer
+        .perform(
+            delete(String.format("/rest/comments/%s", idContainer.get()))
                 .with(userModelCreator2)
         )
         .andExpect(
@@ -576,4 +613,10 @@ public class CommentControllerTest extends IntegrationTestBase {
             jsonPath("$[0].author").value(USER_MODEL_CREATOR_NAME)
         );
   }
+
+  @After
+  public void after() throws Exception {
+    commentRepository.deleteAll();
+  }
+
 }

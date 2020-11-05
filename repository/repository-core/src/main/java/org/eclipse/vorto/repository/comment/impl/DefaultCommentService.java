@@ -38,6 +38,7 @@ import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,11 +261,17 @@ public class DefaultCommentService implements ICommentService {
         return true;
         // is model public?
       } else {
-        ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
-        ModelInfo model = modelRepositoryFactory
-            .getRepositoryByModel(id)
-            .getById(id);
-        return model.getVisibility().equalsIgnoreCase(ModelVisibility.Public.name());
+        try {
+          ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
+          ModelInfo model = modelRepositoryFactory
+              .getRepositoryByModel(id)
+              .getById(id);
+          return model.getVisibility().equalsIgnoreCase(ModelVisibility.Public.name());
+        }
+        // user cannot access the model - meaning it's not public
+        catch (NotAuthorizedException nae) {
+          return false;
+        }
       }
     } catch (DoesNotExistException dnee) {
       return false;
