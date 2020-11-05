@@ -630,7 +630,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
           searchRequest.toString()));
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
-      logger.info(String.format("Number of hits: %d", hits.getTotalHits()));
+      logger.info(String.format("Number of hits: %d", hits.getTotalHits().value));
       return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
       throw new IndexingException(
