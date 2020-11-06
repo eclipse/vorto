@@ -106,7 +106,7 @@
 		<angular.version>1.7.9</angular.version>
 		<testcontainers.version>1.14.1</testcontainers.version>
 		<selenium.version>3.141.59</selenium.version>
-		<elasticsearch.version>6.8.8</elasticsearch.version>
+		<elasticsearch.version>7.9.3</elasticsearch.version>
 		<commons-io.version>2.7</commons-io.version>
 	</properties>
 

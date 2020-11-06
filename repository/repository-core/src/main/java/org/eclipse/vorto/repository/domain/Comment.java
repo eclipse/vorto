@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.repository.domain;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,9 +34,6 @@ public class Comment {
 
   @NotNull
   private String author;
-
-  private String firstname;
-  private String lastname;
 
   @NotNull
   private String content;
@@ -83,13 +77,12 @@ public class Comment {
     return createdOn;
   }
 
-  public void setDate(Date createdOn) {
-
-    String strDateFormat = "hh:mm a dd-MM-yyyy";
-    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-    String formattedDate = dateFormat.format(createdOn);
-
-    this.createdOn = formattedDate;
+  /**
+   * For DTO conversion.
+   * @param date
+   */
+  public void setDate(String date) {
+    this.createdOn = date;
   }
 
   public String getAuthor() {
@@ -98,22 +91,6 @@ public class Comment {
 
   public void setAuthor(String author) {
     this.author = author;
-  }
-
-  public String getFirstname() {
-    return firstname;
-  }
-
-  public void setFirstname(String firstname) {
-    this.firstname = firstname;
-  }
-
-  public String getLastname() {
-    return lastname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
   }
 
 }

@@ -244,7 +244,9 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.deleteUser = function (user) {
             var dialog = dialogConfirm($scope,
                 "Are you sure you want to remove '" + user.userId
-                + "' as a collaborator from the namespace?",
+                + "' as a collaborator from the namespace? "
+                + "Their comments (if any) will be anonymized, but not the content. "
+                + "Consider reviewing and deleting those if necessary.",
                 ["Confirm", "Cancel"]);
 
             dialog.setCallback("Confirm", function () {

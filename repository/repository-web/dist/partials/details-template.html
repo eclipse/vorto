@@ -483,11 +483,17 @@
 							</div>
 						</div>
     			</uib-tab>
-    			<uib-tab index="1" ng-click="getCommentsForModelId(model.id.prettyFormat)">
+    			<uib-tab ng-if="!modelIsLoading" index="1" ng-click="getCommentsForModelId(model.id.prettyFormat)">
     				<uib-tab-heading>
-    					<i class="fa fa-comment"></i> Comments</span>
-					</uib-tab-heading>
+    					<i class="fa fa-comment"></i> Comments
+						</uib-tab-heading>
 					<div class="row ">
+							<div class="overlay" ng-show="isLoadingComments">
+								<div style="display: table-cell;vertical-align: middle;">
+									<i class="fa fa-refresh fa-spin" style="font-size:xx-large"></i>
+									<span style="font-size: xx-large">&nbsp;Loading comments...</span>
+								</div>
+							</div>
 							<!-- Left col -->
 							<section class="col-md-12 connectedSortable">
 								<!-- Chat box -->
@@ -499,13 +505,16 @@
 											<a href="#/login">Sign In</a> to write a comment!
 										</h3>
 										<div class="box-footer">
+											<div id="cannotDeleteComment" ng-if="cannotDeleteComment" class="alert alert-danger">Cannot delete this comment. Please reload the page and try again.</div>
 											<div class="input-group group">
 												<textarea class="form-control comment" style="height: 100px;" placeholder="Type comment ..." ng-model="newComment.value" ng-disabled="!authenticated">
 												</textarea>
+
 											</div>
 											<div class="input-group-btn">
-												<button class=" btn btn-primary createCommentBtn" ng-click="createComment()" ng-disabled="!authenticated || reviewChat.$invalid">Send</button>
+													<button class="btn btn-primary createCommentBtn" ng-click="createComment()" ng-disabled="!authenticated || reviewChat.$invalid">Send</button>
 											</div>
+
 										</div>
 										<!-- chat item -->
 										<div class="vorto-chat-msg" ng-repeat="comment in comments">
@@ -518,10 +527,11 @@
 													<i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}} (server time)
 												</span>
 											</div>
+
 											<!-- /.vorto-chat-info -->
 											<div class="vorto-chat-text">
+												<span ng-if="authenticated && comment.canDelete" ng-click="deleteComment(comment.id)" class="pull-right fa fa-trash-o" style="cursor:pointer" ></span>
 												<pre class="chat">{{comment.content}}</pre>
-
 											</div>
 											<!-- /.vorto-chat-text -->
 										</div>
@@ -537,7 +547,16 @@
 						</div>
 					
     			</uib-tab>
+				<div class="pull-right">
+					<a class="help-icon"
+						 href="https://github.com/eclipse/vorto/blob/master/docs/tutorials/model_comments.md"
+						 target="_blank"
+						 title="Read more about comments">
+					<span class="fa fa-question-circle" />
+				</a>
+				</div>
     		</uib-tabset>
+
 		</div>
 		<div class="col-md-3 col-xs-6">
 			<div class="text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">

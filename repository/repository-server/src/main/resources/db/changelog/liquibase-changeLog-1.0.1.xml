@@ -4,4 +4,18 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+  <changeSet id="migrate_db_comment_2020" author="mena-bosch">
+    <preConditions onFail="CONTINUE">
+      <and>
+        <tableExists tableName="comment" />
+        <or>
+          <columnExists tableName="comment" columnName="firstname" />
+          <columnExists tableName="comment" columnName="lastname" />
+        </or>
+      </and>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/migrate_db_comment_2020_H2.sql" dbms="h2" />
+    <sqlFile path="/db/changelog/scripts/migrate_db_comment_2020_MariaDB.sql" dbms="mariadb,mysql" />
+  </changeSet>
+
 </databaseChangeLog>

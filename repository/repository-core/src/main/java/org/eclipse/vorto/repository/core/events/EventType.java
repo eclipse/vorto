@@ -27,5 +27,7 @@ public enum EventType {
   MODEL_DELETED,
   NAMESPACE_ADDED,
   NAMESPACE_UPDATED,
-  NAMESPACE_DELETED
+  NAMESPACE_DELETED,
+  // when a user loses all roles on a namespace
+  USER_REMOVED_FROM_NAMESPACE
 }

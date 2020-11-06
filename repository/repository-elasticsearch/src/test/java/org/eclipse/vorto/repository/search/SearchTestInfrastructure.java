@@ -12,27 +12,10 @@
  */
 package org.eclipse.vorto.repository.search;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
-import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -48,12 +31,7 @@ import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.IRole;
-import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.domain.NamespaceRole;
-import org.eclipse.vorto.repository.domain.Privilege;
-import org.eclipse.vorto.repository.domain.RepositoryRole;
-import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.*;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
@@ -63,12 +41,7 @@ import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
-import org.eclipse.vorto.repository.services.NamespaceService;
-import org.eclipse.vorto.repository.services.PrivilegeService;
-import org.eclipse.vorto.repository.services.RoleService;
-import org.eclipse.vorto.repository.services.UserBuilder;
-import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
-import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.services.*;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -89,9 +62,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
-import pl.allegro.tech.embeddedelasticsearch.JavaHomeOption;
-import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
+
+import java.util.*;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -244,107 +220,11 @@ public final class SearchTestInfrastructure {
   @InjectMocks
   protected ISearchService searchService;
 
-  protected EmbeddedElastic elasticSearch;
-
-  /**
-   * When building in a non-isolated environment, concurrent builds may not work while testing
-   * ES tests as the same ports would be in use.<br/>
-   * Moreover, the default ES installation directory in the {@literal /tmp} folder can be an issue
-   * too. <br/>
-   * This tiny utility randomizes ports and ES installation directory for Allegro, with a few basic criteria:
-   * <ul>
-   *  <li>Ports are not production ES ports</li>
-   *  <li>Ports are {@literal > 10000} (to broadly avoid collision with other "known" ports)</li>
-   *  <li>HTTP port (see {@link PopularProperties#HTTP_PORT}) and TCP port
-   *  (see {@link PopularProperties#TRANSPORT_TCP_PORT}) are expressed as a range of {@literal 1}</li>
-   *  <li>HTTP port and TCP port have a distance of {@literal 100} (arbitrary rule)</li>
-   *  <li>The temporary installation folder is a relative path under the {@literal target} directory</li>
-   * </ul>
-   */
-  private static class ESRandomizer {
-
-    private static final int MAX_PORT = 65535;
-    private static final int MIN_PORT = 10000;
-    private int httpStart = 19200;
-    private int tcpStart = 19300;
-    private String installationDirectory = ".";
-    private static final String PATH_FORMAT = "target/temporaryESWithHTTP%dTCP%d";
-
-    private ESRandomizer withHTTPStart(int start) {
-      this.httpStart = start;
-      return this;
-    }
-
-    private ESRandomizer withTCPStart(int start) {
-      this.tcpStart = start;
-      return this;
-    }
-
-    private ESRandomizer withInstallationDirectory(String path) {
-      this.installationDirectory = path;
-      return this;
-    }
-
-    String getInstallationDirectory() {
-      return installationDirectory;
-    }
-
-    int getHTTPStartPort() {
-      return httpStart;
-    }
-
-    int getHTTPEndPort() {
-      return httpStart + 1;
-    }
-
-    int getTCPStartPort() {
-      return tcpStart;
-    }
-
-    int getTCPEndPort() {
-      return tcpStart + 1;
-    }
-
-    private ESRandomizer() {
-    }
-
-    static ESRandomizer newInstance() {
-      int httpStart = ThreadLocalRandom.current().nextInt(MIN_PORT, MAX_PORT - 101);
-      return new ESRandomizer()
-          .withHTTPStart(httpStart)
-          .withTCPStart(httpStart + 100)
-          .withInstallationDirectory(String.format(PATH_FORMAT, httpStart, httpStart + 100));
-    }
-  }
-
-  private static final Logger LOGGER = Logger.getLogger(SearchTestInfrastructure.class);
-  private static final String RANDOM_ES_LOG_FORMAT = "Initializing Elasticsearch test service port randomizer with HTTP [%d-%d] and TRANSPORT TCP [%d-%d] and installation directory: %s";
+  protected ElasticsearchContainer elasticSearch;
 
   protected SearchTestInfrastructure() throws Exception {
 
-    ESRandomizer rando = ESRandomizer.newInstance();
-    LOGGER.info(
-        String.format(
-            RANDOM_ES_LOG_FORMAT,
-            rando.getHTTPStartPort(),
-            rando.getHTTPEndPort(),
-            rando.getTCPStartPort(),
-            rando.getTCPEndPort(),
-            rando.getInstallationDirectory()
-        )
-    );
-
-    elasticSearch = EmbeddedElastic.builder()
-        .withElasticVersion("6.8.8")
-        .withSetting(PopularProperties.HTTP_PORT, rando.getHTTPStartPort())
-        .withSetting(PopularProperties.TRANSPORT_TCP_PORT, rando.getTCPStartPort())
-        .withSetting("discovery.type", "single-node")
-        .withJavaHome(JavaHomeOption.inheritTestSuite())
-        .withInResourceLocation("elasticsearch-6.8.8.zip")
-        .withInstallationDirectory(new File(rando.getInstallationDirectory()))
-        // defaults to 15 seconds, making it up to 1 minute to try and smoothe down tests in slower machines
-        .withStartTimeout(1, TimeUnit.MINUTES)
-        .build();
+    this.elasticSearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.9.3");
     elasticSearch.start();
 
     when(namespaceService.resolveWorkspaceIdForNamespace(anyString()))
@@ -520,10 +400,7 @@ public final class SearchTestInfrastructure {
 
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     RestClientBuilder clientBuilder = RestClient.builder(
-        new HttpHost("localhost", rando.getHTTPStartPort(), "http"),
-        new HttpHost("localhost", rando.getHTTPEndPort(), "http"),
-        new HttpHost("localhost", rando.getTCPStartPort(), "http"),
-        new HttpHost("localhost", rando.getTCPEndPort(), "http")
+        new HttpHost(this.elasticSearch.getContainerIpAddress(), this.elasticSearch.getMappedPort(9200), "http")
     );
     searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder),
         repositoryFactory, userNamespaceRoleService, namespaceRepository);

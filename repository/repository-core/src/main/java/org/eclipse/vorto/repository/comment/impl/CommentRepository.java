@@ -26,4 +26,6 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
   List<Comment> findByModelId(String modelId);
 
   List<Comment> findByAuthor(String author);
+
+  void delete(Long id);
 }
