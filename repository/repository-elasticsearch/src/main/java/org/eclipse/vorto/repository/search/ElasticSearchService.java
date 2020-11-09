@@ -13,6 +13,18 @@
 package org.eclipse.vorto.repository.search;
 
 import com.google.common.base.Strings;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -22,8 +34,8 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
-import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.extractor.BasicIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor.FieldType;
@@ -64,12 +76,6 @@ import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Search Service implementation using a remote Elastic Search Service.<br/>
  * This search service provides a powerful and flexible way to look for specific models.<br>
@@ -83,7 +89,10 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   public static final String KEYWORD = "keyword";
 
-  private static final String TENANT_ID = "tenantId";
+  /**
+   * Legacy value, kept for index
+   */
+  private static final String WORKSPACE_ID = "tenantId";
 
   private static final int MAX_SEARCH_RESULTS = 10000;
 
@@ -95,7 +104,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private static final String VORTO_INDEX_TEMP = "vorto_temp";
 
-  private static Logger logger = Logger.getLogger(ElasticSearchService.class);
+  private static final Logger LOGGER = Logger.getLogger(ElasticSearchService.class);
 
   private Collection<IIndexFieldExtractor> fieldExtractors = new ArrayList<>();
 
@@ -103,7 +112,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private NamespaceRepository namespaceRepository;
+  // Using cache directly because wiring NamespaceService through ctor would introduce a circular dep.
+  @Autowired
+  private NamespaceRequestCache namespaceRequestCache;
 
   private UserNamespaceRoleService userNamespaceRoleService;
 
@@ -163,11 +174,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   public ElasticSearchService(@Autowired RestHighLevelClient client,
       @Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired UserNamespaceRoleService userNamespaceRoleService,
-      @Autowired NamespaceRepository namespaceRepository) {
+      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
     this.client = client;
     this.repositoryFactory = repositoryFactory;
-    this.namespaceRepository = namespaceRepository;
     this.userNamespaceRoleService = userNamespaceRoleService;
 
     this.fieldExtractors.add(new BasicIndexFieldExtractor());
@@ -182,18 +191,18 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       createIndexIfNotExisting();
     } catch (IndexingException e) {
-      logger.error("Cannot create index", e);
+      LOGGER.error("Cannot create index", e);
     }
   }
 
   private void createIndexIfNotExisting() {
-    logger.info("Checking index.");
+    LOGGER.debug("Checking index.");
     if (!indexExist(VORTO_INDEX)) {
-      logger.info("Index doesn't exist. Try creating it.");
+      LOGGER.debug("Index doesn't exist. Attempting to create it.");
       createIndexWithMapping(VORTO_INDEX, createMappingForIndex());
-      logger.info(String.format("Index '%s' created.", VORTO_INDEX));
+      LOGGER.debug(String.format("Index '%s' created.", VORTO_INDEX));
     } else {
-      logger.info("Index already exist");
+      LOGGER.debug("Index already exists");
     }
   }
 
@@ -329,7 +338,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private Map<String, Object> createMappingForIndex() {
     Map<String, Object> properties = new HashMap<>();
-    properties.put(TENANT_ID, createPropertyWithType(FieldType.KEY));
+    properties.put(WORKSPACE_ID, createPropertyWithType(FieldType.KEY));
 
     for (IIndexFieldExtractor extractor : fieldExtractors) {
       extractor.getFields().forEach((key, value) -> {
@@ -359,8 +368,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     // (1) Delete all models in the index
     deleteAllModels(VORTO_INDEX);
 
-    // (2) Index all models in all the tenants
-    namespaceRepository.findAll().stream().forEach(namespace -> {
+    // (2) Index all models in all the namespaces
+    namespaceRequestCache.namespaces().forEach(namespace -> {
       IModelRepository repo = this.repositoryFactory.getRepository(namespace.getWorkspaceId());
       List<ModelInfo> modelsToIndex = repo.search("");
       if (!modelsToIndex.isEmpty()) {
@@ -372,10 +381,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
         try {
           BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-          // temporary fix: getting namespace name instead of tenant ID here
-          // in the long run, once the tenant service is gone we can normalize
           result.addIndexedNamespace(namespace.getName(), modelsToIndex.size());
-          logger.info(
+          LOGGER.debug(
               String.format(
                   "Received %d replies for workspace '%s' with %d models",
                   bulkResponse.getItems().length, repo.getWorkspaceId(), modelsToIndex.size()
@@ -393,12 +400,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private void deleteByQuery(String index, QueryBuilder query) {
-    logger.info(String.format("Trying to delete all models in index '%s'", index));
+    LOGGER.debug(String.format("Trying to delete all models in index '%s'", index));
     DeleteByQueryRequest request = new DeleteByQueryRequest(index);
     request.setQuery(query);
     try {
       BulkByScrollResponse bulkResponse = client.deleteByQuery(request, RequestOptions.DEFAULT);
-      logger.info(
+      LOGGER.debug(
           String.format("Deleted %d models in the index '%s'", bulkResponse.getTotal(), index));
     } catch (IOException e) {
       throw new IndexingException(
@@ -426,15 +433,15 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   @Override
   public void indexModel(ModelInfo modelInfo, String workspaceId) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
-    PreConditions.notNullOrEmpty(workspaceId, TENANT_ID);
+    PreConditions.notNullOrEmpty(workspaceId, WORKSPACE_ID);
 
-    logger.info(String.format("Indexing model '%s'", modelInfo.getId()));
+    LOGGER.debug(String.format("Indexing model '%s'", modelInfo.getId()));
 
     try {
       IndexResponse indexResponse =
           client.index(createIndexRequest(modelInfo, workspaceId), RequestOptions.DEFAULT);
       if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
-        logger.info(String.format("Index created for '%s'", modelInfo.getId().getPrettyFormat()));
+        LOGGER.debug(String.format("Index created for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
@@ -442,9 +449,9 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private IndexRequest createIndexRequest(ModelInfo modelInfo, String tenantId) {
+  private IndexRequest createIndexRequest(ModelInfo modelInfo, String workspaceID) {
     Map<String, Object> jsonMap = new HashMap<>();
-    jsonMap.put(TENANT_ID, tenantId);
+    jsonMap.put(WORKSPACE_ID, workspaceID);
 
     for (IIndexFieldExtractor extractor : fieldExtractors) {
       extractor.extractFields(modelInfo).forEach((key, value) -> {
@@ -459,7 +466,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   public void updateIndex(ModelInfo modelInfo) {
     PreConditions.notNull(modelInfo, "modelInfo must not be null.");
 
-    logger.info(String.format("Updating index of model '%s'", modelInfo.getId()));
+    LOGGER.debug(String.format("Updating index of model '%s'", modelInfo.getId()));
 
     UpdateRequest request = new UpdateRequest(VORTO_INDEX, DOC, modelInfo.getId().getPrettyFormat())
         .doc(updateMap(modelInfo));
@@ -467,7 +474,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       UpdateResponse response = client.update(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.UPDATED) {
-        logger.info(String.format("Index updated for '%s'", modelInfo.getId().getPrettyFormat()));
+        LOGGER.debug(String.format("Index updated for '%s'", modelInfo.getId().getPrettyFormat()));
       }
     } catch (IOException e) {
       throw new IndexingException(
@@ -496,7 +503,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     try {
       DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
       if (response.getResult() == DocWriteResponse.Result.DELETED) {
-        logger.info("Index deleted for '" + modelId.getPrettyFormat() + "'");
+        LOGGER.debug(
+            String.format(
+                "Index deleted for '%s'",
+                modelId.getPrettyFormat()
+            )
+        );
       }
     } catch (IOException e) {
       throw new IndexingException(
@@ -507,7 +519,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   @Override
   public void deleteIndexForWorkspace(String workspaceId) {
-    deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(TENANT_ID, workspaceId));
+    deleteByQuery(VORTO_INDEX, QueryBuilders.termQuery(WORKSPACE_ID, workspaceId));
   }
 
   /**
@@ -524,7 +536,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   /**
    * The {@code searchExpression} value is composed of tokens explained below. <br/>
    * All tokens are optional, meaning that a search expression can actually be empty (and will
-   * consequently yield all known models visible to the tenant searching). <br/>
+   * consequently yield all known models visible to the user searching). <br/>
    * Tokens are made of single values or tagged values, space-separated.<br/>
    * Single values are always interpreted as name searches.<br/>
    * Tagged values are expressed in the form of {@literal tagname:value}, with <b>no whitespace</b>
@@ -602,8 +614,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    *     @see ModelVisibility
    *   </li>
    *   <li>
-   *     In addition to those search options, a collection of tenant IDs containing the current
-   *     tenant's ID is typically inferred from context, in order to filter items by ownership.
+   *     In addition to those search options, a collection of workspace IDs containing the current
+   *     workspace ID is typically inferred from context, in order to filter items by ownership.
    *   </li>
    * </ul>
    *
@@ -626,11 +638,11 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
     try {
 
-      logger.info(String.format("Search Expression: %s Elastic Search: %s", searchExpression,
+      LOGGER.debug(String.format("Search Expression: %s Elastic Search: %s", searchExpression,
           searchRequest.toString()));
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
       SearchHits hits = response.getHits();
-      logger.info(String.format("Number of hits: %d", hits.getTotalHits().value));
+      LOGGER.debug(String.format("Number of hits: %d", hits.getTotalHits().value));
       return Stream.of(hits.getHits()).map(this::fromSearchHit).collect(Collectors.toList());
     } catch (IOException e) {
       throw new IndexingException(
@@ -645,7 +657,11 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
       return Collections.emptyList();
     }
     else if (userContext.isSysAdmin()) {
-      return namespaceRepository.findAll().stream().map(Namespace::getWorkspaceId).collect(Collectors.toList());
+      return namespaceRequestCache
+          .namespaces()
+          .stream()
+          .map(Namespace::getWorkspaceId)
+          .collect(Collectors.toList());
     }
     else {
       try {
@@ -696,7 +712,7 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   @Deprecated
   private static QueryBuilder isOwnedByTenants(Collection<String> tenants) {
-    return QueryBuilders.termsQuery(TENANT_ID, tenants);
+    return QueryBuilders.termsQuery(WORKSPACE_ID, tenants);
   }
 
   /**

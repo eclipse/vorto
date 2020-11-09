@@ -403,7 +403,7 @@ public final class SearchTestInfrastructure {
         new HttpHost(this.elasticSearch.getContainerIpAddress(), this.elasticSearch.getMappedPort(9200), "http")
     );
     searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder),
-        repositoryFactory, userNamespaceRoleService, namespaceRepository);
+        repositoryFactory, userNamespaceRoleService);
 
     indexingService = (IIndexingService) searchService;
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
