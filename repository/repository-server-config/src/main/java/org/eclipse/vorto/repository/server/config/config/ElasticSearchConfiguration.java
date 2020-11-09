@@ -26,8 +26,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
-import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.search.ElasticSearchService;
+import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -70,7 +70,7 @@ public class ElasticSearchConfiguration {
   @Value("${testcontainers.es:9200}")
   private int esPort;
   
-  private String serviceName = "es";
+  private final static String SERVICE_NAME = "es";
   
   @Value("${aws.region:eu-central-1}")
   private String region;
@@ -80,7 +80,7 @@ public class ElasticSearchConfiguration {
   
   private AWSCredentialsProvider credentialsProvider = new DefaultAWSCredentialsProviderChain();
 
-  private static Logger logger = Logger.getLogger(ElasticSearchConfiguration.class);
+  private static final Logger LOGGER = Logger.getLogger(ElasticSearchConfiguration.class);
   
   @Autowired
   private RestHighLevelClient client;
@@ -89,16 +89,13 @@ public class ElasticSearchConfiguration {
   private IModelRepositoryFactory repositoryFactory;
 
   @Autowired
-  private NamespaceRepository namespaceRepository;
-
-  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
   
 
   @Bean
   @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql","local-benchmark-test"})
   public ElasticSearchService elasticSearch() {
-    return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService, namespaceRepository);
+    return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService);
   }
   
   @Bean
@@ -113,14 +110,18 @@ public class ElasticSearchConfiguration {
   @Bean
   @Profile({ "prod" , "int"})
   public RestHighLevelClient awsIndexingClient() {
-    logger.info("Creating an elastic server client with config(serviceName=" + 
-        serviceName + " region=" + region + " aesEndpoint=" + aesEndpoint);
+    LOGGER.debug(
+        String.format(
+            "Creating an elastic server client with config(serviceName=%s region=%s aesEndpoint=%s",
+            SERVICE_NAME, region, aesEndpoint
+        )
+    );
     
     AWS4Signer signer = new AWS4Signer();
-    signer.setServiceName(serviceName);
+    signer.setServiceName(SERVICE_NAME);
     signer.setRegionName(region);
     
-    HttpRequestInterceptor interceptor = new AWSRequestSigningApacheInterceptor(serviceName, signer, credentialsProvider);
+    HttpRequestInterceptor interceptor = new AWSRequestSigningApacheInterceptor(SERVICE_NAME, signer, credentialsProvider);
     
     RestClientBuilder builder = RestClient.builder(HttpHost.create(aesEndpoint))
         .setHttpClientConfigCallback(httpClientConfig(getProxy(), interceptor));
@@ -149,7 +150,7 @@ public class ElasticSearchConfiguration {
           httpClientBuilder.setSSLContext(sslContext);
           httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
         } catch (Exception e) {
-          logger.error("Error while trying to skip SSL verification", e);
+          LOGGER.error("Error while trying to skip SSL verification", e);
         }
       }
       
@@ -182,7 +183,7 @@ public class ElasticSearchConfiguration {
     try {
       client.close();
     } catch (IOException e) {
-      logger.error("Not able to close indexing client", e);
+      LOGGER.error("Not able to close indexing client", e);
     }
   }
 }
