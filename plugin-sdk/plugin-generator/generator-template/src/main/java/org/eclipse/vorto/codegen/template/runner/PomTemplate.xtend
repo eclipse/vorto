@@ -62,6 +62,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<dependency>
 					<groupId>org.apache.httpcomponents</groupId>
 					<artifactId>httpclient</artifactId>
+					<version>${apache.httpclient.version}</version>
 				</dependency>
 		
 				<!-- Vorto Dependencies -->
