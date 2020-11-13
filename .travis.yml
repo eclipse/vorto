@@ -6,7 +6,7 @@ jobs:
     - stage: deploy-generator-lambda
       name: Deploys the Vorto Generators as Lambda Functions to AWS
       language: java
-      jdk: oraclejdk8
+      jdk: oraclejdk11
       before_script:
         - cd generators/generator-lambda
       script:
