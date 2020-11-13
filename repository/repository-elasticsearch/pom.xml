@@ -34,13 +34,11 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>${elasticsearch.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>elasticsearch-rest-high-level-client</artifactId>
-      <version>${elasticsearch.version}</version>
     </dependency>
 
     <dependency>
@@ -57,32 +55,12 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Spins up an ElasticSearch server at runtime, for tests -->
     <dependency>
-      <groupId>pl.allegro.tech</groupId>
-      <artifactId>embedded-elasticsearch</artifactId>
-      <version>2.10.0</version>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
-    <!--
-    Required by Allegro above, due to some signature usage incompatible with 2.2 (currently in
-    use in the parent.
-     -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.6</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Required by ES spin up by Allegro -->
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>7.7.2</version>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -104,34 +82,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <!-- Use the dependency plugin to download the embedded elasticsearch artifact via maven-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>copy-elasticsearchdistr</id>
-            <phase>process-test-classes</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <artifactItems>
-            <artifactItem>
-              <groupId>org.elasticsearch.distribution.zip</groupId>
-              <artifactId>elasticsearch-oss</artifactId>
-              <version>${elasticsearch.version}</version>
-              <type>zip</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-              <destFileName>elasticsearch-${elasticsearch.version}.zip</destFileName>
-            </artifactItem>
-          </artifactItems>
-        </configuration>
       </plugin>
     </plugins>
   </build>

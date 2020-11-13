@@ -116,7 +116,7 @@ public class ApiBenchmarkTest {
 
   @ClassRule
   public static ElasticsearchContainer container = new ElasticsearchContainer(
-      "docker.elastic.co/elasticsearch/elasticsearch:6.7.2");
+      "docker.elastic.co/elasticsearch/elasticsearch:7.9.3");
 
   @ClassRule
   public static JdbcDatabaseContainer mySQLContainer = (JdbcDatabaseContainer) new CustomMysqlTestContainer(

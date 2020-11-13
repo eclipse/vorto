@@ -25,7 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
     NamespaceControllerIntegrationTest.class,
     AccountControllerTest.class,
     ModelRepositoryControllerTest.class,
-    CORSRequestIntegrationTest.class})
+    CORSRequestIntegrationTest.class,
+    CommentControllerTest.class})
 public class IntegrationTestSuite {
 
 }

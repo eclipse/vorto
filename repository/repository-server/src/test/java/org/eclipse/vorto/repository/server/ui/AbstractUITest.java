@@ -227,10 +227,14 @@ public abstract class AbstractUITest {
     driver.manage().window().fullscreen();
     driver.findElementByXPath("//a[contains(., 'Rename')]").click();
     // this is the sub-namespace text input, contrary to the advertised tag name
-    driver.findElementsByName("namespace").get(0).clear();
-    driver.findElementsByName("namespace").get(0).sendKeys(params.getNewSubNamespace());
-    driver.findElementsByName("name").get(0).clear();
-    driver.findElementsByName("name").get(0).sendKeys(params.getNewName());
+    WebElement namespaceField = driver.findElementByXPath("//input[@type='text' and @name='namespace']");
+    WebElement nameField = driver.findElementByXPath("//input[@type='text' and @name='name']");
+    namespaceField.click();
+    namespaceField.clear();
+    namespaceField.sendKeys(params.getNewSubNamespace());
+    nameField.click();
+    nameField.clear();
+    nameField.sendKeys(params.getNewName());
     return new RenameModelResultHandler(driver, params);
   }
 

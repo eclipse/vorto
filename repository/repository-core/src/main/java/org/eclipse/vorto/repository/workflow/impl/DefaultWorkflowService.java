@@ -73,8 +73,6 @@ public class DefaultWorkflowService implements IWorkflowService {
     final Optional<IAction> action = state.get().getAction(actionName);
     if (action.isPresent() && isValidInput(modelInfo, action.get(), user) && passesConditions(
         action.get().getConditions(), modelInfo, user)) {
-      // test
-      IAction actionTest = action.get();
       final IState newState = action.get().getTo();
       modelInfo.setState(newState.getName());
 
