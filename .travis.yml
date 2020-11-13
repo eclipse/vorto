@@ -22,7 +22,7 @@ jobs:
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
-          runtime: "java8"
+          runtime: "java11"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
@@ -36,7 +36,7 @@ jobs:
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
-          runtime: "java8"
+          runtime: "java11"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
@@ -50,7 +50,7 @@ jobs:
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGININFO"
-          runtime: "java8"
+          runtime: "java11"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.meta.plugins.function.GeneratorMetaHandler"
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
@@ -64,7 +64,7 @@ jobs:
           region: "$VORTO_S3_REGION"
           role: "$VORTO_AWS_LAMBDA_EXECUTION_ROLE"
           zip: "$ARTIFACT_PLUGINEXECUTOR"
-          runtime: "java8"
+          runtime: "java11"
           module_name: "org.eclipse.vorto.plugins.generator.lambda.executor.GeneratorExecutionHandler"
           handler_name: "handleRequest"
           access_key_id: "$AWS_ACCESS_KEY_ID"
@@ -80,7 +80,7 @@ jobs:
       services:
         - docker
 
-      jdk: oraclejdk8
+      jdk: oraclejdk11
 
       cache:
         npm: false
