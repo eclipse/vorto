@@ -75,7 +75,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
   
   @Override
   public String getId() {
-    return "BOSCH-ID";
+    return "BOSCH";
   }
 
   /**
