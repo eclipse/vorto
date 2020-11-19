@@ -28,7 +28,7 @@ Require-Bundle: org.eclipse.xtext.ide,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.infomodel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.services,
  org.eclipse.vorto.editor.mapping.serializer,

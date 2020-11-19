@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.vorto.editor.functionblock,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.functionblock.ide,
  org.eclipse.vorto.editor.functionblock.ide.contentassist.antlr,
  org.eclipse.vorto.editor.functionblock.ide.contentassist.antlr.internal

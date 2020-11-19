@@ -27,7 +27,7 @@ Require-Bundle:
  org.eclipse.vorto.editor.functionblock.ui;bundle-version="0.10.0",
  org.eclipse.vorto.editor.infomodel
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,or
  g.eclipse.vorto.editor.infomodel.ui.internal,org.eclipse.vorto.editor
  .infomodel.ui.quickfix
