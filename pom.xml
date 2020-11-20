@@ -502,6 +502,22 @@
 							<autoReleaseAfterClose>false</autoReleaseAfterClose>
 						</configuration>
 					</plugin>
+					<plugin>
+					<!-- exclude ES tests from test execution on Eclipse jenkins because of infrastructure issues -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<junitArtifactName>junit:junit</junitArtifactName>
+							<encoding>UTF-8</encoding>
+							<inputEncoding>UTF-8</inputEncoding>
+							<excludes>
+								<exclude>**/AllTests.java</exclude>
+								<exclude>**/*UITest.java</exclude>
+								<exclude>**/*BenchmarkTest.java</exclude>
+								<exclude>**/org/eclipse/vorto/repository/search/*.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
