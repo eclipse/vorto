@@ -45,7 +45,6 @@ then
 elif [[ "$GIT_BRANCH" == "java11" ]]
 then
   aws s3 cp s3://$VORTO_S3_BUCKET/configuration_files/dev ./BOOT-INF/classes --recursive
-  aws s3 cp s3://$VORTO_S3_BUCKET/ebextensions/dev ./ --recursive
 else
   echo "no extra files are include from S3Bucket"
 fi
