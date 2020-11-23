@@ -27,4 +27,11 @@
     <sqlFile path="/db/changelog/scripts/merge_bosch_oauth_providers.sql" dbms="mariadb,mysql" />
   </changeSet>
 
+  <changeSet id="change_comment_authorship" author="mena-bosch" dbms="mariadb, mysql">
+    <preConditions onFail="CONTINUE">
+      <columnExists tableName="comment" columnName="author"/>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/change_comment_authorship.sql" dbms="mariadb,mysql"/>
+  </changeSet>
+
 </databaseChangeLog>
