@@ -394,7 +394,7 @@
 						<executions>
 							<execution>
 								<id>sign</id>
-								<phase>package</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
