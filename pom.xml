@@ -257,7 +257,6 @@
 		<module>mapping-engine</module>
 		<module>repository</module>
 		<module>utilities</module>
-		<module>jacoco-coverage</module>
 	</modules>
 
 	<build>
