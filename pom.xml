@@ -411,6 +411,10 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+									<retryLimit>5</retryLimit>
+									<retryTimer>30</retryTimer>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
