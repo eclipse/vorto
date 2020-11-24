@@ -401,6 +401,7 @@
 								<configuration>
 									<retryLimit>5</retryLimit>
 									<retryTimer>30</retryTimer>
+									<resigningStrategy>OVERWRITE</resigningStrategy>
 								</configuration>
 							</execution>
 						</executions>
