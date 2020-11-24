@@ -394,7 +394,7 @@
 						<executions>
 							<execution>
 								<id>sign</id>
-								<phase>deploy</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
@@ -463,7 +463,7 @@
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
-								<phase>verify</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
