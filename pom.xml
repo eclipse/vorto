@@ -402,7 +402,6 @@
 									<retryLimit>5</retryLimit>
 									<retryTimer>30</retryTimer>
 								</configuration>
-
 							</execution>
 						</executions>
 					</plugin>
