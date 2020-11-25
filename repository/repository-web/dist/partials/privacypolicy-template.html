@@ -23,7 +23,7 @@
 			<li>You have full control on inviting collaborators to your
 				namespace and privileges for each of them.</li>
 			<li>We only store your GitHub-Id (for GitHub authentication) or
-				Bosch Subject-Id (for Bosch authentication) to uniquely identify
+				Bosch Subject-Id (for Bosch.IO authentication) to uniquely identify
 				you. Email-id is optional and you can choose to add/remove it from
 				your account.</li>
 			<li>You can export all your models and choose to delete your
@@ -31,44 +31,136 @@
 				becomes anonymous.</li>
 		</ul>
 		<h2>Types of personal data collected and processed</h2>
-		<p>The following types of personal data is processed:</p>
+		<p>The following personal data is processed:</p>
 		<ol>
 			<li>Account Information:
 				<ul>
-					<li>GitHub-Id: The GitHub-Id is an identifier which uniquely
+					<li>
+						GitHub-Id: The GitHub-Id is an identifier which uniquely
 						identifies your account if you login with your GitHub credentials.
-						Models created or modified by you show this identifier publicly.</li>
-					<li>Bosch Subject-Id: The Bosch Subject-Id is an identifier
+						Models created or modified by you show this identifier publicly.
+					</li>
+					<li>
+						Bosch Subject-Id and Suite Auth: The Bosch.IO Subject-Id is an identifier
 						which uniquely identifies your account if you login with your
-						Bosch credentials. Models created or modified by you show this
-						identifier publicly.</li>
+						Bosch.IO credentials. Models created or modified by you show this
+						identifier publicly.
+					</li>
 				</ul>
 			</li>
-			<li>IP address: Captured in access logs, used to serve you data
-				faster using CDN.</li>
-			<li>Email Address (Optional): A user may provide an email
+			<li>
+				IP address: Captured in access logs, used to serve you data
+				faster using CDN.
+			</li>
+			<li>
+				E-mail address (Optional): A user may provide an email
 				address. Email address is used by the system to notify users of
 				pending actions such as release approvals or notify the user upon
-				discussions on their models.</li>
+				discussions on their models.
+			</li>
+			<li>
+				Users' OAuth2 identifiers (and optionally, e-mail addresses) are persisted upon signing up
+				to the Vorto service.
+			</li>
+			<li>
+				They are deleted from Vorto data stores, and their references anonymized, when a user
+				deletes their account.
+			</li>
+			<li>
+				The anonymization process impacts on references to user identifiers in:
+				<ul>
+					<li>
+						Model authorship (the "author" property of a model)
+					</li>
+					<li>
+						Model authorship for last modification (the "lastModifiedBy" property of a model)
+					</li>
+					<li>
+						Comment authorship (the "author" property of a comment on a model). <br/>
+						<b>Important:</b> comment content is not anonymized.
+						<br/>Comments can be deleted by their
+						author if they have not been anonymized, or by the Vorto user(s) managing the
+						namespace(s) hosting the Vorto models for which comments have been written.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<b>Note</b>: Deleting a user's account requires the user to relinquish any exclusive
+				administrative privileges they have on any number of Vorto namespaces, to another user
+				of their choice.
+				If there is any difficulty, the Vorto team can be contacted directly for assistance.
+			</li>
 		</ol>
 		<p>
 			<br />
 		</p>
 		<h2>Other information you share with us</h2>
 		<ol>
-			<li>Public Information: You are solely responsible for Vorto
+			<li>
+				Public Information: You are solely responsible for Vorto
 				models created or modified by you. Think carefully before sharing or
 				releasing a model and marking them public, especially if they
 				contain sensitive information. Your account identifier and
 				timestamps for your models are visible to other users of Vorto
-				repository depending on who you share your namespaces/models with.</li>
-			<li>Comments: Any comment made by you as part of discussions on
+				repository depending on who you share your namespaces/models with.
+			</li>
+			<li>
+				Comments: Any comment made by you as part of discussions on
 				a Vorto model are visible to all collaborators of your namespace. A
 				copy of your comment will also be sent to your email if you have
 				have provided your email address in your account settings. You are
-				solely responsible for the content of your comments.</li>
-			<li>Images: You are solely responsible for images uploaded by
-				you. Please make sure the images do not infringe any copyright.</li>
+				solely responsible for the content of your comments.
+			</li>
+			<li>
+				Images: You are solely responsible for images uploaded by
+				you. Please make sure the images do not infringe any copyright.
+			</li>
+		</ol>
+		<p>
+			<br />
+		</p>
+		<h2>Visibility of user information</h2>
+		<ol>
+			<li>
+				User identifiers are either visible Vorto only, to other Vorto users, or to the public at
+				large, depending on the case.
+				<ul>
+					<li>
+						The visibility of OAuth2 identifiers contextually to model authorship
+						(the "author" and "lastModifiedBy" properties) depends on the model's visibility.
+					</li>
+					<li>
+						Public models are visible to the general public.
+					</li>
+					<li>
+						Other models are visible to authenticated Vorto users who are collaborators on the
+						namespaces where those models reside.
+					</li>
+					<li>
+						All models are visible to system administrators - i.e. for vorto.eclipse.org, the Vorto
+						development team.
+					</li>
+					<li>
+						The visibility of comments on a model depends on the model's visibility, as above.
+					</li>
+					<li>
+						Additionally, some Vorto features (e.g. requesting or providing access to a namespace)
+						allow authenticated Vorto users to search for other users by a partial match of the
+						desired OAuth2 identifier, without restrictions.<br/>
+						In some cases, e.g. when a user manages the collaborators for a Vorto namespace they
+						manage, the collaborators' identifier and the OAuth2 provider associated with that
+						identifier will be visible to the user.<br/>
+						The collaborators' e-mail addresses are <i>never</i> visible to other users, with the
+						exception of system administrators.
+					</li>
+				</ul>
+			</li>
+			<li>
+				E-mail addresses are kept private at all time, and are only visible to the Vorto system
+				administrators - i.e. for vorto.eclipse.org, the Vorto development team. <br/>
+				Setting one's e-mail address is entirely optional, and the e-mail address can be deleted
+				or modified at any time without deleting one's account.
+			</li>
 		</ol>
 		<p>
 			<br />
@@ -77,7 +169,7 @@
 		<ul>
 			<li>We only store log data for a maximum of 7 days</li>
 			<li>You can export your Vorto models at any time</li>
-			<li>You can delete your account at any time</li>
+			<li>You can delete your account at any time (see pre-requisites above)</li>
 			<li>We do not use tracking cookies to monitor your activity on
 				our platform or serve you ads</li>
 			<li>You can choose to add/remove/update your email address at
