@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * This class groups all tests scoped to the model details UI.
  */
@@ -47,34 +49,39 @@ public class ModelDetailsUITest extends AbstractUITest {
 
   @Test
   public void testSaveModelSuccessfulNotification() {
+    this.seleniumVortoHelper.allowCookies();
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // fullscreen to make save button visible
     driver.manage().window().fullscreen();
+    //find the save button
+    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the editor.
     driver.executeScript("window.scrollBy(0,350)");
-    //find the save button and click it to trigger notification
-    driver.findElementByXPath("//a[@ng-click='saveModel()']").click();
+    WebDriverWait wait = new WebDriverWait(driver, 300);
+    //trigger notification
+    saveButton.click();
     // make sure the success message is displayed (wait a little longer)
     // waits 5 minutes max for model saving
-    WebDriverWait wait = new WebDriverWait(driver, 300);
     wait.until(ExpectedConditions.visibilityOf(
         driver.findElementByXPath("//span[contains(.,'Model saved successfully')]")));
   }
 
   @Test
   public void testSaveModelErrorNotification() {
+    this.seleniumVortoHelper.allowCookies();
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // going full screen
     driver.manage().window().fullscreen();
-    //find the save button and click it to trigger notification
+    //find the save button
     WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the text area
     driver.executeScript("window.scrollBy(0,350)");
+    driver.findElementByXPath("//div[@class='ace_content']");
     // changes the editor's text via Javascript
     driver.executeScript(String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax"));
-    driver.executeScript("arguments[0].scrollIntoView();", saveButton);
+    // trigger notification
     saveButton.click();
     WebDriverWait waitForErrorMessage = new WebDriverWait(driver, 10);
     // verifies a div "Cannot parse model" is visible

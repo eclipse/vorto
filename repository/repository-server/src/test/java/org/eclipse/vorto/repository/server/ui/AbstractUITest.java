@@ -165,10 +165,9 @@ public abstract class AbstractUITest {
       usedParams = params[0];
     }
     RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
-    // there should be no create button before logging in.
-    List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver()
-        .findElementsByXPath("//a[@ng-click='openCreateModelDialog()']");
-    Assert.assertTrue(createModelButtonList.isEmpty());
+    this.seleniumVortoHelper.gotoWelcomePage();
+    //logout button is hidden when not logged in (parent element has 'ng-hide' class).
+    WebElement logoutLink = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@ng-click='logout()']/parent::li[@class='ng-hide']");
     // create a namespace (reuse existing test)
     testCreateNamespace();
     // now the create button should be available
