@@ -182,12 +182,11 @@ public abstract class AbstractUITest {
         new Select(remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
     namespaceComboBox.selectByVisibleText(usedParams.getNamespace().toLowerCase());
     WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
-    modelNameTextField.sendKeys(usedParams.getName());
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(usedParams.getName(), modelNameTextField);
     // sub-ns
     if (!Strings.isNullOrEmpty(usedParams.getSubNamespace())) {
       // this is actually the sub-namespace text field
-      remoteWebDriver.findElementByName("modelNamespace")
-          .sendKeys(usedParams.getSubNamespace());
+      this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(usedParams.getSubNamespace(), remoteWebDriver.findElementByName("modelNamespace"));
     }
 
     return new CreateModelResultHandler(remoteWebDriver, usedParams);
@@ -229,12 +228,8 @@ public abstract class AbstractUITest {
     // this is the sub-namespace text input, contrary to the advertised tag name
     WebElement namespaceField = driver.findElementByXPath("//input[@type='text' and @name='namespace']");
     WebElement nameField = driver.findElementByXPath("//input[@type='text' and @name='name']");
-    namespaceField.click();
-    namespaceField.clear();
-    namespaceField.sendKeys(params.getNewSubNamespace());
-    nameField.click();
-    nameField.clear();
-    nameField.sendKeys(params.getNewName());
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(params.getNewSubNamespace(),namespaceField);
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(params.getNewName(), nameField);
     return new RenameModelResultHandler(driver, params);
   }
 

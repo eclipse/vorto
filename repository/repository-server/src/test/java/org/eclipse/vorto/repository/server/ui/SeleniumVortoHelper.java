@@ -23,6 +23,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Helper class for vorto repository Selenium tests.
@@ -122,8 +123,7 @@ public class SeleniumVortoHelper {
     Assert.assertTrue(namespaceInputField.isEnabled());
     namespaceInputField.click();
     namespaceInputField.clear();
-    // Enter the name of the namespace to create in th text field.
-    namespaceInputField.sendKeys(myNamespace);
+    sendTextToTextWebElementWithDelay(myNamespace, namespaceInputField);
     webDriver.findElementByXPath("//button[@ng-click='createOrUpdateNamespace()']").click();
   }
 
@@ -168,8 +168,8 @@ public class SeleniumVortoHelper {
   public void addUserToNamespace(String userToAdd, String namespace, String... roles) {
     openManageNamespacesTab();
     WebElement namespaceFilterField = this.webDriver.findElementById("namespaceFilter");
-    if (namespaceFilterField.isEnabled()) {
-      namespaceFilterField.sendKeys(namespace);
+    if(namespaceFilterField.isEnabled()) {
+      sendTextToTextWebElementWithDelay(namespace, namespaceFilterField);
     }
     // xpath selects the row with the namespace in it and finds the link to open the collaborators dialog
     WebElement manageUsersLink = this.webDriver.findElementByXPath(
@@ -180,7 +180,7 @@ public class SeleniumVortoHelper {
         .click();
     WebElement userIdSearchBox = this.webDriver.findElementById("userId");
     userIdSearchBox.clear();
-    userIdSearchBox.sendKeys(userToAdd);
+    sendTextToTextWebElementWithDelay(userToAdd, userIdSearchBox);
     // tick all checkboxes (could be made configurable)
     this.webDriver.findElementById(userToAdd).click();
     selectRolesForUserInNamespaceDialog(roles);
@@ -201,5 +201,26 @@ public class SeleniumVortoHelper {
    */
   public void goToModelDetails(String modelId) {
     this.webDriver.get(String.format("%s/#/details/%s", rootUrl, modelId));
+  }
+
+  /**
+   * Tries to send a text to a web element. Each character is send separately to avoid
+   * issues with angular UIs.
+   *
+   * @param text the text to send
+   * @param webElement the web element
+   */
+  public void sendTextToTextWebElementWithDelay(String text, WebElement webElement) {
+    WebDriverWait waitForElementToBeVisible = new WebDriverWait(this.webDriver, 10);
+    waitForElementToBeVisible.until(ExpectedConditions.visibilityOf(webElement));
+    webElement.clear();
+    for (char c : text.toCharArray()) {
+      webElement.sendKeys(String.valueOf(c));
+      try {
+        TimeUnit.MILLISECONDS.sleep(20);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
