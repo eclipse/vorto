@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.server.ui;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
@@ -67,12 +68,12 @@ public class ModelDetailsUITest extends AbstractUITest {
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     // going full screen
     driver.manage().window().fullscreen();
+    //find the save button and click it to trigger notification
+    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the text area
     driver.executeScript("window.scrollBy(0,350)");
     // changes the editor's text via Javascript
     driver.executeScript(String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax"));
-    //find the save button and click it to trigger notification
-    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     driver.executeScript("arguments[0].scrollIntoView();", saveButton);
     saveButton.click();
     WebDriverWait waitForErrorMessage = new WebDriverWait(driver, 10);
