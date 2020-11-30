@@ -38,7 +38,9 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.NamespaceRole;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
@@ -332,6 +334,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // you would think a user called "userModelCreator" has a username called "userModelCreator", but
     // the way it has been mapped to in the parent class is "user3" instead
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -363,6 +366,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // then, add the non-existing user
     Collaborator nonExistingCollaborator = new Collaborator();
     nonExistingCollaborator.setUserId("toto");
+    nonExistingCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     nonExistingCollaborator.setRoles(roles);
@@ -399,6 +403,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // you would think a user called "userModelCreator" has a username called "userModelCreator", but
     // the way it has been mapped to in the parent class is "user3" instead
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -419,8 +424,11 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // now removes the user
     repositoryServer
         .perform(
-            delete(String
-                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete("/rest/namespaces/myAdminNamespace/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(
+                    UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB)
+                ))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -445,8 +453,9 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // now removes a user that has not been added
     repositoryServer
         .perform(
-            delete(String
-                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete("/rest/namespaces/myAdminNamespace/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB)))
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -464,7 +473,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    * admin of that namespace, and will try to remove the simple user.<br/>
    * Note that it might be worth thinking of the edge case where a user simply wants to be removed
    * from a namespace they have been added to, regardless of their role in that namespace. <br/>
-   * See {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController#removeUserFromNamespace(String, String)}
+   * See {@link org.eclipse.vorto.repository.web.api.v1.NamespaceController#removeUserFromNamespace(String, UserDto)}
    * for specifications on how authorization is enforced.
    *
    * @throws Exception
@@ -476,6 +485,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -496,7 +506,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
             )
         );
 
-    // creates a user with tenant admin privileges but no access to the namespace in question
+    // creates a user with namespace admin privileges in a different namespace
     SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor thirdUser = user("thirdPartyUser")
         .password("pass");
     userRepository.save(
@@ -509,8 +519,11 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // "somewhere else", which fails due to lack of tenant admin role on that given namespace
     repositoryServer
         .perform(
-            delete(String
-                .format("/rest/namespaces/myAdminNamespace/users/%s", USER_MODEL_CREATOR_NAME))
+            delete("/rest/namespaces/myAdminNamespace/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(
+                    UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB))
+                )
                 .with(thirdUser)
         )
         .andExpect(status().isForbidden());
@@ -530,6 +543,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -580,6 +594,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -635,6 +650,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     // then, add the creator user
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     userModelCreatorCollaborator.setRoles(roles);
@@ -716,6 +732,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     */
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_VIEWER_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> roles = new HashSet<>();
     roles.add("model_viewer");
     roles.add("namespace_admin");
@@ -938,7 +955,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     collaborator.setTechnicalUser(true);
     createTechnicalUserAndAddToNamespace(namespaceName, collaborator);
 
-    User technicalUser = userRepository.findByUsername("my-technical-user");
+    User technicalUser = userRepository.findByUsernameAndAuthenticationProviderId("my-technical-user", GITHUB).get();
     assertNotNull(technicalUser);
     assertTrue(technicalUser.isTechnicalUser());
 
@@ -979,7 +996,12 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
    *   </li>
    *   <li>
    *     PUT ops mean adding an existing user to the namespace, and therefore only perform minimal
-   *     validation (i.e. the user name), yet assume the user exists and fail otherwise.
+   *     validation (i.e. the user name and authentication provider), yet assume the user exists
+   *     and fail otherwise.
+   *   </li>
+   *   <li>
+   *     In this case, since users are now identified by both the username and the OAuth provider
+   *     ID, the PUT operation fails with 404.
    *   </li>
    * </ul>
    *
@@ -998,7 +1020,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
             .content(objectMapper.writeValueAsString(collaborator))
             .contentType(MediaType.APPLICATION_JSON)
             .with(userSysadmin))
-        .andExpect(status().isOk());
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -1108,7 +1130,7 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
 
   @Test
   public void updateCollaboratorNamespaceDoesNotExist() throws Exception {
-    Collaborator collaborator = new Collaborator("userstandard2", GITHUB, null,
+    Collaborator collaborator = new Collaborator(USER_MODEL_CREATOR_NAME, GITHUB, null,
         Lists.newArrayList("model_viewer", "model_creator"));
     repositoryServer.perform(
         put("/rest/namespaces/com.unknown.namespace/users")

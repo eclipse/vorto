@@ -12,9 +12,13 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import java.util.Optional;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,7 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +81,8 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
 
     @Test
     public void authenticateUserNotFoundTest() {
-        when(userAccountService.getUser(any())).thenReturn(null);
+        when(userAccountService.getUser((IUserContext)any())).thenReturn(null);
+        when(userAccountService.getUser((Authentication)any())).thenReturn(null);
         assertNull(sut.authenticate(null, TOKEN));
     }
 
@@ -88,7 +94,15 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
 
     @Test
     public void authenticateSuccessTest() {
-        when(userAccountService.getUser(any())).thenReturn(new User());
+        when(
+            userAccountService.getUser(UserDto.of(anyString(), BoschIDOAuthProvider.ID))
+        )
+            .thenAnswer(a ->
+                new UserBuilder()
+                    .withName(a.getArguments()[0].toString())
+                    .withAuthenticationProviderID(BoschIDOAuthProvider.ID)
+                .build()
+            );
         Authentication authentication = sut.authenticate(null, TOKEN);
         assertTrue(authentication.isAuthenticated());
     }

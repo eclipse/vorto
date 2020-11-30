@@ -44,6 +44,7 @@ public class BulkApproveFunction implements IWorkflowFunction {
         this.repositoryFactory = repositoryFactory;
     }
 
+    @Deprecated
     @Override
     public void execute(ModelInfo model, IUserContext user, Map<String, Object> context) {
         for (ModelId referenceId : model.getReferences()) {

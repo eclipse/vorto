@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -25,8 +26,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentAnonymizationListener implements ApplicationListener<AppEvent> {
 
-  private static final String ANONYMOUS = "anonymous";
-  
   @Autowired
   private CommentRepository commentRepository;
 
@@ -39,27 +38,33 @@ public class CommentAnonymizationListener implements ApplicationListener<AppEven
     switch(type) {
       // subject here is the username
       case USER_DELETED: {
-        String userId = (String) event.getSubject();
+        UserDto user = (UserDto) event.getSubject();
 
-        commentRepository.findByAuthor(userId).forEach(comment -> {
-          comment.setAuthor(ANONYMOUS);
-          commentRepository.save(comment);
-        });
+        commentRepository.findByAuthor(user.getUsername(), user.getAuthenticationProvider())
+            .forEach(comment -> {
+              // null author means anonymous
+              comment.setAuthor(null);
+              commentRepository.save(comment);
+            }
+        );
         break;
       }
       // subject is the UserNamespaceRoles so we can have both target user and namespace
       case USER_REMOVED_FROM_NAMESPACE: {
         UserNamespaceRoles roles = (UserNamespaceRoles)event.getSubject();
-        String username = roles.getUser().getName();
         Namespace namespace = roles.getNamespace();
-        commentRepository.findByAuthor(username).forEach(
+        commentRepository
+            .findByAuthor(
+              roles.getUser().getUsername(), roles.getUser().getAuthenticationProviderId()
+            )
+            .forEach(
             comment -> {
               ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
               Namespace commentNS = namespaceRequestCache
                   .namespace(id.getNamespace())
                   .orElse(null);
               if (namespace.equals(commentNS)) {
-                comment.setAuthor(ANONYMOUS);
+                comment.setAuthor(null);
                 commentRepository.save(comment);
               }
             }

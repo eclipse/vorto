@@ -12,11 +12,29 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
@@ -24,6 +42,9 @@ import org.eclipse.vorto.plugin.generator.adapter.ObjectMapperFactory;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
+import org.eclipse.vorto.repository.oauth.internal.DefaultOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserService;
 import org.eclipse.vorto.repository.web.VortoRepository;
@@ -33,6 +54,8 @@ import org.eclipse.vorto.repository.web.api.v1.dto.OperationResult;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -40,11 +63,13 @@ import org.springframework.boot.test.context.ConfigFileApplicationContextInitial
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -60,16 +85,6 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = {"test"})
@@ -132,6 +147,27 @@ public abstract class IntegrationTestBase {
       return new PropertySourcesPlaceholderConfigurer();
     }
 
+    /**
+     * This replaces the autowired {@link IOAuthProviderRegistry} with one that only lists a mock
+     * {@link IOAuthProvider}. <br/>
+     * This way, the {@link Authentication}s used in conjunction with test users can be "handled"
+     * by the provider despite not being OAuth2.<br/>
+     * This requires all test users to be registered with the same OAuth provider ID as the mock
+     * provider - here, {@literal GITHUB}.
+     *
+     * @return
+     */
+    @Primary
+    @Bean
+    public static IOAuthProviderRegistry registry() {
+      IOAuthProvider mockProvider = Mockito.mock(IOAuthProvider.class);
+      // mocks a IOAuthProviderRegistry with one provider mocking GITHUB
+      when(mockProvider.getId()).thenReturn("GITHUB");
+      when(mockProvider.canHandle(anyString())).thenReturn(true);
+      when(mockProvider.canHandle((Authentication)any())).thenReturn(true);
+      return new DefaultOAuthProviderRegistry(Arrays.asList(mockProvider));
+    }
+
   }
 
   @BeforeClass
@@ -145,6 +181,7 @@ public abstract class IntegrationTestBase {
     System.setProperty("suite_clientid", "foo");
     System.setProperty("line.separator", "\n");
   }
+
 
   @Before
   public void setUpTest() throws Exception {
@@ -171,6 +208,7 @@ public abstract class IntegrationTestBase {
   protected Collaborator userModelCreatorCollaborator() {
     Collaborator collaborator = new Collaborator();
     collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    collaborator.setAuthenticationProviderId(GITHUB);
     collaborator.setRoles(Sets.newHashSet("model_creator", "model_viewer"));
     collaborator.setAuthenticationProviderId("GITHUB");
     collaborator.setTechnicalUser(false);

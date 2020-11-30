@@ -35,10 +35,15 @@ public class GrantReviewerModelPolicy implements IWorkflowFunction {
     this.repositoryFactory = repositoryFactory;
   }
 
+  @Deprecated
   @Override
-  public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
-    LOGGER.info("Granting permission of model " + model.getId() + " to reviewer role");
-    repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication()).addPolicyEntry(
+  public void execute(ModelInfo model, IUserContext user, Map<String,Object> context) {
+    LOGGER.info(
+        String.format(
+            "Granting permission of model [%s] to reviewer role", model.getId()
+        )
+    );
+    repositoryFactory.getPolicyManager(user.getWorkspaceId()).addPolicyEntry(
         model.getId(),
         PolicyEntry.of("model_reviewer", PrincipalType.Role, Permission.FULL_ACCESS));
 

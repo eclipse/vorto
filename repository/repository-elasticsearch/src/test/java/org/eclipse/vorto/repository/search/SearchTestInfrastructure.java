@@ -12,8 +12,21 @@
  */
 package org.eclipse.vorto.repository.search;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.eclipse.vorto.model.ModelType;
@@ -31,19 +44,33 @@ import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
-import org.eclipse.vorto.repository.domain.*;
+import org.eclipse.vorto.repository.domain.IRole;
+import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.domain.NamespaceRole;
+import org.eclipse.vorto.repository.domain.Privilege;
+import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.Context;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
-import org.eclipse.vorto.repository.services.*;
+import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.PrivilegeService;
+import org.eclipse.vorto.repository.services.RoleService;
+import org.eclipse.vorto.repository.services.RoleUtil;
+import org.eclipse.vorto.repository.services.UserBuilder;
+import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.elasticsearch.client.RestClient;
@@ -62,12 +89,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
-
-import java.util.*;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
 
 /**
  * This class provides all the infrastructure required to perform tests on the search service. <br/>
@@ -179,8 +202,14 @@ public final class SearchTestInfrastructure {
   @Mock
   protected UserRepositoryRoleRepository userRepositoryRoleRepository;
 
+  @Mock
+  protected IOAuthProviderRegistry registry = Mockito.mock(IOAuthProviderRegistry.class);
+
+  @Mock
+  protected IOAuthProvider defaultOauthProvider = Mockito.mock(IOAuthProvider.class);
+
   protected UserRolesRequestCache userRolesRequestCache = new UserRolesRequestCache(
-      userNamespaceRoleRepository, userRepositoryRoleRepository, userRepository);
+      userNamespaceRoleRepository, userRepositoryRoleRepository, userRepository, registry);
 
   @Mock
   protected AttachmentValidator attachmentValidator = Mockito
@@ -215,6 +244,8 @@ public final class SearchTestInfrastructure {
 
   RoleService roleService = Mockito.mock(RoleService.class);
 
+  RoleUtil roleUtil = Mockito.mock(RoleUtil.class);
+
   PrivilegeService privilegeService = Mockito.mock(PrivilegeService.class);
 
   @InjectMocks
@@ -223,6 +254,14 @@ public final class SearchTestInfrastructure {
   protected ElasticsearchContainer elasticSearch;
 
   protected SearchTestInfrastructure() throws Exception {
+
+    // mocks a IOAuthProviderRegistry with one provider mocking GITHUB
+    when(defaultOauthProvider.getId()).thenReturn("GITHUB");
+    when(defaultOauthProvider.canHandle(anyString())).thenReturn(true);
+    when(defaultOauthProvider.canHandle((Authentication)any())).thenReturn(true);
+
+    when(registry.getByAuthentication(any())).thenReturn(defaultOauthProvider);
+    when(registry.list()).thenReturn(Arrays.asList(defaultOauthProvider));
 
     this.elasticSearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.9.3");
     elasticSearch.start();
@@ -295,17 +334,18 @@ public final class SearchTestInfrastructure {
     User reviewer = new UserBuilder().withName("reviewer").withAuthenticationProviderID("GITHUB").build();
     User publisher = new UserBuilder().withName("publisher").withAuthenticationProviderID("GITHUB").build();
 
-    when(userRepository.findByUsername("alex")).thenReturn(alex);
-    when(userRepository.findByUsername("erle")).thenReturn(erle);
-    when(userRepository.findByUsername("admin")).thenReturn(admin);
-    when(userRepository.findByUsername("creator")).thenReturn(creator);
-    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
-    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
-    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("alex", alex.getAuthenticationProviderId())).thenReturn(Optional.of(alex));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("erle", erle.getAuthenticationProviderId())).thenReturn(Optional.of(erle));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("admin", admin.getAuthenticationProviderId())).thenReturn(Optional.of(admin));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("creator", creator.getAuthenticationProviderId())).thenReturn(Optional.of(creator));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("promoter", promoter.getAuthenticationProviderId())).thenReturn(Optional.of(promoter));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("reviewer", reviewer.getAuthenticationProviderId())).thenReturn(Optional.of(reviewer));
+    when(userRepository.findByUsernameAndAuthenticationProviderId("publisher", publisher.getAuthenticationProviderId())).thenReturn(Optional.of(publisher));
     when(userRepository.findAll())
         .thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
 
-    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
+    when(userNamespaceRoleService.hasRole(any(User.class), any(Namespace.class), any(IRole.class)))
+        .thenReturn(false);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_promoter))).thenReturn(true);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_reviewer))).thenReturn(true);
@@ -331,40 +371,72 @@ public final class SearchTestInfrastructure {
     when(userNamespaceRoleService.hasRole(eq(publisher), any(), eq(model_publisher)))
         .thenReturn(true);
 
-    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), anyString()))
-        .thenAnswer(inv -> {
-          if (inv.getArguments()[1].equals("namespace_admin")) {
-            return Sets.newHashSet(namespace_admin);
-          }
+    when(userNamespaceRoleService.getRoles(any(UserDto.class), anyString()))
+        .thenAnswer(
+            inv -> {
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("namespace_admin")) {
+                return Sets.newHashSet(namespace_admin);
+              }
 
-          if (inv.getArguments()[1].equals("viewer")) {
-            return Sets.newHashSet(model_viewer);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("viewer")) {
+                return Sets.newHashSet(model_viewer);
+              }
 
-          if (inv.getArguments()[1].equals("creator")) {
-            return Sets.newHashSet(model_creator);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("creator")) {
+                return Sets.newHashSet(model_creator);
+              }
 
-          if (inv.getArguments()[1].equals("promoter")) {
-            return Sets.newHashSet(model_promoter);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("promoter")) {
+                return Sets.newHashSet(model_promoter);
+              }
 
-          if (inv.getArguments()[1].equals("publisher")) {
-            return Sets.newHashSet(model_publisher);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("publisher")) {
+                return Sets.newHashSet(model_publisher);
+              }
 
-          if (inv.getArguments()[1].equals("reviewer")) {
-            return Sets.newHashSet(model_reviewer);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("reviewer")) {
+                return Sets.newHashSet(model_reviewer);
+              }
 
-          return Sets
-              .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
-                  model_publisher,
-                  model_reviewer);
-        });
+              return Sets
+                  .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher,
+                      model_reviewer);
+            }
+        );
 
-    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), any(User.class)))
-        .thenReturn(roles);
+    when(userNamespaceRoleService.getRolesByUserAndWorkspaceId(any(UserDto.class), anyString()))
+        .thenAnswer(
+            inv -> {
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("namespace_admin")) {
+                return Sets.newHashSet(namespace_admin);
+              }
+
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("viewer")) {
+                return Sets.newHashSet(model_viewer);
+              }
+
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("creator")) {
+                return Sets.newHashSet(model_creator);
+              }
+
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("promoter")) {
+                return Sets.newHashSet(model_promoter);
+              }
+
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("publisher")) {
+                return Sets.newHashSet(model_publisher);
+              }
+
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("reviewer")) {
+                return Sets.newHashSet(model_reviewer);
+              }
+
+              return Sets
+                  .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
+                      model_publisher,
+                      model_reviewer);
+            }
+        );
 
     setupNamespaceMocking();
 
@@ -375,9 +447,21 @@ public final class SearchTestInfrastructure {
     config =
         RepositoryConfiguration.read(new ClassPathResource("vorto-repository.json").getPath());
 
-    repositoryFactory = new ModelRepositoryFactory(null,
-        attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-        userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
+    repositoryFactory = new ModelRepositoryFactory(
+        null,
+        attachmentValidator,
+        modelParserFactory,
+        null,
+        config,
+        null,
+        namespaceService,
+        userNamespaceRoleService,
+        userRepositoryRoleService,
+        privilegeService,
+        roleService,
+        roleUtil,
+        registry
+    ) {
 
       @Override
       public IModelRetrievalService getModelRetrievalService() {
@@ -386,14 +470,11 @@ public final class SearchTestInfrastructure {
 
       @Override
       public IModelRepository getRepository(String workspaceId) {
-        return super.getRepository(createUserContext("admin", workspaceId));
+        return super.getRepository("admin", createUserContext("admin", workspaceId));
       }
 
       @Override
       public IModelRepository getRepository(String workspaceId, Authentication user) {
-        if (user == null) {
-          return getRepository(workspaceId);
-        }
         return super.getRepository(workspaceId, user);
       }
     };
@@ -403,7 +484,7 @@ public final class SearchTestInfrastructure {
         new HttpHost(this.elasticSearch.getContainerIpAddress(), this.elasticSearch.getMappedPort(9200), "http")
     );
     searchService = new ElasticSearchService(new RestHighLevelClient(clientBuilder),
-        repositoryFactory, userNamespaceRoleService);
+        repositoryFactory, userNamespaceRoleService, registry);
 
     indexingService = (IIndexingService) searchService;
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
@@ -415,7 +496,7 @@ public final class SearchTestInfrastructure {
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
     accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
-        userNamespaceRoleService);
+        userNamespaceRoleService, registry);
     accountService.setApplicationEventPublisher(eventPublisher);
 
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
@@ -471,20 +552,30 @@ public final class SearchTestInfrastructure {
     if (username.equalsIgnoreCase("admin")) {
       return new TestingAuthenticationToken(username, username, RepositoryRole.SYS_ADMIN.getName());
     }
-    Collection<IRole> roles;
-    try {
-      roles = userNamespaceRoleService.getRoles(username, "");
-    } catch (DoesNotExistException e) {
-      roles = Sets
+    Collection<IRole> roles = Sets
           .newHashSet(org.eclipse.vorto.repository.search.utils.RoleProvider.modelReviewer());
-    }
 
     return new TestingAuthenticationToken(username, username,
         roles.stream().map(IRole::getName).toArray(String[]::new));
   }
 
-  protected IUserContext createUserContext(String username, String tenantId) {
-    return UserContext.user(createAuthenticationToken(username), tenantId);
+  /**
+   * Creates and returns an instance of {@link IUserContext} with the given username and workspace
+   * ID (the latter being the cause for deprecation since it should not be associated with the
+   * {@link IUserContext} and be removed as a field of that class in the future).<br/>
+   * Before returning, injects the authentication into the
+   * {@link org.springframework.security.core.context.SecurityContextHolder} so that the
+   * {@link IModelRepositoryFactory} functionality in charge of inferring the authentication when
+   * not provided can retrieve it.
+   * @param username
+   * @param workspaceId
+   * @return
+   */
+  @Deprecated
+  protected IUserContext createUserContext(String username, String workspaceId) {
+    Authentication authentication = createAuthenticationToken(username);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    return UserContext.user(authentication, workspaceId);
   }
 
   protected ModelInfo importModel(String user, String modelName) {
@@ -561,8 +652,7 @@ public final class SearchTestInfrastructure {
         .thenReturn(Optional.of("playground"));
     when(namespaceService.findNamespaceByWorkspaceId(anyString())).thenReturn(mockNamespace());
     when(namespaceRepository.findAll()).thenReturn(Arrays.asList(mockNamespace()));
-    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(true);
-    when(userNamespaceRoleService.getNamespaces(anyString(), anyString()))
+    when(userNamespaceRoleService.getNamespaces(any(UserDto.class)))
         .thenReturn(Arrays.asList(mockNamespace()));
     List<String> workspaceIds = new ArrayList<>();
     workspaceIds.add("playground");
@@ -573,9 +663,6 @@ public final class SearchTestInfrastructure {
     role.setRole(32);
     Set<IRole> roles = new HashSet<>();
     roles.add(role);
-    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenReturn(roles);
-    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
-        .thenReturn(roles);
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
   }

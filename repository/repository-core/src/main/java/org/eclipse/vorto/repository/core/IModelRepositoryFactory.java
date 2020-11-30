@@ -17,27 +17,42 @@ import org.springframework.security.core.Authentication;
 
 public interface IModelRepositoryFactory {
 
-  IDiagnostics getDiagnosticsService(String tenant, Authentication user);
+  IDiagnostics getDiagnosticsService(String workspaceID);
 
-  IModelPolicyManager getPolicyManager(String tenant, Authentication user);
+  IDiagnostics getDiagnosticsService(String workspaceID, Authentication auth);
 
-  IModelPolicyManager getPolicyManager(IUserContext userContext);
+  IModelPolicyManager getPolicyManager(String workspaceID);
 
-  IModelRepository getRepository(String tenant, Authentication user);
+  IModelPolicyManager getPolicyManager(String workspaceID, Authentication authentication);
 
-  IModelRepository getRepository(IUserContext userContext);
+  @Deprecated
+  IModelPolicyManager getPolicyManager(IUserContext context);
 
-  IModelRepository getRepository(String tenant);
+  IModelRepository getRepository(String workspaceID);
 
   IModelRepository getRepositoryByNamespace(String namespace);
 
+  IModelRepository getRepositoryByNamespaceEscalated(String namespace);
+
   IModelRepository getRepositoryByModel(ModelId modelId);
+
+  IModelRepository getRepositoryByModelEscalated(ModelId modelId);
 
   IModelRepository getRepositoryByModelWithoutSessionHelper(ModelId modelId);
 
-  IModelRepository getRepositoryByModel(ModelId modelId, IUserContext userContext);
+  IModelRepository getRepository(String workspaceId, Authentication authentication);
 
-  IModelRetrievalService getModelRetrievalService(Authentication user);
+  IModelRepository getRepository(String workspaceId, IUserContext context);
+
+  @Deprecated
+  IModelRepository getRepository(IUserContext userContext);
+
+  IModelRetrievalService getModelRetrievalService();
+
+  IModelRetrievalService getModelRetrievalService(Authentication authentication);
+
+  @Deprecated
+  IModelRetrievalService getModelRetrievalService(IUserContext context);
 
   /**
    * The SessionHelper is scoped to the request and to the instance of the IModelRepositoryFactory.
@@ -45,14 +60,10 @@ public interface IModelRepositoryFactory {
    * therefore this method uses individual SessionHelpers instead. This method should only be used
    * in a multi-threaded context of a single request.
    */
-  IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper(Authentication user);
+  IModelRetrievalService getModelRetrievalServiceWithoutSessionHelper();
 
-  IModelRetrievalService getModelRetrievalService(IUserContext userContext);
+  IRepositoryManager getRepositoryManager(String workspaceID);
 
-  IModelRetrievalService getModelRetrievalService();
-
-  IRepositoryManager getRepositoryManager(String tenant, Authentication user);
-
-  IModeshapeDoctor getModeshapeDoctor(String workspaceId, Authentication user);
+  IModeshapeDoctor getModeshapeDoctor(String workspaceID);
 
 }

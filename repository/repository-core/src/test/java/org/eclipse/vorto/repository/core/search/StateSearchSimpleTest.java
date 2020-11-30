@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.search.SearchParameters;
@@ -39,7 +40,7 @@ public class StateSearchSimpleTest {
   static SearchTestInfrastructure testInfrastructure;
 
   private static void updateState(ModelInfo model, String state) {
-    testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("reviewer"))
+    testInfrastructure.getRepositoryFactory().getRepositoryByModel(model.getId())
         .updateState(model.getId(), state);
   }
 
@@ -58,7 +59,10 @@ public class StateSearchSimpleTest {
     // deprecated
     testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
 
-    List<ModelInfo> model = testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("alex")).search("*");
+    IUserContext context = testInfrastructure.createUserContext("alex");
+
+    List<ModelInfo> model = testInfrastructure.getRepositoryFactory()
+        .getRepository(context.getWorkspaceId(), context).search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");

@@ -203,7 +203,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   private boolean isAdmin(IUserContext userContext) {
-    User user = getUserAccountService().getUser(userContext.getUsername());
+    User user = getUserAccountService().getUser(userContext);
     return Objects.nonNull(user) && userRepositoryRoleService.isSysadmin(user);
   }
 

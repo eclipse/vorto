@@ -63,7 +63,7 @@ public class AbstractRepositoryOperation {
     RequestRepositorySessionHelper helper = new RequestRepositorySessionHelper(false, privilegeService);
     IUserContext elevatedUserContext = getUserContextForCreatingAttachment(userContext);
     try {
-      helper.setUser(elevatedUserContext.getAuthentication());
+      helper.setAuthentication(elevatedUserContext.getAuthentication());
       helper.setRepository(repositorySessionHelperSupplier.get().getRepository());
       helper.setUserRoles(Stream.of(RepositoryRole.SYS_ADMIN).collect(Collectors.toSet()));
       helper.setWorkspaceId(repositorySessionHelperSupplier.get().getWorkspaceId());

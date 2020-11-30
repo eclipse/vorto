@@ -106,16 +106,16 @@ public class MappingTest extends UnitTestBase {
     importModel("sample.mapping");
     Thread.sleep(2000);
     assertEquals(1,
-        repositoryFactory.getRepository(createUserContext("admin", "playground"))
+        repositoryFactory.getRepository("playground", createAuthenticationToken("admin"))
             .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().size());
     assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0",
-        repositoryFactory.getRepository(createUserContext("admin", "playground"))
+        repositoryFactory.getRepository("playground", createAuthenticationToken("admin"))
             .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().get(0).getPrettyFormat());
 
     assertEquals(1,
-        repositoryFactory.getRepository(createUserContext("admin", "playground"))
+        repositoryFactory.getRepository("playground", createAuthenticationToken("admin"))
             .getByIdWithPlatformMappings(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getPlatformMappings().size());
   }

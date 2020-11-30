@@ -39,10 +39,11 @@ public class ReadOnlyRoleAccessPolicy implements IWorkflowFunction {
     this.roleToMakeReadOnly = role;
   }
 
+  @Deprecated
   @Override
   public void execute(ModelInfo model, IUserContext user, Map<String, Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId());
     IRole role = roleToMakeReadOnly.get();
     LOGGER.info(String
         .format("Setting read-only access to model [%s] for role [%s].", model.getId(),

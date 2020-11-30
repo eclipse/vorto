@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.comment.impl;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -33,10 +32,12 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
 import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.services.ServiceValidationUtil;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.slf4j.Logger;
@@ -66,7 +67,8 @@ public class DefaultCommentService implements ICommentService {
 
   private UserRepositoryRoleService userRepositoryRoleService;
 
-  public DefaultCommentService(@Autowired ModelRepositoryFactory modelRepositoryFactory,
+  public DefaultCommentService(
+      @Autowired ModelRepositoryFactory modelRepositoryFactory,
       @Autowired INotificationService notificationService,
       @Autowired CommentRepository commentRepository,
       @Autowired DefaultUserAccountService defaultUserAccountService,
@@ -82,11 +84,12 @@ public class DefaultCommentService implements ICommentService {
     this.userRepositoryRoleService = userRepositoryRoleService;
   }
 
-  public void createComment(String username, CommentDTO dto) throws DoesNotExistException, OperationForbiddenException {
+  @Override
+  public void createComment(UserDto user, CommentDTO commentDTO) throws DoesNotExistException, OperationForbiddenException {
 
-    final ModelId id = ModelId.fromPrettyFormat(dto.getModelId());
+    final ModelId id = ModelId.fromPrettyFormat(commentDTO.getModelId());
 
-    if (!canCreate(username, dto)) {
+    if (!canCreate(user, commentDTO)) {
       throw new OperationForbiddenException(
           String.format(
               "User cannot create a comment for model ID [%s]", id.getPrettyFormat()
@@ -104,39 +107,32 @@ public class DefaultCommentService implements ICommentService {
     IModelRepository modelRepo = modelRepositoryFactory
         .getRepository(workspaceId.get());
 
-    Comment comment = new Comment();
-
     if (modelRepo.exists(id)) {
-      comment.setAuthor(dto.getAuthor());
-      comment.setModelId(id.getPrettyFormat());
-      comment.setDate(DATE_FORMAT.format(new Date()));
-      comment.setContent(dto.getContent());
-      commentRepository.save(comment);
-
-      notifyAllCommentAuthors(comment, modelRepo.getById(id));
+      saveComment(commentDTO);
+      User author = accountService.getUser(commentDTO.getAuthor());
+      notifyAllCommentAuthors(author, commentDTO, modelRepo.getById(id));
 
     } else {
       throw new ModelNotFoundException("Model not found", new PathNotFoundException());
     }
   }
 
-  private void notifyAllCommentAuthors(Comment comment, ModelInfo model) {
-    Set<String> recipients = new HashSet<>();
+  private void notifyAllCommentAuthors(User author, CommentDTO comment, ModelInfo model) {
+    Set<User> recipients = new HashSet<>();
 
-    recipients.add(model.getAuthor());
+    recipients.add(author);
 
     List<Comment> existingComments = this.commentRepository.findByModelId(comment.getModelId());
     for (Comment c : existingComments) {
-      recipients.add(c.getAuthor());
+      if (c.getAuthor() != null) {
+        recipients.add(c.getAuthor());
+      }
     }
 
-    recipients.stream().filter(recipient -> !User.USER_ANONYMOUS.equalsIgnoreCase(recipient))
+    recipients.stream()
         .forEach(recipient -> {
-          User user = accountService.getUser(recipient);
-          if (user != null) {
             notificationService.sendNotification(
-                new CommentReplyMessage(user, model, comment.getContent()));
-          }
+                new CommentReplyMessage(recipient, model, comment.getContent()));
         });
   }
 
@@ -144,13 +140,22 @@ public class DefaultCommentService implements ICommentService {
     return commentRepository.findByModelId(modelId.getPrettyFormat());
   }
 
-  public List<Comment> getCommentsByAuthor(String author) {
-    return commentRepository.findByAuthor(author);
+  public List<Comment> getCommentsByAuthor(UserDto author) {
+    return commentRepository.findByAuthor(author.getUsername(), author.getAuthenticationProvider());
   }
 
   @Override
-  public void saveComment(Comment comment) {
-    this.commentRepository.save(comment);
+  public void saveComment(CommentDTO comment) throws DoesNotExistException {
+    ServiceValidationUtil.validateNulls(
+        comment, comment.getAuthor(), comment.getContent(), comment.getDate(), comment.getModelId()
+    );
+    User author = accountService.getUser(comment.getAuthor());
+    if (null == author) {
+      throw new DoesNotExistException("Author cannot be resolved to a real user");
+    }
+    Comment entity = comment.toComment();
+    entity.setAuthor(author);
+    this.commentRepository.save(entity);
   }
 
   public IModelRepositoryFactory getModelRepositoryFactory() {
@@ -188,13 +193,13 @@ public class DefaultCommentService implements ICommentService {
    *     commented model is stored.
    *   </li>
    * </ul>
-   * @param username
+   * @param user
    * @param id
    * @throws OperationForbiddenException
    * @throws DoesNotExistException
    */
   @Override
-  public boolean deleteComment(String username, long id) throws DoesNotExistException {
+  public boolean deleteComment(UserDto user, long id) throws DoesNotExistException {
 
     Comment comment = commentRepository.findOne(id);
 
@@ -206,7 +211,7 @@ public class DefaultCommentService implements ICommentService {
       );
     }
 
-    if (canDelete(username, comment)) {
+    if (canDelete(user, comment)) {
       commentRepository.delete(comment.getId());
       return true;
     }
@@ -219,23 +224,28 @@ public class DefaultCommentService implements ICommentService {
 
   /**
    *
-   * @param username
+   * @param user
    * @param comment
    * @return
    */
   @Override
-  public boolean canDelete(String username, Comment comment) {
+  public boolean canDelete(UserDto user, Comment comment) {
     String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
 
-    if (username.equals(comment.getAuthor())) {
+    if (user.is(comment.getAuthor())) {
       return true;
     } else {
       try {
         if (userNamespaceRoleService
-            .hasRole(username, namespace, userNamespaceRoleService.namespaceAdminRole().getName())) {
+            .hasRole(
+                user,
+                namespace,
+                userNamespaceRoleService.namespaceAdminRole().getName()
+            )
+        ) {
           return true;
         } else {
-          return userRepositoryRoleService.isSysadmin(username);
+          return userRepositoryRoleService.isSysadmin(user);
         }
       } catch (DoesNotExistException dnee) {
         return false;
@@ -245,19 +255,19 @@ public class DefaultCommentService implements ICommentService {
 
   /**
    *
-   * @param username
+   * @param user
    * @param comment
    * @return
    */
   @Override
-  public boolean canCreate(String username, Comment comment) {
+  public boolean canCreate(UserDto user, CommentDTO comment) {
     String namespace = ModelId.fromPrettyFormat(comment.getModelId()).getNamespace();
     try {
       // sysadmin?
-      if (userRepositoryRoleService.isSysadmin(username)) {
+      if (userRepositoryRoleService.isSysadmin(user)) {
         return true;
         // has role in namespace?
-      } else if (userNamespaceRoleService.hasAnyRole(username, namespace)) {
+      } else if (userNamespaceRoleService.hasAnyRole(user, namespace)) {
         return true;
         // is model public?
       } else {

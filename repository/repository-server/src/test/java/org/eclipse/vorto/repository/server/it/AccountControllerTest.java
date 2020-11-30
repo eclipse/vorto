@@ -28,6 +28,7 @@ import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 
@@ -97,8 +98,7 @@ public class AccountControllerTest extends IntegrationTestBase {
         .perform(
             put("/rest/accounts/" + USER_MODEL_CREATOR_NAME).content(testMail).with(userSysadmin))
         .andExpect(status().isOk());
-    User user = userRepository.findByUsername(USER_MODEL_CREATOR_NAME);
-    assertNotNull(user);
+    User user = userRepository.findByUsernameAndAuthenticationProviderId(USER_MODEL_CREATOR_NAME, GITHUB).get();
     assertEquals(testMail, user.getEmailAddress());
     this.repositoryServer
         .perform(put("/rest/accounts/doesnotexist").content(testMail).with(userSysadmin))
@@ -111,9 +111,16 @@ public class AccountControllerTest extends IntegrationTestBase {
         .perform(get("/rest/accounts/" + USER_MODEL_VIEWER_NAME).with(userSysadmin))
         .andExpect(status().isOk());
 
+    UserDto user = new UserDto();
+    user.setUsername(USER_MODEL_VIEWER_NAME);
+    user.setAuthenticationProvider(GITHUB);
+
     this.repositoryServer
         .perform(
-            delete("/rest/accounts/" + USER_MODEL_VIEWER_NAME).content(testMail).with(userSysadmin))
+            delete("/rest/accounts/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user))
+                .with(userSysadmin))
         .andExpect(status().isNoContent());
 
     this.repositoryServer
@@ -129,9 +136,16 @@ public class AccountControllerTest extends IntegrationTestBase {
     this.repositoryServer.perform(get("/rest/accounts/" + USER_SYSADMIN_NAME_2).with(userSysadmin))
         .andExpect(status().isOk());
 
+    UserDto user = new UserDto();
+    user.setUsername(USER_SYSADMIN_NAME_2);
+    user.setAuthenticationProvider(GITHUB);
+
     this.repositoryServer
         .perform(
-            delete("/rest/accounts/" + USER_SYSADMIN_NAME_2).content(testMail).with(userSysadmin))
+            delete("/rest/accounts/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user))
+                .with(userSysadmin))
         .andExpect(status().isNoContent());
 
     this.repositoryServer.perform(get("/rest/accounts/" + USER_SYSADMIN_NAME_2).with(userSysadmin))
@@ -143,7 +157,7 @@ public class AccountControllerTest extends IntegrationTestBase {
     UserDto payload = UserDto.fromUser(
         new UserBuilder()
             .withName("theTechnicalUser")
-            .withAuthenticationProviderID("GITHUB")
+            .withAuthenticationProviderID(GITHUB)
             .withAuthenticationSubject("theSubject")
             .build()
     );
@@ -158,11 +172,10 @@ public class AccountControllerTest extends IntegrationTestBase {
         .andExpect(status().isCreated());
 
     // fetch sysadmin id
-    User sysadmin = userRepository.findByUsername(USER_SYSADMIN_NAME);
+    User sysadmin = userRepository.findByUsernameAndAuthenticationProviderId(USER_SYSADMIN_NAME, GITHUB).get();
     assertNotNull(sysadmin);
     // compare with the tech user created by
-    User theTechnicalUser = userRepository.findByUsername("theTechnicalUser");
-    assertNotNull(theTechnicalUser);
+    User theTechnicalUser = userRepository.findByUsernameAndAuthenticationProviderId("theTechnicalUser", GITHUB).get();
     assertEquals(sysadmin.getId(), theTechnicalUser.getCreatedBy());
 
   }

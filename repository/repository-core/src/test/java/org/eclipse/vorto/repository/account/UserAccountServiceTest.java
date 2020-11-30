@@ -13,14 +13,15 @@
 package org.eclipse.vorto.repository.account;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class UserAccountServiceTest extends UnitTestBase {
     importModel("HueLightStrips.infomodel", admin);
 
     assertEquals(2, getModelRepository(alex).search("author:" + alex.getUsername()).size());
-    userService.delete("alex", "alex");
+    userService.delete(UserDto.of("alex", "GITHUB"));
     assertEquals(0, getModelRepository(alex).search("author:" + alex.getUsername()).size());
     assertEquals(2, getModelRepository(alex).search("author:anonymous").size());
   }
@@ -59,8 +60,9 @@ public class UserAccountServiceTest extends UnitTestBase {
   @Test(expected = IllegalArgumentException.class)
   public void testCreateUserAlreadyExists() throws Exception {
     User user = setupUser("alex");
-    when(userRepository.findByUsername("alex")).thenReturn(user);
-    accountService.createNonTechnicalUser(user.getUsername(), "GITHUB", null);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("alex", user.getAuthenticationProviderId())).thenReturn(
+        Optional.of(user));
+    accountService.createNonTechnicalUser(UserDto.of(user.getUsername(), "GITHUB"), null);
   }
 
   private User setupUser(String username) throws InvalidUserException {

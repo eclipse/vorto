@@ -15,8 +15,6 @@ package org.eclipse.vorto.repository.core;
 import org.eclipse.vorto.core.api.model.mapping.*;
 import org.eclipse.vorto.model.*;
 import org.eclipse.vorto.repository.UnitTestBase;
-import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -31,7 +29,7 @@ public class ModelDtoFactoryTest extends UnitTestBase {
   @Test
   public void testDtoCreation() {
     importModel("Color.type");
-    ModelInfo original = repositoryFactory.getRepository(createUserContext("admin", "playground"))
+    ModelInfo original = repositoryFactory.getRepository("playground", createUserContext("admin"))
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 
     ModelInfo dto = ModelDtoFactory.createDto(original);
@@ -40,17 +38,6 @@ public class ModelDtoFactoryTest extends UnitTestBase {
     assertEquals(original.getId(), dto.getId());
     assertEquals(original.isHasImage(), dto.isHasImage());
     assertEquals(original.getAuthor(), dto.getAuthor());
-  }
-
-  @Test
-  public void testCreateComment() {
-    Comment comment =
-        new Comment(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "erle",
-            "test comment");
-
-    Comment dto = ModelDtoFactory.createDto(comment, UserContext.user("anon", "playground"));
-
-    assertEquals("erle", dto.getAuthor());
   }
 
   @Test

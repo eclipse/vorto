@@ -34,6 +34,8 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.search.IIndexingService;
@@ -47,6 +49,7 @@ import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenExcept
 import org.eclipse.vorto.repository.utils.MockAppEventPublisher;
 import org.eclipse.vorto.repository.utils.NamespaceProvider;
 import org.eclipse.vorto.repository.utils.RoleProvider;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
@@ -56,6 +59,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
@@ -65,6 +69,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import java.util.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
@@ -103,13 +108,20 @@ public abstract class UnitTestBase {
   @Mock
   protected UserRepositoryRoleService userRepositoryRoleService;
 
-
-
   @Mock
   protected PrivilegeService privilegeService;
 
   @Mock
   protected RoleService roleService;
+
+  @Mock
+  protected IOAuthProviderRegistry registry = Mockito.mock(IOAuthProviderRegistry.class);;
+
+  @Mock
+  protected IOAuthProvider defaultOauthProvider = Mockito.mock(IOAuthProvider.class);
+
+  @Mock
+  protected RoleUtil roleUtil;
 
   @Mock
   protected IIndexingService indexingService;
@@ -172,6 +184,14 @@ public abstract class UnitTestBase {
   }
 
   protected void mockServices() throws Exception {
+    // mocks a IOAuthProviderRegistry with one provider mocking GITHUB
+    when(defaultOauthProvider.getId()).thenReturn("GITHUB");
+    when(defaultOauthProvider.canHandle(anyString())).thenReturn(true);
+    when(defaultOauthProvider.canHandle(any(Authentication.class))).thenReturn(true);
+
+    when(registry.getByAuthentication(any())).thenReturn(defaultOauthProvider);
+    when(registry.list()).thenReturn(Arrays.asList(defaultOauthProvider));
+
     ModelRepositoryEventListener supervisor = new ModelRepositoryEventListener();
     IndexingEventListener indexingSupervisor = new IndexingEventListener(indexingService);
 
@@ -207,12 +227,28 @@ public abstract class UnitTestBase {
     RepositoryConfiguration config = RepositoryConfiguration
         .read(new ClassPathResource("vorto-repository.json").getPath());
 
-    when(userRepositoryRoleService.isSysadmin("admin")).thenReturn(true);
+    when(
+        userRepositoryRoleService.isSysadmin(
+          UserDto.of("admin", "GITHUB")
+        )
+    )
+    .thenReturn(true);
 
-    repositoryFactory =
-        new ModelRepositoryFactory(modelSearchUtil,
-            attachmentValidator, modelParserFactory, null, config, null, namespaceService,
-            userNamespaceRoleService, privilegeService, userRepositoryRoleService, userRepository) {
+    repositoryFactory = new ModelRepositoryFactory(
+            null,
+            attachmentValidator,
+            modelParserFactory,
+            null,
+            config,
+            null,
+            namespaceService,
+            userNamespaceRoleService,
+            userRepositoryRoleService,
+            privilegeService,
+            roleService,
+            roleUtil,
+            registry
+    ) {
 
           @Override
           public IModelRetrievalService getModelRetrievalService() {
@@ -221,24 +257,17 @@ public abstract class UnitTestBase {
 
           @Override
           public IModelRepository getRepository(String workspaceId) {
-            return super.getRepository(createUserContext("admin", workspaceId));
+            return super.getRepository(workspaceId, createUserContext("admin"));
           }
 
           @Override
           public IModelRepository getRepository(String workspaceId, Authentication user) {
-            if (user == null) {
-              return getRepository(workspaceId);
-            }
             return super.getRepository(workspaceId, user);
           }
 
           @Override
-          public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId,
-              Authentication user) {
-            if (user == null) {
-              return getRepository(workspaceId);
-            }
-            return super.getRepository(workspaceId, user);
+          public IModelRepository getRepositoryWithoutSessionHelper(String workspaceId) {
+            return getRepository(workspaceId);
           }
         };
     repositoryFactory.setApplicationEventPublisher(eventPublisher);
@@ -247,13 +276,13 @@ public abstract class UnitTestBase {
 
   protected void mockAccountService(ApplicationEventPublisher eventPublisher) {
     accountService = new DefaultUserAccountService(userRolesRequestCache, userRepository,
-        userNamespaceRoleService);
+        userNamespaceRoleService, registry);
     accountService.setApplicationEventPublisher(eventPublisher);
   }
 
   protected void mockUserService(ApplicationEventPublisher eventPublisher) {
     userService = new UserService(userRolesRequestCache, userUtil, userRepository, userRepositoryRoleService,
-        userNamespaceRoleService, notificationService);
+        userNamespaceRoleService, notificationService, registry);
     userService.setApplicationEventPublisher(eventPublisher);
   }
 
@@ -279,73 +308,72 @@ public abstract class UnitTestBase {
     roles.add(model_publisher);
     roles.add(model_reviewer);
 
-    when(userNamespaceRoleService.getRoles(anyString(), anyString())).thenAnswer(inv -> {
-      if (inv.getArguments()[0].equals("namespace_admin")) {
-        return Sets.newHashSet(namespace_admin);
-      }
+    when(userNamespaceRoleService.getRoles(any(UserDto.class), anyString()))
+        .thenAnswer(
+            inv -> {
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("namespace_admin")) {
+                return Sets.newHashSet(namespace_admin);
+              }
 
-      if (inv.getArguments()[0].equals("viewer")) {
-        return Sets.newHashSet(model_viewer);
-      }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("viewer")) {
+                return Sets.newHashSet(model_viewer);
+              }
 
-      if (inv.getArguments()[0].equals("creator")) {
-        return Sets.newHashSet(model_creator);
-      }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("creator")) {
+                return Sets.newHashSet(model_creator);
+              }
 
-      if (inv.getArguments()[0].equals("promoter")) {
-        return Sets.newHashSet(model_promoter);
-      }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("promoter")) {
+                return Sets.newHashSet(model_promoter);
+              }
 
-      if (inv.getArguments()[0].equals("publisher")) {
-        return Sets.newHashSet(model_publisher);
-      }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("publisher")) {
+                return Sets.newHashSet(model_publisher);
+              }
 
-      if (inv.getArguments()[0].equals("reviewer")) {
-        return Sets.newHashSet(model_reviewer);
-      }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("reviewer")) {
+                return Sets.newHashSet(model_reviewer);
+              }
 
-      return Sets
-          .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher,
-              model_reviewer);
-    });
+              return Sets
+                  .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter, model_publisher,
+                      model_reviewer);
+            }
+    );
 
-    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), anyString()))
-        .thenAnswer(inv -> {
-          if (inv.getArguments()[1].equals("namespace_admin")) {
-            return Sets.newHashSet(namespace_admin);
-          }
+    when(userNamespaceRoleService.getRolesByUserAndWorkspaceId(any(UserDto.class), anyString()))
+        .thenAnswer(
+            inv -> {
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("namespace_admin")) {
+                return Sets.newHashSet(namespace_admin);
+              }
 
-          if (inv.getArguments()[1].equals("viewer")) {
-            return Sets.newHashSet(model_viewer);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("viewer")) {
+                return Sets.newHashSet(model_viewer);
+              }
 
-          if (inv.getArguments()[1].equals("creator")) {
-            return Sets.newHashSet(model_creator);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("creator")) {
+                return Sets.newHashSet(model_creator);
+              }
 
-          if (inv.getArguments()[1].equals("promoter")) {
-            return Sets.newHashSet(model_promoter);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("promoter")) {
+                return Sets.newHashSet(model_promoter);
+              }
 
-          if (inv.getArguments()[1].equals("publisher")) {
-            return Sets.newHashSet(model_publisher);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("publisher")) {
+                return Sets.newHashSet(model_publisher);
+              }
 
-          if (inv.getArguments()[1].equals("reviewer")) {
-            return Sets.newHashSet(model_reviewer);
-          }
+              if (((UserDto)inv.getArguments()[0]).getUsername().equals("reviewer")) {
+                return Sets.newHashSet(model_reviewer);
+              }
 
-          return Sets
-              .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
-                  model_publisher,
-                  model_reviewer);
-        });
-
-    when(userNamespaceRoleService.getRoles(any(User.class), any(Namespace.class)))
-        .thenReturn(roles);
-
-    when(userNamespaceRoleService.getRolesByWorkspaceIdAndUser(anyString(), any(User.class)))
-        .thenReturn(roles);
+              return Sets
+                  .newHashSet(namespace_admin, model_viewer, model_creator, model_promoter,
+                      model_publisher,
+                      model_reviewer);
+            }
+    );
 
     Set<Privilege> privileges = new HashSet<>(Arrays.asList(Privilege.DEFAULT_PRIVILEGES));
     when(privilegeService.getPrivileges(anyLong())).thenReturn(privileges);
@@ -372,7 +400,8 @@ public abstract class UnitTestBase {
       NamespaceRole model_reviewer, User alex, User erle, User admin, User creator, User promoter,
       User reviewer, User publisher) throws DoesNotExistException, OperationForbiddenException {
 
-    when(userNamespaceRoleService.hasRole(anyString(), any(), any())).thenReturn(false);
+    when(userNamespaceRoleService.hasRole(any(UserDto.class), anyString(), anyString()))
+        .thenReturn(false);
 
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_creator))).thenReturn(true);
     when(userNamespaceRoleService.hasRole(eq(alex), any(), eq(model_promoter))).thenReturn(true);
@@ -401,6 +430,10 @@ public abstract class UnitTestBase {
 
     when(userRepositoryRoleService.isSysadmin(any(User.class))).thenReturn(false);
     when(userRepositoryRoleService.isSysadmin(admin)).thenReturn(true);
+    when(userRepositoryRoleService.isSysadmin(
+        UserDto.of(admin.getUsername(), "GITHUB"))
+    )
+        .thenReturn(true);
 
     when(userNamespaceRoleService.getNamespaces(any(User.class), any(User.class)))
         .thenReturn(Sets.newHashSet(
@@ -409,19 +442,19 @@ public abstract class UnitTestBase {
 
   private void mockUserRepository(User alex, User erle, User admin, User creator, User promoter,
       User reviewer, User publisher) {
-    when(userRepository.findByUsername("alex")).thenReturn(alex);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("alex", alex.getAuthenticationProviderId())).thenReturn(Optional.of(alex));
     when(userRepository.exists(alex.getId())).thenReturn(true);
-    when(userRepository.findByUsername("erle")).thenReturn(erle);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("erle", erle.getAuthenticationProviderId())).thenReturn(Optional.of(erle));
     when(userRepository.exists(erle.getId())).thenReturn(true);
-    when(userRepository.findByUsername("admin")).thenReturn(admin);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("admin", admin.getAuthenticationProviderId())).thenReturn(Optional.of(admin));
     when(userRepository.exists(admin.getId())).thenReturn(true);
-    when(userRepository.findByUsername("creator")).thenReturn(creator);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("creator", creator.getAuthenticationProviderId())).thenReturn(Optional.of(creator));
     when(userRepository.exists(creator.getId())).thenReturn(true);
-    when(userRepository.findByUsername("promoter")).thenReturn(promoter);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("promoter", promoter.getAuthenticationProviderId())).thenReturn(Optional.of(promoter));
     when(userRepository.exists(promoter.getId())).thenReturn(true);
-    when(userRepository.findByUsername("reviewer")).thenReturn(reviewer);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("reviewer", reviewer.getAuthenticationProviderId())).thenReturn(Optional.of(reviewer));
     when(userRepository.exists(reviewer.getId())).thenReturn(true);
-    when(userRepository.findByUsername("publisher")).thenReturn(publisher);
+    when(userRepository.findByUsernameAndAuthenticationProviderId("publisher", publisher.getAuthenticationProviderId())).thenReturn(Optional.of(publisher));
     when(userRepository.exists(publisher.getId())).thenReturn(true);
     when(userRepository.findAll())
         .thenReturn(Lists.newArrayList(alex, erle, admin, creator, promoter, reviewer, publisher));
@@ -499,23 +532,23 @@ public abstract class UnitTestBase {
       fail(iue.getMessage());
     }
     when(
-        userRepository.findByUsername(createUserContext(getCallerId(), "playground").getUsername()))
-        .thenReturn(mockUser);
+        userRepository.findByUsernameAndAuthenticationProviderId(createUserContext(getCallerId(), "playground").getUsername(), "GITHUB"))
+        .thenReturn(Optional.of(mockUser));
     workflow.doAction(model.getId(), createUserContext(getCallerId(), "playground"),
         SimpleWorkflowModel.ACTION_RELEASE.getName());
-    when(userRepository.findByUsername(createUserContext("admin", "playground").getUsername()))
-        .thenReturn(mockAdmin);
+    when(userRepository.findByUsernameAndAuthenticationProviderId(createUserContext("admin", "playground").getUsername(), "GITHUB"))
+        .thenReturn(Optional.of(mockAdmin));
     workflow.doAction(model.getId(), createUserContext("admin", "playground"),
         SimpleWorkflowModel.ACTION_APPROVE.getName());
   }
 
   protected IModelRepository getModelRepository(IUserContext userContext) {
-    return repositoryFactory.getRepository(userContext);
+    return repositoryFactory.getRepository(userContext.getWorkspaceId(), userContext);
   }
 
   protected IRepositoryManager getRepoManager(IUserContext userContext) {
     return repositoryFactory
-        .getRepositoryManager(userContext.getWorkspaceId(), userContext.getAuthentication());
+        .getRepositoryManager(userContext.getWorkspaceId());
   }
 
   protected IUserContext createUserContext(String username) {
@@ -526,19 +559,29 @@ public abstract class UnitTestBase {
     if (username.equalsIgnoreCase("admin")) {
       return new TestingAuthenticationToken(username, username, RepositoryRole.SYS_ADMIN.getName());
     }
-    Collection<IRole> roles;
-    try {
-      roles = userNamespaceRoleService.getRoles(username, "");
-    } catch (DoesNotExistException e) {
-      roles = Sets.newHashSet(RoleProvider.modelReviewer());
-    }
+    Collection<IRole> roles = Sets.newHashSet(RoleProvider.modelReviewer());
 
     return new TestingAuthenticationToken(username, username,
         roles.stream().map(IRole::getName).toArray(String[]::new));
   }
 
-  protected IUserContext createUserContext(String username, String tenantId) {
-    return UserContext.user(createAuthenticationToken(username), tenantId);
+  /**
+   * Creates and returns an instance of {@link IUserContext} with the given username and workspace
+   * ID (the latter being the cause for deprecation since it should not be associated with the
+   * {@link IUserContext} and be removed as a field of that class in the future).<br/>
+   * Before returning, injects the authentication into the
+   * {@link org.springframework.security.core.context.SecurityContextHolder} so that the
+   * {@link IModelRepositoryFactory} functionality in charge of inferring the authentication when
+   * not provided can retrieve it.
+   * @param username
+   * @param workspaceID
+   * @return
+   */
+  @Deprecated
+  protected IUserContext createUserContext(String username, String workspaceID) {
+    Authentication authentication = createAuthenticationToken(username);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    return UserContext.user(authentication, workspaceID);
   }
 
 }

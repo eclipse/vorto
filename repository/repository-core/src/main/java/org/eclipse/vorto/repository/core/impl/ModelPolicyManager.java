@@ -29,7 +29,6 @@ import javax.jcr.Session;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.AccessControlPolicyIterator;
 import javax.jcr.security.Privilege;
 import org.apache.log4j.Logger;
@@ -44,11 +43,13 @@ import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.RoleUtil;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantCollaboratorAccessPolicy;
@@ -58,6 +59,7 @@ import org.eclipse.vorto.repository.workflow.impl.functions.RemoveRoleAccessPoli
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ModelPolicyManager extends AbstractRepositoryOperation implements IModelPolicyManager {
@@ -74,17 +76,21 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
 
   private NamespaceService namespaceService;
 
+  private IOAuthProviderRegistry registry;
+
   public ModelPolicyManager(
       @Autowired UserNamespaceRoleService userNamespaceRoleService,
       @Autowired RoleUtil roleUtil,
       @Autowired IModelRepositoryFactory iModelRepositoryFactory,
       @Autowired RoleService roleService,
-      @Autowired NamespaceService namespaceService) {
+      @Autowired NamespaceService namespaceService,
+      @Autowired IOAuthProviderRegistry registry) {
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.roleUtil = roleUtil;
     this.modelRepositoryFactory = iModelRepositoryFactory;
     this.roleService = roleService;
     this.namespaceService = namespaceService;
+    this.registry = registry;
   }
 
   @Override
@@ -191,9 +197,9 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
   }
 
   @Override
-  public boolean hasPermission(final ModelId modelId, final Permission permission) {
+  public boolean hasPermission(final Authentication authentication, final ModelId modelId, final Permission permission) {
     return doInSession(session -> this.getPolicyEntries(modelId).stream()
-        .anyMatch(userFilter(session).and(p -> hasPermission(p.getPermission(), permission))));
+        .anyMatch(userFilter(authentication, session).and(p -> hasPermission(p.getPermission(), permission))));
   }
 
   @Override
@@ -210,7 +216,7 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
     });
   }
 
-  private Predicate<PolicyEntry> userFilter(Session session) {
+  private Predicate<PolicyEntry> userFilter(Authentication authentication, Session session) {
     return p -> {
       if (p.getPrincipalType() == PrincipalType.User) {
         return p.getPrincipalId().equalsIgnoreCase(session.getUserID());
@@ -225,7 +231,14 @@ public class ModelPolicyManager extends AbstractRepositoryOperation implements I
         }
         try {
           return userNamespaceRoleService
-              .hasRole(username, namespace.getName(), roleUtil.normalize(roleName));
+              .hasRole(
+                  UserDto.of(
+                    username,
+                    registry.getByAuthentication(authentication).getId()
+                  ),
+                  namespace.getName(),
+                  roleUtil.normalize(roleName)
+              );
         }
         // should not occur unless namespace removed whilst checking for authorization
         catch (DoesNotExistException dnee) {

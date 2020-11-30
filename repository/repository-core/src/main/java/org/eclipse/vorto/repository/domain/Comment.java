@@ -12,10 +12,13 @@
  */
 package org.eclipse.vorto.repository.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import org.eclipse.vorto.model.ModelId;
 
@@ -33,16 +36,17 @@ public class Comment {
   private String modelId;
 
   @NotNull
-  private String author;
-
-  @NotNull
   private String content;
+
+  @ManyToOne(cascade = CascadeType.DETACH)
+  @JoinColumn(name = "author")
+  private User author;
 
   private String createdOn;
 
   public Comment() {}
 
-  public Comment(ModelId modelId, String author, String content) {
+  public Comment(ModelId modelId, User author, String content) {
     this.modelId = modelId.getPrettyFormat();
     this.author = author;
     this.content = content;
@@ -85,11 +89,11 @@ public class Comment {
     this.createdOn = date;
   }
 
-  public String getAuthor() {
+  public User getAuthor() {
     return this.author;
   }
 
-  public void setAuthor(String author) {
+  public void setAuthor(User author) {
     this.author = author;
   }
 

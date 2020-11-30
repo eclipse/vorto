@@ -12,6 +12,16 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
+import java.security.PublicKey;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.IRole;
@@ -19,17 +29,12 @@ import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.oauth.internal.VerificationHelper;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.PublicKey;
-import java.time.Instant;
-import java.util.*;
-import java.util.function.Supplier;
 
 public abstract class AbstractOAuthProvider implements IOAuthProvider {
 
@@ -131,7 +136,7 @@ public abstract class AbstractOAuthProvider implements IOAuthProvider {
   protected boolean verifyUserExist(JwtToken jwtToken) {
     String userId = getUserId(jwtToken.getPayloadMap()).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-    return userAccountService.exists(userId);
+    return userAccountService.exists(UserDto.of(userId, getId()));
   }
   
   @Override

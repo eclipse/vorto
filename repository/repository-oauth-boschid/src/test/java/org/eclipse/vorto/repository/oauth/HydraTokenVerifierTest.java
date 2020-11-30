@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.oauth.internal.VerificationHelper;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -39,9 +40,13 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
   private BoschIoTSuiteOAuthProviderConfiguration configuration;
 
   private BoschIoTSuiteOAuthProviderAuthCode getVerifier() throws InvalidUserException {
-    User user = new UserBuilder().withName("d758a35e-94ef-443f-9625-7f03092e2005").withAuthenticationProviderID("GITHUB").build();
+    User user = new UserBuilder().withName("d758a35e-94ef-443f-9625-7f03092e2005")
+        .withAuthenticationProviderID(BoschIoTSuiteOAuthProviderAuthCode.ID)
+        .build();
     DefaultUserAccountService userAccountService = Mockito.mock(DefaultUserAccountService.class);
-    when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
+    when(userAccountService.getUser(
+        UserDto.of("d758a35e-94ef-443f-9625-7f03092e2005", BoschIoTSuiteOAuthProviderAuthCode.ID)
+    )).thenReturn(user);
 
     UserNamespaceRoleService userNamespaceRoleService = Mockito
         .mock(UserNamespaceRoleService.class);

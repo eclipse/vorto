@@ -251,8 +251,11 @@ define(["../../init/appController"], function (repositoryControllers) {
 
             dialog.setCallback("Confirm", function () {
               $http
-              .delete("./rest/namespaces/" + $scope.namespace.name + "/users/"
-                  + user.userId)
+              .delete("./rest/namespaces/" + $scope.namespace.name + "/users/",
+                  {
+                    "username" : user.userId,
+                    "authenticationProvider" : user.authenticationProviderId
+                  })
               .then(
                   function (result) {
                     $scope.initialize($scope.namespace.name);

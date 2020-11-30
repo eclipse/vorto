@@ -20,11 +20,17 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.RepositoryRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserRepositoryRoleService {
+
+  private static final Logger LOGGER = Logger.getLogger(UserRepositoryRoleService.class);
 
   @Autowired
   private RepositoryRoleRepository repositoryRoleRepository;
@@ -55,26 +61,50 @@ public class UserRepositoryRoleService {
   }
 
   /**
-   * @param username
-   * @return
+   *
+   * @param dto
+   * @return whether the target user has the {@literal sysadmin} repository role.
    * @see UserRepositoryRoleService#isSysadmin(User)
    */
-  public boolean isSysadmin(String username) {
-    return isSysadmin(cache.withUser(username).getUser());
+  public boolean isSysadmin(UserDto dto) {
+    try {
+      return isSysadmin(cache.withUser(dto).getUser());
+    }
+    catch (DoesNotExistException dnee) {
+      LOGGER.warn("Could not resolve user", dnee);
+      return false;
+    }
   }
 
   /**
-   * Sets a user as sysadmin.
    *
-   * @param username
+   * @return whether the authenticated user has the {@literal sysadmin} repository role.
+   * @see UserRepositoryRoleService#isSysadmin(UserDto) for other users.
+   */
+  public boolean isAuthenticatedUserSysadmin() {
+    try {
+      return isSysadmin(cache.withSelf().getUser());
+    }
+    catch (DoesNotExistException dnee) {
+      LOGGER.warn("Could not resolve user", dnee);
+      return false;
+    }
+  }
+
+  /**
+   * Sets a user as {@literal sysadmin}. <br/>
+   * Requires the acting user to be {@literal sysadmin}.
+   *
+   * @param dto
    * @return
    */
-  @Transactional
-  public void setSysadmin(String username) {
-    User user = cache.withUser(username).getUser();
-    if (user == null) {
-      throw new IllegalArgumentException("User is null");
+  @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
+  public void setSysadmin(UserDto dto) throws DoesNotExistException, OperationForbiddenException {
+    User actor = cache.withSelf().getUser();
+    if (!isSysadmin(actor)) {
+      throw new OperationForbiddenException("Acting user is not sysadmin");
     }
+    User user = cache.withUser(dto).getUser();
     if (isSysadmin(user)) {
       return;
     }

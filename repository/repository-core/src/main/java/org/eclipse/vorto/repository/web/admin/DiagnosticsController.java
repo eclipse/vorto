@@ -26,8 +26,6 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.repositories.NamespaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,11 +59,10 @@ public class DiagnosticsController {
   @PreAuthorize("hasAuthority('sysadmin')")
   public Collection<Diagnostic> diagnose() {
     Collection<Diagnostic> diagnostics = new ArrayList<>();
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
     diagnostics = namespaceRepository.findAll().stream().flatMap(
         namespace -> repoFactory
-            .getDiagnosticsService(namespace.getWorkspaceId(), auth)
+            .getDiagnosticsService(namespace.getWorkspaceId())
             .diagnoseAllModels()
             .stream()
             .map(d -> d.setWorkspaceId(namespace.getWorkspaceId()))
@@ -90,7 +87,7 @@ public class DiagnosticsController {
   @GetMapping(value = "modeshape/node/{workspaceId}", produces = "application/json")
   @PreAuthorize("hasAuthority('sysadmin')")
   public ModeshapeNodeData readNodeData(@PathVariable String workspaceId, @RequestParam String path) {
-    return repoFactory.getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+    return repoFactory.getModeshapeDoctor(workspaceId)
         .readModeshapeNodeData(path);
   }
 
@@ -98,7 +95,7 @@ public class DiagnosticsController {
   @PreAuthorize("hasAuthority('sysadmin')")
   public void readNodeContentData(@PathVariable String workspaceId, @RequestParam String path, final HttpServletResponse response) {
     ModeshapeContentData contentData = repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .getModeshapeDoctor(workspaceId)
         .readModeshapeNodeContent(path);
 
     writeByteArrayToResponse(response, contentData);
@@ -108,7 +105,7 @@ public class DiagnosticsController {
   @PreAuthorize("hasAuthority('sysadmin')")
   public void deleteNode(@PathVariable String workspaceId, @RequestParam String path) {
     repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .getModeshapeDoctor(workspaceId)
         .deleteModeshapeNode(path);
   }
 
@@ -118,7 +115,7 @@ public class DiagnosticsController {
       @RequestBody ModeshapeProperty property) {
 
     IModeshapeDoctor doctor = repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication());
+        .getModeshapeDoctor(workspaceId);
     doctor.setPropertyOnNode(path, property);
     return doctor.readModeshapeNodeData(path);
   }
@@ -129,7 +126,7 @@ public class DiagnosticsController {
       @RequestBody ModeshapeAclEntry aclEntry) {
 
     IModeshapeDoctor doctor = repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication());
+        .getModeshapeDoctor(workspaceId);
     doctor.setAclEntryOnNode(path, aclEntry);
     return doctor.readModeshapeNodeData(path);
   }
@@ -140,7 +137,7 @@ public class DiagnosticsController {
       @RequestBody ModeshapeAclEntry aclEntry) {
 
     repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .getModeshapeDoctor(workspaceId)
         .deleteAclEntryOnNode(path, aclEntry);
   }
 
@@ -150,7 +147,7 @@ public class DiagnosticsController {
       @RequestBody ModeshapeProperty property) {
 
     repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .getModeshapeDoctor(workspaceId)
         .deletePropertyOnNode(path, property);
   }
 
@@ -168,7 +165,7 @@ public class DiagnosticsController {
 
   private ModeshapeNodeData loadNodeData(ModelId modelId, String workspaceId) {
     return repoFactory
-        .getModeshapeDoctor(workspaceId, SecurityContextHolder.getContext().getAuthentication())
+        .getModeshapeDoctor(workspaceId)
         .readModeshapeNodeData(modelId);
   }
 

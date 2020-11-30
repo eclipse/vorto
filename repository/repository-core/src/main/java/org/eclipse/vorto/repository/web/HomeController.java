@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.OAuthUser;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.oauth.OAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,7 +76,7 @@ public class HomeController {
         
     OAuthUser oauthUser = provider.createUser((OAuth2Authentication) user);
    
-    User userAccount = accountService.getUser(oauthUser.getUserId());
+    User userAccount = accountService.getUser(UserDto.of(oauthUser.getUserId(), provider.getId()));
 
     Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);
 

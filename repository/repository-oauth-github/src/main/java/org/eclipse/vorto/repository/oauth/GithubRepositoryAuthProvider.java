@@ -30,7 +30,7 @@ public class GithubRepositoryAuthProvider implements IOAuthProvider {
   
   private String clientId;
   
-  private static final String ID = "GITHUB";
+  public static final String ID = "GITHUB";
   
   @Autowired
   public GithubRepositoryAuthProvider(@Value("${github.oauth2.client.clientId}") String clientId, GithubOAuthProviderConfiguration githubTokenService) {

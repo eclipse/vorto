@@ -33,9 +33,6 @@ public class UserAccountListener implements ApplicationListener<AppEvent> {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
-  @Autowired
-  private RoleService roleService;
-
   @Override
   public void onApplicationEvent(AppEvent event) {
     // update the user context in case of a namespace event (e.g. to display or hide the create model button - #2484).
@@ -56,7 +53,7 @@ public class UserAccountListener implements ApplicationListener<AppEvent> {
       if (userId != null && !auth.getName().equals(userId)) {
         return;
       }
-      User user = userAccountService.getUser(auth.getName());
+      User user = userAccountService.getUser(auth);
       SpringUserUtils.refreshSpringSecurityUser(user, userNamespaceRoleService);
     }
   }

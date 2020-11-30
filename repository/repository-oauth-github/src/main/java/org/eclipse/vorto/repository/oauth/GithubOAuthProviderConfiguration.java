@@ -78,4 +78,8 @@ public class GithubOAuthProviderConfiguration extends AbstractOAuthProviderConfi
     return "webjars/repository-web/dist/images/github-social.png";
   }
 
+  @Override
+  protected String getProviderID() {
+    return GithubRepositoryAuthProvider.ID;
+  }
 }

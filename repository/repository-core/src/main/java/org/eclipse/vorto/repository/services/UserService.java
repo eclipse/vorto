@@ -22,10 +22,12 @@ import org.eclipse.vorto.repository.domain.Namespace;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,19 +56,23 @@ public class UserService implements ApplicationEventPublisherAware {
 
   private UserRolesRequestCache cache;
 
+  private IOAuthProviderRegistry registry;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
   public UserService(@Autowired UserRolesRequestCache cache,
       @Autowired UserUtil userUtil, @Autowired UserRepository userRepository,
       @Autowired UserRepositoryRoleService userRepositoryRoleService,
       @Autowired UserNamespaceRoleService userNamespaceRoleService,
-      @Autowired INotificationService notificationService) {
+      @Autowired INotificationService notificationService,
+      @Autowired IOAuthProviderRegistry registry) {
     this.cache = cache;
     this.userUtil = userUtil;
     this.userRepository = userRepository;
     this.userRepositoryRoleService = userRepositoryRoleService;
     this.userNamespaceRoleService = userNamespaceRoleService;
     this.notificationService = notificationService;
+    this.registry = registry;
   }
 
   /**
@@ -170,7 +176,7 @@ public class UserService implements ApplicationEventPublisherAware {
 
     // firstly, publish the user deleted event - this way, the models are all anonymized while the
     // user and their namespace associations are still there
-    eventPublisher.publishEvent(new AppEvent(this, target.getUsername(), EventType.USER_DELETED));
+    eventPublisher.publishEvent(new AppEvent(this, UserDto.fromUser(target), EventType.USER_DELETED));
 
     // then, retrie namespaces where target has any role
     Collection<Namespace> namespacesWhereTargetHasAnyRole = userNamespaceRoleService
@@ -192,40 +198,31 @@ public class UserService implements ApplicationEventPublisherAware {
     return true;
   }
 
-  @Transactional
-  public void delete(final String userId) {
-    User userToDelete = cache.withUser(userId).getUser();
-    if (userToDelete != null) {
-
-      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
-      userRepository.delete(userToDelete);
-      if (userToDelete.hasEmailAddress()) {
-        notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
-      }
-    }
-  }
-
   /**
-   * @param actorUsername
-   * @param targetUsername
+   * @param targetUser
    * @return
    * @throws OperationForbiddenException
    * @throws DoesNotExistException
    * @see UserService#delete(User, User)
    */
-  public boolean delete(String actorUsername, String targetUsername)
+  public boolean delete(UserDto targetUser)
       throws OperationForbiddenException, DoesNotExistException {
-    User actor = cache.withUser(actorUsername).getUser();
-    User target = cache.withUser(targetUsername).getUser();
+    User actor = cache.withSelf().getUser();
+    User target = cache.withUser(targetUser).getUser();
     return delete(actor, target);
   }
 
   /**
-   * @param userName
+   * @param user
    * @return whether the given user name pertains to an existing user.
    */
-  public boolean exists(String userName) {
-    return cache.withUser(userName).getUser() != null;
+  public boolean exists(UserDto user) {
+    try {
+      return cache.withUser(user).getUser() != null;
+    }
+    catch (DoesNotExistException dnee) {
+      return false;
+    }
   }
 
   @Override

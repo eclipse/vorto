@@ -32,10 +32,11 @@ public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
     this.repositoryFactory = repositoryFactory;
   }
 
+  @Deprecated
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId());
 
     logger.info("Adding access of model " + model.getId() + " to non-tenant member users");
     policyManager.addPolicyEntry(model.getId(),

@@ -17,7 +17,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

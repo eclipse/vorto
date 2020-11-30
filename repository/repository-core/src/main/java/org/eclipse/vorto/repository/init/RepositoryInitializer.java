@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.init;
 
+import java.util.Collection;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RepositoryInitializer {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryInitializer.class);
 
   public static final String STANDARDIZATION = "standardization";
 
@@ -55,28 +56,32 @@ public class RepositoryInitializer {
   }
 
   private void createAdminUser(String username, long id) {
-    if (userRepository.findByUsername(username) == null) {
-      logger.info("Creating admin user: {}", username);
-      User user = null;
+    User actualUser = null;
+    Collection<User> users = userRepository.findByUsername(username);
+    if (users.size() > 1) {
+      LOGGER.warn("Could not resolve only one user with the given username - skipping admin creation");
+    }
+    else if (users.size() == 0) {
+      LOGGER.info("Creating admin user with GITHUB OAuth provider");
       try {
-        user = new UserBuilder().withName(username).build();
+        actualUser = new UserBuilder().withName(username).build();
       } catch (InvalidUserException iue) {
-        logger.warn("Unable to create admin user - skipping.");
+        LOGGER.warn("Unable to create admin user - skipping.");
         return;
       }
       // TODO : set to be configurable from configuration file
-      user.setEmailAddress("vorto-dev@bosch-si.com");
-      user.setAuthenticationProviderId("GITHUB");
-      user.setTechnicalUser(false);
-      userRepository.save(user);
+      actualUser.setEmailAddress("vorto-dev@bosch-si.com");
+      actualUser.setAuthenticationProviderId("GITHUB");
+      actualUser.setTechnicalUser(false);
+      actualUser = userRepository.save(actualUser);
     }
-    User user = userRepository.findByUsername(username);
-    UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(user.getId())
+
+    UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(actualUser.getId())
         .orElse(
             new UserRepositoryRoles()
         );
     if (roles.getUser() == null) {
-      roles.setUser(user);
+      roles.setUser(actualUser);
     }
     if (roles.getId() == null) {
       roles.setId(id);

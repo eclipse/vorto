@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,8 +52,7 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
 
   private final UserNamespaceRoleService userNamespaceRoleService;
 
-
-  private static final String ID = "BOSCH";
+  public static final String ID = "BOSCH";
 
   @Autowired
   public BoschIoTSuiteOAuthProviderAuthCode(
@@ -153,7 +153,7 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
 
     String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-    return Optional.ofNullable(userAccountService.getUser(userId))
+    return Optional.ofNullable(userAccountService.getUser(UserDto.of(userId, ID)))
         .map(user -> createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user)))
         .orElse(null);
   }

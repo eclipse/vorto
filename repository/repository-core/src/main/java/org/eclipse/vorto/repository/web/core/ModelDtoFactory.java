@@ -127,15 +127,6 @@ public class ModelDtoFactory {
     dto.setVisibility(resource.getVisibility());
   }
 
-  public static Comment createDto(Comment comment, IUserContext userContext) {
-    // TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has
-    // taken place
-    if (userContext.getHashedUsername().equals(comment.getAuthor())) {
-      comment.setAuthor(userContext.getUsername());
-    }
-    return comment;
-  }
-
   public static ModelId createDto(ModelId modelId) {
     return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
   }

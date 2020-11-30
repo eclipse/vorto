@@ -37,6 +37,7 @@ import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.NameSyntaxException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.services.exceptions.PrivateNamespaceQuotaExceededException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -272,8 +273,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   * @param actorUsername
-   * @param targetUsername
+   * @param targetUser
    * @param namespaceName
    * @return
    * @throws IllegalArgumentException
@@ -282,10 +282,31 @@ public class NamespaceService implements ApplicationEventPublisherAware {
    * @throws NameSyntaxException
    * @see NamespaceService#create(User, User, String)
    */
-  public Namespace create(String actorUsername, String targetUsername, String namespaceName)
-      throws IllegalArgumentException, DoesNotExistException, CollisionException, NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
-    User actor = userRolesRequestCache.withUser(actorUsername).getUser();
-    User target = userRolesRequestCache.withUser(targetUsername).getUser();
+  public Namespace create(UserDto targetUser, String namespaceName)
+      throws IllegalArgumentException, DoesNotExistException, CollisionException,
+      NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
+    User actor = userRolesRequestCache.withSelf().getUser();
+    User target = userRolesRequestCache.withUser(targetUser).getUser();
+    return create(actor, target, namespaceName);
+  }
+
+  /**
+   * Creates a namespace for the acting user.
+   * @param namespaceName
+   * @return
+   * @throws IllegalArgumentException
+   * @throws DoesNotExistException
+   * @throws CollisionException
+   * @throws NameSyntaxException
+   * @throws PrivateNamespaceQuotaExceededException
+   * @throws OperationForbiddenException
+   * @see NamespaceService#create(User, User, String)
+   */
+  public Namespace create(String namespaceName)
+      throws IllegalArgumentException, DoesNotExistException, CollisionException,
+      NameSyntaxException, PrivateNamespaceQuotaExceededException, OperationForbiddenException {
+    User actor = userRolesRequestCache.withSelf().getUser();
+    User target = actor;
     return create(actor, target, namespaceName);
   }
 
@@ -331,15 +352,14 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   }
 
   /**
-   * @param actorUsername
    * @param namespaceName
    * @throws DoesNotExistException
    * @throws OperationForbiddenException
    * @see NamespaceService#deleteNamespace(User, String)
    */
-  public void deleteNamespace(String actorUsername, String namespaceName)
+  public void deleteNamespace(String namespaceName)
       throws DoesNotExistException, OperationForbiddenException {
-    User actor = userRolesRequestCache.withUser(actorUsername).getUser();
+    User actor = userRolesRequestCache.withSelf().getUser();
     deleteNamespace(actor, namespaceName);
   }
 
@@ -409,13 +429,13 @@ public class NamespaceService implements ApplicationEventPublisherAware {
     return cache.namespaces().stream().map(Namespace::getWorkspaceId).collect(Collectors.toList());
   }
 
-  public Set<String> findWorkspaceIdsOfPossibleReferences() {
+  public Set<String> findWorkspaceIdsOfPossibleReferences() throws DoesNotExistException {
     Set<Namespace> visibleNamespaces = new HashSet<>(
         cache.namespaces(NamespaceRequestCache.PUBLIC));
     IUserContext userContext = UserContext
         .user(SecurityContextHolder.getContext().getAuthentication());
     if (!userContext.isAnonymous()) {
-      User user = userRolesRequestCache.withUser(userContext.getUsername()).getUser();
+      User user = userRolesRequestCache.withSelf().getUser();
       try {
         visibleNamespaces.addAll(userNamespaceRoleService.getNamespaces(user, user, (Long) null));
       } catch (OperationForbiddenException | DoesNotExistException e) {
@@ -461,7 +481,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
   private void deleteAllCollaboratorAssociations(User actor, Namespace currentNamespace)
       throws OperationForbiddenException, DoesNotExistException {
     Collection<User> users = userNamespaceRoleService
-        .getRolesByUser(actor, currentNamespace).keySet();
+        .getRolesByAuthenticatedUser(actor, currentNamespace).keySet();
     boolean actorIsAmongstUsers = users.contains(actor);
     if (actorIsAmongstUsers) {
       users.remove(actor);
@@ -477,8 +497,7 @@ public class NamespaceService implements ApplicationEventPublisherAware {
 
   private void deleteModeshapeWorkspace(Namespace currentNamespace) {
     IRepositoryManager repoMgr = repositoryFactory
-        .getRepositoryManager(currentNamespace.getWorkspaceId(),
-            SecurityContextHolder.getContext().getAuthentication());
+        .getRepositoryManager(currentNamespace.getWorkspaceId());
     repoMgr.removeWorkspace(currentNamespace.getWorkspaceId());
   }
 

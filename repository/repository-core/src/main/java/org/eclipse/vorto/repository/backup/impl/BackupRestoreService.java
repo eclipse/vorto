@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -37,8 +36,6 @@ import org.eclipse.vorto.repository.utils.ZipUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.modeshape.common.collection.ImmutableMapEntry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -51,9 +48,6 @@ public class BackupRestoreService implements IBackupRestoreService {
   private IIndexingService indexingService;
 
   private NamespaceRepository namespaceRepository;
-
-  private Supplier<Authentication> authSupplier =
-      () -> SecurityContextHolder.getContext().getAuthentication();
 
   public BackupRestoreService(@Autowired IModelRepositoryFactory modelRepositoryFactory,
       @Autowired IIndexingService indexingService,
@@ -81,7 +75,7 @@ public class BackupRestoreService implements IBackupRestoreService {
             new ImmutableMapEntry<>(
                 namespace.getName(),
                 modelRepositoryFactory
-                    .getRepositoryManager(namespace.getWorkspaceId(), authSupplier.get()).backup())
+                    .getRepositoryManager(namespace.getWorkspaceId()).backup())
         ).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
   }
 
@@ -122,7 +116,7 @@ public class BackupRestoreService implements IBackupRestoreService {
           try {
             String workspaceId = namespace.getWorkspaceId();
             IRepositoryManager repoMgr = modelRepositoryFactory
-                .getRepositoryManager(workspaceId, authSupplier.get());
+                .getRepositoryManager(workspaceId);
 
             if (!repoMgr.exists(workspaceId)) {
               repoMgr.createWorkspace(workspaceId);
@@ -132,8 +126,8 @@ public class BackupRestoreService implements IBackupRestoreService {
             }
 
             repoMgr.restore(backup);
-            this.modelRepositoryFactory.getPolicyManager(workspaceId,
-                SecurityContextHolder.getContext().getAuthentication()).restorePolicyEntries();
+            this.modelRepositoryFactory.getPolicyManager(workspaceId)
+                .restorePolicyEntries();
             namespacesRestored.add(namespace);
           } catch (Exception e) {
             LOGGER.error(String.format("Error while restoring [%s]", namespaceName), e);
@@ -174,11 +168,4 @@ public class BackupRestoreService implements IBackupRestoreService {
     return backups;
   }
 
-  public Supplier<Authentication> getAuthSupplier() {
-    return authSupplier;
-  }
-
-  public void setAuthSupplier(Supplier<Authentication> authSupplier) {
-    this.authSupplier = authSupplier;
-  }
 }

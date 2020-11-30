@@ -18,5 +18,8 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 
 public interface IWorkflowFunction {
 
+  // TODO #2529 this should be overloaded without IUserContext, and a workspace ID not tied to the
+  // user context should be added instead to the signature, then implementors should be refactored
+  @Deprecated
   void execute(ModelInfo model, IUserContext user, Map<String,Object> context);
 }

@@ -111,7 +111,7 @@ public class GeneratedOutputAttachmentHandler {
 
     String filename = buildAttachmentFilename(modelId, serviceKey, requestParams, response, plugin);
     FileContent fc = new FileContent(filename, response.getContent());
-    modelRepositoryFactory.getRepositoryByModel(modelId, userContext)
+    modelRepositoryFactory.getRepositoryByModel(modelId)
         .attachFileInElevatedSession(modelId, fc, userContext,
             GeneratedOutputAttachmentHandler.tagsForRequest(plugin, requestParams));
     return new GeneratedOutput(response.getContent(), filename, response.getSize());

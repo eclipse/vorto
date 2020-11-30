@@ -36,6 +36,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.cache.NamespaceRequestCache;
 import org.eclipse.vorto.repository.domain.Namespace;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.search.extractor.BasicIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor;
 import org.eclipse.vorto.repository.search.extractor.IIndexFieldExtractor.FieldType;
@@ -43,6 +44,7 @@ import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
 import org.eclipse.vorto.repository.utils.PreConditions;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.workflow.ModelState;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -74,6 +76,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -117,6 +120,8 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   private NamespaceRequestCache namespaceRequestCache;
 
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  private IOAuthProviderRegistry registry;
 
   /**
    * An un-tagged name token in a search will search into the following fields:
@@ -172,12 +177,16 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
 
   private static final String ANALYZER = "standard";
 
-  public ElasticSearchService(@Autowired RestHighLevelClient client,
+  public ElasticSearchService(
+      @Autowired RestHighLevelClient client,
       @Autowired IModelRepositoryFactory repositoryFactory,
-      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired IOAuthProviderRegistry registry
+  ) {
     this.client = client;
     this.repositoryFactory = repositoryFactory;
     this.userNamespaceRoleService = userNamespaceRoleService;
+    this.registry = registry;
 
     this.fieldExtractors.add(new BasicIndexFieldExtractor());
 
@@ -625,10 +634,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
    */
   @Override
   public List<ModelInfo> search(String searchExpression, IUserContext userContext) {
+    return search(searchExpression, userContext.getAuthentication());
+  }
 
+  @Override
+  public List<ModelInfo> search(String searchExpression, Authentication auth) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(
-        toESQuery(SearchParameters.build(findWorkspaceIdsForUser(userContext), searchExpression)));
+        toESQuery(SearchParameters.build(findWorkspaceIdsForUser(auth), searchExpression)));
     searchSourceBuilder.from(0);
     searchSourceBuilder.size(MAX_SEARCH_RESULTS);
     searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.MINUTES));
@@ -652,11 +665,11 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     }
   }
 
-  private Collection<String> findWorkspaceIdsForUser(IUserContext userContext) {
-    if (userContext.isAnonymous()) {
+  private Collection<String> findWorkspaceIdsForUser(Authentication auth) {
+    if (UserContext.isAnonymous(auth.getName())) {
       return Collections.emptyList();
     }
-    else if (userContext.isSysAdmin()) {
+    else if (UserContext.isSysAdmin(auth)) {
       return namespaceRequestCache
           .namespaces()
           .stream()
@@ -666,7 +679,12 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
     else {
       try {
         return userNamespaceRoleService
-            .getNamespaces(userContext.getUsername(), userContext.getUsername()).stream()
+            .getNamespaces(
+                UserDto.of(
+                    auth.getName(),
+                    registry.getByAuthentication(auth).getId()
+                )
+            ).stream()
             .map(Namespace::getWorkspaceId)
             .collect(Collectors.toList());
       } catch (OperationForbiddenException | DoesNotExistException e) {

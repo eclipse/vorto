@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.oauth.internal;
 
+import org.eclipse.vorto.repository.oauth.AnonymousOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProvider;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,11 @@ import java.util.*;
 @Service
 public class DefaultOAuthProviderRegistry implements IOAuthProviderRegistry {
   
-  @Autowired
   private Collection<IOAuthProvider> providers = new ArrayList<>();
+
+  public DefaultOAuthProviderRegistry(@Autowired Collection<IOAuthProvider> providers) {
+    this.providers = providers;
+  }
 
   public Optional<IOAuthProvider> getProviderFor(String jwtToken) {
     return providers.stream().filter(provider -> provider.canHandle(jwtToken)).findFirst();
@@ -42,7 +46,11 @@ public class DefaultOAuthProviderRegistry implements IOAuthProviderRegistry {
 
   @Override
   public IOAuthProvider getByAuthentication(Authentication auth) {
-    return providers.stream().filter(authProvider -> authProvider.canHandle(auth)).findFirst().get();
+    return providers
+        .stream()
+        .filter(authProvider -> authProvider.canHandle(auth))
+        .findFirst()
+        .orElse(new AnonymousOAuthProvider());
   }
   
   @Override

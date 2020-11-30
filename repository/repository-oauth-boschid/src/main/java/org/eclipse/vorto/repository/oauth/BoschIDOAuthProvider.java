@@ -17,6 +17,7 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -37,6 +38,8 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
   private String ciamJwtIssuer;
   
   protected static final String JWT_CLIENT_ID = "client_id";
+
+  public static final String ID = "BOSCH";
   
   @Autowired
   private BoschIDOAuthProviderConfiguration configuration;
@@ -75,7 +78,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
   
   @Override
   public String getId() {
-    return "BOSCH";
+    return ID;
   }
 
   /**
@@ -92,7 +95,7 @@ public class BoschIDOAuthProvider extends AbstractOAuthProvider {
 
     String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-    User user = userAccountService.getUser(userId);
+    User user = userAccountService.getUser(UserDto.of(userId, ID));
 
     if (user == null) {
       throw new InvalidTokenException("User from token is not a registered user in the repository!");

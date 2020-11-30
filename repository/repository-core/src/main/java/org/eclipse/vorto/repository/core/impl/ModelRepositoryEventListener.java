@@ -25,6 +25,7 @@ import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.search.ISearchService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -57,24 +58,32 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
   private void createWorkspace(AppEvent event) {
     IUserContext userContext = event.getUserContext();
     IRepositoryManager repoMgr = repositoryFactory
-        .getRepositoryManager(userContext.getWorkspaceId(),
-            userContext.getAuthentication());
+        .getRepositoryManager(userContext.getWorkspaceId());
     repoMgr.createWorkspace(userContext.getWorkspaceId());
   }
 
   private void makeModelsAnonymous(AppEvent event) {
-    String username = (String) event.getSubject();
+    UserDto user =(UserDto) event.getSubject();
 
+    //
     IUserContext technicalUserContext = PrivilegedUserContextProvider
         .systemAdminContext(USER_ADMIN);
-
+    /*
+      TODO #2529: provide search for specific users by name+oauth provider id - as is, it can potentially
+      anonymize models from users sharing the same username
+     */
     List<ModelInfo> result = searchService
-        .search("userReference:" + username, technicalUserContext);
+        .search(
+            String.format(
+                "userReference:%s", user.getUsername()
+            ),
+            technicalUserContext
+        );
     result.forEach(model -> {
       IModelRepository repository = repositoryFactory
-          .getRepositoryByModel(model.getId(), technicalUserContext);
+          .getRepositoryByModelEscalated(model.getId());
       if (model.getAuthor() != null &&
-          model.getAuthor().equals(username)) {
+          model.getAuthor().equals(user.getUsername())) {
         model.setAuthor(User.USER_ANONYMOUS);
       }
       Map<String, String> properties = new HashMap<>();

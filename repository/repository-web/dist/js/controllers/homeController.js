@@ -38,7 +38,11 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.isOnlyAdminForNamespaces();
 
           $scope.deleteAccount = function () {
-            $http.delete('./rest/accounts/' + $rootScope.user)
+            let user = {
+              "username" : $rootScope.user,
+              "authenticationProviderId": $rootScope.provider.id
+            }
+            $http.delete('./rest/accounts/', user)
             .then(
                 function (response) {
                   $scope.user = response.data;

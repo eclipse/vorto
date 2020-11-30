@@ -90,7 +90,7 @@ public class GeneratedOutputAttachmentHandlerTest {
         .of("eclipseditto", "v2", "http://localhost:8888", "1.0.0");
     when(repository.getAttachmentContent(any(), any()))
         .thenReturn(Optional.of(new FileContent(filename, content)));
-    when(modelRepositoryFactory.getRepositoryByModel(any(), any())).thenReturn(repository);
+    when(modelRepositoryFactory.getRepositoryByModel(any())).thenReturn(repository);
 
     IUserContext userContext = new IUserContext() {
       @Override

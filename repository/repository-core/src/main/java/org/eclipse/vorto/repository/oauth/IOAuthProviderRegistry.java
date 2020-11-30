@@ -35,7 +35,7 @@ public interface IOAuthProviderRegistry {
   
   /**
    * Gets a provider by a given authentication
-   * @param auth
+   * @param authentication
    * @return
    */
   IOAuthProvider getByAuthentication(Authentication authentication); 
