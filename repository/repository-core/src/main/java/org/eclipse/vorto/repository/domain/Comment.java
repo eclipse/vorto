@@ -39,7 +39,7 @@ public class Comment {
   private String content;
 
   @ManyToOne(cascade = CascadeType.DETACH)
-  @JoinColumn(name = "author")
+  @JoinColumn(name = "author_id")
   private User author;
 
   private String createdOn;

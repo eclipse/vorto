@@ -60,6 +60,7 @@ public class RepositoryInitializer {
     Collection<User> users = userRepository.findByUsername(username);
     if (users.size() > 1) {
       LOGGER.warn("Could not resolve only one user with the given username - skipping admin creation");
+      return;
     }
     else if (users.size() == 0) {
       LOGGER.info("Creating admin user with GITHUB OAuth provider");
@@ -74,21 +75,20 @@ public class RepositoryInitializer {
       actualUser.setAuthenticationProviderId("GITHUB");
       actualUser.setTechnicalUser(false);
       actualUser = userRepository.save(actualUser);
-    }
+      UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(actualUser.getId())
+          .orElse(
+              new UserRepositoryRoles()
+          );
+      if (roles.getUser() == null) {
+        roles.setUser(actualUser);
+      }
+      if (roles.getId() == null) {
+        roles.setId(id);
+      }
+      roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
 
-    UserRepositoryRoles roles = userRepositoryRoleRepository.findByUser(actualUser.getId())
-        .orElse(
-            new UserRepositoryRoles()
-        );
-    if (roles.getUser() == null) {
-      roles.setUser(actualUser);
+      userRepositoryRoleRepository.save(roles);
     }
-    if (roles.getId() == null) {
-      roles.setId(id);
-    }
-    roles.setRoles(RepositoryRole.SYS_ADMIN.getRole());
-
-    userRepositoryRoleRepository.save(roles);
   }
 
 }
