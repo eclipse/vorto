@@ -202,13 +202,13 @@ public abstract class UnitTestBase {
     ApplicationEventPublisher eventPublisher = new MockAppEventPublisher(listeners);
 
     mockAccountService(eventPublisher);
-    mockUserService(eventPublisher);
     mockModelParserFactory();
     mockModelRepositoryFactory(eventPublisher);
+    searchService = new SimpleSearchService(namespaceRepository, repositoryFactory);
+    mockUserService(eventPublisher);
 
     supervisor.setRepositoryFactory(repositoryFactory);
     modelParserFactory.setModelRepositoryFactory(repositoryFactory);
-    searchService = new SimpleSearchService(namespaceRepository, repositoryFactory);
     supervisor.setSearchService(searchService);
     this.modelValidationHelper = new ModelValidationHelper(repositoryFactory, this.accountService,
         userRepositoryRoleService, userNamespaceRoleService);
@@ -281,8 +281,8 @@ public abstract class UnitTestBase {
   }
 
   protected void mockUserService(ApplicationEventPublisher eventPublisher) {
-    userService = new UserService(userRolesRequestCache, userUtil, userRepository, userRepositoryRoleService,
-        userNamespaceRoleService, notificationService, registry);
+    userService = new UserService(userRolesRequestCache, userUtil, userRepository, repositoryFactory,
+        userNamespaceRoleService, notificationService, searchService);
     userService.setApplicationEventPublisher(eventPublisher);
   }
 
