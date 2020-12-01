@@ -157,7 +157,16 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
     String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
     return userRepository.findByUsernameAndAuthenticationProviderId(userId, ID)
-        .map(user -> createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user)))
+        .map(
+            user ->
+                createAuthentication(
+                    this.clientId,
+                    userId,
+                    name.orElse(userId),
+                    email.orElse(null),
+                    userNamespaceRoleService.getRolesOnAllNamespaces(user)
+                )
+        )
         .orElse(null);
   }
 

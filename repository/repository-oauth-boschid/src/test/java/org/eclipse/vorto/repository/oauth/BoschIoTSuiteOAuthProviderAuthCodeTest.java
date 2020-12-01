@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -92,13 +93,17 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
     @Test
     public void authenticateSuccessTest() {
         when(
-            userRepository.findByUsernameAndAuthenticationProviderId(anyString(), BoschIDOAuthProvider.ID)
+            userRepository.findByUsernameAndAuthenticationProviderId(anyString(), eq(BoschIDOAuthProvider.ID))
         )
-            .thenAnswer(a ->
-                new UserBuilder()
-                    .withName(a.getArguments()[0].toString())
-                    .withAuthenticationProviderID(BoschIDOAuthProvider.ID)
-                .build()
+            .thenAnswer(
+                a ->
+
+                    Optional.of(
+                        new UserBuilder()
+                            .withName(a.getArguments()[0].toString())
+                            .withAuthenticationProviderID(BoschIDOAuthProvider.ID)
+                            .build()
+                    )
             );
         Authentication authentication = sut.authenticate(null, TOKEN);
         assertTrue(authentication.isAuthenticated());
