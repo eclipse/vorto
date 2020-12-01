@@ -225,6 +225,8 @@ public abstract class AbstractUITest {
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
     driver.manage().window().fullscreen();
     driver.findElementByXPath("//a[contains(., 'Rename')]").click();
+    // wait for the rename dialog to open
+    driver.findElementByXPath("//div[@class='modal fade ng-isolate-scope in']");
     // this is the sub-namespace text input, contrary to the advertised tag name
     WebElement namespaceField = driver.findElementByXPath("//input[@type='text' and @name='namespace']");
     WebElement nameField = driver.findElementByXPath("//input[@type='text' and @name='name']");
