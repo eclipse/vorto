@@ -164,6 +164,7 @@ public abstract class AbstractUITest {
     } else {
       usedParams = params[0];
     }
+    this.seleniumVortoHelper.allowCookies();
     RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
     this.seleniumVortoHelper.gotoWelcomePage();
     //logout button is hidden when not logged in (parent element has 'ng-hide' class).
