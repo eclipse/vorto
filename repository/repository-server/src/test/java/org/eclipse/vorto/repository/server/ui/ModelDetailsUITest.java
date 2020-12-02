@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,6 +56,10 @@ public class ModelDetailsUITest extends AbstractUITest {
     WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the editor.
     driver.executeScript("window.scrollBy(0,350)");
+    // wait until editor is loaded
+    WebDriverWait waitForEditor = new WebDriverWait(driver, 20);
+    // closing bracket in the last line of the editor. ATTN: Works only with the model created by "createModel()"
+    waitForEditor.until(ExpectedConditions.textToBePresentInElement(driver.findElementByXPath("//div[@class='ace_line'][12]"), "}"));
     WebDriverWait wait = new WebDriverWait(driver, 300);
     //trigger notification
     saveButton.click();
@@ -72,6 +77,10 @@ public class ModelDetailsUITest extends AbstractUITest {
     WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the text area
     driver.executeScript("window.scrollBy(0,350)");
+    // wait until editor is loaded
+    WebDriverWait waitForEditor = new WebDriverWait(driver, 20);
+    // closing bracket in the last line of the editor. ATTN: Works only with the model created by "createModel()"
+    waitForEditor.until(ExpectedConditions.textToBePresentInElement(driver.findElementByXPath("//div[@class='ace_line'][12]"), "}"));
     driver.findElementByXPath("//div[@class='ace_content']");
     // changes the editor's text via Javascript
     driver.executeScript(String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax"));
