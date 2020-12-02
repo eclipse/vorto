@@ -51,8 +51,6 @@ public class ModelDetailsUITest extends AbstractUITest {
   public void testSaveModelSuccessfulNotification() {
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    // fullscreen to make save button visible
-    driver.manage().window().fullscreen();
     //find the save button
     WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the editor.
@@ -70,8 +68,6 @@ public class ModelDetailsUITest extends AbstractUITest {
   public void testSaveModelErrorNotification() {
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    // going full screen
-    driver.manage().window().fullscreen();
     //find the save button
     WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
     // scroll down to the text area

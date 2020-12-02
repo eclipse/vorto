@@ -200,9 +200,6 @@ public abstract class AbstractUITest {
    *     Loads the model's details page for the given {@link ModelId}
    *   </li>
    *   <li>
-   *     Goes fullscreen
-   *   </li>
-   *   <li>
    *     Clicks the {@literal Rename} button
    *   </li>
    *   <li>
@@ -223,7 +220,6 @@ public abstract class AbstractUITest {
   public RenameModelResultHandler renameModel(ModelId id, RenameModelParams params) {
     loadModelDetailsUI(id);
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    driver.manage().window().fullscreen();
     driver.findElementByXPath("//a[contains(., 'Rename')]").click();
     // wait for the rename dialog to open
     driver.findElementByXPath("//div[@class='modal fade ng-isolate-scope in']");
@@ -242,9 +238,6 @@ public abstract class AbstractUITest {
    *     Navigates to the model details UI page for that model ID
    *   </li>
    *   <li>
-   *     Goes fullscreen
-   *   </li>
-   *   <li>
    *     Waits for the model to load, and verifies it is loaded by checking the {@code h2} element
    *     of the DOM bearing the model's name as a title.
    *   </li>
@@ -255,7 +248,6 @@ public abstract class AbstractUITest {
   public void loadModelDetailsUI(ModelId id) {
     seleniumVortoHelper.goToModelDetails(id.getPrettyFormat());
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    driver.manage().window().fullscreen();
     // loading a model through the UI can take a long time - giving it 5 mins and fetching the
     // h2 header with the model name
     WebDriverWait waitForDetailsLoading = new WebDriverWait(driver, 300);

@@ -153,10 +153,11 @@ public class SeleniumVortoHelper {
   }
 
   /**
-   * open the repository start page.
+   * open the repository start page and maximize the browser
    */
   public void gotoWelcomePage() {
     this.webDriver.get(rootUrl);
+    this.webDriver.manage().window().fullscreen();
   }
 
   /**
