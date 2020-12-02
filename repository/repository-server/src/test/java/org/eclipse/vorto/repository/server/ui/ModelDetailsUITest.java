@@ -12,9 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
 import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
@@ -25,8 +22,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class groups all tests scoped to the model details UI.
@@ -57,9 +53,7 @@ public class ModelDetailsUITest extends AbstractUITest {
     // scroll down to the editor.
     driver.executeScript("window.scrollBy(0,350)");
     // wait until editor is loaded
-    WebDriverWait waitForEditor = new WebDriverWait(driver, 20);
-    // closing bracket in the last line of the editor. ATTN: Works only with the model created by "createModel()"
-    waitForEditor.until(ExpectedConditions.textToBePresentInElement(driver.findElementByXPath("//div[@class='ace_line'][12]"), "}"));
+    this.seleniumVortoHelper.waitForModelEditorToLoad(12);
     WebDriverWait wait = new WebDriverWait(driver, 300);
     //trigger notification
     saveButton.click();
@@ -78,10 +72,7 @@ public class ModelDetailsUITest extends AbstractUITest {
     // scroll down to the text area
     driver.executeScript("window.scrollBy(0,350)");
     // wait until editor is loaded
-    WebDriverWait waitForEditor = new WebDriverWait(driver, 20);
-    // closing bracket in the last line of the editor. ATTN: Works only with the model created by "createModel()"
-    waitForEditor.until(ExpectedConditions.textToBePresentInElement(driver.findElementByXPath("//div[@class='ace_line'][12]"), "}"));
-    driver.findElementByXPath("//div[@class='ace_content']");
+    this.seleniumVortoHelper.waitForModelEditorToLoad(12);
     // changes the editor's text via Javascript
     driver.executeScript(String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax"));
     // trigger notification

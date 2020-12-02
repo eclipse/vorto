@@ -12,20 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
-import java.io.File;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import org.assertj.core.util.Strings;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
-import org.eclipse.vorto.repository.server.ui.util.CreateModelResultHandler;
-import org.eclipse.vorto.repository.server.ui.util.CreateNamespaceParams;
-import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
-import org.eclipse.vorto.repository.server.ui.util.RenameModelResultHandler;
+import org.eclipse.vorto.repository.server.ui.util.*;
 import org.eclipse.vorto.repository.web.VortoRepository;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -50,6 +41,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+
+import java.io.File;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles = {"local-ui-test"})

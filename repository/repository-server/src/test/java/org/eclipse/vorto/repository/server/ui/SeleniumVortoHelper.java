@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -219,6 +220,23 @@ public class SeleniumVortoHelper {
       webElement.sendKeys(String.valueOf(c));
       try {
         TimeUnit.MILLISECONDS.sleep(20);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Waits for the model editor to load by checking the number of lines until the
+   * expected number is reached.
+   *
+   * @param expectedNumberOfLines
+   */
+  public void waitForModelEditorToLoad(int expectedNumberOfLines) {
+    List<WebElement> elList = this.webDriver.findElementsByXPath("//div[@class='ace_line']");
+    while (elList.size() < expectedNumberOfLines) {
+      try {
+        TimeUnit.MILLISECONDS.wait(50);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
