@@ -12,17 +12,30 @@
  */
 package org.eclipse.vorto.repository.conversion;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.*;
+import org.eclipse.vorto.core.api.model.mapping.EntityMappingModel;
+import org.eclipse.vorto.core.api.model.mapping.EnumMappingModel;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelContent;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.conversion.IModelConverter;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -34,10 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
-
-import java.io.ByteArrayInputStream;
-import java.util.*;
-import java.util.concurrent.ForkJoinPool;
 
 public class ModelIdToModelContentConverter implements IModelConverter<ModelId, ModelContent> {
 
@@ -52,8 +61,13 @@ public class ModelIdToModelContentConverter implements IModelConverter<ModelId, 
 
   @Override
   public ModelContent convert(ModelId modelId, Optional<String> platformKey) {
-    modelId = repositoryFactory.getRepositoryByNamespace(modelId.getNamespace())
-        .getLatestModelVersionIfLatestTagIsSet(modelId);
+    IModelRepository repo = repositoryFactory
+        .getRepositoryByNamespace(modelId.getNamespace());
+    if (Objects.isNull(repo)) {
+      throw new ModelNotFoundException(
+          String.format("Namespace [%s] does not exist", modelId.getName()), null);
+    }
+    modelId = repo.getLatestModelVersionIfLatestTagIsSet(modelId);
     if (!repositoryFactory.getRepositoryByModel(modelId).exists(modelId)) {
       throw new ModelNotFoundException(
           String.format("Model [%s] does not exist", modelId.getPrettyFormat()), null);
