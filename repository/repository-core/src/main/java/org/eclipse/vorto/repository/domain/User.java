@@ -38,7 +38,6 @@ public class User implements Serializable {
   private Long id;
 
   @Column(name = "username")
-  @NaturalId
   private String username;
 
   @Column(name = "authentication_provider_id")

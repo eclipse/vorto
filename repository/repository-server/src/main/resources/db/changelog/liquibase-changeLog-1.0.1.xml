@@ -34,4 +34,13 @@
     <sqlFile path="/db/changelog/scripts/change_comment_authorship.sql" dbms="mariadb,mysql"/>
   </changeSet>
 
+  <changeSet id="remove_username_uniqueness" author="mena-bosch" dbms="mariadb, mysql">
+    <preConditions onFail="CONTINUE">
+      <sqlCheck expectedResult="1">
+        select count(*) from information_schema.KEY_COLUMN_USAGE where TABLE_NAME ='user' and COLUMN_NAME = 'username';
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/remove_username_uniqueness.sql" dbms="mariadb, mysq"/>
+  </changeSet>
+
 </databaseChangeLog>
