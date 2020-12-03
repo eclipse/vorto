@@ -117,6 +117,7 @@ public class ModelDetailsUITest extends AbstractUITest {
   @Test
   public void testLoadModelWithCapitalizedNS() {
     createModel().succeed();
+    this.seleniumVortoHelper.getRemoteWebDriver().navigate().refresh();
     ModelId id = new ModelId(CreateModelParams.defaults().getName(),
         CreateModelParams.defaults().getNamespace().toUpperCase(), "1.0.0");
     loadModelDetailsUI(id);
@@ -131,6 +132,7 @@ public class ModelDetailsUITest extends AbstractUITest {
   @Test
   public void testRenameModelWithBadSubNS() {
     createModel().succeed();
+    this.seleniumVortoHelper.getRemoteWebDriver().navigate().refresh();
     ModelId id = new ModelId(CreateModelParams.defaults().getName(),
         CreateModelParams.defaults().getNamespace(), "1.0.0");
     RenameModelParams params = new RenameModelParams()
