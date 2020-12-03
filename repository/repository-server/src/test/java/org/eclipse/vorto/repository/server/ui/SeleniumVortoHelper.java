@@ -219,7 +219,7 @@ public class SeleniumVortoHelper {
     for (char c : text.toCharArray()) {
       webElement.sendKeys(String.valueOf(c));
       try {
-        TimeUnit.MILLISECONDS.sleep(20);
+3          TimeUnit.MILLISECONDS.sleep(20);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -236,7 +236,8 @@ public class SeleniumVortoHelper {
     List<WebElement> elList = this.webDriver.findElementsByXPath("//div[@class='ace_line']");
     while (elList.size() < expectedNumberOfLines) {
       try {
-        TimeUnit.MILLISECONDS.wait(50);
+        TimeUnit.MILLISECONDS.sleep(50);
+        elList = this.webDriver.findElementsByXPath("//div[@class='ace_line']");
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
