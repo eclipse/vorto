@@ -219,7 +219,7 @@ public class SeleniumVortoHelper {
     for (char c : text.toCharArray()) {
       webElement.sendKeys(String.valueOf(c));
       try {
-3          TimeUnit.MILLISECONDS.sleep(20);
+          TimeUnit.MILLISECONDS.sleep(20);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
