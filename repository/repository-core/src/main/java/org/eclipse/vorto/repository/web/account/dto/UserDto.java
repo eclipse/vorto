@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.web.account.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Strings;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.vorto.repository.domain.User;
 
 public class UserDto {

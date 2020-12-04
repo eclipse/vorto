@@ -21,32 +21,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.domain.User;
-import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 
 public class AccountControllerTest extends IntegrationTestBase {
 
 
-  @Autowired
-  private DefaultUserAccountService accountService;
-
-  @Autowired
-  private RoleService roleService;
-
   private String testMail = "test@mail.de";
 
   @Test
   public void getUser() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/accounts/" + USER_MODEL_CREATOR_NAME).with(userSysadmin))
+        .perform(
+            get("/rest/accounts/")
+                .param("username", USER_MODEL_CREATOR_NAME)
+                .param("authenticationProvider", GITHUB)
+                .with(userSysadmin))
         .andExpect(status().isOk());
     this.repositoryServer.perform(get("/rest/accounts/doesNotExist").with(userSysadmin))
         .andExpect(status().isNotFound());
@@ -55,7 +49,7 @@ public class AccountControllerTest extends IntegrationTestBase {
   @Test
   public void searchExistingUserStartingWith() throws Exception {
     MvcResult result = this.repositoryServer
-        .perform(get("/rest/accounts/search/" + "user").with(userSysadmin))
+        .perform(get("/rest/accounts/search/user").with(userSysadmin))
         .andExpect(status().isOk())
         .andReturn();
     // quick, but dirty
@@ -108,7 +102,10 @@ public class AccountControllerTest extends IntegrationTestBase {
   @Test
   public void deleteUserAccount() throws Exception {
     this.repositoryServer
-        .perform(get("/rest/accounts/" + USER_MODEL_VIEWER_NAME).with(userSysadmin))
+        .perform(get("/rest/accounts/")
+            .param("username", USER_MODEL_VIEWER_NAME)
+            .param("authenticationProvider", GITHUB)
+        .with(userSysadmin))
         .andExpect(status().isOk());
 
     UserDto user = new UserDto();
@@ -117,14 +114,18 @@ public class AccountControllerTest extends IntegrationTestBase {
 
     this.repositoryServer
         .perform(
-            delete("/rest/accounts/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user))
+            delete("/rest/accounts")
+                .param("username", user.getUsername())
+                .param("authenticationProvider", user.getAuthenticationProvider())
                 .with(userSysadmin))
         .andExpect(status().isNoContent());
 
     this.repositoryServer
-        .perform(get("/rest/accounts/" + USER_MODEL_VIEWER_NAME).with(userSysadmin))
+        .perform(
+            get("/rest/accounts/")
+              .param("username", USER_MODEL_VIEWER_NAME)
+              .param("authenticationProvider", GITHUB)
+                .with(userSysadmin))
         .andExpect(status().isNotFound());
   }
 
@@ -133,7 +134,11 @@ public class AccountControllerTest extends IntegrationTestBase {
    */
   @Test
   public void deleteUserAccountSysAdmin() throws Exception {
-    this.repositoryServer.perform(get("/rest/accounts/" + USER_SYSADMIN_NAME_2).with(userSysadmin))
+    this.repositoryServer.perform(
+        get("/rest/accounts/")
+            .param("username", USER_SYSADMIN_NAME_2)
+            .param("authenticationProvider", GITHUB)
+            .with(userSysadmin))
         .andExpect(status().isOk());
 
     UserDto user = new UserDto();
@@ -143,8 +148,8 @@ public class AccountControllerTest extends IntegrationTestBase {
     this.repositoryServer
         .perform(
             delete("/rest/accounts/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user))
+                .param("username", user.getUsername())
+                .param("authenticationProvider", user.getAuthenticationProvider())
                 .with(userSysadmin))
         .andExpect(status().isNoContent());
 
