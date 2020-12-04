@@ -18,7 +18,7 @@
 
     <div class="form-group">
       <div class="row">
-        <label for="userId" class="col-sm-2 control-label">User ID</label>
+        <label for="userId" class="col-sm-2 control-label">Username</label>
         <div class="col-sm-10">
           <input ng-if="!user.edit" autofocus type="search"
                  class="search-box-query-filter form-control search-input"
@@ -27,9 +27,10 @@
                  ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
                  ng-focus="toggleSubmitButton()"
                  ng-keyup="selectOtherUser($event, lastHighlightedUser)"
+                 autocomplete="off"
           >
           <input ng-if="user.edit" autofocus type="text" class="form-control" id="userIdEdit"
-                 placeholder="userId" ng-model="user.userId" ng-readonly="true">
+                 placeholder="userId" ng-model="user.displayName || user.userId" ng-readonly="true">
         </div>
       </div>
       <div class="row">
@@ -37,13 +38,13 @@
           <ul id="userDropDown" class="dropDownUL" ng-show="retrievedUsers.length > 0"
               ng-keyup="selectOtherUser($event, lastHighlightedUser)"
           >
-            <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
+            <li id="{{user.displayName}}" ng-repeat="user in retrievedUsers track by user.displayName"
                 ng-model="selectedUser" ng-click="selectUser(user)"
                 ng-mouseover="highlightUser(user)"
                 ng-mouseleave="unhighlightUser(user)"
                 ng-keyup="selectOtherUser($event, lastHighlightedUser)"
             >
-              {{user.userId}}
+              {{user.displayName}}
             </li>
           </ul>
         </div>

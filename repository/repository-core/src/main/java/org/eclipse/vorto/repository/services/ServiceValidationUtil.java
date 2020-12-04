@@ -99,13 +99,13 @@ public class ServiceValidationUtil {
       throws IllegalArgumentException {
     validateNulls(traverseCollections, arguments);
     if (Stream.of(arguments).anyMatch(o -> o.toString().trim().isEmpty())) {
-      throw new IllegalArgumentException("At least one value is empty.");
+      throw new IllegalArgumentException("At least one required value is empty.");
     }
     if (traverseCollections) {
       // non-null args that are collections
       Stream.of(arguments).filter(a -> a instanceof Collection).forEach(c -> {
         if (((Collection) c).stream().anyMatch(o -> o.toString().trim().isEmpty())) {
-          throw new IllegalArgumentException("At least one value is empty.");
+          throw new IllegalArgumentException("At least one required value is empty.");
         }
       });
     }

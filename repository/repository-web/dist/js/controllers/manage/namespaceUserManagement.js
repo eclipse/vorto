@@ -43,8 +43,9 @@ define(["../../init/appController"], function (repositoryControllers) {
            add/update a user and pre-populate the child modal with the relevant
            data.
            */
-          $scope.targetUsername = $routeParams.targetUser;
-          // will be constructed based on retrieval of targetUsername in namespace
+          $scope.targetUsername = $routeParams.targetUsername || $routeParams.targetUser;
+          $scope.targetUserOAuthProvider = $routeParams.targetUserOAuthProvider;
+          // will be constructed based on retrieval of targetUser... in namespace
           // collaborators if present, or by calling the back-end otherwise
           $scope.targetUser = null;
           // this flag will signal an error retrieving the user if that fails
@@ -98,21 +99,29 @@ define(["../../init/appController"], function (repositoryControllers) {
                   $scope.isRetrievingNamespaceUsers = false;
                   $scope.namespaceUsers = result.data;
                   // checks if user attempting to edit themselves as collaborator
-                  if ($scope.targetUsername && $scope.targetUsername
-                      == $scope.currentUser.name) {
+                  if (
+                      $scope.targetUsername &&
+                      $scope.targetUsername == $scope.currentUser.name &&
+                      $scope.targetUserOAuthProvider &&
+                      $scope.targetUserOAuthProvider == $scope.currentUser.authenticationProvider
+                  ) {
                     $scope.editingSelf = true;
                     return;
                   }
-                  // defines target user by target username and either existing
-                  // data or data to be fetched
-                  // checks if given user name is present in retrieved users
-                  if (
-                      $scope.targetUsername &&
-                      $scope.namespaceUsers.map(u => u.userId).includes(
-                          $scope.targetUsername)
-                  ) {
-                    $scope.targetUser = $scope.namespaceUsers.find(
-                        e => e.userId == $scope.targetUsername);
+                  /*
+                  Defines target user by target username and either existing
+                  data or data to be fetched.
+                  Checks if parametrized user is present in retrieved ns users
+                  */
+                  let target = $scope.namespaceUsers.find(
+                      u => u.userId == $scope.targetUsername &&
+                      u.authenticationProvider == $scope.targetUserOAuthProvider
+                  );
+                  if (target) {
+                    $scope.targetUser = target;
+                    // decorating with display name
+                    $scope.targetUser.displayName = $scope.targetUser.userId +
+                        " (" + $scope.targetUser.authenticationProviderId + ")";
                     // if the form is parametrized with a user, then we jump to
                     // the edit or add modal
 
@@ -125,11 +134,14 @@ define(["../../init/appController"], function (repositoryControllers) {
                         $scope.editableUser($scope.targetUser));
                   }
                   // need to load the user from the back-end
-                  else if ($scope.targetUsername) {
-                    $http.get("./rest/accounts/" + $scope.targetUsername)
+                  else if ($scope.targetUsername && $scope.targetUserOAuthProvider) {
+                    $http.get("./rest/accounts/" + $scope.targetUsername + "/" + $scope.targetUserOAuthProvider)
                     .then(
                         function (result) {
                           $scope.targetUser = result.data;
+                          // decorating with display name
+                          $scope.targetUser.displayName = $scope.targetUser.userId +
+                              " (" + $scope.targetUser.authenticationProviderId + ")";
                           // replaces the target user's roles with the desired roles
                           // if present
                           if ($scope.desiredRoles) {
@@ -205,6 +217,8 @@ define(["../../init/appController"], function (repositoryControllers) {
               edit: true,
               // different "username" notations over time caused this
               userId: user.userId ? user.userId : user.username,
+              displayName: user.displayName || user.userId,
+              authenticationProviderId: user.authenticationProviderId,
               roleModelCreator: user.roles.includes("model_creator"),
               roleModelPromoter: user.roles.includes("model_promoter"),
               roleModelReviewer: user.roles.includes("model_reviewer"),
@@ -297,14 +311,14 @@ define(["../../init/appController"], function (repositoryControllers) {
             if (user) {
               $scope.selectedUser = user;
               document.getElementById(
-                  'userId').value = $scope.selectedUser.userId;
+                  'userId').value = $scope.selectedUser.displayName;
             }
             $scope.retrievedUsers = [];
           }
 
           $scope.highlightUser = function (user) {
             let list = document.getElementById("userDropDown");
-            let element = document.getElementById(user.userId);
+            let element = document.getElementById(user.displayName);
             if (list && element) {
               element.style.backgroundColor = '#7fc6e7';
               element.style.color = '#ffffff';
@@ -362,7 +376,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           }
 
           $scope.unhighlightUser = function (user) {
-            let element = document.getElementById(user.userId);
+            let element = document.getElementById(user.displayName);
             if (element) {
               element.style.backgroundColor = 'initial';
               element.style.color = 'initial';
@@ -378,6 +392,24 @@ define(["../../init/appController"], function (repositoryControllers) {
                   function (result) {
                     if (result.data) {
                       $scope.retrievedUsers = result.data;
+                      // adds display name and finds duplicate usernames / adds
+                      // oauth provider id to display name
+                      $scope.retrievedUsers.forEach(function(value, index, array) {
+                        // only suitable for 2+ element arrays
+                        if (array.length < 2) {
+                          return;
+                        }
+                        // sets a display value as userId regardless
+                        value.displayName = value.userId;
+                        // decorates duplicates
+                        if (index > 0 && array[index - 1].userId == value.userId) {
+                          value.displayName = value.userId + " ("
+                              + value.authenticationProviderId + ")";
+                          array[index - 1].displayName = array[index - 1].userId
+                              + " (" + array[index - 1].authenticationProviderId
+                              + ")";
+                        }
+                      });
                     } else {
                       $scope.retrievedUsers = [];
                       $scope.selectedUser = null;
@@ -440,17 +472,19 @@ define(["../../init/appController"], function (repositoryControllers) {
             // drop-down if any, or using the string in user's input     box
             if ($scope.selectedUser) {
               $scope.user.userId = $scope.selectedUser.userId;
-            } else if ($scope.userPartial) {
-              $scope.user.userId = $scope.userPartial;
+              $scope.user.authenticationProviderId = $scope.selectedUser.authenticationProviderId;
             }
             $scope.validate($scope.user, function (result) {
               if (result.valid) {
                 $scope.isCurrentlyAddingOrUpdating = false;
                 $http.put(
-                    "./rest/namespaces/" + $scope.namespace.name + "/users", {
+                    "./rest/namespaces/" + $scope.namespace.name + "/users",
+                    {
                       "userId": $scope.user.userId,
+                      "authenticationProviderId": $scope.user.authenticationProviderId,
                       "roles": $scope.getRoles($scope.user)
-                    })
+                    }
+                )
                 .then(
                     function (result) {
                       $uibModalInstance.close($scope.user);
@@ -503,7 +537,8 @@ define(["../../init/appController"], function (repositoryControllers) {
               return;
             }
 
-            $http.get("./rest/accounts/" + user.userId)
+            $http.get(
+                "./rest/accounts/" + user.userId + "/" + user.authenticationProviderId)
             .then(
                 function (result) {
                   callback({valid: true});

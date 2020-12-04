@@ -17,11 +17,10 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
@@ -74,25 +73,57 @@ public class AccountController {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
+  /**
+   * Users should now be identified by both username and authentication provider ID. <br/>
+   * This legacy endpoint remains for some edge cases where standalone forms that can take a
+   * single username query parameter, etc.
+   *
+   * @param username
+   * @return
+   */
+  @Deprecated
   @GetMapping("/rest/accounts/{username:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
-
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication());
     return accountService.getUser(ControllerUtils.sanitize(username))
         .map(
-            u -> new ResponseEntity<>(
-                UserDto.fromUser(
-                    u, !userContext.getUsername().equals(username)
-                ),
-                HttpStatus.OK
-            )
+            u -> {
+              User actor = accountService.getUser(
+                  SecurityContextHolder.getContext().getAuthentication()
+              );
+              return new ResponseEntity<>(
+                  // suppresses sensitive data if caller not the same user as target
+                  UserDto.fromUser(u, !actor.equals(u)),
+                  HttpStatus.OK
+              );
+            }
         )
-        .orElseGet(
-            () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        .orElse(
+            new ResponseEntity<>(HttpStatus.NOT_FOUND)
         );
+  }
+
+  @GetMapping("/rest/accounts/{username:.+}/{authenticationProvider:.+}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDto> getUser(
+      @ApiParam(value = "username", required = true) @PathVariable String username,
+      @ApiParam(value = "authenticationProvider", required = true) @PathVariable String authenticationProvider
+  ) {
+    User result = accountService.getUser(UserDto.of(username, authenticationProvider));
+    if (Objects.isNull(result)) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    else {
+      User actor = accountService.getUser(
+          SecurityContextHolder.getContext().getAuthentication()
+      );
+      return new ResponseEntity<>(
+          // suppresses sensitive data if caller not the same user as target
+          UserDto.fromUser(result, !actor.equals(result)),
+          HttpStatus.OK
+      );
+    }
   }
 
   @GetMapping("/rest/accounts/search/{partial:.+}")
@@ -164,13 +195,12 @@ public class AccountController {
    *
    * @param technicalUser
    * @return
-   * @see AccountController#getUser(String)
    */
   @PostMapping(consumes = "application/json", value = "/rest/accounts/createTechnicalUser")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<OperationResult> createTechnicalUser(
       @RequestBody @ApiParam(value = "The technical user to be created", required = true) final UserDto technicalUser) {
-    // user exists - do nothing and return false / 200
+    // user exists - do nothing and return false / conflict
     User existingUser = accountService.getUser(
         UserDto.of(
           technicalUser.getUsername(),
@@ -178,7 +208,7 @@ public class AccountController {
         )
     );
     if (existingUser != null) {
-      return new ResponseEntity<>(OperationResult.success("User already exists"), HttpStatus.OK);
+      return new ResponseEntity<>(OperationResult.failure("Technical user exists already"), HttpStatus.CONFLICT);
     }
     // user does not exist
     // getting calling user

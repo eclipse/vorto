@@ -16,11 +16,13 @@ import com.google.common.base.Strings;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.vorto.repository.domain.User;
 
 public class UserDto {
 
   public static final UserDto ANONYMOUS = UserDto.of("anonymous", "n/a");
+  public static final String UNAMBIGUOUS_USERNAME_FORMAT = "%s (%s)";
 
   private String username;
 
@@ -130,6 +132,14 @@ public class UserDto {
     return username;
   }
 
+  /**
+   * For broader compatibility with userId vs username in front-end script payloads
+   * @return
+   */
+  public String getUserId() {
+    return username;
+  }
+
   public Timestamp getDateCreated() {
     return dateCreated;
   }
@@ -140,6 +150,10 @@ public class UserDto {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public void setUserId(String userId) {
+    setUsername(userId);
   }
 
   public void setDateCreated(Timestamp dateCreated) {
@@ -162,8 +176,20 @@ public class UserDto {
     return authenticationProvider;
   }
 
+  /**
+   * For broader compatibility with various non-homogeneous payloads
+   * @return
+   */
+  public String getAuthenticationProviderId() {
+    return authenticationProvider;
+  }
+
   public void setAuthenticationProvider(String authenticationProvider) {
     this.authenticationProvider = authenticationProvider;
+  }
+
+  public void setAuthenticationProviderId(String authenticationProviderId) {
+    this.authenticationProvider = authenticationProviderId;
   }
 
   public String getSubject() {
@@ -184,6 +210,16 @@ public class UserDto {
 
   public void setIsTechnicalUser(boolean value) {
     isTechnicalUser = value;
+  }
+
+  @JsonIgnore
+  public String toUnambiguousUsernameFormat() {
+    return String.format(UNAMBIGUOUS_USERNAME_FORMAT, username, authenticationProvider);
+  }
+
+  @JsonIgnore
+  public boolean isBasicUserInfoValid() {
+    return !Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(authenticationProvider);
   }
 
   @Override

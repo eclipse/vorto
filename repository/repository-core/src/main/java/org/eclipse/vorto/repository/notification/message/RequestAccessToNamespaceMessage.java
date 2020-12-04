@@ -40,7 +40,7 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
 
   @Override
   public String getSubject() {
-    return String.format(SUBJECT_FORMAT, request.getNamespaceName(), request.getTargetUsername());
+    return String.format(SUBJECT_FORMAT, request.getNamespaceName(), request.getTargetUser().toUnambiguousUsernameFormat());
   }
 
   @Override
@@ -48,8 +48,10 @@ public class RequestAccessToNamespaceMessage extends AbstractMessage {
     Map<String, Object> map = new HashMap<>();
     map.put("host", host);
     map.put("namespace", request.getNamespaceName());
-    map.put("requestingUser", request.getRequestingUsername());
-    map.put("targetUser", request.getTargetUsername());
+    map.put("requestingUser", request.getRequestingUser().toUnambiguousUsernameFormat());
+    map.put("targetUser", request.getTargetUser().toUnambiguousUsernameFormat());
+    map.put("targetUsername", request.getTargetUser().getUsername());
+    map.put("targetUserOAuthProvider", request.getTargetUser().getAuthenticationProvider());
     map.put("suggestedRoles", request.getSuggestedRoles());
     map.put("recipient", recipient.getUsername());
     String subject = Strings.nullToEmpty(request.getTargetSubject()).trim().isEmpty() ? "n/a" : request.getTargetSubject();

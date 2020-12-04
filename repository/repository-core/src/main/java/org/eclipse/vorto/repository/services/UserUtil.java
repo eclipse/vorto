@@ -112,10 +112,15 @@ public class UserUtil {
    */
   public void validateNewUser(User user) throws InvalidUserException {
     // boilerplate null validation
-    ServiceValidationUtil.validateNulls(user);
-    ServiceValidationUtil.validateEmpties(user.getUsername(),
-        user.getAuthenticationProviderId(), user.getSubject());
-    validateSubject(user.getSubject());
+    try {
+      ServiceValidationUtil.validateNulls(user);
+      ServiceValidationUtil.validateEmpties(user.getUsername(),
+          user.getAuthenticationProviderId(), user.getSubject());
+      validateSubject(user.getSubject());
+    }
+    catch (IllegalArgumentException iae) {
+      throw new InvalidUserException(iae.getMessage());
+    }
     // converts the legacy-notation authentication provider ID to the new notation if necessary
     user.setAuthenticationProviderId(
         convertLegacyBoschOAuthProviderID(user.getAuthenticationProviderId())

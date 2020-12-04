@@ -89,10 +89,10 @@
     <div class="row"><br/></div>
     <div class="row" ng-show="!parametrized">
       <div class="col-sm-3">
-        <input type="radio" name="requestTargetUser" id="myself" value="{{username}}"
+        <input type="radio" name="requestTargetUser" id="myself" value="{{currentUser.displayName}}"
                ng-model="userRadio"
                ng-change="toggleUserSearchEnabled('myself')"/>
-        <label id="myselfLabel" for="myself">myself ({{username}})</label>
+        <label id="myselfLabel" for="myself">myself ({{currentUser.displayName}})</label>
       </div>
       <div class="col-sm-2">
         <input type="radio" name="requestTargetUser" id="anotherUser" ng-model="userRadio"
@@ -109,6 +109,7 @@
                    ng-model-options="{ debounce: 200 }" ng-change="findUsers()"
                    style="height:32px"
                    ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
+                   autocomplete="off"
             >
           </div>
           <div class="col-sm-2" style="padding-left:0px">
@@ -130,13 +131,13 @@
             <ul id="userDropDown" class="dropDownUL" ng-show="retrievedUsers.length > 0"
                 ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
             >
-              <li id="{{user.userId}}" ng-repeat="user in retrievedUsers track by user.userId"
+              <li id="{{user.displayName}}" ng-repeat="user in retrievedUsers track by user.displayName"
                   ng-model="selectedUser" ng-click="selectUser(user)"
                   ng-mouseover="highlightUser(user)"
                   ng-mouseleave="unhighlightUser(user)"
                   ng-keyup="selectOtherTechnicalUser($event, lastHighlightedUser)"
               >
-                {{user.userId}}
+                {{user.displayName}}
               </li>
             </ul>
           </div>
@@ -149,7 +150,7 @@
           <label>Technical user name / client ID:</label>
         </div>
         <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
-          <input class="form-control" disabled ng-model="paramUserId"/>
+          <input class="form-control" ng-model="paramUserId"/>
         </div>
       </div>
       <div class="row" style="padding-top:5px;padding-bottom:5px">
@@ -157,7 +158,7 @@
           <label>Client name:</label>
         </div>
         <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
-          <input class="form-control" disabled ng-model="paramClientName"/>
+          <input class="form-control" ng-model="paramClientName"/>
         </div>
       </div>
       <div class="row" style="padding-top:5px;padding-bottom:5px">
@@ -165,7 +166,7 @@
           <label>Subject:</label>
         </div>
         <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
-          <input class="form-control" disabled ng-model="paramSubject"/>
+          <input class="form-control" ng-model="paramSubject"/>
         </div>
       </div>
       <div class="row" style="padding-top:5px;padding-bottom:5px">
@@ -173,8 +174,7 @@
           <label>Authentication provider:</label>
         </div>
         <div class="col-sm-6" style="padding-left:0px;padding-right:0px">
-          <input class="form-control" disabled
-                 ng-model="paramOauthProvider"/>
+          <input class="form-control" ng-model="paramOauthProvider"/>
         </div>
       </div>
       <div class="row" style="padding-top:5px;padding-bottom:5px">
@@ -182,7 +182,8 @@
           <div class="pull-right">
             <button id="createTechnicalUserButton" class="btn btn-primary"
                     ng-click="createTechnicalUser()"
-                    ng-disabled="technicalUser">{{createUserButtonCaption}}
+                    ng-disabled="technicalUser || !ackCreateTechnicalUser ||
+                  !paramUserId || !paramOauthProvider">{{createUserButtonCaption}}
             </button>
           </div>
         </div>
@@ -192,8 +193,7 @@
       </div>
       <div id="ackCreateTechnicalUserDiv" class="row">
         <div class="col-sm-10 col-sm-offset-1">
-          <input id="ackCreateTechnicalUser" type="checkbox" ng-model="ackCreateTechnicalUser"
-                 ng-change="computeCreateTechnicalUserAvailability()">
+          <input id="ackCreateTechnicalUser" type="checkbox" ng-model="ackCreateTechnicalUser">
           I acknowledge that I have read the
           <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms and
             Conditions</a>
@@ -214,7 +214,7 @@
     </div>
     <div class="row" id="roles">
       <div class="col-sm-12">
-        <label>I want <i>{{selectedUser}}</i> to be able to:</label>
+        <label>I want <i>{{selectedUser.displayName}}</i> to be able to:</label>
       </div>
       <div class="row"><br/><br/>
       </div>
