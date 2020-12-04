@@ -12,8 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
-import static org.junit.Assert.assertTrue;
-
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
 import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
@@ -23,6 +21,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class groups all tests scoped to the model details UI.
@@ -48,13 +48,17 @@ public class ModelDetailsUITest extends AbstractUITest {
   public void testSaveModelSuccessfulNotification() {
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    // fullscreen to make save button visible
-    driver.manage().window().fullscreen();
-    //find the save button and click it to trigger notification
-    driver.findElementByXPath("//a[@ng-click='saveModel()']").click();
+    //find the save button
+    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
+    // scroll down to the editor.
+    driver.executeScript("window.scrollBy(0,350)");
+    // wait until editor is loaded
+    this.seleniumVortoHelper.waitForModelEditorToLoad(12);
+    WebDriverWait wait = new WebDriverWait(driver, 300);
+    //trigger notification
+    saveButton.click();
     // make sure the success message is displayed (wait a little longer)
     // waits 5 minutes max for model saving
-    WebDriverWait wait = new WebDriverWait(driver, 300);
     wait.until(ExpectedConditions.visibilityOf(
         driver.findElementByXPath("//span[contains(.,'Model saved successfully')]")));
   }
@@ -63,15 +67,15 @@ public class ModelDetailsUITest extends AbstractUITest {
   public void testSaveModelErrorNotification() {
     createModel().succeed();
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    // going full screen
-    driver.manage().window().fullscreen();
-    WebElement textArea = driver.findElementByXPath("//div[@class='ace_content']");
-    driver.executeScript("arguments[0].scrollIntoView();", textArea);
+    //find the save button
+    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
+    // scroll down to the text area
+    driver.executeScript("window.scrollBy(0,350)");
+    // wait until editor is loaded
+    this.seleniumVortoHelper.waitForModelEditorToLoad(12);
     // changes the editor's text via Javascript
     driver.executeScript(String.format(SET_EDITOR_SYNTAX_FORMAT, "this will break the syntax"));
-    //find the save button and click it to trigger notification
-    WebElement saveButton = driver.findElementByXPath("//a[@ng-click='saveModel()']");
-    driver.executeScript("arguments[0].scrollIntoView();", saveButton);
+    // trigger notification
     saveButton.click();
     WebDriverWait waitForErrorMessage = new WebDriverWait(driver, 10);
     // verifies a div "Cannot parse model" is visible
@@ -113,6 +117,7 @@ public class ModelDetailsUITest extends AbstractUITest {
   @Test
   public void testLoadModelWithCapitalizedNS() {
     createModel().succeed();
+    this.seleniumVortoHelper.getRemoteWebDriver().navigate().refresh();
     ModelId id = new ModelId(CreateModelParams.defaults().getName(),
         CreateModelParams.defaults().getNamespace().toUpperCase(), "1.0.0");
     loadModelDetailsUI(id);
@@ -127,6 +132,7 @@ public class ModelDetailsUITest extends AbstractUITest {
   @Test
   public void testRenameModelWithBadSubNS() {
     createModel().succeed();
+    this.seleniumVortoHelper.getRemoteWebDriver().navigate().refresh();
     ModelId id = new ModelId(CreateModelParams.defaults().getName(),
         CreateModelParams.defaults().getNamespace(), "1.0.0");
     RenameModelParams params = new RenameModelParams()
