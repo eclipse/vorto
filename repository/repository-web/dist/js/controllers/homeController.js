@@ -15,8 +15,7 @@ define(["../init/appController"], function (repositoryControllers) {
   repositoryControllers.controller('RemoveAccountModalController',
       ['$location', '$scope', '$rootScope', '$http', '$uibModalInstance',
         '$window',
-        function ($location, $scope, $rootScope, $http, $uibModalInstance,
-            $window) {
+        function ($location, $scope, $rootScope, $http, $uibModalInstance) {
 
           $scope.isOnlyAdminForNamespaces = function () {
             $http
@@ -25,12 +24,12 @@ define(["../init/appController"], function (repositoryControllers) {
                 function (result) {
                   // result.data cannot be undefined, i.e. falsey, so either
                   // this or error
-                  $scope.soleNamespaceAdmin = result.data;
+                  $scope.onlyNamespaceAdmin = result.data;
                 },
                 function (error) {
-                  // no error handling within context but setting soleNamespaceAdmin
+                  // no error handling within context but setting onlyNamespaceAdmin
                   // as false for safety
-                  $scope.soleNamespaceAdmin = true;
+                  $scope.onlyNamespaceAdmin = true;
                 }
             );
           };
@@ -38,11 +37,15 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.isOnlyAdminForNamespaces();
 
           $scope.deleteAccount = function () {
-            let user = {
-              "username" : $rootScope.user,
-              "authenticationProviderId": $rootScope.provider.id
-            }
-            $http.delete('./rest/accounts/', user)
+            $http.delete('./rest/accounts',
+                {
+                  params:
+                      {
+                        username: $rootScope.userInfo.name,
+                        authenticationProvider: $rootScope.userInfo.provider.id
+                      }
+                }
+            )
             .then(
                 function (response) {
                   $scope.user = response.data;
@@ -51,7 +54,9 @@ define(["../init/appController"], function (repositoryControllers) {
                     $uibModalInstance.dismiss("cancel");
                   }
                 },
-                function(error){}
+                function(error){
+                  console.log(error);
+                }
             );
           };
 

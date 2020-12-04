@@ -34,7 +34,7 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
             var updateError = function(error) {
                 $scope.isUpdating = false;
             };
-
+            // TODO #2529 this should arguably be deprecated, need to evaluate
             $http
               .post("./rest/accounts/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"} })
               .then(updateSuccess, updateError);

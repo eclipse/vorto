@@ -104,11 +104,17 @@ public class AccountController {
         );
   }
 
-  @GetMapping("/rest/accounts/{username:.+}/{authenticationProvider:.+}")
+  /**
+   * Fetches user information now based on both username and authentication provider. <br/>
+   * @param username
+   * @param authenticationProvider
+   * @return
+   */
+  @GetMapping("/rest/accounts")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDto> getUser(
-      @ApiParam(value = "username", required = true) @PathVariable String username,
-      @ApiParam(value = "authenticationProvider", required = true) @PathVariable String authenticationProvider
+      @ApiParam(value = "username", required = true) @RequestParam String username,
+      @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider
   ) {
     User result = accountService.getUser(UserDto.of(username, authenticationProvider));
     if (Objects.isNull(result)) {
@@ -300,10 +306,14 @@ public class AccountController {
 
   @DeleteMapping("/rest/accounts")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<Void> deleteUserAccount(@RequestBody UserDto user) {
+  public ResponseEntity<Void> deleteUserAccount(
+      @ApiParam(value = "username", required = true) @RequestParam String username,
+      @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider
+  ) {
     try {
-        userService.delete(user);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      UserDto user = UserDto.of(username, authenticationProvider);
+      userService.delete(user);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (DoesNotExistException dnee) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (OperationForbiddenException ofe) {

@@ -157,11 +157,7 @@ define(["../init/appController"], function (repositoryControllers) {
            */
           $scope.loadUserData = function () {
             $scope.isLoadingUserData = true;
-            let path = $scope.paramUserId;
-            if ($scope.paramOauthProvider) {
-              path += "/" + $scope.paramOauthProvider;
-            }
-            $http.get("./rest/accounts/" + path)
+            $http.get("./rest/accounts", {params:{"username":$scope.paramUserId,"authenticationProvider":$scope.paramOauthProvider}})
             .then(
                 function (result) {
                   // builds tech user data from result

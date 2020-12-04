@@ -135,7 +135,7 @@ define(["../../init/appController"], function (repositoryControllers) {
                   }
                   // need to load the user from the back-end
                   else if ($scope.targetUsername && $scope.targetUserOAuthProvider) {
-                    $http.get("./rest/accounts/" + $scope.targetUsername + "/" + $scope.targetUserOAuthProvider)
+                    $http.get("./rest/accounts", {params:{"username":$scope.targetUsername,"authenticationProvider":$scope.targetUserOAuthProvider}})
                     .then(
                         function (result) {
                           $scope.targetUser = result.data;
