@@ -12,20 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.ui;
 
-import java.io.File;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import org.assertj.core.util.Strings;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.repositories.UserRepository;
-import org.eclipse.vorto.repository.server.ui.util.CreateModelParams;
-import org.eclipse.vorto.repository.server.ui.util.CreateModelResultHandler;
-import org.eclipse.vorto.repository.server.ui.util.CreateNamespaceParams;
-import org.eclipse.vorto.repository.server.ui.util.RenameModelParams;
-import org.eclipse.vorto.repository.server.ui.util.RenameModelResultHandler;
+import org.eclipse.vorto.repository.server.ui.util.*;
 import org.eclipse.vorto.repository.web.VortoRepository;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -50,6 +41,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+
+import java.io.File;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(profiles = {"local-ui-test"})
@@ -164,11 +159,11 @@ public abstract class AbstractUITest {
     } else {
       usedParams = params[0];
     }
+    this.seleniumVortoHelper.allowCookies();
     RemoteWebDriver remoteWebDriver = this.seleniumVortoHelper.getRemoteWebDriver();
-    // there should be no create button before logging in.
-    List<WebElement> createModelButtonList = this.seleniumVortoHelper.getRemoteWebDriver()
-        .findElementsByXPath("//a[@ng-click='openCreateModelDialog()']");
-    Assert.assertTrue(createModelButtonList.isEmpty());
+    this.seleniumVortoHelper.gotoWelcomePage();
+    //logout button is hidden when not logged in (parent element has 'ng-hide' class).
+    WebElement logoutLink = this.seleniumVortoHelper.getRemoteWebDriver().findElementByXPath("//a[@ng-click='logout()']/parent::li[@class='ng-hide']");
     // create a namespace (reuse existing test)
     testCreateNamespace();
     // now the create button should be available
@@ -182,12 +177,11 @@ public abstract class AbstractUITest {
         new Select(remoteWebDriver.findElementById(SeleniumVortoHelper.ID_CB_NAMESPACE_ROOT));
     namespaceComboBox.selectByVisibleText(usedParams.getNamespace().toLowerCase());
     WebElement modelNameTextField = remoteWebDriver.findElementByName("modelName");
-    modelNameTextField.sendKeys(usedParams.getName());
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(usedParams.getName(), modelNameTextField);
     // sub-ns
     if (!Strings.isNullOrEmpty(usedParams.getSubNamespace())) {
       // this is actually the sub-namespace text field
-      remoteWebDriver.findElementByName("modelNamespace")
-          .sendKeys(usedParams.getSubNamespace());
+      this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(usedParams.getSubNamespace(), remoteWebDriver.findElementByName("modelNamespace"));
     }
 
     return new CreateModelResultHandler(remoteWebDriver, usedParams);
@@ -199,9 +193,6 @@ public abstract class AbstractUITest {
    * <ol>
    *   <li>
    *     Loads the model's details page for the given {@link ModelId}
-   *   </li>
-   *   <li>
-   *     Goes fullscreen
    *   </li>
    *   <li>
    *     Clicks the {@literal Rename} button
@@ -224,17 +215,14 @@ public abstract class AbstractUITest {
   public RenameModelResultHandler renameModel(ModelId id, RenameModelParams params) {
     loadModelDetailsUI(id);
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    driver.manage().window().fullscreen();
     driver.findElementByXPath("//a[contains(., 'Rename')]").click();
+    // wait for the rename dialog to open
+    driver.findElementByXPath("//div[@class='modal fade ng-isolate-scope in']");
     // this is the sub-namespace text input, contrary to the advertised tag name
     WebElement namespaceField = driver.findElementByXPath("//input[@type='text' and @name='namespace']");
     WebElement nameField = driver.findElementByXPath("//input[@type='text' and @name='name']");
-    namespaceField.click();
-    namespaceField.clear();
-    namespaceField.sendKeys(params.getNewSubNamespace());
-    nameField.click();
-    nameField.clear();
-    nameField.sendKeys(params.getNewName());
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(params.getNewSubNamespace(),namespaceField);
+    this.seleniumVortoHelper.sendTextToTextWebElementWithDelay(params.getNewName(), nameField);
     return new RenameModelResultHandler(driver, params);
   }
 
@@ -243,9 +231,6 @@ public abstract class AbstractUITest {
    * <ol>
    *   <li>
    *     Navigates to the model details UI page for that model ID
-   *   </li>
-   *   <li>
-   *     Goes fullscreen
    *   </li>
    *   <li>
    *     Waits for the model to load, and verifies it is loaded by checking the {@code h2} element
@@ -258,7 +243,6 @@ public abstract class AbstractUITest {
   public void loadModelDetailsUI(ModelId id) {
     seleniumVortoHelper.goToModelDetails(id.getPrettyFormat());
     RemoteWebDriver driver = seleniumVortoHelper.getRemoteWebDriver();
-    driver.manage().window().fullscreen();
     // loading a model through the UI can take a long time - giving it 5 mins and fetching the
     // h2 header with the model name
     WebDriverWait waitForDetailsLoading = new WebDriverWait(driver, 300);

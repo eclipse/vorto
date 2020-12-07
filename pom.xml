@@ -403,14 +403,19 @@
 					<plugin>
 						<groupId>org.eclipse.cbi.maven.plugins</groupId>
 						<artifactId>eclipse-jarsigner-plugin</artifactId>
-						<version>1.1.3</version>
+						<version>1.1.7</version>
 						<executions>
 							<execution>
 								<id>sign</id>
-								<phase>verify</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+									<retryLimit>5</retryLimit>
+									<retryTimer>30</retryTimer>
+									<resigningStrategy>OVERWRITE</resigningStrategy>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -471,7 +476,7 @@
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
-								<phase>verify</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
@@ -501,6 +506,31 @@
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>false</autoReleaseAfterClose>
 						</configuration>
+					</plugin>
+					<plugin>
+					<!-- exclude ES tests from test execution on Eclipse jenkins because of infrastructure issues -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<junitArtifactName>junit:junit</junitArtifactName>
+							<encoding>UTF-8</encoding>
+							<inputEncoding>UTF-8</inputEncoding>
+							<excludes>
+								<exclude>**/AllTests.java</exclude>
+								<exclude>**/*UITest.java</exclude>
+								<exclude>**/*BenchmarkTest.java</exclude>
+								<exclude>**/org/eclipse/vorto/repository/search/*.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>none</phase>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
