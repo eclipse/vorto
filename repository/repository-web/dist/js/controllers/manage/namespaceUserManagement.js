@@ -538,7 +538,9 @@ define(["../../init/appController"], function (repositoryControllers) {
             }
 
             $http.get(
-                "./rest/accounts/" + user.userId + "/" + user.authenticationProviderId)
+                "./rest/accounts/",
+                {params:{"username":user.userId,"authenticationProvider":user.authenticationProviderId}}
+            )
             .then(
                 function (result) {
                   callback({valid: true});
