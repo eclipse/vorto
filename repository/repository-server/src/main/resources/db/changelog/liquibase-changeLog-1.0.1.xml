@@ -29,7 +29,9 @@
 
   <changeSet id="change_comment_authorship" author="mena-bosch" dbms="mariadb, mysql">
     <preConditions onFail="CONTINUE">
-      <columnExists tableName="comment" columnName="author"/>
+      <not>
+        <columnExists tableName="comment" columnName="author_id"/>
+      </not>
     </preConditions>
     <sqlFile path="/db/changelog/scripts/change_comment_authorship.sql" dbms="mariadb,mysql"/>
   </changeSet>
