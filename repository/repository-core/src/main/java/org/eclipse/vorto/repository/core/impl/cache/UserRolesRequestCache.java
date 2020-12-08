@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.vorto.repository.core.impl.PrivilegedUserContextProvider;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
@@ -242,6 +243,9 @@ public class UserRolesRequestCache {
    * @return
    */
   public IUserRequestCache withUser(UserDto dto) throws DoesNotExistException {
+    if (PrivilegedUserContextProvider.isAnonymousSysadmin(dto)) {
+      return new NullUserRequestCache();
+    }
     // boilerplate null/empty validation
     ServiceValidationUtil.validateEmpties(dto.getUsername(), dto.getAuthenticationProvider());
     // searches for already cached users

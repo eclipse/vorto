@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -57,8 +55,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class UserService implements ApplicationEventPublisherAware {
-
-  private static final String USER_ADMIN = "Admin";
 
   private UserUtil userUtil;
 
@@ -265,7 +261,7 @@ public class UserService implements ApplicationEventPublisherAware {
     // the acting user as well if they are != target user, since that would imply acting user
     // is sysadmin
     IUserContext technicalUserContext = PrivilegedUserContextProvider
-        .systemAdminContext(USER_ADMIN);
+        .systemAdminContext(PrivilegedUserContextProvider.USER_ADMIN);
 
     result.forEach(
         model -> {

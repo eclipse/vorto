@@ -24,9 +24,11 @@ import org.springframework.security.core.Authentication;
  */
 public class AnonymousOAuthProvider implements IOAuthProvider {
 
+  public static final String ID = "n/a";
+
   @Override
   public String getId() {
-    return "";
+    return ID;
   }
 
   @Override
