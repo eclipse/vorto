@@ -331,7 +331,7 @@ public class NamespaceController {
       @ApiParam(value = "The name of the namespace to be created", required = true) final @PathVariable String namespace) {
 
     try {
-      namespaceService.create(namespace);
+        namespaceService.create(namespace);
       return new ResponseEntity<>(OperationResult.success(), HttpStatus.CREATED);
 
     } catch (DoesNotExistException | NameSyntaxException e) {
@@ -343,7 +343,7 @@ public class NamespaceController {
     }
     // omitting explicit collision message and just going with status here
     catch (CollisionException ce) {
-      return new ResponseEntity<>(OperationResult.failure(""), HttpStatus.CONFLICT);
+      return new ResponseEntity<>(OperationResult.failure("Cannot create this namespace"), HttpStatus.CONFLICT);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(OperationResult.failure(ofe.getMessage()),
           HttpStatus.FORBIDDEN);

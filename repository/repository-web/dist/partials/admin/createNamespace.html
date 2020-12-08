@@ -24,9 +24,9 @@
 		Official vendor namespaces are not meant for specific projects or personal use only.
 		 </div>
 	      <form name="namespaceForm" novalidate>
-	      	  <div class="row" ng-show="errorMessage !== ''">
-					<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
-			  </div>
+					<div class="row" ng-show="errorMessage !== null">
+						<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+			  	</div>
 			  <div class="form-group">
 				<label>Specify namespace</label>
 				<div class="input-group">
@@ -34,10 +34,11 @@
 					<input type="text" name="namespace" ng-pattern="/^(?!\d)\w+(\.(?!\d)\w+)*$/" ng-model="namespace.name" placeholder="{{user}}" class="form-control" required>
 				</div>
 				<div class="invalid-input" ng-show="namespaceForm.namespace.$error.pattern">Namespaces are made of alphanumeric sequences including underscores, optionally separated by dots. A segment cannot start with a digit.</div>
-			 </div>   
+			 </div>
 		</form>
 	</div>
-   <div class="modal-footer" style="margin-top: 90px;">       
+   <div class="modal-footer" style="margin-top: 90px;">
+
    	<button type="button" class="btn btn-default pull-right" ng-click="cancel()">Cancel</button>
 	<button class="btn btn-primary pull-right" type="button" ng-disabled="namespaceForm.$invalid || isCreatingOrUpdating" ng-click="createOrUpdateNamespace()">
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create</button>
