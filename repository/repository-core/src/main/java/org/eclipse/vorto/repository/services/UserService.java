@@ -173,19 +173,6 @@ public class UserService implements ApplicationEventPublisherAware {
       );
     }
 
-    // retrieving namespaces target manages
-    Collection<Namespace> namespacesManagedByTarget = userNamespaceRoleService
-        .getNamespacesAndRolesByUser(actor, target).entrySet().stream()
-        .filter(e -> e.getValue().contains(userNamespaceRoleService.namespaceAdminRole())).map(
-            Entry::getKey).collect(Collectors.toSet());
-
-    // target owns at least one namespace - failing
-    if (!namespacesManagedByTarget.isEmpty()) {
-      throw new OperationForbiddenException(
-          "User is administrator in at least one namespace. Ownership must change before user can be deleted. Aborting operation."
-      );
-    }
-
     // collecting target user's e-mail address if any
     DeleteAccountMessage message = null;
     if (target.hasEmailAddress()) {
@@ -309,7 +296,7 @@ public class UserService implements ApplicationEventPublisherAware {
 
     // and remove association for all namespaces
     for (Namespace namespace : namespacesWhereTargetHasAnyRole) {
-      userNamespaceRoleService.deleteAllRoles(actor, target, namespace, false);
+      userNamespaceRoleService.deleteAllRoles(actor, target, namespace, true);
     }
 
     // finally, delete target user

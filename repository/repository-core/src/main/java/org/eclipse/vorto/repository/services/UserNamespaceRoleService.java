@@ -608,13 +608,13 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
    * @param actor
    * @param target
    * @param namespace
-   * @param deleteNamespace
+   * @param deleteNamespaceOrUser
    * @return
    * @throws DoesNotExistException
    */
   @Transactional(rollbackOn = {DoesNotExistException.class, OperationForbiddenException.class})
   public boolean deleteAllRoles(User actor, User target, Namespace namespace,
-      boolean deleteNamespace)
+      boolean deleteNamespaceOrUser)
       throws DoesNotExistException, OperationForbiddenException {
     // boilerplate null validation
     ServiceValidationUtil.validate(actor, target, namespace);
@@ -629,7 +629,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
     // Actor can administrate namespace, but trying to remove themselves, not contextually to
     // deleting the whole namespace: forbidden
     if (hasRole(actor, namespace, namespaceAdminRole()) && actor.equals(target)
-        && !deleteNamespace) {
+        && !deleteNamespaceOrUser) {
       throw new OperationForbiddenException(
           String.format(
               "Acting user with namespace administrator role cannot remove themselves from namespace [%s].",
@@ -678,20 +678,20 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
   /**
    * @param targetDTO
-   * @param deleteNamespace
+   * @param deleteNamespaceOrUser
    * @return
    * @throws DoesNotExistException
    * @throws OperationForbiddenException
    * @see UserNamespaceRoleService#deleteAllRoles(User, User, Namespace, boolean)
    */
-  public boolean deleteAllRoles(UserDto targetDTO, String namespaceName, boolean deleteNamespace)
+  public boolean deleteAllRoles(UserDto targetDTO, String namespaceName, boolean deleteNamespaceOrUser)
       throws DoesNotExistException, OperationForbiddenException {
     LOGGER.debug("Retrieving users and namespace [{}].", namespaceName);
     User actor = cache.withSelf().getUser();
     User target = cache.withUser(targetDTO).getUser();
     Namespace namespace = namespaceRequestCache.namespace(namespaceName)
         .orElseThrow(() -> DoesNotExistException.withNamespace(namespaceName));
-    return deleteAllRoles(actor, target, namespace, deleteNamespace);
+    return deleteAllRoles(actor, target, namespace, deleteNamespaceOrUser);
   }
 
 
