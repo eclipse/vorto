@@ -266,10 +266,10 @@ define(["../../init/appController"], function (repositoryControllers) {
             dialog.setCallback("Confirm", function () {
               $http
               .delete("./rest/namespaces/" + $scope.namespace.name + "/users/",
-                  {
+                  {params: {
                     "username" : user.userId,
                     "authenticationProvider" : user.authenticationProviderId
-                  })
+                  }})
               .then(
                   function (result) {
                     $scope.initialize($scope.namespace.name);
@@ -395,14 +395,10 @@ define(["../../init/appController"], function (repositoryControllers) {
                       // adds display name and finds duplicate usernames / adds
                       // oauth provider id to display name
                       $scope.retrievedUsers.forEach(function(value, index, array) {
-                        // only suitable for 2+ element arrays
-                        if (array.length < 2) {
-                          return;
-                        }
                         // sets a display value as userId regardless
                         value.displayName = value.userId;
                         // decorates duplicates
-                        if (index > 0 && array[index - 1].userId == value.userId) {
+                        if (array.length > 1 && index > 0 && array[index - 1].userId == value.userId) {
                           value.displayName = value.userId + " ("
                               + value.authenticationProviderId + ")";
                           array[index - 1].displayName = array[index - 1].userId

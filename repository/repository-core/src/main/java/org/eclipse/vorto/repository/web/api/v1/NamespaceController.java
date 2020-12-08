@@ -67,6 +67,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -468,19 +469,24 @@ public class NamespaceController {
    * namespace or target user do not exist.
    *
    * @param namespace
-   * @param user
+   * @param username
+   * @param authenticationProvider
    * @return
    */
   @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace:.+}/users")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Boolean> removeUserFromNamespace(
       @ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-      @ApiParam(value = "user", required = true) @RequestBody UserDto user) {
+      @ApiParam(value = "username", required = true) @RequestParam String username,
+      @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider) {
 
     try {
       return new ResponseEntity<>(
-          userNamespaceRoleService.deleteAllRoles(user, namespace, false),
-          HttpStatus.OK);
+          userNamespaceRoleService.deleteAllRoles(
+              UserDto.of(username, authenticationProvider), namespace, false
+          ),
+          HttpStatus.OK
+      );
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     } catch (DoesNotExistException dnee) {

@@ -425,10 +425,8 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             delete("/rest/namespaces/myAdminNamespace/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(
-                    UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB)
-                ))
+                .param("username", USER_MODEL_CREATOR_NAME)
+                .param("authenticationProvider", GITHUB)
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -454,8 +452,8 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             delete("/rest/namespaces/myAdminNamespace/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB)))
+                .param("username", USER_MODEL_CREATOR_NAME)
+                .param("authenticationProvider", GITHUB)
                 .with(userSysadmin)
         )
         .andExpect(status().isOk())
@@ -520,10 +518,8 @@ public class NamespaceControllerIntegrationTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             delete("/rest/namespaces/myAdminNamespace/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(
-                    UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB))
-                )
+                .param("username", USER_MODEL_CREATOR_NAME)
+                .param("authenticationProvider", GITHUB)
                 .with(thirdUser)
         )
         .andExpect(status().isForbidden());

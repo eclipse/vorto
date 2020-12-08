@@ -303,8 +303,8 @@ public class CommentControllerTest extends IntegrationTestBase {
     repositoryServer
         .perform(
             delete(String.format("/rest/namespaces/%s/users", userCreatorModel.getNamespace()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB)))
+                .param("username", USER_MODEL_CREATOR_NAME_2)
+                .param("authenticationProvider", GITHUB)
                 .with(userModelCreator)
         )
         .andExpect(status().isOk());
