@@ -64,14 +64,14 @@ Now you need to define an instance of the function within **functionblocks**. Th
  
 
 ### Step 4: Import the Model into the Vorto Repository
-You can now import your *Informationmodel* into the [Vorto Repository](https://vorto.eclipse.org) where you can manage your models and release it to the community.
+You can now import your *Informationmodel* into the [Vorto Repository](https://vorto.eclipseprojects.io) where you can manage your models and release it to the community.
 To do that, you need to export your project as a **General Archive File**.
 
 <img src="../images/tutorials/describe_device_eclipseide/export.png"/>
 
 <img src="../images/tutorials/describe_device_eclipseide/export_2.png"/>
 
-Log into the [Eclipse Vorto Repository](https://vorto.eclipse.org) with your BoschID or GitHub account and [**Import** the zip-file](../../repository/docs/import_model.md).
+Log into the [Eclipse Vorto Repository](https://vorto.eclipseprojects.io) with your BoschID or GitHub account and [**Import** the zip-file](../../repository/docs/import_model.md).
 
 
 ## What's Next?

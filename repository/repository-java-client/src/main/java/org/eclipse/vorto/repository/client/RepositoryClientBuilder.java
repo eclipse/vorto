@@ -31,7 +31,7 @@ import org.eclipse.vorto.repository.client.impl.DefaultRepositoryClient;
 
 public class RepositoryClientBuilder {
 
-	private String baseUrl = "http://vorto.eclipse.org";
+	private String baseUrl = "https://vorto.eclipseprojects.io";
 	private String proxyHost;
 	private int proxyPort = 8080;
 	private String tenantId = null;

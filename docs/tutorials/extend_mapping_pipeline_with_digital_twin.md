@@ -29,7 +29,7 @@ In the previous tutorial we subscribed to the Bosch IoT Hub service from [bosch-
 
 For Bosch IoT Things to create a digital twin for our devices we need to register our devices. This can be done easily by following three steps:
 
-1. Generate the device provisioning postman scripts using the Bosch IoT Suite generator from [Eclipse Vorto Repository](https://vorto.eclipse.org/).
+1. Generate the device provisioning postman scripts using the Bosch IoT Suite generator from [Eclipse Vorto Repository](https://vorto.eclipseprojects.io/).
 
 2. Import the generated file in postman and navigate to the request body. Copy only the *things* part of the body payload.
 	

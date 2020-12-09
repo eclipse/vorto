@@ -9,7 +9,7 @@ The OpenAPI Generator currently supports the following Digital Twin Service:
 ## Bosch IoT Things (Eclipse Ditto)
 
 Here is an example rendered OpenAPI/Swagger documentation for a [Raspberry Pi Vorto Model]
-(https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0): 
+(https://vorto.eclipseprojects.io/#/details/org.eclipse.vorto.tutorials:RaspberryPi:1.0.0): 
 
 <img alt="Bosch IoT Things REST API of Raspberry Pi" src="../../docs/images/tutorials/create_openapi/openAPI_view.png" width="70%"/>
 

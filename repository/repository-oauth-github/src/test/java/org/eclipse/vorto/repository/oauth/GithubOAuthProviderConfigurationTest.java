@@ -31,19 +31,19 @@ public class GithubOAuthProviderConfigurationTest {
     @Test
     public void contextStringTestSlash() {
         when(mockRequest.getRequestURI()).thenReturn("/");
-        when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://vorto.eclipse.org"));
+        when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://vorto.eclipseprojects.io"));
         GithubOAuthProviderConfiguration configuration = new GithubOAuthProviderConfiguration(null, null, "/");
         String result = configuration.getLogoutUrl(mockRequest);
-        assertEquals("https://vorto.eclipse.org/logout", result);
+        assertEquals("https://vorto.eclipseprojects.io/logout", result);
     }
 
     @Test
     public void contextStringTestRepository() {
         when(mockRequest.getRequestURI()).thenReturn("/repository");
-        when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://vorto.eclipse.org/repository"));
+        when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://vorto.eclipseprojects.io/repository"));
         GithubOAuthProviderConfiguration configuration = new GithubOAuthProviderConfiguration(null, null, "/repository");
         String result = configuration.getLogoutUrl(mockRequest);
-        assertEquals("https://vorto.eclipse.org/repository/logout", result);
+        assertEquals("https://vorto.eclipseprojects.io/repository/logout", result);
     }
 
 }

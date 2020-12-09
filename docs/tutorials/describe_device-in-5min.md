@@ -14,7 +14,7 @@ Let's get started.
 
 ## Steps to follow
 
-1. Log in to [Vorto Repository](https://vorto.eclipse.org) with your BoschID or Github Account
+1. Log in to [Vorto Repository](https://vorto.eclipseprojects.io) with your BoschID or Github Account
 
 2. Select **Create model** 
 

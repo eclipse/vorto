@@ -20,7 +20,7 @@
 # EMAIL -  Email to sent for alerts
 
 URLS=urls.lst
-GEN_URL=http://vorto.eclipse.org/repo/rest/generation-router/platform
+GEN_URL=https://vorto.eclipseprojects.io/repo/rest/generation-router/platform
 EMAIL=vorto-dev@eclipse.org
 
 

@@ -1,7 +1,7 @@
-https://vorto.eclipse.org
-http://vorto.eclipse.org
-https://vorto.eclipse.org:8080
-http://vorto.eclipse.org:8888
+https://vorto.eclipseprojects.io
+https://vorto.eclipseprojects.io
+https://vorto.eclipseprojects.io:8080
+https://vorto.eclipseprojects.io:8888
 https://localhost
 http://localhost
 https://localhost:8080

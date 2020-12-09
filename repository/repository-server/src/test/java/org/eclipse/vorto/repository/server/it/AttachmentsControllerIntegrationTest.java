@@ -57,7 +57,7 @@ public class AttachmentsControllerIntegrationTest extends IntegrationTestBase {
   @Test
   public void testAttachingLink() throws Exception {
       List<ModelLink> expectedResult = new ArrayList<>();
-      ModelLink url = new ModelLink("https://vorto.eclipse.org", "A link");
+      ModelLink url = new ModelLink("https://vorto.eclipseprojects.io", "A link");
       ModelLink url2 = new ModelLink("https://vorto-dev.eclipse.org", "Another link");
       setPublic(testModel.prettyName);
       addLink(testModel.prettyName, userModelCreator, url).andExpect(status().isOk());

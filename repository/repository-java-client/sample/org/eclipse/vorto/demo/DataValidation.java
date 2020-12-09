@@ -44,7 +44,7 @@ public class DataValidation {
 
 	private static final String GENERATOR_KEY = "eclipseditto";
 
-	private static final String PUBLIC_ECLIPSE_REPO_URL = "http://vorto.eclipse.org";
+	private static final String PUBLIC_ECLIPSE_REPO_URL = "https://vorto.eclipseprojects.io";
 
 	private static final IModelGeneration repoClient = getGenerationClient();
 	

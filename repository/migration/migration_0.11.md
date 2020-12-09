@@ -32,7 +32,7 @@ The new repository is hosted in AWS Cloud (region Frankfurt). It helps us to red
 
 	<img src="../docs/images/migrate_model/download_model.png" alt="download model" height="65%" width="65%"/>
 
-4. Log in to new [Vorto Repository](https://vorto.eclipse.org)
+4. Log in to new [Vorto Repository](https://vorto.eclipseprojects.io)
 
 5. [Create and manage Namespace](../../docs/tutorials/managing_namespaces.md), by default all new namespaces will be prefixed with *vorto.private*. To claim for an official namespace, [reach out to the Vorto Team](mailto:vorto-development@bosch-si.com?Subject=Request%20Vorto%20Repository%20Namespace&amp;body=Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20).
 
