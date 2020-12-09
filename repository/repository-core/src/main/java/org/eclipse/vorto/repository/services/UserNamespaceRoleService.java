@@ -806,7 +806,7 @@ public class UserNamespaceRoleService implements ApplicationEventPublisherAware 
 
     // not cached
     TreeMap<User, Collection<IRole>> result = new TreeMap<>(
-        Comparator.comparing(User::getUsername));
+        Comparator.comparing(User::getUsername).thenComparing(User::getAuthenticationProviderId));
     userNamespaceRoleRepository.findAllByNamespace(namespace)
         .forEach(unr -> result.put(unr.getUser(), roleUtil.toNamespaceRoles(unr.getRoles())));
     return result;
