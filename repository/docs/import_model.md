@@ -10,7 +10,7 @@ If you had created an external / 3rd party tool to create Vorto Models, you can 
 
 ## Steps to Import any type of model
 
-**1.** Log in to the [Vorto Repository](https://vorto.eclipse.org)
+**1.** Log in to the [Vorto Repository](https://vorto.eclipseprojects.io)
 
 **2.** [Create and manage Namespace](../../docs/tutorials/managing_namespaces.md), by default all new namespaces will be prefixed with *vorto.private*. To claim for an official namespace, [reach out to the Vorto Team](../../docs/tutorials/managing_namespaces.md#claiming-an-official-namespace).
 

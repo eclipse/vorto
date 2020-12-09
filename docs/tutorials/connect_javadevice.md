@@ -1,7 +1,7 @@
 # Integrating a Java - based Device with the Bosch IoT Suite using Vorto
 
 This tutorial explains how to integrate a device with the Bosch IoT Suite using Java and Maven. Your device should already be created as a thing from an Information Model at this point.   
-We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
+We will use this [Distance Sensor VIM](https://vorto.eclipseprojects.io/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
 
 <img src="../images/tutorials/connect_java/cover.png"/>
 
@@ -26,7 +26,7 @@ We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.e
 
 ## Download the generated integration script
 
-**1.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+**1.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipseprojects.io/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
 <img src="../images/tutorials/create_thing/code_generators.png" />
 
 **2.** We want to integrate a device using Java. Click the `Source Code` button to download the generated Java project.

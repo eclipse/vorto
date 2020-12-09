@@ -20,12 +20,12 @@ The following curl commands show, how you can invoke the Eclipse Hono Generator 
 
 Generate for Arduino platform:
 
-	curl -GET https://vorto.eclipse.org/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=arduino
+	curl -GET https://vorto.eclipseprojects.io/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=arduino
 
 Generate for Python platform:
 
-	curl -GET https://vorto.eclipse.org/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=python
+	curl -GET https://vorto.eclipseprojects.io/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=python
 
 Generate for Java platform:
 
-	curl -GET https://vorto.eclipse.org/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=java
+	curl -GET https://vorto.eclipseprojects.io/api/v1/generators/eclipsehono/models/com.ipso.smartobjects.Load_Control:1.1.0?language=java

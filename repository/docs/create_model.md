@@ -19,7 +19,7 @@ This section would lead you through the various ways to create a new model, say 
 
 Here we will be seeing the steps to create models through the _Web Editor_
 
-1. Log in to [Vorto Repository](http://vorto.eclipse.org) using either your BoschID or GitHub Account
+1. Log in to [Vorto Repository](https://vorto.eclipseprojects.io) using either your BoschID or GitHub Account
 
 2. Click on **create new model**
 

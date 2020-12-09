@@ -11,7 +11,7 @@ The following Code Generators are currently supported:
 
 Invoke Generator via Curl:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/[Key]/models/[Model ID]
+	curl -GET https://vorto.eclipseprojects.io/api/v1/generators/[Key]/models/[Model ID]
 
 
 ## Test the Generators locally

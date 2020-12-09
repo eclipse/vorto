@@ -52,7 +52,7 @@ class OpenAPITemplate implements IFileTemplate<InformationModel> {
 		  description: |-
 		    Bosch IoT Things enables applications to manage digital twins of IoT device assets in a simple, convenient, robust, and secure way.
 		    
-		    These descriptions focus on the JSON-based, REST-like API of the <a href="https://vorto.eclipse.org/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name»</a> Vorto Model.
+		    These descriptions focus on the JSON-based, REST-like API of the <a href="https://vorto.eclipseprojects.io/#/details/«infomodel.namespace»:«infomodel.name»:«infomodel.version»">«infomodel.name»</a> Vorto Model.
 		    
 		    For more details on concepts, please consult the full [documentation](https://things.eu-1.bosch-iot-suite.com/dokuwiki/).
 		  version: "«infomodel.version»"

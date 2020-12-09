@@ -127,7 +127,7 @@ In this step, we are going to use [Eclipse Vorto](https://www.eclipse.org/vorto)
 
 As in traditional Software Design, we need to first think about the interfaces of the system as well as the data structures that are exchanged between devices and the IoT solution. Vorto provides a web-based tooling, that let's you easily define interfaces, so called Function Blocks. In our case, we are going to create a Geolocation Function Block: 
 
-1. Login to the [Vorto Repository](https://vorto.eclipse.org) with your Bosch ID or Github ID account.
+1. Login to the [Vorto Repository](https://vorto.eclipseprojects.io) with your Bosch ID or Github ID account.
 2. In order to start creating models, you need to first [create your own namespace](managing_namespaces.md). Skip this step, if you already own a namespace
 3. Click `Explore` in the menu and then click `Create Model` 
 4. Choose `Function Blocks` and work yourself through the wizard by giving it the name `Geolocation` and version `1.0.0`. Confirm to create the model. This will take you directly to the newly created Function Block where you can start defining the functionality of the model in the web-based editor:

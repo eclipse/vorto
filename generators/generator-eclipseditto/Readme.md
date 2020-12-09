@@ -18,8 +18,8 @@ The following curl commands show, how you can invoke the Eclipse Ditto Generator
 
 JSON Schema:
 
-	curl -GET https://vorto.eclipse.org/api/v1/generators/eclipseditto/models/com.ipso.smartobjects.Load_Control:1.1.0?target=jsonSchema
+	curl -GET https://vorto.eclipseprojects.io/api/v1/generators/eclipseditto/models/com.ipso.smartobjects.Load_Control:1.1.0?target=jsonSchema
 
 Thing JSON: 
 
-    curl -GET https://vorto.eclipse.org/api/v1/generators/eclipseditto/models/com.ipso.smartobjects.Load_Control:1.1.0?target=thingJson
+    curl -GET https://vorto.eclipseprojects.io/api/v1/generators/eclipseditto/models/com.ipso.smartobjects.Load_Control:1.1.0?target=thingJson

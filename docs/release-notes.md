@@ -202,7 +202,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 - Log-in with Github and Bosch ID OAuth Provider
 - Many stabilization and performance fixes
 
-[Click here](https://vorto.eclipse.org) and start using the new official Eclipse Vorto Repository.
+[Click here](https://vorto.eclipseprojects.io) and start using the new official Eclipse Vorto Repository.
 
 **Device Integration Features**
 
@@ -252,7 +252,7 @@ Please refer to our [Getting started guide](https://github.com/eclipse/vorto/blo
 - Various UX Improvements
 - Many stabilization and performance fixes
 
-[Click here](https://vorto.eclipse.org) to try out the Eclipse Vorto Repository with all its new features.
+[Click here](https://vorto.eclipseprojects.io) to try out the Eclipse Vorto Repository with all its new features.
 
 **Device Integration Features**
 

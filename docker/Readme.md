@@ -75,7 +75,7 @@ Generators using APIv2 are registered via a base64 encoded string, containing a 
 
 The generator might be provided via AWS, Docker or anything else you can imagine.
 
-Some plugins that are also used on [vorto.eclipse.org](https://vorto.eclipse.org) can be found under `/repository/repository-server/target/classes/application-local-https.yml`.
+Some plugins that are also used on [vorto.eclipseprojects.io](https://vorto.eclipseprojects.io) can be found under `/repository/repository-server/target/classes/application-local-https.yml`.
 
 ## Configuration environment variables
 

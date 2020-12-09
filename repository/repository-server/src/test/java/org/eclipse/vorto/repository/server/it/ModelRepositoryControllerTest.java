@@ -521,7 +521,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     String streetLampModelID = String.format(idFormat, namespace, streetLampModelName, version);
     String streetLampFileName = streetLampModelName.concat(".infomodel");
     String streetLampAttachmentFileName = "StreetLampAttachment.json";
-    String streetLampLinkURL = "https://vorto.eclipse.org/";
+    String streetLampLinkURL = "https://vorto.eclipseprojects.io/";
     String streetLampLinkName = "Vorto";
 
     // creates the namespace as sysadmin

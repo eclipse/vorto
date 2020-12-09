@@ -89,7 +89,7 @@ This reflects the common "in-Vorto" usage of the form.
 ### Standalone view without parameters
 
 - This mode is virtually identical to the modal mode in terms of functionality and UI. 
-- The only notable difference is that instead of navigating to the form from Vorto's navigation bar, you can access it in a standalone page at https://vorto.eclipse.org/#/requestAccessToNamespace
+- The only notable difference is that instead of navigating to the form from Vorto's navigation bar, you can access it in a standalone page at https://vorto.eclipseprojects.io/#/requestAccessToNamespace
 - However, there is a far more interesting usage of the standalone form - see below.
 
 ### Standalone view with parameters
