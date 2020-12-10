@@ -134,6 +134,8 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class UserRolesRequestCache {
 
+  private static final NullUserRequestCache NULL_USER_REQUEST_CACHE = new NullUserRequestCache();
+
   private IOAuthProviderRegistry registry;
 
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
@@ -167,7 +169,7 @@ public class UserRolesRequestCache {
    */
   public IUserRequestCache withUser(User user) {
     if (null == user) {
-      return new NullUserRequestCache();
+      return NULL_USER_REQUEST_CACHE;
     }
     cache.putIfAbsent(user,
         new UserRequestCache(userNamespaceRoleRepository, userRepositoryRoleRepository, user));
@@ -224,7 +226,7 @@ public class UserRolesRequestCache {
           user
       );
       if (null == userCache.getUser()) {
-        return new NullUserRequestCache();
+        return NULL_USER_REQUEST_CACHE;
       }
       else {
         cache.putIfAbsent(userCache.getUser(), userCache);
@@ -243,7 +245,7 @@ public class UserRolesRequestCache {
    */
   public IUserRequestCache withUser(UserDto dto) throws DoesNotExistException {
     if (UserDto.isAnonymous(dto)) {
-      return new NullUserRequestCache();
+      return NULL_USER_REQUEST_CACHE;
     }
     // boilerplate null/empty validation
     ServiceValidationUtil.validateEmpties(dto.getUsername(), dto.getAuthenticationProvider());
@@ -277,7 +279,7 @@ public class UserRolesRequestCache {
       );
       // user cannot be resolved - returns pseudo-cache
       if (null == userCache.getUser()) {
-        return new NullUserRequestCache();
+        return NULL_USER_REQUEST_CACHE;
       }
       // user resolved - caching
       else {
