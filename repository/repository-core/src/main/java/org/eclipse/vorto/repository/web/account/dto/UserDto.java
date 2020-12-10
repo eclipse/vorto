@@ -12,16 +12,20 @@
  */
 package org.eclipse.vorto.repository.web.account.dto;
 
+import static org.eclipse.vorto.repository.core.impl.PrivilegedUserContextProvider.USER_ADMIN;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Strings;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.oauth.AnonymousOAuthProvider;
 
 public class UserDto {
 
   public static final UserDto ANONYMOUS = UserDto.of("anonymous", "n/a");
+  public static final String ANONYMOUS_USERNAME_PATTERN = "(?i)anonymous(user)?";
   public static final String UNAMBIGUOUS_USERNAME_FORMAT = "%s (%s)";
 
   private String username;
@@ -220,6 +224,23 @@ public class UserDto {
   @JsonIgnore
   public boolean isBasicUserInfoValid() {
     return !Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(authenticationProvider);
+  }
+
+  /**
+   *
+   * @param user
+   * @return whether a given {@link UserDto} is meant to represent an anonymous user, including a privileged anonymous admin.
+   */
+  public static final boolean isAnonymous(UserDto user) {
+    return null == user ||
+        (
+            (
+                user.getUsername().matches(ANONYMOUS_USERNAME_PATTERN) ||
+                    user.getUsername().equals(USER_ADMIN)
+            )
+                &&
+            user.getAuthenticationProvider().equals(AnonymousOAuthProvider.ID)
+        );
   }
 
   @Override

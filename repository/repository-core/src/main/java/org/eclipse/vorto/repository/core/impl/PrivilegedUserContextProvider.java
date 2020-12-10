@@ -55,6 +55,12 @@ public class PrivilegedUserContextProvider {
     return new UsernamePasswordAuthenticationToken(username, username, authorities);
   }
 
+  /**
+   *
+   * @param user
+   * @return whether the user is an anonymous administrator (created on demand e.g. to anonymize another user's models).
+   * @see UserDto#isAnonymous(UserDto) for a complete check of all anonymous user combinations.
+   */
   public static boolean isAnonymousSysadmin(UserDto user) {
     return user.getUsername().equals(USER_ADMIN) && user.getAuthenticationProviderId().equals(
         AnonymousOAuthProvider.ID);
