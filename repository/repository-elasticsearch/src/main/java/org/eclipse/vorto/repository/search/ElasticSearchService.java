@@ -666,7 +666,14 @@ public class ElasticSearchService implements IIndexingService, ISearchService {
   }
 
   private Collection<String> findWorkspaceIdsForUser(Authentication auth) {
-    if (UserContext.isAnonymous(auth.getName())) {
+    if (
+        UserDto.isAnonymous(
+            UserDto.of(
+                auth.getName(),
+                registry.getByAuthentication(auth).getId()
+            )
+        )
+    ) {
       return Collections.emptyList();
     }
     else if (UserContext.isSysAdmin(auth)) {

@@ -71,7 +71,7 @@ public class UserRepositoryRoleService {
       return isSysadmin(cache.withUser(dto).getUser());
     }
     catch (DoesNotExistException dnee) {
-      LOGGER.warn("Could not resolve user", dnee);
+      LOGGER.warn("Could not resolve user. Ignore if new user signing up.", dnee);
       return false;
     }
   }

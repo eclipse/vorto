@@ -421,7 +421,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
    */
   private Collection<IRole> getUserRoles(String workspaceId, UserDto targetUser) {
 
-    if (UserContext.isAnonymous(targetUser.getUsername())) {
+    if (UserDto.isAnonymous(targetUser)) {
       return new HashSet<>();
     }
     try {
@@ -458,7 +458,7 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory,
   }
 
   private Supplier<Collection<String>> getMatchingWorkspaceIdSupplier(UserDto user) {
-    if (!UserContext.isAnonymous(user.getUsername()) && userRepositoryRoleService.isSysadmin(user)) {
+    if (!UserDto.isAnonymous(user) && userRepositoryRoleService.isSysadmin(user)) {
       return allWorkspaceIdSupplier;
     }
     return visibleWorkspaceIdSupplier;
