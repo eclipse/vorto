@@ -520,9 +520,7 @@
 										<div class="vorto-chat-msg" ng-repeat="comment in comments">
 											<div class='vorto-chat-info clearfix'>
 												<span class='vorto-chat-name pull-left' ng-show="comment.firstname == null || comment.lastname == null">
-													{{comment.author}} </span>
-												<span class='vorto-chat-name pull-left' ng-show="comment.firstname != '' && comment.lastname != ''">
-													{{comment.firstname}} {{comment.lastname}} </span>
+													{{comment.author.username}} </span>
 												<span class='vorto-chat-timestamp pull-right'>
 													<i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}} (server time)
 												</span>

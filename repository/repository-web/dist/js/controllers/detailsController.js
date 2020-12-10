@@ -318,7 +318,10 @@ define(["../init/appController"], function (repositoryControllers) {
 
             var comment = {
               "modelId": $scope.modelId,
-              "author": $scope.user,
+              "author": {
+                "username": $rootScope.userInfo.name,
+                "authenticationProvider": $rootScope.userInfo.provider.id
+              },
               "date": $scope.date,
               "content": $scope.newComment.value
             };
