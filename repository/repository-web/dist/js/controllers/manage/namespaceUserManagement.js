@@ -470,10 +470,12 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.user.userId = $scope.selectedUser.userId;
               $scope.user.authenticationProviderId = $scope.selectedUser.authenticationProviderId;
             }
-            // creating on the fly through popup
-            else {
+            // creating on the fly through popup - checking first that the
+            // user has not already been built by query parametrization
+            else if (!$scope.user || !$scope.user.userId) {
               $scope.user.userId = $scope.userPartial;
             }
+
             $scope.validate($scope.user, function (result) {
               if (result.valid) {
                 $scope.isCurrentlyAddingOrUpdating = false;
