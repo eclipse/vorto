@@ -470,6 +470,10 @@ define(["../../init/appController"], function (repositoryControllers) {
               $scope.user.userId = $scope.selectedUser.userId;
               $scope.user.authenticationProviderId = $scope.selectedUser.authenticationProviderId;
             }
+            // creating on the fly through popup
+            else {
+              $scope.user.userId = $scope.userPartial;
+            }
             $scope.validate($scope.user, function (result) {
               if (result.valid) {
                 $scope.isCurrentlyAddingOrUpdating = false;
@@ -535,7 +539,9 @@ define(["../../init/appController"], function (repositoryControllers) {
 
             $http.get(
                 "./rest/accounts/",
-                {params:{"username":user.userId,"authenticationProvider":user.authenticationProviderId}}
+                // authentication provider can be undefined when attempting to
+                // resolve a non-existing user
+                {params:{"username":user.userId,"authenticationProvider":user.authenticationProviderId || ""}}
             )
             .then(
                 function (result) {

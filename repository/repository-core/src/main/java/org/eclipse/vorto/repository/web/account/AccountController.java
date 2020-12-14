@@ -120,7 +120,7 @@ public class AccountController {
     User result;
     // handling legacy case where authenticationProvider param provided empty/null
     if (Strings.isNullOrEmpty(authenticationProvider)) {
-      result = accountService.getUser(username).get();
+      result = accountService.getUser(username).orElse(null);
     }
     // both provided - safest usage
     else {
