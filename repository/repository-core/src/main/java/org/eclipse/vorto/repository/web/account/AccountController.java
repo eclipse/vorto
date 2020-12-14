@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
+import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -116,7 +117,15 @@ public class AccountController {
       @ApiParam(value = "username", required = true) @RequestParam String username,
       @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider
   ) {
-    User result = accountService.getUser(UserDto.of(username, authenticationProvider));
+    User result;
+    // handling legacy case where authenticationProvider param provided empty/null
+    if (Strings.isNullOrEmpty(authenticationProvider)) {
+      result = accountService.getUser(username).get();
+    }
+    // both provided - safest usage
+    else {
+      result = accountService.getUser(UserDto.of(username, authenticationProvider));
+    }
     if (Objects.isNull(result)) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }

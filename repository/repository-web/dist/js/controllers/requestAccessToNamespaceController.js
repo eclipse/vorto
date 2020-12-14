@@ -129,8 +129,8 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.consumeParametrization = function() {
             // initializes scope fields if applicable
             if ($scope.parametrized) {
-              $scope.paramUserId = $routeParams.userId;
-              $scope.paramOauthProvider = $routeParams.oauthProvider;
+              $scope.paramUserId = $routeParams.userId || $routeParams.username;
+              $scope.paramOauthProvider = $routeParams.oauthProvider || $routeParams.authenticationProvider || $routeParams.authenticationProviderId;
               $scope.paramClientName = $routeParams.clientName;
               $scope.paramSubject = $routeParams.subject;
               // checks if namespace specified
@@ -157,7 +157,7 @@ define(["../init/appController"], function (repositoryControllers) {
            */
           $scope.loadUserData = function () {
             $scope.isLoadingUserData = true;
-            $http.get("./rest/accounts", {params:{"username":$scope.paramUserId,"authenticationProvider":$scope.paramOauthProvider}})
+            $http.get("./rest/accounts", {params:{"username":$scope.paramUserId,"authenticationProvider":$scope.paramOauthProvider || ""}})
             .then(
                 function (result) {
                   // builds tech user data from result
