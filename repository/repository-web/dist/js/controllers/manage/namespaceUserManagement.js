@@ -44,7 +44,7 @@ define(["../../init/appController"], function (repositoryControllers) {
            data.
            */
           $scope.targetUsername = $routeParams.targetUsername || $routeParams.targetUser;
-          $scope.targetUserOAuthProvider = $routeParams.targetUserOAuthProvider;
+          $scope.targetUserOAuthProvider = $routeParams.targetUserOAuthProvider || $routeParams.targetOAuthProvider || $routeParams.targetAuthenticationProvider;
           // will be constructed based on retrieval of targetUser... in namespace
           // collaborators if present, or by calling the back-end otherwise
           $scope.targetUser = null;
@@ -134,8 +134,8 @@ define(["../../init/appController"], function (repositoryControllers) {
                         $scope.editableUser($scope.targetUser));
                   }
                   // need to load the user from the back-end
-                  else if ($scope.targetUsername && $scope.targetUserOAuthProvider) {
-                    $http.get("./rest/accounts", {params:{"username":$scope.targetUsername,"authenticationProvider":$scope.targetUserOAuthProvider}})
+                  else if ($scope.targetUsername) {
+                    $http.get("./rest/accounts", {params:{"username":$scope.targetUsername,"authenticationProvider":$scope.targetUserOAuthProvider || ""}})
                     .then(
                         function (result) {
                           $scope.targetUser = result.data;
