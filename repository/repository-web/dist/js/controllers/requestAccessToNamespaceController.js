@@ -441,6 +441,10 @@ define(["../init/appController"], function (repositoryControllers) {
             if (user) {
               $scope.selectedUser = user;
               $scope.selectedSubject = user.subject;
+              // populating display name if not present
+              if (!$scope.selectedUser.displayName) {
+                $scope.selectedUser.displayName = $scope.selectedUser.userId;
+              }
               document.getElementById(
                   'userId').value = $scope.selectedUser.displayName;
             }
@@ -491,7 +495,8 @@ define(["../init/appController"], function (repositoryControllers) {
             modalInstance.result.then(
                 function (result) {
                   $scope.selectUser(result);
-                }
+                },
+                function() {}
             );
 
           }
