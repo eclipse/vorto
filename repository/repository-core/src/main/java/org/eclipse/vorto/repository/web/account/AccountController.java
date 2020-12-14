@@ -301,7 +301,7 @@ public class AccountController {
   }
 
   @PutMapping("/rest/accounts")
-  @PreAuthorize("hasAuthority('sysadmin') or #username == authentication.name")
+  @PreAuthorize("hasAuthority('sysadmin') or #user.username == authentication.name")
   public ResponseEntity<UserDto> updateAccount(@RequestBody UserDto user) {
     User account = accountService.getUser(user);
     if (account == null) {
