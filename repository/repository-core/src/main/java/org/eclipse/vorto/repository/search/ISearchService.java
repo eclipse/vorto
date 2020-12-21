@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.search;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.springframework.security.core.Authentication;
 
 public interface ISearchService {
 
@@ -27,11 +28,21 @@ public interface ISearchService {
   List<ModelInfo> search(String expression);
   
   /**
-   * Searches all public models or models for which the calling user is member/collaborator of, but uses the
-   * user context of @userContext
+   * Searches all public models or models for which the calling user is member/collaborator of,
+   * with the given {@link IUserContext}'s {@link Authentication}.
    * @param searchExpression The search expression
    * @param userContext The user context with which to execute this query
    * @return
    */
   List<ModelInfo> search(String searchExpression, IUserContext userContext);
+
+  /**
+   * Searches all public models or models for which the calling user is member/collaborator of,
+   * with the given {@link Authentication}.
+   *
+   * @param searchExpression
+   * @param auth
+   * @return
+   */
+  List<ModelInfo> search(String searchExpression, Authentication auth);
 }

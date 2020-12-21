@@ -36,7 +36,7 @@ public class HasRoleCondition extends AbstractWorkflowCondition {
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
-    User foundUser = userAccountService.getUser(user.getUsername());
+    User foundUser = userAccountService.getUser(user);
     return Objects.nonNull(foundUser) && hasRole(user, foundUser, roleSupplier.get());
   }
 

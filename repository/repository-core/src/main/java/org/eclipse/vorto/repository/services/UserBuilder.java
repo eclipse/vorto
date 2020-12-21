@@ -54,10 +54,11 @@ public class UserBuilder {
 
   public UserBuilder withAuthenticationProviderID(String authenticationProviderID)
       throws InvalidUserException {
+    String convertedID = UserUtil.convertLegacyBoschOAuthProviderID(authenticationProviderID);
     if (userUtil != null) {
-      userUtil.validateAuthenticationProviderID(authenticationProviderID);
+      userUtil.validateAuthenticationProviderID(convertedID);
     }
-    user.setAuthenticationProviderId(authenticationProviderID);
+    user.setAuthenticationProviderId(convertedID);
     return this;
   }
 

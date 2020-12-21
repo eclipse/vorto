@@ -12,8 +12,16 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.domain.User;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import org.eclipse.vorto.repository.repositories.UserRepository;
+import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +31,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest {
@@ -40,14 +44,14 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
     private BoschIoTSuiteOAuthProviderConfiguration configuration;
 
     @Mock
-    private DefaultUserAccountService userAccountService;
+    private UserRepository userRepository;
 
     @Mock
     private UserNamespaceRoleService userNamespaceRoleService;
 
     @Before
     public void instantiate() {
-        sut = new BoschIoTSuiteOAuthProviderAuthCode(CLIENT_ID, publicKey(), configuration, userAccountService, userNamespaceRoleService);
+        sut = new BoschIoTSuiteOAuthProviderAuthCode(CLIENT_ID, publicKey(), configuration, userRepository, userNamespaceRoleService);
     }
 
     @Test
@@ -76,7 +80,7 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
 
     @Test
     public void authenticateUserNotFoundTest() {
-        when(userAccountService.getUser(any())).thenReturn(null);
+        when(userRepository.findByUsernameAndAuthenticationProviderId(anyString(), anyString())).thenReturn(Optional.ofNullable(null));
         assertNull(sut.authenticate(null, TOKEN));
     }
 
@@ -88,7 +92,19 @@ public class BoschIoTSuiteOAuthProviderAuthCodeTest extends AbstractVerifierTest
 
     @Test
     public void authenticateSuccessTest() {
-        when(userAccountService.getUser(any())).thenReturn(new User());
+        when(
+            userRepository.findByUsernameAndAuthenticationProviderId(anyString(), eq(BoschIDOAuthProvider.ID))
+        )
+            .thenAnswer(
+                a ->
+
+                    Optional.of(
+                        new UserBuilder()
+                            .withName(a.getArguments()[0].toString())
+                            .withAuthenticationProviderID(BoschIDOAuthProvider.ID)
+                            .build()
+                    )
+            );
         Authentication authentication = sut.authenticate(null, TOKEN);
         assertTrue(authentication.isAuthenticated());
     }

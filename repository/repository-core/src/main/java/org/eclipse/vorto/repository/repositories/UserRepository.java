@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.repositories;
 
 import java.util.Collection;
+import java.util.Optional;
 import org.eclipse.vorto.repository.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -25,12 +26,26 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
   /**
-   * Finds the user by the specified username
+   * Finds the user by the specified username and authentication provider ID
    * 
    * @param username
    * @return
    */
-  User findByUsername(String username);
+  Optional<User> findByUsernameAndAuthenticationProviderId(String username, String authenticationProviderID);
+
+  /**
+   *
+   * @param id
+   * @return
+   */
+  Optional<User> findById(long id);
+
+  /**
+   * Finds all users with the specified username
+   * @param username
+   * @return
+   */
+  Collection<User> findByUsername(String username);
 
   /**
    * Finds a list of users matching the given partial username.

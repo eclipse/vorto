@@ -42,7 +42,7 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
 
   public AbstractOAuthProviderConfiguration(UserInfoTokenServices tokenService) {
     this.tokenService = tokenService;
-    this.tokenService.setAuthoritiesExtractor(new UserDBAuthoritiesExtractor(getUserAttributeId()));
+    this.tokenService.setAuthoritiesExtractor(new UserDBAuthoritiesExtractor(getUserAttributeId(), getProviderID()));
   }
 
   @Override
@@ -60,7 +60,7 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
         new OAuth2ClientAuthenticationProcessingFilter("/"+getFilterProcessingUrl());
     filter.setAuthenticationSuccessHandler(successHandler);
     tokenService.setRestTemplate(restTemplate);
-    tokenService.setAuthoritiesExtractor(authoritiesExtractor(getUserAttributeId()));
+    tokenService.setAuthoritiesExtractor(authoritiesExtractor(getUserAttributeId(), getProviderID()));
     filter.setRestTemplate(restTemplate);
     filter.setTokenServices(tokenService);
 
@@ -77,10 +77,12 @@ public abstract class AbstractOAuthProviderConfiguration implements IOAuthFlowCo
   public abstract String getFilterProcessingUrl();
 
   protected abstract String getUserAttributeId();
+
+  protected abstract String getProviderID();
   
   @Bean
   @Scope("prototype")
-  public AuthoritiesExtractor authoritiesExtractor(String userAttributeId) {
-    return new UserDBAuthoritiesExtractor(userAttributeId);
+  public AuthoritiesExtractor authoritiesExtractor(String userAttributeId, String providerID) {
+    return new UserDBAuthoritiesExtractor(userAttributeId, providerID);
   }
 }

@@ -13,16 +13,23 @@
 package org.eclipse.vorto.repository.account.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 import javax.transaction.Transactional;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.cache.UserRolesRequestCache;
 import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.oauth.IOAuthProvider;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,13 +44,18 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
 
   private UserRolesRequestCache cache;
 
+  private IOAuthProviderRegistry registry;
+
   public DefaultUserAccountService(
       @Autowired UserRolesRequestCache cache,
       @Autowired UserRepository userRepository,
-      @Autowired UserNamespaceRoleService userNamespaceRoleService) {
+      @Autowired UserNamespaceRoleService userNamespaceRoleService,
+      @Autowired IOAuthProviderRegistry registry
+  ) {
     this.cache = cache;
     this.userRepository = userRepository;
     this.userNamespaceRoleService = userNamespaceRoleService;
+    this.registry = registry;
   }
 
   private ApplicationEventPublisher eventPublisher = null;
@@ -60,32 +72,33 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
    * {@code created_by} value.<br/>
    * Will fail is the user already exists or cannot be persisted for extraneous reasons.
    *
-   * @param username
-   * @param provider
+   * @param user
    * @param subject
    * @return
    * @throws
    */
   @Transactional(rollbackOn = {IllegalArgumentException.class, IllegalStateException.class,
       InvalidUserException.class})
-  public User createNonTechnicalUser(String username, String provider, String subject)
-      throws InvalidUserException {
-    if (cache.withUser(username).getUser() != null) {
+  public User createNonTechnicalUser(UserDto user, String subject) throws InvalidUserException {
+    try {
+      cache.withUser(user);
       throw new IllegalArgumentException("User with given username already exists");
     }
-    User saved = userRepository.save(
-        new UserBuilder()
-            .withName(username)
-            .withAuthenticationProviderID(provider)
-            .withAuthenticationSubject(subject)
-            .build()
-    );
-    if (null == saved) {
-      throw new IllegalStateException("Could not persist new user");
+    catch (DoesNotExistException dnee) {
+      User saved = userRepository.save(
+          new UserBuilder()
+              .withName(user.getUsername())
+              .withAuthenticationProviderID(user.getAuthenticationProvider())
+              .withAuthenticationSubject(subject)
+              .build()
+      );
+      if (null == saved) {
+        throw new IllegalStateException("Could not persist new user");
+      }
+      // sets "created by" field once ID is generated and saves again
+      saved.setCreatedBy(saved.getId());
+      return userRepository.save(saved);
     }
-    // sets "created by" field once ID is generated and saves again
-    saved.setCreatedBy(saved.getId());
-    return userRepository.save(saved);
   }
 
   /**
@@ -101,14 +114,114 @@ public class DefaultUserAccountService implements ApplicationEventPublisherAware
     this.userRepository.save(user);
   }
 
-  public boolean exists(String userId) {
-    return cache.withUser(userId).getUser() != null;
+  /**
+   *
+   * @param user
+   * @return
+   */
+  public boolean exists(UserDto user) {
+    try {
+      return cache.withUser(user).getUser() != null;
+    }
+    catch (DoesNotExistException dnee) {
+      return false;
+    }
   }
 
-  public User getUser(String username) {
-    return cache.withUser(username).getUser();
+  /**
+   *
+   * @param username
+   * @return whether any user exists by the given username
+   */
+  public boolean anyExists(String username) {
+    return registry
+        .list()
+        .stream()
+        .map(IOAuthProvider::getId)
+        .filter(
+          id -> exists(UserDto.of(username, id))
+        )
+        .findAny()
+        .map(u -> true)
+        .orElse(false);
   }
 
+  /**
+   *
+   * @param context
+   * @return
+   * @see DefaultUserAccountService#exists(UserDto)
+   */
+  public User getUser(IUserContext context) {
+    return getUser(
+        UserDto.of(
+          context.getUsername(),
+          registry.getByAuthentication(context.getAuthentication()).getId()
+        )
+    );
+  }
+
+  /**
+   * 
+   * @param authentication
+   * @return
+   * @see DefaultUserAccountService#exists(UserDto)
+   */
+  public User getUser(Authentication authentication) {
+    return getUser(
+        UserDto.of(
+          authentication.getName(),
+          registry.getByAuthentication(authentication).getId()
+        )
+    );
+  }
+
+  /**
+   *
+   * @param user
+   * @return whether a user exists with the given wrapped username and authentication provider ID.
+   */
+  public User getUser(UserDto user) {
+    try {
+      return cache.withUser(user).getUser();
+    }
+    catch (DoesNotExistException dnee) {
+      return null;
+    }
+  }
+
+  /**
+   * Returns a user by name only, only if there is a single user with that username.<br/>
+   * It is recommended to invoke the finer-tuned overloads of this method instead.
+   * @param username
+   * @return
+   */
+  public Optional<User> getUser(String username) {
+    Collection<User> users = userRepository.findByUsername(username);
+    switch(users.size()) {
+      case 1: {
+        return users.stream().findAny();
+      }
+      default: {
+        return Optional.empty();
+      }
+    }
+  }
+
+  /**
+   * Proxy for {@link UserRepository#findById(long)}
+   * @param id
+   * @return
+   */
+  public Optional<User> getUser(long id) {
+    return this.userRepository.findById(id);
+  }
+
+  /**
+   *
+   * @param partial
+   * @return
+   */
   public Collection<User> findUsers(String partial) {
     return this.userRepository.findUserByPartial(partial);
   }

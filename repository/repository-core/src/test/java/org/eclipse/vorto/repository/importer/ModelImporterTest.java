@@ -96,7 +96,10 @@ public class ModelImporterTest extends UnitTestBase {
     assertEquals(false,uploadResult.isValid());
     assertEquals(MessageSeverity.ERROR,uploadResult.getReport().get(0).getMessage().getSeverity());
 
-    assertEquals("1) User alex does not have access to target namespace vorto.private.alex",uploadResult.getReport().get(0).getMessage().getMessage());
+    assertEquals(
+        "1) User does not have access to target namespace [vorto.private.alex]",
+        uploadResult.getReport().get(0).getMessage().getMessage()
+    );
   }
   
   @Test

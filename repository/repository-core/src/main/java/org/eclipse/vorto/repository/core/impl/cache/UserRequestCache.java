@@ -19,13 +19,11 @@ import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
-import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
 
 /**
  * This is a "view" on a {@link User}'s role data, returned as an instance of {@link IUserRequestCache}
- * when invoked by {@link UserRolesRequestCache#withUser(User)} or {@link UserRolesRequestCache#withUser(String)}.<br/>
- * The latter overload will also resolve the {@link User} by name. <br/>
+ * when invoked by one of the {@code UserRolesRequestCache#with...} methods.<br/>
  * Initial invocations of {@link IUserRequestCache#getUserNamespaceRoles()} and
  * {@link IUserRequestCache#getUserRepositoryRoles()} on this object will retrieve the
  * {@link UserNamespaceRoles} and {@link UserRepositoryRoles} respectively and cache them.<br/>
@@ -42,7 +40,8 @@ public class UserRequestCache implements IUserRequestCache {
   private User user;
 
   /**
-   * Invoked by {@link UserRolesRequestCache#withUser(String)}
+   * Invoked by
+   * {@link UserRolesRequestCache#withUser(org.eclipse.vorto.repository.web.account.dto.UserDto)}
    *
    * @param userNamespaceRoleRepository
    * @param userRepositoryRoleRepository
@@ -56,25 +55,6 @@ public class UserRequestCache implements IUserRequestCache {
     this.userNamespaceRoleRepository = userNamespaceRoleRepository;
     this.userRepositoryRoleRepository = userRepositoryRoleRepository;
     this.user = user;
-  }
-
-  /**
-   * Invoked by {@link UserRolesRequestCache#withUser(String)}
-   *
-   * @param userNamespaceRoleRepository
-   * @param userRepositoryRoleRepository
-   * @param userRepository
-   * @param username
-   */
-  protected UserRequestCache(UserNamespaceRoleRepository userNamespaceRoleRepository,
-      UserRepositoryRoleRepository userRepositoryRoleRepository, UserRepository userRepository,
-      String username) {
-    if (null == username) {
-      throw new IllegalArgumentException("Given username is null.");
-    }
-    this.userNamespaceRoleRepository = userNamespaceRoleRepository;
-    this.userRepositoryRoleRepository = userRepositoryRoleRepository;
-    this.user = userRepository.findByUsername(username);
   }
 
   /**

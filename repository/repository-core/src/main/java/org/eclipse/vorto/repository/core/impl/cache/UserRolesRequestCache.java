@@ -14,14 +14,21 @@ package org.eclipse.vorto.repository.core.impl.cache;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.repositories.UserNamespaceRoleRepository;
 import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.repositories.UserRepositoryRoleRepository;
+import org.eclipse.vorto.repository.services.ServiceValidationUtil;
+import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -39,19 +46,19 @@ import org.springframework.web.context.annotation.RequestScope;
  * a {@link User}'s {@link org.eclipse.vorto.repository.domain.NamespaceRole}s, or retrieves a
  * {@link User}'s {@link org.eclipse.vorto.repository.domain.RepositoryRole}s, the cache will be
  * used. <br/>
- * To avail of the cache, one must first invoke {@link UserRolesRequestCache#withUser(User)} or
- * {@link UserRolesRequestCache#withUser(String)} on an instance of {@link UserRolesRequestCache}.<br/>
+ * To avail of the cache, one must first invoke a {@code with...} method on an instance of
+ * {@link UserRolesRequestCache}.<br/>
  * This will return a {@link IUserRequestCache} object, either a {@link UserRequestCache} if the
  * {@link User} is resolved, or a {@link NullUserRequestCache} if the {@link User} cannot be
  * resolved (e.g. has been deleted within the request). <br/>
- * The {@link UserRolesRequestCache#withUser(String)} will also resolve the entity by username and cache it
+ * The {@link UserRolesRequestCache#withSelf()} will also resolve the entity and cache it
  * for later invocations.<br/>
  * In turn, one can then invoke any or all of the following methods:
  * <ul>
  *   <li>
- *     {@link IUserRequestCache#getUser()} returns the mapped and resolved {@link User} - obviously more
- *     useful if {@link UserRolesRequestCache#withUser(String)} was invoked previously (rather than
- *     {@link UserRolesRequestCache#withUser(User)}, since that would imply the context had already
+ *     {@link IUserRequestCache#getUser()} returns the mapped and resolved {@link User} - more
+ *     useful if a {@code with...(String)} overload was invoked previously (rather than a
+ *     {@code with...(User)} overload, since that would imply the context had already
  *     resolved the {@link User} or known about it by then).
  *   </li>
  *   <li>
@@ -127,6 +134,10 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class UserRolesRequestCache {
 
+  private static final NullUserRequestCache NULL_USER_REQUEST_CACHE = new NullUserRequestCache();
+
+  private IOAuthProviderRegistry registry;
+
   private UserNamespaceRoleRepository userNamespaceRoleRepository;
 
   private UserRepositoryRoleRepository userRepositoryRoleRepository;
@@ -143,10 +154,11 @@ public class UserRolesRequestCache {
    */
   public UserRolesRequestCache(@Autowired UserNamespaceRoleRepository userNamespaceRoleRepository,
       @Autowired UserRepositoryRoleRepository userRepositoryRoleRepository,
-      @Autowired UserRepository userRepository) {
+      @Autowired UserRepository userRepository, @Autowired IOAuthProviderRegistry registry) {
     this.userNamespaceRoleRepository = userNamespaceRoleRepository;
     this.userRepositoryRoleRepository = userRepositoryRoleRepository;
     this.userRepository = userRepository;
+    this.registry = registry;
   }
 
   private Map<User, IUserRequestCache> cache = new ConcurrentHashMap<>();
@@ -157,7 +169,7 @@ public class UserRolesRequestCache {
    */
   public IUserRequestCache withUser(User user) {
     if (null == user) {
-      return new NullUserRequestCache();
+      return NULL_USER_REQUEST_CACHE;
     }
     cache.putIfAbsent(user,
         new UserRequestCache(userNamespaceRoleRepository, userRepositoryRoleRepository, user));
@@ -165,20 +177,118 @@ public class UserRolesRequestCache {
   }
 
   /**
-   * Resolves the {@link User} by name.
+   * Resolves the authenticated {@link User} by inferring the {@link Authentication} through
+   * the {@link SecurityContextHolder}.<br/>
+   * This usage is valid only when attempting to resolve the currently authenticated user - 
+   * typically the "actor" in {@link org.eclipse.vorto.repository.services.UserNamespaceRoleService}. 
+   * <br/>
+   * It will also infer the correct OAuth provider ID.<br/>
+   * When attempting to resolve another user (typically the "target" in 
+   * {@link org.eclipse.vorto.repository.services.UserNamespaceRoleService}) instead, use 
+   * {@link UserRolesRequestCache#withUser(org.eclipse.vorto.repository.web.account.dto.UserDto)}.
    *
-   * @param username
    * @return either a {@link UserRequestCache} or a {@link NullUserRequestCache}
    */
-  public IUserRequestCache withUser(String username) {
-    IUserRequestCache userCache = new UserRequestCache(userNamespaceRoleRepository,
-        userRepositoryRoleRepository, userRepository, username);
-    if (null == userCache.getUser()) {
-      return new NullUserRequestCache();
+  public IUserRequestCache withSelf() throws DoesNotExistException {
+    // gets the right username and OAuth provider for the logged on user
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication.getName();
+    String authenticationProviderID = registry
+        .getByAuthentication(
+          authentication
+        )
+        .getId();
+    // attempts to resolve user if already cached
+    Optional<User> maybeCachedUser = cache
+        .keySet()
+        .stream()
+        .filter(
+            u -> u.getUsername().equals(username) &&
+            u.getAuthenticationProviderId().equals(authenticationProviderID)
+        )
+        .findAny();
+    // found - returning cached value
+    if (maybeCachedUser.isPresent()) {
+      return cache.get(maybeCachedUser.get());
     }
-    cache.putIfAbsent(userCache.getUser(), userCache);
-    return cache.get(userCache.getUser());
+    else {
+      // retrieves the user entity from the repository by name and provider
+      User user = userRepository
+          .findByUsernameAndAuthenticationProviderId(username, authenticationProviderID)
+          .orElseThrow(
+              () -> new DoesNotExistException(
+                  "Could not resolve a user with the given username and inferred OAuth provider ID"
+              )
+          );
+      IUserRequestCache userCache = new UserRequestCache(
+          userNamespaceRoleRepository,
+          userRepositoryRoleRepository,
+          user
+      );
+      if (null == userCache.getUser()) {
+        return NULL_USER_REQUEST_CACHE;
+      }
+      else {
+        cache.putIfAbsent(userCache.getUser(), userCache);
+      }
+      return userCache;
+    }
   }
+
+  /**
+   * Retrieves any given user by name and authentication provider ID, then returns the
+   * {@link IUserRequestCache} associated with it.<br/>
+   * Both properties of the given {@link UserDto} are validated.
+   *
+   * @param dto
+   * @return
+   */
+  public IUserRequestCache withUser(UserDto dto) throws DoesNotExistException {
+    if (UserDto.isAnonymous(dto)) {
+      return NULL_USER_REQUEST_CACHE;
+    }
+    // boilerplate null/empty validation
+    ServiceValidationUtil.validateEmpties(dto.getUsername(), dto.getAuthenticationProvider());
+    // searches for already cached users
+    Optional<User> maybeCachedUser = cache
+        .keySet()
+        .stream()
+        .filter(
+          u -> u.getUsername().equals(dto.getUsername()) &&
+          u.getAuthenticationProviderId().equals(dto.getAuthenticationProvider())
+        )
+        .findAny();
+    // found - returning
+    if (maybeCachedUser.isPresent()) {
+      return cache.get(maybeCachedUser.get());
+    }
+    else {
+      // retrieves the user entity from the repository by name and provider
+      User user = userRepository
+          .findByUsernameAndAuthenticationProviderId(dto.getUsername(), dto.getAuthenticationProvider())
+          .orElseThrow(
+              () -> new DoesNotExistException(
+                  "Could not resolve a user with the given username and OAuth provider ID"
+              )
+          );
+      // builds new cache
+      IUserRequestCache userCache = new UserRequestCache(
+          userNamespaceRoleRepository,
+          userRepositoryRoleRepository,
+          user
+      );
+      // user cannot be resolved - returns pseudo-cache
+      if (null == userCache.getUser()) {
+        return NULL_USER_REQUEST_CACHE;
+      }
+      // user resolved - caching
+      else {
+        cache.putIfAbsent(userCache.getUser(), userCache);
+      }
+      return userCache;
+    }
+  }
+
 
   /**
    * @return

@@ -12,16 +12,16 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
+import com.google.common.base.Strings;
 import io.swagger.annotations.ApiParam;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
@@ -42,6 +42,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,25 +74,70 @@ public class AccountController {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
+  /**
+   * Users should now be identified by both username and authentication provider ID. <br/>
+   * This legacy endpoint remains for some edge cases where standalone forms that can take a
+   * single username query parameter, etc.
+   *
+   * @param username
+   * @return
+   */
+  @Deprecated
   @GetMapping("/rest/accounts/{username:.+}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
+    return accountService.getUser(ControllerUtils.sanitize(username))
+        .map(
+            u -> {
+              User actor = accountService.getUser(
+                  SecurityContextHolder.getContext().getAuthentication()
+              );
+              return new ResponseEntity<>(
+                  // suppresses sensitive data if caller not the same user as target
+                  UserDto.fromUser(u, !actor.equals(u)),
+                  HttpStatus.OK
+              );
+            }
+        )
+        .orElse(
+            new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        );
+  }
 
-    IUserContext userContext = UserContext
-        .user(SecurityContextHolder.getContext().getAuthentication());
-    User user = accountService.getUser(ControllerUtils.sanitize(username));
-    if (user != null) {
-      // suppresses sensitive data e.g. e-mail if the queried username is not identical to the
-      // logged-on user's name
+  /**
+   * Fetches user information now based on both username and authentication provider. <br/>
+   * @param username
+   * @param authenticationProvider
+   * @return
+   */
+  @GetMapping("/rest/accounts")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDto> getUser(
+      @ApiParam(value = "username", required = true) @RequestParam String username,
+      @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider
+  ) {
+    User result;
+    // handling legacy case where authenticationProvider param provided empty/null
+    if (Strings.isNullOrEmpty(authenticationProvider)) {
+      result = accountService.getUser(username).orElse(null);
+    }
+    // both provided - safest usage
+    else {
+      result = accountService.getUser(UserDto.of(username, authenticationProvider));
+    }
+    if (Objects.isNull(result)) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+    else {
+      User actor = accountService.getUser(
+          SecurityContextHolder.getContext().getAuthentication()
+      );
       return new ResponseEntity<>(
-          UserDto.fromUser(
-              user, !userContext.getUsername().equals(username)
-          ),
+          // suppresses sensitive data if caller not the same user as target
+          UserDto.fromUser(result, !actor.equals(result)),
           HttpStatus.OK
       );
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -118,16 +164,19 @@ public class AccountController {
   public ResponseEntity<Boolean> createUserAccount(Principal user) {
     OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 
-    if (accountService.getUser(oauth2User.getName()) != null) {
+    if (accountService.getUser(oauth2User) != null) {
       return new ResponseEntity<>(false, HttpStatus.CREATED);
     }
     User createdUser = null;
     try {
       createdUser = accountService
-          .createNonTechnicalUser(oauth2User.getName(), getAuthenticationProvider(oauth2User),
-              null);
-    }
-    catch (InvalidUserException iue) {
+          .createNonTechnicalUser(
+              UserDto.of(
+                  oauth2User.getName(), getAuthenticationProvider(oauth2User)
+              ),
+              null
+          );
+    } catch (InvalidUserException iue) {
       return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
     SpringUserUtils.refreshSpringSecurityUser(createdUser, userNamespaceRoleService);
@@ -161,22 +210,24 @@ public class AccountController {
    *
    * @param technicalUser
    * @return
-   * @see AccountController#getUser(String)
    */
   @PostMapping(consumes = "application/json", value = "/rest/accounts/createTechnicalUser")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<OperationResult> createTechnicalUser(
       @RequestBody @ApiParam(value = "The technical user to be created", required = true) final UserDto technicalUser) {
-    // user exists - do nothing and return false / 200
-    User existingUser = accountService.getUser(technicalUser.getUsername());
+    // user exists - do nothing and return false / conflict
+    User existingUser = accountService.getUser(
+        UserDto.of(
+          technicalUser.getUsername(),
+          technicalUser.getAuthenticationProvider()
+        )
+    );
     if (existingUser != null) {
-      return new ResponseEntity<>(OperationResult.success("User already exists"), HttpStatus.OK);
+      return new ResponseEntity<>(OperationResult.failure("Technical user exists already"), HttpStatus.CONFLICT);
     }
     // user does not exist
     // getting calling user
-    User actor = accountService.getUser(
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication()).getUsername()
-    );
+    User actor = accountService.getUser(SecurityContextHolder.getContext().getAuthentication());
     try {
       // adding date fields
       technicalUser.setDateCreated(Timestamp.from(Instant.now()));
@@ -197,22 +248,49 @@ public class AccountController {
   @PreAuthorize("hasAuthority('sysadmin') or #username == authentication.name")
   public ResponseEntity<Boolean> upgradeUserAccount(Principal user,
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
+    // TODO #2529 this will only find unique users whose name is unique
+    return accountService.getUser(username).map(
+        u -> {
+          updateService.installUserUpgrade(u, () -> user);
 
-    User userAccount = accountService.getUser(username);
-    if (userAccount == null) {
-      return new ResponseEntity<>(true, HttpStatus.NOT_FOUND);
-    }
+          return new ResponseEntity<>(true, HttpStatus.CREATED);
+        }
+    )
+        .orElse(
+            new ResponseEntity<>(true, HttpStatus.NOT_FOUND)
+        );
 
-    updateService.installUserUpgrade(userAccount, () -> user);
-
-    return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
 
+  /**
+   * This essentially updates a user's e-mail address. <br/>
+   * As long as the user is updating their own e-mail address (which constitutes the totality of
+   * the cases in the field at the time of writing), this requires no changes.<br/>
+   * However, as this resolves the user by their username only, it cannot infer the right
+   * authentication provider ID if it is called by a sysadmin user on behalf of another user
+   * (again, no documented field cases for that). <br/>
+   * The latter implies that if the target username is not unique, the operation will fail when
+   * initiated by a sysadmin targeting another user.<br/>
+   *
+   * @param username
+   * @param httpEntity
+   * @return
+   * @see AccountController#updateAccount(UserDto) for a safer implementation
+   */
   @PutMapping("/rest/accounts/{username:.+}")
   @PreAuthorize("hasAuthority('sysadmin') or #username == authentication.name")
   public ResponseEntity<UserDto> updateAccount(@PathVariable("username") final String username,
       HttpEntity<String> httpEntity) {
-    User account = accountService.getUser(username);
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User account = null;
+    if (username.equals(authentication.getName())) {
+      account = accountService.getUser(authentication);
+    } else {
+      LOGGER.warn(
+          "Invoking with sysadmin targeting another user - this can fail if the target user's name is not unique");
+      account = accountService.getUser(username).orElse(null);
+    }
     if (account == null) {
       return new ResponseEntity<>((UserDto) null, HttpStatus.NOT_FOUND);
     }
@@ -222,18 +300,34 @@ public class AccountController {
     return new ResponseEntity<>(UserDto.fromUser(account), HttpStatus.OK);
   }
 
-  @DeleteMapping("/rest/accounts/{username:.+}")
-  @PreAuthorize("hasAuthority('sysadmin') or hasPermission(#username,'user:delete')")
-  public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
+  @PutMapping("/rest/accounts")
+  @PreAuthorize("hasAuthority('sysadmin') or #user.username == authentication.name")
+  public ResponseEntity<UserDto> updateAccount(@RequestBody UserDto user) {
+    User account = accountService.getUser(user);
+    if (account == null) {
+      return new ResponseEntity<>((UserDto) null, HttpStatus.NOT_FOUND);
+    }
+    account.setEmailAddress(user.getEmail());
+    accountService.updateUser(account);
+
+    return new ResponseEntity<>(UserDto.fromUser(account), HttpStatus.OK);
+  }
+
+  @DeleteMapping("/rest/accounts")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> deleteUserAccount(
+      @ApiParam(value = "username", required = true) @RequestParam String username,
+      @ApiParam(value = "authenticationProvider", required = true) @RequestParam String authenticationProvider
+  ) {
     try {
-      IUserContext userContext = UserContext
-          .user(SecurityContextHolder.getContext().getAuthentication());
-      userService.delete(userContext.getUsername(), username);
+      UserDto user = UserDto.of(username, authenticationProvider);
+      userService.delete(user);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } catch (OperationForbiddenException ofe) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     } catch (DoesNotExistException dnee) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (OperationForbiddenException ofe) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
   }
 }

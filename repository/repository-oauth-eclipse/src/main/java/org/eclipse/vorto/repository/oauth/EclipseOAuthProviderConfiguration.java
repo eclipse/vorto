@@ -95,4 +95,8 @@ public class EclipseOAuthProviderConfiguration extends AbstractOAuthProviderConf
     return "webjars/repository-web/dist/images/eclipse.png";
   }
 
+  @Override
+  protected String getProviderID() {
+    return EclipseRepositoryAuthProvider.ID;
+  }
 }

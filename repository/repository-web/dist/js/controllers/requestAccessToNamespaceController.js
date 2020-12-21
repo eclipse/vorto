@@ -18,6 +18,9 @@ define(["../init/appController"], function (repositoryControllers) {
         function ($rootScope, $scope, $http, $routeParams, $uibModal,
             $location, modal, $window) {
 
+          // defines the currently logged on user
+          $scope.currentUser = null;
+
           // infers whether this page is loaded as modal or standalone
           $scope.modal = modal;
 
@@ -42,24 +45,18 @@ define(["../init/appController"], function (repositoryControllers) {
           $scope.selectedNamespace = null;
           $scope.namespacePartial = "";
 
-          // initializes scope fields if applicable
-          if ($scope.parametrized) {
-            $scope.paramUserId = $routeParams.userId;
-            $scope.paramOauthProvider = $routeParams.oauthProvider;
-            $scope.paramClientName = $routeParams.clientName;
-            $scope.paramSubject = $routeParams.subject;
-            // checks if namespace specified
-            if ($routeParams.namespace) {
-              $scope.namespacePartial = $routeParams.namespace;
-              $scope.selectedNamespace = {
-                name: $scope.namespacePartial
-              };
-            }
-            // no subject provided as parameter - using the client name
-            if (!$scope.paramSubject) {
-              $scope.paramSubject = $scope.paramClientName;
-            }
-          }
+          $scope.userRadio = "myself";
+          $scope.namespaces = [];
+          $scope.lastHighlightedNamespace = null;
+          $scope.userPartial = "";
+          $scope.selectedUser = null;
+          $scope.retrievedUsers = [];
+          $scope.lastHighlightedUser = null;
+          $scope.desiredRoles = [true];
+          $scope.ack = false;
+          $scope.isSendingRequest = false;
+          $scope.success = false;
+
           // defaults flag to display a loading overlay if parametrized
           $scope.isLoadingUserData = $scope.parametrized;
           $scope.isCreatingTechnicalUser = false;
@@ -74,20 +71,99 @@ define(["../init/appController"], function (repositoryControllers) {
           // legalese before creating the technical user
           $scope.ackCreateTechnicalUser = false;
 
+          // user data initialization / error handling
+          $scope.errorLoadingUserData = false;
+          $scope.selectedSubject = null;
+
+          /**
+           * Fetches the required information about the currently logged on user.
+           * In some cases, this will already be available in the root scope.
+           * In other cases, this requires an additional REST call to the
+           * back-end.
+           */
+          $scope.getCurrentUser = function() {
+            if (
+                $rootScope && $rootScope.userInfo && $rootScope.userInfo.name &&
+                $rootScope.userInfo.provider && $rootScope.userInfo.provider.id) {
+              $scope.currentUser = {
+                "username" : $rootScope.userInfo.name,
+                "displayName" : $rootScope.userInfo.displayName,
+                "authenticationProvider": $rootScope.userInfo.provider.id,
+                // optional
+                "subject": $rootScope.userInfo.subject
+              }
+            }
+            else {
+              $http.get("./user")
+              .then(
+                  function (result) {
+                    // not optional
+                    if (result.data) {
+                      $scope.currentUser = {
+                        "username" : result.data.name,
+                        "displayName": result.data.displayName,
+                        "authenticationProvider": result.data.provider.id,
+                        // optional
+                        "subject": result.data.subject
+                      }
+                    } else {
+                      $scope.errorLoadingUserData = true;
+                    }
+                    // eagerly sets the subject in case the request will be for
+                    // the current user and the current user has one
+                    if ($scope.currentUser.subject) {
+                      $scope.selectedSubject = $scope.currentUser.subject;
+                    }
+                  },
+                  function (error) {
+                    $scope.errorLoadingUserData = true;
+                  }
+              )
+            }
+          }
+
+          /**
+           * Infers whether the form is being loaded standalone and parametrized,
+           * and populates data accordingly when parametrization is valid.
+           */
+          $scope.consumeParametrization = function() {
+            // initializes scope fields if applicable
+            if ($scope.parametrized) {
+              $scope.paramUserId = $routeParams.userId || $routeParams.username;
+              $scope.paramOauthProvider = $routeParams.oauthProvider || $routeParams.authenticationProvider || $routeParams.authenticationProviderId;
+              $scope.paramClientName = $routeParams.clientName;
+              $scope.paramSubject = $routeParams.subject;
+              // checks if namespace specified
+              if ($routeParams.namespace) {
+                $scope.namespacePartial = $routeParams.namespace;
+                $scope.selectedNamespace = {
+                  name: $scope.namespacePartial
+                };
+              }
+              // no subject provided as parameter - using the client name
+              if (!$scope.paramSubject) {
+                $scope.paramSubject = $scope.paramClientName;
+              }
+            }
+          }
+
           $scope.reloadPage = function () {
             $location.search({});
             $window.location.reload();
           }
 
+          /**
+           * Loads data about a specific user (not the logged on user).
+           */
           $scope.loadUserData = function () {
             $scope.isLoadingUserData = true;
-            $http.get("./rest/accounts/" + $scope.paramUserId)
+            $http.get("./rest/accounts", {params:{"username":$scope.paramUserId,"authenticationProvider":$scope.paramOauthProvider || ""}})
             .then(
                 function (result) {
                   // builds tech user data from result
                   $scope.technicalUser = result.data;
                   // assigns selected user for form submit
-                  $scope.selectedUser = $scope.technicalUser.username;
+                  $scope.selectedUser = $scope.technicalUser;
                   // stop loading data
                   $scope.isLoadingUserData = false;
                   // replaces GET parameter values with actual technical user values
@@ -120,21 +196,17 @@ define(["../init/appController"], function (repositoryControllers) {
             )
           }
 
-          // starts attempting to load an existing technical user if the form
-          // is parametrized
-          if ($scope.parametrized) {
-            $scope.loadUserData();
-          }
-
           $scope.computeCreateTechnicalUserAvailability = function () {
             let button = document.getElementById(
                 "createTechnicalUserButton");
             if (button) {
-              button.disabled = !$scope.ackCreateTechnicalUser;
+              button.disabled =
+                $scope.technicalUser ||
+                !$scope.ackCreateTechnicalUser ||
+                !$scope.paramUserId ||
+                !$scope.paramOauthProvider;
             }
           }
-
-          $scope.computeCreateTechnicalUserAvailability();
 
           $scope.createTechnicalUser = function () {
             $scope.isCreatingTechnicalUser = true;
@@ -159,7 +231,7 @@ define(["../init/appController"], function (repositoryControllers) {
                         "subject": "", // TODO if we decide to parametrize with subject
                         "isTechnicalUser": true
                       };
-                  $scope.selectedUser = $scope.technicalUser.username;
+                  $scope.selectedUser = $scope.technicalUser;
                   $scope.isCreatingTechnicalUser = false;
                   // disable create user button and change caption
                   $scope.createUserButtonCaption = "Technical user created";
@@ -182,63 +254,21 @@ define(["../init/appController"], function (repositoryControllers) {
                   if (error.data) {
                     $scope.createTechnicalUserErrorMessage = error.data.errorMessage;
                   }
+                  // disables button if tech user already exists
+                  if (error.status && error.status == 409) {
+                    $scope.createUserButtonCaption = "Technical user exists";
+                    let button = document.getElementById(
+                        "createTechnicalUserButton");
+                    if (button) {
+                      button.disabled = true;
+                    }
+                  }
                   $scope.isCreatingTechnicalUser = false;
                   $scope.selectedUser = null;
                   $scope.computeSubmitAvailability();
                 }
             );
           }
-
-          // user data initialization / error handling
-          $scope.errorLoadingUserData = false;
-          $scope.username = null;
-          $scope.loggedInUserSubject = null;
-          $scope.selectedSubject = null;
-
-          $scope.initialize = function () {
-            // no user data in root scope: loaded as standalone
-            // (requires additional networking call)
-            if (!$scope.username && (!$rootScope.displayName
-                || !$rootScope.userInfo)) {
-              $http.get("./user")
-              .then(
-                  function (result) {
-                    // not optional
-                    if (result.data.displayName) {
-                      $scope.username = result.data.displayName;
-                    } else {
-                      $scope.errorLoadingUserData = true;
-                    }
-                    // optional
-                    if (result.data.subject) {
-                      $scope.selectedSubject = result.data.subject;
-                    }
-                  },
-                  function (error) {
-                    $scope.errorLoadingUserData = true;
-                  }
-              )
-            }
-            // loaded as modal - user data available from root scope
-            else {
-              $scope.username = $rootScope.displayName;
-              $scope.loggedInUserSubject = $rootScope.userInfo.subject;
-              $scope.selectedSubject = $rootScope.userInfo.subject;
-            }
-          }
-
-          $scope.userRadio = "myself";
-          $scope.namespaces = [];
-          $scope.lastHighlightedNamespace = null;
-          $scope.userPartial = "";
-          $scope.selectedUser = null;
-          $scope.retrievedUsers = [];
-          $scope.lastHighlightedUser = null;
-          $scope.desiredRoles = [true];
-          $scope.ack = false;
-          $scope.isSendingRequest = false;
-          $scope.success = false;
-          $scope.initialize();
 
           $scope.computeSubmitAvailability = function () {
             let element = document.getElementById("submit");
@@ -409,10 +439,14 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.selectUser = function (user) {
             if (user) {
-              $scope.selectedUser = user.userId;
+              $scope.selectedUser = user;
               $scope.selectedSubject = user.subject;
+              // populating display name if not present
+              if (!$scope.selectedUser.displayName) {
+                $scope.selectedUser.displayName = $scope.selectedUser.userId;
+              }
               document.getElementById(
-                  'userId').value = $scope.selectedUser;
+                  'userId').value = $scope.selectedUser.displayName;
             }
             $scope.retrievedUsers = [];
             $scope.computeSubmitAvailability();
@@ -420,7 +454,7 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.highlightUser = function (user) {
             let list = document.getElementById("userDropDown");
-            let element = document.getElementById(user.userId);
+            let element = document.getElementById(user.displayName);
             if (list && element) {
               element.style.backgroundColor = '#7fc6e7';
               element.style.color = '#ffffff';
@@ -430,7 +464,7 @@ define(["../init/appController"], function (repositoryControllers) {
           }
 
           $scope.unhighlightUser = function (user) {
-            let element = document.getElementById(user.userId);
+            let element = document.getElementById(user.displayName);
             if (element) {
               element.style.backgroundColor = 'initial';
               element.style.color = 'initial';
@@ -461,7 +495,8 @@ define(["../init/appController"], function (repositoryControllers) {
             modalInstance.result.then(
                 function (result) {
                   $scope.selectUser(result);
-                }
+                },
+                function() {}
             );
 
           }
@@ -482,6 +517,20 @@ define(["../init/appController"], function (repositoryControllers) {
                   function (result) {
                     if (result.data) {
                       $scope.retrievedUsers = result.data;
+                      // adds display name and finds duplicate usernames / adds
+                      // oauth provider id to display name
+                      $scope.retrievedUsers.forEach(function(value, index, array) {
+                        // sets a display value as userId regardless
+                        value.displayName = value.userId;
+                        // decorates duplicates
+                        if (array.length > 1 && index > 0 && array[index - 1].userId == value.userId) {
+                          value.displayName = value.userId + " ("
+                              + value.authenticationProviderId + ")";
+                          array[index - 1].displayName = array[index - 1].userId
+                              + " (" + array[index - 1].authenticationProviderId
+                              + ")";
+                        }
+                      });
                     } else {
                       $scope.retrievedUsers = [];
                       $scope.selectedUser = null;
@@ -523,8 +572,8 @@ define(["../init/appController"], function (repositoryControllers) {
                 if (clearUserSearchButton) {
                   clearUserSearchButton.disabled = true;
                 }
-                $scope.selectedUser = $scope.username;
-                $scope.selectedSubject = $scope.loggedInUserSubject;
+                $scope.selectedUser = $scope.currentUser;
+                $scope.selectedSubject = $scope.currentUser.subject;
               } else {
                 userSearch.disabled = false;
                 if (userSearchButton) {
@@ -543,25 +592,6 @@ define(["../init/appController"], function (repositoryControllers) {
             }
             $scope.computeSubmitAvailability();
           };
-
-          angular.element(document).ready(function () {
-            $scope.focusOnNamespaceSearch();
-            $scope.computeSubmitAvailability();
-            $scope.toggleUserSearchEnabled('myself');
-            $scope.computeCreateTechnicalUserAvailability();
-
-            // this is incredibly stupid but neither ng-model, nor ng-checked,
-            // nor HTML checked, nor plain Javascript work - some unknown
-            // AngularJS event handler occurring after DOM ready prevents
-            // checking the default radio
-            setTimeout(() => {
-              // still possible to have undefined on DOM ready in certain cases
-              let element = document.getElementById("myself");
-              if (element) {
-                element.checked = true;
-              }
-            }, 200);
-          });
 
           // ugly
           $scope.disableAndCheckOtherCheckBoxes = function () {
@@ -611,8 +641,8 @@ define(["../init/appController"], function (repositoryControllers) {
             }
 
             let payload = {
-              'requestingUsername': $scope.username,
-              'targetUsername': $scope.selectedUser,
+              'requestingUser': $scope.currentUser,
+              'targetUser': $scope.selectedUser,
               'namespaceName': $scope.selectedNamespace.name,
               'suggestedRoles': rolesToConvey,
               'conditionsAcknowledged': $scope.ack,
@@ -668,6 +698,44 @@ define(["../init/appController"], function (repositoryControllers) {
               sendButton.disabled = true;
             }
           }
+
+          /**
+           * Performs basic initialization of the controller's required data.
+           */
+          $scope.initialize = function () {
+            $scope.getCurrentUser();
+            $scope.consumeParametrization();
+            // starts attempting to load an existing technical user if the form
+            // is parametrized
+            if ($scope.parametrized) {
+              $scope.loadUserData();
+            }
+            $scope.computeCreateTechnicalUserAvailability();
+          }
+
+          $scope.initialize();
+
+          /**
+           * Initialization procedures that require the DOM to be ready prior.
+           */
+          angular.element(document).ready(function () {
+            $scope.focusOnNamespaceSearch();
+            $scope.computeSubmitAvailability();
+            $scope.toggleUserSearchEnabled('myself');
+            $scope.computeCreateTechnicalUserAvailability();
+
+            // this is incredibly stupid but neither ng-model, nor ng-checked,
+            // nor HTML checked, nor plain Javascript work - some unknown
+            // AngularJS event handler occurring after DOM ready prevents
+            // checking the default radio
+            setTimeout(() => {
+              // still possible to have undefined on DOM ready in certain cases
+              let element = document.getElementById("myself");
+              if (element) {
+                element.checked = true;
+              }
+            }, 200);
+          });
 
         }
       ]);

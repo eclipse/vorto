@@ -12,9 +12,17 @@
  */
 package org.eclipse.vorto.repository.model.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.*;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -23,14 +31,7 @@ import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
 import org.eclipse.vorto.repository.model.RepositoryAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class DefaultBulkOperationsService implements IBulkOperationsService {
@@ -83,7 +84,7 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
 
       // Add corresponding policy to model
       IModelPolicyManager policyMgr = this.repositoryFactory
-          .getPolicyManager(repository.getWorkspaceId(), getAuthenticationToken());
+          .getPolicyManager(repository.getWorkspaceId());
       policyMgr.addPolicyEntry(modelId, PolicyEntry.of(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY,
           PrincipalType.User, Permission.READ));
 
@@ -108,14 +109,14 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
 
     for (ModelId modelId : accumulator) {
       IModelRepository repo = this.repositoryFactory.getRepositoryByModel(modelId);
-      String tenantId = repo.getWorkspaceId();
+      String workspaceID = repo.getWorkspaceId();
 
       // changed back visibility property
       repo.updateVisibility(modelId, IModelRepository.VISIBILITY_PRIVATE);
 
       // remove added policy
       IModelPolicyManager policyManager =
-          this.repositoryFactory.getPolicyManager(tenantId, getAuthenticationToken());
+          this.repositoryFactory.getPolicyManager(workspaceID);
       Collection<PolicyEntry> policies = policyManager.getPolicyEntries(modelId);
       for (PolicyEntry policy : policies) {
         if (policy.getPrincipalId().equals(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)) {
@@ -126,7 +127,4 @@ public class DefaultBulkOperationsService implements IBulkOperationsService {
     }
   }
 
-  protected Authentication getAuthenticationToken() {
-    return SecurityContextHolder.getContext().getAuthentication();
-  }
 }

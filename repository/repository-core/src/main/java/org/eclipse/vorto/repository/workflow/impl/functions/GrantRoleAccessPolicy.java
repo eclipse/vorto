@@ -39,12 +39,20 @@ public class GrantRoleAccessPolicy implements IWorkflowFunction {
     this.roleToGiveAccess = role;
   }
 
+  @Deprecated
   @Override
   public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
-    LOGGER.info("Granting permission of model " + model.getId() + " to " + roleToGiveAccess.get().getName() + " role");
-    repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication()).addPolicyEntry(
+    LOGGER.info(
+        String.format(
+            "Granting permission of model [%s] to [%s] role",
+            model.getId(),
+            roleToGiveAccess.get().getName()
+        )
+    );
+    repositoryFactory.getPolicyManager(user.getWorkspaceId()).addPolicyEntry(
         model.getId(),
-        PolicyEntry.of(roleToGiveAccess.get().getName(), PrincipalType.Role, Permission.FULL_ACCESS));
+        PolicyEntry.of(roleToGiveAccess.get().getName(), PrincipalType.Role, Permission.FULL_ACCESS)
+    );
 
   }
 }

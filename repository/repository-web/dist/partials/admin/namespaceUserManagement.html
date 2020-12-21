@@ -35,7 +35,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="namespaceUser in namespaceUsers | orderBy: 'userId'">
+					<tr ng-repeat="namespaceUser in namespaceUsers | orderBy: ['userId', 'authenticationProviderId']">
 						<td>{{ namespaceUser.userId }}</td>
 						<td>{{ namespaceUser.isTechnicalUser ? namespaceUser.subject : ''}}</td>
 						<td>{{ namespaceUser.authenticationProviderId}}</td>

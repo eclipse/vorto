@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
 import org.eclipse.vorto.repository.services.RoleService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,9 +43,11 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
   private RoleService roleService;
 
   private String userAttributeId = null;
+  private String oauthProviderID;
 
-  public UserDBAuthoritiesExtractor(String userAttributeId) {
+  public UserDBAuthoritiesExtractor(String userAttributeId, String providerID) {
     this.userAttributeId = userAttributeId;
+    this.oauthProviderID = providerID;
   }
 
   @Override
@@ -65,7 +68,7 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
 
   protected List<GrantedAuthority> getGrantedAuthorities(Map<String, Object> map, String userAttr) {
     String username = (String) map.get(userAttr);
-    User user = userService.getUser(username);
+    User user = userService.getUser(UserDto.of(username, oauthProviderID));
     if (user == null) {
       return Collections.emptyList();
     }

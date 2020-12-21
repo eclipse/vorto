@@ -25,12 +25,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.comment.impl.CommentRepository;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.server.it.TestModel.TestModelBuilder;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.Collaborator;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
 import org.junit.After;
@@ -89,6 +89,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // (this is not done automatically by TestModel#createModel)
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
     userModelCreatorCollaboratorRoles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
@@ -98,6 +99,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // assigns other user with read/comment permission on namespace
     Collaborator userModelCreator2Collaborator = new Collaborator();
     userModelCreator2Collaborator.setUserId(USER_MODEL_CREATOR_NAME_2);
+    userModelCreator2Collaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaborator2Roles = new HashSet<>();
     userModelCreatorCollaborator2Roles.add("model_viewer");
     userModelCreator2Collaborator.setRoles(userModelCreatorCollaborator2Roles);
@@ -106,7 +108,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on the model as userModelCreator
     CommentDTO adminComment = new CommentDTO();
-    adminComment.setAuthor(USER_MODEL_CREATOR_NAME);
+    adminComment.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB));
     adminComment.setContent("A comment from userModelCreator");
     adminComment.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     adminComment.setModelId(model.getId().getPrettyFormat());
@@ -121,7 +123,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes two comments on the model as user creator 2
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment0.setContent("First comment from userModelCreator2");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(model.getId().getPrettyFormat());
@@ -134,7 +136,7 @@ public class CommentControllerTest extends IntegrationTestBase {
         )
         .andExpect(status().isCreated());
     CommentDTO userComment1 = new CommentDTO();
-    userComment1.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment1.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment1.setContent("Second comment from userModelCreator2");
     userComment1.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment1.setModelId(model.getId().getPrettyFormat());
@@ -239,6 +241,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // (this is not done automatically by TestModel#createModel)
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
     userModelCreatorCollaboratorRoles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
@@ -248,6 +251,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // assigns other user with read/comment permission on namespace
     Collaborator userModelCreator2Collaborator = new Collaborator();
     userModelCreator2Collaborator.setUserId(USER_MODEL_CREATOR_NAME_2);
+    userModelCreator2Collaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreator2CollaboratorRoles = new HashSet<>();
     userModelCreator2CollaboratorRoles.add("model_viewer");
     userModelCreator2Collaborator.setRoles(userModelCreator2CollaboratorRoles);
@@ -257,6 +261,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // assigns other user with read/comment permission on namespace
     Collaborator userModelCreator2CollaboratorAdmin = new Collaborator();
     userModelCreator2CollaboratorAdmin.setUserId(USER_MODEL_CREATOR_NAME_2);
+    userModelCreator2CollaboratorAdmin.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreator2CollaboratorAdminRoles = new HashSet<>();
     userModelCreator2CollaboratorAdminRoles.add("namespace_admin");
     userModelCreator2CollaboratorAdmin.setRoles(userModelCreator2CollaboratorAdminRoles);
@@ -266,7 +271,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on userCreator's model as user creator 2
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment0.setContent("A comment from userModelCreator2");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(userCreatorModel.getId().getPrettyFormat());
@@ -281,7 +286,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on userCreator2 model as user creator 2
     CommentDTO userComment1 = new CommentDTO();
-    userComment1.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment1.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment1.setContent("A comment from userModelCreator2 on my own model");
     userComment1.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment1.setModelId(userCreator2Model.getId().getPrettyFormat());
@@ -297,8 +302,9 @@ public class CommentControllerTest extends IntegrationTestBase {
     // removes userModelCreator2 from namespace as userModelCreator
     repositoryServer
         .perform(
-            delete(String.format("/rest/namespaces/%s/users/%s", userCreatorModel.getNamespace(),
-                USER_MODEL_CREATOR_NAME_2))
+            delete(String.format("/rest/namespaces/%s/users", userCreatorModel.getNamespace()))
+                .param("username", USER_MODEL_CREATOR_NAME_2)
+                .param("authenticationProvider", GITHUB)
                 .with(userModelCreator)
         )
         .andExpect(status().isOk());
@@ -316,7 +322,7 @@ public class CommentControllerTest extends IntegrationTestBase {
             jsonPath("$", hasSize(1))
         )
         .andExpect(
-            jsonPath("$[0].author").value(User.USER_ANONYMOUS)
+            jsonPath("$[0].author.username").value(User.USER_ANONYMOUS)
         );
 
     // fetches and tests comments for userCreator2's model ID
@@ -332,7 +338,7 @@ public class CommentControllerTest extends IntegrationTestBase {
             jsonPath("$", hasSize(1))
         )
         .andExpect(
-            jsonPath("$[0].author").value(USER_MODEL_CREATOR_NAME_2)
+            jsonPath("$[0].author.username").value(USER_MODEL_CREATOR_NAME_2)
         );
 
   }
@@ -353,6 +359,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // (this is not done automatically by TestModel#createModel)
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
     userModelCreatorCollaboratorRoles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
@@ -361,7 +368,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on the model as user creator 2 - forbidden
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment0.setContent("A comment from userModelCreator2");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(model.getId().getPrettyFormat());
@@ -401,6 +408,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // (this is not done automatically by TestModel#createModel)
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
     userModelCreatorCollaboratorRoles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
@@ -409,7 +417,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on the model as user creator
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB));
     userComment0.setContent("A comment from userModelCreator");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(model.getId().getPrettyFormat());
@@ -479,6 +487,7 @@ public class CommentControllerTest extends IntegrationTestBase {
     // (this is not done automatically by TestModel#createModel)
     Collaborator userModelCreatorCollaborator = new Collaborator();
     userModelCreatorCollaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    userModelCreatorCollaborator.setAuthenticationProviderId(GITHUB);
     Set<String> userModelCreatorCollaboratorRoles = new HashSet<>();
     userModelCreatorCollaboratorRoles.add("namespace_admin");
     userModelCreatorCollaborator.setRoles(userModelCreatorCollaboratorRoles);
@@ -517,7 +526,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on the model as user creator2
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME_2);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME_2, GITHUB));
     userComment0.setContent("A comment from userModelCreator2");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(model.getId().getPrettyFormat());
@@ -548,7 +557,7 @@ public class CommentControllerTest extends IntegrationTestBase {
                   .stream()
                   .filter(
                       c -> c.getModelId().equals(model.getId().getPrettyFormat())
-                          && c.getAuthor().equals(USER_MODEL_CREATOR_NAME_2)
+                          && c.getAuthor().getUsername().equals(USER_MODEL_CREATOR_NAME_2)
                   )
                   .findFirst()
                   .get();
@@ -584,7 +593,7 @@ public class CommentControllerTest extends IntegrationTestBase {
 
     // writes a comment on the model as user creator
     CommentDTO userComment0 = new CommentDTO();
-    userComment0.setAuthor(USER_MODEL_CREATOR_NAME);
+    userComment0.setAuthor(UserDto.of(USER_MODEL_CREATOR_NAME, GITHUB));
     userComment0.setContent("A comment from userModelCreator");
     userComment0.setDate(ICommentService.DATE_FORMAT.format(new Date()));
     userComment0.setModelId(model.getId().getPrettyFormat());
@@ -610,7 +619,7 @@ public class CommentControllerTest extends IntegrationTestBase {
             jsonPath("$", hasSize(1))
         )
         .andExpect(
-            jsonPath("$[0].author").value(USER_MODEL_CREATOR_NAME)
+            jsonPath("$[0].author.username").value(USER_MODEL_CREATOR_NAME)
         );
   }
 

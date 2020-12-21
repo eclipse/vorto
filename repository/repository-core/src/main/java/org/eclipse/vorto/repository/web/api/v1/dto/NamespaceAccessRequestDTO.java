@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import java.util.Collection;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 
 /**
  * Represents a request sent from the UI to the back-end, to give access to a given namespace for
@@ -20,27 +21,27 @@ import java.util.Collection;
  */
 public class NamespaceAccessRequestDTO {
 
-  private String requestingUsername;
-  private String targetUsername;
+  private UserDto requestingUser;
+  private UserDto targetUser;
   private String targetSubject = "n/a";
   private String namespaceName;
   private Collection<String> suggestedRoles;
   private boolean conditionsAcknowledged;
 
-  public String getRequestingUsername() {
-    return requestingUsername;
+  public UserDto getRequestingUser() {
+    return requestingUser;
   }
 
-  public void setRequestingUsername(String requestingUsername) {
-    this.requestingUsername = requestingUsername;
+  public void setRequestingUser(UserDto requestingUser) {
+    this.requestingUser = requestingUser;
   }
 
-  public String getTargetUsername() {
-    return targetUsername;
+  public UserDto getTargetUser() {
+    return targetUser;
   }
 
-  public void setTargetUsername(String targetUsername) {
-    this.targetUsername = targetUsername;
+  public void setTargetUser(UserDto targetUser) {
+    this.targetUser = targetUser;
   }
 
   public String getNamespaceName() {

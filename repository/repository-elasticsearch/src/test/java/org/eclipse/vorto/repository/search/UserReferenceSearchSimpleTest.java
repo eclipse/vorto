@@ -38,11 +38,16 @@ public class UserReferenceSearchSimpleTest {
   @BeforeClass
   public static void beforeClass() throws Exception {
     testInfrastructure = new SearchTestInfrastructure();
-    erleContext = testInfrastructure.createUserContext("erle");
 
     testInfrastructure.importModel(testInfrastructure.DATATYPE_MODEL);
-    List<ModelInfo> model = testInfrastructure.getRepositoryFactory()
-        .getRepository(testInfrastructure.getDefaultUser()).search("*");
+    List<ModelInfo> model =
+        testInfrastructure
+          .getRepositoryFactory()
+          .getRepository(
+              testInfrastructure.getDefaultUser().getWorkspaceId(),
+              testInfrastructure.getDefaultUser()
+          )
+          .search("*");
     // this is arguably over-cautious, as the next statement would fail all tests anyway
     if (model.isEmpty()) {
       fail("Model is empty after importing.");
@@ -50,8 +55,15 @@ public class UserReferenceSearchSimpleTest {
     // "reviewer" user updates the only imported model's visibility to public, i.e.
     // "lastModifiedBy" -> reviewer
     model.get(0).setLastModifiedBy("reviewer");
-    ModelId updated = testInfrastructure.getRepositoryFactory().getRepository(testInfrastructure.createUserContext("reviewer"))
+    IUserContext reviewer = testInfrastructure.createUserContext("reviewer");
+    ModelId updated = testInfrastructure
+        .getRepositoryFactory()
+        .getRepository(
+            reviewer.getWorkspaceId(), reviewer
+        )
         .updateVisibility(model.get(0).getId(), "Public");
+
+    erleContext = testInfrastructure.createUserContext("erle");
 
     // "control group": importing another model as another user
     testInfrastructure.importModel("HueLightStrips.infomodel", erleContext);

@@ -334,7 +334,7 @@ define(["../../init/appController"], function (repositoryControllers) {
           $scope.namespace = namespace;
           $scope.namespaces = namespaces;
           $scope.mode = namespace.edit ? "Update" : "Create";
-          $scope.errorMessage = "";
+          $scope.errorMessage = null;
           $scope.requestEmailTemplate = "Dear%20Vorto%20Team%2C%20%0A%0AI%20would%20like%20to%20request%20for%20an%20official%20namespace.%20%0A%0ANamespace%20Owner%20%28user%20ID%29%20%3A%20%0ANamespace%3A%0A%0AThank%20you.%20%0A%0ABest%20regards%2C%20";
 
           $scope.isCreatingOrUpdating = false;

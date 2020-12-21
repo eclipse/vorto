@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.oauth.AnonymousOAuthProvider;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,13 +29,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 public class PrivilegedUserContextProvider {
 
+  public static final String USER_ADMIN = "admin";
+
   /**
    * Create a SysAdmin user context with the default username "admin".
    *
    * @return a user context with SysAdmin privileges.
    */
   public static IUserContext systemAdminContext() {
-    return UserContext.user(createAdminTechnicalUser("admin"));
+    return UserContext.user(createAdminTechnicalUser(USER_ADMIN));
   }
 
   /**
@@ -49,6 +53,17 @@ public class PrivilegedUserContextProvider {
     List<GrantedAuthority> authorities = new ArrayList<>();
     authorities.add(new SimpleGrantedAuthority(RepositoryRole.SYS_ADMIN.getName()));
     return new UsernamePasswordAuthenticationToken(username, username, authorities);
+  }
+
+  /**
+   *
+   * @param user
+   * @return whether the user is an anonymous administrator (created on demand e.g. to anonymize another user's models).
+   * @see UserDto#isAnonymous(UserDto) for a complete check of all anonymous user combinations.
+   */
+  public static boolean isAnonymousSysadmin(UserDto user) {
+    return user.getUsername().equals(USER_ADMIN) && user.getAuthenticationProviderId().equals(
+        AnonymousOAuthProvider.ID);
   }
 
 }

@@ -55,12 +55,14 @@ public class SimpleSearchService implements ISearchService, IIndexingService {
   public List<ModelInfo> search(String expression) {
     return search(expression, SecurityContextHolder.getContext().getAuthentication());
   }
-  
-  private List<ModelInfo> search(String expression, Authentication authentication) {
+
+  @Override
+  public List<ModelInfo> search(String expression, Authentication authentication) {
     List<ModelInfo> result = new ArrayList<>();
     namespaceRepository.findAll().forEach(namespace -> {
-      IModelRepository repository = this.repositoryFactory.getRepository(namespace.getWorkspaceId(),
-          authentication);
+      IModelRepository repository = this.repositoryFactory.getRepository(
+          namespace.getWorkspaceId(), authentication
+      );
       result.addAll(repository.search(expression));
     });
 

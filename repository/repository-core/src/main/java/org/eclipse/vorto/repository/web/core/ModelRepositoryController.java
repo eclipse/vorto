@@ -68,6 +68,7 @@ import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.model.IBulkOperationsService;
 import org.eclipse.vorto.repository.model.ModelNamespaceNotOfficialException;
 import org.eclipse.vorto.repository.model.ModelNotReleasedException;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
@@ -77,6 +78,7 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.ControllerUtils;
 import org.eclipse.vorto.repository.web.GenericApplicationException;
 import org.eclipse.vorto.repository.web.Status;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelFullDetailsDTO;
 import org.eclipse.vorto.repository.web.api.v1.dto.ModelLink;
@@ -146,6 +148,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
+  @Autowired
+  private IOAuthProviderRegistry registry;
+
   @Value("${config.requestTimeoutInSeconds:#{300}}")
   private int requestTimeoutInSeconds;
 
@@ -187,12 +192,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
    * @return
    */
   @GetMapping("/ui/{modelId:.+}")
-  public ResponseEntity<ModelFullDetailsDTO> getModelForUI(@PathVariable String modelId,
-      final HttpServletResponse response) {
+  public ResponseEntity<ModelFullDetailsDTO> getModelForUI(@PathVariable String modelId) {
 
     try {
       // resolve user
-      Authentication user = SecurityContextHolder.getContext().getAuthentication();
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      UserDto user = UserDto.of(
+          authentication.getName(),
+          registry.getByAuthentication(authentication).getId()
+      );
       // resolve model ID
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
       // resolve ModeShape workspace ID
@@ -248,7 +256,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       Collection<Attachment> attachments = ConcurrentHashMap.newKeySet();
       executor.submit(
           new AsyncModelAttachmentsFetcher(attachments, modelID,
-              userRepositoryRoleService.isSysadmin(user.getName()))
+              userRepositoryRoleService.isSysadmin(user))
               .with(SecurityContextHolder.getContext())
               .with(RequestContextHolder.getRequestAttributes())
               .with(getModelRepositoryFactory())
@@ -267,7 +275,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       Collection<String> actions = ConcurrentHashMap.newKeySet();
       executor.submit(
           new AsyncWorkflowActionsFetcher(
-              workflowService, actions, modelID, UserContext.user(user, workspaceId)
+              workflowService, actions, modelID, UserContext.user(authentication, workspaceId)
           )
               .with(SecurityContextHolder.getContext())
               .with(RequestContextHolder.getRequestAttributes())
@@ -620,7 +628,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public void getUserModels(Principal principal, final HttpServletResponse response) {
     List<ModelId> userModels = Lists.newArrayList();
 
-    User user = accountService.getUser(principal.getName());
+    IUserContext userContext = UserContext
+        .user(SecurityContextHolder.getContext().getAuthentication());
+
+    User user = accountService.getUser(userContext);
     Collection<Namespace> namespaces = null;
     try {
       namespaces = userNamespaceRoleService.getNamespaces(user, user);
@@ -701,7 +712,11 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     try {
       ModelId modelID = ModelId.fromPrettyFormat(modelId);
       String workspaceId = getWorkspaceId(modelId);
-      Authentication user = SecurityContextHolder.getContext().getAuthentication();
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      UserDto user = UserDto.of(
+          authentication.getName(),
+          registry.getByAuthentication(authentication).getId()
+      );
       return new ResponseEntity<>(
           getPolicyManager(workspaceId).getPolicyEntries(modelID)
               .stream()
@@ -722,7 +737,11 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "model ID must not be null");
 
-    Authentication user = SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDto user = UserDto.of(
+        authentication.getName(),
+        registry.getByAuthentication(authentication).getId()
+    );
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
     String tenantId = getWorkspaceId(modelId);
 
@@ -752,10 +771,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     if (attemptChangePolicyOfCurrentUser(entry)) {
       throw new IllegalArgumentException("Cannot change policy of current user");
     } else if (!entry.getPrincipalId().equals(IModelPolicyManager.ANONYMOUS_ACCESS_POLICY)
-        && !this.accountService.exists(entry.getPrincipalId())) {
+        && !this.accountService.anyExists(entry.getPrincipalId())) {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
-
     getPolicyManager(getWorkspaceId(modelId))
         .addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
   }
@@ -783,16 +801,21 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @PostMapping(value = "/{modelId:.+}/makePublic", produces = "application/json")
   public ResponseEntity<Status> makeModelPublic(final @PathVariable String modelId) {
 
-    IUserContext user =
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
-            getWorkspaceId(ControllerUtils.sanitize(modelId)));
+    UserDto user = UserDto.of(
+        SecurityContextHolder.getContext().getAuthentication().getName(),
+        registry.getByAuthentication(SecurityContextHolder.getContext().getAuthentication()).getId()
+    );
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     try {
-      if (!userRepositoryRoleService.isSysadmin(user.getUsername()) &&
+      if (!userRepositoryRoleService.isSysadmin(user) &&
           !userNamespaceRoleService
-              .hasRole(user.getUsername(), modelID.getNamespace(), "model_publisher")) {
+              .hasRole(
+                  user,
+                  modelID.getNamespace(), "model_publisher"
+              )
+      ) {
         return new ResponseEntity<>(
             Status.fail("Only users with Publisher roles are allowed to make models public"),
             HttpStatus.UNAUTHORIZED);
@@ -826,26 +849,30 @@ public class ModelRepositoryController extends AbstractRepositoryController {
             String.format("Namespace [%s] could not be found.", namespace), null));
   }
 
-  private IDiagnostics getDiagnosticService(final String tenantId) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return getModelRepositoryFactory().getDiagnosticsService(tenantId, authentication);
+  private IDiagnostics getDiagnosticService(final String workspaceID) {
+    return getModelRepositoryFactory().getDiagnosticsService(workspaceID);
   }
 
-  private IModelPolicyManager getPolicyManager(final String tenantId) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return getModelRepositoryFactory().getPolicyManager(tenantId, authentication);
+  private IModelPolicyManager getPolicyManager(final String workspaceID) {
+    return getModelRepositoryFactory().getPolicyManager(workspaceID);
   }
 
-  private boolean userHasPolicyEntry(PolicyEntry policyEntry, Authentication user,
+  private boolean userHasPolicyEntry(PolicyEntry policyEntry, UserDto user,
       String workspaceId) {
     Namespace namespace = namespaceService.findNamespaceByWorkspaceId(workspaceId);
+    // this has the potential to return inconsistent results if the policy entry has a user
+    // principal type not associated with an anonymous user
     if (policyEntry.getPrincipalType() == PrincipalType.User && policyEntry.getPrincipalId()
-        .equals(user.getName())) {
+        .equals(user.getUsername())) {
       return true;
     } else if (policyEntry.getPrincipalType() == PrincipalType.Role) {
       try {
         return userNamespaceRoleService
-            .hasRole(user.getName(), namespace.getName(), policyEntry.getPrincipalId());
+            .hasRole(
+                user,
+                namespace.getName(),
+                policyEntry.getPrincipalId()
+            );
       } catch (DoesNotExistException dnee) {
         LOGGER.warn(dnee);
         return false;
@@ -912,8 +939,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     }
   }
 
-  private IModelRepository getModelRepository(String tenantId) {
-    return this.modelRepositoryFactory.getRepository(tenantId);
+  private IModelRepository getModelRepository(String workspaceID) {
+    return this.modelRepositoryFactory.getRepository(workspaceID);
   }
 
   private Map<ModelInfo, FileContent> getModelsAndDependencies(Collection<ModelId> modelIds) {

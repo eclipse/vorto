@@ -37,24 +37,36 @@ public class ClaimOwnership implements IWorkflowFunction {
 	  this.repositoryFactory = repositoryFactory;
 	}
 	
+	@Deprecated
 	@Override
 	public void execute(ModelInfo model, IUserContext user,Map<String,Object> context) {
-		LOGGER.info("Claiming model " + model.getId() + " of user '" + user.getUsername() + "' and role 'admin'");
+		LOGGER.info(
+				String.format(
+						"Claiming model [%s]", model.getId()
+				)
+		);
 		
-		Collection<PolicyEntry> policies = repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
+		Collection<PolicyEntry> policies = repositoryFactory
+				.getPolicyManager(user.getWorkspaceId())
 		    .getPolicyEntries(model.getId());
+
 		for (PolicyEntry entry : policies) {
-		  LOGGER.info("removing " + entry);
-		  repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
+		  LOGGER.info(String.format("Removing [%s]", entry));
+
+		  repositoryFactory.getPolicyManager(user.getWorkspaceId())
 		    .removePolicyEntry(model.getId(), entry);
 		}
 		
-		repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication())
-		  .addPolicyEntry(model.getId(), PolicyEntry.of(user.getUsername(), PrincipalType.User, Permission.FULL_ACCESS), PolicyEntry.of(
-				RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS));
+		repositoryFactory.getPolicyManager(user.getWorkspaceId())
+		  .addPolicyEntry(
+		  		model.getId(),
+					PolicyEntry.of(user.getUsername(), PrincipalType.User, Permission.FULL_ACCESS),
+					PolicyEntry.of(
+						RepositoryRole.SYS_ADMIN.getName(), PrincipalType.Role, Permission.FULL_ACCESS)
+			);
         
         model.setAuthor(user.getUsername());  
-        repositoryFactory.getRepository(user.getWorkspaceId(), user.getAuthentication())
+        repositoryFactory.getRepository(user.getWorkspaceId())
           .updateMeta(model);
 	}
 }

@@ -12,10 +12,15 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.VerificationHelper;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserBuilder;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.InvalidUserException;
@@ -24,10 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HydraTokenVerifierTest extends AbstractVerifierTest {
@@ -39,14 +40,18 @@ public class HydraTokenVerifierTest extends AbstractVerifierTest {
   private BoschIoTSuiteOAuthProviderConfiguration configuration;
 
   private BoschIoTSuiteOAuthProviderAuthCode getVerifier() throws InvalidUserException {
-    User user = new UserBuilder().withName("d758a35e-94ef-443f-9625-7f03092e2005").withAuthenticationProviderID("GITHUB").build();
-    DefaultUserAccountService userAccountService = Mockito.mock(DefaultUserAccountService.class);
-    when(userAccountService.getUser("d758a35e-94ef-443f-9625-7f03092e2005")).thenReturn(user);
+    User user = new UserBuilder().withName("d758a35e-94ef-443f-9625-7f03092e2005")
+        .withAuthenticationProviderID(BoschIoTSuiteOAuthProviderAuthCode.ID)
+        .build();
+    UserRepository userRepository = Mockito.mock(UserRepository.class);
+    when(userRepository.findByUsernameAndAuthenticationProviderId(
+        "d758a35e-94ef-443f-9625-7f03092e2005", BoschIoTSuiteOAuthProviderAuthCode.ID)
+    ).thenReturn(Optional.of(user));
 
     UserNamespaceRoleService userNamespaceRoleService = Mockito
         .mock(UserNamespaceRoleService.class);
 
-    return new BoschIoTSuiteOAuthProviderAuthCode("", publicKey(), configuration, userAccountService,
+    return new BoschIoTSuiteOAuthProviderAuthCode("", publicKey(), configuration, userRepository,
         userNamespaceRoleService);
   }
 

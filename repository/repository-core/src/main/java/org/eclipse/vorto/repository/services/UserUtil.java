@@ -12,7 +12,11 @@
  */
 package org.eclipse.vorto.repository.services;
 
+import com.google.common.base.Strings;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.vorto.repository.domain.Namespace;
@@ -34,6 +38,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserUtil {
+
+  /**
+   * Defines the legacy notation for Bosch OAuth providers. <br/>
+   * Used to convert old-notation requests (e.g. coming from software integrating with Vorto), so
+   * that values are automatically converted to the new notation during validation, thus supporting
+   * edge-case backwards compatibility.
+   */
+  public static final Map<String[], String> LEGACY_BOSCH_OAUTH_IDS_CONVERSION = new HashMap<>();
+  static {
+    LEGACY_BOSCH_OAUTH_IDS_CONVERSION.put(new String[]{"BOSCH-ID", "BOSCH-IOT-SUITE-AUTH"}, "BOSCH");
+  };
 
   @Autowired
   private IOAuthProviderRegistry registry;
@@ -97,10 +112,19 @@ public class UserUtil {
    */
   public void validateNewUser(User user) throws InvalidUserException {
     // boilerplate null validation
-    ServiceValidationUtil.validateNulls(user);
-    ServiceValidationUtil.validateEmpties(user.getUsername(),
-        user.getAuthenticationProviderId(), user.getSubject());
-    validateSubject(user.getSubject());
+    try {
+      ServiceValidationUtil.validateNulls(user);
+      ServiceValidationUtil.validateEmpties(user.getUsername(),
+          user.getAuthenticationProviderId(), user.getSubject());
+      validateSubject(user.getSubject());
+    }
+    catch (IllegalArgumentException iae) {
+      throw new InvalidUserException(iae.getMessage());
+    }
+    // converts the legacy-notation authentication provider ID to the new notation if necessary
+    user.setAuthenticationProviderId(
+        convertLegacyBoschOAuthProviderID(user.getAuthenticationProviderId())
+    );
     validateAuthenticationProviderID(user.getAuthenticationProviderId());
   }
 
@@ -138,6 +162,18 @@ public class UserUtil {
       throw new OperationForbiddenException(
           "Acting user is neither target user nor sysadmin - aborting operation");
     }
+  }
+
+  /**
+   * Converts legacy-notation Bosch OAuth provider ID to new notation if necessary. <br/>
+   * Used in user pre-validation.
+   *
+   * @param oauthID
+   * @return
+   */
+  public static String convertLegacyBoschOAuthProviderID(String oauthID) {
+    if (Strings.isNullOrEmpty(oauthID)) return oauthID;
+    return Optional.ofNullable(LEGACY_BOSCH_OAUTH_IDS_CONVERSION.get(oauthID)).orElse(oauthID);
   }
 
 }

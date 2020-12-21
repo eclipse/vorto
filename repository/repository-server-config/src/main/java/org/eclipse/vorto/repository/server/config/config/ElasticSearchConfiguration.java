@@ -12,6 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.config.config;
 
+import com.amazonaws.auth.AWS4Signer;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.http.AWSRequestSigningApacheInterceptor;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.PreDestroy;
@@ -26,8 +31,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.search.ElasticSearchService;
-import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -38,11 +43,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import com.amazonaws.auth.AWS4Signer;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.http.AWSRequestSigningApacheInterceptor;
-import com.google.common.base.Strings;
 
 /**
  * Elastic Search Service Configuration, supporting local Docker as well as AWS Elastic Service
@@ -90,12 +90,15 @@ public class ElasticSearchConfiguration {
 
   @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private IOAuthProviderRegistry registry;
   
 
   @Bean
   @Profile(value = { "prod", "int", "local-docker", "local-dev", "local-dev-mysql","local-benchmark-test"})
   public ElasticSearchService elasticSearch() {
-    return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService);
+    return new ElasticSearchService(client, repositoryFactory, userNamespaceRoleService, registry);
   }
   
   @Bean

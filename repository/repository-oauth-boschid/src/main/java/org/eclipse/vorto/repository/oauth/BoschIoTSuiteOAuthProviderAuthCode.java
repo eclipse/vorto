@@ -12,11 +12,22 @@
  */
 package org.eclipse.vorto.repository.oauth;
 
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
+import static org.eclipse.vorto.repository.oauth.BoschIDOAuthProvider.JWT_CLIENT_ID;
+
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.vorto.repository.domain.IRole;
 import org.eclipse.vorto.repository.oauth.internal.JwtToken;
 import org.eclipse.vorto.repository.oauth.internal.PublicKeyHelper;
 import org.eclipse.vorto.repository.oauth.internal.SpringUserUtils;
+import org.eclipse.vorto.repository.repositories.UserRepository;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +38,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.PublicKey;
-import java.util.*;
-import java.util.function.Supplier;
-
-import static org.eclipse.vorto.repository.oauth.BoschIDOAuthProvider.JWT_CLIENT_ID;
 
 @Component
 public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
@@ -47,26 +51,25 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
 
   private final String clientId;
 
-  private final DefaultUserAccountService userAccountService;
+  private final UserRepository userRepository;
 
   private final UserNamespaceRoleService userNamespaceRoleService;
 
-
-  private static final String ID = "BOSCH-IOT-SUITE-AUTH";
+  public static final String ID = "BOSCH";
 
   @Autowired
   public BoschIoTSuiteOAuthProviderAuthCode(
       @Value("${suite.oauth2.client.clientId}") String clientId,
       @Value("${oauth2.verification.hydra.publicKeyUri: #{null}}") String hydraPublicKeyUri,
       @Autowired BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration,
-      @Autowired DefaultUserAccountService userAccountService,
+      @Autowired UserRepository userRepository,
       @Autowired UserNamespaceRoleService userNamespaceRoleService
   ) {
-    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userAccountService,
+    super(PublicKeyHelper.supplier(new RestTemplate(), hydraPublicKeyUri), userRepository,
         userNamespaceRoleService);
     this.clientId = Objects.requireNonNull(clientId);
     this.configuration = Objects.requireNonNull(suiteOAuthProviderConfiguration);
-    this.userAccountService = Objects.requireNonNull(userAccountService);
+    this.userRepository = Objects.requireNonNull(userRepository);
     this.userNamespaceRoleService = Objects.requireNonNull(userNamespaceRoleService);
   }
 
@@ -74,14 +77,14 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
       String clientId,
       Supplier<Map<String, PublicKey>> publicKeySupplier,
       BoschIoTSuiteOAuthProviderConfiguration suiteOAuthProviderConfiguration,
-      DefaultUserAccountService userAccountService,
+      UserRepository userRepository,
       UserNamespaceRoleService userNamespaceRoleService
   ) {
-    super(publicKeySupplier, userAccountService,
+    super(publicKeySupplier, userRepository,
         userNamespaceRoleService);
     this.clientId = Objects.requireNonNull(clientId);
     this.configuration = Objects.requireNonNull(suiteOAuthProviderConfiguration);
-    this.userAccountService = Objects.requireNonNull(userAccountService);
+    this.userRepository = Objects.requireNonNull(userRepository);
     this.userNamespaceRoleService = Objects.requireNonNull(userNamespaceRoleService);
   }
 
@@ -153,8 +156,17 @@ public class BoschIoTSuiteOAuthProviderAuthCode extends AbstractOAuthProvider {
 
     String userId = getUserId(tokenPayload).orElseThrow(() -> new InvalidTokenException(
         "Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
-    return Optional.ofNullable(userAccountService.getUser(userId))
-        .map(user -> createAuthentication(this.clientId, userId, name.orElse(userId), email.orElse(null), userNamespaceRoleService.getRolesOnAllNamespaces(user)))
+    return userRepository.findByUsernameAndAuthenticationProviderId(userId, ID)
+        .map(
+            user ->
+                createAuthentication(
+                    this.clientId,
+                    userId,
+                    name.orElse(userId),
+                    email.orElse(null),
+                    userNamespaceRoleService.getRolesOnAllNamespaces(user)
+                )
+        )
         .orElse(null);
   }
 

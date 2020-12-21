@@ -12,6 +12,12 @@
  */
 package org.eclipse.vorto.repository.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.List;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.UnitTestBase;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -20,21 +26,13 @@ import org.eclipse.vorto.repository.model.impl.DefaultBulkOperationsService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
-import org.springframework.security.core.Authentication;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class BulkOperationServiceTest extends UnitTestBase {
 
   private IBulkOperationsService getModelService(final String username) {
-    return new DefaultBulkOperationsService(repositoryFactory) {
-      @Override
-      protected Authentication getAuthenticationToken() {
-        return createAuthenticationToken(username);
-      }
-    };
+    SecurityContextHolder.getContext().setAuthentication(createAuthenticationToken(username));
+    return new DefaultBulkOperationsService(repositoryFactory);
   }
   
   private void importAndMakePublic(String filename, String modelId) {

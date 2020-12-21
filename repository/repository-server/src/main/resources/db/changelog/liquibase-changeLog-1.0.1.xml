@@ -18,4 +18,31 @@
     <sqlFile path="/db/changelog/scripts/migrate_db_comment_2020_MariaDB.sql" dbms="mariadb,mysql" />
   </changeSet>
 
+  <changeSet id="merge_bosch_oauth_providers" author="mena-bosch" dbms="mariadb,mysql">
+    <preConditions onFail="CONTINUE">
+      <sqlCheck expectedResult="1">
+        SELECT CASE WHEN (SELECT COUNT(*) FROM user WHERE authentication_provider_id='BOSCH-ID' OR authentication_provider_id='BOSCH-IOT-SUITE-AUTH' > 0) THEN 1 ELSE 0 END;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/merge_bosch_oauth_providers.sql" dbms="mariadb,mysql" />
+  </changeSet>
+
+  <changeSet id="change_comment_authorship" author="mena-bosch" dbms="mariadb, mysql">
+    <preConditions onFail="CONTINUE">
+      <not>
+        <columnExists tableName="comment" columnName="author_id"/>
+      </not>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/change_comment_authorship.sql" dbms="mariadb,mysql"/>
+  </changeSet>
+
+  <changeSet id="remove_username_uniqueness" author="mena-bosch" dbms="mariadb, mysql">
+    <preConditions onFail="CONTINUE">
+      <sqlCheck expectedResult="1">
+        select count(*) from information_schema.KEY_COLUMN_USAGE where TABLE_NAME ='user' and COLUMN_NAME = 'username';
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="/db/changelog/scripts/remove_username_uniqueness.sql" dbms="mariadb, mysq"/>
+  </changeSet>
+
 </databaseChangeLog>

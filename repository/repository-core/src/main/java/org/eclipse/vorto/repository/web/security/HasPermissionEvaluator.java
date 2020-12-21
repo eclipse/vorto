@@ -18,9 +18,11 @@ import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.NamespaceService;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   private NamespaceService namespaceService;
 
   private UserNamespaceRoleService userNamespaceRoleService;
+
+  @Autowired
+  private IOAuthProviderRegistry registry;
 
   public HasPermissionEvaluator(
       @Autowired IModelRepositoryFactory repositoryFactory,
@@ -62,7 +67,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
                   "Model '" + modelId.getPrettyFormat() + "' can't be found in any workspace."));
 
           String permission = (String) targetPermission;
-          ModelInfo modelInfo = repositoryFactory.getRepository(workspaceId, authentication)
+          ModelInfo modelInfo = repositoryFactory.getRepository(workspaceId)
               .getById(modelId);
           if (modelInfo != null) {
             if ("model:delete".equalsIgnoreCase(permission)) {
@@ -85,8 +90,8 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
             .orElseThrow(() -> new ModelNotFoundException(
                 "The workspace for '" + modelId.getPrettyFormat() + "' could not be found."));
 
-        return repositoryFactory.getPolicyManager(workspaceId, authentication)
-            .hasPermission(modelId, permission);
+        return repositoryFactory.getPolicyManager(workspaceId)
+            .hasPermission(authentication, modelId, permission);
       }
     } else if (targetDomainObject instanceof String) {
       return username.equalsIgnoreCase((String) targetDomainObject);
@@ -104,7 +109,14 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
       final ModelId modelId = ModelId.fromPrettyFormat((String) targetId);
       try {
         return userNamespaceRoleService
-            .hasRole(authentication.getName(), modelId.getNamespace(), role);
+            .hasRole(
+                UserDto.of(
+                  authentication.getName(),
+                  registry.getByAuthentication(authentication).getId()
+                ),
+                modelId.getNamespace(),
+                role
+            );
       } catch (DoesNotExistException dnee) {
         return false;
       }

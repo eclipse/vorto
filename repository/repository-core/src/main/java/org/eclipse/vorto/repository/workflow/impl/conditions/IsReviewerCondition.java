@@ -43,7 +43,7 @@ public class IsReviewerCondition extends AbstractWorkflowCondition {
   public boolean passesCondition(ModelInfo model, IUserContext user) {
     IRole role = roleService.findAnyByName("model_reviewer")
         .orElseThrow(() -> new IllegalStateException("model_reviewer role not found."));
-    User foundUser = userAccountService.getUser(user.getUsername());
+    User foundUser = userAccountService.getUser(user);
     return Objects.nonNull(foundUser) && hasRole(user, foundUser, role);
   }
 

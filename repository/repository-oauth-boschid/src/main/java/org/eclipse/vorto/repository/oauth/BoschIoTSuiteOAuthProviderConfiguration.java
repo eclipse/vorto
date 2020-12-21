@@ -79,4 +79,8 @@ public class BoschIoTSuiteOAuthProviderConfiguration extends AbstractOAuthProvid
     return "webjars/repository-web/dist/images/bosch-social.png";
   }
 
+  @Override
+  protected String getProviderID() {
+    return BoschIoTSuiteOAuthProviderAuthCode.ID;
+  }
 }

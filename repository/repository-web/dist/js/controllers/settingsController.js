@@ -18,8 +18,69 @@ define(["../init/appController"], function (repositoryControllers) {
         function ($location, $rootScope, $scope, $http, $uibModal, $timeout,
             $window) {
 
-          $scope.email = "";
-          $scope.username = "";
+          $scope.user = null;
+
+          $scope.initialize = function() {
+            if ($rootScope.userInfo) {
+              $scope.user = {
+                "username" : $rootScope.userInfo.name,
+                "authenticationProvider" : $rootScope.userInfo.provider.id
+              };
+              $scope.getEmail();
+            }
+            else {
+              $http.get("./user")
+              .then(
+                  function(result) {
+                    $scope.user =
+                        {
+                          "username" : result.data.name,
+                          "authenticationProvider": result.data.provider.id
+                        };
+                    $scope.getEmail();
+                  },
+                  function(error) {
+                    $scope.success = false;
+                    $scope.errorMessage = "There was an issue while retrieving user data. Please reload this page and try again.";
+                    angular.element(document).ready(function () {
+                      $scope.toggleSaveButtonAvailability(false);
+                    });
+                  }
+              )
+            }
+          }
+
+          $scope.getEmail = function() {
+            if ($scope.user) {
+              /*
+                Once we have the username + oauth provider id, we need
+                an additional call to the account settings to get the
+                e-mail address.
+                I expect this is in order to minimize the exposition of that
+                field all across the front-end.
+                */
+              $http.get("./rest/accounts", {
+                params: {
+                  "username": $scope.user.username,
+                  "authenticationProvider": $scope.user.authenticationProvider
+                }
+              })
+              .then(
+                  function (result) {
+                    $scope.user.email = result.data.email;
+                  },
+                  function (error) {
+                    $scope.success = false;
+                    $scope.errorMessage = "There was an issue while retrieving user data. Please reload this page and try again.";
+                    angular.element(document).ready(function () {
+                      $scope.toggleSaveButtonAvailability(false);
+                    });
+                  }
+              )
+            }
+          }
+
+          $scope.initialize();
 
           // HTML autofocus does not work well with angularJS it seems
           angular.element(document).ready(function () {
@@ -31,20 +92,6 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.reload = function () {
             $window.location.reload();
-          }
-
-          /*
-            Retrieves username from root scope initially, in order to fetch
-            settings (so far only e-mail) from back-end.
-            Persists username to session storage.
-           */
-          if ($rootScope.user) {
-            $scope.username = $rootScope.user;
-            if (sessionStorage) {
-              sessionStorage.username = JSON.stringify($scope.username);
-            }
-          } else if (sessionStorage && sessionStorage.username) {
-            $scope.username = JSON.parse(sessionStorage.username);
           }
 
           $scope.toggleSaveButtonAvailability = function (value) {
@@ -62,14 +109,11 @@ define(["../init/appController"], function (repositoryControllers) {
           }
 
           $scope.saveSettings = function () {
-            $http.put("./rest/accounts/" + $scope.username, $scope.email)
+            $http.put("./rest/accounts/", $scope.user)
             .then(
                 function (result) {
                   $scope.success = true;
                   $scope.errorMessage = null;
-                  if (sessionStorage) {
-                    sessionStorage.username = JSON.stringify($scope.username);
-                  }
                   $scope.toggleSaveButtonAvailability(false);
                   $scope.toggleCancelButtonAvailability(false);
                 },
@@ -87,29 +131,6 @@ define(["../init/appController"], function (repositoryControllers) {
                 }
             );
           };
-
-          $scope.getSettings = function () {
-            $http.get("./rest/accounts/" + $scope.username)
-            .then(
-                function (result) {
-                  $scope.errorMessage = null;
-                  $scope.username = result.data.username;
-                  $scope.email = result.data.email;
-                  if (sessionStorage) {
-                    sessionStorage.username = JSON.stringify($scope.username);
-                  }
-                },
-                function(error) {
-                  $scope.success = false;
-                  $scope.errorMessage = "There was an issue while retrieving user data. Please reload this page and try again.";
-                  angular.element(document).ready(function () {
-                    $scope.toggleSaveButtonAvailability(false);
-                  });
-                }
-            );
-          };
-
-          $scope.getSettings();
 
           $scope.openRemoveAccount = function () {
             var modalInstance = $uibModal.open({

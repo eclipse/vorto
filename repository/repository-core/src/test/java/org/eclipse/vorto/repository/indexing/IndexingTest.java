@@ -64,7 +64,7 @@ public class IndexingTest extends UnitTestBase {
     
     importModel("creator", "ColorEnum.type");
     
-    ModelInfo modelInfo = repositoryFactory.getRepository(creator).getById(MODEL_ID); 
+    ModelInfo modelInfo = repositoryFactory.getRepository(creator).getById(MODEL_ID);
     
     modelInfo.setAuthor("newauthor");
     

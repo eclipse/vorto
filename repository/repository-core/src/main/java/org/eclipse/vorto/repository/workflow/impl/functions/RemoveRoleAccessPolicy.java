@@ -39,12 +39,19 @@ public class RemoveRoleAccessPolicy implements IWorkflowFunction {
     this.roleToRemove = role;
   }
 
+  @Deprecated
   @Override
   public void execute(ModelInfo model, IUserContext user, Map<String, Object> context) {
     IModelPolicyManager policyManager =
-        repositoryFactory.getPolicyManager(user.getWorkspaceId(), user.getAuthentication());
+        repositoryFactory.getPolicyManager(user.getWorkspaceId());
     IRole role = roleToRemove.get();
-    LOGGER.info("Removing full access of model to " + role.getName() + " for " + model.getId());
+    LOGGER.info(
+        String.format(
+            "Removing full access of model to [%s] for [%s]",
+            role.getName(),
+            model.getId()
+        )
+    );
     Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
     for (PolicyEntry policy : policies) {
       if (policy.getPrincipalId().equals(role.getName()) &&

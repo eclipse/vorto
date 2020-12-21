@@ -75,5 +75,8 @@ public class BoschIDOAuthProviderConfiguration extends AbstractOAuthProviderConf
     return "webjars/repository-web/dist/images/bosch-social.png";
   }
 
-
+  @Override
+  protected String getProviderID() {
+    return BoschIDOAuthProvider.ID;
+  }
 }

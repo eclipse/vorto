@@ -40,19 +40,31 @@ public class UserHasAccessToNamespaceValidation implements IModelValidator {
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
 
-    if (userRepositoryRoleService.isSysadmin(userAccountService.getUser(context.getUserContext().getUsername()))) {
+    User user = userAccountService.getUser(context.getUserContext());
+
+    if (userRepositoryRoleService.isSysadmin(user)) {
       return;
     }
     
-    User user = userAccountService.getUser(context.getUserContext().getUsername());
     try {
-      if (userNamespaceRoleService.getNamespaces(user, user).stream().noneMatch(namespace -> namespace.owns(modelResource.getId()))) {
-        throw new ValidationException("User " + user.getUsername() + " does not have access to target namespace "
-            + modelResource.getId().getNamespace(), modelResource);
+      if (userNamespaceRoleService.getNamespaces(user, user).stream()
+          .noneMatch(namespace -> namespace.owns(modelResource.getId()))) {
+        throw new ValidationException(
+            String.format(
+                "User does not have access to target namespace [%s]",
+                modelResource.getId().getNamespace()),
+            modelResource
+        );
       }
     } catch (OperationForbiddenException | DoesNotExistException e) {
-      throw new ValidationException("User " + user.getUsername() + " does not have access to target namespace "
-          + modelResource.getId().getNamespace(), modelResource, e);
+      throw new ValidationException(
+          String.format(
+              "User does not have access to target namespace [%s]",
+              modelResource.getId().getNamespace()
+          ),
+          modelResource,
+          e
+      );
     }
   }
 

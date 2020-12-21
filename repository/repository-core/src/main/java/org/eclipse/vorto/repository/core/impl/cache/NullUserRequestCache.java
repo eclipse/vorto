@@ -19,8 +19,9 @@ import org.eclipse.vorto.repository.domain.UserNamespaceRoles;
 import org.eclipse.vorto.repository.domain.UserRepositoryRoles;
 
 /**
- * This is a "view" on a {@link User}'s role data, when invoked by {@link UserRolesRequestCache#withUser(User)}
- * or {@link UserRolesRequestCache#withUser(String)} on
+ * This is a "view" on a {@link User}'s role data, when invoked by
+ * {@link UserRolesRequestCache#withUser(org.eclipse.vorto.repository.web.account.dto.UserDto)}
+ * or {@link UserRolesRequestCache#withSelf()} on
  * an instance of {@link UserRolesRequestCache}.<br/>
  * In this specific case, the {@link User} could not be resolved, because it was not found. <br/>
  * This matches some edge cases where user roles are queried after a {@link User} has been deleted.

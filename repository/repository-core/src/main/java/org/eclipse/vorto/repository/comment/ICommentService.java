@@ -19,6 +19,7 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
 
 /**
@@ -28,20 +29,28 @@ public interface ICommentService {
 
   DateFormat DATE_FORMAT = new SimpleDateFormat("hh:mm a dd-MM-yyyy");
 
-  void createComment(String username, CommentDTO comment) throws DoesNotExistException, OperationForbiddenException;
+  /**
+   *
+   * @param author
+   * @param comment
+   * @throws DoesNotExistException
+   * @throws OperationForbiddenException
+   */
+  void createComment(UserDto author, CommentDTO comment) throws DoesNotExistException,
+      OperationForbiddenException;
 
   List<Comment> getCommentsforModelId(ModelId modelId);
 
-  List<Comment> getCommentsByAuthor(String author);
+  List<Comment> getCommentsByAuthor(UserDto author);
 
   /**
    * Deletes the comment
    *
+   * @param user
    * @param id
-   * @param username
    * @return true if successful
    */
-  boolean deleteComment(String username, long id) throws DoesNotExistException;
+  boolean deleteComment(UserDto user, long id) throws DoesNotExistException;
 
   /**
    * Authorizes the user to delete a given comment. <br/>
@@ -58,11 +67,11 @@ public interface ICommentService {
    *     They have the {@literal sysadmin} role on the repository
    *   </li>
    * </ul>
-   * @param username
+   * @param user
    * @param comment
    * @return
    */
-  boolean canDelete(String username, Comment comment);
+  boolean canDelete(UserDto user, Comment comment);
 
   /**
    * Authorizes a user to create a comment if either of the following conditions applies:
@@ -78,13 +87,18 @@ public interface ICommentService {
    *   </li>
    * </ul>
    *
-   * @param username
+   * @param user
    * @param comment
    * @return
    */
-  boolean canCreate(String username, Comment comment);
+  boolean canCreate(UserDto user, CommentDTO comment);
 
-  void saveComment(Comment comment);
+  /**
+   *
+   * @param comment
+   * @throws DoesNotExistException if the author {@link UserDto} cannot be resolved to a real user.
+   */
+  void saveComment(CommentDTO comment) throws DoesNotExistException;
 
 
 }

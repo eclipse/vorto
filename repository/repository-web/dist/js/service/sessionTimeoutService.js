@@ -28,10 +28,16 @@ define(["../init/appService"], function (repository) {
             };
             checkSessionTimeout($scope);
           }
-
           function extendSession($scope) {
             $http
-            .get('./rest/accounts/' + $rootScope.user)
+            .get('./rest/accounts/',
+                {
+                  params: {
+                    username: $rootScope.userInfo.name,
+                    authenticationProvider: $rootScope.userInfo.provider.id
+                  }
+                }
+            )
             .then(
                 function (result) {
                 },

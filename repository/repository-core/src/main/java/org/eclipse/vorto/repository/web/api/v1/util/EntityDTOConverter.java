@@ -71,7 +71,10 @@ public class EntityDTOConverter {
 
   public static Collection<Collaborator> createCollaborators(
       Map<User, Collection<IRole>> usersAndRoles) {
-    Collection<Collaborator> result = new TreeSet<>(Comparator.comparing(Collaborator::getUserId));
+    Collection<Collaborator> result = new TreeSet<>(
+        Comparator.comparing(Collaborator::getUserId)
+            .thenComparing(Collaborator::getAuthenticationProviderId)
+    );
     usersAndRoles.forEach(
         (u, c) -> {
           Collaborator collaborator = new Collaborator();

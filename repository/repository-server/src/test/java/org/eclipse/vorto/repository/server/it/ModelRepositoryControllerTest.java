@@ -159,6 +159,7 @@ public class ModelRepositoryControllerTest extends IntegrationTestBase {
     Collaborator collaborator = new Collaborator();
     collaborator.setTechnicalUser(false);
     collaborator.setUserId(USER_MODEL_CREATOR_NAME);
+    collaborator.setAuthenticationProviderId(GITHUB);
     collaborator.setRoles(Sets.newHashSet("model_creator"));
     addCollaboratorToNamespace("com.test", collaborator);
     createModel(userModelCreator, fileName, modelId);

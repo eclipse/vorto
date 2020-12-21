@@ -14,7 +14,9 @@ package org.eclipse.vorto.repository.comment.impl;
 
 import java.util.List;
 import org.eclipse.vorto.repository.domain.Comment;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -25,7 +27,13 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
 
   List<Comment> findByModelId(String modelId);
 
-  List<Comment> findByAuthor(String author);
+  @Query(
+      "select c from Comment c join c.author u where u.username = :username and u.authenticationProviderId = :authenticationProviderID"
+  )
+  List<Comment> findByAuthor(
+      @Param("username") String username,
+      @Param("authenticationProviderID") String authenticationProviderID
+  );
 
   void delete(Long id);
 }

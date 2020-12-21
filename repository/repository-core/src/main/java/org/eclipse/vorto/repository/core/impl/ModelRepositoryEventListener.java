@@ -12,18 +12,10 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
-import static org.eclipse.vorto.repository.core.impl.ModelRepository.VORTO_AUTHOR;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IRepositoryManager;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.events.AppEvent;
 import org.eclipse.vorto.repository.core.events.EventType;
-import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.search.ISearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -37,8 +29,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ModelRepositoryEventListener implements ApplicationListener<AppEvent> {
 
-  private static final String USER_ADMIN = "Admin";
-
   @Autowired
   private ModelRepositoryFactory repositoryFactory;
 
@@ -47,9 +37,7 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
 
   @Override
   public void onApplicationEvent(AppEvent event) {
-    if (event.getEventType() == EventType.USER_DELETED) {
-      makeModelsAnonymous(event);
-    } else if (event.getEventType() == EventType.NAMESPACE_ADDED) {
+    if (event.getEventType() == EventType.NAMESPACE_ADDED) {
       createWorkspace(event);
     }
   }
@@ -57,30 +45,8 @@ public class ModelRepositoryEventListener implements ApplicationListener<AppEven
   private void createWorkspace(AppEvent event) {
     IUserContext userContext = event.getUserContext();
     IRepositoryManager repoMgr = repositoryFactory
-        .getRepositoryManager(userContext.getWorkspaceId(),
-            userContext.getAuthentication());
+        .getRepositoryManager(userContext.getWorkspaceId());
     repoMgr.createWorkspace(userContext.getWorkspaceId());
-  }
-
-  private void makeModelsAnonymous(AppEvent event) {
-    String username = (String) event.getSubject();
-
-    IUserContext technicalUserContext = PrivilegedUserContextProvider
-        .systemAdminContext(USER_ADMIN);
-
-    List<ModelInfo> result = searchService
-        .search("userReference:" + username, technicalUserContext);
-    result.forEach(model -> {
-      IModelRepository repository = repositoryFactory
-          .getRepositoryByModel(model.getId(), technicalUserContext);
-      if (model.getAuthor() != null &&
-          model.getAuthor().equals(username)) {
-        model.setAuthor(User.USER_ANONYMOUS);
-      }
-      Map<String, String> properties = new HashMap<>();
-      properties.put(VORTO_AUTHOR, User.USER_ANONYMOUS);
-      repository.updatePropertyInElevatedSession(model.getId(), properties, technicalUserContext);
-    });
   }
 
   public ModelRepositoryFactory getRepositoryFactory() {

@@ -29,8 +29,12 @@ define(["../init/appController"], function (repositoryControllers) {
 
           $scope.createNewTechnicalUser = function () {
             $scope.isCurrentlyAddingOrUpdating = true;
-            // logic two-fold depending on whether a namespace is present or not
+            // adds authentication provider ID to scoped user, so both
+            // username and authentication provider id are returned to caller
+            $scope.user.authenticationProvider = $scope.selectedAuthenticationProviderId;
+            $scope.user.subject = $scope.selectedSubject;
 
+            // logic two-fold depending on whether a namespace is present or not
             // modal opened with namespace, will create tech user and associate
             // with given namespace, with given roles
             if ($scope.namespace) {

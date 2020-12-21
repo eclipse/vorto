@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.web.api.v1.util;
 
 import com.google.common.base.Strings;
+import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.web.api.v1.dto.NamespaceAccessRequestDTO;
@@ -78,10 +79,10 @@ public final class NamespaceValidator {
     if (Strings.nullToEmpty(request.getNamespaceName()).trim().isEmpty()) {
       return Optional.of(OperationResult.failure("No namespace specified"));
     }
-    if (Strings.nullToEmpty(request.getRequestingUsername()).trim().isEmpty()) {
+    if (Objects.isNull(request.getRequestingUser()) || !request.getRequestingUser().isBasicUserInfoValid()) {
       return Optional.of(OperationResult.failure("No requesting user specified"));
     }
-    if (Strings.nullToEmpty(request.getTargetUsername()).trim().isEmpty()) {
+    if (Objects.isNull(request.getTargetUser()) || !request.getTargetUser().isBasicUserInfoValid()) {
       return Optional.of(OperationResult.failure("No target user specified"));
     }
     return Optional.empty();

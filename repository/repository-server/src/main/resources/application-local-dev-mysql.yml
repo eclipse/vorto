@@ -38,6 +38,7 @@ server:
   port: 8080
   contextPath: /
   use-forward-headers: true
+  # this is limited to GitHub users at the time of writing
   admin: aedelmann,erlemantos,kolotu,mena-bosch,t-gauss,c-kersten
 
 eidp_clientid: 123

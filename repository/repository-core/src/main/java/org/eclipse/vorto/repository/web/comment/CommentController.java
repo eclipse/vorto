@@ -24,11 +24,12 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.ModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.services.NamespaceService;
+import org.eclipse.vorto.repository.oauth.IOAuthProviderRegistry;
 import org.eclipse.vorto.repository.services.UserNamespaceRoleService;
 import org.eclipse.vorto.repository.services.UserRepositoryRoleService;
 import org.eclipse.vorto.repository.services.exceptions.DoesNotExistException;
 import org.eclipse.vorto.repository.services.exceptions.OperationForbiddenException;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.eclipse.vorto.repository.web.api.v1.dto.CommentDTO;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.slf4j.Logger;
@@ -56,9 +57,6 @@ public class CommentController {
   private ICommentService commentService;
 
   @Autowired
-  private NamespaceService namespaceService;
-
-  @Autowired
   private UserNamespaceRoleService userNamespaceRoleService;
 
   @Autowired
@@ -66,6 +64,9 @@ public class CommentController {
 
   @Autowired
   private ModelRepositoryFactory modelRepositoryFactory;
+
+  @Autowired
+  private IOAuthProviderRegistry registry;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CommentController.class);
 
@@ -77,6 +78,10 @@ public class CommentController {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    UserDto user = UserDto.of(
+        context.getUsername(),
+        registry.getByAuthentication(context.getAuthentication()).getId()
+    );
 
     // this fetches the model and infers whether it is public
     // if so, the rest of the authorization is bypassed
@@ -87,7 +92,14 @@ public class CommentController {
       if (resource.getVisibility().equalsIgnoreCase(ModelVisibility.Public.name())) {
         return new ResponseEntity<>(
             commentService.getCommentsforModelId(modelID).stream()
-                .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
+                .map(
+                    comment ->
+                        CommentDTO.with(
+                          commentService,
+                          user,
+                          comment
+                        )
+                )
                 .collect(Collectors.toList()),
             HttpStatus.OK
         );
@@ -99,12 +111,19 @@ public class CommentController {
 
     try {
       if (
-          userRepositoryRoleService.isSysadmin(context.getUsername()) ||
-          userNamespaceRoleService.hasAnyRole(context.getUsername(), modelID.getNamespace())
+          userRepositoryRoleService.isSysadmin(user) ||
+          userNamespaceRoleService.hasAnyRole(user,modelID.getNamespace())
       ) {
         return new ResponseEntity<>(
             commentService.getCommentsforModelId(modelID).stream()
-            .map(comment -> CommentDTO.with(commentService, context.getUsername(), comment))
+            .map(comment ->
+                CommentDTO
+                  .with(
+                      commentService,
+                      user,
+                      comment
+                  )
+            )
             .collect(Collectors.toList()),
             HttpStatus.OK
         );
@@ -126,9 +145,13 @@ public class CommentController {
   public ResponseEntity<Void> addCommentToModel(@RequestBody CommentDTO comment) {
 
     IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    UserDto user = UserDto.of(
+        context.getUsername(),
+        registry.getByAuthentication(context.getAuthentication()).getId()
+    );
 
     try {
-      commentService.createComment(context.getUsername(), comment);
+      commentService.createComment(user, comment);
       return new ResponseEntity<>(HttpStatus.CREATED);
     } catch (OperationForbiddenException ofe) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -139,7 +162,7 @@ public class CommentController {
   }
 
   /**
-   * For details on authorization, see {@link DefaultCommentService#deleteComment(String, long)}
+   * For details on authorization, see {@link DefaultCommentService#deleteComment(UserDto, long)}
    *
    * @param id
    * @return
@@ -148,8 +171,14 @@ public class CommentController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Void> deleteComment(@PathVariable long id) {
     IUserContext context = UserContext.user(SecurityContextHolder.getContext().getAuthentication());
+    UserDto user = UserDto.of(
+        context.getUsername(),
+        registry.getByAuthentication(context.getAuthentication()).getId()
+    );
+
     try {
-      if (commentService.deleteComment(context.getUsername(), id)) {
+      if (
+        commentService.deleteComment(user, id)) {
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
       } else {
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);

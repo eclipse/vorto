@@ -34,7 +34,7 @@ public class EclipseRepositoryAuthProvider implements IOAuthProvider {
   
   private String clientId;
   
-  private static final String ID = "ECLIPSE";
+  public static final String ID = "ECLIPSE";
   
   @Autowired
   public EclipseRepositoryAuthProvider(@Value("${eclipse.oauth2.client.clientId}") String clientId, EclipseOAuthProviderConfiguration eclipseTokenService) {

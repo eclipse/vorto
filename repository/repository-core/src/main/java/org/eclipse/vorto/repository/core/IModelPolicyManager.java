@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+import org.springframework.security.core.Authentication;
 
 public interface IModelPolicyManager {
 
@@ -57,17 +58,18 @@ public interface IModelPolicyManager {
   /**
    * checks if the current user has the given permission for the given model ID
    *
+   * @param authentication
    * @param modelId
    * @param permission
    * @return true if he/she has access, false otherwise
    */
-  boolean hasPermission(ModelId modelId, Permission permission);
+  boolean hasPermission(Authentication authentication, ModelId modelId, Permission permission);
 
   /**
    * Copies the policy entries from source model to target model
    *
-   * @param oldModelId
-   * @param newModelId
+   * @param sourceModelId
+   * @param targetModelId
    */
   void copyPolicyEntries(ModelId sourceModelId, ModelId targetModelId);
 

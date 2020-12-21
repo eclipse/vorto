@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.junit.Test;
 
 import java.util.Optional;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.Assert.*;
 
@@ -80,6 +81,7 @@ public class ModelIdToModelContentConverterTest extends UnitTestBase {
 
   private void setupTestDataForLatestTag() throws WorkflowException {
     IUserContext user = createUserContext("alex", "playground");
+    SecurityContextHolder.getContext().setAuthentication(createAuthenticationToken("alex"));
     ModelInfo color = importModel("Color.type");
     ModelInfo color6 = importModel("Color6.type");
     importModel("Color7.type");

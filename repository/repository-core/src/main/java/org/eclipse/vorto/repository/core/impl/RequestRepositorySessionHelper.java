@@ -30,7 +30,6 @@ import org.springframework.web.context.annotation.RequestScope;
 import javax.jcr.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 @Component
@@ -41,7 +40,7 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
 
     private Map<String, Session> repositorySessionMap;
     private String workspaceId;
-    private Authentication user;
+    private Authentication authentication;
     private Repository repository;
     private Collection<IRole> roles;
     private Supplier<Session> internalSessionSupplier;
@@ -58,23 +57,23 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         if(isAutowired) {
             internalSessionSupplier = () -> {
                 try {
-                    return getSessionInternal(workspaceId, user);
+                    return getSessionInternal(workspaceId, authentication);
                 } catch (LoginException e) {
-                    throw new UserLoginException(user.getName(), e);
+                    throw new UserLoginException(authentication.getName(), e);
                 } catch (NoSuchWorkspaceException e) {
                     throw new WorkspaceNotFoundException(workspaceId, e);
                 } catch (RepositoryException e) {
                     throw new FatalModelRepositoryException("Error while getting repository given workspace ID ["
-                            + workspaceId + "] and user [" + user.getName() + "]", e);
+                            + workspaceId + "] and user [" + authentication.getName() + "]", e);
                 }
             };
         } else {
             internalSessionSupplier = () -> {
                 try {
-                    return login(workspaceId, user);
+                    return login(workspaceId, authentication);
                 } catch (RepositoryException e) {
                     throw new FatalModelRepositoryException("Error while getting repository given workspace ID ["
-                            + workspaceId + "] and user [" + user.getName() + "]", e);
+                            + workspaceId + "] and user [" + authentication.getName() + "]", e);
                 }
             };
         }
@@ -145,8 +144,8 @@ public class RequestRepositorySessionHelper implements DisposableBean, Initializ
         return workspaceId;
     }
 
-    public void setUser(Authentication user) {
-        this.user = user;
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
     }
 
     public void setUserRoles(Collection<IRole> userRoles) {

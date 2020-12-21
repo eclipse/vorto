@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.domain.RepositoryRole;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.springframework.security.core.Authentication;
 
 public class UserContext implements IUserContext {
@@ -100,6 +101,13 @@ public class UserContext implements IUserContext {
     return ANONYMOUS_USERS.contains(this.username);
   }
 
+  /**
+   *
+   * @param username
+   * @return
+   * @see UserDto#isAnonymous(UserDto)
+   */
+  @Deprecated
   public static boolean isAnonymous(String username) {
     return ANONYMOUS_USERS.contains(username);
   }
