@@ -1,0 +1,19 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example
+version 1.0.0
+displayname "LedLamp"
+description "A led wich you can control with the setColor() operation"
+
+using org.eclipse.ditto.examples.Color;1.0.0
+
+functionblock LedLamp {
+
+    status {
+       mandatory currentColor as Color
+    }
+    
+    operations {
+	   setColor(r as int <MIN 0, MAX 255>, g as int <MIN 0, MAX 255>, b as int <MIN 0, MAX 255>) "Sets the LED color."
+	}
+	
+}

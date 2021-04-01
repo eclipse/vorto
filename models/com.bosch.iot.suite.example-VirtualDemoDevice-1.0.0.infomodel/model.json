@@ -1,0 +1,627 @@
+{
+  "root" : {
+    "name" : "VirtualDemoDevice",
+    "namespace" : "com.bosch.iot.suite.example",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.example:VirtualDemoDevice:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example:LedLamp:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LedLamp",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:LedLamp:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "LedLamp",
+      "description" : "A led wich you can control with the setColor() operation",
+      "category" : null,
+      "fileName" : "LedLamp.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      }, {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "currentColor",
+        "description" : null,
+        "type" : {
+          "name" : "Color",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setColor",
+        "description" : "Sets the LED color.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:Color:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color",
+      "description" : "Datatype for a Color defined in RGB",
+      "category" : null,
+      "fileName" : "Color.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "r",
+        "description" : "Red",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "g",
+        "description" : "Green",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "b",
+        "description" : "Blue",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example:Switch:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Switch",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Switch:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Switch",
+      "description" : "A switch that can be turned on and off",
+      "category" : null,
+      "fileName" : "Switch.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "current state of the switch",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example:Display:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Display",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Display:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Display",
+      "description" : "A display which shows the text that you set with the setText() operation",
+      "category" : null,
+      "fileName" : "Display.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "currentText",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setText",
+        "description" : "Sets the display text",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "text",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Magnetometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Magnetometer",
+      "description" : "Description: This IPSO object can be used to represent a 1-3 axis magnetometer with optional compass direction.",
+      "category" : null,
+      "fileName" : "Magnetometer.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "xValue",
+        "description" : "The measured value along the X axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "yValue",
+        "description" : "The measured value along the Y axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "zValue",
+        "description" : "The measured value along the Z axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "compassDirection",
+        "description" : "The compass direction",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "360"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example:VirtualDemoDevice:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "VirtualDemoDevice",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:VirtualDemoDevice:1.0.0"
+      },
+      "type" : "InformationModel",
+      "displayName" : "VirtualDemoDevice",
+      "description" : "Information model of a virtual demo device for the Bosch IoT Suite which you can open in your smartphone or web browser",
+      "category" : null,
+      "fileName" : "VirtualDemoDevice.infomodel",
+      "modelType" : "Infomodel",
+      "references" : [ {
+        "name" : "LED",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0"
+      }, {
+        "name" : "Magnetometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+      }, {
+        "name" : "Switch",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Switch:1.0.0"
+      }, {
+        "name" : "Display",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Display:1.0.0"
+      }, {
+        "name" : "LedLamp",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:LedLamp:1.0.0"
+      } ],
+      "functionblocks" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "compass",
+        "description" : "a compass that uses the sensor in a smartphone or which is set manually in a browser",
+        "type" : {
+          "name" : "Magnetometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "switch",
+        "description" : "a switch that can be turned on and off",
+        "type" : {
+          "name" : "Switch",
+          "namespace" : "com.bosch.iot.suite.example",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.example:Switch:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "led",
+        "description" : "a led wich you can control with the setColor() operation",
+        "type" : {
+          "name" : "LedLamp",
+          "namespace" : "com.bosch.iot.suite.example",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.example:LedLamp:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "display",
+        "description" : "a display which shows the text that you set with the setText() operation",
+        "type" : {
+          "name" : "Display",
+          "namespace" : "com.bosch.iot.suite.example",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.example:Display:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ]
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LED",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "LED",
+      "description" : "Functionblock for controlling LED",
+      "category" : null,
+      "fileName" : "LED.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setColor",
+        "description" : "Sets the LED color.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "w",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

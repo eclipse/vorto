@@ -1,0 +1,31 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.1.0
+displayname "Gyrometer"
+description "This IPSO Object is used to report the current reading of a gyrometer sensor in 3 axes. It provides tracking of the minimum and maximum angular rate in all 3 axes. An example unit of measure is radians per second (ucum:rad/s)."
+
+functionblock Gyrometer {
+	
+	configuration {
+		optional applicationType as string with {readable : true, writable: true}   "The application type of the sensor or actuator as a string depending on the use case."
+	}
+	
+	status {
+		mandatory xValue as float with {readable : true, writable: false }   "The measured value along the X axis."
+		optional yValue as float with {readable : true, writable: false }   "The measured value along the Y axis."
+		optional zValue as float with {readable : true, writable: false }   "The measured value along the Z axis."
+		optional sensorUnits as string with {readable : true, writable: false }   "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius."
+		optional minXValue as float with {readable : true, writable: false }   "The minimum measured value along the X axis"
+		optional maxXValue as float with {readable : true, writable: false }   "The maximum measured value along the X axis"
+		optional minYValue as float with {readable : true, writable: false }   "The minimum measured value along the Y axis"
+		optional maxYValue as float with {readable : true, writable: false }   "The maximum measured value along the Y axis"
+		optional minZValue as float with {readable : true, writable: false }   "The minimum measured value along the Z axis"
+		optional maxZValue as float with {readable : true, writable: false }   "The maximum measured value along the Z axis"
+		optional minRangeValue as float with {readable : true, writable: false }   "The minimum value that can be measured by the sensor"
+		optional maxRangeValue as float with {readable : true, writable: false }   "The maximum value that can be measured by the sensor"
+	}
+	
+	operations {
+		resetMinandMaxMeasuredValues() "Reset the Min and Max Measured Values to Current Value."
+	}
+}

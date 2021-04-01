@@ -1,0 +1,26 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.1.0
+displayname "GenericSensor"
+description "This IPSO object allow the description of a generic sensor. It is based on the description of a value and a unit according to the UCUM specification. Thus, any type of value defined within this specification can be reporting using this object. Specific object for a given range of sensors is described later in the document, enabling to identify the type of sensors directly from its Object ID. This object may be used as a generic object if a dedicated one does not exist."
+
+functionblock GenericSensor {
+	
+	configuration {
+		optional applicationType as string with {readable : true, writable: true}   "If present, the application type of the sensor as a string, for instance, ?CO2?"
+	}
+	
+	status {
+		mandatory sensorValue as float with {readable : true, writable: false }   "Last or Current Measured Value from the Sensor"
+		optional sensorUnits as string with {readable : true, writable: false }   "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius."
+		optional minMeasuredValue as float with {readable : true, writable: false }   "The minimum value measured by the sensor since power ON or reset"
+		optional maxMeasuredValue as float with {readable : true, writable: false }   "The maximum value measured by the sensor since power ON or reset"
+		optional minRangeValue as float with {readable : true, writable: false }   "The minimum value that can be measured by the sensor"
+		optional maxRangeValue as float with {readable : true, writable: false }   "The maximum value that can be measured by the sensor"
+		optional sensorType as string with {readable : true, writable: false }   "The type of the sensor (for instance PIR type)"
+	}
+	
+	operations {
+		resetMinandMaxMeasuredValues() "Reset the Min and Max Measured Values to Current Value"
+	}
+}

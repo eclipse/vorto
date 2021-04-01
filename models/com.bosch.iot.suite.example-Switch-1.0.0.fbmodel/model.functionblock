@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example
+version 1.0.0
+displayname "Switch"
+description "A switch that can be turned on and off"
+
+functionblock Switch {
+
+   status {
+        mandatory on as boolean "current state of the switch"
+   }
+   
+}

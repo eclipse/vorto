@@ -1,0 +1,112 @@
+{
+  "root" : {
+    "name" : "LED",
+    "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LED",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:LED:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "LED",
+      "description" : "Functionblock for controlling LED",
+      "category" : null,
+      "fileName" : "LED.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setColor",
+        "description" : "Sets the LED color.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "w",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

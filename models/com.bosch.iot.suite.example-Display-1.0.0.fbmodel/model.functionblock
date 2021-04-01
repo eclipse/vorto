@@ -1,0 +1,17 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example
+version 1.0.0
+displayname "Display"
+description "A display which shows the text that you set with the setText() operation"
+
+functionblock Display {
+
+   status {
+       mandatory currentText as string
+   }
+   
+   operations {
+	   setText(text as string) "Sets the display text"
+   }
+   
+}
