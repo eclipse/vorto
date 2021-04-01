@@ -1,0 +1,20 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.examples.geolocation
+version 1.0.0
+displayname "Geolocation"
+description "Functionblock for Geolocation. Features marked with this Functionblock can be used to track their location"
+
+using com.bosch.iot.suite.examples.geolocation.Geoposition;1.0.0
+
+functionblock Geolocation {
+	
+	configuration {}
+	
+	status {
+	  mandatory geoposition as Geoposition
+	  optional accuracy as int
+	}
+	
+	events {}
+	operations {}
+}

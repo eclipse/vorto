@@ -1,0 +1,188 @@
+{
+  "root" : {
+    "name" : "Voltage",
+    "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Voltage",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Voltage",
+      "description" : "This IPSO object should be used with voltmeter sensor to report measured voltage between two points.  It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is volts (ucum: V).",
+      "category" : null,
+      "fileName" : "Voltage.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentCalibration",
+        "description" : "Read or Write the current calibration coefficient",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

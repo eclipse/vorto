@@ -1,0 +1,67 @@
+{
+  "root" : {
+    "name" : "Display",
+    "namespace" : "com.bosch.iot.suite.example",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.example:Display:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example:Display:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Display",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Display:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Display",
+      "description" : "A display which shows the text that you set with the setText() operation",
+      "category" : null,
+      "fileName" : "Display.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "currentText",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setText",
+        "description" : "Sets the display text",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "text",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

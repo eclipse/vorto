@@ -1,0 +1,47 @@
+{
+  "root" : {
+    "name" : "Switch",
+    "namespace" : "com.bosch.iot.suite.example",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.example:Switch:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example:Switch:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Switch",
+        "namespace" : "com.bosch.iot.suite.example",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example:Switch:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Switch",
+      "description" : "A switch that can be turned on and off",
+      "category" : null,
+      "fileName" : "Switch.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "current state of the switch",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.0.0
+displayname "LED"
+description "Functionblock for controlling LED"
+
+functionblock LED {
+
+    configuration {
+    }
+
+	status {
+	}
+	
+	operations {
+		setColor(r as int <MIN 0, MAX 255>, g as int <MIN 0, MAX 255>, b as int <MIN 0, MAX 255>, w as int <MIN 0, MAX 255>) "Sets the LED color."
+	}
+}

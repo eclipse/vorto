@@ -1,0 +1,10 @@
+[ {
+  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Physical-device-connection---tutorial.html",
+  "displayText" : "Tutorial for device connection"
+}, {
+  "url" : "https://console.bosch-iot-suite.com/virtual-demo-device",
+  "displayText" : "Bosch IoT Suite Virtual Demo Device"
+}, {
+  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Device-connection---Demo-device.html",
+  "displayText" : "Tutorial for device connection using the virtual demo device"
+} ]

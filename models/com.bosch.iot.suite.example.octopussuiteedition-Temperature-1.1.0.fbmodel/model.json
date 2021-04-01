@@ -1,0 +1,152 @@
+{
+  "root" : {
+    "name" : "Temperature",
+    "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Temperature",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Temperature",
+      "description" : "Description: This IPSO object should be used with a temperature sensor to report a temperature measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the temperature sensor. An example measurement unit is degrees Celsius (ucum:Cel).",
+      "category" : null,
+      "fileName" : "Temperature.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

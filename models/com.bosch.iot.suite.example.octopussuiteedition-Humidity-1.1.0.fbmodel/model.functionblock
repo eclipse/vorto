@@ -1,0 +1,24 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.1.0
+displayname "Humidity"
+description "Description: This IPSO object should be used with a humidity sensor to report a humidity measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the humidity sensor. An example measurement unit is relative humidity as a percentage (ucum:%)."
+
+functionblock Humidity {
+	configuration {
+		
+	}
+	
+	status {
+		mandatory sensorValue as float with {readable : true, writable: false }   "Last or Current Measured Value from the Sensor"
+		optional minMeasuredValue as float with {readable : true, writable: false }   "The minimum value measured by the sensor since power ON or reset"
+		optional maxMeasuredValue as float with {readable : true, writable: false }   "The maximum value measured by the sensor since power ON or reset"
+		optional minRangeValue as float with {readable : true, writable: false }   "The minimum value that can be measured by the sensor"
+		optional maxRangeValue as float with {readable : true, writable: false }   "The maximum value that can be measured by the sensor"
+		optional sensorUnits as string with {readable : true, writable: false }   "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius."
+	}
+	
+	operations {
+		resetMinandMaxMeasuredValues() "Reset the Min and Max Measured Values to Current Value"
+	}
+}

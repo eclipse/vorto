@@ -1,0 +1,10 @@
+[ {
+  "url" : "https://www.tindie.com/products/FabLab/iot-octopus-badge-for-iot-evaluation/",
+  "displayText" : "You can buy it in the Fab-Lab.eu Tindie shop"
+}, {
+  "url" : "https://github.com/bosch-io/iot-things-examples/tree/master/octopus-firmware/octopus-hub",
+  "displayText" : "Firmware sources"
+}, {
+  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Physical-device-connection---tutorial.html",
+  "displayText" : "Tutorial for device connection"
+} ]
