@@ -1,0 +1,164 @@
+{
+  "root" : {
+    "name" : "SmokeDetector",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:SmokeDetector:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:SmokeDetector:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SmokeDetector",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:SmokeDetector:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "SmokeDetector",
+      "description" : "SmokeDetector state+behavior for devices capable of detecting smoke",
+      "category" : null,
+      "fileName" : "SmokeDetector.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Priority",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ {
+        "name" : "smokeDetected",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "priority",
+          "description" : "Priority of the smoke detection",
+          "type" : {
+            "name" : "Priority",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+          },
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "density",
+          "description" : "Density of the detected smoke in percent from 0.0 - 1.0",
+          "type" : "FLOAT",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "Smoke detection timestamp",
+          "type" : "DATETIME",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ]
+      }, {
+        "name" : "smokeCleared",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "Timestamp when the smoke cleared",
+          "type" : "DATETIME",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ]
+      } ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:Priority:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Priority",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Priority",
+      "description" : "Enumeration of different priority types",
+      "category" : null,
+      "fileName" : "Priority.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "low",
+        "description" : "low priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "medium",
+        "description" : "medium priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "high",
+        "description" : "high priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "severe",
+        "description" : "severe priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "critial",
+        "description" : "critical priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      } ]
+    }
+  }
+}

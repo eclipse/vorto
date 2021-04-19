@@ -1,0 +1,349 @@
+{
+  "root" : {
+    "name" : "Dimmable",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:Dimmable:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:TimeUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "TimeUnit",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "TimeUnit",
+      "description" : "Enumeration of different units of time",
+      "category" : null,
+      "fileName" : "TimeUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ns",
+        "description" : "nanoseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "us",
+        "description" : "microseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "ms",
+        "description" : "milliseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "s",
+        "description" : "seconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "m",
+        "description" : "minutes",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "h",
+        "description" : "hours",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "d",
+        "description" : "days",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.ditto.examples:Dimmable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Dimmable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Dimmable:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Dimmable",
+      "description" : "Dimmable state+behavior for devices which may be dimmed to a certain level and which may report back the supported dim resolution or fixed levels",
+      "category" : null,
+      "fileName" : "Dimmable.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "dimmerLevel",
+        "description" : "Configuration of the dimmer's level in percent between 0.0 and 1.0",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0.0"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedDimmerLevelResolution",
+        "description" : "Returns the by the device supported resolution of dimmer levels",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedFixedDimmerLevels",
+        "description" : "Returns the by the device supported fixed amount of dimmer levels - may return an empty array if all levels are possible, please refer to supportedDimmerLevelResolution() then to find out the resolution",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : true
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "switchOnFor",
+        "description" : "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto.examples:Switchable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Switchable",
+      "description" : "Switchable state+behavior for devices which may be switched on/off and know their current state",
+      "category" : null,
+      "fileName" : "Switchable.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Duration",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "switchOnFor",
+        "description" : "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:Duration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Duration",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Duration",
+      "description" : "Datatype for a duration including an amount and a time unit",
+      "category" : null,
+      "fileName" : "Duration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "TimeUnit",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "amount",
+        "description" : "The amount of the unit",
+        "type" : "LONG",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "unit",
+        "description" : "The time unit, e.g. seconds",
+        "type" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

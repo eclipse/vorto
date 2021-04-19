@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Priority"
+description "Enumeration of different priority types"
+
+enum Priority {
+    low     "low priority",
+    medium  "medium priority",
+    high    "high priority",
+    severe  "severe priority",
+    critial "critical priority"
+}

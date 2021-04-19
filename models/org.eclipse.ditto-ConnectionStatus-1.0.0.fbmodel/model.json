@@ -1,0 +1,59 @@
+{
+  "root" : {
+    "name" : "ConnectionStatus",
+    "namespace" : "org.eclipse.ditto",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto:ConnectionStatus:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto:ConnectionStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ConnectionStatus",
+        "namespace" : "org.eclipse.ditto",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto:ConnectionStatus:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ConnectionStatus",
+      "description" : "Information about the status of the connectivity to a device",
+      "category" : null,
+      "fileName" : "ConnectionStatus.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "readySince",
+        "description" : "Timestamp when the device or the connectivity endpoint signals that the device is connected and stays connected at least for some time and is ready for receiving information",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "readyUntil",
+        "description" : "Timestamp until when device or the connectivity endpoint signals that it stays ready for receiving information; if it signals that it stays connected and is ready until further notice then this timestamp is symbolically set to a timestamp that is at least 1 year ahead of now",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

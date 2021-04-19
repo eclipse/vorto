@@ -1,0 +1,22 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "SmokeDetector"
+description "SmokeDetector state+behavior for devices capable of detecting smoke"
+
+using org.eclipse.ditto.examples.Priority;1.0.0
+
+functionblock SmokeDetector {
+
+    events {
+        smokeDetected {
+            mandatory priority as Priority  "Priority of the smoke detection"
+            mandatory density as float      "Density of the detected smoke in percent from 0.0 - 1.0"
+            mandatory timestamp as dateTime "Smoke detection timestamp"
+        }
+        
+        smokeCleared {
+            mandatory timestamp as dateTime "Timestamp when the smoke cleared"
+        }
+    }
+}

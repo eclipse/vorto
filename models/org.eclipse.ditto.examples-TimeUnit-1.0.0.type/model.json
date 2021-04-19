@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "TimeUnit",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:TimeUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "TimeUnit",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "TimeUnit",
+      "description" : "Enumeration of different units of time",
+      "category" : null,
+      "fileName" : "TimeUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ns",
+        "description" : "nanoseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "us",
+        "description" : "microseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "ms",
+        "description" : "milliseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "s",
+        "description" : "seconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "m",
+        "description" : "minutes",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "h",
+        "description" : "hours",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "d",
+        "description" : "days",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

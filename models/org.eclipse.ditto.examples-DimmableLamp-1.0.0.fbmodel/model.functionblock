@@ -1,0 +1,29 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "DimmableLamp"
+description "DimmableLamp defines state+behavior of a Lamp which is Dimmable"
+
+using org.eclipse.ditto.examples.Dimmable;1.0.0
+using org.eclipse.vorto.Unit;1.0.1
+
+functionblock DimmableLamp extends Dimmable {
+    
+    configuration {
+        optional bulbChangeDate as dateTime "Contains the date when the bulb was last changed"
+        
+        mandatory reportCurrentPowerConsumption as boolean <DEFAULT "false">
+            "Configures whether the device shall report its status 'currentPowerConsumption' or not"
+        
+        optional currentPowerConsumptionInterval as int with {
+            measurementUnit: org.eclipse.vorto.Unit.second
+        } "Configures the interval of how often the status 'currentPowerConsumption' shall be updated"
+    }
+    
+    status {
+        optional currentPowerConsumption as float with {
+            measurementUnit: org.eclipse.vorto.Unit.watt 
+        } "Status of the current power consumtion in Watts" 
+    }
+    
+}

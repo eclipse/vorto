@@ -1,0 +1,22 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Switchable"
+description "Switchable state+behavior for devices which may be switched on/off and know their current state"
+
+using org.eclipse.ditto.examples.Duration;1.0.0
+
+functionblock Switchable {
+
+  configuration {
+    mandatory on as boolean     "Configuration whether the switch should be on or off"
+  }
+  
+  operations {
+    toggle() returns boolean    "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response"
+    
+    switchOnFor(duration as Duration)
+        "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again"
+  }
+
+}

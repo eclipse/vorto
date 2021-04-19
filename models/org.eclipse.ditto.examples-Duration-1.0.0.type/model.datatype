@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Duration"
+description "Datatype for a duration including an amount and a time unit"
+
+using org.eclipse.ditto.examples.TimeUnit;1.0.0
+
+entity Duration {
+    mandatory amount as long    "The amount of the unit"
+    mandatory unit as TimeUnit  "The time unit, e.g. seconds"
+}

@@ -1,0 +1,22 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 2.0.0
+displayname "MightyLamp"
+description "Information Model for MightyLamp"
+
+using org.eclipse.ditto.ConnectionStatus;1.0.0
+using org.eclipse.ditto.examples.ColorableLamp;1.0.0
+using org.eclipse.ditto.examples.DimmableLamp;1.0.0
+using org.eclipse.ditto.examples.SmokeDetector;1.0.0
+using org.eclipse.ditto.examples.SwitchableLamp;1.0.0
+
+infomodel MightyLamp {
+
+	functionblocks {
+	    mandatory ConnectionStatus as ConnectionStatus  "The connection status of the mightly lamp"
+	    optional multiple StatusLamp as SwitchableLamp  "Multiple switchable lamps, could be lots of them"
+	    Dimmed as DimmableLamp                          "A single big dimmable lamp"
+	    Colored as ColorableLamp                        "Another lamp capable of changing its colors"
+	    SmokeDetection as SmokeDetector                 "Smoke detection capabilities of this mighty lamp"
+	}
+}
