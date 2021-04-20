@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "LogMode",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:LogMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LogMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LogMode",
+      "description" : "Represents the log messages handling mode (buffered or direct) from the container to the log driver",
+      "category" : null,
+      "fileName" : "LogMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "BLOCKING",
+        "description" : null,
+        "parent" : {
+          "name" : "LogMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+        }
+      }, {
+        "name" : "NON_BLOCKING",
+        "description" : null,
+        "parent" : {
+          "name" : "LogMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

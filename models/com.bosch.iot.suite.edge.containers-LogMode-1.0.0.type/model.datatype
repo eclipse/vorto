@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "LogMode"
+description "Represents the log messages handling mode (buffered or direct) from the container to the log driver"
+
+enum LogMode {
+    BLOCKING,
+    NON_BLOCKING
+}

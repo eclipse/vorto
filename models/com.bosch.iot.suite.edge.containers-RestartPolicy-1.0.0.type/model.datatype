@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "RestartPolicy"
+description "Represents the container's restart policy configuratoin"
+using com.bosch.iot.suite.edge.containers.RestartPolicyType ; 1.0.0
+
+entity RestartPolicy {
+	optional maxRetryCount as int "Max number of restart attempts"
+
+	optional retryTimeout as int "Retry timeout in seconds"
+  mandatory type as RestartPolicyType "The type of the container's restart policy"
+}

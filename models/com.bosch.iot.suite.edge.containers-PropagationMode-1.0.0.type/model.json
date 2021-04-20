@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "PropagationMode",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PropagationMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PropagationMode",
+      "description" : "Represents the propagation mode for populating the mounted filesystem artifacts from the host to the container",
+      "category" : null,
+      "fileName" : "PropagationMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "RPRIVATE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "PRIVATE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "RSHARED",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "SHARED",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "RSLAVE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "SLAVE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

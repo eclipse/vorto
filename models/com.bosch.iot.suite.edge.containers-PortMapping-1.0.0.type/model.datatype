@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "PortMapping"
+description "Represents a network port mappings for ports from the container exposed on the host's network interface"
+
+entity PortMapping {
+	optional proto as string "Port protocol"
+ mandatory hostPort as int "Port of the host machine"
+
+	optional hostPortEnd as int "Host port allocation range"
+ mandatory containerPort as int "Port inside the container"
+
+	optional hostIP as string "IP Address of the port to be mapped"
+}

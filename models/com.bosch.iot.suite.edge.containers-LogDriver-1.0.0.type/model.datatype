@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "LogDriver"
+description "Represents the different supported types of logging that can be made for a container instance"
+
+enum LogDriver {
+    JSON_FILE,
+    NONE
+}

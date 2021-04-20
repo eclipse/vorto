@@ -1,0 +1,22 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "LogConfiguration"
+description "Represents the full logging configuration for a container instance"
+using com.bosch.iot.suite.edge.containers.LogMode ; 1.0.0
+using com.bosch.iot.suite.edge.containers.LogDriver ; 1.0.0
+
+entity LogConfiguration {
+	optional type as
+	LogDriver "Indicates what kind of logging will be made for this container instance. The default is JSON_FILE"
+
+	optional maxFiles as int <DEFAULT 2> "The maximum number of log files permitted. If the rolled logs output creates excess files, the oldest one is removed"
+
+	optional maxSize as string <DEFAULT "100M"> "The maximum size of the log before it is rolled. Must be in the form of an integer followed by a modifier representing the unit of measure (k, M, G or T)"
+
+	optional rootDir as
+	string "The root directory where to store the logs for the container under a subdirectory named by its ID"
+
+	optional mode as LogMode "Log messages handling mode (buffered or direct) from the container to the log driver"
+
+	optional maxBufferSize as string <DEFAULT "1M"> "The maximum size of the log buffer it is rolled. Must be in the form of an integer followed by a modifier representing the unit of measure (k, M, G or T)" }

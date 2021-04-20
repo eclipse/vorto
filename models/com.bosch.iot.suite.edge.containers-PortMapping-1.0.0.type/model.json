@@ -1,0 +1,91 @@
+{
+  "root" : {
+    "name" : "PortMapping",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PortMapping",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PortMapping",
+      "description" : "Represents a network port mappings for ports from the container exposed on the host's network interface",
+      "category" : null,
+      "fileName" : "PortMapping.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "proto",
+        "description" : "Port protocol",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hostPort",
+        "description" : "Port of the host machine",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "hostPortEnd",
+        "description" : "Host port allocation range",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "containerPort",
+        "description" : "Port inside the container",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "hostIP",
+        "description" : "IP Address of the port to be mapped",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

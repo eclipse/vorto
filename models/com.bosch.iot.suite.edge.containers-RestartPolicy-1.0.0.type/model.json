@@ -1,0 +1,133 @@
+{
+  "root" : {
+    "name" : "RestartPolicy",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RestartPolicyType",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RestartPolicyType",
+      "description" : "Represents the container's restart policy type - always means that each time te container exists, it will be restarted.",
+      "category" : null,
+      "fileName" : "RestartPolicyType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ALWAYS",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "UNLESS_STOPPED",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "ON_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "NO",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RestartPolicy",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RestartPolicy",
+      "description" : "Represents the container's restart policy configuratoin",
+      "category" : null,
+      "fileName" : "RestartPolicy.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "RestartPolicyType",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRetryCount",
+        "description" : "Max number of restart attempts",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "retryTimeout",
+        "description" : "Retry timeout in seconds",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "The type of the container's restart policy",
+        "type" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

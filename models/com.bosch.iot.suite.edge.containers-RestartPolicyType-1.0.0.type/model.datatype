@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "RestartPolicyType"
+description "Represents the container's restart policy type - always means that each time te container exists, it will be restarted."
+
+enum RestartPolicyType {
+  ALWAYS,
+  UNLESS_STOPPED,
+  ON_FAILURE,
+  NO
+ }

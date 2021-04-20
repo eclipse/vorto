@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.1.0
+displayname "StopOptions"
+description "Represents the container stop options"
+
+entity StopOptions {
+	optional forced as boolean <DEFAULT false> "Whether to send a SIG_KILL signal to the container's process if it does not finish within the timeout specified. The default is true"
+
+	optional timeout as int <DEFAULT 30> "A timeout period in seconds in which the container must stop"
+	
+	optional signal as string <DEFAULT "SIGTERM"> "A specific signal to send to the container in order to stop it. Signals could be specified by using their names or numbers, e.g. SIGINT or 2. The default is SIGTERM"
+}

@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "LogDriver",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LogDriver",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LogDriver",
+      "description" : "Represents the different supported types of logging that can be made for a container instance",
+      "category" : null,
+      "fileName" : "LogDriver.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "JSON_FILE",
+        "description" : null,
+        "parent" : {
+          "name" : "LogDriver",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+        }
+      }, {
+        "name" : "NONE",
+        "description" : null,
+        "parent" : {
+          "name" : "LogDriver",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+        }
+      } ]
+    }
+  }
+}

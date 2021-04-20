@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "MountPoint"
+description "Represents filesystem artifacts mounted from the host to the container"
+using com.bosch.iot.suite.edge.containers.PropagationMode ; 1.0.0
+
+entity MountPoint {
+ mandatory source as string "Path to the source mount point"
+ mandatory destination as string "Path to the container mount point"
+
+	optional propagationMode as PropagationMode "Propagation mode of the mount point"
+}
