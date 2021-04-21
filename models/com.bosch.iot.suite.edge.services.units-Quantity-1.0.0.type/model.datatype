@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.units
+version 1.0.0
+using com.bosch.iot.suite.edge.services.fim.Number ; 1.0.0
+using com.bosch.iot.suite.edge.services.units.Unit ; 1.0.0
+
+entity Quantity {
+	mandatory unit as Unit with {
+		readable : true
+	}
+
+	mandatory value as Number with {
+		readable : true
+	}
+
+}
