@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "BleDevice_BleDeviceState",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BleDevice_BleDeviceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BLE Device State",
+      "description" : "Represents a Bluetooth LE device state.",
+      "category" : null,
+      "fileName" : "BleDevice_BleDeviceState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "DISCONNECTED",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "INITIALIZING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "CONNECTING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "CONNECTED",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "DISCONNECTING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      } ]
+    }
+  }
+}

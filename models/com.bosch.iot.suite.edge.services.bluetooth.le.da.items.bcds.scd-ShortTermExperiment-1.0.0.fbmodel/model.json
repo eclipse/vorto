@@ -1,0 +1,1001 @@
+{
+  "root" : {
+    "name" : "ShortTermExperiment",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:ShortTermExperiment:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:ShortTermExperiment:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ShortTermExperiment",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:ShortTermExperiment:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ScdSte",
+      "description" : "Configures the SCD Short Term Experiment GATT Service.",
+      "category" : null,
+      "fileName" : "ShortTermExperiment.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "SteConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration:1.0.0"
+      }, {
+        "name" : "SteResults",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteResults:1.0.0"
+      }, {
+        "name" : "SteConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration:1.0.0"
+      }, {
+        "name" : "SteResults",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteResults:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "configuration",
+        "description" : "Short term experiment (STE) configuration.",
+        "type" : {
+          "name" : "SteConfiguration",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "results",
+        "description" : "Short term experiment (STE) results.",
+        "type" : {
+          "name" : "SteResults",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteResults:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Configuration",
+      "description" : "Represents a Environmental Thresholds characteristic.",
+      "category" : null,
+      "fileName" : "SteConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "SteConfiguration_AccelerometerSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+      }, {
+        "name" : "SteConfiguration_LightSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "unixTime",
+        "description" : "The time for STE measurements.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerometerSensorEnabled",
+        "description" : "Returns the state of the accelerometer sensor.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magnetometerSensorEnabled",
+        "description" : "Returns the state of the magnetometer sensor.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "lightSensorEnabled",
+        "description" : "Returns the state of the light sensor.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureSensorEnabled",
+        "description" : "Returns the state of the temperature sensor.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerometerSensorOdr",
+        "description" : "The output data rates of accelerometer sensor.",
+        "type" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "lightSensorOdr",
+        "description" : "The output data rates of light sensor.",
+        "type" : {
+          "name" : "SteConfiguration_LightSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationThreshold",
+        "description" : "The acceleration threshold.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminanceLowThreshold",
+        "description" : "The illuminance low threshold.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminanceHighThreshold",
+        "description" : "The illuminance high threshold.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthThreshold",
+        "description" : "The magnetic field strength threshold.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureLowThreshold",
+        "description" : "The temperature low threshold.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureHighThreshold",
+        "description" : "The temperature high threshold.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationToFlashEnabled",
+        "description" : "The state of the acceleration raw values to flash.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthToFlashEnabled",
+        "description" : "The state of the magnetic field strength raw values to flash.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminanceToFlashEnabled",
+        "description" : "The state of the illuminance raw values to flash.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureToFlashEnabled",
+        "description" : "The state of the temperature raw values to flash.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "freeBytesInSerialFlash",
+        "description" : "The number of free flash bytes.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteResults:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteResults",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteResults:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Results",
+      "description" : "Represents a Short Term Experiment Results characteristic.",
+      "category" : null,
+      "fileName" : "SteResults.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationArithmeticMeanX",
+        "description" : "The arithmetic mean of the X-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationArithmeticMeanY",
+        "description" : "The arithmetic mean of the Y-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationArithmeticMeanZ",
+        "description" : "The arithmetic mean of the Z-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationVarianceX",
+        "description" : "The variance of the X-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationVarianceY",
+        "description" : "The variance of the Y-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationVarianceZ",
+        "description" : "The variance of the Z-axis acceleration values.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperature",
+        "description" : "The temperature value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminance",
+        "description" : "The illuminance value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthX",
+        "description" : "The magnetic field strength X-axis value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthY",
+        "description" : "The magnetic field strength Y-axis value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthZ",
+        "description" : "The magnetic field strength Z-axis value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "accelerationViolation",
+        "description" : "The acceleration violation flag.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminanceHighViolation",
+        "description" : "The high illuminance threshold violation.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "illuminanceLowViolation",
+        "description" : "The low illuminance threshold violation.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "magneticFieldStrengthViolation",
+        "description" : "The magnetic field strength threshold violation.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureHighViolation",
+        "description" : "The high temperature threshold violation.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "temperatureSensorLowViolation",
+        "description" : "The low temperature threshold violation.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "rollingCounter",
+        "description" : "The results counter.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteConfiguration_AccelerometerSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Configuration Accelerometer Sensor ODR",
+      "description" : "Specifies the accelerometer sensor output data rates.",
+      "category" : null,
+      "fileName" : "SteConfiguration_AccelerometerSensorOdr.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ODR_400HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_800HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_1600HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_3200HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_6400HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteConfiguration_LightSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Configuration Light Sensor ODR",
+      "description" : "Specifies the light sensor output data rates.",
+      "category" : null,
+      "fileName" : "SteConfiguration_LightSensorOdr.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ODR_100MS",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_LightSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_800MS",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_LightSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

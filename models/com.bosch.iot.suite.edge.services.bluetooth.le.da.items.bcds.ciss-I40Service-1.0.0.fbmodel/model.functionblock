@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "I40Service"
+description "Configures the I40 GATT Service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss.DataControl ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock I40Service extends FunctionalItem {
+	configuration {
+		mandatory dataControl as DataControl with {
+			readable : true,writable : true,eventable : true
+		} "The selected data control configuration."
+
+	}
+
+}

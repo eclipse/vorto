@@ -1,0 +1,83 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "STE Configuration"
+description "Represents a Environmental Thresholds characteristic."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd.SteConfiguration_AccelerometerSensorOdr ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd.SteConfiguration_LightSensorOdr ; 1.0.0
+
+entity SteConfiguration {
+	mandatory unixTime as int with {
+		readable : true
+	} <NULLABLE false> "The time for STE measurements."
+
+	mandatory accelerometerSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Returns the state of the accelerometer sensor."
+
+	mandatory magnetometerSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Returns the state of the magnetometer sensor."
+
+	mandatory lightSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Returns the state of the light sensor."
+
+	mandatory temperatureSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Returns the state of the temperature sensor."
+
+	mandatory accelerometerSensorOdr as SteConfiguration_AccelerometerSensorOdr with {
+		readable : true
+	} "The output data rates of accelerometer sensor."
+
+	mandatory lightSensorOdr as SteConfiguration_LightSensorOdr with {
+		readable : true
+	} "The output data rates of light sensor."
+
+	mandatory accelerationThreshold as float with {
+		readable : true
+	} "The acceleration threshold."
+
+	mandatory illuminanceLowThreshold as int with {
+		readable : true
+	} "The illuminance low threshold."
+
+	mandatory illuminanceHighThreshold as int with {
+		readable : true
+	} "The illuminance high threshold."
+
+	mandatory magneticFieldStrengthThreshold as float with {
+		readable : true
+	} "The magnetic field strength threshold."
+
+	mandatory temperatureLowThreshold as float with {
+		readable : true
+	} "The temperature low threshold."
+
+	mandatory temperatureHighThreshold as float with {
+		readable : true
+	} "The temperature high threshold."
+
+	mandatory accelerationToFlashEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The state of the acceleration raw values to flash."
+
+	mandatory magneticFieldStrengthToFlashEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The state of the magnetic field strength raw values to flash."
+
+	mandatory illuminanceToFlashEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The state of the illuminance raw values to flash."
+
+	mandatory temperatureToFlashEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The state of the temperature raw values to flash."
+
+	mandatory freeBytesInSerialFlash as int with {
+		readable : true
+	} <NULLABLE false> "The number of free flash bytes."
+
+}

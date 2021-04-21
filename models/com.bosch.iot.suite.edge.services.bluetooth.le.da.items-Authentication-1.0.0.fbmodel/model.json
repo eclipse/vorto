@@ -1,0 +1,390 @@
+{
+  "root" : {
+    "name" : "Authentication",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:Authentication:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:Authentication:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Authentication",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:Authentication:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Authentication",
+      "description" : "Contains BLE pairing methods",
+      "category" : null,
+      "fileName" : "Authentication.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "AuthenticationEvent",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent:1.0.0"
+      }, {
+        "name" : "AuthenticationEvent",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "event",
+        "description" : "Property used to post events for authentication requests coming from the driver.",
+        "type" : {
+          "name" : "AuthenticationEvent",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "reject",
+        "description" : "Reject an authentication event.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "providePasskey",
+        "description" : "As a reply to an authentication event, the user provides a passkey.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "passkey",
+          "description" : "A 6-digit number.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "999999"
+          }, {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "providePinCode",
+        "description" : "As a reply to an authentication event, the user provides a pin code.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "pinCode",
+          "description" : "A string of 1-16 characters length. The string should be alphanumeric.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "confirm",
+        "description" : "Confirms an authentication event.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AuthenticationEvent",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Authentication Event",
+      "description" : "Represents an authentication event.",
+      "category" : null,
+      "fileName" : "AuthenticationEvent.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "AuthenticationEvent_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "The authentication event.",
+        "type" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "passkey",
+        "description" : "A six digit number.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "pinCode",
+        "description" : "A string of 1-16 characters length. The string should be alphanumeric.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AuthenticationEvent_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Authentication Event Type",
+      "description" : "Represents an authentication event type.",
+      "category" : null,
+      "fileName" : "AuthenticationEvent_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PASSKEY_NOTIFICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_PASSKEY",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "PIN_CODE_NOTIFICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_PIN_CODE",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_CONFIRMATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

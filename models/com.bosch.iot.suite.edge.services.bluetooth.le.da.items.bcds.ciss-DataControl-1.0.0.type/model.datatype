@@ -1,0 +1,34 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "Data Control"
+description "Represents a Data Control characteristic configuration."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss.DataControl_Frequency ; 1.0.0
+
+entity DataControl {
+	mandatory sendDataViaBleEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Send data via Bluetooth LE."
+
+	mandatory logAccelerationDataEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Log acceleration data."
+
+	mandatory logGyroDataEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Log gyroscope data."
+
+	mandatory logMagnetDataEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Log magnetic data."
+
+	mandatory logEnvironmentalDataEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "Log environmental data."
+
+	mandatory frequency as DataControl_Frequency with {
+		readable : true
+	} "Logging frecuency."
+
+}

@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "SteConfiguration_AccelerometerSensorOdr",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteConfiguration_AccelerometerSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Configuration Accelerometer Sensor ODR",
+      "description" : "Specifies the accelerometer sensor output data rates.",
+      "category" : null,
+      "fileName" : "SteConfiguration_AccelerometerSensorOdr.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ODR_400HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_800HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_1600HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_3200HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_6400HZ",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_AccelerometerSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_AccelerometerSensorOdr:1.0.0"
+        }
+      } ]
+    }
+  }
+}

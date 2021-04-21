@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "AuthenticationEvent_Type",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AuthenticationEvent_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Authentication Event Type",
+      "description" : "Represents an authentication event type.",
+      "category" : null,
+      "fileName" : "AuthenticationEvent_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PASSKEY_NOTIFICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_PASSKEY",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "PIN_CODE_NOTIFICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_PIN_CODE",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      }, {
+        "name" : "REQUEST_CONFIRMATION",
+        "description" : null,
+        "parent" : {
+          "name" : "AuthenticationEvent_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:AuthenticationEvent_Type:1.0.0"
+        }
+      } ]
+    }
+  }
+}

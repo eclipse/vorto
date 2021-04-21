@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "Environmental Thresholds"
+description "Represents the Environmental Thresholds characteristic."
+
+entity EnvironmentalThresholds {
+	mandatory temperatureMinThreshold as float with {
+		readable : true
+	} "The minimal temperature threshold."
+
+	mandatory temperatureMaxThreshold as float with {
+		readable : true
+	} "The maximal temperature threshold."
+
+	mandatory humidityMinThreshold as int with {
+		readable : true
+	} "The minimal humidity threshold."
+
+	mandatory humidityMaxThreshold as int with {
+		readable : true
+	} "The maximal humidity threshold."
+
+	mandatory pressureMinThreshold as float with {
+		readable : true
+	} "The minimal pressure threshold."
+
+	mandatory pressureMaxThreshold as float with {
+		readable : true
+	} "The maximal pressure threshold."
+
+}

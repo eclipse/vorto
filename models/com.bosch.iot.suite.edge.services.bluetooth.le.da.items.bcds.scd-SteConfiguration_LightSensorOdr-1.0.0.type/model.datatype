@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "STE Configuration Light Sensor ODR"
+description "Specifies the light sensor output data rates."
+
+enum SteConfiguration_LightSensorOdr {
+	ODR_100MS,
+	ODR_800MS
+}

@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "SteConfiguration_LightSensorOdr",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SteConfiguration_LightSensorOdr",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "STE Configuration Light Sensor ODR",
+      "description" : "Specifies the light sensor output data rates.",
+      "category" : null,
+      "fileName" : "SteConfiguration_LightSensorOdr.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ODR_100MS",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_LightSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+        }
+      }, {
+        "name" : "ODR_800MS",
+        "description" : null,
+        "parent" : {
+          "name" : "SteConfiguration_LightSensorOdr",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:SteConfiguration_LightSensorOdr:1.0.0"
+        }
+      } ]
+    }
+  }
+}

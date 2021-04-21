@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "Event Detection Configuration Notification Interface"
+description "Specifies the notification interface mode."
+
+enum EventDetectionConfiguration_NotificationInterface {
+	NONE,
+	BLE,
+	USB,
+	BOTH
+}

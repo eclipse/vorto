@@ -1,0 +1,100 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "Logging Summary"
+description "Represents the Logging Summary characteristic."
+
+entity LoggingSummary {
+	mandatory pressureMin as float with {
+		readable : true
+	} <NULLABLE false> "The pressure value that violated the configured minimal pressure threshold."
+
+	mandatory pressureMax as float with {
+		readable : true
+	} <NULLABLE false> "The pressure value that violated the configured maximal pressure threshold."
+
+	mandatory temperatureMin as float with {
+		readable : true
+	} <NULLABLE false> "The temperature value that violated the configured minimal temperature threshold."
+
+	mandatory temperatureMax as float with {
+		readable : true
+	} <NULLABLE false> "The temperature value that violated the configured maximal temperature threshold."
+
+	mandatory humidityMin as int with {
+		readable : true
+	} <NULLABLE false> "The humidity value that violated the configured minimal humidity threshold."
+
+	mandatory humidityMax as int with {
+		readable : true
+	} <NULLABLE false> "The humidity value that violated the configured maximal humidity threshold."
+
+	mandatory periodicViolationCounter as int with {
+		readable : true
+	} <NULLABLE false> "The total number of periodic violations."
+
+	mandatory shockViolationCounter as int with {
+		readable : true
+	} <NULLABLE false> "The total number of shock violations."
+
+	mandatory shockEnergy as float with {
+		readable : true
+	} <NULLABLE false> "The shock energy shock value."
+
+	mandatory shockAcceleration as float with {
+		readable : true
+	} <NULLABLE false> "The acceleration shock value that violated the configured acceleration shock threshold."
+
+	mandatory tiltViolationCounter as int with {
+		readable : true
+	} <NULLABLE false> "The total number of tilt violations."
+
+	mandatory tiltMax as int with {
+		readable : true
+	} <NULLABLE false> "The tilt value that violated the configured maximal tilt threshold."
+
+	mandatory pressureViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for pressure violation."
+
+	mandatory temperatureViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for temperature violation."
+
+	mandatory humidityViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for humidity violation."
+
+	mandatory shockViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for shock violation."
+
+	mandatory tiltViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for tilt violation."
+
+	mandatory illuminanceViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The event flag for illuminance violation."
+
+	mandatory environmentalSensorFailed as boolean with {
+		readable : true
+	} <NULLABLE false> "The self-test status of the environmental sensor unit."
+
+	mandatory accelerometerSensorFailed as boolean with {
+		readable : true
+	} <NULLABLE false> "The self-test status of the accelerometer sensor unit."
+
+	mandatory externalFlashFailed as boolean with {
+		readable : true
+	} <NULLABLE false> "The self-test status of the external flash unit."
+
+	mandatory temperatureSensorFailed as boolean with {
+		readable : true
+	} <NULLABLE false> "The self-test status of the temperature sensor unit."
+
+	mandatory illuminanceValue as int with {
+		readable : true
+	} <NULLABLE false>
+}

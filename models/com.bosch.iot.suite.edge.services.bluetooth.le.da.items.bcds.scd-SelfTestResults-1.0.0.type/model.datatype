@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "Self Test Results"
+description "Represents a {Self-Test Results characteristic."
+
+entity SelfTestResults {
+	mandatory failedADXL372 as boolean with {
+		readable : true
+	} <NULLABLE false> "ADXL372 sensor failure."
+
+	mandatory failedBMM150 as boolean with {
+		readable : true
+	} <NULLABLE false> "BMM150 sensor failure."
+
+	mandatory failedMAX44009 as boolean with {
+		readable : true
+	} <NULLABLE false> "MAX44009 sensor failure."
+
+	mandatory failedMX25R8035F as boolean with {
+		readable : true
+	} <NULLABLE false> "MX25R8035F sensor failure."
+
+	mandatory failedTMP116 as boolean with {
+		readable : true
+	} <NULLABLE false> "TMP116 sensor failure."
+
+	mandatory failedCRC as boolean with {
+		readable : true
+	} <NULLABLE false> "Wrong CRC checksum."
+
+}

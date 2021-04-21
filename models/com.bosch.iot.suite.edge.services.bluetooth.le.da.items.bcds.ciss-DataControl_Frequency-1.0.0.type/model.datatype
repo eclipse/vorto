@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "Data Control Frequency"
+description "Specifies the frequency level."
+
+enum DataControl_Frequency {
+	MS_10,
+	MS_100,
+	S_1,
+	S_10,
+	S_30,
+	M_1,
+	M_10
+}
