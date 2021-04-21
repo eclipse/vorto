@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Actuator"
+description "Represents an actuator that controls the given value."
+using com.bosch.iot.suite.edge.services.da.items.Range ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.units.Quantity ; 1.0.0
+
+functionblock Actuator extends FunctionalItem {
+	configuration {
+		mandatory value as Quantity with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents the value."
+	}
+
+	status {
+		mandatory range as Range with {
+			readable : true,eventable : true
+		} "Represents the value range."
+	}
+
+}

@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.0
+displayname "Power Save"
+description "Improves the energy saving with a monitoring and control on the power states."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock PowerSave extends FunctionalItem {
+	configuration {
+		mandatory wakeUpInterval as long with {
+			readable : true,writable : true,eventable : true
+		} <MIN 0 , NULLABLE false> "Represents the wake up interval in milliseconds. 0 indicates that there is no such interval."
+	}
+
+	status {
+		mandatory awake as boolean with {
+			eventable : true
+		} <NULLABLE false> "Represents the awake event."
+	}
+
+	operations {
+		mandatory sleep() "Initiates the transition from an 'on' power state to a 'sleep' power state."
+	}
+
+}

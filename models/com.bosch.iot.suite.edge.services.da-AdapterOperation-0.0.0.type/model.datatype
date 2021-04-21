@@ -1,0 +1,10 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 0.0.0
+
+enum AdapterOperation {
+	CREATE,
+	REMOVE,
+	CANCEL_REMOVE
+}

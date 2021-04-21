@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 0.0.0
+
+enum DeviceStatus {
+	INITIALIZING,
+	ONLINE,
+	NOT_CONFIGURED,
+	OFFLINE,
+	NOT_INITIALIZED,
+	FIRMWARE_UPDATING,
+	REMOVING,
+	REMOVED
+}

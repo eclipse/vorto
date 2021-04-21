@@ -1,0 +1,102 @@
+{
+  "root" : {
+    "name" : "DeviceStatus",
+    "namespace" : "com.bosch.iot.suite.edge.services.da",
+    "version" : "0.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DeviceStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "DeviceStatus.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INITIALIZING",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "ONLINE",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "NOT_CONFIGURED",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "OFFLINE",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "NOT_INITIALIZED",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "FIRMWARE_UPDATING",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "REMOVING",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      }, {
+        "name" : "REMOVED",
+        "description" : null,
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:0.0.0"
+        }
+      } ]
+    }
+  }
+}

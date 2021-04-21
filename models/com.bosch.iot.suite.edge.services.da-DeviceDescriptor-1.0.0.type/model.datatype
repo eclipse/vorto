@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.0
+using com.bosch.iot.suite.edge.services.da.DeviceItemDescriptor ; 1.0.0
+
+entity DeviceDescriptor {
+
+	mandatory uid as string with {
+		readable : true
+	} "Device UID"
+
+	mandatory name as string with {
+		readable : true
+	} "Device name"
+
+	mandatory multiple tags as string with {
+		readable : true
+	} "Device tags"
+
+	mandatory adapter_name as string with {
+		readable : true
+	} "Device adapter name"
+
+	mandatory multiple items as DeviceItemDescriptor with {
+		readable : true
+	} "Device items to be added"
+
+	mandatory attributes as dictionary [ string , string ] with {
+		readable : true
+	} "Device attributes with their JSON String representations"
+
+}

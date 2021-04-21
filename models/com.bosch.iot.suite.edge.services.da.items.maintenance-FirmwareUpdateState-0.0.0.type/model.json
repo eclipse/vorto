@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "FirmwareUpdateState",
+    "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+    "version" : "0.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FirmwareUpdateState",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "FirmwareUpdateState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PENDING",
+        "description" : "The firmware update is still not started. It's an initial state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "RUNNING",
+        "description" : "The firmware is updating. It's an intermediate state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "SUCCEEDED",
+        "description" : "The firmware was successfully updated. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "FAILED",
+        "description" : "The firmware update has failed. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "CANCELED",
+        "description" : "The firmware update has been canceled. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      } ]
+    }
+  }
+}

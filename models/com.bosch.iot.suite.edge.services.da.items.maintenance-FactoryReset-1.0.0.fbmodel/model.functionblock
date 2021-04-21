@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.0
+displayname "Factory Reset"
+description "Represents a factory reset, also known as hard reset or master reset."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock FactoryReset extends FunctionalItem {
+	operations {
+		mandatory reset() "Initiates the factory reset."
+	}
+
+}

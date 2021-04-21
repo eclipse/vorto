@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "AdapterOperation",
+    "namespace" : "com.bosch.iot.suite.edge.services.da",
+    "version" : "0.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AdapterOperation",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "AdapterOperation.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CREATE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      }, {
+        "name" : "REMOVE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      }, {
+        "name" : "CANCEL_REMOVE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      } ]
+    }
+  }
+}

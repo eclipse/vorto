@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.1
+using com.bosch.iot.suite.edge.services.da.AdapterOperation ; 0.0.0
+using com.bosch.iot.suite.edge.services.da.RemoveArgument ; 0.0.0
+
+entity AdapterInfo {
+
+	mandatory name as string with {
+		readable : true
+	} <NULLABLE false> "Protocol adapter name"
+
+	mandatory version as string with {
+		readable : true
+	} "Protocol adapter version"
+
+	mandatory multiple operations as AdapterOperation with {
+		readable : true
+	} <NULLABLE false> "Protocol adapter supported operations"
+
+	mandatory multiple removeArguments as RemoveArgument with {
+		readable : true
+	} <NULLABLE false> "Supported arguments on device removal"
+
+}

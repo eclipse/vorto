@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+using com.bosch.iot.suite.edge.services.units.Quantity ; 1.0.0
+
+entity Range {
+
+	mandatory min as Quantity with {
+		readable : true
+	} "Represents the minimum value."
+
+	mandatory max as Quantity with {
+		readable : true
+	} "Represents the maximum value."
+
+	mandatory step as Quantity with {
+		readable : true
+	} "Represents the step."
+
+	mandatory multiple possibleValues as Quantity with {
+		readable : true
+	} "Represents the possible values."
+
+}

@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 0.0.0
+
+enum RemoveArgument {
+	FORCE,
+	POSTPONE,
+	FORCE_RESET,
+	POSTPONE_RESET
+}

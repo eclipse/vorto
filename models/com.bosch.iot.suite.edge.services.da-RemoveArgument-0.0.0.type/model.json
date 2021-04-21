@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "RemoveArgument",
+    "namespace" : "com.bosch.iot.suite.edge.services.da",
+    "version" : "0.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RemoveArgument",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "RemoveArgument.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "FORCE",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "POSTPONE",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "FORCE_RESET",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "POSTPONE_RESET",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      } ]
+    }
+  }
+}
