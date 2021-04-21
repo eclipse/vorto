@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Max Inclusion Request Interval"
+description "This Information Type is used to advertise if a power constrained Smart Start node will issue inclusion request at a higher interval value than the default 512 seconds."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity MaxInclusionRequestInterval extends InformationType {
+	mandatory interval as int with {
+		readable : true
+	} <NULLABLE false>
+}

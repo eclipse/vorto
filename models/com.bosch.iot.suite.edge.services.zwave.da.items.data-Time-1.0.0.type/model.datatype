@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Time"
+description "Represents the time of clock."
+
+entity Time {
+	mandatory hour as int with {
+		readable : true
+	} <MIN 0 , MAX 23 , NULLABLE false> "The current hour of clock time."
+
+	mandatory minute as int with {
+		readable : true
+	} <MIN 0 , MAX 59 , NULLABLE false> "The current minute of clock time."
+
+	mandatory second as int with {
+		readable : true
+	} <MIN 0 , MAX 59 , NULLABLE false> "The current second of clock time."
+
+}

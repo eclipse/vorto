@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Alarm Version 1"
+description "Provides support for the Z-Wave Alarm (Notification) Command Class, Version 1."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.AlarmStatus ; 1.0.0
+
+functionblock Alarm extends FunctionalItem {
+	status {
+		mandatory alarm as AlarmStatus with {
+			eventable : true
+		} "Alarm severity report pushed by the device for a specific type."
+
+	}
+
+	operations {
+		mandatory getStatus(type as int <NULLABLE false> "The alarm type to read the severity for.") returns AlarmStatus
+		"Reads the severity report according to the alarm type."
+	}
+
+}

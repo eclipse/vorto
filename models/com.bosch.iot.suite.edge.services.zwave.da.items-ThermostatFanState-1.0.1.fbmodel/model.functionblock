@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Thermostat Fan State"
+description "Provides support for the Z-Wave Thermostat Fan State Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ThermostatFanState extends FunctionalItem {
+	status {
+		mandatory state as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Property value for thermostat fan operating state."
+
+	}
+
+}

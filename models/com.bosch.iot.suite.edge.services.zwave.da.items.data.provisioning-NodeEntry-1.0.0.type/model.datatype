@@ -1,0 +1,68 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Node Entry"
+description "Representation of a Node NodeProvisioning Entry."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.AdvancedJoining ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.BootstrappingMode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.Location ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.MaxInclusionRequestInterval ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.Name ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.NetworkStatus ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.ProductId ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.ProductType ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.QRCompatible ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.SmartStartInclusionSetting ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.UUID16 ; 1.0.0
+
+entity NodeEntry {
+	mandatory multiple dsk as int with {
+		readable : true
+	}
+
+	mandatory productType as ProductType with {
+		readable : true
+	}
+
+	mandatory productId as ProductId with {
+		readable : true
+	}
+
+	mandatory maxInclusionRequestInterval as MaxInclusionRequestInterval with {
+		readable : true
+	}
+
+	mandatory uuid16 as UUID16 with {
+		readable : true
+	}
+
+	mandatory name as Name with {
+		readable : true
+	}
+
+	mandatory location as Location with {
+		readable : true
+	}
+
+	mandatory smartStartInclusionSetting as SmartStartInclusionSetting with {
+		readable : true
+	}
+
+	mandatory advancedJoining as AdvancedJoining with {
+		readable : true
+	}
+
+	mandatory bootstrappingMode as BootstrappingMode with {
+		readable : true
+	}
+
+	mandatory networkStatus as NetworkStatus with {
+		readable : true
+	}
+
+	mandatory multiple qrCompatibleInfos as QRCompatible with {
+		readable : true
+	}
+
+}

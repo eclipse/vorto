@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Wake Up"
+description "Provides support for the Z-Wave Wake Up Command Class "
+using com.bosch.iot.suite.edge.services.da.items.maintenance.PowerSave ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.WakeUpIntervalCapabilities ; 1.0.0
+
+functionblock WakeUp extends PowerSave {
+	status {
+		mandatory intervalCapabilities as WakeUpIntervalCapabilities with {
+			readable : true
+		} "Represents the Wake Up Interval Capabilities values reported by the device"
+
+	}
+
+}

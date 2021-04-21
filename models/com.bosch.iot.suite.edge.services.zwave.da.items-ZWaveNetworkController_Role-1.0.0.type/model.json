@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "ZWaveNetworkController_Role",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_Role",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Role",
+      "description" : "Represents all possible Z-Wave Controller roles.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_Role.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PRIMARY",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SECONDARY",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "INCLUSION",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SUC",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SIS",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      } ]
+    }
+  }
+}

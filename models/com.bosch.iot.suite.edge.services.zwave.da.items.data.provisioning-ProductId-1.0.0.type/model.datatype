@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Product Id"
+description "This Provisioning Information is used to advertise the product identifying data of a supporting node."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity ProductId extends InformationType {
+	mandatory manufacturerID as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory productType as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory productId as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory applicationVersion as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory applicationSubVersion as int with {
+		readable : true
+	} <NULLABLE false>
+}

@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "User Status"
+description "This entity provides additional information regarding the status of the user data defined by the user ID - whether it is available for usage, occupied by an existing user with some code, reserved by the administrator of the device or not availalbe at all."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.User ; 1.0.0
+
+entity UserStatus extends User {
+	mandatory status as int with {
+		readable : true
+	} <NULLABLE false> "The status of the current user."
+
+}

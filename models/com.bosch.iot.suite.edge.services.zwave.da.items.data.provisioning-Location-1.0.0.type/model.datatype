@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Location"
+description "This Information Type is used to advertise the location assigned to a supporting node."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity Location extends InformationType {
+	mandatory location as string with {
+		readable : true
+	}
+
+}

@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Power Level"
+description "Provides support for the Z-Wave Power Level Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.PowerLevel_Level ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.PowerLevelTestResult ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.PowerLevelValue ; 1.0.0
+
+functionblock PowerLevel extends FunctionalItem {
+	configuration {
+		mandatory value as PowerLevelValue with {
+			readable : true,writable : true,eventable : true
+		} "The power level value."
+
+	}
+
+	operations {
+		mandatory startTest(testNodeId as int <NULLABLE false> "The test nodeID that should receive the transmitted test frames.",
+			powerLevel as PowerLevel_Level "The power level to use in the test frame transmission.",
+			testFrameCount as int <NULLABLE false> "The number of test frames to transmit to the test node.")
+		"Initiates a transmission of a number of test frames to the specified node with the RF power level specified."
+		mandatory getLatestTestResult() returns PowerLevelTestResult
+		"Requests for the result of the latest test frames transmission to a node."
+	}
+
+}

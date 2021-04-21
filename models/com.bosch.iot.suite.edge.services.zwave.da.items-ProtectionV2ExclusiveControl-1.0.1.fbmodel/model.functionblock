@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Exclusive Control feature of Protection, Version 2"
+description "Provides support for the Exclusive Control feature of the Z-Wave Protection Command Class, Version 2."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ProtectionV2ExclusiveControl extends FunctionalItem {
+	configuration {
+		mandatory nodeId as int with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Defines the exclusive control of the device."
+
+	}
+
+}

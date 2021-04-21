@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Color Value"
+description "Represents a Z-Wave protocol specific color value wrapper, including the color id and value."
+using com.bosch.iot.suite.edge.services.zwave.da.items.ColorSwitch_Component ; 1.0.0
+
+entity ColorValue {
+	mandatory id as ColorSwitch_Component with {
+		readable : true
+	} "The color component id."
+
+	mandatory value as int with {
+		readable : true
+	} <NULLABLE false> "The color value."
+
+}

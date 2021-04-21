@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "ZWave Network Controller Bandwidth"
+description "The RF Bandwidth (in MHz) of the controller."
+
+enum ZWaveNetworkController_Bandwidth {
+	UNKNOWN,
+	EUROPE,
+	AMERICA,
+	ASIA
+}

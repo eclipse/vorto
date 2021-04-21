@@ -1,0 +1,170 @@
+{
+  "root" : {
+    "name" : "AdvancedJoining",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:AdvancedJoining:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Information Type",
+      "description" : "Abstract representation of a Node Provisioning Information type.",
+      "category" : null,
+      "fileName" : "InformationType.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:AdvancedJoining:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AdvancedJoining",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:AdvancedJoining:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Advanced Joining",
+      "description" : "This Information Type is used to advertise the Security keys to grant during S2 bootstrapping to a SmartStart node in the Provisioning List.",
+      "category" : null,
+      "fileName" : "AdvancedJoining.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "SecurityClass",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+      }, {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "securityClasses",
+        "description" : null,
+        "type" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SecurityClass",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Security Class",
+      "description" : "This enumeration represents the Security Classes defined by the Z-Wave Protocol Specification.",
+      "category" : null,
+      "fileName" : "SecurityClass.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NON_SECURE",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_UNAUTHENTICATED",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_AUTHENTICATED",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_ACCESS_CONTROL",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "SECURITY_0",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      } ]
+    }
+  }
+}

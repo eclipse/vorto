@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Meter"
+description "Provides support for the Z-Wave Meter Command Class, version 2 and higher."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock MeterReset extends FunctionalItem {
+	operations {
+		mandatory reset() "Resets all accumulated values for the devices."
+	}
+
+}

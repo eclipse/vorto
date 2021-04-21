@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Protection State"
+description "Represents the possible protection states that can be set on the device in compliance with the Z-Wave specification for Protection Command Class."
+
+enum Protection_State {
+	UNPROTECTED,
+	PROTECTION_BY_SEQUENCE,
+	NO_OPERATION_POSSIBLE
+}

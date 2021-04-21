@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Door Lock Logging"
+description "Provides support for the Z-Wave Door Lock Logging Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.DoorLockLogRecord ; 1.0.0
+
+functionblock DoorLockLogging extends FunctionalItem {
+	status {
+		mandatory supportedRecordsNumber as int with {
+			readable : true
+		} <NULLABLE false> "Represents the max number of supported records."
+
+	}
+
+	operations {
+		mandatory getRecord(recordId as int <NULLABLE false> "The ID of the record that will be requested.") returns
+		DoorLockLogRecord "Request the audit trail for the record with the specified ID."
+	}
+
+}

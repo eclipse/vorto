@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Clock"
+description "Provides support for the Z-Wave Clock Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.ClockTime ; 1.0.0
+
+functionblock Clock extends FunctionalItem {
+	configuration {
+		mandatory time as ClockTime with {
+			readable : true,writable : true,eventable : true
+		} "Represents the clock time."
+
+	}
+
+}

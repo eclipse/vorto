@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Advanced Joining"
+description "This Information Type is used to advertise the Security keys to grant during S2 bootstrapping to a SmartStart node in the Provisioning List."
+using com.bosch.iot.suite.edge.services.zwave.da.items.SecurityClass ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity AdvancedJoining extends InformationType {
+	mandatory multiple securityClasses as SecurityClass with {
+		readable : true
+	}
+
+}

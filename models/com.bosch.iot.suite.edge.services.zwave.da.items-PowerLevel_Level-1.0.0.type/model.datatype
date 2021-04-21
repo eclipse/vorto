@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Power Level"
+description "Represents the possible power levels that can be set on the device in compliance with the Z-Wave Specification."
+
+enum PowerLevel_Level {
+	NORMAL_POWER,
+	MINUS_1_DBM,
+	MINUS_2_DBM,
+	MINUS_3_DBM,
+	MINUS_4_DBM,
+	MINUS_5_DBM,
+	MINUS_6_DBM,
+	MINUS_7_DBM,
+	MINUS_8_DBM,
+	MINUS_9_DBM
+}

@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Power Level Value"
+description "Represents a report from Z-Wave Power Level Command Class."
+using com.bosch.iot.suite.edge.services.zwave.da.items.PowerLevel_Level ; 1.0.0
+
+entity PowerLevelValue {
+	mandatory powerLevel as PowerLevel_Level with {
+		readable : true
+	} "The current power level value in effect on the node."
+
+	mandatory timeout as long with {
+		readable : true
+	} <NULLABLE false> "The time in seconds the node has back at Power level before resetting to \'normalPower\' level."
+
+}

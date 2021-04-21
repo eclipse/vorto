@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Protection, Version 1"
+description "Provides support for the Z-Wave Protection Command Class, Version 1."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.Protection_State ; 1.0.0
+
+functionblock Protection extends FunctionalItem {
+	configuration {
+		mandatory state as Protection_State with {
+			readable : true,writable : true,eventable : true
+		} "Represents the protection state of the device."
+
+	}
+
+}

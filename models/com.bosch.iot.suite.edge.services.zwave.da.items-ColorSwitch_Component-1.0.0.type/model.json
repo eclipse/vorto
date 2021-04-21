@@ -1,0 +1,111 @@
+{
+  "root" : {
+    "name" : "ColorSwitch_Component",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorSwitch_Component",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Switch Component",
+      "description" : "This enumeration defines all Z-Wave protocol specific color components.",
+      "category" : null,
+      "fileName" : "ColorSwitch_Component.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "WARM_WHITE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "COLD_WHITE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "RED",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "GREEN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "BLUE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "AMBER",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "CYAN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "PURPLE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "INDEXED",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      } ]
+    }
+  }
+}

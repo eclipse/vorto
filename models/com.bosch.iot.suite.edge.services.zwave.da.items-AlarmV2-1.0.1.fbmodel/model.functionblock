@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Alarm Version 2"
+description
+"Provides support for the Z-Wave Alarm Command Class (Version 2 and higher) superseded by the Notification Command Class for Version 3 and higher."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.AlarmV2Status ; 1.0.0
+
+functionblock AlarmV2 extends FunctionalItem {
+	status {
+		mandatory status as AlarmV2Status with {
+			readable : true,eventable : true
+		} "The current state of the alarm for this specific type."
+
+		mandatory active as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE
+		false> "Represents whether the alarm is active or inactive. If the device implements pull mode - then only 0x00 may be used to clear the chacged reports."
+
+	}
+
+	operations {
+		mandatory activate() "Activates the alarm notifications."
+		mandatory deactivate() "Deactivates the alarm notifications."
+	}
+
+}

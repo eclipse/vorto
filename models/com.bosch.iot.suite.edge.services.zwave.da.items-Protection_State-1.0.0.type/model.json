@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "Protection_State",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Protection_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Protection State",
+      "description" : "Represents the possible protection states that can be set on the device in compliance with the Z-Wave specification for Protection Command Class.",
+      "category" : null,
+      "fileName" : "Protection_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNPROTECTED",
+        "description" : null,
+        "parent" : {
+          "name" : "Protection_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0"
+        }
+      }, {
+        "name" : "PROTECTION_BY_SEQUENCE",
+        "description" : null,
+        "parent" : {
+          "name" : "Protection_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0"
+        }
+      }, {
+        "name" : "NO_OPERATION_POSSIBLE",
+        "description" : null,
+        "parent" : {
+          "name" : "Protection_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Protection_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}

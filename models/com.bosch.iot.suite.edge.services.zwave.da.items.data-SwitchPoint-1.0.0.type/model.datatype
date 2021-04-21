@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Switch Point"
+description "Represents a switch point information that defines the setback from the current setpoint at a given time of day."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.Time ; 1.0.0
+
+entity SwitchPoint {
+	mandatory time as Time with {
+		readable : true
+	} "The switch point time."
+
+	mandatory value as byte with {
+		readable : true
+	} <NULLABLE false> "The switch point value."
+
+}

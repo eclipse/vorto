@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "SecurityClass",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SecurityClass",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Security Class",
+      "description" : "This enumeration represents the Security Classes defined by the Z-Wave Protocol Specification.",
+      "category" : null,
+      "fileName" : "SecurityClass.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NON_SECURE",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_UNAUTHENTICATED",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_AUTHENTICATED",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "S2_ACCESS_CONTROL",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      }, {
+        "name" : "SECURITY_0",
+        "description" : null,
+        "parent" : {
+          "name" : "SecurityClass",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:SecurityClass:1.0.0"
+        }
+      } ]
+    }
+  }
+}

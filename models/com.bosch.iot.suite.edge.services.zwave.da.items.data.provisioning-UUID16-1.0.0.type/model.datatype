@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "UUID16"
+description "This Information Type is used to advertise a product’s unique identity."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity UUID16 extends InformationType {
+	mandatory presentationFormat as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory multiple uuid as byte with {
+		readable : true
+	}
+
+}

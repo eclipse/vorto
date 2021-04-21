@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Date Time"
+description "Represents the date time in a Z-Wave specific format."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.Time ; 1.0.0
+
+entity DateTime extends Time {
+	mandatory day as int with {
+		readable : true
+	} <NULLABLE false> "Returns the day."
+
+	mandatory month as int with {
+		readable : true
+	} <NULLABLE false> "The date-time month."
+
+	mandatory year as int with {
+		readable : true
+	} <NULLABLE false> "The date-time year."
+
+}

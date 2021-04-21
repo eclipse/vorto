@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Thermostat Mode"
+description "Provides support for the Z-Wave Thermostat Mode Command Class, Version 1 and 2."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ThermostatMode_Mode ; 1.0.0
+
+functionblock ThermostatMode extends FunctionalItem {
+	configuration {
+		mandatory mode as ThermostatMode_Mode with {
+			readable : true,writable : true,eventable : true
+		} "Represents the thermostat mode of the device. Refer to the supported by the device thermostat modes to get the possible values for this property."
+
+	}
+
+	status {
+		mandatory multiple supportedModes as ThermostatMode_Mode with {
+			readable : true,eventable : true
+		} "Represents the supported by the device thermostat modes."
+
+	}
+
+}

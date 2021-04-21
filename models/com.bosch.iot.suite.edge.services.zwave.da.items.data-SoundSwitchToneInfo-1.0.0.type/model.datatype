@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Sound Switch Tone Info"
+description "Wraps a Z-wave specific tone info report."
+
+entity SoundSwitchToneInfo {
+	mandatory id as int with {
+		readable : true
+	} <NULLABLE false> "The tone id."
+
+	mandatory duration as int with {
+		readable : true
+	} <NULLABLE false> "The duration of the tone."
+
+	mandatory name as string with {
+		readable : true
+	} "The name of the tone."
+
+}

@@ -1,0 +1,32 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Multi Channel Association Version 2"
+description "Provides support for the Z-Wave Multi Channel Association Command Class, Version 2."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.IdToValueTuple ; 1.0.0
+
+functionblock MultiChannelAssociation extends FunctionalItem {
+	operations {
+		mandatory create(sourceEndpoint as int <NULLABLE false>
+			"The endpoint(instance) if the multichannel(instance) device that is the source of the association.",
+			groupId as int <NULLABLE false> "The group to use for the association.",
+			targetNodeId as int <NULLABLE false> "The target device ids.",
+			targetEndpoint as int <NULLABLE false>
+			"The endpoint(instance) if the multichannel(instance) device that is the target of the association.")
+		"Adds one or more destinations to a given association group."
+		mandatory remove(sourceEndpoint as int <NULLABLE false>
+			"The endpoint(instance) if the multichannel(instance) device that is the source of the association.",
+			groupId as int <NULLABLE false> "The group to use for the association.",
+			targetNodeId as int <NULLABLE false> "The target device id.",
+			targetEndpoint as int <NULLABLE false>
+			"The endpoint(instance) if the multichannel(instance) device that is the target of the association.")
+		"Removes the destination node\'s endpoint from the given association group."
+		mandatory get(sourceEndpoint as int <NULLABLE false>
+			"The endpoint(instance) if the multichannel(instance) device that is the source of the association.",
+			groupId as int <NULLABLE false> "The association group id.") returns multiple IdToValueTuple
+		"Retrieves the current destinations of the given association group specified by the provided identifier."
+	}
+
+}

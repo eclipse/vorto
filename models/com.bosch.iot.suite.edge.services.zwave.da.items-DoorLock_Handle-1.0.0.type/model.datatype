@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Door Lock Handle"
+description "This enumeration represents all Door Lock Handle identifiers that can be configured active/inactive on a Z-Wave doorlock device."
+
+enum DoorLock_Handle {
+	INSIDE_1,
+	INSIDE_2,
+	INSIDE_3,
+	INSIDE_4,
+	OUTSIDE_1,
+	OUTSIDE_2,
+	OUTSIDE_3,
+	OUTSIDE_4
+}

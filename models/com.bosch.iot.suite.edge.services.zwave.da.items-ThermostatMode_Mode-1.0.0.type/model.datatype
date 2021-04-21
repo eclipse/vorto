@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Thermostat Mode"
+description "Represents all defined by the Z-Wave CC specification possible Thermostat modes."
+
+enum ThermostatMode_Mode {
+	OFF,
+	HEAT,
+	COOL,
+	AUTO,
+	AUXILIARY_HEAT,
+	RESUME,
+	FAN_ONLY,
+	FURNACE,
+	DRY_AIR,
+	MOIST_AIR,
+	AUTO_CHANGEOVER,
+	ENERGY_SAVE_HEAT,
+	ENERGY_SAVE_COOL,
+	AWAY,
+	FULL_POWER
+}

@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Association Version 1"
+description "Provides support for the Z-Wave Association Command Class, Version 1."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Association extends FunctionalItem {
+	status {
+		mandatory supportedGroupingsNumber as int with {
+			readable : true
+		} <NULLABLE false> "The number of association groupings that the device supports."
+
+	}
+
+	operations {
+		mandatory create(groupId as int <NULLABLE false> "The group to use for the association.",
+			nodeId as int <NULLABLE false> "The target device node id.") "Creates association between two devices."
+		mandatory get(groupId as int <NULLABLE false> "The group identifier.") returns multiple int
+		"Retrieves the current destinations of the given association group specified by the provided identifier."
+		mandatory remove(groupId as int <NULLABLE false> "The group identifier.",
+			nodeId as int <NULLABLE false> "The target device node id to remove from the association group.")
+		"Removes the listed node ids from the specified group\'s endpoints."
+		mandatory getMaxSupportedNodesNumber(groupId as int <NULLABLE false> "The group identifier.") returns int <NULLABLE
+		false> "Retrieves the maximum number of supported endpoints for the specified by the id association group."
+	}
+
+}

@@ -1,0 +1,31 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Door Lock Log Record"
+description "Represents a log record being stored as a result of an action that has been performed on a Z-Wave door lock device."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.DateTime ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.User ; 1.0.0
+
+entity DoorLockLogRecord {
+	mandatory number as int with {
+		readable : true
+	} <NULLABLE false> "The number of the door lock record."
+
+	mandatory status as int with {
+		readable : true
+	} <NULLABLE false> "The status of the door lock record."
+
+	mandatory eventType as int with {
+		readable : true
+	} <NULLABLE false> "The event type of the door lock record."
+
+	mandatory dateTime as DateTime with {
+		readable : true
+	} "The date time of the log record."
+
+	mandatory user as User with {
+		readable : true
+	} "The user associated with the log record."
+
+}

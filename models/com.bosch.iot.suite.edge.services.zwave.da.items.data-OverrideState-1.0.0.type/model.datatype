@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Override State"
+description "Defines a override(setback). The setpoint is the temperature a device will try to maintain. The override(setback) is a deviation from the setpoint. When a override(setback) is in use, the device will apply the override(setback) to the setpoint, resulting in a different temperature."
+
+entity OverrideState {
+	mandatory state as byte with {
+		readable : true
+	} <NULLABLE false> "The override state."
+
+	mandatory type as int with {
+		readable : true
+	} <NULLABLE false> "The override type."
+
+}

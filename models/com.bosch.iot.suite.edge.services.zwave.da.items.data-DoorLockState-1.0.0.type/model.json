@@ -1,0 +1,202 @@
+{
+  "root" : {
+    "name" : "DoorLockState",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:DoorLockState:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data:DoorLockState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DoorLockState",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:DoorLockState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Door Lock State",
+      "description" : "Represents the Z-Wave protocol specific state of a door lock device, including the mode, condition, enabled handles and timeout.",
+      "category" : null,
+      "fileName" : "DoorLockState.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "DoorLock_Handle",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "mode",
+        "description" : "The door lock mode.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "condition",
+        "description" : "The door lock condition.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "enabledHandles",
+        "description" : "The set of all enabled door lock handles.",
+        "type" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "timeout",
+        "description" : "The timeout of the current state.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DoorLock_Handle",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Door Lock Handle",
+      "description" : "This enumeration represents all Door Lock Handle identifiers that can be configured active/inactive on a Z-Wave doorlock device.",
+      "category" : null,
+      "fileName" : "DoorLock_Handle.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INSIDE_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "INSIDE_2",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "INSIDE_3",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "INSIDE_4",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "OUTSIDE_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "OUTSIDE_2",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "OUTSIDE_3",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      }, {
+        "name" : "OUTSIDE_4",
+        "description" : null,
+        "parent" : {
+          "name" : "DoorLock_Handle",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:DoorLock_Handle:1.0.0"
+        }
+      } ]
+    }
+  }
+}
