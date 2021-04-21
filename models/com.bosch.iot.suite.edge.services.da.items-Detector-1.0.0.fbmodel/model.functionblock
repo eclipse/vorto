@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Detector"
+description "Represents a detector that can register a presence, change or something else."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Detector extends FunctionalItem {
+	status {
+		mandatory detected as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the detection result."
+	}
+
+}

@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.whitegoods
+version 0.0.0
+
+enum ApplianceState {
+	OFF "The appliance has been turned off.",
+	STANDBY "The appliance went to standby mode.",
+	IDLE "The appliance is turned on, but it's not ready to operate.",
+	READY "The appliance is configured and ready to be started.",
+	DELAYED_START "The appliance delayed start has been configured.",
+	STARTED "The appliance activity has been started.",
+	ACTION_REQUIRED "The appliance activity requires an user interaction to continue.",
+	PAUSED "The appliance activity has been paused.",
+	STOPPING "The appliance activity is stopping.",
+	FINISHED "The appliance activity has finished.",
+	FAILED "The appliance activity has failed.",
+	STOPPED "The appliance activity has been stopped.",
+	UNKNOWN "The appliance state is not known."
+}

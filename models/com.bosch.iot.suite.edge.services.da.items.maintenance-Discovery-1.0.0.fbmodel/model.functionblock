@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.0
+displayname "Discovery"
+description "Initiates a discovery procedure."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Discovery extends FunctionalItem {
+	status {
+		mandatory started as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether the discovery is started or not."
+	}
+
+	operations {
+		mandatory start() "Starts the discovery."
+		mandatory startWithTimeout(timeout as long <MIN 1 , NULLABLE false> "The maximum time to discover in milliseconds.")
+		"Starts the discovery with the given timeout."
+		mandatory stop() "Stops the current discovery, if any."
+	}
+
+}

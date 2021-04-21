@@ -1,0 +1,32 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.whitegoods
+version 1.0.1
+displayname "Program Selector"
+description "Represents a program selector for the appliances known by different names like white goods, major appliances and domestic appliances."
+using com.bosch.iot.suite.edge.services.da.items.whitegoods.Program ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ProgramSelector extends FunctionalItem {
+	configuration {
+		mandatory targetProgram as string with {
+			readable : true,writable : true,eventable : true
+		} "Represents the target program identifier."
+	}
+
+	status {
+		mandatory currentProgram as string with {
+			readable : true,eventable : true
+		} "Represents the current program identifier."
+
+		mandatory multiple programs as Program with {
+			readable : true,eventable : true
+		} "Represents all supported programs."
+	}
+
+	operations {
+		mandatory getProgramById(programId as string "The program identifier.") returns Program
+		"Returns the program, which is matched by the specified identifier."
+	}
+
+}

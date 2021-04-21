@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.1
+
+entity DeviceError {
+
+	mandatory code as int with {
+		readable : true
+	} <NULLABLE false> "Error code"
+
+	mandatory message as string with {
+		readable : true
+	} "Error message"
+
+}

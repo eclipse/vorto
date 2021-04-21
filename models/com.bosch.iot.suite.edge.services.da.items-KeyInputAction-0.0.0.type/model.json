@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "KeyInputAction",
+    "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+    "version" : "0.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "KeyInputAction",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "KeyInputAction.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PRESSED",
+        "description" : "The key has been pressed. Usually, there is a press and an immediate release.",
+        "parent" : {
+          "name" : "KeyInputAction",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+        }
+      }, {
+        "name" : "LONG_PRESSED",
+        "description" : "The key has been long pressed. Usually, there is a press, the key is held down for a while and it's released.",
+        "parent" : {
+          "name" : "KeyInputAction",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+        }
+      }, {
+        "name" : "HELD",
+        "description" : "The key has been held down. Usually, there is a press and the key is held down.",
+        "parent" : {
+          "name" : "KeyInputAction",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+        }
+      }, {
+        "name" : "RELEASED",
+        "description" : "The key has been released. Usually, there is a release after {@link #HELD}.",
+        "parent" : {
+          "name" : "KeyInputAction",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items:KeyInputAction:0.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Switch"
+description "Represents a switch that can be turned on and off."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Switch extends FunctionalItem {
+	status {
+		mandatory on as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the switch state."
+	}
+
+	operations {
+		mandatory on() "Turns on the switch."
+		mandatory off() "Turns off the switch."
+	}
+
+}

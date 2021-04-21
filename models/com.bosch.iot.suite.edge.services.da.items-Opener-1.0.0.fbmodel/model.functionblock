@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Opener"
+description "Represents a control to open and close."
+using com.bosch.iot.suite.edge.services.da.items.OpenerState ; 0.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Opener extends FunctionalItem {
+	status {
+		mandatory state as OpenerState with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the state."
+	}
+
+	operations {
+		mandatory open() "Starts a moving so that it opens."
+		mandatory close() "Starts a moving so that it closes."
+		mandatory stop() "Stops the current operation, if any."
+	}
+
+}
