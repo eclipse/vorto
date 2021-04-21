@@ -1,0 +1,404 @@
+{
+  "root" : {
+    "name" : "I40Service",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:I40Service:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:I40Service:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "I40Service",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:I40Service:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "I40Service",
+      "description" : "Configures the I40 GATT Service.",
+      "category" : null,
+      "fileName" : "I40Service.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "DataControl",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl:1.0.0"
+      }, {
+        "name" : "DataControl",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "dataControl",
+        "description" : "The selected data control configuration.",
+        "type" : {
+          "name" : "DataControl",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DataControl_Frequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Data Control Frequency",
+      "description" : "Specifies the frequency level.",
+      "category" : null,
+      "fileName" : "DataControl_Frequency.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MS_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "MS_100",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_30",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "M_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "M_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DataControl",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Data Control",
+      "description" : "Represents a Data Control characteristic configuration.",
+      "category" : null,
+      "fileName" : "DataControl.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "DataControl_Frequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sendDataViaBleEnabled",
+        "description" : "Send data via Bluetooth LE.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "logAccelerationDataEnabled",
+        "description" : "Log acceleration data.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "logGyroDataEnabled",
+        "description" : "Log gyroscope data.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "logMagnetDataEnabled",
+        "description" : "Log magnetic data.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "logEnvironmentalDataEnabled",
+        "description" : "Log environmental data.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "frequency",
+        "description" : "Logging frecuency.",
+        "type" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

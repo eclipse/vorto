@@ -1,0 +1,34 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "ScdSettings"
+description "Configures the SCD Settings GATT Service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd.SelfTestResults ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ScdSettings extends FunctionalItem {
+	configuration {
+		mandatory deviceName as string with {
+			writable : true
+		} "Device name."
+
+	}
+
+	status {
+		mandatory interfaceVersion as int with {
+			readable : true
+		} <NULLABLE false> "Interface version."
+
+		mandatory selfTestResults as SelfTestResults with {
+			readable : true
+		} "Self-test results."
+
+	}
+
+	operations {
+		mandatory sendGenericCommand(genericCommand as byte <NULLABLE false>) "Sends a generic command code to the device."
+		mandatory modeSelection(mode as byte <NULLABLE false>) "Selects a new working mode for the device."
+	}
+
+}

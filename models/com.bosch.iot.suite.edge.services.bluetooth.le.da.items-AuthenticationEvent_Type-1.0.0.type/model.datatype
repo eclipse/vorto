@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items
+version 1.0.0
+displayname "Authentication Event Type"
+description "Represents an authentication event type."
+
+enum AuthenticationEvent_Type {
+	PASSKEY_NOTIFICATION,
+	REQUEST_PASSKEY,
+	PIN_CODE_NOTIFICATION,
+	REQUEST_PIN_CODE,
+	REQUEST_CONFIRMATION
+}

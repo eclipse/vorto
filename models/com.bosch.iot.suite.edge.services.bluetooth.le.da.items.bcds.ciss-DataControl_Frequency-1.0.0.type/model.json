@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "DataControl_Frequency",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DataControl_Frequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Data Control Frequency",
+      "description" : "Specifies the frequency level.",
+      "category" : null,
+      "fileName" : "DataControl_Frequency.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MS_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "MS_100",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "S_30",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "M_1",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      }, {
+        "name" : "M_10",
+        "description" : null,
+        "parent" : {
+          "name" : "DataControl_Frequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:DataControl_Frequency:1.0.0"
+        }
+      } ]
+    }
+  }
+}

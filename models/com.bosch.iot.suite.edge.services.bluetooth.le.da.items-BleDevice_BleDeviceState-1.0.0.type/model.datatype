@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items
+version 1.0.0
+displayname "BLE Device State"
+description "Represents a Bluetooth LE device state."
+
+enum BleDevice_BleDeviceState {
+	DISCONNECTED,
+	INITIALIZING,
+	CONNECTING,
+	CONNECTED,
+	DISCONNECTING
+}

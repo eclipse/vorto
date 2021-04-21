@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items
+version 1.0.0
+displayname "Authentication"
+description "Contains BLE pairing methods"
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.AuthenticationEvent ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Authentication extends FunctionalItem {
+	status {
+		mandatory event as AuthenticationEvent with {
+			eventable : true
+		} "Property used to post events for authentication requests coming from the driver."
+
+	}
+
+	operations {
+		mandatory reject() "Reject an authentication event."
+		mandatory providePasskey(passkey as int <MIN 0 , MAX 999999 , NULLABLE false> "A 6-digit number.")
+		"As a reply to an authentication event, the user provides a passkey."
+		mandatory providePinCode(pinCode as string "A string of 1-16 characters length. The string should be alphanumeric.")
+		"As a reply to an authentication event, the user provides a pin code."
+		mandatory confirm() "Confirms an authentication event."
+	}
+
+}

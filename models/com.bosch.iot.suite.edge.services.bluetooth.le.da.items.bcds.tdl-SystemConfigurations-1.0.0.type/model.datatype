@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "System Configurations"
+description "Represents the System Configuration characteristic."
+
+entity SystemConfigurations {
+	mandatory measurementTimeInterval as int with {
+		readable : true
+	} <NULLABLE false> "The measurement time interval."
+
+	mandatory startDelay as int with {
+		readable : true
+	} <NULLABLE false> "The start delay."
+
+}

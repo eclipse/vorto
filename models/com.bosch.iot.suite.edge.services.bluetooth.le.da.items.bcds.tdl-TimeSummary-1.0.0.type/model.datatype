@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "Time Summary"
+description "Represents the Time Summary characteristic."
+
+entity TimeSummary {
+	mandatory startTime as int with {
+		readable : true
+	} <NULLABLE false> "The start time (in minutes)."
+
+	mandatory endTime as int with {
+		readable : true
+	} <NULLABLE false> "The end time (in minutes)."
+
+}

@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items
+version 1.0.0
+displayname "BleDevice"
+description "Provides basic operations of a Bluetooth LE device."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.BleDevice_BleDeviceState ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock BleDevice extends FunctionalItem {
+	status {
+		mandatory deviceState as BleDevice_BleDeviceState with {
+			readable : true,eventable : true
+		} "Indicates the current device state."
+
+	}
+
+	operations {
+		mandatory connect() "Establishes a connection to the Bluetooth device."
+		mandatory disconnect() "Disconnects the Bluetooth device."
+	}
+
+}

@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "STE Configuration Accelerometer Sensor ODR"
+description "Specifies the accelerometer sensor output data rates."
+
+enum SteConfiguration_AccelerometerSensorOdr {
+	ODR_400HZ,
+	ODR_800HZ,
+	ODR_1600HZ,
+	ODR_3200HZ,
+	ODR_6400HZ
+}

@@ -1,0 +1,81 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "STE Results"
+description "Represents a Short Term Experiment Results characteristic."
+
+entity SteResults {
+	mandatory accelerationArithmeticMeanX as float with {
+		readable : true
+	} <NULLABLE false> "The arithmetic mean of the X-axis acceleration values."
+
+	mandatory accelerationArithmeticMeanY as float with {
+		readable : true
+	} <NULLABLE false> "The arithmetic mean of the Y-axis acceleration values."
+
+	mandatory accelerationArithmeticMeanZ as float with {
+		readable : true
+	} <NULLABLE false> "The arithmetic mean of the Z-axis acceleration values."
+
+	mandatory accelerationVarianceX as float with {
+		readable : true
+	} <NULLABLE false> "The variance of the X-axis acceleration values."
+
+	mandatory accelerationVarianceY as float with {
+		readable : true
+	} <NULLABLE false> "The variance of the Y-axis acceleration values."
+
+	mandatory accelerationVarianceZ as float with {
+		readable : true
+	} <NULLABLE false> "The variance of the Z-axis acceleration values."
+
+	mandatory temperature as float with {
+		readable : true
+	} <NULLABLE false> "The temperature value."
+
+	mandatory illuminance as float with {
+		readable : true
+	} <NULLABLE false> "The illuminance value."
+
+	mandatory magneticFieldStrengthX as float with {
+		readable : true
+	} <NULLABLE false> "The magnetic field strength X-axis value."
+
+	mandatory magneticFieldStrengthY as float with {
+		readable : true
+	} <NULLABLE false> "The magnetic field strength Y-axis value."
+
+	mandatory magneticFieldStrengthZ as float with {
+		readable : true
+	} <NULLABLE false> "The magnetic field strength Z-axis value."
+
+	mandatory accelerationViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The acceleration violation flag."
+
+	mandatory illuminanceHighViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The high illuminance threshold violation."
+
+	mandatory illuminanceLowViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The low illuminance threshold violation."
+
+	mandatory magneticFieldStrengthViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The magnetic field strength threshold violation."
+
+	mandatory temperatureHighViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The high temperature threshold violation."
+
+	mandatory temperatureSensorLowViolation as boolean with {
+		readable : true
+	} <NULLABLE false> "The low temperature threshold violation."
+
+	mandatory rollingCounter as int with {
+		readable : true
+	} <NULLABLE false> "The results counter."
+
+}

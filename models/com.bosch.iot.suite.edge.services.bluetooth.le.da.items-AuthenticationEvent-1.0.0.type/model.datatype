@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items
+version 1.0.0
+displayname "Authentication Event"
+description "Represents an authentication event."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.AuthenticationEvent_Type ; 1.0.0
+
+entity AuthenticationEvent {
+	mandatory type as AuthenticationEvent_Type with {
+		readable : true
+	} "The authentication event."
+	mandatory passkey as int with {
+		readable : true
+	} <NULLABLE false> "A six digit number."
+	mandatory pinCode as string with {
+		readable : true
+	} "A string of 1-16 characters length. The string should be alphanumeric."
+
+}

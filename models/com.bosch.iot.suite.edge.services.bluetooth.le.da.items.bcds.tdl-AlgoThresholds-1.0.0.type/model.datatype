@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "Algo Thresholds"
+description "Represents the Algo Thresholds characteristic."
+
+entity AlgoThresholds {
+	mandatory energyThreshold as float with {
+		readable : true
+	} <NULLABLE false> "The energy threshold."
+
+	mandatory accelerationThreshold as float with {
+		readable : true
+	} "The acceleration threshold."
+
+	mandatory timeAboveThreshold as float with {
+		readable : true
+	} <NULLABLE false> "The time-above threshold."
+
+	mandatory tiltThreshold as int with {
+		readable : true
+	} "The tilt threshold."
+
+}

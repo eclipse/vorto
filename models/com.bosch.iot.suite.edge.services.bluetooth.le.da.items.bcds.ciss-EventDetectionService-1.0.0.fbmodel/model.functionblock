@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "EventDetectionService"
+description "Configures the EventDetectionService GATT Service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss.EventDetectionConfiguration ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock EventDetectionService extends FunctionalItem {
+	configuration {
+		mandatory eventDetectionConfiguration as EventDetectionConfiguration with {
+			readable : true,writable : true,eventable : true
+		} "The selected event detection configuration."
+
+	}
+
+}

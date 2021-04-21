@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "EventDetectionConfiguration_NotificationInterface",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "EventDetectionConfiguration_NotificationInterface",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Event Detection Configuration Notification Interface",
+      "description" : "Specifies the notification interface mode.",
+      "category" : null,
+      "fileName" : "EventDetectionConfiguration_NotificationInterface.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NONE",
+        "description" : null,
+        "parent" : {
+          "name" : "EventDetectionConfiguration_NotificationInterface",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+        }
+      }, {
+        "name" : "BLE",
+        "description" : null,
+        "parent" : {
+          "name" : "EventDetectionConfiguration_NotificationInterface",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+        }
+      }, {
+        "name" : "USB",
+        "description" : null,
+        "parent" : {
+          "name" : "EventDetectionConfiguration_NotificationInterface",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+        }
+      }, {
+        "name" : "BOTH",
+        "description" : null,
+        "parent" : {
+          "name" : "EventDetectionConfiguration_NotificationInterface",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss:EventDetectionConfiguration_NotificationInterface:1.0.0"
+        }
+      } ]
+    }
+  }
+}

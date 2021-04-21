@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd
+version 1.0.0
+displayname "ScdSte"
+description "Configures the SCD Short Term Experiment GATT Service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd.SteConfiguration ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd.SteResults ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ShortTermExperiment extends FunctionalItem {
+	configuration {
+		mandatory configuration as SteConfiguration with {
+			readable : true,writable : true
+		} "Short term experiment (STE) configuration."
+
+	}
+
+	status {
+		mandatory results as SteResults with {
+			readable : true
+		} "Short term experiment (STE) results."
+
+	}
+
+}

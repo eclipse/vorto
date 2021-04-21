@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "BulkDataTransfer"
+description "Bulk data transfer service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.BulkDataTransfer_Status ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock BulkDataTransfer extends FunctionalItem {
+	status {
+		mandatory status as BulkDataTransfer_Status with {
+			readable : true,eventable : true
+		} "Represents the current bulk data transfer status."
+
+	}
+
+	operations {
+		mandatory download() "Triggers a bulk data transfer process for all records."
+		mandatory stop() "Stop an ongoing bulk data transfer."
+		mandatory delete() "Delete the collected data from the device."
+	}
+
+}

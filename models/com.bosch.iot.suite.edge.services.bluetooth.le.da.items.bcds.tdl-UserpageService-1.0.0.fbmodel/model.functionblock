@@ -1,0 +1,66 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl
+version 1.0.0
+displayname "UserpageService"
+description "Configures the UserpageService GATT Service."
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.AlgoThresholds ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.EnvironmentalThresholds ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.LoggingSummary ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.SystemConfigurations ; 1.0.0
+using com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.tdl.TimeSummary ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock UserpageService extends FunctionalItem {
+	configuration {
+		mandatory loggingState as boolean with {
+			readable : true,writable : true
+		} <NULLABLE false> "The logging state."
+
+		mandatory systemConfigurations as SystemConfigurations with {
+			readable : true,writable : true
+		} "The device system configurations."
+
+		mandatory environmentalThresholds as EnvironmentalThresholds with {
+			readable : true,writable : true
+		} "The environmental thresholds."
+
+		mandatory algoThresholds as AlgoThresholds with {
+			readable : true,writable : true
+		} "The algo thresholds."
+
+		mandatory syncTime as long with {
+			readable : true,writable : true
+		} <NULLABLE false> "The device system time."
+
+		mandatory emailAddress as string with {
+			readable : true,writable : true
+		} "The email address."
+
+		mandatory deviceName as string with {
+			readable : true,writable : true
+		} "The device name."
+
+	}
+
+	status {
+		mandatory statusInformation as byte with {
+			readable : true,eventable : true
+		} <NULLABLE false> "The real-time status information."
+
+		mandatory loggingSummary as LoggingSummary with {
+			readable : true
+		} "The logging summary."
+
+		mandatory timeSummary as TimeSummary with {
+			readable : true
+		} "The time summary."
+
+	}
+
+	operations {
+		mandatory setPinCode(value as string) returns boolean <NULLABLE false> "Set PIN code."
+		mandatory sendControlCommand(commandCode as byte <NULLABLE false>) "Sends a command code to the device."
+	}
+
+}

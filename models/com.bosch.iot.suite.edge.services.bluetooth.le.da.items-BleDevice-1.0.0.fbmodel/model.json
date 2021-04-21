@@ -1,0 +1,265 @@
+{
+  "root" : {
+    "name" : "BleDevice",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BleDevice_BleDeviceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BLE Device State",
+      "description" : "Represents a Bluetooth LE device state.",
+      "category" : null,
+      "fileName" : "BleDevice_BleDeviceState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "DISCONNECTED",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "INITIALIZING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "CONNECTING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "CONNECTED",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      }, {
+        "name" : "DISCONNECTING",
+        "description" : null,
+        "parent" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BleDevice",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "BleDevice",
+      "description" : "Provides basic operations of a Bluetooth LE device.",
+      "category" : null,
+      "fileName" : "BleDevice.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "BleDevice_BleDeviceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+      }, {
+        "name" : "BleDevice_BleDeviceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "deviceState",
+        "description" : "Indicates the current device state.",
+        "type" : {
+          "name" : "BleDevice_BleDeviceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items:BleDevice_BleDeviceState:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "connect",
+        "description" : "Establishes a connection to the Bluetooth device.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "disconnect",
+        "description" : "Disconnects the Bluetooth device.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

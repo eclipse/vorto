@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "BulkDataTransfer_Status",
+    "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BulkDataTransfer_Status",
+        "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Bulk Data Transfer Status",
+      "description" : "Specifies the bulk data transfer status information.",
+      "category" : null,
+      "fileName" : "BulkDataTransfer_Status.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IDLE",
+        "description" : null,
+        "parent" : {
+          "name" : "BulkDataTransfer_Status",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+        }
+      }, {
+        "name" : "ONGOING",
+        "description" : null,
+        "parent" : {
+          "name" : "BulkDataTransfer_Status",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED",
+        "description" : null,
+        "parent" : {
+          "name" : "BulkDataTransfer_Status",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+        }
+      }, {
+        "name" : "ERROR",
+        "description" : null,
+        "parent" : {
+          "name" : "BulkDataTransfer_Status",
+          "namespace" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.scd:BulkDataTransfer_Status:1.0.0"
+        }
+      } ]
+    }
+  }
+}

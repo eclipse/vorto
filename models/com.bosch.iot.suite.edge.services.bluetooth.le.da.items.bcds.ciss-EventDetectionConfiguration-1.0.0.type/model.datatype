@@ -1,0 +1,84 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss
+version 1.0.0
+displayname "Event Detection Configuration"
+description "Represents a Event Detection Configuration characteristic value."
+using
+com.bosch.iot.suite.edge.services.bluetooth.le.da.items.bcds.ciss.EventDetectionConfiguration_NotificationInterface ;
+1.0.0
+
+entity EventDetectionConfiguration {
+	mandatory accelerationSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The acceleration sensor state."
+
+	mandatory gyroscopeSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The gyroscope sensor state."
+
+	mandatory magneticSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The magnetic sensor state."
+
+	mandatory temperatureSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The temperature sensor state."
+
+	mandatory humiditySensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The humidity sensor state."
+
+	mandatory pressureSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The pressure sensor state."
+
+	mandatory lightSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The light sensor state."
+
+	mandatory acousticSensorEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The acoustic sensor state."
+
+	mandatory notificationInterfaceMode as EventDetectionConfiguration_NotificationInterface with {
+		readable : true
+	} "The event notification interface."
+
+	mandatory eventDetectionModeEnabled as boolean with {
+		readable : true
+	} <NULLABLE false> "The event detection mode."
+
+	mandatory accelerationThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The acceleration threshold."
+
+	mandatory gyroscopeThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The gyroscope threshold."
+
+	mandatory magnetometerThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The magnetometer threshold."
+
+	mandatory temperatureThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The temperature threshold."
+
+	mandatory humidityThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The humidity threshold."
+
+	mandatory pressureThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The pressure threshold."
+
+	mandatory lightThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The light threshold."
+
+	mandatory acousticThreshold as int with {
+		readable : true
+	} <NULLABLE false> "The acoustic threshold."
+
+}
