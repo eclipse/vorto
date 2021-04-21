@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Thermostat System Mode"
+description "Specifies the operating mode of the thermostat."
+
+enum Thermostat_SystemMode {
+	OFF,
+	AUTO,
+	COOL,
+	HEAT,
+	EMERGENCY_HEATING,
+	PRECOOLING,
+	FAN_ONLY,
+	DRY,
+	SLEEP
+}

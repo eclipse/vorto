@@ -1,0 +1,44 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Thermostat"
+description "Represents the ZigBee Thermostat Cluster as defined in the ZCL Specification."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ha.Thermostat_ControlMode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ha.Thermostat_RunningMode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ha.Thermostat_RunningStateBit ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ha.Thermostat_SystemMode ; 1.0.0
+
+functionblock Thermostat extends FunctionalItem {
+	configuration {
+		mandatory systemMode as Thermostat_SystemMode with {
+			readable : true,writable : true,eventable : true
+		} "Represents thermostat system mode."
+
+		mandatory controlMode as Thermostat_ControlMode with {
+			readable : true,writable : true
+		} "Represents thermostat control sequence of operation."
+
+	}
+
+	status {
+		mandatory multiple runningState as Thermostat_RunningStateBit with {
+			readable : true
+		} "Represents the current running thermostat state."
+
+		mandatory runningMode as Thermostat_RunningMode with {
+			readable : true
+		} "Represents the current running thermostat mode."
+
+		mandatory multiple supportedSystemModes as Thermostat_SystemMode with {
+			readable : true
+		} "Represents thermostat supported system modes."
+
+		mandatory multiple supportedControlModes as Thermostat_ControlMode with {
+			readable : true
+		} "Represents thermostat supported control modes."
+
+	}
+
+}

@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Time Control"
+description "Purposed for a DA Device class which represents part of the ZigBee Time cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock TimeControl extends FunctionalItem {
+	configuration {
+		mandatory time as long with {
+			readable : true,writable : true
+		} <NULLABLE false> "Represents time as RFC1123-formatted string."
+
+		mandatory status as int with {
+			readable : true,writable : true
+		} <NULLABLE false> "Represents time status."
+
+	}
+
+}

@@ -1,0 +1,111 @@
+{
+  "root" : {
+    "name" : "Thermostat_SystemMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Thermostat_SystemMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Thermostat System Mode",
+      "description" : "Specifies the operating mode of the thermostat.",
+      "category" : null,
+      "fileName" : "Thermostat_SystemMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "AUTO",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "COOL",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "HEAT",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "EMERGENCY_HEATING",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "PRECOOLING",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "FAN_ONLY",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "DRY",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      }, {
+        "name" : "SLEEP",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_SystemMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_SystemMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

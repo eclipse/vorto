@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "IAS Warning Mode"
+description "Specifies the warning mode. The exact behavior of the WD device in each mode is according to the relevant security standards."
+
+enum IASWarning_WarningMode {
+	STOP,
+	BURGLAR,
+	FIRE,
+	EMERGENCY,
+	POLICE_PANIC,
+	FIRE_PANIC,
+	EMERGENCY_PANIC
+}

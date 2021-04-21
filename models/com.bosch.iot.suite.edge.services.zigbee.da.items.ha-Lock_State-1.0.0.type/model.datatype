@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Lock State"
+description "Specifies the lock state."
+
+enum Lock_State {
+	NOT_FULLY_LOCKED,
+	LOCKED,
+	UNLOCKED,
+	UNDEFINED
+}

@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.2
+displayname "ZigBee Discovery"
+description
+"Provides advanced support for network controller to accept devices with Device Specific Link Key or Install Code"
+using com.bosch.iot.suite.edge.services.da.items.maintenance.Discovery ; 1.0.0
+
+functionblock ZigBeeDiscovery extends Discovery {
+	operations {
+		mandatory allow(multiple ieeeAddress as byte "The EUI64 device address.",
+			multiple key as byte "The device specific link key or install code.") "Allow device for pairing."
+	}
+
+}

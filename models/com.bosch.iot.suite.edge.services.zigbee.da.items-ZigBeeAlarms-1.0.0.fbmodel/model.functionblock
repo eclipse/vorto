@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "ZigBee Alarms"
+description "Purposed for a ZigBee specific device class which represents part of the ZigBee Alarms cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ZigBeeAlarm ; 1.0.0
+
+functionblock ZigBeeAlarms extends FunctionalItem {
+	status {
+		mandatory alarm as ZigBeeAlarm with {
+			eventable : true
+		} "Represents alarm event."
+
+	}
+
+	operations {
+		mandatory resetAlarm(code as int <NULLABLE false> "Code of the alarm to reset.",
+			clusterId as int <NULLABLE false> "The cluster id of the alarm to reset.") "Resets a specific alarm"
+		mandatory resetAllAlarms() "Resets all alarms"
+	}
+
+}

@@ -1,0 +1,39 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Neighbor"
+description "Represents an element of the address table, managed by the routers."
+using com.bosch.iot.suite.edge.services.zigbee.da.items.Neighbor_ReceiverState ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.Neighbor_Relationship ; 1.0.0
+
+entity Neighbor {
+	mandatory multiple ieeeAddress as byte with {
+		readable : true
+	} "Represents the IEEE address of the neighbor."
+
+	mandatory multiple networkAddress as byte with {
+		readable : true
+	} "Represents the network address of the neighbor."
+
+	mandatory deviceType as int with {
+		readable : true
+	} <NULLABLE false> "Represents the device type of the neighbor."
+
+	mandatory rxOnWhenIdle as Neighbor_ReceiverState with {
+		readable : true
+	} "Represents the neighbor\'s receiver state during idle."
+
+	mandatory relationship as Neighbor_Relationship with {
+		readable : true
+	} "Represents the relationship between the neighbor and the current device."
+
+	mandatory depth as int with {
+		readable : true
+	} <NULLABLE false> "Represents the tree depth of the neighbor."
+
+	mandatory lqi as int with {
+		readable : true
+	} <NULLABLE false> "Represents the estimated link quality for RF transmissions from the neighbor."
+
+}

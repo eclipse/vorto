@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Thermostat UI Configuration Display Mode"
+description "Specifies the units of the temperature displayed on the thermostat screen."
+
+enum ThermostatUIConfiguration_DisplayMode {
+	CELSIUS,
+	FAHRENHEIT
+}

@@ -1,0 +1,353 @@
+{
+  "root" : {
+    "name" : "RouterNeighborTable",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:RouterNeighborTable:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Neighbor",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Neighbor",
+      "description" : "Represents an element of the address table, managed by the routers.",
+      "category" : null,
+      "fileName" : "Neighbor.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Neighbor_ReceiverState",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+      }, {
+        "name" : "Neighbor_Relationship",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "ieeeAddress",
+        "description" : "Represents the IEEE address of the neighbor.",
+        "type" : "BYTE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "networkAddress",
+        "description" : "Represents the network address of the neighbor.",
+        "type" : "BYTE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "deviceType",
+        "description" : "Represents the device type of the neighbor.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "rxOnWhenIdle",
+        "description" : "Represents the neighbor's receiver state during idle.",
+        "type" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "relationship",
+        "description" : "Represents the relationship between the neighbor and the current device.",
+        "type" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "depth",
+        "description" : "Represents the tree depth of the neighbor.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "lqi",
+        "description" : "Represents the estimated link quality for RF transmissions from the neighbor.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:RouterNeighborTable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RouterNeighborTable",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:RouterNeighborTable:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Router Neighbor Table",
+      "description" : "Represents an address table, managed by the routers.",
+      "category" : null,
+      "fileName" : "RouterNeighborTable.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Neighbor",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "ieeeAddress",
+        "description" : "Represents the IEEE address of the router.",
+        "type" : "BYTE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "networkAddress",
+        "description" : "Represents the network address of the router.",
+        "type" : "BYTE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "neighbors",
+        "description" : "Represents the neighbours of the router.",
+        "type" : {
+          "name" : "Neighbor",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Neighbor_ReceiverState",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Neighbor Receiver State",
+      "description" : "Indicates if neighbor's receiver is enabled during idle portions of the CAP.",
+      "category" : null,
+      "fileName" : "Neighbor_ReceiverState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      }, {
+        "name" : "ON",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Neighbor_Relationship",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Neighbor Relationship",
+      "description" : "Specifies the relationship between the neighbor and the current device.",
+      "category" : null,
+      "fileName" : "Neighbor_Relationship.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PARENT",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "CHILD",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "SIBLING",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "PREVIOUS_CHILD",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      } ]
+    }
+  }
+}

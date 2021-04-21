@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.1
+displayname "ZigBee Power Save"
+description "Provides support for ZigBee sleepy devices with Poll Control cluster."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.PowerSave ; 1.0.0
+
+functionblock ZigBeePowerSave extends PowerSave {
+	configuration {
+		mandatory shortPollInterval as long with {
+			readable : true,writable : true
+		} <MIN 250 , MAX 16383750 , SCALING 250 , NULLABLE false> "Represents short poll interval."
+
+		mandatory longPollInterval as long with {
+			readable : true,writable : true
+		} <MIN 1000 , MAX 1802240000 , SCALING 250 , NULLABLE false> "Represents long poll interval."
+
+	}
+
+	operations {
+		mandatory subscribe(isOneTime as boolean <NULLABLE false> "Specifies a one time or multiple time subscription.",
+			wakeUpTime as int <NULLABLE false> "Specifies a how many seconds the subscriber will need.") returns int <NULLABLE false>
+		"Callers of this method intend to communicate with the device when it wakes up."
+		mandatory unsubscribe(subscriptionId as int <NULLABLE false> "The subscription identifier.")
+		"Callers declare that they are no more interested in communication with the device."
+	}
+
+}

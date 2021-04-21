@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Neighbor Receiver State"
+description "Indicates if neighbor's receiver is enabled during idle portions of the CAP."
+
+enum Neighbor_ReceiverState {
+	OFF,
+	ON,
+	UNKNOWN
+}

@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "IASWarning_Level",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IASWarning_Level",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "IASWarning Level",
+      "description" : "Specifies the siren or strobe sound level.",
+      "category" : null,
+      "fileName" : "IASWarning_Level.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "LOW",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+        }
+      }, {
+        "name" : "MEDIUM",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+        }
+      }, {
+        "name" : "HIGH",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+        }
+      }, {
+        "name" : "VERY_HIGH",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_Level:1.0.0"
+        }
+      } ]
+    }
+  }
+}

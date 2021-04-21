@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ll
+version 1.0.0
+displayname "Color Mode"
+description "Specifies the active color mode of color light devices."
+
+enum ColorMode_Mode {
+	HUE_SATURATION,
+	X_Y,
+	COLOR_TEMPERATURE
+}

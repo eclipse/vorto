@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Neighbor Relationship"
+description "Specifies the relationship between the neighbor and the current device."
+
+enum Neighbor_Relationship {
+	PARENT,
+	CHILD,
+	SIBLING,
+	PREVIOUS_CHILD,
+	UNKNOWN
+}

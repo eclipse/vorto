@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "Neighbor_Relationship",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Neighbor_Relationship",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Neighbor Relationship",
+      "description" : "Specifies the relationship between the neighbor and the current device.",
+      "category" : null,
+      "fileName" : "Neighbor_Relationship.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PARENT",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "CHILD",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "SIBLING",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "PREVIOUS_CHILD",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_Relationship",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_Relationship:1.0.0"
+        }
+      } ]
+    }
+  }
+}

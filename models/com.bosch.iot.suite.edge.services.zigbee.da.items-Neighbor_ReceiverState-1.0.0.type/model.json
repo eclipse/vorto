@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "Neighbor_ReceiverState",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Neighbor_ReceiverState",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Neighbor Receiver State",
+      "description" : "Indicates if neighbor's receiver is enabled during idle portions of the CAP.",
+      "category" : null,
+      "fileName" : "Neighbor_ReceiverState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      }, {
+        "name" : "ON",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "Neighbor_ReceiverState",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Neighbor_ReceiverState:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "Lock_State",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Lock_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Lock State",
+      "description" : "Specifies the lock state.",
+      "category" : null,
+      "fileName" : "Lock_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NOT_FULLY_LOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "LOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "UNLOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "UNDEFINED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}

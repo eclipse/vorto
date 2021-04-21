@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Fan Control Mode Sequence"
+description "Specifies the possible fan speeds that the thermostat can set."
+
+enum FanControl_ModeSequence {
+	LOW_MEDIUM_HIGH,
+	LOW_HIGH,
+	LOW_MEDIUM_HIGH_AUTO,
+	LOW_HIGH_AUTO,
+	ON_AUTO
+}

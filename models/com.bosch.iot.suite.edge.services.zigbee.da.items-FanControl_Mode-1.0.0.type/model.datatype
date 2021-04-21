@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Fan Control Mode"
+description "Specifies the speed of the fan."
+
+enum FanControl_Mode {
+	OFF,
+	LOW,
+	MEDIUM,
+	HIGH,
+	ON,
+	AUTO,
+	SMART
+}

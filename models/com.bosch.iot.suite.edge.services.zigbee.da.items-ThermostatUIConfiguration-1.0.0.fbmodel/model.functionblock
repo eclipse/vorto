@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Thermostat UI Configuration"
+description "Represents part of the ZigBee Thermostat User Interface Configuration cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ThermostatUIConfiguration_DisplayMode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ThermostatUIConfiguration_KeypadLockout ; 1.0.0
+
+functionblock ThermostatUIConfiguration extends FunctionalItem {
+	configuration {
+		mandatory displayMode as ThermostatUIConfiguration_DisplayMode with {
+			readable : true,writable : true
+		} "Represents temperature display mode."
+
+		mandatory keypadLockout as ThermostatUIConfiguration_KeypadLockout with {
+			readable : true,writable : true
+		} "Represents keypad lockout."
+
+	}
+
+}

@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "Door_State",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Door_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Door State",
+      "description" : "Specifies the door state.",
+      "category" : null,
+      "fileName" : "Door_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OPEN",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      }, {
+        "name" : "CLOSED",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      }, {
+        "name" : "JAMMED",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      }, {
+        "name" : "FORCED_OPEN",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      }, {
+        "name" : "ERROR",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      }, {
+        "name" : "UNDEFINED",
+        "description" : null,
+        "parent" : {
+          "name" : "Door_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Door_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}

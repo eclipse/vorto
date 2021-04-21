@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Attribute Reporting"
+description "Provides functionalities to modify attribute reporting of the physical device."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ReportingConfiguration ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ReportingStatus ; 1.0.0
+
+functionblock Reporting extends FunctionalItem {
+	operations {
+		mandatory configureReporting(clusterIdentifier as int <NULLABLE false> "The identifier of the cluster.",
+			isClientCluster as boolean <NULLABLE false> "Specifies the attributes location (client or server).",
+			multiple reportingConfigurations as ReportingConfiguration "The attribute reporting configurations.") returns multiple ReportingStatus
+		"Configure the reporting mechanism for one or more of the attributes of a cluster."
+		mandatory readReportingConfiguration(clusterIdentifier as int <NULLABLE false> "The identifier of the cluster.",
+			isClientCluster as boolean <NULLABLE false> "Specifies the attributes location (client or server).",
+			multiple attributeIdentifiers as int "The identifiers of the attribute.") returns multiple ReportingConfiguration
+		"Read the configuration details of the reporting mechanism for one or more of the attributes of a cluster."
+	}
+
+}

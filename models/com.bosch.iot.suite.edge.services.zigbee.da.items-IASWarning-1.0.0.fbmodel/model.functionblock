@@ -1,0 +1,35 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "IAS Warning"
+description "Specific device class which represents the ZigBee IAS WD cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.IASWarning_Level ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.IASWarning_SquawkMode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.IASWarning_WarningMode ; 1.0.0
+
+functionblock IASWarning extends FunctionalItem {
+	configuration {
+		mandatory maxSoundDuration as long with {
+			readable : true,writable : true
+		} <MIN 0 , MAX 65534000 , NULLABLE false> "Represents max sound duration."
+
+	}
+
+	operations {
+		mandatory startWarning(warningMode as IASWarning_WarningMode "The warning mode.",
+			strobe as boolean <NULLABLE false> "Determines if the visual indication is required in addition to the audible siren.",
+			sirenLevel as IASWarning_Level "The siren level.",
+			duration as long <MIN 0 , MAX 65534000 , NULLABLE false> "The duration of warning, in milliseconds.",
+			strobeDutyCycle as int <MIN 0 , MAX 100 , SCALING 10 , NULLABLE false> "The length of the flash cycle.",
+			strobeLevel as IASWarning_Level "The strobe brightness.")
+		"The warning device alerts the surrounding area by audible (siren) and visual (strobe) signals."
+		mandatory squawk(squawkMode as IASWarning_SquawkMode "The squawk mode.",
+			strobe as boolean <NULLABLE false>
+			"Determines if the visual indication is required in addition to the audible squawk.",
+			squawkLevel as IASWarning_Level "The intensity of audible squawk sound.")
+		"Emit a quick audible/visible pulse called a squawk."
+	}
+
+}

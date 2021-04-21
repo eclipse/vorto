@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "ZigBee Alarm"
+description "Represents a ZigBee alarm."
+
+entity ZigBeeAlarm {
+	mandatory alarmCode as int with {
+		readable : true
+	} <NULLABLE false> "The alarm code."
+
+	mandatory clusterId as int with {
+		readable : true
+	} <NULLABLE false> "The cluster identifier."
+
+}

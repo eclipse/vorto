@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Thermostat Running Mode"
+description "Specifies the thermostat running modes."
+
+enum Thermostat_RunningMode {
+	OFF,
+	COOL,
+	HEAT
+}

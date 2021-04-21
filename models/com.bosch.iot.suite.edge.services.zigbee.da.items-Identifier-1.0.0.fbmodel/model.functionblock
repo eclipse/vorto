@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Identifier"
+description "Provides functionalities to identify the physical device."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Identifier extends FunctionalItem {
+	status {
+		mandatory remainingTime as int with {
+			readable : true
+		} <MIN 0 , MAX 65535 , NULLABLE false> "Remaining time."
+
+	}
+
+	operations {
+		mandatory identify(identifyTime as int <NULLABLE false> "The length in seconds for the device identify operation.")
+		"Identify the physical device."
+	}
+
+}

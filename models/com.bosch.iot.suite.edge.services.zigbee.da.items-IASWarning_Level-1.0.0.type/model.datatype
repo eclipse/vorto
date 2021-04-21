@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "IASWarning Level"
+description "Specifies the siren or strobe sound level."
+
+enum IASWarning_Level {
+	LOW,
+	MEDIUM,
+	HIGH,
+	VERY_HIGH
+}
