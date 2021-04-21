@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Home Connect Authorization Status"
+description "Holds information about the current authorization status against the Home Connect server."
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.HCAuthorizationStatus_State ; 1.0.0
+
+entity HCAuthorizationStatus {
+
+	mandatory state as HCAuthorizationStatus_State with {
+		readable : true
+	} <NULLABLE false> "Represents the current state."
+
+	mandatory errorCode as int with {
+		readable : true
+	} <NULLABLE false> "Represents the error code in case of an error. Zero means no error."
+
+	mandatory errorMessage as string with {
+		readable : true
+	} "Represents the error message in case of an error."
+
+}

@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Coffee Temperature"
+description "Represents the possible values for the coffee temperature option of a coffee maker program."
+
+enum CoffeeTemperature {
+	NORMAL "Normal coffee temperature.",
+	HIGH "High coffee temperature.",
+	VERY_HIGH "Very high coffee temperature.",
+	UNKNOWN "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values."
+}

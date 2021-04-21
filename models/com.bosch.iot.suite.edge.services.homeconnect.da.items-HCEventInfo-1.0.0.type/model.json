@@ -1,0 +1,121 @@
+{
+  "root" : {
+    "name" : "HCEventInfo",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventInfo:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HCEventPresentState",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Home Connect Event Present State",
+      "description" : "The possible values for the HomeConnect event present state.",
+      "category" : null,
+      "fileName" : "HCEventPresentState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : "The event is off.",
+        "parent" : {
+          "name" : "HCEventPresentState",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+        }
+      }, {
+        "name" : "PRESENT",
+        "description" : "The event occurred and is present.",
+        "parent" : {
+          "name" : "HCEventPresentState",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+        }
+      }, {
+        "name" : "CONFIRMED",
+        "description" : "The event has been confirmed by the user.",
+        "parent" : {
+          "name" : "HCEventPresentState",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventInfo:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HCEventInfo",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventInfo:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Home Connect Event Info",
+      "description" : "Represents an event triggered by a Home Connect appliance.",
+      "category" : null,
+      "fileName" : "HCEventInfo.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "HCEventPresentState",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "key",
+        "description" : "Represents the event source key.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "Represents the event value.",
+        "type" : {
+          "name" : "HCEventPresentState",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCEventPresentState:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

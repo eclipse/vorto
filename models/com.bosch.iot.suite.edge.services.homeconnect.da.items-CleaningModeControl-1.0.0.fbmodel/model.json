@@ -1,0 +1,275 @@
+{
+  "root" : {
+    "name" : "CleaningModeControl",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningModeControl:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningModeControl:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "CleaningModeControl",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningModeControl:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Cleaning Mode Control",
+      "description" : "Provides support for Cleaning Mode option.",
+      "category" : null,
+      "fileName" : "CleaningModeControl.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "CleaningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+      }, {
+        "name" : "CleaningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+      }, {
+        "name" : "CleaningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "Represents cleaning mode option.",
+        "type" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "allowedValues",
+        "description" : "Represents all allowed values of the cleaning mode option.",
+        "type" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "CleaningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Cleaning Mode",
+      "description" : "Represents the possible values for the cleaning mode options.",
+      "category" : null,
+      "fileName" : "CleaningMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "SILENT",
+        "description" : "Silent mode. For simple cleaning tasks with a very low operating noise and long battery life.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "STANDARD",
+        "description" : "Eco (standard) mode. For normal cleaning tasks with efficient cleaning performance and runtime.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "POWER",
+        "description" : "Power mode. Maximum power for demanding everyday cleaning tasks in medium-sized rooms.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

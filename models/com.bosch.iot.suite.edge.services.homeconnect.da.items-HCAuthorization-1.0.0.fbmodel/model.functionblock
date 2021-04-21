@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Home Connect Authorization"
+description "Defines a device item for access to the Home Connect server."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.HCAuthorizationStatus ; 1.0.0
+
+functionblock HCAuthorization extends FunctionalItem {
+	status {
+		mandatory authorizationStatus as HCAuthorizationStatus with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the current status of the authorization to the Home Connect server."
+
+		mandatory username as string with {
+			readable : true,eventable : true
+		} "Represents the account user name that is used for the connection to the Home Connect server."
+	}
+
+	operations {
+		mandatory login(username as string "The username for authentication.",
+			password as string "The password for authentication.",
+			params as dictionary [ string , string ] "Additional properties needed to establish the connection.")
+		"Operation that will try to open a connection to the Home Connect server and try to authenticate with the user credentials"
+		mandatory loginSync(username as string "The username for authentication.",
+			password as string "The password for authentication.",
+			params as dictionary [ string , string ] "Additional properties needed to establish the connection.")
+		"Login operation that is executed synchroniously."
+		mandatory reset() "Operation that closes the connection to the Home Connect server and clears authorization state."
+	}
+
+}

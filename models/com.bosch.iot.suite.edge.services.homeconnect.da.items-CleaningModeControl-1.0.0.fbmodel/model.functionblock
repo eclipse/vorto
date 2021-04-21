@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Cleaning Mode Control"
+description "Provides support for Cleaning Mode option."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.CleaningMode ; 1.0.0
+
+functionblock CleaningModeControl extends FunctionalItem {
+	configuration {
+		mandatory value as CleaningMode with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents cleaning mode option."
+	}
+
+	status {
+		mandatory multiple allowedValues as CleaningMode with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents all allowed values of the cleaning mode option."
+	}
+
+}

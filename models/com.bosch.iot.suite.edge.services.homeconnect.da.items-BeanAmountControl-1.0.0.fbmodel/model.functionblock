@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Bean Amount Control"
+description "Provides support for Bean Amount option."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.BeanAmount ; 1.0.0
+
+functionblock BeanAmountControl extends FunctionalItem {
+	configuration {
+		mandatory value as BeanAmount with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents bean amount option."
+	}
+
+	status {
+		mandatory multiple allowedValues as BeanAmount with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents all allowed values of the bean amount option."
+	}
+
+}

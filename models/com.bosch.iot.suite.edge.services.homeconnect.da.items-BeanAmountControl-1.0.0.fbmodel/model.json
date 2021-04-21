@@ -1,0 +1,320 @@
+{
+  "root" : {
+    "name" : "BeanAmountControl",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmountControl:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BeanAmount",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Bean Amount",
+      "description" : "Represents the possible values for the bean amount option of a coffee maker program.",
+      "category" : null,
+      "fileName" : "BeanAmount.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "VERY_MILD",
+        "description" : "Very mild coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "MILD",
+        "description" : "Mild coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "NORMAL",
+        "description" : "Normal coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "STRONG",
+        "description" : "Strong coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "VERY_STRONG",
+        "description" : "Very strong coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "DOUBLE_SHOT",
+        "description" : "Double shot, extra strong coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "DOUBLE_SHOT_PLUS",
+        "description" : "Double shot plus coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "DOUBLE_SHOT_PLUS_PLUS",
+        "description" : "Double shot plus plus coffee.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values.",
+        "parent" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmountControl:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BeanAmountControl",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmountControl:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Bean Amount Control",
+      "description" : "Provides support for Bean Amount option.",
+      "category" : null,
+      "fileName" : "BeanAmountControl.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "BeanAmount",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+      }, {
+        "name" : "BeanAmount",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+      }, {
+        "name" : "BeanAmount",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "Represents bean amount option.",
+        "type" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "allowedValues",
+        "description" : "Represents all allowed values of the bean amount option.",
+        "type" : {
+          "name" : "BeanAmount",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:BeanAmount:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

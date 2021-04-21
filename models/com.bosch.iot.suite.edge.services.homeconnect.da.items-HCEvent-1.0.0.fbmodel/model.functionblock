@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Home Connect Events"
+description "Reports events triggered by the Home Connect appliance."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.HCEventInfo ; 1.0.0
+
+functionblock HCEvent extends FunctionalItem {
+	status {
+		mandatory event as HCEventInfo with {
+			eventable : true
+		} <NULLABLE false> "Represents the event."
+	}
+
+}
