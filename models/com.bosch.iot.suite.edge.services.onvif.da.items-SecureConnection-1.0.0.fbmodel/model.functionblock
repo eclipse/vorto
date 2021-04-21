@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items
+version 1.0.0
+displayname "SecureConnection"
+description "Provides a way to manage the SSL certificates of ONVIF devices (cameras) in the network."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock SecureConnection extends FunctionalItem {
+	status {
+		mandatory multiple encodedCertificates as string with {
+			readable : true,eventable : true
+		} "List of the certificates of the device own HTTPS server (encoded as Base64 string)."
+
+		mandatory trusted as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates if the HTTPS certificates are valid and trusted."
+
+		mandatory accepted as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE
+		false> "Specifies if the user has marked the HTTPS connection to the ONVIF device to be accepted even if it is not trusted. See operation \'acceptUntrusted\'."
+
+	}
+
+	operations {
+		mandatory acceptUntrusted()
+		"Allows the user to mark the HTTPS connection to the ONVIF device to be accepted even if it is not trusted."
+		mandatory rejectUntrusted()
+		"Allows the user to mark the HTTPS connection to the ONVIF device to be rejected, after it was marked as accepted before."
+	}
+
+}

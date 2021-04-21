@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.ptz
+version 1.0.0
+displayname "Pan Tilt"
+description "Represents the PanTilt parameters."
+
+entity PanTilt {
+	mandatory space as string with {
+		readable : true
+	} "Represents the position in space."
+
+	mandatory x as float with {
+		readable : true
+	} "Represents the pan."
+
+	mandatory y as float with {
+		readable : true
+	} "Represents the tilt."
+
+}

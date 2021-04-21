@@ -1,0 +1,37 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items
+version 1.0.0
+displayname "OnvifDiscoveryDevice"
+description "Provides information for a single discovered ONVIF device."
+
+entity OnvifDiscoveryDevice {
+	mandatory urn as string with {
+		readable : true
+	} "URN (Uniform Resource Name) in form of a UUID (Universally Unique IDentifier)"
+
+	mandatory mac as string with {
+		readable : true
+	} "MAC address of the ONVIF device"
+
+	mandatory address as string with {
+		readable : true
+	} "network address on which this ONVIF device can be accessed"
+
+	mandatory type as string with {
+		readable : true
+	} "the ONVIF type - should contain \'NetworkVideoTransmitter\' for ONVIF camera"
+
+	mandatory name as string with {
+		readable : true
+	} "the value of property \'name\' - usually used for vendor name"
+
+	mandatory hardware as string with {
+		readable : true
+	} "the value of property \'hardware\'  - usually used for model name"
+
+	mandatory profile as string with {
+		readable : true
+	} "the value of property \'profile\'  - should be \'Streaming\' for ONVIF cameras"
+
+}

@@ -1,0 +1,32 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.ptz
+version 1.0.0
+displayname "PTZ Status"
+description "Represents the PTZ Status information."
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PanTilt ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PtzStatus_MoveStatus ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.Zoom ; 1.0.0
+
+entity PtzStatus {
+	mandatory panTiltPosition as PanTilt with {
+		readable : true
+	}
+
+	mandatory zoomPosition as Zoom with {
+		readable : true
+	}
+
+	mandatory moveStatus as PtzStatus_MoveStatus with {
+		readable : true
+	}
+
+	mandatory zoomStatus as PtzStatus_MoveStatus with {
+		readable : true
+	}
+
+	mandatory error as string with {
+		readable : true
+	}
+
+}

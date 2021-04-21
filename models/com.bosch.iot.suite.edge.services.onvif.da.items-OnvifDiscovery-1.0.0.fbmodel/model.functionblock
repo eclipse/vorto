@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items
+version 1.0.0
+displayname "OnvifDiscovery"
+description "Provides a way to discover ONVIF devices (cameras) in the network."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.Discovery ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.OnvifDiscoveryDevice ; 1.0.0
+
+functionblock OnvifDiscovery extends Discovery {
+	status {
+		mandatory multiple result as OnvifDiscoveryDevice with {
+			readable : true,eventable : true
+		} "A temporary list of discovered ONVIF devices."
+
+	}
+
+	operations {
+		mandatory clearResult() "Clears the temporary list of discovered devices."
+		mandatory register(address as string
+			"ONVIF address, can be either IP or hostname. It is possible to specify port and protocol - https://1.2.3.4:443",
+			user as string "username used for login on the ONVIF device",
+			password as string "password used for login on the ONVIF device") returns string "Registers an ONVIF device."
+		mandatory registerOverTLS(address as string
+			"ONVIF address, can be either IP or hostname. It is possible to specify port and protocol - https://1.2.3.4:443",
+			alias as string "Alias of specific key") returns string "Registers an ONVIF device using TLS authentication."
+	}
+
+}

@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.media
+version 1.0.0
+displayname "MediaService"
+description "MediaService for a given profile."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock MediaService extends FunctionalItem {
+	operations {
+		mandatory getSnapshotUri() returns string "Returns snapshot URI."
+		mandatory getStreamUri() returns string "Returns stream URI."
+	}
+
+}

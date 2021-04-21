@@ -1,0 +1,136 @@
+{
+  "root" : {
+    "name" : "OnvifDiscoveryDevice",
+    "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnvifDiscoveryDevice",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OnvifDiscoveryDevice",
+      "description" : "Provides information for a single discovered ONVIF device.",
+      "category" : null,
+      "fileName" : "OnvifDiscoveryDevice.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "urn",
+        "description" : "URN (Uniform Resource Name) in form of a UUID (Universally Unique IDentifier)",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "mac",
+        "description" : "MAC address of the ONVIF device",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "address",
+        "description" : "network address on which this ONVIF device can be accessed",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "the ONVIF type - should contain 'NetworkVideoTransmitter' for ONVIF camera",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "the value of property 'name' - usually used for vendor name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hardware",
+        "description" : "the value of property 'hardware'  - usually used for model name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "profile",
+        "description" : "the value of property 'profile'  - should be 'Streaming' for ONVIF cameras",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

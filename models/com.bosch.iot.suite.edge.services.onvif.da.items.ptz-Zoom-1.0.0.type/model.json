@@ -1,0 +1,64 @@
+{
+  "root" : {
+    "name" : "Zoom",
+    "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Zoom",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Zoom",
+      "description" : "Represents the Zoom parameters.",
+      "category" : null,
+      "fileName" : "Zoom.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "space",
+        "description" : "Represents the position in space.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : "Represents the zoom value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

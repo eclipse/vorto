@@ -1,0 +1,999 @@
+{
+  "root" : {
+    "name" : "PtzService",
+    "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+    "version" : "2.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzService:2.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzPreset:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PtzPreset",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzPreset:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PTZ Preset",
+      "description" : "Represents the PTZ Preset configuration.",
+      "category" : null,
+      "fileName" : "PtzPreset.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "PanTilt",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+      }, {
+        "name" : "Zoom",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "token",
+        "description" : "Represents the preset token.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Represents the preset name.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "panTiltPosition",
+        "description" : "Represents the pan-tilt position.",
+        "type" : {
+          "name" : "PanTilt",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "zoomPosition",
+        "description" : "Represents the zoom position.",
+        "type" : {
+          "name" : "Zoom",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PanTilt",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Pan Tilt",
+      "description" : "Represents the PanTilt parameters.",
+      "category" : null,
+      "fileName" : "PanTilt.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "space",
+        "description" : "Represents the position in space.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : "Represents the pan.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "y",
+        "description" : "Represents the tilt.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzService:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PtzService",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "2.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzService:2.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "PtzService",
+      "description" : "PtzService for a given profile.",
+      "category" : null,
+      "fileName" : "PtzService.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "PanTilt",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+      }, {
+        "name" : "PtzPreset",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzPreset:1.0.0"
+      }, {
+        "name" : "PtzStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus:1.0.0"
+      }, {
+        "name" : "Zoom",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setPreset",
+        "description" : "Stores the current PTZ position. If existing preset token is provided, it will update the specified Preset.",
+        "result" : {
+          "type" : "STRING",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "presetToken",
+          "description" : "presetToken - identifier of an existing preset, optional.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "presetName",
+          "description" : "presetName - preset name, optional.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removePreset",
+        "description" : "Removes the preset.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "presetToken",
+          "description" : "presetToken - identifier of an existing preset.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getPresets",
+        "description" : "Returns a list of PTZ presets.",
+        "result" : {
+          "type" : {
+            "name" : "PtzPreset",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzPreset:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gotoPreset",
+        "description" : "Move to the specified PTZ position.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "presetToken",
+          "description" : "presetToken - identifier of an existing preset.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltSpeed",
+          "description" : "The speed of pan-tilt to perform the movement, optional.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomSpeed",
+          "description" : "The speed to perform the zoom, optional.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gotoHomePosition",
+        "description" : "Go to home position.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltSpeed",
+          "description" : "The speed of pan-tilt to perform the movement, optional.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomSpeed",
+          "description" : "The speed to perform the zoom, optional.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setHomePosition",
+        "description" : "Set the device current position as a home position.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "absoluteMove",
+        "description" : "Force the device to move to an absolute PTZ position.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltPosition",
+          "description" : "Absolute pan-tilt position.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomPosition",
+          "description" : "Absolute zoom position.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltSpeed",
+          "description" : "The speed to perform the movement, optional.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomSpeed",
+          "description" : "The speed to perform the zoom, optional.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "relativeMove",
+        "description" : "Force the device to perform a relative movement.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltTranslation",
+          "description" : "Relative pan-tilt translation.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomTranslation",
+          "description" : "Relative zoom translation.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltSpeed",
+          "description" : "The speed to perform the movement, optional.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomSpeed",
+          "description" : "The speed to perform the zoom, optional.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "continuousMove",
+        "description" : "Force the device to start a continuous movement.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "panTiltVelocity",
+          "description" : "Pan-tilt velocity.",
+          "type" : {
+            "name" : "PanTilt",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "zoomVelocity",
+          "description" : "Zoom velocity.",
+          "type" : {
+            "name" : "Zoom",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "timeout",
+          "description" : "The duration of the movement in seconds.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stop",
+        "description" : "Stops ongoing pan, tilt and zoom movement.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "stopPanTilt",
+          "description" : "Stops the ongoing pan and tilt movement.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "stopZoom",
+          "description" : "Stops the ongoing zooming.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getStatus",
+        "description" : "Returns the current position, time, pan, tilt and zoom state.",
+        "result" : {
+          "type" : {
+            "name" : "PtzStatus",
+            "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PtzStatus_MoveStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PTZ Move Status",
+      "description" : "Represents the state of the Movement.",
+      "category" : null,
+      "fileName" : "PtzStatus_MoveStatus.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MOVING",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      }, {
+        "name" : "IDLE",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Zoom",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Zoom",
+      "description" : "Represents the Zoom parameters.",
+      "category" : null,
+      "fileName" : "Zoom.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "space",
+        "description" : "Represents the position in space.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : "Represents the zoom value.",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PtzStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PTZ Status",
+      "description" : "Represents the PTZ Status information.",
+      "category" : null,
+      "fileName" : "PtzStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "PanTilt",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+      }, {
+        "name" : "PtzStatus_MoveStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+      }, {
+        "name" : "Zoom",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "panTiltPosition",
+        "description" : null,
+        "type" : {
+          "name" : "PanTilt",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PanTilt:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "zoomPosition",
+        "description" : null,
+        "type" : {
+          "name" : "Zoom",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:Zoom:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "moveStatus",
+        "description" : null,
+        "type" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "zoomStatus",
+        "description" : null,
+        "type" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "error",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

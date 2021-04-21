@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.ptz
+version 1.0.0
+displayname "PTZ Move Status"
+description "Represents the state of the Movement."
+
+enum PtzStatus_MoveStatus {
+	MOVING,
+	UNKNOWN,
+	IDLE
+}

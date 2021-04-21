@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items
+version 1.0.0
+displayname "DeviceService"
+description "Representing the Onvif Device Service."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock DeviceService extends FunctionalItem {
+	status {
+		mandatory multiple auxiliaryCommands as string with {
+			readable : true,eventable : true
+		} "The auxiliary commands supported by the device."
+
+	}
+
+	operations {
+		mandatory sendAuxiliaryCommand(command as string "The auxiliary command.") returns string "Send an auxiliary command."
+	}
+
+}

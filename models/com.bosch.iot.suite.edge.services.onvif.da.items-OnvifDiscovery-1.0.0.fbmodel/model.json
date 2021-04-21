@@ -1,0 +1,600 @@
+{
+  "root" : {
+    "name" : "OnvifDiscovery",
+    "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscovery:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnvifDiscoveryDevice",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OnvifDiscoveryDevice",
+      "description" : "Provides information for a single discovered ONVIF device.",
+      "category" : null,
+      "fileName" : "OnvifDiscoveryDevice.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "urn",
+        "description" : "URN (Uniform Resource Name) in form of a UUID (Universally Unique IDentifier)",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "mac",
+        "description" : "MAC address of the ONVIF device",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "address",
+        "description" : "network address on which this ONVIF device can be accessed",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "the ONVIF type - should contain 'NetworkVideoTransmitter' for ONVIF camera",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "the value of property 'name' - usually used for vendor name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hardware",
+        "description" : "the value of property 'hardware'  - usually used for model name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "profile",
+        "description" : "the value of property 'profile'  - should be 'Streaming' for ONVIF cameras",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:Discovery:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Discovery",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:Discovery:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Discovery",
+      "description" : "Initiates a discovery procedure.",
+      "category" : null,
+      "fileName" : "Discovery.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "started",
+        "description" : "Indicates whether the discovery is started or not.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts the discovery.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "startWithTimeout",
+        "description" : "Starts the discovery with the given timeout.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "timeout",
+          "description" : "The maximum time to discover in milliseconds.",
+          "type" : "LONG",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "1"
+          }, {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stop",
+        "description" : "Stops the current discovery, if any.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscovery:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnvifDiscovery",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscovery:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "OnvifDiscovery",
+      "description" : "Provides a way to discover ONVIF devices (cameras) in the network.",
+      "category" : null,
+      "fileName" : "OnvifDiscovery.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "OnvifDiscoveryDevice",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+      }, {
+        "name" : "OnvifDiscoveryDevice",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "result",
+        "description" : "A temporary list of discovered ONVIF devices.",
+        "type" : {
+          "name" : "OnvifDiscoveryDevice",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items:OnvifDiscoveryDevice:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "started",
+        "description" : "Indicates whether the discovery is started or not.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "clearResult",
+        "description" : "Clears the temporary list of discovered devices.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "register",
+        "description" : "Registers an ONVIF device.",
+        "result" : {
+          "type" : "STRING",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "address",
+          "description" : "ONVIF address, can be either IP or hostname. It is possible to specify port and protocol - https://1.2.3.4:443",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "user",
+          "description" : "username used for login on the ONVIF device",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "password",
+          "description" : "password used for login on the ONVIF device",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "registerOverTLS",
+        "description" : "Registers an ONVIF device using TLS authentication.",
+        "result" : {
+          "type" : "STRING",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "address",
+          "description" : "ONVIF address, can be either IP or hostname. It is possible to specify port and protocol - https://1.2.3.4:443",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "alias",
+          "description" : "Alias of specific key",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts the discovery.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "startWithTimeout",
+        "description" : "Starts the discovery with the given timeout.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "timeout",
+          "description" : "The maximum time to discover in milliseconds.",
+          "type" : "LONG",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "1"
+          }, {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stop",
+        "description" : "Stops the current discovery, if any.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Discovery",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:Discovery:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}
