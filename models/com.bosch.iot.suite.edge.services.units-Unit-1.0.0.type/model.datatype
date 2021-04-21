@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.units
+version 1.0.0
+
+entity Unit {
+	mandatory symbol as string with {
+		readable : true
+	}
+
+	mandatory systemName as string with {
+		readable : true
+	}
+
+}
