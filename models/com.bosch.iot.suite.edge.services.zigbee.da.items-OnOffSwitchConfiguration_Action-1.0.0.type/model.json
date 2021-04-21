@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "OnOffSwitchConfiguration_Action",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnOffSwitchConfiguration_Action",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OnOff Switch Configuration Action",
+      "description" : "Specifies the OnOff switch actions.",
+      "category" : null,
+      "fileName" : "OnOffSwitchConfiguration_Action.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF_ON",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      }, {
+        "name" : "ON_OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      }, {
+        "name" : "TOGGLE",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      } ]
+    }
+  }
+}

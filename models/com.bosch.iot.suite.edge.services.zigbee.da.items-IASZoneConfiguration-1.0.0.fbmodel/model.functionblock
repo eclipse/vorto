@@ -1,0 +1,31 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "IAS Zone Configuration"
+description "Represents the configuration part of ZigBee IAS Zone cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock IASZoneConfiguration extends FunctionalItem {
+	configuration {
+		mandatory currentZoneSensitivityLevel as int with {
+			readable : true,writable : true,eventable : true
+		} <MIN 0 , MAX 255 , NULLABLE false> "Represents the current zone sensitivity level."
+
+	}
+
+	status {
+		mandatory numberOfZoneSensitivityLevels as int with {
+			readable : true,eventable : true
+		} <MIN 2 , MAX 255 , NULLABLE false> "Represents the number of supported zone sensitivity levels."
+
+	}
+
+	operations {
+		mandatory initiateNormalOperationMode() "Switch IAS Zone server to normal operational mode."
+		mandatory initiateTestMode(IASZoneConfiguration as int <MIN 0 , NULLABLE false> "The duration, in seconds.",
+			sensitivityLevel as int <MIN 0 , MAX 255 , NULLABLE false> "The sensitivity level.")
+		"Switch IAS Zone server to test mode for the specified duration."
+	}
+
+}

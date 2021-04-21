@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "ThermostatUIConfiguration_KeypadLockout",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ThermostatUIConfiguration_KeypadLockout",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Thermostat UI Configuration Keypad Lockout",
+      "description" : "Specifies the level of functionality that is available to the user via the keypad.",
+      "category" : null,
+      "fileName" : "ThermostatUIConfiguration_KeypadLockout.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NO_LOCKOUT",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      }, {
+        "name" : "LEVEL_1",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      }, {
+        "name" : "LEVEL_2",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      }, {
+        "name" : "LEVEL_3",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      }, {
+        "name" : "LEVEL_4",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      }, {
+        "name" : "LEVEL_5",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_KeypadLockout",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_KeypadLockout:1.0.0"
+        }
+      } ]
+    }
+  }
+}

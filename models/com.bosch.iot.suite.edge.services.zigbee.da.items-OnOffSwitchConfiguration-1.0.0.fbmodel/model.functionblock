@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "OnOff Switch Configuration"
+description "Provides functionalities to configure an OnOff server cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.OnOffSwitchConfiguration_Action ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.OnOffSwitchConfiguration_Type ; 1.0.0
+
+functionblock OnOffSwitchConfiguration extends FunctionalItem {
+	configuration {
+		mandatory switchAction as OnOffSwitchConfiguration_Action with {
+			readable : true,writable : true
+		} "Specifies the commands of the OnOff cluster to be send when the switch moves between its two states."
+
+	}
+
+	status {
+		mandatory switchType as OnOffSwitchConfiguration_Type with {
+			readable : true
+		} "Specifies the basic functionality of the OnOff switching device."
+
+	}
+
+}

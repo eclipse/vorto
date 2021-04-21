@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "Thermostat_RunningStateBit",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Thermostat_RunningStateBit",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Thermostat Running State Bit",
+      "description" : "Specifies the relay state of the heat, cool, and fan relays. Running state is represented by any combination of running state bits.",
+      "category" : null,
+      "fileName" : "Thermostat_RunningStateBit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "HEAT",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "COOL",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "FAN",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "HEAT_STAGE_2",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "COOL_STAGE_2",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "FAN_STAGE_2",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      }, {
+        "name" : "FAN_STAGE_3",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningStateBit",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningStateBit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

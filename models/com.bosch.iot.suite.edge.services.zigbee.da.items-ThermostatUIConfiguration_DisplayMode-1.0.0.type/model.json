@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "ThermostatUIConfiguration_DisplayMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_DisplayMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_DisplayMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ThermostatUIConfiguration_DisplayMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_DisplayMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Thermostat UI Configuration Display Mode",
+      "description" : "Specifies the units of the temperature displayed on the thermostat screen.",
+      "category" : null,
+      "fileName" : "ThermostatUIConfiguration_DisplayMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CELSIUS",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_DisplayMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_DisplayMode:1.0.0"
+        }
+      }, {
+        "name" : "FAHRENHEIT",
+        "description" : null,
+        "parent" : {
+          "name" : "ThermostatUIConfiguration_DisplayMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ThermostatUIConfiguration_DisplayMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

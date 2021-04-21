@@ -1,0 +1,524 @@
+{
+  "root" : {
+    "name" : "Diagnostics",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Diagnostics",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Diagnostics",
+      "description" : "Provides functionalities to retrieve device diagnostic information.",
+      "category" : null,
+      "fileName" : "Diagnostics.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Diagnostics_Attribute",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "readAttribute",
+        "description" : "Reads single diagnostic attribute.",
+        "result" : {
+          "type" : "LONG",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "attribute",
+          "description" : "The attribute identifier.",
+          "type" : {
+            "name" : "Diagnostics_Attribute",
+            "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "readAttributes",
+        "description" : "Reads multiple diagnostic attributes.",
+        "result" : {
+          "type" : {
+            "key" : "STRING",
+            "value" : "LONG",
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "attributes",
+          "description" : "The attributes identifiers.",
+          "type" : {
+            "name" : "Diagnostics_Attribute",
+            "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Diagnostics_Attribute",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Diagnostics Attribute",
+      "description" : "Specifies the Diagnostic attributes.",
+      "category" : null,
+      "fileName" : "Diagnostics_Attribute.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NUMBER_OF_RESETS",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "PERSISTENT_MEMORY_WRITES",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_RX_BCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_TX_BCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_RX_UCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_TX_UCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_TX_UCAST_RETRY",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "MAC_TX_UCAST_FAIL",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_RX_BCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_TX_BCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_RX_UCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_TX_UCAST_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_TX_UCAST_RETRY",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_TX_UCAST_FAIL",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "ROUTE_DISC_INITIATED",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "NEIGHBOR_ADDED",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "NEIGHBOR_REMOVED",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "NEIGHBOR_STALE",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "JOIN_INDICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "CHILD_MOVED",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "NWK_FC_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_FC_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_UNAUTHORIZED_KEY",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "NWK_DECRYPT_FAILURES",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "APS_DECRYPT_FAILURES",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "PACKET_BUFFER_ALLOCATE_FAILURES",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "RELAYED_UCAST",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "PHYTO_MAC_QUEUE_LIMIT_REACHED",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "PACKET_VALIDATE_DROP_COUNT",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "AVERAGE_MAC_RETRY_PER_APS_MESSAGE_SENT",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "LAST_MESSAGE_LQI",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      }, {
+        "name" : "LAST_MESSAGE_RSSI",
+        "description" : null,
+        "parent" : {
+          "name" : "Diagnostics_Attribute",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Diagnostics_Attribute:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Lock"
+description "Represents functional item that maps to the ZigBee Door Lock cluster locking."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ha.Lock_State ; 1.0.0
+
+functionblock Lock extends FunctionalItem {
+	status {
+		mandatory state as Lock_State with {
+			readable : true,eventable : true
+		} "Represents lock state."
+
+	}
+
+	operations {
+		mandatory lock(pin as string "The device PIN.") "Locks the door."
+		mandatory unlock(pin as string "The device PIN.") "Unlocks the door."
+		mandatory toggle(pin as string "The device PIN.") "Changes lock state."
+	}
+
+}

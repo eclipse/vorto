@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Reporting Status"
+description "Represents an attribute reporting status record. Holds parameters that are needed when configuring and reading the reporting behavior of an attribute."
+
+entity ReportingStatus {
+	mandatory status as int with {
+		readable : true
+	} "The status of attribute reporting configuration."
+
+	mandatory attributeIdentifier as int with {
+		readable : true
+	} <NULLABLE false> "The identifier of the attribute that the reporting configuration details apply to."
+
+}

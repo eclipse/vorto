@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Router Neighbor Table"
+description "Represents an address table, managed by the routers."
+using com.bosch.iot.suite.edge.services.zigbee.da.items.Neighbor ; 1.0.0
+
+entity RouterNeighborTable {
+	mandatory multiple ieeeAddress as byte with {
+		readable : true
+	} "Represents the IEEE address of the router."
+
+	mandatory multiple networkAddress as byte with {
+		readable : true
+	} "Represents the network address of the router."
+
+	mandatory multiple neighbors as Neighbor with {
+		readable : true
+	} "Represents the neighbours of the router."
+
+}

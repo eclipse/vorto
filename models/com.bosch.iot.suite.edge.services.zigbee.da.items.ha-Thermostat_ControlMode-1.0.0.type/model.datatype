@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Thermostat Control Mode"
+description "Specifies the overall operating environment of the thermostat, and thus the possible system modes that the thermostat can operate in."
+
+enum Thermostat_ControlMode {
+	COOLING_ONLY,
+	COOLING_WITH_REHEAT,
+	HEATING_ONLY,
+	HEATING_WITH_REHEAT,
+	COOLING_AND_HEATING_4_PIPES,
+	COOLING_AND_HEATING_4_PIPES_WITH_REHEAT
+}

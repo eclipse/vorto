@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "FanControl_ModeSequence",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FanControl_ModeSequence",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Fan Control Mode Sequence",
+      "description" : "Specifies the possible fan speeds that the thermostat can set.",
+      "category" : null,
+      "fileName" : "FanControl_ModeSequence.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "LOW_MEDIUM_HIGH",
+        "description" : null,
+        "parent" : {
+          "name" : "FanControl_ModeSequence",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+        }
+      }, {
+        "name" : "LOW_HIGH",
+        "description" : null,
+        "parent" : {
+          "name" : "FanControl_ModeSequence",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+        }
+      }, {
+        "name" : "LOW_MEDIUM_HIGH_AUTO",
+        "description" : null,
+        "parent" : {
+          "name" : "FanControl_ModeSequence",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+        }
+      }, {
+        "name" : "LOW_HIGH_AUTO",
+        "description" : null,
+        "parent" : {
+          "name" : "FanControl_ModeSequence",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+        }
+      }, {
+        "name" : "ON_AUTO",
+        "description" : null,
+        "parent" : {
+          "name" : "FanControl_ModeSequence",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:FanControl_ModeSequence:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ll
+version 1.0.0
+displayname "Color Mode"
+description "Represents the color mode of color light devices"
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ll.ColorMode_Mode ; 1.0.0
+
+functionblock ColorMode extends FunctionalItem {
+	status {
+		mandatory mode as ColorMode_Mode with {
+			readable : true,eventable : true
+		} "Represents the device color mode."
+
+	}
+
+}

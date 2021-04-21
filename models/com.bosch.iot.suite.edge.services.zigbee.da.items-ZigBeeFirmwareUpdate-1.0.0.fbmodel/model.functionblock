@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "ZigBee Firmware Update"
+description "Provide option for firmware update or information about current firmware."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.FirmwareUpdate ; 1.0.0
+
+functionblock ZigBeeFirmwareUpdate extends FirmwareUpdate {
+	operations {
+		mandatory startWithParameters(url as string "Firmware image URL.",
+			parameters as dictionary [ string , string ] "Additional operation parameters, can be null.")
+		"Starts the firmware update with provided parameters."
+	}
+
+}

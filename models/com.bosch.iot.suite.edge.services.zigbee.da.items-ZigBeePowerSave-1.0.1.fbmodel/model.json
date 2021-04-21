@@ -1,0 +1,453 @@
+{
+  "root" : {
+    "name" : "ZigBeePowerSave",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.1",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeePowerSave:1.0.1"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeePowerSave:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZigBeePowerSave",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeePowerSave:1.0.1"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ZigBee Power Save",
+      "description" : "Provides support for ZigBee sleepy devices with Poll Control cluster.",
+      "category" : null,
+      "fileName" : "ZigBeePowerSave.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "shortPollInterval",
+        "description" : "Represents short poll interval.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "250"
+        }, {
+          "type" : "MAX",
+          "value" : "16383750"
+        }, {
+          "type" : "SCALING",
+          "value" : "250"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "longPollInterval",
+        "description" : "Represents long poll interval.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "1000"
+        }, {
+          "type" : "MAX",
+          "value" : "1802240000"
+        }, {
+          "type" : "SCALING",
+          "value" : "250"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "wakeUpInterval",
+        "description" : "Represents the wake up interval in milliseconds. 0 indicates that there is no such interval.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "awake",
+        "description" : "Represents the awake event.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "subscribe",
+        "description" : "Callers of this method intend to communicate with the device when it wakes up.",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "isOneTime",
+          "description" : "Specifies a one time or multiple time subscription.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "wakeUpTime",
+          "description" : "Specifies a how many seconds the subscriber will need.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "unsubscribe",
+        "description" : "Callers declare that they are no more interested in communication with the device.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "subscriptionId",
+          "description" : "The subscription identifier.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "sleep",
+        "description" : "Initiates the transition from an 'on' power state to a 'sleep' power state.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "PowerSave",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:PowerSave:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:PowerSave:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PowerSave",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:PowerSave:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Power Save",
+      "description" : "Improves the energy saving with a monitoring and control on the power states.",
+      "category" : null,
+      "fileName" : "PowerSave.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "wakeUpInterval",
+        "description" : "Represents the wake up interval in milliseconds. 0 indicates that there is no such interval.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "awake",
+        "description" : "Represents the awake event.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "sleep",
+        "description" : "Initiates the transition from an 'on' power state to a 'sleep' power state.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

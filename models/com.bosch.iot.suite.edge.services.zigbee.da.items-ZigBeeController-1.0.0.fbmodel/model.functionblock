@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "ZigBee Controller"
+description
+"Represents a ZigBee Controller that can manage the channel, be restarted, provide the network structure and devices link quality."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.RouterNeighborTable ; 1.0.0
+
+functionblock ZigBeeController extends FunctionalItem {
+	configuration {
+		mandatory channel as int with {
+			readable : true,writable : true,eventable : true
+		} <MIN 11 , MAX 26 , NULLABLE false> "Represents ZigBee channel."
+
+	}
+
+	operations {
+		mandatory findBestChannel() returns int <NULLABLE false>
+		"Finds the best channel by scanning all ZigBee channels within the currently configured channel mask."
+		mandatory restart() "Performs a restart on the controller device."
+		mandatory getRouterNeighborTables() returns multiple RouterNeighborTable
+		"Performs requests to all routers within the network and returns data about their neighbors."
+	}
+
+}

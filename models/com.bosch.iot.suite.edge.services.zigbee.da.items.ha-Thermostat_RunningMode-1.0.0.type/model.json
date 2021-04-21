@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "Thermostat_RunningMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Thermostat_RunningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Thermostat Running Mode",
+      "description" : "Specifies the thermostat running modes.",
+      "category" : null,
+      "fileName" : "Thermostat_RunningMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0"
+        }
+      }, {
+        "name" : "COOL",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0"
+        }
+      }, {
+        "name" : "HEAT",
+        "description" : null,
+        "parent" : {
+          "name" : "Thermostat_RunningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Thermostat_RunningMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

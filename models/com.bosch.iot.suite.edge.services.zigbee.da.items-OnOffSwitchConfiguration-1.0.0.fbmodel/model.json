@@ -1,0 +1,306 @@
+{
+  "root" : {
+    "name" : "OnOffSwitchConfiguration",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnOffSwitchConfiguration_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OnOff Switch Configuration Type",
+      "description" : "Specifies the OnOff switch types.",
+      "category" : null,
+      "fileName" : "OnOffSwitchConfiguration_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "TOGGLE",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+        }
+      }, {
+        "name" : "MOMENTARY",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+        }
+      }, {
+        "name" : "MULTIFUNCTION",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnOffSwitchConfiguration_Action",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OnOff Switch Configuration Action",
+      "description" : "Specifies the OnOff switch actions.",
+      "category" : null,
+      "fileName" : "OnOffSwitchConfiguration_Action.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF_ON",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      }, {
+        "name" : "ON_OFF",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      }, {
+        "name" : "TOGGLE",
+        "description" : null,
+        "parent" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OnOffSwitchConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "OnOff Switch Configuration",
+      "description" : "Provides functionalities to configure an OnOff server cluster.",
+      "category" : null,
+      "fileName" : "OnOffSwitchConfiguration.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "OnOffSwitchConfiguration_Action",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+      }, {
+        "name" : "OnOffSwitchConfiguration_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+      }, {
+        "name" : "OnOffSwitchConfiguration_Action",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+      }, {
+        "name" : "OnOffSwitchConfiguration_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "switchAction",
+        "description" : "Specifies the commands of the OnOff cluster to be send when the switch moves between its two states.",
+        "type" : {
+          "name" : "OnOffSwitchConfiguration_Action",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Action:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "switchType",
+        "description" : "Specifies the basic functionality of the OnOff switching device.",
+        "type" : {
+          "name" : "OnOffSwitchConfiguration_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:OnOffSwitchConfiguration_Type:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

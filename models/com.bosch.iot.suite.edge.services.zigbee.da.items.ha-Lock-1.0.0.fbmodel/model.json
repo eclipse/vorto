@@ -1,0 +1,298 @@
+{
+  "root" : {
+    "name" : "Lock",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Lock_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Lock State",
+      "description" : "Specifies the lock state.",
+      "category" : null,
+      "fileName" : "Lock_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NOT_FULLY_LOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "LOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "UNLOCKED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      }, {
+        "name" : "UNDEFINED",
+        "description" : null,
+        "parent" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Lock",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Lock",
+      "description" : "Represents functional item that maps to the ZigBee Door Lock cluster locking.",
+      "category" : null,
+      "fileName" : "Lock.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Lock_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+      }, {
+        "name" : "Lock_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "Represents lock state.",
+        "type" : {
+          "name" : "Lock_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ha:Lock_State:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "lock",
+        "description" : "Locks the door.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "pin",
+          "description" : "The device PIN.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "unlock",
+        "description" : "Unlocks the door.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "pin",
+          "description" : "The device PIN.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Changes lock state.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "pin",
+          "description" : "The device PIN.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

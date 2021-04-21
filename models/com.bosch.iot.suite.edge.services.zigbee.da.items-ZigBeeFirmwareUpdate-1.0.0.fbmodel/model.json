@@ -1,0 +1,564 @@
+{
+  "root" : {
+    "name" : "ZigBeeFirmwareUpdate",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeeFirmwareUpdate:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeeFirmwareUpdate:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZigBeeFirmwareUpdate",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ZigBeeFirmwareUpdate:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ZigBee Firmware Update",
+      "description" : "Provide option for firmware update or information about current firmware.",
+      "category" : null,
+      "fileName" : "ZigBeeFirmwareUpdate.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "FirmwareUpdateStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Represents the firmware update status.",
+        "type" : {
+          "name" : "FirmwareUpdateStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "startWithParameters",
+        "description" : "Starts the firmware update with provided parameters.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "url",
+          "description" : "Firmware image URL.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "parameters",
+          "description" : "Additional operation parameters, can be null.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts the firmware update.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "url",
+          "description" : "Firmware image URL.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "cancel",
+        "description" : "Cancels the firmware update.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FirmwareUpdate",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdate:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FirmwareUpdateStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "FirmwareUpdateStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "FirmwareUpdateState",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "url",
+        "description" : "Represents the firmware image URL.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "Represents the firmware update state.",
+        "type" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "progress",
+        "description" : "Represents the firmware update progress as a percent.",
+        "type" : "BYTE",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "100"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "errorCode",
+        "description" : "Represents the firmware update error code.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "errorMessage",
+        "description" : "Represents the firmware update error message.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdate:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FirmwareUpdate",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdate:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Firmware Update",
+      "description" : "Updates a firmware.",
+      "category" : null,
+      "fileName" : "FirmwareUpdate.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "FirmwareUpdateStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+      }, {
+        "name" : "FirmwareUpdateStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Represents the firmware update status.",
+        "type" : {
+          "name" : "FirmwareUpdateStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts the firmware update.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "url",
+          "description" : "Firmware image URL.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "cancel",
+        "description" : "Cancels the firmware update.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FirmwareUpdateState",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "FirmwareUpdateState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PENDING",
+        "description" : "The firmware update is still not started. It's an initial state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "RUNNING",
+        "description" : "The firmware is updating. It's an intermediate state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "SUCCEEDED",
+        "description" : "The firmware was successfully updated. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "FAILED",
+        "description" : "The firmware update has failed. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      }, {
+        "name" : "CANCELED",
+        "description" : "The firmware update has been canceled. It's a final state.",
+        "parent" : {
+          "name" : "FirmwareUpdateState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.maintenance",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.maintenance:FirmwareUpdateState:0.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "OnOff Switch Configuration Action"
+description "Specifies the OnOff switch actions."
+
+enum OnOffSwitchConfiguration_Action {
+	OFF_ON,
+	ON_OFF,
+	TOGGLE
+}

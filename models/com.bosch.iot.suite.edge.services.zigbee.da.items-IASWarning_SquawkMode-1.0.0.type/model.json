@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "IASWarning_SquawkMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IASWarning_SquawkMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "IASWarning Squawk Mode",
+      "description" : "Specifies the squawk mode.",
+      "category" : null,
+      "fileName" : "IASWarning_SquawkMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ARMED",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_SquawkMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+        }
+      }, {
+        "name" : "DISARMED",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_SquawkMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+        }
+      }, {
+        "name" : "RESERVED1",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_SquawkMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+        }
+      }, {
+        "name" : "RESERVED2",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_SquawkMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_SquawkMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

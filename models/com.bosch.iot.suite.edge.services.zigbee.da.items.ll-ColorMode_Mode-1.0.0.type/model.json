@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "ColorMode_Mode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorMode_Mode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Mode",
+      "description" : "Specifies the active color mode of color light devices.",
+      "category" : null,
+      "fileName" : "ColorMode_Mode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "HUE_SATURATION",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorMode_Mode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0"
+        }
+      }, {
+        "name" : "X_Y",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorMode_Mode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0"
+        }
+      }, {
+        "name" : "COLOR_TEMPERATURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorMode_Mode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items.ll:ColorMode_Mode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

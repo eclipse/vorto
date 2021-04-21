@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Diagnostics"
+description "Provides functionalities to retrieve device diagnostic information."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.Diagnostics_Attribute ; 1.0.0
+
+functionblock Diagnostics extends FunctionalItem {
+	operations {
+		mandatory readAttribute(attribute as Diagnostics_Attribute "The attribute identifier.") returns long <NULLABLE false>
+		"Reads single diagnostic attribute."
+		mandatory readAttributes(multiple attributes as Diagnostics_Attribute "The attributes identifiers.") returns
+		dictionary [ string , long ] "Reads multiple diagnostic attributes."
+	}
+
+}

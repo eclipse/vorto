@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "IASWarning_WarningMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IASWarning_WarningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "IAS Warning Mode",
+      "description" : "Specifies the warning mode. The exact behavior of the WD device in each mode is according to the relevant security standards.",
+      "category" : null,
+      "fileName" : "IASWarning_WarningMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "STOP",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "BURGLAR",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "FIRE",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "EMERGENCY",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "POLICE_PANIC",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "FIRE_PANIC",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      }, {
+        "name" : "EMERGENCY_PANIC",
+        "description" : null,
+        "parent" : {
+          "name" : "IASWarning_WarningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:IASWarning_WarningMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

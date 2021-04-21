@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Reporting Configuration"
+description "Represents an attribute reporting configuration. Holds the parameters needed to configure and read the reporting behavior of an attribute."
+using com.bosch.iot.suite.edge.services.fim.Number ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.ReportingStatus ; 1.0.0
+
+entity ReportingConfiguration extends ReportingStatus {
+	mandatory attributeDataType as int with {
+		readable : true
+	} "The data type of the attribute that is to be reported."
+
+	mandatory minimumReportingInterval as int with {
+		readable : true
+	} "The minimum interval, in seconds, between issuing reports of the specified attribute."
+
+	mandatory maximumReportingInterval as int with {
+		readable : true
+	} "The maximum interval, in seconds, between issuing reports of the specified attribute."
+
+	mandatory reportableChange as Number with {
+		readable : true
+	} "The minimum change to the attribute that will result in a report being issued."
+
+}

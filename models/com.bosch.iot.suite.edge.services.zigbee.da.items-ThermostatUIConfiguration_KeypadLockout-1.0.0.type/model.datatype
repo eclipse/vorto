@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Thermostat UI Configuration Keypad Lockout"
+description "Specifies the level of functionality that is available to the user via the keypad."
+
+enum ThermostatUIConfiguration_KeypadLockout {
+	NO_LOCKOUT,
+	LEVEL_1,
+	LEVEL_2,
+	LEVEL_3,
+	LEVEL_4,
+	LEVEL_5
+}

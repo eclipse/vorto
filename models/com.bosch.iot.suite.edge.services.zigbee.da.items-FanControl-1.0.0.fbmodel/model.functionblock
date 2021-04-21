@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "Fan Control"
+description "Specific device class which represents the ZigBee Fan Control cluster."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.FanControl_Mode ; 1.0.0
+using com.bosch.iot.suite.edge.services.zigbee.da.items.FanControl_ModeSequence ; 1.0.0
+
+functionblock FanControl extends FunctionalItem {
+	configuration {
+		mandatory mode as FanControl_Mode with {
+			readable : true,writable : true,eventable : true
+		} "Represents fan mode."
+
+		mandatory modeSequence as FanControl_ModeSequence with {
+			readable : true,writable : true,eventable : true
+		} "Represents fan mode sequence."
+
+	}
+
+}

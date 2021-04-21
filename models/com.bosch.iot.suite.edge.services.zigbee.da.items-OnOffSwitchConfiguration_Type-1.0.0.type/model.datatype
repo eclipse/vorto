@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items
+version 1.0.0
+displayname "OnOff Switch Configuration Type"
+description "Specifies the OnOff switch types."
+
+enum OnOffSwitchConfiguration_Type {
+	TOGGLE,
+	MOMENTARY,
+	MULTIFUNCTION
+}

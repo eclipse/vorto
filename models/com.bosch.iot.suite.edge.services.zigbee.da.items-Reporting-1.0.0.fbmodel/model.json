@@ -1,0 +1,484 @@
+{
+  "root" : {
+    "name" : "Reporting",
+    "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Reporting:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.fim:Number:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Number",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:Number:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "Number.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "className",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ReportingConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingConfiguration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Reporting Configuration",
+      "description" : "Represents an attribute reporting configuration. Holds the parameters needed to configure and read the reporting behavior of an attribute.",
+      "category" : null,
+      "fileName" : "ReportingConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Number",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:Number:1.0.0"
+      }, {
+        "name" : "ReportingStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "attributeDataType",
+        "description" : "The data type of the attribute that is to be reported.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "minimumReportingInterval",
+        "description" : "The minimum interval, in seconds, between issuing reports of the specified attribute.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "maximumReportingInterval",
+        "description" : "The maximum interval, in seconds, between issuing reports of the specified attribute.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "reportableChange",
+        "description" : "The minimum change to the attribute that will result in a report being issued.",
+        "type" : {
+          "name" : "Number",
+          "namespace" : "com.bosch.iot.suite.edge.services.fim",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:Number:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : {
+        "name" : "ReportingStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:Reporting:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Reporting",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:Reporting:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Attribute Reporting",
+      "description" : "Provides functionalities to modify attribute reporting of the physical device.",
+      "category" : null,
+      "fileName" : "Reporting.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "ReportingConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingConfiguration:1.0.0"
+      }, {
+        "name" : "ReportingStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "configureReporting",
+        "description" : "Configure the reporting mechanism for one or more of the attributes of a cluster.",
+        "result" : {
+          "type" : {
+            "name" : "ReportingStatus",
+            "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "clusterIdentifier",
+          "description" : "The identifier of the cluster.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "isClientCluster",
+          "description" : "Specifies the attributes location (client or server).",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "reportingConfigurations",
+          "description" : "The attribute reporting configurations.",
+          "type" : {
+            "name" : "ReportingConfiguration",
+            "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingConfiguration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "readReportingConfiguration",
+        "description" : "Read the configuration details of the reporting mechanism for one or more of the attributes of a cluster.",
+        "result" : {
+          "type" : {
+            "name" : "ReportingConfiguration",
+            "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingConfiguration:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "clusterIdentifier",
+          "description" : "The identifier of the cluster.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "isClientCluster",
+          "description" : "Specifies the attributes location (client or server).",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "attributeIdentifiers",
+          "description" : "The identifiers of the attribute.",
+          "type" : "INT",
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ReportingStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.zigbee.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zigbee.da.items:ReportingStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Reporting Status",
+      "description" : "Represents an attribute reporting status record. Holds parameters that are needed when configuring and reading the reporting behavior of an attribute.",
+      "category" : null,
+      "fileName" : "ReportingStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "The status of attribute reporting configuration.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "attributeIdentifier",
+        "description" : "The identifier of the attribute that the reporting configuration details apply to.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

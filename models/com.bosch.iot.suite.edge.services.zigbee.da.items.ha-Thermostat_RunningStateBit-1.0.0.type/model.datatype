@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zigbee.da.items.ha
+version 1.0.0
+displayname "Thermostat Running State Bit"
+description "Specifies the relay state of the heat, cool, and fan relays. Running state is represented by any combination of running state bits."
+
+enum Thermostat_RunningStateBit {
+	HEAT,
+	COOL,
+	FAN,
+	HEAT_STAGE_2,
+	COOL_STAGE_2,
+	FAN_STAGE_2,
+	FAN_STAGE_3
+}
