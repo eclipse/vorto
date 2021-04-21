@@ -1,0 +1,22 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.vendor.nxp.frdm_k64f
+version 1.0.0
+displayname "FRDM-K64F"
+description "Represents a Freedom-K64F development board."
+
+using org.eclipse.ditto.ConnectionStatus;1.0.0
+using org.eclipse.vorto.std.sensor.AccelerationSensor3D;1.0.0
+using org.eclipse.vorto.std.sensor.MagneticFieldSensor3D;1.0.0
+using org.eclipse.vorto.std.sensor.TemperatureSensor;1.0.0
+using org.eclipse.hawkbit.swupdatable.SoftwareUpdatable;2.0.0
+	
+infomodel FreedomK64F {
+
+	functionblocks {
+	    mandatory ConnectionStatus as ConnectionStatus "Information about the status of the connectivity to the device."
+		optional AccelerationSensor3D as AccelerationSensor3D "3-dimensional linear accelerometer."
+		optional MagneticFieldSensor3D as MagneticFieldSensor3D "3-dimensional linear magnetometer."
+		optional TemperatureSensor as TemperatureSensor "Temperature sensor that measures the internal temperature of the device."
+		mandatory SoftwareUpdatable as SoftwareUpdatable "Represents the ability of the device to install and manage a certain type of software."
+	}
+}
