@@ -1,0 +1,30 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.1
+displayname "Datapoint Config"
+description "This device item provides a mechanism to get and set configuration properties (group addresses) of the data points used by the other KNX device items."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock DatapointConfig extends FunctionalItem {
+	operations {
+		mandatory getDatapointNames(functionItemUID as string "The UID of the KNX functional item which data points are to be returned.") returns multiple string "Returns the names of the available data points for the given the KNX functional item."
+		mandatory getGroupAddresses(functionItemUID as string "The UID of the KNX functional item which data points are to be returned.",
+			datapointName as string "The name of the target data point which group addresses are to be returned.") returns multiple int
+		"Returns the group addresses as integers that are bound to the given data point."
+		mandatory getGroupAddressesString(functionItemUID as string
+			"The UID of the KNX functional item which data points are to be returned.",
+			datapointName as string "The name of the target data point which group addresses are to be returned.") returns multiple string
+		"Returns the group addresses as their string representation in KNX group address format that are bound to the given data point."
+		mandatory setGroupAddresses(functionItemUID as string "The UID of the KNX functional item which data points are to be modified.",
+			datapointName as string "The name of the target data point which group addresses are to be modified.",
+			multiple groupAddresses as int "The new group addresses for the target data point.")
+		"Sets new group addresses as integers to the given data point."
+		mandatory setGroupAddressesString(functionItemUID as string
+			"The UID of the KNX functional item which data points are to be modified.",
+			datapointName as string "The name of the target data point which group addresses are to be modified.",
+			multiple groupAddresses as string "The new group addresses for the target data point.")
+		"Sets new group addresses as strings to the given data point."
+	}
+
+}

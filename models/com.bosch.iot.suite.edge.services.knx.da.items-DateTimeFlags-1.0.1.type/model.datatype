@@ -1,0 +1,44 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.1
+
+entity DateTimeFlags {
+
+	mandatory isFault as boolean with {
+		readable : true
+	} <NULLABLE false> "True if one or more supported fields of the Date and Time information are corrupted."
+
+	mandatory isWorkingDay as boolean with {
+		readable : true
+	} <NULLABLE false> "True for working day, false for non-working day."
+
+	mandatory isWorkingDayInvalid as boolean with {
+		readable : true
+	} <NULLABLE false> "True if the working day field is invalid, false for valid working day field."
+
+	mandatory isYearInvalid as boolean with {
+		readable : true
+	} <NULLABLE false> "True if year field is invalid, false for valid year."
+
+	mandatory isDateInvalid as boolean with {
+		readable : true
+	} <NULLABLE false> "True if the date and month fields are invalid, false for valid date and month."
+
+	mandatory isDayOfWeekInvalid as boolean with {
+		readable : true
+	} <NULLABLE false> "True if the day of week field is invalid, false for valid day of week."
+
+	mandatory isTimeInvalid as boolean with {
+		readable : true
+	} <NULLABLE false> "True if the hour/minutes/seconds fields are invalid, false for valid time."
+
+	mandatory isSummerTime as boolean with {
+		readable : true
+	} <NULLABLE false> "True if the time is summer daylight saving time, false for standard time. Just for information purposes."
+
+	mandatory qualityOfClock as boolean with {
+		readable : true
+	} <NULLABLE false> "True for externally synchronized clock, false for local clock."
+
+}

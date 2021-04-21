@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.0
+displayname "KNX Blinds"
+description "This device item provides support for controlling KNX Blinds/Shutters actuators."
+using com.bosch.iot.suite.edge.services.da.items.Opener ; 1.0.0
+
+functionblock KnxBlinds extends Opener {
+	operations {
+		mandatory stepOpen() "Performs a gradual movement in direction UP."
+		mandatory stepClose() "Performs a gradual movement in direction DOWN."
+	}
+
+}

@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.0
+displayname "KNX Date Control"
+description "This device item provides support for KNX Date Control allowing the user get and set date information to the KNX bus."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.knx.da.items.Date ; 1.0.1
+
+functionblock KnxDateControl extends FunctionalItem {
+	configuration {
+		mandatory date as Date with {
+			readable : true,writable : true,eventable : true
+		} "Property for current date in the KNX system."
+
+	}
+
+}
