@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.1
+
+entity Date {
+
+	mandatory day as int with {
+		readable : true
+	} <MIN 0 , MAX 31 , NULLABLE false> "The day of the month, from 1 to 31. Zero may be used if the bean is used within KnxDateTimeControl."
+
+	mandatory month as int with {
+		readable : true
+	} <MIN 0 , MAX 12 , NULLABLE false> "The month in the year, from 1 to 12. Zero may be used if the bean is used within KnxDateTimeControl"
+
+	mandatory year as int with {
+		readable : true
+	} <MIN 1900 , MAX 2155 , NULLABLE false> "The year. Valid range for KNX dates is from 1900 to 2155."
+
+}

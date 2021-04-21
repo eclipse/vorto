@@ -1,0 +1,32 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.knx.da.items
+version 1.0.1
+displayname "KNX Date And Time Control"
+description "This device item provides support for KNX Date And Time Control allowing the user get and set date and time information to the KNX bus."
+using com.bosch.iot.suite.edge.services.knx.da.items.Date ; 1.0.1
+using com.bosch.iot.suite.edge.services.knx.da.items.DateTimeFlags ; 1.0.1
+using com.bosch.iot.suite.edge.services.knx.da.items.KnxDateControl ; 1.0.0
+using com.bosch.iot.suite.edge.services.knx.da.items.Time ; 1.0.1
+
+functionblock KnxDateTimeControl extends KnxDateControl {
+	configuration {
+		mandatory time as Time with {
+			readable : true,writable : true,eventable : true
+		} "Property for current time in the KNX system."
+	}
+
+	status {
+		mandatory dateTimeFlags as DateTimeFlags with {
+			readable : true,eventable : true
+		} "Property for additional information about the current date and time."
+	}
+
+	operations {
+		mandatory setDateAndTime(date as Date "The new date for the clock.",
+			time as Time "The new time for the clock.",
+			dateTimeFlags as DateTimeFlags "New new day properties for the clock.")
+		"This operation changes the current date and time of the clock at the same time."
+	}
+
+}

@@ -1,0 +1,193 @@
+{
+  "root" : {
+    "name" : "DateTimeFlags",
+    "namespace" : "com.bosch.iot.suite.edge.services.knx.da.items",
+    "version" : "1.0.1",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.knx.da.items:DateTimeFlags:1.0.1"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.knx.da.items:DateTimeFlags:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DateTimeFlags",
+        "namespace" : "com.bosch.iot.suite.edge.services.knx.da.items",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.knx.da.items:DateTimeFlags:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "DateTimeFlags.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isFault",
+        "description" : "True if one or more supported fields of the Date and Time information are corrupted.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isWorkingDay",
+        "description" : "True for working day, false for non-working day.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isWorkingDayInvalid",
+        "description" : "True if the working day field is invalid, false for valid working day field.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isYearInvalid",
+        "description" : "True if year field is invalid, false for valid year.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isDateInvalid",
+        "description" : "True if the date and month fields are invalid, false for valid date and month.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isDayOfWeekInvalid",
+        "description" : "True if the day of week field is invalid, false for valid day of week.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isTimeInvalid",
+        "description" : "True if the hour/minutes/seconds fields are invalid, false for valid time.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isSummerTime",
+        "description" : "True if the time is summer daylight saving time, false for standard time. Just for information purposes.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "qualityOfClock",
+        "description" : "True for externally synchronized clock, false for local clock.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

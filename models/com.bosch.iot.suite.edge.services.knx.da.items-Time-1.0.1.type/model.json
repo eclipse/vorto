@@ -1,0 +1,127 @@
+{
+  "root" : {
+    "name" : "Time",
+    "namespace" : "com.bosch.iot.suite.edge.services.knx.da.items",
+    "version" : "1.0.1",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.knx.da.items:Time:1.0.1"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.knx.da.items:Time:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Time",
+        "namespace" : "com.bosch.iot.suite.edge.services.knx.da.items",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.knx.da.items:Time:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "Time.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "day",
+        "description" : "Information about the week day. 0 is no day, 1 is Monday, ... 7 is Sunday.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "7"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hour",
+        "description" : "Hour of the day, from 0 to 24.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "24"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "minutes",
+        "description" : "Minutes within the hour, from 0 to 59.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "59"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "seconds",
+        "description" : "Seconds within the minute, from 0 to 59.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "59"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}
