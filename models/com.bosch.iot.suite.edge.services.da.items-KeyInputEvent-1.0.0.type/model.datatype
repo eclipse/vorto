@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+using com.bosch.iot.suite.edge.services.da.items.KeyInputAction ; 0.0.0
+
+entity KeyInputEvent {
+
+	mandatory multiple actions as KeyInputAction with {
+		readable : true
+	} <NULLABLE false> "Represents the actions that triggered the event."
+
+	mandatory keyCode as int with {
+		readable : true
+	} <NULLABLE false> "Represents the source key code."
+
+	mandatory keyName as string with {
+		readable : true
+	} "Represents the source key name."
+
+}

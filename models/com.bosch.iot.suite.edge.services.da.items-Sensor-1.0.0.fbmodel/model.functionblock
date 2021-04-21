@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Sensor"
+description "Represents a sensor that measures a physical property."
+using com.bosch.iot.suite.edge.services.da.items.Range ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.units.Quantity ; 1.0.0
+
+functionblock Sensor extends FunctionalItem {
+	status {
+		mandatory range as Range with {
+			readable : true,eventable : true
+		} "Represents the value range."
+
+		mandatory value as Quantity with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the measured value."
+	}
+
+}

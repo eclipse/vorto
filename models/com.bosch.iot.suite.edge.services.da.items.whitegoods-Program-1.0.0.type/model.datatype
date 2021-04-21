@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.whitegoods
+version 1.0.0
+
+entity Program {
+
+	mandatory id as string with {
+		readable : true
+	} <NULLABLE false> "Represents the program identifier."
+
+	mandatory name as string with {
+		readable : true
+	} "Represents the program name."
+
+}

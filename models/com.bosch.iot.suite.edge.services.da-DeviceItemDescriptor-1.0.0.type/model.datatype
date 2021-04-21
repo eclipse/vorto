@@ -1,0 +1,28 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.0
+
+entity DeviceItemDescriptor {
+
+	mandatory objectClass as string with {
+		readable : true
+	} "Device item fully qualified class name"
+
+	mandatory uid as string with {
+		readable : true
+	} "Item UID"
+
+	mandatory name as string with {
+		readable : true
+	} "Item name"
+
+	mandatory multiple tags as string with {
+		readable : true
+	} "Item tags"
+
+	mandatory attributes as dictionary [ string , string ] with {
+		readable : true
+	} "Item attributes with their JSON String representations"
+
+}

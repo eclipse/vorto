@@ -1,0 +1,30 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.1.0
+displayname "Device Admin"
+description "This item administrates all devices."
+using com.bosch.iot.suite.edge.services.da.AdapterInfo ; 1.0.1
+using com.bosch.iot.suite.edge.services.da.DeviceDescriptor ; 1.0.0
+using com.bosch.iot.suite.edge.services.da.RemoveArgument ; 0.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItemFactory ; 1.0.0
+
+functionblock DeviceAdmin extends FunctionalItemFactory {
+	status {
+		mandatory multiple adapterInfos as AdapterInfo with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Available protocol adapters."
+	}
+
+	operations {
+		mandatory getAdapterInfo(name as string "Name of the protocol adapter which is required.") returns AdapterInfo
+		"Returns information for specific protocol adapter."
+		mandatory createDevice(deviceDescriptor as DeviceDescriptor "Initial device property values.") returns dictionary [
+		string , string ] "Creates and registers a Device using device descriptor for initial property values."
+		mandatory removeDevice(deviceUID as string "The UID of the Device to be removed.",
+			removeArgument as RemoveArgument "Supported remove argument.") "Removes the specified device with specified remove argument."
+		mandatory cancelRemove(deviceUID as string "The UID of the removing Device.")
+		"Forces the adapter to cancel a device remove operation."
+	}
+
+}

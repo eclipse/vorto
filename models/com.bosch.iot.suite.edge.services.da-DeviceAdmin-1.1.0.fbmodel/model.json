@@ -1,0 +1,1005 @@
+{
+  "root" : {
+    "name" : "DeviceAdmin",
+    "namespace" : "com.bosch.iot.suite.edge.services.da",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceAdmin:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da:DeviceDescriptor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DeviceDescriptor",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceDescriptor:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "DeviceDescriptor.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "DeviceItemDescriptor",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceItemDescriptor:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "uid",
+        "description" : "Device UID",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Device name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : "Device tags",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "adapter_name",
+        "description" : "Device adapter name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "items",
+        "description" : "Device items to be added",
+        "type" : {
+          "name" : "DeviceItemDescriptor",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceItemDescriptor:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "attributes",
+        "description" : "Device attributes with their JSON String representations",
+        "type" : {
+          "key" : "STRING",
+          "value" : "STRING",
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RemoveArgument",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "RemoveArgument.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "FORCE",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "POSTPONE",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "FORCE_RESET",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      }, {
+        "name" : "POSTPONE_RESET",
+        "description" : null,
+        "parent" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItemFactory:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItemFactory",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItemFactory:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item Factory",
+      "description" : "Enables dynamic creation and registration of functional items.",
+      "category" : null,
+      "fileName" : "FunctionalItemFactory.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "create",
+        "description" : "Creates and registers a functional item for a supported interface name and initial properties values.",
+        "result" : {
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemClass",
+          "description" : "Supported functional item class name.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemProperties",
+          "description" : "Initial functional item properties values.",
+          "type" : {
+            "key" : null,
+            "value" : null,
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "remove",
+        "description" : "Unregisters a functional item created by the factory.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemUID",
+          "description" : "The UID of a created functional item.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getCreationMetadata",
+        "description" : "Provides the creation properties metadata of supported functional item class.",
+        "result" : {
+          "type" : {
+            "key" : null,
+            "value" : null,
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemClass",
+          "description" : "Supported functional item class name.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AdapterInfo",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "AdapterInfo.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "AdapterOperation",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+      }, {
+        "name" : "RemoveArgument",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Protocol adapter name",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : "Protocol adapter version",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "operations",
+        "description" : "Protocol adapter supported operations",
+        "type" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "removeArguments",
+        "description" : "Supported arguments on device removal",
+        "type" : {
+          "name" : "RemoveArgument",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.da:DeviceAdmin:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DeviceAdmin",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceAdmin:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Device Admin",
+      "description" : "This item administrates all devices.",
+      "category" : null,
+      "fileName" : "DeviceAdmin.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "AdapterInfo",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1"
+      }, {
+        "name" : "DeviceDescriptor",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceDescriptor:1.0.0"
+      }, {
+        "name" : "RemoveArgument",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+      }, {
+        "name" : "AdapterInfo",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "adapterInfos",
+        "description" : "Available protocol adapters.",
+        "type" : {
+          "name" : "AdapterInfo",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.1",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getAdapterInfo",
+        "description" : "Returns information for specific protocol adapter.",
+        "result" : {
+          "type" : {
+            "name" : "AdapterInfo",
+            "namespace" : "com.bosch.iot.suite.edge.services.da",
+            "version" : "1.0.1",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterInfo:1.0.1"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "name",
+          "description" : "Name of the protocol adapter which is required.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "createDevice",
+        "description" : "Creates and registers a Device using device descriptor for initial property values.",
+        "result" : {
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceDescriptor",
+          "description" : "Initial device property values.",
+          "type" : {
+            "name" : "DeviceDescriptor",
+            "namespace" : "com.bosch.iot.suite.edge.services.da",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceDescriptor:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeDevice",
+        "description" : "Removes the specified device with specified remove argument.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceUID",
+          "description" : "The UID of the Device to be removed.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "removeArgument",
+          "description" : "Supported remove argument.",
+          "type" : {
+            "name" : "RemoveArgument",
+            "namespace" : "com.bosch.iot.suite.edge.services.da",
+            "version" : "0.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.da:RemoveArgument:0.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "cancelRemove",
+        "description" : "Forces the adapter to cancel a device remove operation.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceUID",
+          "description" : "The UID of the removing Device.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "create",
+        "description" : "Creates and registers a functional item for a supported interface name and initial properties values.",
+        "result" : {
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemClass",
+          "description" : "Supported functional item class name.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemProperties",
+          "description" : "Initial functional item properties values.",
+          "type" : {
+            "key" : null,
+            "value" : null,
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "remove",
+        "description" : "Unregisters a functional item created by the factory.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemUID",
+          "description" : "The UID of a created functional item.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getCreationMetadata",
+        "description" : "Provides the creation properties metadata of supported functional item class.",
+        "result" : {
+          "type" : {
+            "key" : null,
+            "value" : null,
+            "type" : "dictionary"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "itemClass",
+          "description" : "Supported functional item class name.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItemFactory",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItemFactory:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AdapterOperation",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "0.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "AdapterOperation.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CREATE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      }, {
+        "name" : "REMOVE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      }, {
+        "name" : "CANCEL_REMOVE",
+        "description" : null,
+        "parent" : {
+          "name" : "AdapterOperation",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "0.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:AdapterOperation:0.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.da:DeviceItemDescriptor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DeviceItemDescriptor",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceItemDescriptor:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "DeviceItemDescriptor.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "objectClass",
+        "description" : "Device item fully qualified class name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "uid",
+        "description" : "Item UID",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Item name",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : "Item tags",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "attributes",
+        "description" : "Item attributes with their JSON String representations",
+        "type" : {
+          "key" : "STRING",
+          "value" : "STRING",
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

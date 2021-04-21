@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 0.0.0
+
+enum OpenerState {
+	OPENING "The open operation is currently executing.",
+	OPEN "Indicates an open state.",
+	CLOSING "The close operation is currently executing.",
+	CLOSED "Indicates a closed state.",
+	STOPPED "The current operation has been stopped.",
+	UNDEFINED "The state is not one of the defined states."
+}

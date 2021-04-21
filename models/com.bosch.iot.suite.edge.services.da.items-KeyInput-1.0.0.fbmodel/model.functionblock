@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+displayname "Key Input"
+description "Reports input events which are triggered by keys."
+using com.bosch.iot.suite.edge.services.da.items.KeyInputEvent ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock KeyInput extends FunctionalItem {
+	status {
+		mandatory event as KeyInputEvent with {
+			eventable : true
+		} "Represents the event."
+
+		mandatory multiple supportedEvents as KeyInputEvent with {
+			readable : true,eventable : true
+		} "Represents the supported events."
+	}
+
+}
