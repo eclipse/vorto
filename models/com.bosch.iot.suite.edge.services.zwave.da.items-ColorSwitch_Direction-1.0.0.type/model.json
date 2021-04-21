@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "ColorSwitch_Direction",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorSwitch_Direction",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Switch Direction",
+      "description" : "This enumeration defines all Z-Wave protocol specific color value change directions.",
+      "category" : null,
+      "fileName" : "ColorSwitch_Direction.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UP",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Direction",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+        }
+      }, {
+        "name" : "DOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Direction",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+        }
+      } ]
+    }
+  }
+}

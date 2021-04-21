@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "QR Compatible"
+description "This Information Type represents all possible Provisioning Information Types NOT defined in the Z-Wave Specification, but are QR Code compatible."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity QRCompatible extends InformationType {
+	mandatory multiple data as byte with {
+		readable : true
+	}
+
+}

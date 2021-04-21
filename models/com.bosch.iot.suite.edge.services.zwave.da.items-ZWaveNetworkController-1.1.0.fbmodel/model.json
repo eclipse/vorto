@@ -1,0 +1,1169 @@
+{
+  "root" : {
+    "name" : "ZWaveNetworkController",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Z-Wave Network Controller",
+      "description" : "Provides support for managing all Z-Wave defined Network Controller operations, modes, properties.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "ZWaveNetworkController_Bandwidth",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+      }, {
+        "name" : "ZWaveNetworkController_CenterFrequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+      }, {
+        "name" : "ZWaveNetworkController_Role",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+      }, {
+        "name" : "ZWaveNetworkController_Role",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+      }, {
+        "name" : "ZWaveNetworkController_CenterFrequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+      }, {
+        "name" : "ZWaveNetworkController_Bandwidth",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "mode",
+        "description" : "Represents the mode of the Z-Wave Network Controller.\n Note! MODE_PROCESSING_CONTROL_EVENT, MODE_REPLACING cannot be explicitly set! They are system internal modes that the controller only reports.",
+        "type" : "BYTE",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "highPower",
+        "description" : "Represents the High Power inclusion or exclusion mode.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "networkWide",
+        "description" : "Represents the Network Wide inclusion mode.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "houseId",
+        "description" : "Represents the house ID of the Z-Wave Network.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "chipVersion",
+        "description" : "Represents the chip version of the Z-Wave Network Controller.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "zwaveVersion",
+        "description" : "Represents the supported by the Z-Wave Network Controller version of the Z-Wave protocol.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "controllerVersionString",
+        "description" : "Represents the string representation of the supported by the Z-Wave Network Controller version of the Z-Wave protocol.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isRealPrimary",
+        "description" : "Indicates whether the Z-Wave Network Controller is a real primary controller.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isSecondary",
+        "description" : "Indicates whether the Z-Wave Network Controller is a secondary controller.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isSUCPresent",
+        "description" : "Indicates whether SUC is present in the Z-Wave network.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isOnOtherNetwork",
+        "description" : "Indicates whether this Z-Wave Network Controller is added in another network.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "role",
+        "description" : "Represents the Z-Wave Controller's role in the Z-Wave network.",
+        "type" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isSUC",
+        "description" : "Indicates whether this Z-Wave Network Controller is the SUC controller of the network.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sucNodeId",
+        "description" : "Contains the node ID of the SUC controller.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "isSUCSIS",
+        "description" : "Indicates whether the SUC controller is in fact the SIS one.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "radioFrequency",
+        "description" : "The RF (in kHz of the Z-Wave Controller. The allowed values are: 0xFFFFFF(16777215): Unknown radio frequency; 0x000000(0): All radio frequencies pass; 0x000001-0xFFFFFD(1-16777213): Valid radio frequency values; 0xFFFFFE(16777214): Radio frequency does not work. The standard used values are: Europe: 0x0D3CDE (867550 kHz); America: 0x0DEB7A (912250 kHz); Asia: 0x0E1578 (923000 kHz).)",
+        "type" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "radioFrequencyBandwidth",
+        "description" : "The RF Bandwidth (in MHz) of the Z-Wave Controller. The allowed values are: 0xFF(255): Unknown RF bandwidth; 0x00-0xFE(0-254): Valid RF bandwidth values.",
+        "type" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "assignReturnRoute",
+        "description" : "Assigns route between two devices.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "sourceNodeId",
+          "description" : "The device that will generate events.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetNodeId",
+          "description" : "The device that will receive events.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "deleteReturnRoute",
+        "description" : "Deletes all routes for a device.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "sourceNodeId",
+          "description" : "The device that will generate events.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "isFailedNode",
+        "description" : "Checks if the specified node is failed. Note that all sleeping devices will probably return true.",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The node id to check.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeFailedNode",
+        "description" : "Explicitly remove a failed node from the network. Use with caution since the removed node will not be reset.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The failed node ID of the device to remove.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "forceNetworkUpdate",
+        "description" : "Rereads the device table from the Z-Wave controller and fires events if there are changes. The actual reread is done asynchronously any changes to the network will be reported as events.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetController",
+        "description" : "Resets the controller to the factory defaults.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeNode",
+        "description" : "Try to remove a node. Internally isFailedNode(int) is used to check if the node is failed. If the node is failed then removeFailedNode(int) is used to remove the node. If the node is sleeping it is impossible to reliably determine if the node is failed to remove such nodes forceRemoveSleepingNode has to be set to true. However if the device is online i.e. not sleeping at the time this method is invoked it won't be removed.",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The target device which is forced to be removed.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "forceRemoveSleepingNode",
+          "description" : "If true, an attempt is made to remove a sleeping node.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "replaceFailedNode",
+        "description" : "Try to replace a node from the network with a new one. Internally isFailedNode(int) is used to check if the node is failed. If the node is sleeping it is impossible to reliably determine if the node is failed to remove such nodes forceReplaceSleepingNode has to be set to true. However if the device is online i.e. not sleeping at the time this method is invoked it won't be replaced.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The target device which is forced to be replaced.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "forceReplaceSleepingNode",
+          "description" : "If true, an attempt is made to replace a sleeping node.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setSUCNode",
+        "description" : "Changes the SUC node on the network. For optimal performance we strongly suggest that the controller attached to the gateway is configured as SIS.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The id of the node to be set as SUC.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "isSIS",
+          "description" : "Specifies that the node should be set as SIS.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getRoutingInfo",
+        "description" : "Returns the IDs of neighbor devices for the specified device.",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "The ID of target device which neighbor routing info is requested.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "removeBadRoutesOpt",
+          "description" : "Specify if to remove bad routes from the routing info.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "removeNonrepsOpt",
+          "description" : "Specify if to remove non-repeaters from the routing info.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "speedVal",
+          "description" : "Specify a speed and it work like a filter to include only neighbor nodes supporting all lower speeds in addition to the advertised highest speed.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "sendNodeInfoFrame",
+        "description" : "Sends Node Information Frame for this Z-Wave Network Controller.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "sendNOP",
+        "description" : "Sends NOP(No operation) command to the node with specified node ID.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "nodeId",
+          "description" : "Node ID of the device to send NOP to.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getModeDuration",
+        "description" : "Returns the Z-Wave Network Controller mode duration in milliseconds. -1 indicates that the mode has no duration. 0 indicates infinite duration.",
+        "result" : {
+          "type" : "LONG",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "mode",
+          "description" : "The requested mode.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "setModeDuration",
+        "description" : "Sets the Z-Wave Network Controller mode duration.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "mode",
+          "description" : "The requested mode.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : "The new duration in milliseconds. 0 indicates infinite duration.",
+          "type" : "LONG",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "addNodeS2",
+        "description" : "",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "properties",
+          "description" : "The specific mode properties to be applied for the inclusion.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_Role",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Role",
+      "description" : "Represents all possible Z-Wave Controller roles.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_Role.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "PRIMARY",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SECONDARY",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "INCLUSION",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SUC",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "SIS",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Role",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Role:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_CenterFrequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Center Frequency",
+      "description" : "The RF (in kHz) of the Z-Wave controller.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_CenterFrequency.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "DIRECT_CONNECTION",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "RF_NOT_WORKING",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "EUROPE",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "AMERICA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "ASIA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_Bandwidth",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Bandwidth",
+      "description" : "The RF Bandwidth (in MHz) of the controller.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_Bandwidth.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "EUROPE",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "AMERICA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "ASIA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

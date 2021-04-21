@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Power Level Test Result"
+description "A result of a power level test being initiated on a Z-Wave node. The test checks the connectivity by sending a certain number of test frames and verifies how many have been successfully acknowledged by the node."
+
+entity PowerLevelTestResult {
+	mandatory testNodeId as int with {
+		readable : true
+	} <NULLABLE false> "The NodeID on the node, which is under test."
+
+	mandatory resultStatus as int with {
+		readable : true
+	} <NULLABLE false> "The result of latest PowerLevel TestNode Set Command."
+
+	mandatory ackFramesCount as int with {
+		readable : true
+	} <NULLABLE false> "The number of test frames transmitted, which the Test NodeID has acknowledged."
+
+}

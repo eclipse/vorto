@@ -1,0 +1,613 @@
+{
+  "root" : {
+    "name" : "ColorSwitch",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.1",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch:1.0.1"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data:ColorValue:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorValue",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ColorValue:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Value",
+      "description" : "Represents a Z-Wave protocol specific color value wrapper, including the color id and value.",
+      "category" : null,
+      "fileName" : "ColorValue.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "ColorSwitch_Component",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "The color component id.",
+        "type" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "The color value.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorSwitch",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch:1.0.1"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Z-Wave Color Switch",
+      "description" : "Provides support for the Z-Wave Color Switch Command Class, Version 1.",
+      "category" : null,
+      "fileName" : "ColorSwitch.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "ColorSwitch_Component",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+      }, {
+        "name" : "ColorSwitch_Direction",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+      }, {
+        "name" : "ColorValue",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ColorValue:1.0.0"
+      }, {
+        "name" : "ColorSwitch_Component",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "supportedColorComponents",
+        "description" : "Defines the supported color components ids.",
+        "type" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "get",
+        "description" : "Retrieves the current value for the color component specified.",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "componentId",
+          "description" : "The target color component to be retrieved.",
+          "type" : {
+            "name" : "ColorSwitch_Component",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "set",
+        "description" : "Updates the value of the specified color component.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "componentId",
+          "description" : "The target color component to be updated.",
+          "type" : {
+            "name" : "ColorSwitch_Component",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "value",
+          "description" : "The target color value to be set.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "bulkGet",
+        "description" : "Retrieves the value of all specified color components.",
+        "result" : {
+          "type" : {
+            "name" : "ColorValue",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ColorValue:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "componentIds",
+          "description" : "The target color components to be retrieved.",
+          "type" : {
+            "name" : "ColorSwitch_Component",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "bulkSet",
+        "description" : "Updates the values of all specified color components.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "colorComponentValues",
+          "description" : "The set of Color Component values to be set on the device",
+          "type" : {
+            "name" : "ColorValue",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ColorValue:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "startChange",
+        "description" : "Initiates a change of the color level up (to 0xFF) or down (to 0x00) of the specified by color component.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "componentId",
+          "description" : "The component to start the change on.",
+          "type" : {
+            "name" : "ColorSwitch_Component",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "direction",
+          "description" : "The direction of the change - up (to reach the max value - 255) or down (to reach the min value - 0).",
+          "type" : {
+            "name" : "ColorSwitch_Direction",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "ignoreStartLevel",
+          "description" : "Defines whether the start level provided should be ignored.",
+          "type" : "BOOLEAN",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "startLevel",
+          "description" : "The color value to start the change from.",
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stopChange",
+        "description" : "Stops the currently ongoing color level change for the specified color component.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "componentId",
+          "description" : "The color component to stop the change for.",
+          "type" : {
+            "name" : "ColorSwitch_Component",
+            "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorSwitch_Component",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Switch Component",
+      "description" : "This enumeration defines all Z-Wave protocol specific color components.",
+      "category" : null,
+      "fileName" : "ColorSwitch_Component.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "WARM_WHITE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "COLD_WHITE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "RED",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "GREEN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "BLUE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "AMBER",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "CYAN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "PURPLE",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      }, {
+        "name" : "INDEXED",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Component",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Component:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorSwitch_Direction",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color Switch Direction",
+      "description" : "This enumeration defines all Z-Wave protocol specific color value change directions.",
+      "category" : null,
+      "fileName" : "ColorSwitch_Direction.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UP",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Direction",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+        }
+      }, {
+        "name" : "DOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ColorSwitch_Direction",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ColorSwitch_Direction:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

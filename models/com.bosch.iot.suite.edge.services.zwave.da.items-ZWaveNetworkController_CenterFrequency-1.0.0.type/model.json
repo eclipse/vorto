@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "ZWaveNetworkController_CenterFrequency",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_CenterFrequency",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Center Frequency",
+      "description" : "The RF (in kHz) of the Z-Wave controller.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_CenterFrequency.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "DIRECT_CONNECTION",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "RF_NOT_WORKING",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "EUROPE",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "AMERICA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      }, {
+        "name" : "ASIA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_CenterFrequency",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_CenterFrequency:1.0.0"
+        }
+      } ]
+    }
+  }
+}

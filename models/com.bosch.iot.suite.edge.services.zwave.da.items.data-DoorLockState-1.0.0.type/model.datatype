@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Door Lock State"
+description "Represents the Z-Wave protocol specific state of a door lock device, including the mode, condition, enabled handles and timeout."
+using com.bosch.iot.suite.edge.services.zwave.da.items.DoorLock_Handle ; 1.0.0
+
+entity DoorLockState {
+	mandatory mode as int with {
+		readable : true
+	} <NULLABLE false> "The door lock mode."
+
+	mandatory condition as int with {
+		readable : true
+	} <NULLABLE false> "The door lock condition."
+
+	mandatory multiple enabledHandles as DoorLock_Handle with {
+		readable : true
+	} "The set of all enabled door lock handles."
+
+	mandatory timeout as long with {
+		readable : true
+	} <NULLABLE false> "The timeout of the current state."
+
+}

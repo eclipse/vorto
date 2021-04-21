@@ -1,0 +1,35 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Z-Wave Sound Switch"
+description "Provides support for the Z-Wave Sound Switch Command Class, Version 2."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.SoundSwitchToneInfo ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.SoundSwitchToneVolume ; 1.0.0
+
+functionblock SoundSwitchV2 extends FunctionalItem {
+	configuration {
+		mandatory configuration as SoundSwitchToneVolume with {
+			readable : true,writable : true,eventable : true
+		} "The current configuration."
+
+		mandatory tonePlay as SoundSwitchToneVolume with {
+			readable : true,writable : true,eventable : true
+		} "The current tone being played."
+
+	}
+
+	status {
+		mandatory tonesNumber as int with {
+			readable : true
+		} <NULLABLE false> "The number of supported tones."
+
+	}
+
+	operations {
+		mandatory getToneInfo(toneId as int <NULLABLE false> "The id of the requested tone.") returns SoundSwitchToneInfo
+		"Gets a tone information."
+	}
+
+}

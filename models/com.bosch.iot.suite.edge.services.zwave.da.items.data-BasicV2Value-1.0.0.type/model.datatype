@@ -1,0 +1,20 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Basic V2 Value"
+description "Represents the value of the Z-Wave Basic Version 2 Command class, including current and target values and expected duration respectively."
+using com.bosch.iot.suite.edge.services.units.Quantity ; 1.0.0
+
+entity BasicV2Value {
+	mandatory current as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory target as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory duration as Quantity with {
+		readable : true
+	}
+
+}

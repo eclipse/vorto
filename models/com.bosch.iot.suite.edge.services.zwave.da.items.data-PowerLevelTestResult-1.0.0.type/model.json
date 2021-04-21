@@ -1,0 +1,85 @@
+{
+  "root" : {
+    "name" : "PowerLevelTestResult",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:PowerLevelTestResult:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data:PowerLevelTestResult:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PowerLevelTestResult",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:PowerLevelTestResult:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Power Level Test Result",
+      "description" : "A result of a power level test being initiated on a Z-Wave node. The test checks the connectivity by sending a certain number of test frames and verifies how many have been successfully acknowledged by the node.",
+      "category" : null,
+      "fileName" : "PowerLevelTestResult.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "testNodeId",
+        "description" : "The NodeID on the node, which is under test.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "resultStatus",
+        "description" : "The result of latest PowerLevel TestNode Set Command.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "ackFramesCount",
+        "description" : "The number of test frames transmitted, which the Test NodeID has acknowledged.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

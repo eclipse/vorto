@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Smart Start Inclusion Setting"
+description "This Information Type is used to advertise the SmartStart Inclusion Setting of the Provisioning List entry."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity SmartStartInclusionSetting extends InformationType {
+	mandatory setting as int with {
+		readable : true
+	} <NULLABLE false>
+}

@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Product Type"
+description "This Provisioning Information type is used to advertise the product type data of a supporting node."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity ProductType extends InformationType {
+	mandatory genericDeviceClass as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory specificDeviceClass as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory installerIconType as int with {
+		readable : true
+	} <NULLABLE false>
+}

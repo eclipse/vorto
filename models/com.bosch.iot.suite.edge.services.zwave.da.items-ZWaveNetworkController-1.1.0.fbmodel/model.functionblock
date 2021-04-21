@@ -1,0 +1,130 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.1.0
+displayname "Z-Wave Network Controller"
+description "Provides support for managing all Z-Wave defined Network Controller operations, modes, properties."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ZWaveNetworkController_Bandwidth ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ZWaveNetworkController_CenterFrequency ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ZWaveNetworkController_Role ; 1.0.0
+
+functionblock ZWaveNetworkController extends FunctionalItem {
+	configuration {
+		mandatory mode as byte with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE
+		false> "Represents the mode of the Z-Wave Network Controller.\n Note! MODE_PROCESSING_CONTROL_EVENT, MODE_REPLACING cannot be explicitly set! They are system internal modes that the controller only reports."
+
+		mandatory highPower as boolean with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents the High Power inclusion or exclusion mode."
+
+		mandatory networkWide as boolean with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents the Network Wide inclusion mode."
+
+	}
+
+	status {
+		mandatory houseId as int with {
+			readable : true
+		} <NULLABLE false> "Represents the house ID of the Z-Wave Network."
+
+		mandatory chipVersion as int with {
+			readable : true
+		} <NULLABLE false> "Represents the chip version of the Z-Wave Network Controller."
+
+		mandatory zwaveVersion as int with {
+			readable : true
+		} <NULLABLE false> "Represents the supported by the Z-Wave Network Controller version of the Z-Wave protocol."
+
+		mandatory controllerVersionString as string with {
+			readable : true
+		} "Represents the string representation of the supported by the Z-Wave Network Controller version of the Z-Wave protocol."
+
+		mandatory isRealPrimary as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether the Z-Wave Network Controller is a real primary controller."
+
+		mandatory isSecondary as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether the Z-Wave Network Controller is a secondary controller."
+
+		mandatory isSUCPresent as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether SUC is present in the Z-Wave network."
+
+		mandatory isOnOtherNetwork as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether this Z-Wave Network Controller is added in another network."
+
+		mandatory role as ZWaveNetworkController_Role with {
+			readable : true,eventable : true
+		} "Represents the Z-Wave Controller\'s role in the Z-Wave network."
+
+		mandatory isSUC as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether this Z-Wave Network Controller is the SUC controller of the network."
+
+		mandatory sucNodeId as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Contains the node ID of the SUC controller."
+
+		mandatory isSUCSIS as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether the SUC controller is in fact the SIS one."
+
+		mandatory radioFrequency as ZWaveNetworkController_CenterFrequency with {
+			readable : true
+		} "The RF (in kHz of the Z-Wave Controller. The allowed values are: 0xFFFFFF(16777215): Unknown radio frequency; 0x000000(0): All radio frequencies pass; 0x000001-0xFFFFFD(1-16777213): Valid radio frequency values; 0xFFFFFE(16777214): Radio frequency does not work. The standard used values are: Europe: 0x0D3CDE (867550 kHz); America: 0x0DEB7A (912250 kHz); Asia: 0x0E1578 (923000 kHz).)"
+
+		mandatory radioFrequencyBandwidth as ZWaveNetworkController_Bandwidth with {
+			readable : true
+		} "The RF Bandwidth (in MHz) of the Z-Wave Controller. The allowed values are: 0xFF(255): Unknown RF bandwidth; 0x00-0xFE(0-254): Valid RF bandwidth values."
+
+	}
+
+	operations {
+		mandatory assignReturnRoute(sourceNodeId as int <NULLABLE false> "The device that will generate events.",
+			targetNodeId as int <NULLABLE false> "The device that will receive events.") "Assigns route between two devices."
+		mandatory deleteReturnRoute(sourceNodeId as int <NULLABLE false> "The device that will generate events.")
+		"Deletes all routes for a device."
+		mandatory isFailedNode(nodeId as int <NULLABLE false> "The node id to check.") returns boolean <NULLABLE false>
+		"Checks if the specified node is failed. Note that all sleeping devices will probably return true."
+		mandatory removeFailedNode(nodeId as int <NULLABLE false> "The failed node ID of the device to remove.")
+		"Explicitly remove a failed node from the network. Use with caution since the removed node will not be reset."
+		mandatory forceNetworkUpdate()
+		"Rereads the device table from the Z-Wave controller and fires events if there are changes. The actual reread is done asynchronously any changes to the network will be reported as events."
+		mandatory resetController() "Resets the controller to the factory defaults."
+		mandatory removeNode(nodeId as int <NULLABLE false> "The target device which is forced to be removed.",
+			forceRemoveSleepingNode as boolean <NULLABLE false> "If true, an attempt is made to remove a sleeping node.")
+		returns boolean <NULLABLE
+		false>
+		"Try to remove a node. Internally isFailedNode(int) is used to check if the node is failed. If the node is failed then removeFailedNode(int) is used to remove the node. If the node is sleeping it is impossible to reliably determine if the node is failed to remove such nodes forceRemoveSleepingNode has to be set to true. However if the device is online i.e. not sleeping at the time this method is invoked it won\'t be removed."
+		mandatory replaceFailedNode(nodeId as int <NULLABLE false> "The target device which is forced to be replaced.",
+			forceReplaceSleepingNode as boolean <NULLABLE false> "If true, an attempt is made to replace a sleeping node.")
+		"Try to replace a node from the network with a new one. Internally isFailedNode(int) is used to check if the node is failed. If the node is sleeping it is impossible to reliably determine if the node is failed to remove such nodes forceReplaceSleepingNode has to be set to true. However if the device is online i.e. not sleeping at the time this method is invoked it won\'t be replaced."
+		mandatory setSUCNode(nodeId as int <NULLABLE false> "The id of the node to be set as SUC.",
+			isSIS as boolean <NULLABLE false> "Specifies that the node should be set as SIS.")
+		"Changes the SUC node on the network. For optimal performance we strongly suggest that the controller attached to the gateway is configured as SIS."
+		mandatory getRoutingInfo(nodeId as int <NULLABLE false>
+			"The ID of target device which neighbor routing info is requested.",
+			removeBadRoutesOpt as boolean <NULLABLE false> "Specify if to remove bad routes from the routing info.",
+			removeNonrepsOpt as boolean <NULLABLE false> "Specify if to remove non-repeaters from the routing info.",
+			speedVal as int <NULLABLE false>
+			"Specify a speed and it work like a filter to include only neighbor nodes supporting all lower speeds in addition to the advertised highest speed.")
+		returns multiple int "Returns the IDs of neighbor devices for the specified device."
+		mandatory sendNodeInfoFrame() "Sends Node Information Frame for this Z-Wave Network Controller."
+		mandatory sendNOP(nodeId as int <NULLABLE false> "Node ID of the device to send NOP to.")
+		"Sends NOP(No operation) command to the node with specified node ID."
+		mandatory getModeDuration(mode as int <NULLABLE false> "The requested mode.") returns long <MIN -1 , NULLABLE false>
+		"Returns the Z-Wave Network Controller mode duration in milliseconds. -1 indicates that the mode has no duration. 0 indicates infinite duration."
+		mandatory setModeDuration(mode as int <NULLABLE false> "The requested mode.",
+			duration as long <MIN 0 , NULLABLE false> "The new duration in milliseconds. 0 indicates infinite duration.")
+		"Sets the Z-Wave Network Controller mode duration."
+		mandatory addNodeS2(properties as dictionary [ string , string ]
+			"The specific mode properties to be applied for the inclusion.") ""
+	}
+
+}

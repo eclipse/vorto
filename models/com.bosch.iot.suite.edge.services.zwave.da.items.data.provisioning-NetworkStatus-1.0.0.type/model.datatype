@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Network Status"
+description "This Information Type is used to advertise if the Provisioning List entry is in the network and its assigned NodeID."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity NetworkStatus extends InformationType {
+	mandatory assignedNodeId as int with {
+		readable : true
+	} <NULLABLE false>
+	mandatory networkStatus as int with {
+		readable : true
+	} <NULLABLE false>
+}

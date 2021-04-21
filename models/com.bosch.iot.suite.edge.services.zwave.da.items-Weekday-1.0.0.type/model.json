@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "Weekday",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Weekday",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Weekday",
+      "description" : "Represents the days of the week. If null is provided - then it is mapped to value 0 - a special case that must be noted.",
+      "category" : null,
+      "fileName" : "Weekday.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MONDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "TUESDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "WEDNESDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "THURSDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "FRIDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "SATURDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "SUNDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      } ]
+    }
+  }
+}

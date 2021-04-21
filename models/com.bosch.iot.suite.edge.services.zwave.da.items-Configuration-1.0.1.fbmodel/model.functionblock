@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Configuration"
+description "Provides support for the Z-Wave Clock Configuration Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.Configuration_ParameterLength ; 1.0.0
+
+functionblock Configuration extends FunctionalItem {
+	operations {
+		mandatory get(paramId as int <MIN 1 , MAX 255 , NULLABLE false>
+			"Specifies which configuration parameter value is to be get.") returns long <NULLABLE false>
+		"Gets the value of a configuration parameter."
+		mandatory set(paramId as int <MIN 1 , MAX 255 , NULLABLE false>
+			"Specifies which configuration parameter value is to be set.",
+			length as Configuration_ParameterLength
+			"Indicates the number of bytes used for the configuration value. This field can take values 1, 2 or 4.",
+			value as long <NULLABLE false> "The new configuration value.") "Sets a new value of configuration parameter."
+		mandatory reset(paramId as int <MIN 1 , MAX 255 , NULLABLE false>
+			"Specifies which configuration parameter value is to be set to factory default.")
+		"Sets to default factory setting the configuration parameter."
+	}
+
+}

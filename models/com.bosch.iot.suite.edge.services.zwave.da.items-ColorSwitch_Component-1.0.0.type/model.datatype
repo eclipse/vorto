@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Color Switch Component"
+description "This enumeration defines all Z-Wave protocol specific color components."
+
+enum ColorSwitch_Component {
+	WARM_WHITE,
+	COLD_WHITE,
+	RED,
+	GREEN,
+	BLUE,
+	AMBER,
+	CYAN,
+	PURPLE,
+	INDEXED
+}

@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Thermostat Operating State"
+description "Provides support for the Z-Wave Thermostat Operating State Command Class, Version 1."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ThermostatState extends FunctionalItem {
+	status {
+		mandatory state as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the thermostat operating state."
+
+	}
+
+}

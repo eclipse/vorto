@@ -1,0 +1,36 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Climate Control Schedule"
+description "Provides support for the Z-Wave Climate Control Schedule Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.Weekday ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.OverrideState ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.SwitchPoint ; 1.0.0
+
+functionblock ClimateControlSchedule extends FunctionalItem {
+	configuration {
+		mandatory override as OverrideState with {
+			readable : true,writable : true,eventable : true
+		} "Property for the climate control schedule override state"
+
+	}
+
+	status {
+		mandatory changeCounter as int with {
+			readable : true,eventable : true
+		} <NULLABLE
+		false> "Counter that is incremented each time a climate schedule is changed on the device that serves as a schedule provider."
+
+	}
+
+	operations {
+		mandatory getDaySchedule(dayOfWeek as Weekday "The day of the week which to return the schedule for.") returns multiple
+		SwitchPoint "Retrieves the schedule for the given day."
+		mandatory setDaySchedule(dayOfWeek as Weekday "The day of the week which to change the schedule for.",
+			multiple sc as SwitchPoint "The new SwitchPoints for the new schedule.")
+		"Changes the schedule for given day of the week."
+	}
+
+}

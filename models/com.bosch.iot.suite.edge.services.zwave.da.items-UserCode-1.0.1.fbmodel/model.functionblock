@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave User Code"
+description "Provides support for the Z-Wave User Code Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.UserStatus ; 1.0.0
+
+functionblock UserCode extends FunctionalItem {
+	status {
+		mandatory supportedUsersNumber as int with {
+			readable : true
+		} <NULLABLE false> "Represents the number of user codes that this node supports."
+
+	}
+
+	operations {
+		mandatory setUserCode(id as int <NULLABLE false> "The user id to update the information for.",
+			multiple code as byte "The new code of the specified user",
+			status as int <NULLABLE false> "The new status for the specified user.")
+		"Updates the user cod and status for the user with the specified use id."
+		mandatory getUserCode(userId as int <NULLABLE false> "The user identifier which user code is requested.") returns
+		UserStatus "Requests the user code of a specific user identifier."
+	}
+
+}

@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Bootstrapping Mode"
+description "This Information Type is used to advertise the bootstrapping mode to use when including the node advertised in Provisioning List entry."
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.InformationType ; 1.0.0
+
+entity BootstrappingMode extends InformationType {
+	mandatory mode as int with {
+		readable : true
+	} <NULLABLE false>
+}

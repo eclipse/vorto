@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "ZWave Network Controller Center Frequency"
+description "The RF (in kHz) of the Z-Wave controller."
+
+enum ZWaveNetworkController_CenterFrequency {
+	UNKNOWN,
+	DIRECT_CONNECTION,
+	RF_NOT_WORKING,
+	EUROPE,
+	AMERICA,
+	ASIA
+}

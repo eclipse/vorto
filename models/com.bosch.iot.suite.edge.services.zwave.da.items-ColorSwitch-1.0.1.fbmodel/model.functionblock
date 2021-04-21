@@ -1,0 +1,42 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Color Switch"
+description "Provides support for the Z-Wave Color Switch Command Class, Version 1."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ColorSwitch_Component ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.ColorSwitch_Direction ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.ColorValue ; 1.0.0
+
+functionblock ColorSwitch extends FunctionalItem {
+	status {
+		mandatory multiple supportedColorComponents as ColorSwitch_Component with {
+			readable : true
+		} "Defines the supported color components ids."
+
+	}
+
+	operations {
+		mandatory get(componentId as ColorSwitch_Component "The target color component to be retrieved.") returns
+		int <NULLABLE
+		false> "Retrieves the current value for the color component specified."
+		mandatory set(componentId as ColorSwitch_Component "The target color component to be updated.",
+			value as int <NULLABLE false> "The target color value to be set.")
+		"Updates the value of the specified color component."
+		mandatory bulkGet(multiple componentIds as ColorSwitch_Component "The target color components to be retrieved.")
+		returns
+		multiple ColorValue "Retrieves the value of all specified color components."
+		mandatory bulkSet(multiple colorComponentValues as ColorValue "The set of Color Component values to be set on the device")
+		"Updates the values of all specified color components."
+		mandatory startChange(componentId as ColorSwitch_Component "The component to start the change on.",
+			direction as ColorSwitch_Direction
+			"The direction of the change - up (to reach the max value - 255) or down (to reach the min value - 0).",
+			ignoreStartLevel as boolean <NULLABLE false> "Defines whether the start level provided should be ignored.",
+			startLevel as int <NULLABLE false> "The color value to start the change from.")
+		"Initiates a change of the color level up (to 0xFF) or down (to 0x00) of the specified by color component."
+		mandatory stopChange(componentId as ColorSwitch_Component "The color component to stop the change for.")
+		"Stops the currently ongoing color level change for the specified color component."
+	}
+
+}

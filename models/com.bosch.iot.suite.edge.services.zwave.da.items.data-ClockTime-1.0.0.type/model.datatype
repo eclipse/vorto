@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Clock Time"
+description "Represents the time reported by a Z-Wave device in a format compliant with the Z-Wave Clock Command Class specification."
+using com.bosch.iot.suite.edge.services.zwave.da.items.Weekday ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.Time ; 1.0.0
+
+entity ClockTime extends Time {
+	mandatory weekday as Weekday with {
+		readable : true
+	} "The clock weekday."
+
+}

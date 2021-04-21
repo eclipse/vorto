@@ -1,0 +1,134 @@
+{
+  "root" : {
+    "name" : "ProductType",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:ProductType:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Information Type",
+      "description" : "Abstract representation of a Node Provisioning Information type.",
+      "category" : null,
+      "fileName" : "InformationType.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:ProductType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ProductType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:ProductType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Product Type",
+      "description" : "This Provisioning Information type is used to advertise the product type data of a supporting node.",
+      "category" : null,
+      "fileName" : "ProductType.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "genericDeviceClass",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "specificDeviceClass",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "installerIconType",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : {
+        "name" : "InformationType",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning:InformationType:1.0.0"
+      }
+    }
+  }
+}

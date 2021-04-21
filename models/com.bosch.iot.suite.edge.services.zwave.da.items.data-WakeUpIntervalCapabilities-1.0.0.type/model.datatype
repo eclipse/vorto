@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Wake Up Interval Capabilities"
+description "This class represents the Wake Up Command Class capabilities of a Z-Wave device represented by the Z-Wave Wake Up CC Version 2 and higher."
+
+entity WakeUpIntervalCapabilities {
+	mandatory maxValue as long with {
+		readable : true
+	} <NULLABLE false> "The max wake up interval value in milliseconds."
+
+	mandatory minValue as long with {
+		readable : true
+	} <NULLABLE false> "The min wake up interval value in milliseconds."
+
+	mandatory defaultValue as long with {
+		readable : true
+	} <NULLABLE false> "The default wake up interval value in milliseconds."
+
+	mandatory step as long with {
+		readable : true
+	} <NULLABLE false> "The wake up interval step."
+
+}

@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Protection V2 State"
+description "Represents a report with local and RF protection states of the device as a result of a sent request compliant with the Z-Wave Protection State Command Class v2 and higher."
+
+entity ProtectionV2State {
+	mandatory local as int with {
+		readable : true
+	} <NULLABLE false> "The local protection state of the device."
+
+	mandatory rf as int with {
+		readable : true
+	} <NULLABLE false> "The RF protection state of the device."
+
+}

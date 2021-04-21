@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "User"
+description "Wraps a Z-Wave specific user information (ID, personal code) that can be used for managing/identification when using a Z-Wave Door Lock or other device that supports user identification."
+
+entity User {
+	mandatory id as int with {
+		readable : true
+	} <NULLABLE false> "The user id of the current user."
+
+	mandatory multiple code as byte with {
+		readable : true
+	} "The user code of the current user."
+
+}

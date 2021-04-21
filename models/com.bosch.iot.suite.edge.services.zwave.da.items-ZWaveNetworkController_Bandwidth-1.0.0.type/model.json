@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "ZWaveNetworkController_Bandwidth",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ZWaveNetworkController_Bandwidth",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ZWave Network Controller Bandwidth",
+      "description" : "The RF Bandwidth (in MHz) of the controller.",
+      "category" : null,
+      "fileName" : "ZWaveNetworkController_Bandwidth.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "EUROPE",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "AMERICA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      }, {
+        "name" : "ASIA",
+        "description" : null,
+        "parent" : {
+          "name" : "ZWaveNetworkController_Bandwidth",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:ZWaveNetworkController_Bandwidth:1.0.0"
+        }
+      } ]
+    }
+  }
+}

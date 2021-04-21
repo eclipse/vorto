@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Notification Status"
+description "Represents an alarm notification of the Z-Wave Notification (starting from Version 3 and higher) Command Class, including the protocol specific alarm type, alarm status, event type, event parameters and the sequence number."
+
+entity NotificationStatus {
+	mandatory type as int with {
+		readable : true
+	} <NULLABLE false> "The notification type."
+
+	mandatory status as int with {
+		readable : true
+	} <NULLABLE false> "The notification status."
+
+	mandatory eventType as int with {
+		readable : true
+	} <NULLABLE false> "The notification event type."
+
+	mandatory multiple eventParameters as byte with {
+		readable : true
+	} "The notification event parameters."
+
+	mandatory sequenceNumber as int with {
+		readable : true
+	} <NULLABLE false> "The notification sequence number."
+
+}

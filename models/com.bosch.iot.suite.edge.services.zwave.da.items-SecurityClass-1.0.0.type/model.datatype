@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Security Class"
+description "This enumeration represents the Security Classes defined by the Z-Wave Protocol Specification."
+
+enum SecurityClass {
+	NON_SECURE,
+	S2_UNAUTHENTICATED,
+	S2_AUTHENTICATED,
+	S2_ACCESS_CONTROL,
+	SECURITY_0
+}

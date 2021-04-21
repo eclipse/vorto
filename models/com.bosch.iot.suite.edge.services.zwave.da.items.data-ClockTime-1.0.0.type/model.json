@@ -1,0 +1,242 @@
+{
+  "root" : {
+    "name" : "ClockTime",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ClockTime:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data:Time:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Time",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:Time:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Time",
+      "description" : "Represents the time of clock.",
+      "category" : null,
+      "fileName" : "Time.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hour",
+        "description" : "The current hour of clock time.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "23"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "minute",
+        "description" : "The current minute of clock time.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "59"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "second",
+        "description" : "The current second of clock time.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "59"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items.data:ClockTime:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ClockTime",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:ClockTime:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Clock Time",
+      "description" : "Represents the time reported by a Z-Wave device in a format compliant with the Z-Wave Clock Command Class specification.",
+      "category" : null,
+      "fileName" : "ClockTime.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Weekday",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+      }, {
+        "name" : "Time",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:Time:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "weekday",
+        "description" : "The clock weekday.",
+        "type" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : {
+        "name" : "Time",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items.data",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items.data:Time:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Weekday",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Weekday",
+      "description" : "Represents the days of the week. If null is provided - then it is mapped to value 0 - a special case that must be noted.",
+      "category" : null,
+      "fileName" : "Weekday.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MONDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "TUESDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "WEDNESDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "THURSDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "FRIDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "SATURDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      }, {
+        "name" : "SUNDAY",
+        "description" : null,
+        "parent" : {
+          "name" : "Weekday",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:Weekday:1.0.0"
+        }
+      } ]
+    }
+  }
+}

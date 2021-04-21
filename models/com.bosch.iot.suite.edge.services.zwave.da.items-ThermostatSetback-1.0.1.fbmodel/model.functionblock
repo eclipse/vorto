@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Thermostat Setback"
+description "Provides support for the Z-Wave Thermostat Setback Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.OverrideState ; 1.0.0
+
+functionblock ThermostatSetback extends FunctionalItem {
+	configuration {
+		mandatory state as OverrideState with {
+			readable : true,writable : true,eventable : true
+		} "Represents the state of the Thermostat Setback (Override)."
+
+	}
+
+}

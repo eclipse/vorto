@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Color Switch Direction"
+description "This enumeration defines all Z-Wave protocol specific color value change directions."
+
+enum ColorSwitch_Direction {
+	UP,
+	DOWN
+}

@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.1
+displayname "Z-Wave Thermostat Fan Mode"
+description "Provides support for the Z-Wave Thermostat Fan Mode Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ThermostatFanMode extends FunctionalItem {
+	configuration {
+		mandatory mode as int with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE
+		false> "Represents the fan mode of the device. Refer to the supported values to get the possible modes that could be set to the device."
+
+	}
+
+	status {
+		mandatory multiple supportedModes as int with {
+			readable : true
+		} "Represents the supported by the device fan modes."
+
+	}
+
+}

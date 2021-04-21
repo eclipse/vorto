@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Id to Value Tuple"
+description "Represents a relation between two integers as the first is assumed to be key and the second - a value related to this identificator."
+
+entity IdToValueTuple {
+	mandatory id as int with {
+		readable : true
+	} <NULLABLE false> "The id of the tuple."
+
+	mandatory value as int with {
+		readable : true
+	} <NULLABLE false> "The value of the tuple."
+
+}

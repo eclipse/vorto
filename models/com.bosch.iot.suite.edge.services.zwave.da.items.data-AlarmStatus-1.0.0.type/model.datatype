@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Alarm Status"
+description "Represents an alarm notification of the Z-Wave Alarm Version 1 Command class, including the protocol specific alarm type and severity."
+
+entity AlarmStatus {
+	mandatory type as int with {
+		readable : true
+	} <NULLABLE false> "The notification type."
+
+	mandatory severity as int with {
+		readable : true
+	} <NULLABLE false> "The notification severity."
+
+}

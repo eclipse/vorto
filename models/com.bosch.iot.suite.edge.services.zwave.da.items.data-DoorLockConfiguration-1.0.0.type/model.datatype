@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data
+version 1.0.0
+displayname "Door Lock Configuration"
+description "Represents a configuration of Door Lock device."
+using com.bosch.iot.suite.edge.services.zwave.da.items.DoorLock_Handle ; 1.0.0
+
+entity DoorLockConfiguration {
+	mandatory operationType as int with {
+		readable : true
+	} <NULLABLE false> "The operation type of the configuration."
+
+	mandatory multiple enabledHandles as DoorLock_Handle with {
+		readable : true
+	} "The enabled handles of the configuration."
+
+	mandatory timeout as long with {
+		readable : true
+	} <NULLABLE false> "The timeout of the configuration."
+
+}

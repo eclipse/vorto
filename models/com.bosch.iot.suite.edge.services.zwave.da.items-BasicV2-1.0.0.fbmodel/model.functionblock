@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Z-Wave Basic Version 2"
+description "Provides support for the Z-Wave Basic Command Class Version 2."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.BasicV2Value ; 1.0.0
+
+functionblock BasicV2 extends FunctionalItem {
+	operations {
+		mandatory basicGet() returns BasicV2Value "Executes a Basic Get command on the device."
+		mandatory basicSet(value as int <NULLABLE false>) "Executes a Basic Set command on the device."
+	}
+
+}

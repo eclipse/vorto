@@ -1,0 +1,120 @@
+{
+  "root" : {
+    "name" : "PowerLevel_Level",
+    "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PowerLevel_Level",
+        "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Power Level",
+      "description" : "Represents the possible power levels that can be set on the device in compliance with the Z-Wave Specification.",
+      "category" : null,
+      "fileName" : "PowerLevel_Level.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NORMAL_POWER",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_1_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_2_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_3_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_4_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_5_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_6_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_7_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_8_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      }, {
+        "name" : "MINUS_9_DBM",
+        "description" : null,
+        "parent" : {
+          "name" : "PowerLevel_Level",
+          "namespace" : "com.bosch.iot.suite.edge.services.zwave.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.zwave.da.items:PowerLevel_Level:1.0.0"
+        }
+      } ]
+    }
+  }
+}

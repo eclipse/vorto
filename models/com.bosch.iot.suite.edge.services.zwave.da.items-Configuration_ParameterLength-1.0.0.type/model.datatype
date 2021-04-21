@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Configuration Parameter Length"
+description "This enumeration defines all possible Z-Wave protocol specific configuration parameter lengths."
+
+enum Configuration_ParameterLength {
+	SIZE_1,
+	SIZE_2,
+	SIZE_4
+}

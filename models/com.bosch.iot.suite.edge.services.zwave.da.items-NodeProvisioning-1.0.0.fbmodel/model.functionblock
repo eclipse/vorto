@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items
+version 1.0.0
+displayname "Z-Wave Node Provisioning"
+description "Provides support for the Z-Wave Node Provisioning Command Class."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning.NodeEntry ; 1.0.0
+
+functionblock NodeProvisioning extends FunctionalItem {
+	operations {
+		mandatory setProvisioningEntry(entry as NodeEntry "The provisioning entry data.")
+		"Creates a new or updates an existing provisioning entry in the provisioning list of the Z-Wave controller."
+		mandatory deleteProvisioningEntry(multiple dsk as int "The device DSK in 5-digit integer array format.")
+		"Deletes a provisioning entry from the provisioning list by the DSK."
+		mandatory getProvisioningEntry(multiple dsk as int "The device DSK.") returns NodeEntry
+		"Gets a provisioning entry from the provisioning list by the DSK."
+		mandatory getProvisioningEntries() returns multiple NodeEntry "Gets the full node provisioning list."
+	}
+
+}

@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.zwave.da.items.data.provisioning
+version 1.0.0
+displayname "Information Type"
+description "Abstract representation of a Node Provisioning Information type."
+
+entity InformationType {
+	mandatory type as int with {
+		readable : true
+	} <NULLABLE false>
+}
