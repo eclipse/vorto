@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "ContainersDevice"
+description "A device that supports containers management via SOTA and locally"
+
+using org.eclipse.hawkbit.swupdatable.SoftwareUpdatable;2.0.0
+using com.bosch.iot.suite.edge.containers.ContainerFactory;1.0.0
+using com.bosch.iot.suite.edge.containers.Container;1.0.0
+
+
+infomodel ContainersDevice {
+  functionblocks {
+    mandatory ContainerFactory as ContainerFactory "Containers creation entry point"
+    multiple Container as Container "Represents a single container instance and its management"
+    mandatory SoftwareUpdatable as SoftwareUpdatable "Supports containers SOTA"
+  }
+}

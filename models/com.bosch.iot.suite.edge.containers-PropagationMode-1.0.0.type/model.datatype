@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "PropagationMode"
+description "Represents the propagation mode for populating the mounted filesystem artifacts from the host to the container"
+
+enum PropagationMode {
+    RPRIVATE,
+    PRIVATE,
+    RSHARED,
+    SHARED,
+    RSLAVE,
+    SLAVE
+}

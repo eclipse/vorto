@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "Status"
+description "Represents the current container's status given the container's lifecycle"
+
+enum Status {
+    CREATING,
+    CREATED,
+    RUNNING,
+    STOPPED,
+    PAUSED,
+    EXITED,
+    DEAD,
+    UNKNOWN
+}

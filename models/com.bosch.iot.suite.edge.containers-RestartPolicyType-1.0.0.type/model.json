@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "RestartPolicyType",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RestartPolicyType",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RestartPolicyType",
+      "description" : "Represents the container's restart policy type - always means that each time te container exists, it will be restarted.",
+      "category" : null,
+      "fileName" : "RestartPolicyType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ALWAYS",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "UNLESS_STOPPED",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "ON_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "NO",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      } ]
+    }
+  }
+}

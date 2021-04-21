@@ -1,0 +1,76 @@
+{
+  "root" : {
+    "name" : "StopOptions",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:StopOptions:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:StopOptions:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "StopOptions",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:StopOptions:1.1.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "StopOptions",
+      "description" : "Represents the container stop options",
+      "category" : null,
+      "fileName" : "StopOptions.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "forced",
+        "description" : "Whether to send a SIG_KILL signal to the container's process if it does not finish within the timeout specified. The default is true",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "false"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "timeout",
+        "description" : "A timeout period in seconds in which the container must stop",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "30"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "signal",
+        "description" : "A specific signal to send to the container in order to stop it. Signals could be specified by using their names or numbers, e.g. SIGINT or 2. The default is SIGTERM",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"SIGTERM\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

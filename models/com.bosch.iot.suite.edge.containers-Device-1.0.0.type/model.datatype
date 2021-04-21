@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "Device"
+description "Represents a serial device exposed from the host to the container mapped to a certain internal container's path"
+
+entity Device {
+  mandatory pathOnHost as string "Device path on the host machine"
+  mandatory pathInContainer as string "Device path inside the container"
+
+	optional cgroupPermissions as string "cgroup permissions"
+}
