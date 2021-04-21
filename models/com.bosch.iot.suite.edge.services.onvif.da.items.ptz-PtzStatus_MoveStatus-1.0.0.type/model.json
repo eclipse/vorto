@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "PtzStatus_MoveStatus",
+    "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PtzStatus_MoveStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PTZ Move Status",
+      "description" : "Represents the state of the Movement.",
+      "category" : null,
+      "fileName" : "PtzStatus_MoveStatus.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "MOVING",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      }, {
+        "name" : "IDLE",
+        "description" : null,
+        "parent" : {
+          "name" : "PtzStatus_MoveStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.onvif.da.items.ptz:PtzStatus_MoveStatus:1.0.0"
+        }
+      } ]
+    }
+  }
+}

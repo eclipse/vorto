@@ -1,0 +1,43 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.ptz
+version 2.0.0
+displayname "PtzService"
+description "PtzService for a given profile."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PanTilt ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PtzPreset ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PtzStatus ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.Zoom ; 1.0.0
+
+functionblock PtzService extends FunctionalItem {
+	operations {
+		mandatory setPreset(presetToken as string "presetToken - identifier of an existing preset, optional.",
+			presetName as string "presetName - preset name, optional.") returns string
+		"Stores the current PTZ position. If existing preset token is provided, it will update the specified Preset."
+		mandatory removePreset(presetToken as string "presetToken - identifier of an existing preset.") "Removes the preset."
+		mandatory getPresets() returns multiple PtzPreset "Returns a list of PTZ presets."
+		mandatory gotoPreset(presetToken as string "presetToken - identifier of an existing preset.",
+			panTiltSpeed as PanTilt "The speed of pan-tilt to perform the movement, optional.",
+			zoomSpeed as Zoom "The speed to perform the zoom, optional.") "Move to the specified PTZ position."
+		mandatory gotoHomePosition(panTiltSpeed as PanTilt "The speed of pan-tilt to perform the movement, optional.",
+			zoomSpeed as Zoom "The speed to perform the zoom, optional.") "Go to home position."
+		mandatory setHomePosition() "Set the device current position as a home position."
+		mandatory absoluteMove(panTiltPosition as PanTilt "Absolute pan-tilt position.",
+			zoomPosition as Zoom "Absolute zoom position.",
+			panTiltSpeed as PanTilt "The speed to perform the movement, optional.",
+			zoomSpeed as Zoom "The speed to perform the zoom, optional.") "Force the device to move to an absolute PTZ position."
+		mandatory relativeMove(panTiltTranslation as PanTilt "Relative pan-tilt translation.",
+			zoomTranslation as Zoom "Relative zoom translation.",
+			panTiltSpeed as PanTilt "The speed to perform the movement, optional.",
+			zoomSpeed as Zoom "The speed to perform the zoom, optional.") "Force the device to perform a relative movement."
+		mandatory continuousMove(panTiltVelocity as PanTilt "Pan-tilt velocity.",
+			zoomVelocity as Zoom "Zoom velocity.",
+			timeout as int <NULLABLE false> "The duration of the movement in seconds.")
+		"Force the device to start a continuous movement."
+		mandatory stop(stopPanTilt as boolean <NULLABLE false> "Stops the ongoing pan and tilt movement.",
+			stopZoom as boolean <NULLABLE false> "Stops the ongoing zooming.") "Stops ongoing pan, tilt and zoom movement."
+		mandatory getStatus() returns PtzStatus "Returns the current position, time, pan, tilt and zoom state."
+	}
+
+}

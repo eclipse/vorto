@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.onvif.da.items.ptz
+version 1.0.0
+displayname "PTZ Preset"
+description "Represents the PTZ Preset configuration."
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.PanTilt ; 1.0.0
+using com.bosch.iot.suite.edge.services.onvif.da.items.ptz.Zoom ; 1.0.0
+
+entity PtzPreset {
+	mandatory token as string with {
+		readable : true
+	} "Represents the preset token."
+
+	mandatory name as string with {
+		readable : true
+	} "Represents the preset name."
+
+	mandatory panTiltPosition as PanTilt with {
+		readable : true
+	} "Represents the pan-tilt position."
+
+	mandatory zoomPosition as Zoom with {
+		readable : true
+	} "Represents the zoom position."
+
+}
