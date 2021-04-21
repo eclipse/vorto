@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim
+version 1.0.0
+displayname "Functional Item Factory"
+description "Enables dynamic creation and registration of functional items."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock FunctionalItemFactory extends FunctionalItem {
+	operations {
+		mandatory create(itemClass as string "Supported functional item class name.",
+			itemProperties as dictionary "Initial functional item properties values.") returns dictionary [ string , string ]
+		"Creates and registers a functional item for a supported interface name and initial properties values."
+
+		mandatory remove(itemUID as string "The UID of a created functional item.")
+		"Unregisters a functional item created by the factory."
+
+		mandatory getCreationMetadata(itemClass as string "Supported functional item class name.") returns dictionary
+		"Provides the creation properties metadata of supported functional item class."
+	}
+
+}
