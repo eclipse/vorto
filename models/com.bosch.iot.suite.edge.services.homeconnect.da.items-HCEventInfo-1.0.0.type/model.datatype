@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Home Connect Event Info"
+description "Represents an event triggered by a Home Connect appliance."
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.HCEventPresentState ; 1.0.0
+
+entity HCEventInfo {
+
+	mandatory key as string with {
+		readable : true
+	} <NULLABLE false> "Represents the event source key."
+
+	mandatory value as HCEventPresentState with {
+		readable : true
+	} "Represents the event value."
+
+}

@@ -1,0 +1,35 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Map Control"
+description "Provides support for Map options and settings."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock MapControl extends FunctionalItem {
+	configuration {
+		mandatory referenceMapId as string with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents the used reference map option."
+
+		mandatory currentMap as string with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents the currently selected map setting."
+	}
+
+	status {
+		mandatory namesOfMaps as dictionary [ string , string ] with {
+			readable : true,eventable : true
+		} "Represents the names of the user-defined map."
+
+		mandatory lastSelectedMap as string with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represent the last selected map status."
+	}
+
+	operations {
+		mandatory setNameOfMap(key as string <NULLABLE false> "The reference Id of the map.",
+			name as string <NULLABLE false> "User friendly name for the given map.") "Operation that set user friendly name for the given map."
+	}
+
+}

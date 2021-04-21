@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Cleaning Mode"
+description "Represents the possible values for the cleaning mode options."
+
+enum CleaningMode {
+	SILENT "Silent mode. For simple cleaning tasks with a very low operating noise and long battery life.",
+	STANDARD "Eco (standard) mode. For normal cleaning tasks with efficient cleaning performance and runtime.",
+	POWER "Power mode. Maximum power for demanding everyday cleaning tasks in medium-sized rooms.",
+	UNKNOWN "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values."
+}

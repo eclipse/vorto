@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Bean Amount"
+description "Represents the possible values for the bean amount option of a coffee maker program."
+
+enum BeanAmount {
+	VERY_MILD "Very mild coffee.",
+	MILD "Mild coffee.",
+	NORMAL "Normal coffee.",
+	STRONG "Strong coffee.",
+	VERY_STRONG "Very strong coffee.",
+	DOUBLE_SHOT "Double shot, extra strong coffee.",
+	DOUBLE_SHOT_PLUS "Double shot plus coffee.",
+	DOUBLE_SHOT_PLUS_PLUS "Double shot plus plus coffee.",
+	UNKNOWN "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values."
+}

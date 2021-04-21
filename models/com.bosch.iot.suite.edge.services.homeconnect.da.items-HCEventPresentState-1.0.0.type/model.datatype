@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Home Connect Event Present State"
+description "The possible values for the HomeConnect event present state."
+
+enum HCEventPresentState {
+	OFF "The event is off.",
+	PRESENT "The event occurred and is present.",
+	CONFIRMED "The event has been confirmed by the user."
+}

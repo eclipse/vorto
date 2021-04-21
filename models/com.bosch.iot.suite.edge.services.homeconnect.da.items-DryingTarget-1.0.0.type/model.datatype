@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Drying Target"
+description "Represents the possible values for the drying target option of a dryer program."
+
+enum DryingTarget {
+	IRON_DRY "The dryer will stop drying if the clothes are iron dry.",
+	CUPBOARD_DRY "The dryer will stop drying if the clothes are cupboard dry.",
+	CUPBOARD_DRY_PLUS "The dryer will stop drying if the clothes are absolutely dry.",
+	UNKNOWN "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values."
+}

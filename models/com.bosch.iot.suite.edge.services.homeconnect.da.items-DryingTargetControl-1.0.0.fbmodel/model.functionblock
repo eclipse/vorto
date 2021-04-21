@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Drying Target Control"
+description "Provides support for Drying Target option."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.DryingTarget ; 1.0.0
+
+functionblock DryingTargetControl extends FunctionalItem {
+	configuration {
+		mandatory value as DryingTarget with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents drying target option."
+	}
+
+	status {
+		mandatory multiple allowedValues as DryingTarget with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents all allowed values of drying target option."
+	}
+
+}

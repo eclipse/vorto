@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "CoffeeTemperature",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "CoffeeTemperature",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Coffee Temperature",
+      "description" : "Represents the possible values for the coffee temperature option of a coffee maker program.",
+      "category" : null,
+      "fileName" : "CoffeeTemperature.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NORMAL",
+        "description" : "Normal coffee temperature.",
+        "parent" : {
+          "name" : "CoffeeTemperature",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+        }
+      }, {
+        "name" : "HIGH",
+        "description" : "High coffee temperature.",
+        "parent" : {
+          "name" : "CoffeeTemperature",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+        }
+      }, {
+        "name" : "VERY_HIGH",
+        "description" : "Very high coffee temperature.",
+        "parent" : {
+          "name" : "CoffeeTemperature",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values.",
+        "parent" : {
+          "name" : "CoffeeTemperature",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CoffeeTemperature:1.0.0"
+        }
+      } ]
+    }
+  }
+}

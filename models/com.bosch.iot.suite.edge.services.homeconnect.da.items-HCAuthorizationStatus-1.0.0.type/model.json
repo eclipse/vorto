@@ -1,0 +1,148 @@
+{
+  "root" : {
+    "name" : "HCAuthorizationStatus",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HCAuthorizationStatus_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Home Connect Authorization Status State",
+      "description" : "The possible states of the HomeConnect authorization status.",
+      "category" : null,
+      "fileName" : "HCAuthorizationStatus_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "NOT_INITIALIZED",
+        "description" : "No user account credentials are set to the controller.",
+        "parent" : {
+          "name" : "HCAuthorizationStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "AUTHORIZING",
+        "description" : "A connection to the HomeConnect server is being authorized at the moment.",
+        "parent" : {
+          "name" : "HCAuthorizationStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "AUTHORIZED",
+        "description" : "A connection to the HomeConnect server is authorized at the moment.",
+        "parent" : {
+          "name" : "HCAuthorizationStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "ERROR",
+        "description" : "Authorization to the HomeConnect server cannot be granted open due to some error.",
+        "parent" : {
+          "name" : "HCAuthorizationStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HCAuthorizationStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Home Connect Authorization Status",
+      "description" : "Holds information about the current authorization status against the Home Connect server.",
+      "category" : null,
+      "fileName" : "HCAuthorizationStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "HCAuthorizationStatus_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "Represents the current state.",
+        "type" : {
+          "name" : "HCAuthorizationStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:HCAuthorizationStatus_State:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "errorCode",
+        "description" : "Represents the error code in case of an error. Zero means no error.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "errorMessage",
+        "description" : "Represents the error message in case of an error.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

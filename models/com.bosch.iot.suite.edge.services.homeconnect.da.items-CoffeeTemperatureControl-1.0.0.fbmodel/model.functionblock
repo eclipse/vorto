@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.homeconnect.da.items
+version 1.0.0
+displayname "Coffee Temperature Control"
+description "Provides support for Coffee Temperature option."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.homeconnect.da.items.CoffeeTemperature ; 1.0.0
+
+functionblock CoffeeTemperatureControl extends FunctionalItem {
+	configuration {
+		mandatory value as CoffeeTemperature with {
+			readable : true,writable : true,eventable : true
+		} <NULLABLE false> "Represents coffee temperature option."
+	}
+
+	status {
+		mandatory multiple allowedValues as CoffeeTemperature with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents all allowed values of coffee temperature option."
+	}
+
+}

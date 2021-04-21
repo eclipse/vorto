@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "CleaningMode",
+    "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "CleaningMode",
+        "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Cleaning Mode",
+      "description" : "Represents the possible values for the cleaning mode options.",
+      "category" : null,
+      "fileName" : "CleaningMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "SILENT",
+        "description" : "Silent mode. For simple cleaning tasks with a very low operating noise and long battery life.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "STANDARD",
+        "description" : "Eco (standard) mode. For normal cleaning tasks with efficient cleaning performance and runtime.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "POWER",
+        "description" : "Power mode. Maximum power for demanding everyday cleaning tasks in medium-sized rooms.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : "Unknown value, used when the appliance reports a value that cannot be mapped to any of the other values.",
+        "parent" : {
+          "name" : "CleaningMode",
+          "namespace" : "com.bosch.iot.suite.edge.services.homeconnect.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.homeconnect.da.items:CleaningMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}
