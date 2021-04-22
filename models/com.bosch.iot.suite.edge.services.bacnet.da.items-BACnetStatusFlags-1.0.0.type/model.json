@@ -1,0 +1,103 @@
+{
+  "root" : {
+    "name" : "BACnetStatusFlags",
+    "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetStatusFlags:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetStatusFlags:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetStatusFlags",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetStatusFlags:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BACnet Status Flags",
+      "description" : "The BACnet status flags that indicate the general health of a BACnet object.",
+      "category" : null,
+      "fileName" : "BACnetStatusFlags.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "inAlarm",
+        "description" : "Determines if the BACnet object is in alarm state.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "fault",
+        "description" : "Determines if the BACnet object has detected a fault.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "overriden",
+        "description" : "Determines if the present value of the BACnet object is overridden.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "outOfService",
+        "description" : "Determines if the BACnet object is out of service.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

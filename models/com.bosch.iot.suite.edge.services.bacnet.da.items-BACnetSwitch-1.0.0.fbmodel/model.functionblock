@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Switch"
+description "Represents a switch that controls the present value of a BACnet Binary Output or Binary Value object."
+using com.bosch.iot.suite.edge.services.da.items.Switch ; 1.0.0
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetStatusFlags ; 1.0.0
+
+functionblock BACnetSwitch extends Switch {
+	status {
+		mandatory statusFlags as BACnetStatusFlags with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Holds the status flags that indicate the general health of the BACnet object."
+	}
+
+}

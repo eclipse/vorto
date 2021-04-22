@@ -1,0 +1,139 @@
+{
+  "root" : {
+    "name" : "BACnetDiscoveryParameters",
+    "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDiscoveryParameters:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDiscoveryParameters:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetDiscoveryParameters",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDiscoveryParameters:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BACnet Discovery Parameters",
+      "description" : "The parameters for initiating a BACnet discovery process.",
+      "category" : null,
+      "fileName" : "BACnetDiscoveryParameters.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "rangeLowLimit",
+        "description" : "Represents the low limit of the range of device instance numbers to be discovered.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "4194303"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "rangeHighLimit",
+        "description" : "Represents the high limit of the range of device instance numbers to be discovered.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "4194303"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "whoIsInterval",
+        "description" : "Represents the interval in seconds between sending broadcast Who-Is service requests.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "timeout",
+        "description" : "Represents the time interval during which the discovery process is active.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "globalBroadcast",
+        "description" : "Represents whether the WhoIs request is broadcasted to the local BACnet network or globally.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

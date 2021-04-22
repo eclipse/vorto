@@ -1,0 +1,61 @@
+{
+  "root" : {
+    "name" : "BACnetObjectInstances",
+    "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetObjectInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BACnet Object Instances",
+      "description" : "Holds the configuration of a certain type of BACnet end points.",
+      "category" : null,
+      "fileName" : "BACnetObjectInstances.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "instances",
+        "description" : "Represents the set of BACnet object instance numbers.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "properties",
+        "description" : "Represents the optional set of BACnet property identifiers as strings.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

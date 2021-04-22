@@ -1,0 +1,30 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Discovery Parameters"
+description "The parameters for initiating a BACnet discovery process."
+
+entity BACnetDiscoveryParameters {
+
+	mandatory rangeLowLimit as int with {
+		readable : true
+	} <MIN 0 , MAX 4194303 , NULLABLE false> "Represents the low limit of the range of device instance numbers to be discovered."
+
+	mandatory rangeHighLimit as int with {
+		readable : true
+	} <MIN 0 , MAX 4194303 , NULLABLE false> "Represents the high limit of the range of device instance numbers to be discovered."
+
+	mandatory whoIsInterval as long with {
+		readable : true
+	} <MIN 0 , NULLABLE false> "Represents the interval in seconds between sending broadcast Who-Is service requests."
+
+	mandatory timeout as long with {
+		readable : true
+	} <MIN 0 , NULLABLE false> "Represents the time interval during which the discovery process is active."
+
+	mandatory globalBroadcast as boolean with {
+		readable : true
+	} <NULLABLE false> "Represents whether the WhoIs request is broadcasted to the local BACnet network or globally."
+
+}

@@ -1,0 +1,23 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Device Instances"
+description "Holds information about the configured end points of a set of BACnet device instances."
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetObjectInstances ; 1.0.0
+
+entity BACnetDeviceInstances {
+
+	mandatory multiple devices as int with {
+		readable : true
+	} "A set of instance numbers that identify BACnet devices."
+
+	mandatory multiple deviceRanges as string with {
+		readable : true
+	} <REGEX '(\d+)\s*[-|:|,|;]\s*(\d+)'> "A collection of ranges of BACnet device instance numbers."
+
+	mandatory objects as dictionary [ string , BACnetObjectInstances ] with {
+		readable : true
+	} "A map that defines the common configuration that shall be applied to all the devices."
+
+}

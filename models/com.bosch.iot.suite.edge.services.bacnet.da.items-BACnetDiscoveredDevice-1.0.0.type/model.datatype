@@ -1,0 +1,34 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Discovered Device"
+description "The information about a discovered BACnet device on the network."
+
+entity BACnetDiscoveredDevice {
+
+	mandatory networkNumber as int with {
+		readable : true
+	} <MIN 0 , MAX 65535 , NULLABLE false> "Represents the network number."
+
+	mandatory deviceInstanceNumber as int with {
+		readable : true
+	} <MIN 0 , MAX 4194303 , NULLABLE false> "Represents the device instance number."
+
+	mandatory macAddress as string with {
+		readable : true
+	} <NULLABLE false> "Represents the MAC address."
+
+	mandatory deviceName as string with {
+		readable : true
+	} "Represents the device object name."
+
+	mandatory vendorIdentifier as int with {
+		readable : true
+	} <MIN 0 , NULLABLE false> "Represents the vendor identifier."
+
+	mandatory modelName as string with {
+		readable : true
+	} "Represents the model name."
+
+}

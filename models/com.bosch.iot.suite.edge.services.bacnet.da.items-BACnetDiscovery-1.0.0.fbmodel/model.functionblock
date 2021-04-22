@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Discovery"
+description "Represents a FI that controls the BACnet discovery mechanism."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.Discovery ; 1.0.0
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetDiscoveredDevice ; 1.0.0
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetDiscoveryParameters ; 1.0.0
+
+functionblock BACnetDiscovery extends Discovery {
+	status {
+		mandatory multiple result as BACnetDiscoveredDevice with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the set of discovered BACnet devices."
+	}
+
+	operations {
+		mandatory startWithParameters(discoveryParameters as BACnetDiscoveryParameters "The BACnet discovery parameters.")
+		"Initiates a BACnet discovery process with parameters."
+		mandatory add(networkNumber as int <MIN 0 , MAX 65535 , NULLABLE false> "A network number.",
+			multiple deviceInstanceNumbers as int <MIN 0 , MAX 4194303> "A list of device instance numbers.")
+		"Adds a list of BACnet devices to the system."
+		mandatory find(networkNumber as int <MIN 0 , MAX 65535 , NULLABLE false> "The network number of the BACnet address.",
+			macAddress as string <NULLABLE false> "The mac address of the BACnet address.") returns BACnetDiscoveredDevice
+		"Finds a device on the network by BACnet address."
+	}
+
+}

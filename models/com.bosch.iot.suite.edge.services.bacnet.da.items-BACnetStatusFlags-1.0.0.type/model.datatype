@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Status Flags"
+description "The BACnet status flags that indicate the general health of a BACnet object."
+
+entity BACnetStatusFlags {
+
+	mandatory inAlarm as boolean with {
+		readable : true
+	} <NULLABLE false> "Determines if the BACnet object is in alarm state."
+
+	mandatory fault as boolean with {
+		readable : true
+	} <NULLABLE false> "Determines if the BACnet object has detected a fault."
+
+	mandatory overriden as boolean with {
+		readable : true
+	} <NULLABLE false> "Determines if the present value of the BACnet object is overridden."
+
+	mandatory outOfService as boolean with {
+		readable : true
+	} <NULLABLE false> "Determines if the BACnet object is out of service."
+
+}
