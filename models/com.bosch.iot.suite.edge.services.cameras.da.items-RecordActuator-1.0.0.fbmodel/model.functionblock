@@ -1,0 +1,37 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Record Actuator"
+description "Provides support for the camera record control."
+using com.bosch.iot.suite.edge.services.cameras.da.items.Record ; 1.0.0
+using com.bosch.iot.suite.edge.services.cameras.da.items.StorageInfo ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock RecordActuator extends FunctionalItem {
+	status {
+		mandatory multiple videoRecordContainers as string with {
+			readable : true,eventable : true
+		} "Represents the supported video record containers."
+
+	}
+
+	operations {
+		mandatory record(props as dictionary [ string , string ] "A set of properties.") returns Record
+		"Starts the camera recording and returns the new record."
+		mandatory getRecord(recordId as string "The record identifier.",
+			storagePID as string "The storage identifier.") returns Record "Returns the requested record."
+		mandatory getRecords(filter as string "The LDAP filter.") returns multiple Record
+		"Returns all records which match the given filter."
+		mandatory getRecordStorage(storagePID as string "The storage identifier.") returns StorageInfo
+		"Returns information about the specific record storage."
+		mandatory getRecordStorages(filter as string "The LDAP filter.") returns multiple StorageInfo
+		"Returns information about the available record storages according to the specified filter."
+		mandatory getRecordURL(proxy as boolean <NULLABLE false> "True value requests a proxy URL, false otherwise.",
+			props as dictionary [ string , string ] "A set of properties.") returns string
+		"Returns an URL that provides an access to the record content."
+		mandatory deleteRecord(recordId as string "The record identifier.") "Deletes the specified record."
+		mandatory stopRecord(recordId as string "The record identifier.") "Stops the recording of the specified record."
+	}
+
+}

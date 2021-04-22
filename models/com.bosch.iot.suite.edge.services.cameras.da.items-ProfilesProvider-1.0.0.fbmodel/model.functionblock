@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Profiles Provider"
+description "This device class provides support for camera stream profiles control."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ProfilesProvider extends FunctionalItem {
+	operations {
+		mandatory listStreamProfiles(props as dictionary [ string , string ] "Filter settings.") returns multiple string
+		"Operation to list available profiles names."
+		mandatory getStreamProfile(profileName as string "Stream profile name") returns dictionary [ string , string ]
+		"Operation to get stream profile settings."
+		mandatory updateStreamProfile(profileName as string "Stream profile name",
+			settings as dictionary [ string , string ] "Stream profiles settings.") "Operation to update stream profile settings."
+	}
+
+}

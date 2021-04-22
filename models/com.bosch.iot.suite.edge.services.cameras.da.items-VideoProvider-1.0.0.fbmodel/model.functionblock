@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Video Provider"
+description "Provides support for video contents."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock VideoProvider extends FunctionalItem {
+	status {
+		mandatory multiple videoFormats as string with {
+			readable : true,eventable : true
+		} "Represents the supported video formats."
+
+		mandatory multiple videoProtocols as string with {
+			readable : true,eventable : true
+		} "Represents the supported protocols to get the video content."
+
+	}
+
+	operations {
+		mandatory getVideoResolutions(format as string "The video format.") returns multiple int
+		"Returns the supported video resolutions. The resolution width is on the array index i, the height is on the index i+1."
+		mandatory getVideoURL(proxy as boolean <NULLABLE false> "True value requests a proxy URL, false otherwise.",
+			props as dictionary [ string , string ] "A set of properties.") returns string
+		"Returns an URL that provides an access to the video content."
+	}
+
+}

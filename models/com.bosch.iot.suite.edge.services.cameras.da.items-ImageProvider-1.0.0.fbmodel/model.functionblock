@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Image Provider"
+description "Provides support for images."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ImageProvider extends FunctionalItem {
+	status {
+		mandatory multiple imageFormats as string with {
+			readable : true,eventable : true
+		} "Represents the supported image formats."
+
+		mandatory multiple imageProtocols as string with {
+			readable : true,eventable : true
+		} "Represents the supported protocols to get the images."
+
+	}
+
+	operations {
+		mandatory getImageResolutions(format as string "The image format.") returns multiple int
+		"Returns the supported image resolutions. The resolution width is on the array index i, the height is on the index i+1."
+		mandatory getImageURL(proxy as boolean <NULLABLE false> "True value requests a proxy URL, false otherwise.",
+			props as dictionary [ string , string ] "A set of properties.") returns string
+		"Returns an URL that provides an access to the image."
+	}
+
+}
