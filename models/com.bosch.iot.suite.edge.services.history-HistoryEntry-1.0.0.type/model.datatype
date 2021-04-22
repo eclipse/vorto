@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history
+version 1.0.0
+using com.bosch.iot.suite.edge.services.fim.data.FunctionalItemObject ; 1.0.0
+
+entity HistoryEntry {
+	mandatory id as long with {
+		readable : true
+	} <NULLABLE false> "The entry unique identifier."
+
+	mandatory value as FunctionalItemObject with {
+		readable : true
+	} "The entry value."
+
+	mandatory timestamp as long with {
+		readable : true
+	} <NULLABLE false> "The entry timestamp."
+
+	mandatory namespace as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9_.-]+(\/[a-zA-Z0-9_.-]+)*'> "The entry namespace."
+
+	mandatory tokens as dictionary [ string , string ] with {
+		readable : true
+	} "The entry tokens."
+}

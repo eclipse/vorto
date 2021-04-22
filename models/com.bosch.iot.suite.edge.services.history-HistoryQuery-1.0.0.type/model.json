@@ -1,0 +1,274 @@
+{
+  "root" : {
+    "name" : "HistoryQuery",
+    "namespace" : "com.bosch.iot.suite.edge.services.history",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HistoryQuery_Order",
+        "namespace" : "com.bosch.iot.suite.edge.services.history",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "HistoryQuery_Order.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ID_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "ID_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "TIMESTAMP_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "TIMESTAMP_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "NAMESPACE_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "NAMESPACE_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.history:HistoryQuery:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HistoryQuery",
+        "namespace" : "com.bosch.iot.suite.edge.services.history",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "HistoryQuery.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "HistoryQuery_Order",
+        "namespace" : "com.bosch.iot.suite.edge.services.history",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "startId",
+        "description" : "The selection first entry unique identifier, inclusive.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "endId",
+        "description" : "The selection last entry unique identifier, inclusive.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "startTime",
+        "description" : "The selection start time, inclusive.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "endTime",
+        "description" : "The selection end time, inclusive.",
+        "type" : "LONG",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "limit",
+        "description" : "The selection limit.",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "1"
+        }, {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "namespaceFilter",
+        "description" : "The namespace filter.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'\\*|[a-zA-Z0-9_.-]+(\\/[a-zA-Z0-9_.-]+)*(\\/\\*|\\*)?'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tokensFilter",
+        "description" : "The selection tokens LDAP filter.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hideMetadata",
+        "description" : "The hide metadata flag.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "orderBy",
+        "description" : "The sort schema as a primary, secondary, etc. sort keys.",
+        "type" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

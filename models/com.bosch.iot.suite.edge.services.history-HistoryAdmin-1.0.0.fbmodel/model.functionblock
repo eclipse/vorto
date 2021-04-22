@@ -1,0 +1,30 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history
+version 1.0.0
+displayname "History Admin"
+description "Manages time series data from different sources."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.data.FunctionalItemObject ; 1.0.0
+using com.bosch.iot.suite.edge.services.history.HistoryEntry ; 1.0.0
+using com.bosch.iot.suite.edge.services.history.HistoryQuery ; 1.0.0
+
+functionblock HistoryAdmin extends FunctionalItem {
+	operations {
+		mandatory countEntries(query as HistoryQuery "Optional selection query. If it's missed, all entries are selected.")
+		returns int <NULLABLE false> "Returns the count of the entries selected by the query."
+
+		mandatory getEntries(query as HistoryQuery "Optional selection query. If it's missed, all entries are selected.")
+		returns multiple HistoryEntry "Returns the entries selected by the query."
+
+		mandatory addEntry(value as FunctionalItemObject "Entry mandatory value.",
+			timestamp as long <NULLABLE false> "Entry mandatory timestamp.",
+			namespace as string <REGEX '[a-zA-Z0-9_.-]+(\/[a-zA-Z0-9_.-]+)*'> "Entry mandatory namespace.",
+			tokens as dictionary [ string , string ] "Entry optional tokens.") returns long <NULLABLE false>
+		"Adds a new entry with the given parameters and returns the entry unique identifier."
+
+		mandatory removeEntries(query as HistoryQuery "Optional selection query. If it's missed, all entries are removed.")
+		"Removes the entries selected by the query."
+	}
+
+}
