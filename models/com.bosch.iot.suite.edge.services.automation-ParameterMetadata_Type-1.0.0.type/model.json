@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "ParameterMetadata_Type",
+    "namespace" : "com.bosch.iot.suite.edge.services.automation",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ParameterMetadata_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "ParameterMetadata_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "GENERIC",
+        "description" : null,
+        "parent" : {
+          "name" : "ParameterMetadata_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+        }
+      }, {
+        "name" : "NUMERIC",
+        "description" : null,
+        "parent" : {
+          "name" : "ParameterMetadata_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+        }
+      }, {
+        "name" : "ENUM",
+        "description" : null,
+        "parent" : {
+          "name" : "ParameterMetadata_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+        }
+      }, {
+        "name" : "BEAN",
+        "description" : null,
+        "parent" : {
+          "name" : "ParameterMetadata_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+        }
+      }, {
+        "name" : "ANY",
+        "description" : null,
+        "parent" : {
+          "name" : "ParameterMetadata_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:ParameterMetadata_Type:1.0.0"
+        }
+      } ]
+    }
+  }
+}

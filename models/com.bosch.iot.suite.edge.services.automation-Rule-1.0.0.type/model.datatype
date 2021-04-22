@@ -1,0 +1,40 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.Instruction ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.RuleStatus ; 1.0.0
+
+entity Rule {
+	mandatory uid as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "The rule unique identifier."
+
+	mandatory name as string with {
+		readable : true
+	} "Rule short human-readable name."
+
+	mandatory description as string with {
+		readable : true
+	} "The detailed human-readable description of the rule."
+
+	mandatory multiple tags as string with {
+		readable : true
+	} "The rule tags."
+
+	mandatory multiple triggers as Instruction with {
+		readable : true
+	} "The rule triggers."
+
+	mandatory multiple flow as Instruction with {
+		readable : true
+	} "The rule conditions and actions flow."
+
+	mandatory modifiable as boolean with {
+		readable : true
+	} <NULLABLE false> "Defines if the rule can be updated or removed."
+
+	mandatory status as RuleStatus with {
+		readable : true
+	} "The current status of the rule."
+}

@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.RuleStatus_State ; 1.0.0
+
+entity RuleStatus {
+	mandatory state as RuleStatus_State with {
+		readable : true
+	} "The status state."
+
+	mandatory description as string with {
+		readable : true
+	} "The reason for the status."
+}

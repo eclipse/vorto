@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.InputBinding_Type ; 1.0.0
+
+entity InputBinding {
+	mandatory id as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "Input binding identifier."
+
+	mandatory type as InputBinding_Type with {
+		readable : true
+	} "Input binding type."
+
+	mandatory source as string with {
+		readable : true
+	} "Input binding source."
+}

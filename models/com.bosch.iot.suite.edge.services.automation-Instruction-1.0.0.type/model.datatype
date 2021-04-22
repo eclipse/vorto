@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.InputBinding ; 1.0.0
+
+entity Instruction {
+	mandatory id as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "Instruction identifier."
+
+	mandatory handlerUID as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "Instruction handler unique identifier."
+
+	mandatory name as string with {
+		readable : true
+	} "Instruction short human-readable name."
+
+	mandatory description as string with {
+		readable : true
+	} "The detailed human-readable description of the instruction."
+
+	mandatory multiple bindings as InputBinding with {
+		readable : true
+	} "The input bindings of the instruction."
+}

@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+
+enum ParameterMetadata_Type {
+	GENERIC,
+	NUMERIC,
+	ENUM,
+	BEAN,
+	ANY
+}

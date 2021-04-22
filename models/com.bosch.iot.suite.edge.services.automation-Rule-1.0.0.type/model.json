@@ -1,0 +1,555 @@
+{
+  "root" : {
+    "name" : "Rule",
+    "namespace" : "com.bosch.iot.suite.edge.services.automation",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Rule:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.automation:InputBinding:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InputBinding",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "InputBinding.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "InputBinding_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "Input binding identifier.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'[a-zA-Z0-9._-]+'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "Input binding type.",
+        "type" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "source",
+        "description" : "Input binding source.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.automation:Rule:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Rule",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Rule:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "Rule.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Instruction",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Instruction:1.0.0"
+      }, {
+        "name" : "RuleStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "uid",
+        "description" : "The rule unique identifier.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'[a-zA-Z0-9._-]+'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Rule short human-readable name.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "description",
+        "description" : "The detailed human-readable description of the rule.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : "The rule tags.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "triggers",
+        "description" : "The rule triggers.",
+        "type" : {
+          "name" : "Instruction",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Instruction:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "flow",
+        "description" : "The rule conditions and actions flow.",
+        "type" : {
+          "name" : "Instruction",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Instruction:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "modifiable",
+        "description" : "Defines if the rule can be updated or removed.",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "The current status of the rule.",
+        "type" : {
+          "name" : "RuleStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.automation:Instruction:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Instruction",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:Instruction:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "Instruction.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "InputBinding",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "Instruction identifier.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'[a-zA-Z0-9._-]+'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "handlerUID",
+        "description" : "Instruction handler unique identifier.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'[a-zA-Z0-9._-]+'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Instruction short human-readable name.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "description",
+        "description" : "The detailed human-readable description of the instruction.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "bindings",
+        "description" : "The input bindings of the instruction.",
+        "type" : {
+          "name" : "InputBinding",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.automation:RuleStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RuleStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "RuleStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "RuleStatus_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "The status state.",
+        "type" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "description",
+        "description" : "The reason for the status.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InputBinding_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "InputBinding_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CONSTANT",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "INSTRUCTION",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "SYSTEM",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "VARIABLE",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RuleStatus_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "RuleStatus_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNRESOLVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "RESOLVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVE",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "DISABLED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "REMOVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}
