@@ -1,0 +1,43 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history
+version 1.0.0
+using com.bosch.iot.suite.edge.services.history.HistoryQuery_Order ; 1.0.0
+
+entity HistoryQuery {
+	mandatory startId as long with {
+		readable : true
+	} <NULLABLE false> "The selection first entry unique identifier, inclusive."
+
+	mandatory endId as long with {
+		readable : true
+	} <NULLABLE false> "The selection last entry unique identifier, inclusive."
+
+	mandatory startTime as long with {
+		readable : true
+	} <NULLABLE false> "The selection start time, inclusive."
+
+	mandatory endTime as long with {
+		readable : true
+	} <NULLABLE false> "The selection end time, inclusive."
+
+	mandatory limit as int with {
+		readable : true
+	} <MIN 1 , NULLABLE false> "The selection limit."
+
+	mandatory namespaceFilter as string with {
+		readable : true
+	} <REGEX '\*|[a-zA-Z0-9_.-]+(\/[a-zA-Z0-9_.-]+)*(\/\*|\*)?'> "The namespace filter."
+
+	mandatory tokensFilter as string with {
+		readable : true
+	} "The selection tokens LDAP filter."
+
+	mandatory hideMetadata as boolean with {
+		readable : true
+	} <NULLABLE false> "The hide metadata flag."
+
+	mandatory multiple orderBy as HistoryQuery_Order with {
+		readable : true
+	} "The sort schema as a primary, secondary, etc. sort keys."
+}

@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history.config
+version 1.1.0
+
+entity HistoryConfiguration {
+	mandatory id as string with {
+		readable : true
+	} "The mandatory configuration unique identifier."
+
+	mandatory group as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9_.-]+(\/[a-zA-Z0-9_.-]+)*'> "The mandatory configuration group."
+
+	mandatory namespacePattern as string with {
+		readable : true
+	} "The optional configuration namespace pattern."
+
+	mandatory tokenPatterns as dictionary [ string , string ] with {
+		readable : true
+	} "The optional configuration token patterns."
+
+	mandatory properties as dictionary [ string , string ] with {
+		readable : true
+	} "The optional configuration properties."
+}

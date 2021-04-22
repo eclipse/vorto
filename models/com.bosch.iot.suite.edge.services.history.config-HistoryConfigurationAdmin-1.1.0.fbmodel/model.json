@@ -1,0 +1,468 @@
+{
+  "root" : {
+    "name" : "HistoryConfigurationAdmin",
+    "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfigurationAdmin:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.history.config:HistoryConfigurationAdmin:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HistoryConfigurationAdmin",
+        "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfigurationAdmin:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "History Configuration Admin",
+      "description" : "Maintains the history configurations.",
+      "category" : null,
+      "fileName" : "HistoryConfigurationAdmin.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "HistoryConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfiguration:1.1.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getConfiguration",
+        "description" : "Returns an existing configuration.",
+        "result" : {
+          "type" : {
+            "name" : "HistoryConfiguration",
+            "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+            "version" : "1.1.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfiguration:1.1.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "id",
+          "description" : "Mandatory configuration unique identifier.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getConfigurations",
+        "description" : "Returns all configurations for the given filter.",
+        "result" : {
+          "type" : {
+            "name" : "HistoryConfiguration",
+            "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+            "version" : "1.1.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfiguration:1.1.0"
+          },
+          "primitive" : false,
+          "multiple" : true
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "filter",
+          "description" : "Optional configurations LDAP filter defined by configuration.id and configuration.group keys. If it's missed, all configurations are returned.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "addConfiguration",
+        "description" : "Adds a new configuration and returns the configuration unique identifier.",
+        "result" : {
+          "type" : "STRING",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "group",
+          "description" : "Mandatory configuration group.",
+          "type" : "STRING",
+          "constraints" : [ {
+            "type" : "REGEX",
+            "value" : "'[a-zA-Z0-9_.-]+(\\/[a-zA-Z0-9_.-]+)*'"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "namespacePattern",
+          "description" : "Optional configuration namespace pattern.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "tokenPatterns",
+          "description" : "Optional configuration token patterns.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "properties",
+          "description" : "Optional configuration properties.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "updateConfiguration",
+        "description" : "Updates an existing configuration.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "id",
+          "description" : "Mandatory configuration unique identifier.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "namespacePattern",
+          "description" : "Optional configuration namespace pattern.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "tokenPatterns",
+          "description" : "Optional configuration token patterns.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "properties",
+          "description" : "Optional configuration properties.",
+          "type" : {
+            "key" : "STRING",
+            "value" : "STRING",
+            "type" : "dictionary"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeConfiguration",
+        "description" : "Removes the configuration, which is selected by the given unique identifier.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "id",
+          "description" : "Mandatory configuration unique identifier.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.history.config:HistoryConfiguration:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HistoryConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.services.history.config",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history.config:HistoryConfiguration:1.1.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "HistoryConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "The mandatory configuration unique identifier.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "group",
+        "description" : "The mandatory configuration group.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'[a-zA-Z0-9_.-]+(\\/[a-zA-Z0-9_.-]+)*'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "namespacePattern",
+        "description" : "The optional configuration namespace pattern.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tokenPatterns",
+        "description" : "The optional configuration token patterns.",
+        "type" : {
+          "key" : "STRING",
+          "value" : "STRING",
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "properties",
+        "description" : "The optional configuration properties.",
+        "type" : {
+          "key" : "STRING",
+          "value" : "STRING",
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,35 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history.config
+version 1.1.0
+displayname "History Configuration Admin"
+description "Maintains the history configurations."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.history.config.HistoryConfiguration ; 1.1.0
+
+functionblock HistoryConfigurationAdmin extends FunctionalItem {
+	operations {
+		mandatory getConfiguration(id as string "Mandatory configuration unique identifier.") returns HistoryConfiguration
+		"Returns an existing configuration."
+
+		mandatory getConfigurations(filter as string
+			"Optional configurations LDAP filter defined by configuration.id and configuration.group keys. If it's missed, all configurations are returned.")
+		returns multiple HistoryConfiguration "Returns all configurations for the given filter."
+
+		mandatory addConfiguration(group as string <REGEX '[a-zA-Z0-9_.-]+(\/[a-zA-Z0-9_.-]+)*'>
+			"Mandatory configuration group.",
+			namespacePattern as string "Optional configuration namespace pattern.",
+			tokenPatterns as dictionary [ string , string ] "Optional configuration token patterns.",
+			properties as dictionary [ string , string ] "Optional configuration properties.") returns string
+		"Adds a new configuration and returns the configuration unique identifier."
+
+		mandatory updateConfiguration(id as string "Mandatory configuration unique identifier.",
+			namespacePattern as string "Optional configuration namespace pattern.",
+			tokenPatterns as dictionary [ string , string ] "Optional configuration token patterns.",
+			properties as dictionary [ string , string ] "Optional configuration properties.") "Updates an existing configuration."
+
+		mandatory removeConfiguration(id as string "Mandatory configuration unique identifier.")
+		"Removes the configuration, which is selected by the given unique identifier."
+	}
+
+}

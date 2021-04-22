@@ -1,0 +1,13 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.history
+version 1.0.0
+
+enum HistoryQuery_Order {
+	ID_ASC,
+	ID_DESC,
+	TIMESTAMP_ASC,
+	TIMESTAMP_DESC,
+	NAMESPACE_ASC,
+	NAMESPACE_DESC
+}

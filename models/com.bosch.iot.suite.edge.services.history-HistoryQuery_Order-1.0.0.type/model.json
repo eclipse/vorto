@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "HistoryQuery_Order",
+    "namespace" : "com.bosch.iot.suite.edge.services.history",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HistoryQuery_Order",
+        "namespace" : "com.bosch.iot.suite.edge.services.history",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "HistoryQuery_Order.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ID_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "ID_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "TIMESTAMP_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "TIMESTAMP_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "NAMESPACE_ASC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      }, {
+        "name" : "NAMESPACE_DESC",
+        "description" : null,
+        "parent" : {
+          "name" : "HistoryQuery_Order",
+          "namespace" : "com.bosch.iot.suite.edge.services.history",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.history:HistoryQuery_Order:1.0.0"
+        }
+      } ]
+    }
+  }
+}
