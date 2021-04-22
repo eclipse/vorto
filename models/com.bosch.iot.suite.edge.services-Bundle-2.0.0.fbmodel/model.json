@@ -1,0 +1,231 @@
+{
+  "root" : {
+    "name" : "Bundle",
+    "namespace" : "com.bosch.iot.suite.edge.services",
+    "version" : "2.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services:Bundle:2.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services:BundleState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BundleState",
+        "namespace" : "com.bosch.iot.suite.edge.services",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BundleState",
+      "description" : "Represents the possible states of an OSGi bundle.",
+      "category" : null,
+      "fileName" : "BundleState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INSTALLED",
+        "description" : "The bundle is installed but not resolved yet.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "RESOLVED",
+        "description" : "The bundle is resolved and is able to be started.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVE",
+        "description" : "The bundle is now running.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "STARTING",
+        "description" : "The bundle is in the process of starting.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "STOPPING",
+        "description" : "The bundle is in the process of stopping.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services:Bundle:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Bundle",
+        "namespace" : "com.bosch.iot.suite.edge.services",
+        "version" : "2.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services:Bundle:2.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Bundle",
+      "description" : "Represents a single bundle in the OSGi framework.",
+      "category" : null,
+      "fileName" : "Bundle.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "BundleState",
+        "namespace" : "com.bosch.iot.suite.edge.services",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+      }, {
+        "name" : "BundleState",
+        "namespace" : "com.bosch.iot.suite.edge.services",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "Holds the state of the current bundle.",
+        "type" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "symbolicName",
+        "description" : "The symbolic name of the current bundle.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : "The version of the current bundle.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts the current bundle.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stop",
+        "description" : "Stops the current bundle.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "uninstall",
+        "description" : "Uninstalls the current bundle.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "update",
+        "description" : "Updates the current bundle.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "updateFromURL",
+        "description" : "Updates the current bundle from a new URL or location.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "url",
+          "description" : "The location identifier of the bundle to update.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

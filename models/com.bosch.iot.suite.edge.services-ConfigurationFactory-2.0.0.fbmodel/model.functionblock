@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services
+version 2.0.0
+displayname "ConfigurationFactory"
+description "Enables configuration management via functional items."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItemFactory ; 1.0.0
+
+functionblock ConfigurationFactory extends FunctionalItemFactory {
+	configuration {
+		mandatory filter as string with {
+			readable : true,writable : true,eventable : true
+		} "Filter used to determine which configurations will have functional item representations."
+
+	}
+
+}

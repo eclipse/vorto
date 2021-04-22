@@ -1,0 +1,14 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle
+version 1.0.0
+displayname "Bundle Item State"
+description "Represents the possible states of an OSGi bundle."
+
+enum BundleItem_State {
+	INSTALLED "The bundle is installed but not yet resolved.",
+	RESOLVED "The bundle is resolved and is able to be started.",
+	ACTIVE "The bundle is now running.",
+	STARTING "The bundle is in the process of starting.",
+	STOPPING "The bundle is in the process of stopping."
+}

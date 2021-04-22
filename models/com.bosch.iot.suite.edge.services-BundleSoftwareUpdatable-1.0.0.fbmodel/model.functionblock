@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services
+version 1.0.0
+displayname "BundleSoftwareUpdatable"
+description "Represents the ability of a device to install and manage OSGi bundles."
+using org.eclipse.hawkbit.swupdatable.SoftwareUpdatable ; 2.0.0
+
+functionblock BundleSoftwareUpdatable extends SoftwareUpdatable {
+	configuration {
+		mandatory filter as string with {
+			readable : true,writable : true,eventable : true
+		} "Filter used to determine which bundles will be reported as installed dependencies."
+
+	}
+
+}

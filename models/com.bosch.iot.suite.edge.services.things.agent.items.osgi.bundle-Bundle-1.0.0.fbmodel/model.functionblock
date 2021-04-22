@@ -1,0 +1,37 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle
+version 1.0.0
+displayname "Bundle"
+description "Represents a single bundle in the OSGi framework."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+using com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle.BundleItem_State ; 1.0.0
+
+functionblock Bundle extends FunctionalItem {
+	status {
+		mandatory id as long with {
+			readable : true
+		} <NULLABLE false> "The ID of the current bundle."
+
+		mandatory state as BundleItem_State with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Holds the state of the current bundle."
+
+		mandatory symbolicName as string with {
+			readable : true,eventable : true
+		} "The symbolic name of the current bundle."
+
+		mandatory version as string with {
+			readable : true,eventable : true
+		} <NULLABLE false> "The version of the current bundle."
+	}
+
+	operations {
+		mandatory start() "Starts the current bundle."
+		mandatory stop() "Stops the current bundle."
+		mandatory uninstall() "Uninstalls the current bundle."
+		mandatory update() "Updates the current bundle."
+		mandatory updateFromURL(url as string "The location identifier of the bundle to update.") "Updates the current bundle from a new URL or location."
+	}
+
+}

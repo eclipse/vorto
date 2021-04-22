@@ -1,0 +1,27 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.things.agent.items.osgi.framework
+version 1.0.0
+displayname "Framework Management"
+description "Functional item which enables framework management."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock FrameworkManagement extends FunctionalItem {
+	status {
+		mandatory startLevel as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Start level value of the Framework."
+
+		mandatory initialBundleStartLevel as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Start level value that is assigned to a bundle when it is first installed."
+	}
+
+	operations {
+		mandatory changeStartLevel(startLevel as int <NULLABLE false> "The new start level to be applied.")
+		"Changes the initial start level of the framework."
+		mandatory changeInitialBundleStartLevel(startLevel as int <NULLABLE false> "The new initial start level to be applied.")
+		"Changes the bundle initial start level."
+	}
+
+}
