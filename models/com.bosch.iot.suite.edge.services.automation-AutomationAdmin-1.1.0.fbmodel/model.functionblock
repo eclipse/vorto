@@ -1,0 +1,66 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.1.0
+displayname "Automation Admin"
+description "Manages rules, templates and handlers."
+using com.bosch.iot.suite.edge.services.automation.Handler ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.Rule ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.RuleInfo ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.Template ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.TemplateInfo ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock AutomationAdmin extends FunctionalItem {
+	operations {
+		mandatory getRule(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.") returns Rule
+		"Returns the rule identified by specified UID."
+
+		mandatory getRules(filter as string
+			"Optional LDAP filter defined by 'rule.uid', 'rule.name' and 'rule.tags' keys. If it's missed, all rules are returned.")
+		returns multiple Rule "Returns the rules matching the filter."
+
+		mandatory addRule(rule as RuleInfo "The creation data of the rule to be added.") "Adds a new rule."
+
+		mandatory addRuleFromTemplate(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.",
+			templateUID as string <REGEX '[a-zA-Z0-9._-]+'> "Template UID.",
+			variables as dictionary [ string , string ] "JSON representation of the template variables values.")
+		"Adds a new rule from an existing template."
+
+		mandatory updateRule(rule as RuleInfo "The data of the rule to be updated.") "Updates an existing rule."
+
+		mandatory removeRule(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.")
+		"Removes the rule identified by specified UID."
+
+		mandatory enableRule(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.")
+		"Enables the rule identified by specified UID."
+
+		mandatory disableRule(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.")
+		"Disables the rule identified by specified UID."
+
+		mandatory runRule(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Rule UID.")
+		"Executes the actions and checks the conditions of a rule identified by specified UID."
+
+		mandatory getTemplate(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Template UID.") returns Template
+		"Returns the template identified by specified UID."
+
+		mandatory getTemplates(filter as string
+			"Optional LDAP filter defined by 'template.uid', 'template.name' and 'template.tags' keys. If it's missed, all templates are returned.")
+		returns multiple Template "Returns the templates matching the filter."
+
+		mandatory addTemplate(template as TemplateInfo "Template creation data.") "Adds a new template."
+
+		mandatory updateTemplate(template as TemplateInfo "The new template data.") "Updates an existing template."
+
+		mandatory removeTemplate(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Template UID.")
+		"Removes a template identified by specified UID."
+
+		mandatory getHandler(uid as string <REGEX '[a-zA-Z0-9._-]+'> "Handler UID.") returns Handler
+		"Returns a handler identified by specified UID."
+
+		mandatory getHandlers(filter as string
+			"Optional LDAP filter defined by 'handler.uid', 'handler.type' and 'handler.name', 'handler.tags' keys. If it's missed, all handlers are returned.")
+		returns multiple Handler "Returns the handlers matching the filter."
+	}
+
+}

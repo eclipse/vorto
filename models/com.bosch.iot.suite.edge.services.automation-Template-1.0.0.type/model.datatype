@@ -1,0 +1,40 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.Instruction ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.ParameterMetadata ; 1.0.0
+
+entity Template {
+	mandatory uid as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "The template unique identifier."
+
+	mandatory name as string with {
+		readable : true
+	} "The template short human-readable name."
+
+	mandatory description as string with {
+		readable : true
+	} "The detailed human-readable description of the template."
+
+	mandatory multiple tags as string with {
+		readable : true
+	} "The template tags."
+
+	mandatory multiple variables as ParameterMetadata with {
+		readable : true
+	} "The template variables metadata."
+
+	mandatory multiple triggers as Instruction with {
+		readable : true
+	} "The template triggers."
+
+	mandatory multiple flow as Instruction with {
+		readable : true
+	} "The template conditions and actions flow."
+
+	mandatory modifiable as boolean with {
+		readable : true
+	} <NULLABLE false> "Defines if the template can be updated or removed."
+}

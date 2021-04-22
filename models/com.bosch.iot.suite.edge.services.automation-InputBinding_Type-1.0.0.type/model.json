@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "InputBinding_Type",
+    "namespace" : "com.bosch.iot.suite.edge.services.automation",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InputBinding_Type",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "InputBinding_Type.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CONSTANT",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "INSTRUCTION",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "SYSTEM",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      }, {
+        "name" : "VARIABLE",
+        "description" : null,
+        "parent" : {
+          "name" : "InputBinding_Type",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:InputBinding_Type:1.0.0"
+        }
+      } ]
+    }
+  }
+}

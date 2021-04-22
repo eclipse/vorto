@@ -1,0 +1,60 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.ParameterMetadata_Type ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.Number ; 1.0.0
+
+entity ParameterMetadata {
+	mandatory id as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "The identifier of the parameter."
+
+	mandatory type as ParameterMetadata_Type with {
+		readable : true
+	} "The data type of the parameter."
+
+	mandatory multiple classes as string with {
+		readable : true
+	} "The class names for the parameter."
+
+	mandatory namespace as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+(\/[a-zA-Z0-9._-]+)*'> "The namespace of the parameter."
+
+	mandatory context as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "The context of the parameter."
+
+	mandatory required as boolean with {
+		readable : true
+	} <NULLABLE false> "Specifies if the parameter value is required or not."
+
+	mandatory name as string with {
+		readable : true
+	} "The human-readable name of the parameter."
+
+	mandatory description as string with {
+		readable : true
+	} "The human-readable description of the parameter."
+
+	mandatory pattern as string with {
+		readable : true
+	} "The regular expression matching the value of the parameter."
+
+	mandatory min as Number with {
+		readable : true
+	} "The allowed minimal value for the numeric parameter."
+
+	mandatory max as Number with {
+		readable : true
+	} "The allowed maximal value for the numeric parameter."
+
+	mandatory step as Number with {
+		readable : true
+	} "The allowed value granularity for the numeric parameter."
+
+	mandatory multiple options as string with {
+		readable : true
+	} "The list of allowed values for the value of the parameter."
+}

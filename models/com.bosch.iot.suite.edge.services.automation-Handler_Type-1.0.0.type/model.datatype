@@ -1,0 +1,10 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+
+enum Handler_Type {
+	TRIGGER,
+	CONDITION,
+	ACTION
+}

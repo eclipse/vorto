@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "RuleStatus_State",
+    "namespace" : "com.bosch.iot.suite.edge.services.automation",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RuleStatus_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.automation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "RuleStatus_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "UNRESOLVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "RESOLVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVE",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "DISABLED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      }, {
+        "name" : "REMOVED",
+        "description" : null,
+        "parent" : {
+          "name" : "RuleStatus_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.automation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.automation:RuleStatus_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}

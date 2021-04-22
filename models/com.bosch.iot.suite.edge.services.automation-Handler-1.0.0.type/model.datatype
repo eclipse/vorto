@@ -1,0 +1,36 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.automation
+version 1.0.0
+using com.bosch.iot.suite.edge.services.automation.Handler_Type ; 1.0.0
+using com.bosch.iot.suite.edge.services.automation.ParameterMetadata ; 1.0.0
+
+entity Handler {
+	mandatory uid as string with {
+		readable : true
+	} <REGEX '[a-zA-Z0-9._-]+'> "Handler unique identifier."
+
+	mandatory type as Handler_Type with {
+		readable : true
+	} "Handler type."
+
+	mandatory name as string with {
+		readable : true
+	} "Handler human-readable name."
+
+	mandatory description as string with {
+		readable : true
+	} "Handler human-readable description."
+
+	mandatory multiple tags as string with {
+		readable : true
+	} "Handler tags."
+
+	mandatory multiple inputs as ParameterMetadata with {
+		readable : true
+	} "The metadata of the handler inputs."
+
+	mandatory multiple outputs as ParameterMetadata with {
+		readable : true
+	} "The metadata of the handler outputs."
+}
