@@ -1,0 +1,36 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim.groups
+version 1.1.0
+displayname "Group"
+description "Groups a set of functional items."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Group extends FunctionalItem {
+	status {
+		mandatory multiple items as dictionary [ string , string ] with {
+			readable : true,eventable : true
+		} "The items added to the group."
+	}
+
+	operations {
+		mandatory filterItems(filter as string
+			"Items LDAP filter defined by attributes uid, objectClass, name, tags or any item custom attribute.") returns
+		multiple dictionary [ string , string ] "Returns the group items matching to the filter."
+
+		mandatory addItem(itemUID as string "UID of the item to be added to the group.") "Adds existing item to the group."
+
+		mandatory removeItem(itemUID as string "UID of the item to be removed from the group.") "Removes an item from the group."
+
+		mandatory set(itemClass as string "Item class.",
+			property as string "Property name.",
+			value as string "JSON string representation of the property value.")
+		"Sets the property value to all group items with the provided class."
+
+		mandatory invoke(itemClass as string "Item class.",
+			operation as string "Operation name.",
+			multiple arguments as string "JSON string representations of the operation arguments.")
+		"Invokes the operation over all group items with the provided class."
+	}
+
+}

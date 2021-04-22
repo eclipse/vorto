@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim
+version 1.0.0
+
+entity Number {
+	mandatory value as string with {
+		readable : true
+	}
+
+	optional className as string with {
+		readable : true
+	}
+
+}

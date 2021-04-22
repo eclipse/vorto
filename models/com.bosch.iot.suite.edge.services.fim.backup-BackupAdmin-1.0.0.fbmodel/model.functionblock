@@ -1,0 +1,28 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim.backup
+version 1.0.0
+displayname "Backup Admin"
+description "Manages data backup and restore over backup providers."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock BackupAdmin extends FunctionalItem {
+	status {
+		mandatory multiple providers as string with {
+			readable : true,eventable : true
+		} "The available backup providers."
+	}
+
+	operations {
+		mandatory backup(url as string "The data backup location.",
+			params as dictionary [ string , string ] "Parameters if needed for the location access or the data backup upload.",
+			multiple providers as string "A set of providers if a partial data backup is required.") returns multiple string
+		"Forces the backup providers to backup their data."
+
+		mandatory restore(url as string "The data backup location.",
+			params as dictionary [ string , string ] "Parameters if needed for the location access or the data restore.",
+			multiple providers as string "A set of providers if a partial data restore is required.") returns multiple string
+		"Forces the backup providers to restore their data."
+	}
+
+}
