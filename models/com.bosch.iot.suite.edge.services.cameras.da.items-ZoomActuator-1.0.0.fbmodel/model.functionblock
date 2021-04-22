@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Zoom Actuator"
+description "Provides support for the camera zooming control."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock ZoomActuator extends FunctionalItem {
+	operations {
+		mandatory zoomIn(steps as int <NULLABLE false> "Specifies the steps for the camera zoom operation.")
+		"Requests the camera to zoom in."
+		mandatory zoomOut(steps as int <NULLABLE false> "Specifies the steps for the camera zoom operation.")
+		"Requests the camera to zoom out."
+	}
+
+}

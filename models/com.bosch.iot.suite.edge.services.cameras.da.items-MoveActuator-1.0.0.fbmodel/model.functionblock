@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Move Actuator"
+description "Provides support for the camera moving control."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock MoveActuator extends FunctionalItem {
+	operations {
+		mandatory moveLeft(degrees as int <NULLABLE false>
+			"Specifies the angle change for the camera move operation in degrees.")
+		"Requests the camera to move its focus to the left direction."
+		mandatory moveRight(degrees as int <NULLABLE false>
+			"Specifies the angle change for the camera move operation in degrees.")
+		"Requests the camera to move its focus to the right direction."
+		mandatory moveUp(degrees as int <NULLABLE false> "Specifies the angle change for the camera move operation in degrees.")
+		"Requests the camera to move its focus to the up direction."
+		mandatory moveDown(degrees as int <NULLABLE false>
+			"Specifies the angle change for the camera move operation in degrees.")
+		"Requests the camera to move its focus to the down direction."
+	}
+
+}

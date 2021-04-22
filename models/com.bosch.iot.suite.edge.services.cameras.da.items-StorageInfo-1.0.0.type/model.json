@@ -1,0 +1,76 @@
+{
+  "root" : {
+    "name" : "StorageInfo",
+    "namespace" : "com.bosch.iot.suite.edge.services.cameras.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.cameras.da.items:StorageInfo:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.cameras.da.items:StorageInfo:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "StorageInfo",
+        "namespace" : "com.bosch.iot.suite.edge.services.cameras.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.cameras.da.items:StorageInfo:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Storage Info",
+      "description" : "Provides information about the camera record storage.",
+      "category" : null,
+      "fileName" : "StorageInfo.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "pID",
+        "description" : "Represents the camera record storage persistent identifier.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "Represents the record storage type.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "description",
+        "description" : "Represents the record storage description.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

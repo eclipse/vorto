@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Presets Provider"
+description "This device class provides support for camera presets control."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock PresetsProvider extends FunctionalItem {
+	status {
+		mandatory maxPresetsCount as int with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Property used to get max presets count supported by the camera."
+
+	}
+
+	operations {
+		mandatory listIndexes() returns multiple int "Operation to get list of available preset indexes."
+		mandatory listNames() returns multiple string "Operation to get list of available preset names."
+		mandatory goToPreset(index as int <NULLABLE false> "Integer number. Parameter to configure the camera preset index.")
+		"Operation to go to the camera preset by index."
+		mandatory savePreset(index as int <NULLABLE false> "Integer number. Parameter to configure the camera preset index.",
+			name as string "String. Parameter to configure the camera preset name.")
+		"Operation to save the current camera position as a preset."
+		mandatory removePreset(index as int <NULLABLE false> "Integer number. Parameter to configure the camera preset index.")
+		"Operation to remove camera preset by index."
+	}
+
+}

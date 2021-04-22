@@ -1,0 +1,21 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Storage Info"
+description "Provides information about the camera record storage."
+
+entity StorageInfo {
+	mandatory pID as string with {
+		readable : true
+	} "Represents the camera record storage persistent identifier."
+
+	mandatory type as string with {
+		readable : true
+	} "Represents the record storage type."
+
+	mandatory description as string with {
+		readable : true
+	} "Represents the record storage description."
+
+}

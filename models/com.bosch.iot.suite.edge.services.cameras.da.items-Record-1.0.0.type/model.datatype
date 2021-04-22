@@ -1,0 +1,55 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Record"
+description "Represents a camera record."
+using com.bosch.iot.suite.edge.services.cameras.da.items.StorageInfo ; 1.0.0
+
+entity Record {
+	mandatory duration as long with {
+		readable : true
+	} <MIN 0 , NULLABLE false> "Represents the record duration time measured in seconds."
+
+	mandatory error as string with {
+		readable : true
+	} "Represents the recording error if available."
+
+	mandatory id as string with {
+		readable : true
+	} "Represents the record unique identifier."
+
+	mandatory name as string with {
+		readable : true
+	} "Represents the record name."
+
+	mandatory properties as dictionary [ string , string ] with {
+		readable : true
+	} "Represents the record initialization properties."
+
+	mandatory startTime as long with {
+		readable : true
+	} <NULLABLE
+	false> "Represents the time when the record is started to be recorded. The difference, measured in milliseconds, between the start time and midnight, January 1, 1970 UTC."
+
+	mandatory state as int with {
+		readable : true
+	} <NULLABLE false> "Represents the record current state."
+
+	mandatory type as int with {
+		readable : true
+	} <NULLABLE false> "Represents the record type."
+
+	mandatory container as string with {
+		readable : true
+	} "Represents the record container."
+
+	mandatory location as string with {
+		readable : true
+	} "Represents the record location."
+
+	mandatory storage as StorageInfo with {
+		readable : true
+	} "Represents the record storage."
+
+}

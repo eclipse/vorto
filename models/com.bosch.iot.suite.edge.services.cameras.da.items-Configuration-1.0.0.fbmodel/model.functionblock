@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Configuration"
+description "This device class provides support for camera configuration."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Configuration extends FunctionalItem {
+	operations {
+		mandatory updateCameraProperties(properties as dictionary [ string , string ] "Camera properties")
+		"Operation to update camera properties"
+		mandatory updateCameraCredentials(user as string "User name",
+			password as string "Password") "Operation to update camera user and password"
+		mandatory updateCameraAddress(address as string "Address") "Operation to update camera address"
+	}
+
+}

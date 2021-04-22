@@ -1,0 +1,16 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.cameras.da.items
+version 1.0.0
+displayname "Camera Basic HTTP Actuator"
+description "Provides support for camera basic http control."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock BasicHTTPActuator extends FunctionalItem {
+	operations {
+		mandatory sendGetRequest(uri as string "Define the request URI",
+			requestParams as dictionary [ string , string ] "Set of request parameters") returns string
+		"Operation to send http get request."
+	}
+
+}

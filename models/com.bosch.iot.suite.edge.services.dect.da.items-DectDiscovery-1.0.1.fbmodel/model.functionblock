@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.dect.da.items
+version 1.0.1
+displayname "Dect Discovery"
+description "A Dect Discovery allows view and configuration the main properties of the Base Station."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.Discovery ; 1.0.0
+
+functionblock DectDiscovery extends Discovery {
+	operations {
+		mandatory setAuthPin(pin as string "The new PIN value to set.")
+		"Sets Authentication PIN code. The PIN must be four hexadecimal digits."
+	}
+
+}
