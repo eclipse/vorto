@@ -1,0 +1,433 @@
+{
+  "root" : {
+    "name" : "BACnetEndpointConfigurator",
+    "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetEndpointConfigurator:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetEndpointConfigurator:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetEndpointConfigurator",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetEndpointConfigurator:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "BACnet Endpoint Configurator",
+      "description" : "Provides a mechanism for applications to configure which BACnet devices and their objects and properties (end points) they are interested in.",
+      "category" : null,
+      "fileName" : "BACnetEndpointConfigurator.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "BACnetDeviceInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+      }, {
+        "name" : "BACnetDeviceInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "endpoints",
+        "description" : "Represents the BACnet end points configured by this item.",
+        "type" : {
+          "name" : "BACnetDeviceInstances",
+          "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "putDeviceInstances",
+        "description" : "Adds or updates configured end points for multiple sets of BACnet devices.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceInstances",
+          "description" : null,
+          "type" : {
+            "name" : "BACnetDeviceInstances",
+            "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeDeviceInstances",
+        "description" : "Removes BACnet device instances from the configuration.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceInstanceNumbers",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ ],
+          "multiple" : true,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "removeDeviceRange",
+        "description" : "Removes all the BACnet device instances inside the given closed range from the configuration.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "rangeLowerBound",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "rangeUpperBound",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "getDeviceEndpoints",
+        "description" : "Retrieves the currently configured end points of a given BACnet device.",
+        "result" : {
+          "type" : {
+            "name" : "BACnetDeviceInstances",
+            "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "deviceInstanceNumber",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "NULLABLE",
+            "value" : "false"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetDeviceInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetDeviceInstances:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BACnet Device Instances",
+      "description" : "Holds information about the configured end points of a set of BACnet device instances.",
+      "category" : null,
+      "fileName" : "BACnetDeviceInstances.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "BACnetObjectInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "devices",
+        "description" : "A set of instance numbers that identify BACnet devices.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "deviceRanges",
+        "description" : "A collection of ranges of BACnet device instance numbers.",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "REGEX",
+          "value" : "'(\\d+)\\s*[-|:|,|;]\\s*(\\d+)'"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "objects",
+        "description" : "A map that defines the common configuration that shall be applied to all the devices.",
+        "type" : {
+          "key" : "STRING",
+          "value" : {
+            "name" : "BACnetObjectInstances",
+            "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0"
+          },
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BACnetObjectInstances",
+        "namespace" : "com.bosch.iot.suite.edge.services.bacnet.da.items",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.bacnet.da.items:BACnetObjectInstances:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BACnet Object Instances",
+      "description" : "Holds the configuration of a certain type of BACnet end points.",
+      "category" : null,
+      "fileName" : "BACnetObjectInstances.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "instances",
+        "description" : "Represents the set of BACnet object instance numbers.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "properties",
+        "description" : "Represents the optional set of BACnet property identifiers as strings.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

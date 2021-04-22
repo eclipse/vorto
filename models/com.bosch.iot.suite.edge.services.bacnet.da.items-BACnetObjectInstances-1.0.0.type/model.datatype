@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Object Instances"
+description "Holds the configuration of a certain type of BACnet end points."
+
+entity BACnetObjectInstances {
+
+	mandatory multiple instances as int with {
+		readable : true
+	} "Represents the set of BACnet object instance numbers."
+
+	mandatory multiple properties as string with {
+		readable : true
+	} "Represents the optional set of BACnet property identifiers as strings."
+
+}

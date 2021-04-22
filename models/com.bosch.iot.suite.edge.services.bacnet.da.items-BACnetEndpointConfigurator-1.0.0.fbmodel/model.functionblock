@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Endpoint Configurator"
+description
+"Provides a mechanism for applications to configure which BACnet devices and their objects and properties (end points) they are interested in."
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetDeviceInstances; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem; 1.0.0
+
+functionblock BACnetEndpointConfigurator extends FunctionalItem {
+
+	configuration {
+		mandatory multiple endpoints as BACnetDeviceInstances with {
+			readable : true, writable : true, eventable : true
+		} "Represents the BACnet end points configured by this item."
+	}
+
+	operations {
+		mandatory putDeviceInstances(multiple deviceInstances as BACnetDeviceInstances)
+		"Adds or updates configured end points for multiple sets of BACnet devices."
+		mandatory removeDeviceInstances(multiple deviceInstanceNumbers as int) "Removes BACnet device instances from the configuration."
+		mandatory removeDeviceRange(rangeLowerBound as int <NULLABLE false>, rangeUpperBound as int <NULLABLE false>)
+		"Removes all the BACnet device instances inside the given closed range from the configuration."
+		mandatory getDeviceEndpoints(deviceInstanceNumber as int <NULLABLE false>) returns BACnetDeviceInstances
+		"Retrieves the currently configured end points of a given BACnet device."
+	}
+
+}

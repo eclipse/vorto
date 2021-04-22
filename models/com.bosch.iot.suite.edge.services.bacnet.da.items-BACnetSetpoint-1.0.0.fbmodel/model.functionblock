@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Setpoint"
+description "Represents a setpoint that controls the present value of a BACnet Analog Output, Analog Value and Large Analog Value object."
+using com.bosch.iot.suite.edge.services.da.items.Setpoint ; 1.0.0
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetStatusFlags ; 1.0.0
+
+functionblock BACnetSetpoint extends Setpoint {
+	status {
+		mandatory statusFlags as BACnetStatusFlags with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Holds the status flags that indicate the general health of the BACnet object."
+	}
+
+}

@@ -1,0 +1,26 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Multi-state Detector"
+description "Represents a BACnet Multi-state Input object."
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetObject ; 1.0.0
+
+functionblock BACnetMultiStateDetector extends BACnetObject {
+	status {
+		mandatory presentValue as int with {
+			readable : true,eventable : true
+		} <MIN 1 , NULLABLE false> "Represents the present value of a BACnet Multi-state Input object."
+		mandatory numberOfStates as int with {
+			readable : true
+		} <MIN 1 , NULLABLE false> "Represents the number of states of a BACnet Multi-state object."
+	}
+
+	operations {
+		mandatory getStateTexts(multiple states as int <MIN 1> "A list of state values") returns multiple string
+		"Returns a list of text representations of BACnet Multi-state object states."
+		mandatory getStateText(state as int <MIN 1 , NULLABLE false> "A state value") returns string
+		"Returns the text representation of a BACnet Multi-state object state."
+	}
+
+}

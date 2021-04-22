@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.bacnet.da.items
+version 1.0.0
+displayname "BACnet Detector"
+description "Represents a detector that returns its value from a BACnet Binary Input object."
+using com.bosch.iot.suite.edge.services.da.items.Detector ; 1.0.0
+using com.bosch.iot.suite.edge.services.bacnet.da.items.BACnetStatusFlags ; 1.0.0
+
+functionblock BACnetDetector extends Detector {
+	status {
+		mandatory statusFlags as BACnetStatusFlags with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Holds the status flags that indicate the general health of the BACnet object."
+	}
+
+}
