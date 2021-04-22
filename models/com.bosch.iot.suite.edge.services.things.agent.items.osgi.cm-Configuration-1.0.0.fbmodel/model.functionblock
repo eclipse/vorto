@@ -1,0 +1,25 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.things.agent.items.osgi.cm
+version 1.0.0
+displayname "Configuration"
+description "Represents an OSGi configuration."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Configuration extends FunctionalItem {
+	status {
+		mandatory properties as dictionary [ string , string ] with {
+			readable : true,eventable : true
+		} "The configuration properties."
+
+		mandatory location as string with {
+			readable : true,eventable : true
+		} "The configuration location."
+	}
+
+	operations {
+		mandatory update(properties as dictionary [ string , string ] "New properties which will be applied.") "Sets/updates the current configuration properties."
+		mandatory delete() "Deletes the current configuration."
+	}
+
+}

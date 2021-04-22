@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "BundleItem_State",
+    "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BundleItem_State",
+        "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Bundle Item State",
+      "description" : "Represents the possible states of an OSGi bundle.",
+      "category" : null,
+      "fileName" : "BundleItem_State.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INSTALLED",
+        "description" : "The bundle is installed but not yet resolved.",
+        "parent" : {
+          "name" : "BundleItem_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+        }
+      }, {
+        "name" : "RESOLVED",
+        "description" : "The bundle is resolved and is able to be started.",
+        "parent" : {
+          "name" : "BundleItem_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVE",
+        "description" : "The bundle is now running.",
+        "parent" : {
+          "name" : "BundleItem_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+        }
+      }, {
+        "name" : "STARTING",
+        "description" : "The bundle is in the process of starting.",
+        "parent" : {
+          "name" : "BundleItem_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+        }
+      }, {
+        "name" : "STOPPING",
+        "description" : "The bundle is in the process of stopping.",
+        "parent" : {
+          "name" : "BundleItem_State",
+          "namespace" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle:BundleItem_State:1.0.0"
+        }
+      } ]
+    }
+  }
+}

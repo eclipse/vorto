@@ -1,0 +1,17 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.things.agent.items.osgi.bundle
+version 1.0.0
+displayname "BundleFactory"
+description "Enables bundle management via functional items."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItemFactory ; 1.0.0
+
+functionblock BundleFactory extends FunctionalItemFactory {
+	operations {
+		mandatory install(location as string "The location identifier of the bundle to install.",
+			autoStart as boolean <NULLABLE false> 
+		"Flag indication if the bundle should be started.") returns dictionary [ string , string ]
+		"Installs a bundle from a specified location."
+	}
+
+}

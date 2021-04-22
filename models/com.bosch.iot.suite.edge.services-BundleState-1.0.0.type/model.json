@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "BundleState",
+    "namespace" : "com.bosch.iot.suite.edge.services",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services:BundleState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "BundleState",
+        "namespace" : "com.bosch.iot.suite.edge.services",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "BundleState",
+      "description" : "Represents the possible states of an OSGi bundle.",
+      "category" : null,
+      "fileName" : "BundleState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INSTALLED",
+        "description" : "The bundle is installed but not resolved yet.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "RESOLVED",
+        "description" : "The bundle is resolved and is able to be started.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVE",
+        "description" : "The bundle is now running.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "STARTING",
+        "description" : "The bundle is in the process of starting.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      }, {
+        "name" : "STOPPING",
+        "description" : "The bundle is in the process of stopping.",
+        "parent" : {
+          "name" : "BundleState",
+          "namespace" : "com.bosch.iot.suite.edge.services",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services:BundleState:1.0.0"
+        }
+      } ]
+    }
+  }
+}
