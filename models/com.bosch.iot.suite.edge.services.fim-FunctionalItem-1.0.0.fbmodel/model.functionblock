@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim
+version 1.0.0
+displayname "Functional Item"
+
+functionblock FunctionalItem {
+	configuration {
+		mandatory name as string with {
+			readable : true,writable : true,eventable : true
+		}
+
+		mandatory multiple tags as string with {
+			readable : true,writable : true,eventable : true
+		}
+
+	}
+
+}

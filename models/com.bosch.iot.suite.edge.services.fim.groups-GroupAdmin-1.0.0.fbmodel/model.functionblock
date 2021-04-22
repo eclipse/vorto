@@ -1,0 +1,19 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim.groups
+version 1.0.0
+displayname "Group Admin"
+description "Enables groups management and utility methods related to the items grouping."
+using com.bosch.iot.suite.edge.services.fim.FunctionalItemFactory ; 1.0.0
+
+functionblock GroupAdmin extends FunctionalItemFactory {
+	operations {
+		mandatory getParentGroups(itemUID as string "Functional item UID.") returns multiple dictionary [ string , string ]
+		"Returns the groups that contain a given functional item."
+
+		mandatory getRootGroups(filter as string
+			"LDAP filter defined by attributes uid, objectClass, name, tags or any group custom attribute.") returns multiple
+		dictionary [ string , string ] "Returns the root groups matching to the filter."
+	}
+
+}

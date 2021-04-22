@@ -1,0 +1,18 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.fim.data
+version 1.0.0
+
+entity FunctionalItemObject {
+	mandatory jsonStringValue as string with {
+		readable : true
+	} "JSON string representation of the value."
+
+	mandatory multiple classes as string with {
+		readable : true
+	} "The list with value fully qualified class names as defined in the metadata."
+
+	mandatory type as string with {
+		readable : true
+	} "Value metadata type."
+}
