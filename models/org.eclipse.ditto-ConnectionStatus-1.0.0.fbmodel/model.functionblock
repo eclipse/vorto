@@ -1,0 +1,17 @@
+vortolang 1.0
+namespace org.eclipse.ditto
+version 1.0.0
+displayname "ConnectionStatus"
+description "Information about the status of the connectivity to a device"
+
+functionblock ConnectionStatus {
+
+	status {
+	  readySince as dateTime 
+	    "Timestamp when the device or the connectivity endpoint signals that the device is connected and stays connected at least for some time and is ready for receiving information"
+	  
+	  readyUntil as dateTime 
+	    "Timestamp until when device or the connectivity endpoint signals that it stays ready for receiving information; if it signals that it stays connected and is ready until further notice then this timestamp is symbolically set to a timestamp that is at least 1 year ahead of now"
+	}
+
+}

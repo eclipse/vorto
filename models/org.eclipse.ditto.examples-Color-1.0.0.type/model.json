@@ -1,0 +1,85 @@
+{
+  "root" : {
+    "name" : "Color",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:Color:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color",
+      "description" : "Datatype for a Color defined in RGB",
+      "category" : null,
+      "fileName" : "Color.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "r",
+        "description" : "Red",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "g",
+        "description" : "Green",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "b",
+        "description" : "Blue",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

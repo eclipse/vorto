@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "Priority",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:Priority:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Priority",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Priority",
+      "description" : "Enumeration of different priority types",
+      "category" : null,
+      "fileName" : "Priority.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "low",
+        "description" : "low priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "medium",
+        "description" : "medium priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "high",
+        "description" : "high priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "severe",
+        "description" : "severe priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "critial",
+        "description" : "critical priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      } ]
+    }
+  }
+}

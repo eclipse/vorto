@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Color"
+description "Datatype for a Color defined in RGB"
+
+entity Color {
+    mandatory r as short <MIN 0, MAX 255>   "Red"
+    mandatory g as short <MIN 0, MAX 255>   "Green"
+    mandatory b as short <MIN 0, MAX 255>   "Blue"
+}

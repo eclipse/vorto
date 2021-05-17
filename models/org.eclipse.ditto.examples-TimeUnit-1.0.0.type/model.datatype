@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "TimeUnit"
+description "Enumeration of different units of time"
+
+enum TimeUnit {
+    ns  "nanoseconds",
+    us  "microseconds",
+    ms  "milliseconds",
+    s   "seconds",
+    m   "minutes",
+    h   "hours",
+    d   "days"
+}

@@ -1,0 +1,2800 @@
+{
+  "root" : {
+    "name" : "MightyLamp",
+    "namespace" : "org.eclipse.ditto.examples",
+    "version" : "2.0.0",
+    "prettyFormat" : "org.eclipse.ditto.examples:MightyLamp:2.0.0"
+  },
+  "models" : {
+    "org.eclipse.ditto.examples:MightyLamp:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MightyLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:MightyLamp:2.0.0"
+      },
+      "type" : "InformationModel",
+      "displayName" : "MightyLamp",
+      "description" : "Information Model for MightyLamp",
+      "category" : null,
+      "fileName" : "MightyLamp.infomodel",
+      "modelType" : "Infomodel",
+      "references" : [ {
+        "name" : "ConnectionStatus",
+        "namespace" : "org.eclipse.ditto",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto:ConnectionStatus:1.0.0"
+      }, {
+        "name" : "ColorableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:ColorableLamp:1.0.0"
+      }, {
+        "name" : "DimmableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:DimmableLamp:1.0.0"
+      }, {
+        "name" : "SmokeDetector",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:SmokeDetector:1.0.0"
+      }, {
+        "name" : "SwitchableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:SwitchableLamp:1.0.0"
+      } ],
+      "functionblocks" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "ConnectionStatus",
+        "description" : "The connection status of the mightly lamp",
+        "type" : {
+          "name" : "ConnectionStatus",
+          "namespace" : "org.eclipse.ditto",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto:ConnectionStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "StatusLamp",
+        "description" : "Multiple switchable lamps, could be lots of them",
+        "type" : {
+          "name" : "SwitchableLamp",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:SwitchableLamp:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "Dimmed",
+        "description" : "A single big dimmable lamp",
+        "type" : {
+          "name" : "DimmableLamp",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:DimmableLamp:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "Colored",
+        "description" : "Another lamp capable of changing its colors",
+        "type" : {
+          "name" : "ColorableLamp",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:ColorableLamp:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "SmokeDetection",
+        "description" : "Smoke detection capabilities of this mighty lamp",
+        "type" : {
+          "name" : "SmokeDetector",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:SmokeDetector:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ]
+    },
+    "org.eclipse.ditto.examples:ColorableLamp:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ColorableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:ColorableLamp:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ColorableLamp",
+      "description" : "ColorableLamp defines state+behavior of a Lamp which is colorable",
+      "category" : null,
+      "fileName" : "ColorableLamp.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Unit",
+        "namespace" : "org.eclipse.vorto",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+      }, {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "bulbChangeDate",
+        "description" : "Contains the date when the bulb was last changed",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "reportCurrentPowerConsumption",
+        "description" : "Configures whether the device shall report its status 'currentPowerConsumption' or not",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"false\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumptionInterval",
+        "description" : "Configures the interval of how often the status 'currentPowerConsumption' shall be updated",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "second",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "color",
+        "description" : "Configures the current color",
+        "type" : {
+          "name" : "Color",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumption",
+        "description" : "Status of the current power consumtion in Watts",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "watt",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "red",
+        "description" : "Overwrites the current 'red' value of the configured 'color' returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "green",
+        "description" : "Overwrites the current 'green' value of the configured 'color' returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "blue",
+        "description" : "Overwrites the current 'blue' value of the configured 'color'  returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "rgb",
+        "description" : "Overwrites the current 'r', 'g' and 'b' values of the configured 'color'  returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveRed",
+        "description" : "Retrieves the 'red' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveGreen",
+        "description" : "Retrieves the 'green' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveBlue",
+        "description" : "Retrieves the 'blue' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientColorChange",
+        "description" : "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "startingColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientColorChangeDuringInterval",
+        "description" : "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor' during the given 'interval'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "startingColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "interval",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientFadeToColor",
+        "description" : "Change the currently configured color with a gradient to the passed in 'targetColor'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "switchOnFor",
+        "description" : "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Colorable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Colorable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto.examples:Priority:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Priority",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Priority",
+      "description" : "Enumeration of different priority types",
+      "category" : null,
+      "fileName" : "Priority.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "low",
+        "description" : "low priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "medium",
+        "description" : "medium priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "high",
+        "description" : "high priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "severe",
+        "description" : "severe priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      }, {
+        "name" : "critial",
+        "description" : "critical priority",
+        "parent" : {
+          "name" : "Priority",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.ditto.examples:TimeUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "TimeUnit",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "TimeUnit",
+      "description" : "Enumeration of different units of time",
+      "category" : null,
+      "fileName" : "TimeUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ns",
+        "description" : "nanoseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "us",
+        "description" : "microseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "ms",
+        "description" : "milliseconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "s",
+        "description" : "seconds",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "m",
+        "description" : "minutes",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "h",
+        "description" : "hours",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      }, {
+        "name" : "d",
+        "description" : "days",
+        "parent" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.ditto.examples:Colorable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Colorable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Colorable:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Colorable",
+      "description" : "Colorable state+behavior for devices capable of changing their color",
+      "category" : null,
+      "fileName" : "Colorable.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      }, {
+        "name" : "Duration",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+      }, {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "color",
+        "description" : "Configures the current color",
+        "type" : {
+          "name" : "Color",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "red",
+        "description" : "Overwrites the current 'red' value of the configured 'color' returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "green",
+        "description" : "Overwrites the current 'green' value of the configured 'color' returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "blue",
+        "description" : "Overwrites the current 'blue' value of the configured 'color'  returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "rgb",
+        "description" : "Overwrites the current 'r', 'g' and 'b' values of the configured 'color'  returning the new color",
+        "result" : {
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "primitive" : false,
+          "multiple" : false
+        },
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "r",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "g",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "b",
+          "description" : null,
+          "type" : "INT",
+          "constraints" : [ {
+            "type" : "MIN",
+            "value" : "0"
+          }, {
+            "type" : "MAX",
+            "value" : "255"
+          } ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveRed",
+        "description" : "Retrieves the 'red' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveGreen",
+        "description" : "Retrieves the 'green' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "retrieveBlue",
+        "description" : "Retrieves the 'blue' part of the currently configured 'color'",
+        "result" : {
+          "type" : "INT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientColorChange",
+        "description" : "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "startingColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientColorChangeDuringInterval",
+        "description" : "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor' during the given 'interval'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "startingColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "interval",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "gradientFadeToColor",
+        "description" : "Change the currently configured color with a gradient to the passed in 'targetColor'",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "targetColor",
+          "description" : null,
+          "type" : {
+            "name" : "Color",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "switchOnFor",
+        "description" : "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto.examples:Dimmable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Dimmable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Dimmable:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Dimmable",
+      "description" : "Dimmable state+behavior for devices which may be dimmed to a certain level and which may report back the supported dim resolution or fixed levels",
+      "category" : null,
+      "fileName" : "Dimmable.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "dimmerLevel",
+        "description" : "Configuration of the dimmer's level in percent between 0.0 and 1.0",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0.0"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedDimmerLevelResolution",
+        "description" : "Returns the by the device supported resolution of dimmer levels",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedFixedDimmerLevels",
+        "description" : "Returns the by the device supported fixed amount of dimmer levels - may return an empty array if all levels are possible, please refer to supportedDimmerLevelResolution() then to find out the resolution",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : true
+        },
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto:ConnectionStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ConnectionStatus",
+        "namespace" : "org.eclipse.ditto",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto:ConnectionStatus:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "ConnectionStatus",
+      "description" : "Information about the status of the connectivity to a device",
+      "category" : null,
+      "fileName" : "ConnectionStatus.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "readySince",
+        "description" : "Timestamp when the device or the connectivity endpoint signals that the device is connected and stays connected at least for some time and is ready for receiving information",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "readyUntil",
+        "description" : "Timestamp until when device or the connectivity endpoint signals that it stays ready for receiving information; if it signals that it stays connected and is ready until further notice then this timestamp is symbolically set to a timestamp that is at least 1 year ahead of now",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:SmokeDetector:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SmokeDetector",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:SmokeDetector:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "SmokeDetector",
+      "description" : "SmokeDetector state+behavior for devices capable of detecting smoke",
+      "category" : null,
+      "fileName" : "SmokeDetector.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Priority",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ {
+        "name" : "smokeDetected",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "priority",
+          "description" : "Priority of the smoke detection",
+          "type" : {
+            "name" : "Priority",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Priority:1.0.0"
+          },
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "density",
+          "description" : "Density of the detected smoke in percent from 0.0 - 1.0",
+          "type" : "FLOAT",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "Smoke detection timestamp",
+          "type" : "DATETIME",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ]
+      }, {
+        "name" : "smokeCleared",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "Timestamp when the smoke cleared",
+          "type" : "DATETIME",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ]
+      } ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "org.eclipse.vorto:Unit:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Unit",
+        "namespace" : "org.eclipse.vorto",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : "Unit",
+      "description" : "SI units plus some common imperial units",
+      "category" : null,
+      "fileName" : "Unit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "second",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "metre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilogram",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "ampere",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kelvin",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "mole",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "candela",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "squareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "cubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "metrePerSecond",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "reciprocalMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilogramPerCubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilogramPerSquareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "cubicMetrePerKilogram",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "amperePerSquareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "amperePerMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "molePerCubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "candelaPerSquareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "radian",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "steriadian",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "hertz",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "newton",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "pascal",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joule",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "watt",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "coulomb",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "volt",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "farad",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "ohm",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "siemens",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "weber",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "tesla",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "henry",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "degreeCelsius",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "lumen",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "lux",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "becquerel",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "gray",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "sievert",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "katal",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "pascalSecond",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "newtonMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "newtonPerMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "radianPerSecond",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "radianPerSecondSquared",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "wattPerSquareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerKelvin",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerKilogramKelvin",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerKilogram",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "wattPerMetreKelvin",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerCubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "voltPerMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "coulombPerCubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "coulombPerSquareMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "faradPerMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "henryPerMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerMole",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "joulePerMoleKelvin",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "coulombPerKilogram",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "grayPerSecond",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "wattPerSteradian",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "wattPerSquareMetreSteradia",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "katalPerCubicMetre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "calorie",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kiloCalorie",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "inch",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "feet",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "yard",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "mile",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "nauticalMile",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "pound",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "stone",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "poundPerSquareInch",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "milePerHour",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "fahrenheit",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "percent",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "beatsPerMinute",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "rotationsPerMinute",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilometre",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilometrePerHour",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "degreeAngle",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "secondsSinceBegin1970",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "minute",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "bar",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "millibar",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kiloWattHour",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "Byte",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "kilobyte",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "megabyte",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      }, {
+        "name" : "gigabyte",
+        "description" : null,
+        "parent" : {
+          "name" : "Unit",
+          "namespace" : "org.eclipse.vorto",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+        }
+      } ]
+    },
+    "org.eclipse.ditto.examples:Color:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Color",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Color:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Color",
+      "description" : "Datatype for a Color defined in RGB",
+      "category" : null,
+      "fileName" : "Color.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "r",
+        "description" : "Red",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "g",
+        "description" : "Green",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "b",
+        "description" : "Blue",
+        "type" : "SHORT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "255"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:DimmableLamp:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DimmableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:DimmableLamp:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "DimmableLamp",
+      "description" : "DimmableLamp defines state+behavior of a Lamp which is Dimmable",
+      "category" : null,
+      "fileName" : "DimmableLamp.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Unit",
+        "namespace" : "org.eclipse.vorto",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "bulbChangeDate",
+        "description" : "Contains the date when the bulb was last changed",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "reportCurrentPowerConsumption",
+        "description" : "Configures whether the device shall report its status 'currentPowerConsumption' or not",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"false\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumptionInterval",
+        "description" : "Configures the interval of how often the status 'currentPowerConsumption' shall be updated",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "second",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "dimmerLevel",
+        "description" : "Configuration of the dimmer's level in percent between 0.0 and 1.0",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0.0"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumption",
+        "description" : "Status of the current power consumtion in Watts",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "watt",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedDimmerLevelResolution",
+        "description" : "Returns the by the device supported resolution of dimmer levels",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "supportedFixedDimmerLevels",
+        "description" : "Returns the by the device supported fixed amount of dimmer levels - may return an empty array if all levels are possible, please refer to supportedDimmerLevelResolution() then to find out the resolution",
+        "result" : {
+          "type" : "FLOAT",
+          "primitive" : true,
+          "multiple" : true
+        },
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "Dimmable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Dimmable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto.examples:SwitchableLamp:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SwitchableLamp",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:SwitchableLamp:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "SwitchableLamp",
+      "description" : "SwitchableLamp defines state+behavior of a Lamp which is Switchable",
+      "category" : null,
+      "fileName" : "SwitchableLamp.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Unit",
+        "namespace" : "org.eclipse.vorto",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "bulbChangeDate",
+        "description" : "Contains the date when the bulb was last changed",
+        "type" : "DATETIME",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "reportCurrentPowerConsumption",
+        "description" : "Configures whether the device shall report its status 'currentPowerConsumption' or not",
+        "type" : "BOOLEAN",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"false\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumptionInterval",
+        "description" : "Configures the interval of how often the status 'currentPowerConsumption' shall be updated",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "second",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentPowerConsumption",
+        "description" : "Status of the current power consumtion in Watts",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "watt",
+            "description" : null,
+            "parent" : {
+              "name" : "Unit",
+              "namespace" : "org.eclipse.vorto",
+              "version" : "1.0.1",
+              "prettyFormat" : "org.eclipse.vorto:Unit:1.0.1"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      }
+    },
+    "org.eclipse.ditto.examples:Switchable:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Switchable",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Switchable:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Switchable",
+      "description" : "Switchable state+behavior for devices which may be switched on/off and know their current state",
+      "category" : null,
+      "fileName" : "Switchable.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Duration",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "on",
+        "description" : "Configuration whether the switch should be on or off",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "toggle",
+        "description" : "Toggles the current 'on' configuration by negating it and returning the new 'on' value as response",
+        "result" : {
+          "type" : "BOOLEAN",
+          "primitive" : true,
+          "multiple" : false
+        },
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "switchOnFor",
+        "description" : "Switches the switchable on for a passed in duration, afterwards applying the previous 'on' configuration again",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "duration",
+          "description" : null,
+          "type" : {
+            "name" : "Duration",
+            "namespace" : "org.eclipse.ditto.examples",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.ditto.examples:Duration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Duration",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:Duration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Duration",
+      "description" : "Datatype for a duration including an amount and a time unit",
+      "category" : null,
+      "fileName" : "Duration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "TimeUnit",
+        "namespace" : "org.eclipse.ditto.examples",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "amount",
+        "description" : "The amount of the unit",
+        "type" : "LONG",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "unit",
+        "description" : "The time unit, e.g. seconds",
+        "type" : {
+          "name" : "TimeUnit",
+          "namespace" : "org.eclipse.ditto.examples",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.ditto.examples:TimeUnit:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,44 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Colorable"
+description "Colorable state+behavior for devices capable of changing their color"
+
+using org.eclipse.ditto.examples.Color;1.0.0
+using org.eclipse.ditto.examples.Duration;1.0.0
+using org.eclipse.ditto.examples.Switchable;1.0.0
+
+functionblock Colorable extends Switchable {
+    
+    configuration {
+        color as Color "Configures the current color"
+    }
+    
+    operations {
+        red(r as int <MIN 0, MAX 255>) returns Color
+            "Overwrites the current 'red' value of the configured 'color' returning the new color"
+        green(g as int <MIN 0, MAX 255>) returns Color
+            "Overwrites the current 'green' value of the configured 'color' returning the new color"
+        blue(b as int <MIN 0, MAX 255>) returns Color
+            "Overwrites the current 'blue' value of the configured 'color'  returning the new color"
+
+        rgb(r as int <MIN 0, MAX 255>, g as int <MIN 0, MAX 255>, b as int <MIN 0, MAX 255>) returns Color
+            "Overwrites the current 'r', 'g' and 'b' values of the configured 'color'  returning the new color"
+
+        retrieveRed() returns int <MIN 0, MAX 255>
+            "Retrieves the 'red' part of the currently configured 'color'"
+        retrieveGreen() returns int <MIN 0, MAX 255>
+            "Retrieves the 'green' part of the currently configured 'color'"
+        retrieveBlue() returns int <MIN 0, MAX 255>
+            "Retrieves the 'blue' part of the currently configured 'color'"
+
+        gradientColorChange(startingColor as Color, targetColor as Color)
+                "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor'"
+
+        gradientColorChangeDuringInterval(startingColor as Color, targetColor as Color, interval as Duration)
+            "Changes the color via a gradient, starting with the passed in 'startingColor', ending at the 'targetColor' during the given 'interval'"
+
+        gradientFadeToColor(targetColor as Color)
+            "Change the currently configured color with a gradient to the passed in 'targetColor'"
+    }
+}

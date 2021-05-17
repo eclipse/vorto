@@ -1,0 +1,24 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples
+version 1.0.0
+displayname "Dimmable"
+description "Dimmable state+behavior for devices which may be dimmed to a certain level and which may report back the supported dim resolution or fixed levels"
+
+using org.eclipse.ditto.examples.Switchable;1.0.0
+
+functionblock Dimmable extends Switchable {
+
+  configuration {
+    mandatory dimmerLevel as float <MIN 0.0>
+        "Configuration of the dimmer's level in percent between 0.0 and 1.0"
+  }
+  
+  operations {
+    supportedDimmerLevelResolution() returns float <MIN 0.0>
+        "Returns the by the device supported resolution of dimmer levels"
+    
+    supportedFixedDimmerLevels() returns multiple float <MIN 0.0>
+        "Returns the by the device supported fixed amount of dimmer levels - may return an empty array if all levels are possible, please refer to supportedDimmerLevelResolution() then to find out the resolution"
+  }
+
+}
