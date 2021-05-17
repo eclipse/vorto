@@ -1,0 +1,119 @@
+{
+  "root" : {
+    "name" : "Geolocation",
+    "namespace" : "com.bosch.iot.suite.examples.geolocation",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geolocation:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.examples.geolocation:Geolocation:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Geolocation",
+        "namespace" : "com.bosch.iot.suite.examples.geolocation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geolocation:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Geolocation",
+      "description" : "Functionblock for Geolocation. Features marked with this Functionblock can be used to track their location",
+      "category" : null,
+      "fileName" : "Geolocation.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Geoposition",
+        "namespace" : "com.bosch.iot.suite.examples.geolocation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geoposition:1.0.0"
+      }, {
+        "name" : "Geoposition",
+        "namespace" : "com.bosch.iot.suite.examples.geolocation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geoposition:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "geoposition",
+        "description" : null,
+        "type" : {
+          "name" : "Geoposition",
+          "namespace" : "com.bosch.iot.suite.examples.geolocation",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geoposition:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "accuracy",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.examples.geolocation:Geoposition:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Geoposition",
+        "namespace" : "com.bosch.iot.suite.examples.geolocation",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.examples.geolocation:Geoposition:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Geoposition",
+      "description" : "Entity for Geoposition",
+      "category" : null,
+      "fileName" : "Geoposition.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "latitude",
+        "description" : null,
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "longitude",
+        "description" : null,
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,1916 @@
+{
+  "root" : {
+    "name" : "OctopusSuiteEdition",
+    "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:OctopusSuiteEdition:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.example.octopussuiteedition:Humidity:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Humidity",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Humidity:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Humidity",
+      "description" : "Description: This IPSO object should be used with a humidity sensor to report a humidity measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the humidity sensor. An example measurement unit is relative humidity as a percentage (ucum:%).",
+      "category" : null,
+      "fileName" : "Humidity.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Temperature",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Temperature",
+      "description" : "Description: This IPSO object should be used with a temperature sensor to report a temperature measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the temperature sensor. An example measurement unit is degrees Celsius (ucum:Cel).",
+      "category" : null,
+      "fileName" : "Temperature.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Voltage",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Voltage",
+      "description" : "This IPSO object should be used with voltmeter sensor to report measured voltage between two points.  It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is volts (ucum: V).",
+      "category" : null,
+      "fileName" : "Voltage.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentCalibration",
+        "description" : "Read or Write the current calibration coefficient",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:OctopusSuiteEdition:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OctopusSuiteEdition",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:OctopusSuiteEdition:1.0.0"
+      },
+      "type" : "InformationModel",
+      "displayName" : "OctopusSuiteEdition",
+      "description" : "Model defining the fab-lab.eu Octopus - Bosch IoT Suite Edition",
+      "category" : null,
+      "fileName" : "OctopusSuiteEdition.infomodel",
+      "modelType" : "Infomodel",
+      "references" : [ {
+        "name" : "Temperature",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+      }, {
+        "name" : "Accelerometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0"
+      }, {
+        "name" : "Gyrometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Gyrometer:1.1.0"
+      }, {
+        "name" : "Humidity",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Humidity:1.1.0"
+      }, {
+        "name" : "Barometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Barometer:1.1.0"
+      }, {
+        "name" : "Magnetometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+      }, {
+        "name" : "Voltage",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0"
+      }, {
+        "name" : "MultipleAxisJoystick",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:MultipleAxisJoystick:1.1.0"
+      }, {
+        "name" : "Altitude",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Altitude:1.1.0"
+      }, {
+        "name" : "GenericSensor",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:GenericSensor:1.1.0"
+      } ],
+      "functionblocks" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "temperature",
+        "description" : "temperature provided by sensor BME680",
+        "type" : {
+          "name" : "Temperature",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "humidity",
+        "description" : "relative humidity provided by sensor BME680",
+        "type" : {
+          "name" : "Humidity",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Humidity:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "pressure",
+        "description" : "barometric pressure provided by sensor BME680",
+        "type" : {
+          "name" : "Barometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Barometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "gas_resistance",
+        "description" : "volatile organic compounds (VOC) provided by sensor BME680",
+        "type" : {
+          "name" : "GenericSensor",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:GenericSensor:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "altitude",
+        "description" : "altitude provided by sensor BME680",
+        "type" : {
+          "name" : "Altitude",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Altitude:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "ambient_temperature",
+        "description" : "temperature provided by sensor BNO055",
+        "type" : {
+          "name" : "Temperature",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Temperature:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "linear_acceleration",
+        "description" : "linear acceleratrion provided by sensor BNO055",
+        "type" : {
+          "name" : "Accelerometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "acceleration",
+        "description" : "acceleratrion provided by sensor BNO055",
+        "type" : {
+          "name" : "Accelerometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "angular_velocity",
+        "description" : "angular velocity provided by sensor BNO055",
+        "type" : {
+          "name" : "Gyrometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Gyrometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "gravity",
+        "description" : "gravitational forces provided by sensor BNO055",
+        "type" : {
+          "name" : "Accelerometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "orientation",
+        "description" : "absolute orientation provided by sensor BNO055",
+        "type" : {
+          "name" : "MultipleAxisJoystick",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:MultipleAxisJoystick:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "magnetometer",
+        "description" : "magnetic field strength provided by sensor BNO055",
+        "type" : {
+          "name" : "Magnetometer",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "voltage",
+        "description" : "the voltage supply",
+        "type" : {
+          "name" : "Voltage",
+          "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+          "version" : "1.1.0",
+          "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Voltage:1.1.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ]
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Barometer:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Barometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Barometer:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Barometer",
+      "description" : "Description: This IPSO object should be used with an air pressure sensor to report a barometer measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the barometer sensor. An example measurement unit is kPa (ucum:kPa).",
+      "category" : null,
+      "fileName" : "Barometer.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "If present, the type of sensor defined as the UCUM Unit Definition e.g. ?Cel? for Temperature in Celcius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Gyrometer:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Gyrometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Gyrometer:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Gyrometer",
+      "description" : "This IPSO Object is used to report the current reading of a gyrometer sensor in 3 axes. It provides tracking of the minimum and maximum angular rate in all 3 axes. An example unit of measure is radians per second (ucum:rad/s).",
+      "category" : null,
+      "fileName" : "Gyrometer.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "xValue",
+        "description" : "The measured value along the X axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "yValue",
+        "description" : "The measured value along the Y axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "zValue",
+        "description" : "The measured value along the Z axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minXValue",
+        "description" : "The minimum measured value along the X axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxXValue",
+        "description" : "The maximum measured value along the X axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minYValue",
+        "description" : "The minimum measured value along the Y axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxYValue",
+        "description" : "The maximum measured value along the Y axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minZValue",
+        "description" : "The minimum measured value along the Z axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxZValue",
+        "description" : "The maximum measured value along the Z axis",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:GenericSensor:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "GenericSensor",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:GenericSensor:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "GenericSensor",
+      "description" : "This IPSO object allow the description of a generic sensor. It is based on the description of a value and a unit according to the UCUM specification. Thus, any type of value defined within this specification can be reporting using this object. Specific object for a given range of sensors is described later in the document, enabling to identify the type of sensors directly from its Object ID. This object may be used as a generic object if a dedicated one does not exist.",
+      "category" : null,
+      "fileName" : "GenericSensor.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "If present, the application type of the sensor as a string, for instance, ?CO2?",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorType",
+        "description" : "The type of the sensor (for instance PIR type)",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Magnetometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Magnetometer:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Magnetometer",
+      "description" : "Description: This IPSO object can be used to represent a 1-3 axis magnetometer with optional compass direction.",
+      "category" : null,
+      "fileName" : "Magnetometer.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "xValue",
+        "description" : "The measured value along the X axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "yValue",
+        "description" : "The measured value along the Y axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "zValue",
+        "description" : "The measured value along the Z axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "compassDirection",
+        "description" : "The compass direction",
+        "type" : "FLOAT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "0"
+        }, {
+          "type" : "MAX",
+          "value" : "360"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Accelerometer",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Accelerometer:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Accelerometer",
+      "description" : "Description: This IPSO object can be used to represent a 1-3 axis accelerometer.",
+      "category" : null,
+      "fileName" : "Accelerometer.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "xValue",
+        "description" : "The measured value along the X axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "yValue",
+        "description" : "The measured value along the Y axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "zValue",
+        "description" : "The measured value along the Z axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:Altitude:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Altitude",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:Altitude:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Altitude",
+      "description" : "This IPSO object should be used with an altitude sensor to report altitude above sea level in meters. Note that Altitude can be calculated from the measured pressure given the local sea level pressure.  It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is meters (ucum: m).",
+      "category" : null,
+      "fileName" : "Altitude.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "currentCalibration",
+        "description" : "Read or Write the current calibration coefficient",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sensorValue",
+        "description" : "Last or Current Measured Value from the Sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "sensorUnits",
+        "description" : "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minMeasuredValue",
+        "description" : "The minimum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxMeasuredValue",
+        "description" : "The maximum value measured by the sensor since power ON or reset",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "minRangeValue",
+        "description" : "The minimum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRangeValue",
+        "description" : "The maximum value that can be measured by the sensor",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "resetMinandMaxMeasuredValues",
+        "description" : "Reset the Min and Max Measured Values to Current Value",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.example.octopussuiteedition:MultipleAxisJoystick:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MultipleAxisJoystick",
+        "namespace" : "com.bosch.iot.suite.example.octopussuiteedition",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.example.octopussuiteedition:MultipleAxisJoystick:1.1.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "MultipleAxisJoystick",
+      "description" : "This IPSO object can be used to report the position of a shuttle or joystick control. A digital input is provided to report the state of an associated push button.",
+      "category" : null,
+      "fileName" : "MultipleAxisJoystick.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "digitalInputState",
+        "description" : "The current state of a digital input.",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "digitalInputCounter",
+        "description" : "The number of times the input transitions from 0 to 1.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "xValue",
+        "description" : "The measured value along the X axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "yValue",
+        "description" : "The measured value along the Y axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "zValue",
+        "description" : "The measured value along the Z axis.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

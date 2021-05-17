@@ -1,0 +1,25 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.1.0
+displayname "Voltage"
+description "This IPSO object should be used with voltmeter sensor to report measured voltage between two points.  It also provides resources for minimum and maximum measured values, as well as the minimum and maximum range that can be measured by the sensor. An example measurement unit is volts (ucum: V)."
+
+functionblock Voltage {
+	configuration {
+		optional currentCalibration as string with {readable : true, writable: true}   "Read or Write the current calibration coefficient"
+		optional applicationType as string with {readable : true, writable: true}   "The application type of the sensor or actuator as a string depending on the use case"
+	}
+	
+	status {
+		mandatory sensorValue as float with {readable : true, writable: false }   "Last or Current Measured Value from the Sensor"
+		optional sensorUnits as string with {readable : true, writable: false }   "Measurement Units Definition e.g. ?Cel? for Temperature in Celsius"
+		optional minMeasuredValue as float with {readable : true, writable: false }   "The minimum value measured by the sensor since power ON or reset"
+		optional maxMeasuredValue as float with {readable : true, writable: false }   "The maximum value measured by the sensor since power ON or reset"
+		optional minRangeValue as float with {readable : true, writable: false }   "The minimum value that can be measured by the sensor"
+		optional maxRangeValue as float with {readable : true, writable: false }   "The maximum value that can be measured by the sensor"
+	}
+	
+	operations {
+		resetMinandMaxMeasuredValues() "Reset the Min and Max Measured Values to Current Value"
+	}
+}

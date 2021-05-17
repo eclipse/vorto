@@ -1,0 +1,39 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.0.0
+displayname "OctopusSuiteEdition"
+description "Model defining the fab-lab.eu Octopus - Bosch IoT Suite Edition"
+
+using com.bosch.iot.suite.example.octopussuiteedition.Temperature;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Accelerometer;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Gyrometer;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Humidity;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Barometer;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Magnetometer;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Voltage;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.MultipleAxisJoystick;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.Altitude;1.1.0
+using com.bosch.iot.suite.example.octopussuiteedition.GenericSensor;1.1.0
+	
+infomodel OctopusSuiteEdition {
+	functionblocks {
+    /* Bosch Sensortec BME680 */
+    mandatory temperature         as Temperature            "temperature provided by sensor BME680"
+    mandatory humidity            as Humidity               "relative humidity provided by sensor BME680"
+    mandatory pressure            as Barometer              "barometric pressure provided by sensor BME680"
+    mandatory gas_resistance      as GenericSensor          "volatile organic compounds (VOC) provided by sensor BME680"
+    mandatory altitude            as Altitude               "altitude provided by sensor BME680"
+    
+    /* Bosch Sensortec BNO055 */
+    mandatory ambient_temperature as Temperature            "temperature provided by sensor BNO055"
+    mandatory linear_acceleration as Accelerometer          "linear acceleratrion provided by sensor BNO055"
+    mandatory acceleration        as Accelerometer          "acceleratrion provided by sensor BNO055"
+    mandatory angular_velocity    as Gyrometer              "angular velocity provided by sensor BNO055"
+    mandatory gravity             as Accelerometer          "gravitational forces provided by sensor BNO055"
+    mandatory orientation         as MultipleAxisJoystick   "absolute orientation provided by sensor BNO055"
+    mandatory magnetometer        as Magnetometer           "magnetic field strength provided by sensor BNO055"
+    
+    /* others */
+    mandatory voltage             as Voltage                "the voltage supply"
+	}
+}

@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.examples.geolocation
+version 1.0.0
+displayname "Geoposition"
+description "Entity for Geoposition"
+
+entity Geoposition {
+  mandatory latitude as float
+  mandatory longitude as float
+}

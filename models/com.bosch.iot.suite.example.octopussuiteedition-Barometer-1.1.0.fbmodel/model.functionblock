@@ -1,0 +1,25 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example.octopussuiteedition
+version 1.1.0
+displayname "Barometer"
+description "Description: This IPSO object should be used with an air pressure sensor to report a barometer measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the barometer sensor. An example measurement unit is kPa (ucum:kPa)."
+
+functionblock Barometer {
+	
+	configuration {
+		
+	}
+	
+	status {
+		mandatory sensorValue as float with {readable : true, writable: false }   "Last or Current Measured Value from the Sensor"
+		optional minMeasuredValue as float with {readable : true, writable: false }   "The minimum value measured by the sensor since power ON or reset"
+		optional maxMeasuredValue as float with {readable : true, writable: false }   "The maximum value measured by the sensor since power ON or reset"
+		optional minRangeValue as float with {readable : true, writable: false }   "The minimum value that can be measured by the sensor"
+		optional maxRangeValue as float with {readable : true, writable: false }   "The maximum value that can be measured by the sensor"
+		optional sensorUnits as string with {readable : true, writable: false }   "If present, the type of sensor defined as the UCUM Unit Definition e.g. ?Cel? for Temperature in Celcius."
+	}
+	
+	operations {
+		resetMinandMaxMeasuredValues() "Reset the Min and Max Measured Values to Current Value"
+	}
+}

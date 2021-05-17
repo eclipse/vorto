@@ -1,0 +1,24 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.example
+version 2.0.0
+displayname "VirtualDemoDevice"
+description "Information model of a virtual demo device for the Bosch IoT Suite which you can open in your smartphone or web browser"
+
+using com.bosch.iot.suite.example.octopussuiteedition.Magnetometer;1.1.0
+using com.bosch.iot.suite.example.Switch;1.0.0
+using com.bosch.iot.suite.example.Display;1.0.0
+using com.bosch.iot.suite.example.LedLamp;1.0.0
+using com.bosch.iot.suite.examples.geolocation.Geolocation;1.0.0
+using org.eclipse.hawkbit.swupdatable.SoftwareUpdatable;2.0.0
+
+infomodel VirtualDemoDevice {
+
+	functionblocks {
+	    mandatory compass as Magnetometer "a compass that uses the sensor in a smartphone or which is set manually in a browser"
+	    mandatory switch as Switch "a switch that can be turned on and off"
+	    mandatory led as LedLamp  "a led wich you can control with the setColor() operation"
+	    mandatory display as Display "a display which shows the text that you set with the setText() operation"
+	    mandatory geolocation as Geolocation "coordinates to track the geoposition of the device"
+	    mandatory softwareUpdates as SoftwareUpdatable "represents the capability to download, install and manage software of a specific type via Bosch IoT Rollouts"
+	}
+}
