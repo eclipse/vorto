@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "SoftwareRemoveAction"
+description "Action instructing the device to remove a defined set of software."
+using org.eclipse.hawkbit.DependencyDescription;1.0.0
+
+entity SoftwareRemoveAction {
+  mandatory correlationId as string "An identifier used to correlate the status updates sent from the device for this action."
+  mandatory multiple software as DependencyDescription "Software to be removed."
+  optional weight as int <MIN 0, MAX 1000> "Priority in case of multiple, parallel instructions."
+  optional metadata as dictionary[string, string] "MetaData associated with Eclipse hawkBit's Distribution Set."
+  optional forced as boolean "Indicates the urgency of the software removal, when true the device should remove the software as soon as possible."
+}

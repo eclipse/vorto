@@ -1,0 +1,26 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "Status"
+description "Datatype for Status"
+
+enum Status {
+   STARTED "Confirmation that the request is received.",
+   DOWNLOADING "Required dependencies are being downloaded.",
+   DOWNLOADING_WAITING "In the state of downloading, but waiting for another operation to complete. Ex: user confirmation.",
+   DOWNLOADED "Software has been downloaded.",
+   INSTALLING "Software is being installed.",
+   INSTALLING_WAITING "In the state of installing, but waiting for another operation to complete. Ex: user confirmation, completion of another software etc.",
+   INSTALLED "Software has been installed.",
+   REMOVING "Software is in the progress of being removed",
+   REMOVING_WAITING "Software remove is waiting for some conditions, e.g. user-confirmation",
+   REMOVED "Software part has been removed - final success of all removals should report FINISHED_SUCCESS",
+   CANCELING "Operation is being cancelled.",
+   CANCELING_WAITING "Cancel is waiting. Ex: user confirmation.",
+   CANCEL_REJECTED "Cancel could not be performed.",
+   FINISHED_CANCELED "Operation is successfully cancelled.",
+   FINISHED_ERROR "Operation is completed with errors.",
+   FINISHED_SUCCESS "Operation is completed successfully.",
+   FINISHED_WARNING "Operation is completed with warnings.",
+   FINISHED_REJECTED "Operation is rejected."
+}

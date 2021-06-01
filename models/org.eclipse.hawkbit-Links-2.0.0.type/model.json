@@ -1,0 +1,105 @@
+{
+  "root" : {
+    "name" : "Links",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "2.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:Links:2.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:Links:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Links",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Links:2.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Links",
+      "description" : "Datatype for Links",
+      "category" : null,
+      "fileName" : "Links.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Url",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "url",
+        "description" : "Url to download the artifact.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "md5url",
+        "description" : "Url to download the MD5SUM file.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:Url:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Url",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Url",
+      "description" : "Datatype for Url",
+      "category" : null,
+      "fileName" : "Url.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "http",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "https",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

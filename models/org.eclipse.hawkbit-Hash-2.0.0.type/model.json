@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "Hash",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "2.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:Hash:2.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:Hash:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Hash",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Hash:2.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Hash",
+      "description" : "Datatype for Hash",
+      "category" : null,
+      "fileName" : "Hash.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "SHA1",
+        "description" : null,
+        "parent" : {
+          "name" : "Hash",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Hash:2.0.0"
+        }
+      }, {
+        "name" : "MD5",
+        "description" : null,
+        "parent" : {
+          "name" : "Hash",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Hash:2.0.0"
+        }
+      }, {
+        "name" : "SHA256",
+        "description" : null,
+        "parent" : {
+          "name" : "Hash",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Hash:2.0.0"
+        }
+      } ]
+    }
+  }
+}

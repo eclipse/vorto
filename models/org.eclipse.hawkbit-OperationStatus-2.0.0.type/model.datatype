@@ -1,0 +1,23 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "OperationStatus"
+description "Entity representing the status of an operation (install/remove) called on a device."
+
+using org.eclipse.hawkbit.Status;2.0.0
+using org.eclipse.hawkbit.SoftwareModuleId;2.0.0
+using org.eclipse.hawkbit.DependencyDescription;2.0.0
+using org.eclipse.vorto.Unit;1.0.1
+
+entity OperationStatus {
+ mandatory correlationId as string "Id used for correlating the status-update with the operation called before."
+ mandatory status as Status "One of the predefined status, representing the failure, progress or success of the operation."
+
+ optional softwareModule as SoftwareModuleId "Required in the case of an install/download/cancel operation, absent in case of remove or cancelRemove."
+ optional multiple software as DependencyDescription "Required for a remove or cancelRemove operation, absent in case of install/download/cancel."
+ 
+ optional progress as int with {
+		measurementUnit : org.eclipse.vorto.Unit.percent } <MIN 0 , MAX 100> "A progress indicator in percentage."
+ optional message as string "Message from the device to give more context to the transmitted status."
+ optional statusCode as string "Custom status code transmitted by the device."
+}

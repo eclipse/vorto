@@ -1,0 +1,55 @@
+{
+  "root" : {
+    "name" : "SoftwareDescription",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:SoftwareDescription:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:SoftwareDescription:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareDescription",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareDescription:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareDescription",
+      "description" : "Describes a software installed on the device.",
+      "category" : null,
+      "fileName" : "SoftwareDescription.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Name of the software.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : "Version of the software.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

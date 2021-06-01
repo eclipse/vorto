@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "ActionType"
+description "Defines the mode in which an install or download operation must be performed."
+
+enum ActionType {
+  FORCED "Device is advised to execute immediately.",
+  SOFT "Device can execute the update at any time, e.g. with user approval or according to its regular update time plan."
+}

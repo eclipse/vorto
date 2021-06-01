@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "Protocol"
+description "Protocol provided for downloading an artifact"
+
+enum Protocol {
+  HTTP,
+  HTTPS,
+  FTP,
+  SFTP
+}

@@ -1,0 +1,91 @@
+{
+  "root" : {
+    "name" : "ActionProperties",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:ActionProperties:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:ActionProperties:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ActionProperties",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:ActionProperties:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ActionProperties",
+      "description" : "Action arguments associated with a download or install operation.",
+      "category" : null,
+      "fileName" : "ActionProperties.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "ActionType",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "actionType",
+        "description" : "Type of the action",
+        "type" : {
+          "name" : "ActionType",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:ActionType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ActionType",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ActionType",
+      "description" : "Defines the mode in which an install or download operation must be performed.",
+      "category" : null,
+      "fileName" : "ActionType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "FORCED",
+        "description" : "Device is advised to execute immediately.",
+        "parent" : {
+          "name" : "ActionType",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+        }
+      }, {
+        "name" : "SOFT",
+        "description" : "Device can execute the update at any time, e.g. with user approval or according to its regular update time plan.",
+        "parent" : {
+          "name" : "ActionType",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+        }
+      } ]
+    }
+  }
+}

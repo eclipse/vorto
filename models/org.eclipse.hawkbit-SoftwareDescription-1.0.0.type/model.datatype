@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "SoftwareDescription"
+description "Describes a software installed on the device."
+
+entity SoftwareDescription {
+    mandatory name as string "Name of the software."
+    mandatory version as string "Version of the software."
+}

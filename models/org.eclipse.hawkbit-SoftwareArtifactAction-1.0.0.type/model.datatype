@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "SoftwareArtifactAction"
+description "Datatype for SoftwareArtifactAction"
+
+using org.eclipse.hawkbit.Links;1.0.0
+using org.eclipse.hawkbit.Hashes;1.0.0
+
+entity SoftwareArtifactAction {
+   mandatory filename as string "Filename of the software module artifact."
+   mandatory links as Links "Links to download the artifact and its md5Sum."
+   mandatory hashes as Hashes "Hashes to verify the downloaded content."
+   mandatory size as int "Artifact size."
+}

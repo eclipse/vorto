@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "ActionProperties"
+description "Action arguments associated with a download or install operation."
+
+using org.eclipse.hawkbit.ActionType;1.0.0
+
+entity ActionProperties {
+   mandatory actionType as ActionType "Type of the action"
+}

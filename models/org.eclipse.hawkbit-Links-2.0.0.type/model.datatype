@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "Links"
+description "Datatype for Links"
+
+using org.eclipse.hawkbit.Url;1.0.0
+
+entity Links {
+ mandatory url as string "Url to download the artifact."
+ mandatory md5url as string "Url to download the MD5SUM file."
+}

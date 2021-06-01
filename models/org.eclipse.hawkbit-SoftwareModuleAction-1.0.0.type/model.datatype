@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "SoftwareModuleAction"
+description "Entity that represents the information of the software module which is passed during the install or download operation"
+
+
+using org.eclipse.hawkbit.SoftwareArtifactAction ; 1.0.0
+
+entity SoftwareModuleAction {
+  optional name as string "An optional name for the software module."
+  mandatory version as string "Version of the software module."
+  mandatory multiple artifacts as SoftwareArtifactAction "List of software artifacts associated with this software module."
+  optional metaData as dictionary[string, string] "An optional configuration which can be configured from Eclipse hawkBit."
+}

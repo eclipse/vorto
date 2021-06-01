@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "UpdateAction"
+description "Information associated with install or download."
+
+using org.eclipse.hawkbit.SoftwareModuleAction;1.0.0
+using org.eclipse.hawkbit.ActionProperties;1.0.0
+
+entity UpdateAction {
+  mandatory correlationId as string "An identifier for the caller to associate with this action."
+  optional weight as int <MIN 0, MAX 1000> "Priority or urgency of the action. Higher weight represents higher priority."
+  mandatory actionProperties as ActionProperties
+  mandatory multiple softwareModules as SoftwareModuleAction "Software modules that need to be processed."
+  optional dsMetaData as dictionary[string, string] "MetaData associated with Eclipse hawkBit's Distribution Set."
+}

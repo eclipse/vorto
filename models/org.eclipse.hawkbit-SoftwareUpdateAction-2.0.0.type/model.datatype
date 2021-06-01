@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "SoftwareUpdateAction"
+description "Parameter used for instructing the device to install or download one or more software."
+
+using org.eclipse.hawkbit.SoftwareModuleAction;2.0.0
+
+entity SoftwareUpdateAction {
+  mandatory correlationId as string "An identifier used to correlate the status updates sent from the device for this action."
+  mandatory multiple softwareModules as SoftwareModuleAction "Software modules that needs to be processed."
+  
+  optional weight as int <MIN 0, MAX 1000> "Priority in case of multiple, parallel installation instructions."
+  optional metadata as dictionary[string, string] "Any other information which should be passed to the device."
+  optional forced as boolean "Indicates the urgency of the update. when true, the device should install as soon as possible."
+}

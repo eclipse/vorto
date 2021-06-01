@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "Hash"
+description "Datatype for Hash"
+
+enum Hash {
+  SHA1,
+  MD5,
+  SHA256
+}

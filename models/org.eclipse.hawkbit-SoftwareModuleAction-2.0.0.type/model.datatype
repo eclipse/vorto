@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "SoftwareModuleAction"
+description "Parameter representing a software module - a collection of artifacts to be downloaded and installed"
+
+
+using org.eclipse.hawkbit.SoftwareArtifactAction ; 2.0.0
+using org.eclipse.hawkbit.SoftwareModuleId;2.0.0
+
+entity SoftwareModuleAction {
+  mandatory softwareModule as SoftwareModuleId "A unique identifier for the software module."
+  optional multiple artifacts as SoftwareArtifactAction "List of software artifacts contained in the module. In case of a cancel request, this will not be provided."
+  optional metadata as dictionary[string, string] "Any other information which should be passed to the device."
+}

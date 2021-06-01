@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "SoftwareModuleId"
+description "Unique identifier for software-modules"
+
+entity SoftwareModuleId {
+   mandatory name as string "Name for the software module."
+   mandatory version as string "Version of the software module."
+}
