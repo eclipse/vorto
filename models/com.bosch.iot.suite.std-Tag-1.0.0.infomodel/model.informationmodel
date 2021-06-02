@@ -1,0 +1,8 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.std
+version 1.0.0
+displayname "Tag"
+description "Tag is used to facilitate grouping and searching of devices"
+
+infomodel Tag {
+}

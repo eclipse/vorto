@@ -1,0 +1,8 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.std
+version 1.0.0
+displayname "Filter"
+description "Filter is used to group devices based on their current state"
+
+infomodel Filter {
+}

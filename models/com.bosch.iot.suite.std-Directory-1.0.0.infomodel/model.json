@@ -1,0 +1,30 @@
+{
+  "root" : {
+    "name" : "Directory",
+    "namespace" : "com.bosch.iot.suite.std",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.std:Directory:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.std:Directory:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Directory",
+        "namespace" : "com.bosch.iot.suite.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.std:Directory:1.0.0"
+      },
+      "type" : "InformationModel",
+      "displayName" : "Directory",
+      "description" : "Directory is used to group devices in a tree-like structure",
+      "category" : null,
+      "fileName" : "Directory.infomodel",
+      "modelType" : "Infomodel",
+      "references" : [ ],
+      "functionblocks" : [ ]
+    }
+  }
+}
