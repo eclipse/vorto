@@ -1,0 +1,30 @@
+{
+  "root" : {
+    "name" : "Filter",
+    "namespace" : "com.bosch.iot.suite.std",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.std:Filter:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.std:Filter:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Filter",
+        "namespace" : "com.bosch.iot.suite.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.std:Filter:1.0.0"
+      },
+      "type" : "InformationModel",
+      "displayName" : "Filter",
+      "description" : "Filter is used to group devices based on their current state",
+      "category" : null,
+      "fileName" : "Filter.infomodel",
+      "modelType" : "Infomodel",
+      "references" : [ ],
+      "functionblocks" : [ ]
+    }
+  }
+}
