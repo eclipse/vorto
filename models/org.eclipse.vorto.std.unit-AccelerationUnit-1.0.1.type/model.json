@@ -1,0 +1,39 @@
+{
+  "root" : {
+    "name" : "AccelerationUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.1",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.1"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AccelerationUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : "AccelerationUnit",
+      "description" : "Datatype for AccelerationUnit",
+      "category" : null,
+      "fileName" : "AccelerationUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "metre_per_second_squared",
+        "description" : "m/s²",
+        "parent" : {
+          "name" : "AccelerationUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.1"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "root" : {
+    "name" : "Location3D",
+    "namespace" : "org.eclipse.vorto.std",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std:Location3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Location3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Location3D",
+      "description" : "Datatype for Location3D",
+      "category" : null,
+      "fileName" : "Location3D.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "longitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "latitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "altitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

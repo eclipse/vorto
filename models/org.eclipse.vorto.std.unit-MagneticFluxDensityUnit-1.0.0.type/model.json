@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "MagneticFluxDensityUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MagneticFluxDensityUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "MagneticStrengthUnit",
+      "description" : "Datatype for MagneticStrengthUnit",
+      "category" : null,
+      "fileName" : "MagneticFluxDensityUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "tesla",
+        "description" : "T",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      }, {
+        "name" : "micro_tesla",
+        "description" : "uT",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      }, {
+        "name" : "gauss",
+        "description" : "G",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

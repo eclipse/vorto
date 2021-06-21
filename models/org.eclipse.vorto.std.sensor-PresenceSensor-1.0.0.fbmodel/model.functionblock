@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "PresenceSensor"
+description "Functionblock for PresenceSensor"
+
+functionblock PresenceSensor {
+    status {
+        value as boolean
+    }
+}

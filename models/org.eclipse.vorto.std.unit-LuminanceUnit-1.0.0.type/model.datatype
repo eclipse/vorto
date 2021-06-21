@@ -1,0 +1,9 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "LuminanceUnit"
+description "Datatype for LuminanceUnit"
+
+enum LuminanceUnit {
+    candela_per_square_metre "cd/m^2"
+}

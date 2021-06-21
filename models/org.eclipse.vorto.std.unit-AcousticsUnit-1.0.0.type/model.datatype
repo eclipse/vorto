@@ -1,0 +1,9 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "AcousticsUnit"
+description "Datatype for AcousticsUnit"
+
+enum AcousticsUnit {
+    decibel "dB"
+}

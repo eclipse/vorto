@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "MagneticFieldSensor3D"
+description "Functionblock for MagneticFieldSensor3D"
+
+using org.eclipse.vorto.std.Value3D;1.0.0
+using org.eclipse.vorto.std.unit.MagneticFluxDensityUnit;1.0.0
+
+functionblock MagneticFieldSensor3D {
+    status {
+        value as Value3D with {
+            measurementUnit: org.eclipse.vorto.std.unit.MagneticFluxDensityUnit.micro_tesla
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+  "root" : {
+    "name" : "IlluminanceUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IlluminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "IlluminanceUnit",
+      "description" : "Datatype for IlluminanceUnit",
+      "category" : null,
+      "fileName" : "IlluminanceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "lux",
+        "description" : "lx",
+        "parent" : {
+          "name" : "IlluminanceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

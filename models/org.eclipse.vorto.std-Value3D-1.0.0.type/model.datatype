@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std
+version 1.0.0
+displayname "Value3D"
+description "Datatype for Value3D"
+
+entity Value3D {
+    x as double
+    y as double
+    z as double
+}

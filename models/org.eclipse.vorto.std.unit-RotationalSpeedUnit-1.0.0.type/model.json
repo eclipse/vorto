@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "RotationalSpeedUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RotationalSpeedUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RotationalSpeedUnit",
+      "description" : "Datatype for RotationalSpeedUnit",
+      "category" : null,
+      "fileName" : "RotationalSpeedUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "radian_per_second",
+        "description" : "rad/s",
+        "parent" : {
+          "name" : "RotationalSpeedUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0"
+        }
+      }, {
+        "name" : "revolutions_per_second",
+        "description" : "RPS",
+        "parent" : {
+          "name" : "RotationalSpeedUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0"
+        }
+      }, {
+        "name" : "degree_per_second",
+        "description" : "degree/s",
+        "parent" : {
+          "name" : "RotationalSpeedUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:RotationalSpeedUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

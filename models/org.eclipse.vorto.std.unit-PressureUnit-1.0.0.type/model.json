@@ -1,0 +1,84 @@
+{
+  "root" : {
+    "name" : "PressureUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:PressureUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PressureUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PressureUnit",
+      "description" : "Datatype for PressureUnit",
+      "category" : null,
+      "fileName" : "PressureUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "pascal",
+        "description" : "Pa",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      }, {
+        "name" : "bar",
+        "description" : "bar",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      }, {
+        "name" : "millimetre_of_mercury",
+        "description" : "mmHg",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      }, {
+        "name" : "inch_of_water",
+        "description" : "inAq",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      }, {
+        "name" : "pound_force_per_square_inch",
+        "description" : "psi",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      }, {
+        "name" : "inch_of_mercury",
+        "description" : "inHg",
+        "parent" : {
+          "name" : "PressureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:PressureUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

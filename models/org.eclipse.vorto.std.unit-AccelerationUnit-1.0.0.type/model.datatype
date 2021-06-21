@@ -1,0 +1,9 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "AccelerationUnit"
+description "Datatype for AccelerationUnit"
+
+enum AccelerationUnit {
+    metre_per_second_squared "m/s^2"
+}

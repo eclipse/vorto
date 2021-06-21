@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std
+version 1.0.0
+displayname "Location"
+description "Datatype for Location"
+
+entity Location {
+    mandatory longitude as double
+    mandatory latitude as double
+}

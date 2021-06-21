@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "PressureSensor"
+description "Functionblock for PressureSensor"
+
+using org.eclipse.vorto.std.unit.PressureUnit;1.0.0
+
+functionblock PressureSensor {
+	status {
+		value as double with {
+		    measurementUnit: org.eclipse.vorto.std.unit.PressureUnit.pascal
+		}
+  }
+}

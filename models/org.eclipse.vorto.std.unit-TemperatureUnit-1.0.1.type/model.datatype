@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.1
+displayname "TemperatureUnit"
+description "Datatype for TemperatureUnit"
+
+enum TemperatureUnit {
+    degree_celsius "℃",
+    degree_fahrenheit "℉",
+    kelvin "K"
+}

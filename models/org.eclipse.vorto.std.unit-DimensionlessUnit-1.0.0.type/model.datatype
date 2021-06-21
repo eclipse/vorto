@@ -1,0 +1,9 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "DimensionlessUnit"
+description "Datatype for DimensionlessUnit"
+
+enum DimensionlessUnit {
+    percent "%"
+}

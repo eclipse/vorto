@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "LocationSensor3D"
+description "Functionblock for LocationSensor3D"
+
+using org.eclipse.vorto.std.Location3D;1.0.0
+
+functionblock LocationSensor3D {
+    status {
+        value as Location3D
+    }
+}

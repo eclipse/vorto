@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "LengthUnit"
+description "Datatype for LengthUnit"
+
+enum LengthUnit {
+    metre "m",
+    inch "in",
+    hand "h",
+    foot "ft",
+    yard "yd",
+    fathom "fth",
+    chain "chain",
+    furlong "fur",
+    mile "mi",
+    nautical_mile "M"
+}

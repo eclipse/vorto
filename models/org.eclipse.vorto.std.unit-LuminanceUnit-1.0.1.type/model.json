@@ -1,0 +1,39 @@
+{
+  "root" : {
+    "name" : "LuminanceUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.1",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.1"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LuminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : "LuminanceUnit",
+      "description" : "Datatype for LuminanceUnit",
+      "category" : null,
+      "fileName" : "LuminanceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "candela_per_square_metre",
+        "description" : "cd/m²",
+        "parent" : {
+          "name" : "LuminanceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.1"
+        }
+      } ]
+    }
+  }
+}

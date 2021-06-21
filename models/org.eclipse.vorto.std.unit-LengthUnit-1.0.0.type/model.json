@@ -1,0 +1,120 @@
+{
+  "root" : {
+    "name" : "LengthUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:LengthUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LengthUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LengthUnit",
+      "description" : "Datatype for LengthUnit",
+      "category" : null,
+      "fileName" : "LengthUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "metre",
+        "description" : "m",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "inch",
+        "description" : "in",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "hand",
+        "description" : "h",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "foot",
+        "description" : "ft",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "yard",
+        "description" : "yd",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "fathom",
+        "description" : "fth",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "chain",
+        "description" : "chain",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "furlong",
+        "description" : "fur",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "mile",
+        "description" : "mi",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      }, {
+        "name" : "nautical_mile",
+        "description" : "M",
+        "parent" : {
+          "name" : "LengthUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LengthUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}
