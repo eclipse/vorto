@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.upload
+version 1.0.0
+displayname "State"
+description "Represents an upload state."
+
+enum State {
+    PENDING "The upload is still not started. It is an initial state.",
+    UPLOADING "The upload is in progress. It is an intermediate state.",
+    PAUSED "The upload is paused. It is an intermediated state.",
+    SUCCESS  "The upload was successfully finished. It is a final state.",
+    FAILED "The upload has failed. It is a final state.",
+    CANCELED  "The upload has been canceled. It is a final state."
+}

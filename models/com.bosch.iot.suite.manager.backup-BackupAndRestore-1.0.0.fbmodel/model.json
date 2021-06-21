@@ -1,0 +1,1170 @@
+{
+  "root": {
+    "name": "BackupAndRestore",
+    "namespace": "com.bosch.iot.suite.manager.backup",
+    "version": "1.0.0",
+    "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestore:1.0.0"
+  },
+  "models": {
+    "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "UploadStatus",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "UploadStatus",
+      "description": "Represents an upload status.",
+      "category": null,
+      "fileName": "UploadStatus.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "State",
+          "namespace": "com.bosch.iot.suite.manager.upload",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "Represents the upload correlation ID.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "state",
+          "description": "Represents the upload state.",
+          "type": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "startTime",
+          "description": "Represents the upload start time.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "endTime",
+          "description": "Represents the upload end time if it has been already finished.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "statusCode",
+          "description": "Represents upload request status code.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "message",
+          "description": "Represents upload request result as a human-readable message.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "progress",
+          "description": "Represents upload progress.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "100"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "info",
+          "description": "Represent the upload additional information.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "com.bosch.iot.suite.manager.backup:BackupAndRestore:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BackupAndRestore",
+        "namespace": "com.bosch.iot.suite.manager.backup",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestore:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "BackupAndRestore",
+      "description": "Provides capabilities to initiate a backup of data (and its subsequent restoring) to external storage.",
+      "category": null,
+      "fileName": "BackupAndRestore.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "BackupAndRestoreStatus",
+          "namespace": "com.bosch.iot.suite.manager.backup",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestoreStatus:1.0.0"
+        },
+        {
+          "name": "BackupAndRestoreStatus",
+          "namespace": "com.bosch.iot.suite.manager.backup",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestoreStatus:1.0.0"
+        },
+        {
+          "name": "UploadStatus",
+          "namespace": "com.bosch.iot.suite.manager.upload",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "providers",
+          "description": "Contains the available backup providers.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "lastOperation",
+          "description": "Represents the last triggered backup/restore status.",
+          "type": {
+            "name": "BackupAndRestoreStatus",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestoreStatus:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "type",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "id",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "attributes",
+          "description": null,
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "lastUpload",
+          "description": null,
+          "type": {
+            "name": "UploadStatus",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "backup",
+          "description": "Triggers a process to create data backup and upload it to external storage. Operation options contain backup request information. Options prefixed with options., will be included (without the prefix) in the sent request event options.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "providers",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": true,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "restore",
+          "description": "Triggers a process to restore data using a previously created backup.\nOperation options must contain\n- https.url - a download url of the backup data to be restored.\n- https.header.<header_key> - https.header. prefixed headers to be included in the download request. An example is https.header.x-my-header-name: my-header-value when the dowload request should include x-my-header-name: my-header-value header.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "providers",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": true,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "start",
+          "description": null,
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "url",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "headers",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "trigger",
+          "description": null,
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "cancel",
+          "description": null,
+          "result": {
+            "type": "BOOLEAN",
+            "multiple": false,
+            "primitive": true
+          },
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "statusCode",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "message",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        }
+      ],
+      "superType": {
+        "name": "Uploadable",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:Uploadable:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.manager.upload:Uploadable:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Uploadable",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:Uploadable:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Uploadable",
+      "description": "Functionblock for Uploadable",
+      "category": null,
+      "fileName": "Uploadable.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "UploadStatus",
+          "namespace": "com.bosch.iot.suite.manager.upload",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+        },
+        {
+          "name": "UploadStatus",
+          "namespace": "com.bosch.iot.suite.manager.upload",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "type",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "id",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "attributes",
+          "description": null,
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "lastUpload",
+          "description": null,
+          "type": {
+            "name": "UploadStatus",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [
+        {
+          "name": "request",
+          "properties": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": true,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "attributes": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "attributes": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "start",
+          "description": null,
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "url",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "headers",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "trigger",
+          "description": null,
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "options",
+              "description": null,
+              "type": {
+                "key": "STRING",
+                "value": "STRING",
+                "type": "dictionary"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "cancel",
+          "description": null,
+          "result": {
+            "type": "BOOLEAN",
+            "multiple": false,
+            "primitive": true
+          },
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "correlationId",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "statusCode",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            },
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "message",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        }
+      ],
+      "superType": null
+    },
+    "com.bosch.iot.suite.manager.backup:BackupAndRestoreStatus:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BackupAndRestoreStatus",
+        "namespace": "com.bosch.iot.suite.manager.backup",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.backup:BackupAndRestoreStatus:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "BackupAndRestoreStatus",
+      "description": "Represents backup/restore status.",
+      "category": null,
+      "fileName": "BackupAndRestoreStatus.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "State",
+          "namespace": "com.bosch.iot.suite.manager.backup",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "Represents the backup/restore correlation ID.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "state",
+          "description": "Represents the backup/restore state.",
+          "type": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "startTime",
+          "description": "Represents the backup/restore start time.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "endTime",
+          "description": "Represents the backup/restore end time if it has been already finished.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "statusCode",
+          "description": "Represents backup/restore status code.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "message",
+          "description": "Represents backup/restore result as a human-readable message.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "progress",
+          "description": "Represents backup/restore progress.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "100"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "info",
+          "description": "Represent the backup/restore additional information.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "com.bosch.iot.suite.manager.backup:State:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "State",
+        "namespace": "com.bosch.iot.suite.manager.backup",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "State",
+      "description": "Represents backup/restore state.",
+      "category": null,
+      "fileName": "State.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "BACKUP_STARTED",
+          "description": "The backup operation has been started.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "BACKUP_FINISHED",
+          "description": "The backup operation has finished successfully.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "BACKUP_FAILED",
+          "description": "The backup operation has failed.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_STARTED",
+          "description": "The restore operation has been started.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_FINISHED",
+          "description": "The restore operation has finished successfully.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_FAILED",
+          "description": "The restore operation has failed.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        }
+      ]
+    },
+    "com.bosch.iot.suite.manager.upload:State:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "State",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "State",
+      "description": "Represents an upload state.",
+      "category": null,
+      "fileName": "State.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "PENDING",
+          "description": "The upload is still not started. It is an initial state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "UPLOADING",
+          "description": "The upload is in progress. It is an intermediate state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "PAUSED",
+          "description": "The upload is paused. It is an intermediated state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "SUCCESS",
+          "description": "The upload was successfully finished. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "FAILED",
+          "description": "The upload has failed. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "CANCELED",
+          "description": "The upload has been canceled. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        }
+      ]
+    }
+  }
+}

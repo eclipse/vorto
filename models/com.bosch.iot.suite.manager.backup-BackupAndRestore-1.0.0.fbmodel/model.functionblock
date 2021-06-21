@@ -1,0 +1,24 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.backup
+version 1.0.0
+displayname "BackupAndRestore"
+description "Provides capabilities to initiate a backup of data (and its subsequent restoring) to external storage."
+
+using com.bosch.iot.suite.manager.upload.Uploadable;1.0.0
+using com.bosch.iot.suite.manager.backup.BackupAndRestoreStatus;1.0.0
+
+functionblock BackupAndRestore extends Uploadable {
+
+    status {
+        mandatory multiple providers as string "Contains the available backup providers."
+        optional lastOperation as BackupAndRestoreStatus "Represents the last triggered backup/restore status."
+    }
+    
+    operations {
+        backup(correlationId as string, multiple providers as string, options as dictionary[string, string]) "Triggers a process to create data backup and upload it to external storage. Operation options contain backup request information. Options prefixed with options., will be included (without the prefix) in the sent request event options."
+        restore(correlationId as string, multiple providers as string, options as dictionary[string, string]) "Triggers a process to restore data using a previously created backup.
+Operation options must contain
+- https.url - a download url of the backup data to be restored.
+- https.header.<header_key> - https.header. prefixed headers to be included in the download request. An example is https.header.x-my-header-name: my-header-value when the dowload request should include x-my-header-name: my-header-value header."
+    }
+}

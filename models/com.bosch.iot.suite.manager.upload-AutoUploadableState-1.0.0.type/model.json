@@ -1,0 +1,71 @@
+{
+  "root": {
+    "name": "AutoUploadableState",
+    "namespace": "com.bosch.iot.suite.manager.upload",
+    "version": "1.0.0",
+    "prettyFormat": "com.bosch.iot.suite.manager.upload:AutoUploadableState:1.0.0"
+  },
+  "models": {
+    "com.bosch.iot.suite.manager.upload:AutoUploadableState:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "AutoUploadableState",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:AutoUploadableState:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "AutoUploadableState",
+      "description": "Represents auto-uploadable state.",
+      "category": null,
+      "fileName": "AutoUploadableState.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "active",
+          "description": "Represents the current auto-upload active state.",
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "startTime",
+          "description": "Represents the auto-upload start time.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "endTime",
+          "description": "Represents the auto-upload end time.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.backup
+version 1.0.0
+displayname "State"
+description "Represents backup/restore state."
+
+enum State {
+    BACKUP_STARTED "The backup operation has been started.",
+    BACKUP_FINISHED "The backup operation has finished successfully.",
+    BACKUP_FAILED "The backup operation has failed.",
+ 
+    RESTORE_STARTED "The restore operation has been started.",
+    RESTORE_FINISHED "The restore operation has finished successfully.",
+    RESTORE_FAILED "The restore operation has failed."
+}

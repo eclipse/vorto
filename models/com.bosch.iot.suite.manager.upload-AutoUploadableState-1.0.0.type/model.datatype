@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.upload
+version 1.0.0
+displayname "AutoUploadableState"
+description "Represents auto-uploadable state."
+
+entity AutoUploadableState {
+    mandatory active as boolean "Represents the current auto-upload active state."
+    optional startTime as dateTime "Represents the auto-upload start time."
+    optional endTime as dateTime "Represents the auto-upload end time."
+}

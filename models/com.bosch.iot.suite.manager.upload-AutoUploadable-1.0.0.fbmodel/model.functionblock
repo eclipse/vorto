@@ -1,0 +1,20 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.upload
+version 1.0.0
+displayname "AutoUploadable"
+description "Provides capabilities for initiating automatic object upload to external storage."
+
+using com.bosch.iot.suite.manager.upload.AutoUploadableState;1.0.0
+using com.bosch.iot.suite.manager.upload.Uploadable;1.0.0
+
+functionblock AutoUploadable extends Uploadable {
+    
+    status {
+        optional autoUpload as AutoUploadableState "Represents the auto-upload state, including start time, end time, and current active state."
+    }
+    
+    operations {
+        activate(from as dateTime, to as dateTime) "Activates automatic upload for the defined period."
+        deactivate() "Deactivates the automatic upload."
+    }
+}
