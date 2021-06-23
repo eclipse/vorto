@@ -82,7 +82,7 @@ The ESP3266 Development board's ports will not be recognized by the Arduino IDE	
 **7.** Unzip the downloaded file and open it the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 
 **8.** In order to guarantee secure transmission of your data, the integration uses SSL. We therefore need a certificate.   
-Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub.crt) file and download it.   
+Right click and save the [iothub.crt](https://docs.bosch-iot-suite.com/hub/iothub.crt) file and download it.   
 We need to extract the fingerprint of this certificate to paste into our script later. This can be done by using
 ```bash
 openssl x509 -noout -fingerprint -sha1 -inform pem -in iothub.crt
