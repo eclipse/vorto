@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "IlluminanceSensor",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:IlluminanceSensor:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IlluminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "IlluminanceUnit",
+      "description" : "Datatype for IlluminanceUnit",
+      "category" : null,
+      "fileName" : "IlluminanceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "lux",
+        "description" : "lx",
+        "parent" : {
+          "name" : "IlluminanceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.vorto.std.sensor:IlluminanceSensor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "IlluminanceSensor",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:IlluminanceSensor:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "IlluminanceSensor",
+      "description" : "Functionblock for IlluminanceSensor",
+      "category" : null,
+      "fileName" : "IlluminanceSensor.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "IlluminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "lux",
+            "description" : "lx",
+            "parent" : {
+              "name" : "IlluminanceUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:IlluminanceUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

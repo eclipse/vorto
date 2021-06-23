@@ -1,0 +1,39 @@
+{
+  "root" : {
+    "name" : "AcousticsUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:AcousticsUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:AcousticsUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AcousticsUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:AcousticsUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "AcousticsUnit",
+      "description" : "Datatype for AcousticsUnit",
+      "category" : null,
+      "fileName" : "AcousticsUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "decibel",
+        "description" : "dB",
+        "parent" : {
+          "name" : "AcousticsUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:AcousticsUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

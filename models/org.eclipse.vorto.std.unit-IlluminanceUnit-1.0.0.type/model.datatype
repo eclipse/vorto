@@ -1,0 +1,9 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "IlluminanceUnit"
+description "Datatype for IlluminanceUnit"
+
+enum IlluminanceUnit {
+    lux "lx"
+}

@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "RotationSensor3D"
+description "Functionblock for RotationSensor3D"
+
+using org.eclipse.vorto.std.Value3D;1.0.0
+using org.eclipse.vorto.std.unit.RotationalSpeedUnit;1.0.0
+
+functionblock RotationSensor3D {
+    status {
+        value as Value3D with {
+            measurementUnit: org.eclipse.vorto.std.unit.RotationalSpeedUnit.degree_per_second
+        }
+    }
+}

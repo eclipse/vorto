@@ -1,0 +1,183 @@
+{
+  "root" : {
+    "name" : "MagneticFieldSensor3D",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:MagneticFieldSensor3D:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std:Value3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Value3D",
+      "description" : "Datatype for Value3D",
+      "category" : null,
+      "fileName" : "Value3D.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "y",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "z",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MagneticFluxDensityUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "MagneticStrengthUnit",
+      "description" : "Datatype for MagneticStrengthUnit",
+      "category" : null,
+      "fileName" : "MagneticFluxDensityUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "tesla",
+        "description" : "T",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      }, {
+        "name" : "micro_tesla",
+        "description" : "uT",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      }, {
+        "name" : "gauss",
+        "description" : "G",
+        "parent" : {
+          "name" : "MagneticFluxDensityUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.vorto.std.sensor:MagneticFieldSensor3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MagneticFieldSensor3D",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:MagneticFieldSensor3D:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "MagneticFieldSensor3D",
+      "description" : "Functionblock for MagneticFieldSensor3D",
+      "category" : null,
+      "fileName" : "MagneticFieldSensor3D.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      }, {
+        "name" : "MagneticFluxDensityUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+      }, {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : {
+          "name" : "Value3D",
+          "namespace" : "org.eclipse.vorto.std",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "micro_tesla",
+            "description" : "uT",
+            "parent" : {
+              "name" : "MagneticFluxDensityUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:MagneticFluxDensityUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

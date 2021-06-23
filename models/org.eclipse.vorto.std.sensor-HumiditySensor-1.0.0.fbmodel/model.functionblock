@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "HumiditySensor"
+description "Functionblock for HumiditySensor"
+
+using org.eclipse.vorto.std.unit.DimensionlessUnit;1.0.0
+
+functionblock HumiditySensor {
+    status {
+        value as double with {
+            measurementUnit: org.eclipse.vorto.std.unit.DimensionlessUnit.percent
+        }
+    }
+}

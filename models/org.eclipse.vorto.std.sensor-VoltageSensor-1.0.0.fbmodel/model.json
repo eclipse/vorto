@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "VoltageSensor",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:VoltageSensor:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ElectricPotentialDifferenceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ElectricPotentialDifferenceUnit",
+      "description" : "Datatype for ElectricPotentialDifferenceUnit",
+      "category" : null,
+      "fileName" : "ElectricPotentialDifferenceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "volt",
+        "description" : "V",
+        "parent" : {
+          "name" : "ElectricPotentialDifferenceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.vorto.std.sensor:VoltageSensor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "VoltageSensor",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:VoltageSensor:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "VoltageSensor",
+      "description" : "Functionblock for VoltageSensor",
+      "category" : null,
+      "fileName" : "VoltageSensor.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "ElectricPotentialDifferenceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "volt",
+            "description" : "V",
+            "parent" : {
+              "name" : "ElectricPotentialDifferenceUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

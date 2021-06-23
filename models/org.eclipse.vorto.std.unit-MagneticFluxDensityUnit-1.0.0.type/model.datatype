@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "MagneticStrengthUnit"
+description "Datatype for MagneticStrengthUnit"
+
+enum MagneticFluxDensityUnit {
+    tesla "T",
+    micro_tesla "uT",
+    gauss "G"
+}

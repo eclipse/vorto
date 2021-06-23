@@ -1,0 +1,165 @@
+{
+  "root" : {
+    "name" : "AccelerationSensor3D",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:AccelerationSensor3D:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std:Value3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Value3D",
+      "description" : "Datatype for Value3D",
+      "category" : null,
+      "fileName" : "Value3D.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "y",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "z",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AccelerationUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "AccelerationUnit",
+      "description" : "Datatype for AccelerationUnit",
+      "category" : null,
+      "fileName" : "AccelerationUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "metre_per_second_squared",
+        "description" : "m/s^2",
+        "parent" : {
+          "name" : "AccelerationUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.vorto.std.sensor:AccelerationSensor3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "AccelerationSensor3D",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:AccelerationSensor3D:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "AccelerationSensor3D",
+      "description" : "Functionblock for AccelerationSensor3D",
+      "category" : null,
+      "fileName" : "AccelerationSensor3D.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "AccelerationUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.0"
+      }, {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      }, {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : {
+          "name" : "Value3D",
+          "namespace" : "org.eclipse.vorto.std",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "metre_per_second_squared",
+            "description" : "m/s^2",
+            "parent" : {
+              "name" : "AccelerationUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:AccelerationUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

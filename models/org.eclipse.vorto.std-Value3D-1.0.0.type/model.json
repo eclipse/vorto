@@ -1,0 +1,67 @@
+{
+  "root" : {
+    "name" : "Value3D",
+    "namespace" : "org.eclipse.vorto.std",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std:Value3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Value3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Value3D:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Value3D",
+      "description" : "Datatype for Value3D",
+      "category" : null,
+      "fileName" : "Value3D.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "x",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "y",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "z",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

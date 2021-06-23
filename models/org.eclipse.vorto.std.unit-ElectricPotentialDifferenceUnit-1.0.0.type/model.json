@@ -1,0 +1,39 @@
+{
+  "root" : {
+    "name" : "ElectricPotentialDifferenceUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ElectricPotentialDifferenceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ElectricPotentialDifferenceUnit",
+      "description" : "Datatype for ElectricPotentialDifferenceUnit",
+      "category" : null,
+      "fileName" : "ElectricPotentialDifferenceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "volt",
+        "description" : "V",
+        "parent" : {
+          "name" : "ElectricPotentialDifferenceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:ElectricPotentialDifferenceUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "LocationSensor"
+description "Functionblock for LocationSensor"
+
+using org.eclipse.vorto.std.Location;1.0.0
+
+functionblock LocationSensor {
+    status {
+        value as Location
+    }
+}

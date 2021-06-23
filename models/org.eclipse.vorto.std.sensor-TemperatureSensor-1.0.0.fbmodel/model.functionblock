@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "TemperatureSensor"
+description "Functionblock for TemperatureSensor"
+
+using org.eclipse.vorto.std.unit.TemperatureUnit;1.0.0
+
+functionblock TemperatureSensor {
+    
+    status {
+        mandatory value as double with {
+            measurementUnit: org.eclipse.vorto.std.unit.TemperatureUnit.degree_celsius
+        }
+    }
+}

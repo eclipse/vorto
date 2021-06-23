@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "HumiditySensor",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:HumiditySensor:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.sensor:HumiditySensor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HumiditySensor",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:HumiditySensor:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "HumiditySensor",
+      "description" : "Functionblock for HumiditySensor",
+      "category" : null,
+      "fileName" : "HumiditySensor.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "DimensionlessUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:DimensionlessUnit:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "percent",
+            "description" : "%",
+            "parent" : {
+              "name" : "DimensionlessUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:DimensionlessUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "org.eclipse.vorto.std.unit:DimensionlessUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DimensionlessUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:DimensionlessUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "DimensionlessUnit",
+      "description" : "Datatype for DimensionlessUnit",
+      "category" : null,
+      "fileName" : "DimensionlessUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "percent",
+        "description" : "%",
+        "parent" : {
+          "name" : "DimensionlessUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:DimensionlessUnit:1.0.0"
+        }
+      } ]
+    }
+  }
+}

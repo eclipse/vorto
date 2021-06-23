@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "LuminanceSensor"
+description "Functionblock for LuminanceSensor"
+
+using org.eclipse.vorto.std.unit.LuminanceUnit;1.0.0
+
+functionblock LuminanceSensor {
+    status {
+        value as double with { 
+            measurementUnit: org.eclipse.vorto.std.unit.LuminanceUnit.candela_per_square_metre
+        }
+    }
+}

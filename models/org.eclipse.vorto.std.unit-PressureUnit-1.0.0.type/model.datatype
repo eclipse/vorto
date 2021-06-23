@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "PressureUnit"
+description "Datatype for PressureUnit"
+
+enum PressureUnit {
+    pascal "Pa",
+    bar "bar",
+    millimetre_of_mercury "mmHg",
+    inch_of_water "inAq",
+    pound_force_per_square_inch "psi",
+    inch_of_mercury "inHg"
+}

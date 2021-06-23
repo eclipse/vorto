@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.unit
+version 1.0.0
+displayname "RotationalSpeedUnit"
+description "Datatype for RotationalSpeedUnit"
+
+enum RotationalSpeedUnit {
+    radian_per_second "rad/s",
+    revolutions_per_second "RPS",
+    degree_per_second "degree/s" 
+}

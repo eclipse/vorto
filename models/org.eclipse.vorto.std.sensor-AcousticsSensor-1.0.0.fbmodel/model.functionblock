@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "AcousticsSensor"
+description "Functionblock for AcousticsSensor"
+
+using org.eclipse.vorto.std.unit.AcousticsUnit;1.0.0
+
+functionblock AcousticsSensor {
+    status {
+        value as double with {
+            measurementUnit: org.eclipse.vorto.std.unit.AcousticsUnit.decibel
+        }
+    }
+}

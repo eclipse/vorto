@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "DistanceSensor"
+description "Functionblock for DistanceSensor"
+
+using org.eclipse.vorto.std.unit.LengthUnit;1.0.0
+
+functionblock DistanceSensor {
+    status {
+        value as double with {
+            measurementUnit: org.eclipse.vorto.std.unit.LengthUnit.metre
+        }
+    }
+}

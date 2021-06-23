@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.vorto.std.sensor
+version 1.0.0
+displayname "VoltageSensor"
+description "Functionblock for VoltageSensor"
+
+using org.eclipse.vorto.std.unit.ElectricPotentialDifferenceUnit;1.0.0
+
+functionblock VoltageSensor {
+    status {
+        value as double with {
+            measurementUnit: org.eclipse.vorto.std.unit.ElectricPotentialDifferenceUnit.volt
+        }
+    }
+}

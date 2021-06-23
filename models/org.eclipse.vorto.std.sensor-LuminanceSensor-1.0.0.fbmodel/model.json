@@ -1,0 +1,93 @@
+{
+  "root" : {
+    "name" : "LuminanceSensor",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:LuminanceSensor:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LuminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LuminanceUnit",
+      "description" : "Datatype for LuminanceUnit",
+      "category" : null,
+      "fileName" : "LuminanceUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "candela_per_square_metre",
+        "description" : "cd/m^2",
+        "parent" : {
+          "name" : "LuminanceUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.0"
+        }
+      } ]
+    },
+    "org.eclipse.vorto.std.sensor:LuminanceSensor:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LuminanceSensor",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:LuminanceSensor:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "LuminanceSensor",
+      "description" : "Functionblock for LuminanceSensor",
+      "category" : null,
+      "fileName" : "LuminanceSensor.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "LuminanceUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "MEASUREMENT_UNIT",
+          "value" : {
+            "name" : "candela_per_square_metre",
+            "description" : "cd/m^2",
+            "parent" : {
+              "name" : "LuminanceUnit",
+              "namespace" : "org.eclipse.vorto.std.unit",
+              "version" : "1.0.0",
+              "prettyFormat" : "org.eclipse.vorto.std.unit:LuminanceUnit:1.0.0"
+            }
+          }
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

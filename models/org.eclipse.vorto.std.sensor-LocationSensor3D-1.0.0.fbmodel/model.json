@@ -1,0 +1,119 @@
+{
+  "root" : {
+    "name" : "LocationSensor3D",
+    "namespace" : "org.eclipse.vorto.std.sensor",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.vorto.std.sensor:LocationSensor3D:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.sensor:LocationSensor3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LocationSensor3D",
+        "namespace" : "org.eclipse.vorto.std.sensor",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std.sensor:LocationSensor3D:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "LocationSensor3D",
+      "description" : "Functionblock for LocationSensor3D",
+      "category" : null,
+      "fileName" : "LocationSensor3D.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "Location3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+      }, {
+        "name" : "Location3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : {
+          "name" : "Location3D",
+          "namespace" : "org.eclipse.vorto.std",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    },
+    "org.eclipse.vorto.std:Location3D:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Location3D",
+        "namespace" : "org.eclipse.vorto.std",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.vorto.std:Location3D:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Location3D",
+      "description" : "Datatype for Location3D",
+      "category" : null,
+      "fileName" : "Location3D.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "longitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "latitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "altitude",
+        "description" : null,
+        "type" : "DOUBLE",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

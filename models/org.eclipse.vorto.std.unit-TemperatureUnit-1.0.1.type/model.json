@@ -1,0 +1,57 @@
+{
+  "root" : {
+    "name" : "TemperatureUnit",
+    "namespace" : "org.eclipse.vorto.std.unit",
+    "version" : "1.0.1",
+    "prettyFormat" : "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1"
+  },
+  "models" : {
+    "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "TemperatureUnit",
+        "namespace" : "org.eclipse.vorto.std.unit",
+        "version" : "1.0.1",
+        "prettyFormat" : "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1"
+      },
+      "type" : "Datatype",
+      "displayName" : "TemperatureUnit",
+      "description" : "Datatype for TemperatureUnit",
+      "category" : null,
+      "fileName" : "TemperatureUnit.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "degree_celsius",
+        "description" : "℃",
+        "parent" : {
+          "name" : "TemperatureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1"
+        }
+      }, {
+        "name" : "degree_fahrenheit",
+        "description" : "℉",
+        "parent" : {
+          "name" : "TemperatureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1"
+        }
+      }, {
+        "name" : "kelvin",
+        "description" : "K",
+        "parent" : {
+          "name" : "TemperatureUnit",
+          "namespace" : "org.eclipse.vorto.std.unit",
+          "version" : "1.0.1",
+          "prettyFormat" : "org.eclipse.vorto.std.unit:TemperatureUnit:1.0.1"
+        }
+      } ]
+    }
+  }
+}
