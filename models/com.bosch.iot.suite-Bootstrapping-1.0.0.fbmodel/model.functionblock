@@ -1,0 +1,25 @@
+vortolang 1.0
+namespace com.bosch.iot.suite
+version 1.0.0
+displayname "Bootstrapping"
+description "Helper service that allows bootstrapping to the right field subscription and additional custom configuration."
+
+functionblock Bootstrapping {
+  events {
+    request {
+      requestId as string "Identifier used to match all the requests and the responses."
+      optional chunk as string "One or more optional base64 encoded chunks of additional pre-configuration data."
+      optional hash as string "SHA256 hash checksum of all additional pre-configuration data chunks, also used to mark the last chunk."
+    } "One or more events (if the data can not fit into a single message) sent as first step from edge to cloud."
+  }
+
+  operations {
+    response (
+      requestId as string, "Identifier used to match all the requests and the responses."
+      optional chunk as string, "One or more optional base64 encoded chunks of additional configuration data."
+      optional hash as string, "SHA256 hash checksum of all additional configuration data chunks, also used to mark the last chunk."
+      optional provisioning as string, "Field subscription provisioning info as JSON."
+      optional error as short "Error with HTTP status code semantics i.e. 4xx for client errors, 5xx for server errors."
+    ) "One or more operations (if the data can not fit into a single message) sent as second step from cloud to edge."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "root" : {
+    "name" : "Bootstrapping",
+    "namespace" : "com.bosch.iot.suite",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite:Bootstrapping:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite:Bootstrapping:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Bootstrapping",
+        "namespace" : "com.bosch.iot.suite",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite:Bootstrapping:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Bootstrapping",
+      "description" : "Helper service that allows bootstrapping to the right field subscription and additional custom configuration.",
+      "category" : null,
+      "fileName" : "Bootstrapping.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ {
+        "name" : "request",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "requestId",
+          "description" : "Identifier used to match all the requests and the responses.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "chunk",
+          "description" : "One or more optional base64 encoded chunks of additional pre-configuration data.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "hash",
+          "description" : "SHA256 hash checksum of all additional pre-configuration data chunks, also used to mark the last chunk.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        } ]
+      } ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "response",
+        "description" : null,
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "requestId",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "chunk",
+        "description" : null,
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "hash",
+        "description" : null,
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "provisioning",
+        "description" : null,
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "error",
+        "description" : null,
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    }
+  }
+}
