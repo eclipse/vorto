@@ -1,0 +1,91 @@
+{
+  "root": {
+    "name": "State",
+    "namespace": "com.bosch.iot.suite.manager.upload",
+    "version": "1.0.0",
+    "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+  },
+  "models": {
+    "com.bosch.iot.suite.manager.upload:State:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "State",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "State",
+      "description": "Represents an upload state.",
+      "category": null,
+      "fileName": "State.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "PENDING",
+          "description": "The upload is still not started. It is an initial state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "UPLOADING",
+          "description": "The upload is in progress. It is an intermediate state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "PAUSED",
+          "description": "The upload is paused. It is an intermediated state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "SUCCESS",
+          "description": "The upload was successfully finished. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "FAILED",
+          "description": "The upload has failed. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "CANCELED",
+          "description": "The upload has been canceled. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        }
+      ]
+    }
+  }
+}

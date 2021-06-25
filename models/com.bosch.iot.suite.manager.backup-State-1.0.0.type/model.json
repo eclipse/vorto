@@ -1,0 +1,91 @@
+{
+  "root": {
+    "name": "State",
+    "namespace": "com.bosch.iot.suite.manager.backup",
+    "version": "1.0.0",
+    "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+  },
+  "models": {
+    "com.bosch.iot.suite.manager.backup:State:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "State",
+        "namespace": "com.bosch.iot.suite.manager.backup",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "State",
+      "description": "Represents backup/restore state.",
+      "category": null,
+      "fileName": "State.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "BACKUP_STARTED",
+          "description": "The backup operation has been started.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "BACKUP_FINISHED",
+          "description": "The backup operation has finished successfully.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "BACKUP_FAILED",
+          "description": "The backup operation has failed.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_STARTED",
+          "description": "The restore operation has been started.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_FINISHED",
+          "description": "The restore operation has finished successfully.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        },
+        {
+          "name": "RESTORE_FAILED",
+          "description": "The restore operation has failed.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.backup",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.backup:State:1.0.0"
+          }
+        }
+      ]
+    }
+  }
+}

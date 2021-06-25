@@ -1,0 +1,45 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.upload
+version 1.0.0
+displayname "Uploadable"
+description "Provides capabilities for large objects upload to external storage."
+
+using com.bosch.iot.suite.manager.upload.UploadStatus;1.0.0
+
+functionblock Uploadable {
+    status {
+        mandatory type as string "Represents the uploaded objects type, e.g. log, backup, diagnostics, etc."
+        mandatory context as string "Represents the uploaded objects context, unique in the scope of the type. An example context for log type is 'application', 'system', etc."
+        optional info as dictionary[string, string] "Represents the instance-specific information."
+        optional lastUpload as UploadStatus "Represents the last triggered upload status."
+    }
+    
+    events {
+        request {
+            mandatory correlationId as string "Upload request correlation ID."
+            optional options as dictionary[string, string] "Contains upload request additional information. An example is supported storage providers, temporary credentials validity, uploaded object key, etc."
+        }
+    }
+    
+    operations {
+        start(correlationId as string, options as dictionary[string, string]) "Starts an upload with the provided correlation ID and options.
+Generic upload options could contain
+- https.url - upload HTTPS url
+- https.method - upload HTTPS method, PUT is used by default
+- https.header.<header_key> - https.header. prefixed headers to be included in the upload request. An example is https.header.x-my-header-name: my-header-value when the upload request should include x-my-header-name: my-header-value header
+Cloud-specific upload options could contain provider credentials. An example of AWS S3 upload options could be
+- aws.region
+- aws.access.key.id
+- aws.secret.access.key
+- aws.session.token
+- aws.s3.bucket
+Azure Blob Storage upload options could be
+- azure.storage.endpoint
+- azure.shared.access.signature
+- azure.blob.container
+Options prefixed with info. should be included (without the prefix) in the lastUpload status. An example is info.downloadUrl containing the address the uploaded object could be downloaded from."
+    
+        trigger(correlationId as string, options as dictionary[string, string]) "Triggers upload request. Options contain request information. Options prefixed with options. should be included (without the prefix) in the sent request event options."
+        cancel(correlationId as string, statusCode as string, message as string) "Cancels the upload identified by the correlation ID, only if cancel operation is supported and the upload is not already finished."
+    }
+}

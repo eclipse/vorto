@@ -1,0 +1,242 @@
+{
+  "root": {
+    "name": "UploadStatus",
+    "namespace": "com.bosch.iot.suite.manager.upload",
+    "version": "1.0.0",
+    "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+  },
+  "models": {
+    "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "UploadStatus",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:UploadStatus:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "UploadStatus",
+      "description": "Represents an upload status.",
+      "category": null,
+      "fileName": "UploadStatus.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "State",
+          "namespace": "com.bosch.iot.suite.manager.upload",
+          "version": "1.0.0",
+          "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "Represents the upload correlation ID.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "state",
+          "description": "Represents the upload state.",
+          "type": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "startTime",
+          "description": "Represents the upload start time.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "endTime",
+          "description": "Represents the upload end time if it has been already finished.",
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "statusCode",
+          "description": "Represents upload request status code.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "message",
+          "description": "Represents upload request result as a human-readable message.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "progress",
+          "description": "Represents upload progress.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "100"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "info",
+          "description": "Represent the upload additional information.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "com.bosch.iot.suite.manager.upload:State:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "State",
+        "namespace": "com.bosch.iot.suite.manager.upload",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "State",
+      "description": "Represents an upload state.",
+      "category": null,
+      "fileName": "State.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "PENDING",
+          "description": "The upload is still not started. It is an initial state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "UPLOADING",
+          "description": "The upload is in progress. It is an intermediate state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "PAUSED",
+          "description": "The upload is paused. It is an intermediated state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "SUCCESS",
+          "description": "The upload was successfully finished. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "FAILED",
+          "description": "The upload has failed. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        },
+        {
+          "name": "CANCELED",
+          "description": "The upload has been canceled. It is a final state.",
+          "parent": {
+            "name": "State",
+            "namespace": "com.bosch.iot.suite.manager.upload",
+            "version": "1.0.0",
+            "prettyFormat": "com.bosch.iot.suite.manager.upload:State:1.0.0"
+          }
+        }
+      ]
+    }
+  }
+}

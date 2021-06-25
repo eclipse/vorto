@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.backup
+version 1.0.0
+displayname "BackupAndRestoreStatus"
+description "Represents backup/restore status."
+
+using com.bosch.iot.suite.manager.backup.State;1.0.0
+
+entity BackupAndRestoreStatus {
+    mandatory correlationId as string "Represents the backup/restore correlation ID."
+    mandatory state as State "Represents the backup/restore state."
+    optional startTime as dateTime "Represents the backup/restore start time."
+    optional endTime as dateTime "Represents the backup/restore end time if it has been already finished."
+    optional statusCode as string "Represents backup/restore status code."
+    optional message as string "Represents backup/restore result as a human-readable message."
+    optional progress as int <MIN 0, MAX 100> "Represents backup/restore progress."
+    optional info as dictionary[string, string] "Represent the backup/restore additional information."
+}

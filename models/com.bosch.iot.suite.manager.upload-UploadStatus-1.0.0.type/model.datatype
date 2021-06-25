@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.manager.upload
+version 1.0.0
+displayname "UploadStatus"
+description "Represents an upload status."
+
+using com.bosch.iot.suite.manager.upload.State;1.0.0
+
+entity UploadStatus {
+    mandatory correlationId as string "Represents the upload correlation ID."
+    mandatory state as State "Represents the upload state."
+    optional startTime as dateTime "Represents the upload start time."
+    optional endTime as dateTime "Represents the upload end time if it has been already finished."
+    optional statusCode as string "Represents upload request status code."
+    optional message as string "Represents upload request result as a human-readable message."
+    optional progress as int <MIN 0, MAX 100> "Represents upload progress."
+    optional info as dictionary[string, string] "Represent the upload additional information."
+}
