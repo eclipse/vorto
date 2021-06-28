@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "Hashes"
+description "Hashes to verify the downloaded payload"
+
+entity Hashes {
+  sha1 as string
+  md5 as string
+  sha256 as string
+}

@@ -1,0 +1,344 @@
+{
+  "root" : {
+    "name" : "SoftwareModuleAction",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:SoftwareModuleAction:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:Links:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Links",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Links:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Links",
+      "description" : "Datatype for Links",
+      "category" : null,
+      "fileName" : "Links.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Url",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "download",
+        "description" : "Url of the artifact.",
+        "type" : {
+          "name" : "Url",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "md5sum",
+        "description" : "Url of the md5Sum file.",
+        "type" : {
+          "name" : "Url",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:Url:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Url",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Url:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Url",
+      "description" : "Datatype for Url",
+      "category" : null,
+      "fileName" : "Url.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "http",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "https",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:Hashes:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Hashes",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Hashes:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Hashes",
+      "description" : "Hashes to verify the downloaded payload",
+      "category" : null,
+      "fileName" : "Hashes.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sha1",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "md5",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sha256",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:SoftwareModuleAction:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareModuleAction",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareModuleAction:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareModuleAction",
+      "description" : "Entity that represents the information of the software module which is passed during the install or download operation",
+      "category" : null,
+      "fileName" : "SoftwareModuleAction.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "SoftwareArtifactAction",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareArtifactAction:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "name",
+        "description" : "An optional name for the software module.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : "Version of the software module.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "artifacts",
+        "description" : "List of software artifacts associated with this software module.",
+        "type" : {
+          "name" : "SoftwareArtifactAction",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:SoftwareArtifactAction:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "metaData",
+        "description" : "An optional configuration which can be configured from Eclipse hawkBit.",
+        "type" : {
+          "key" : "STRING",
+          "value" : "STRING",
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:SoftwareArtifactAction:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareArtifactAction",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareArtifactAction:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareArtifactAction",
+      "description" : "Datatype for SoftwareArtifactAction",
+      "category" : null,
+      "fileName" : "SoftwareArtifactAction.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Links",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Links:1.0.0"
+      }, {
+        "name" : "Hashes",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Hashes:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "filename",
+        "description" : "Filename of the software module artifact.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "links",
+        "description" : "Links to download the artifact and its md5Sum.",
+        "type" : {
+          "name" : "Links",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Links:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hashes",
+        "description" : "Hashes to verify the downloaded content.",
+        "type" : {
+          "name" : "Hashes",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Hashes:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "size",
+        "description" : "Artifact size.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

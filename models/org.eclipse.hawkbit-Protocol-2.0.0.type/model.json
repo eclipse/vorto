@@ -1,0 +1,66 @@
+{
+  "root" : {
+    "name" : "Protocol",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "2.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:Protocol:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Protocol",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Protocol",
+      "description" : "Protocol provided for downloading an artifact",
+      "category" : null,
+      "fileName" : "Protocol.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "HTTP",
+        "description" : null,
+        "parent" : {
+          "name" : "Protocol",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+        }
+      }, {
+        "name" : "HTTPS",
+        "description" : null,
+        "parent" : {
+          "name" : "Protocol",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+        }
+      }, {
+        "name" : "FTP",
+        "description" : null,
+        "parent" : {
+          "name" : "Protocol",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+        }
+      }, {
+        "name" : "SFTP",
+        "description" : null,
+        "parent" : {
+          "name" : "Protocol",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
+        }
+      } ]
+    }
+  }
+}

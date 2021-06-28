@@ -1,0 +1,226 @@
+{
+  "root" : {
+    "name" : "OperationStatus",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:OperationStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OperationStatus",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OperationStatus",
+      "description" : "Entity representing the status of an UpdateAction.",
+      "category" : null,
+      "fileName" : "OperationStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Status",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "correlationId",
+        "description" : "Correlation id of the UpdateAction entity.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "operation",
+        "description" : "Operation for which the status is provided, for example: download or install.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Status of the last performed operation on this software module.",
+        "type" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "message",
+        "description" : "Message that can assist for further troubleshooting. If present, this message will be seen in the action history of Eclipse hawkBit.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:Status:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Status",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Status",
+      "description" : "Datatype for Status",
+      "category" : null,
+      "fileName" : "Status.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "STARTED",
+        "description" : "Confirmation that the request is received.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : "Required dependencies are being downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING_WAITING",
+        "description" : "In the state of downloading, but waiting for another operation to complete. Ex: user confirmation.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADED",
+        "description" : "Software has been downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLING",
+        "description" : "Software is being installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLING_WAITING",
+        "description" : "In the state of installing, but waiting for another operation to complete. Ex: user confirmation, completion of another software etc.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLED",
+        "description" : "Software has been installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "CANCELING",
+        "description" : "Operation is being cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "CANCELED",
+        "description" : "Operation is cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_ERROR",
+        "description" : "Operation is completed with errors.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_SUCCESS",
+        "description" : "Operation is completed successfully.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_WARNING",
+        "description" : "Operation is completed with warnings.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_REJECTED",
+        "description" : "Operation is rejected.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "DependencyDescription"
+description "Describes an installed software or other dependencies for a device."
+
+// Note that the combination of group.name:version should be a global unique key!
+entity DependencyDescription {
+    mandatory group as string "Group name (e.g. vendor). This should be unique together with name."
+    mandatory name as string "Name of the software or hardware part."
+    mandatory version as string "Version or value uniquely identifying the software or hardware."
+    optional type as string "An additional classification type, e.g. hw-part, docker, etc."
+}

@@ -1,0 +1,192 @@
+{
+  "root" : {
+    "name" : "Status",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "2.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:Status:2.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Status",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Status",
+      "description" : "Datatype for Status",
+      "category" : null,
+      "fileName" : "Status.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "STARTED",
+        "description" : "Confirmation that the request is received.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : "Required dependencies are being downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING_WAITING",
+        "description" : "In the state of downloading, but waiting for another operation to complete. Ex: user confirmation.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADED",
+        "description" : "Software has been downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "INSTALLING",
+        "description" : "Software is being installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "INSTALLING_WAITING",
+        "description" : "In the state of installing, but waiting for another operation to complete. Ex: user confirmation, completion of another software etc.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "INSTALLED",
+        "description" : "Software has been installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "REMOVING",
+        "description" : "Software is in the progress of being removed",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "REMOVING_WAITING",
+        "description" : "Software remove is waiting for some conditions, e.g. user-confirmation",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "REMOVED",
+        "description" : "Software part has been removed - final success of all removals should report FINISHED_SUCCESS",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "CANCELING",
+        "description" : "Operation is being cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "CANCELING_WAITING",
+        "description" : "Cancel is waiting. Ex: user confirmation.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "CANCEL_REJECTED",
+        "description" : "Cancel could not be performed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "FINISHED_CANCELED",
+        "description" : "Operation is successfully cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "FINISHED_ERROR",
+        "description" : "Operation is completed with errors.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "FINISHED_SUCCESS",
+        "description" : "Operation is completed successfully.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "FINISHED_WARNING",
+        "description" : "Operation is completed with warnings.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      }, {
+        "name" : "FINISHED_REJECTED",
+        "description" : "Operation is rejected.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:2.0.0"
+        }
+      } ]
+    }
+  }
+}

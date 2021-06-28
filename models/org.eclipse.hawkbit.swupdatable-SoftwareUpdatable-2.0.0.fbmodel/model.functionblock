@@ -1,0 +1,37 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit.swupdatable
+version 2.0.0
+displayname "SoftwareUpdatable"
+description "Represents the ability of a device to install and manage a certain type of software."
+
+using org.eclipse.hawkbit.SoftwareUpdateAction;2.0.0
+using org.eclipse.hawkbit.SoftwareRemoveAction;2.0.0
+using org.eclipse.hawkbit.OperationStatus;2.0.0
+using org.eclipse.hawkbit.DependencyDescription;2.0.0
+
+functionblock SoftwareUpdatable {
+
+  status {
+	   mandatory softwareModuleType as string "The type of the software managed by this feature."
+	   
+	   // Optional software-inventory and dependency management: Required when remove should be performed
+	   optional installedDependencies as dictionary[string, DependencyDescription] "List of all installed software managed by this feature. The key should be the concatenated group.name:version."
+	   optional contextDependencies as dictionary[string, DependencyDescription] "Information additional dependencies relevant for software installation, e.g. hardware parts or runtimes like OSGi container or JREs."
+       
+       // Operation status responses
+	   optional lastOperation as OperationStatus "The last operation's status response."
+	   optional lastFailedOperation as OperationStatus "The last operation status indicating a finished with error."
+  }
+
+  operations {
+       // Software installation
+	   install(update as SoftwareUpdateAction) "Instruction to download and install."
+	   download(update as SoftwareUpdateAction) "Instruction to download (without installing)."
+	   cancel(update as SoftwareUpdateAction) "Try to cancel a running installation."
+	   
+	   // Software removal
+	   remove(software as SoftwareRemoveAction) "Remove an installed software."
+	   cancelRemove(software as SoftwareRemoveAction) "Try to cancel a remove operation."
+  }
+	
+}

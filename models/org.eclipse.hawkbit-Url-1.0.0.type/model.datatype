@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "Url"
+description "Datatype for Url"
+
+entity Url {
+   http as string
+   https as string
+}

@@ -1,0 +1,382 @@
+{
+  "root" : {
+    "name" : "SoftwareModule",
+    "namespace" : "org.eclipse.hawkbit.swmodule",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit.swmodule:SoftwareModule:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:SoftwareDescription:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareDescription",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareDescription:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareDescription",
+      "description" : "Describes a software installed on the device.",
+      "category" : null,
+      "fileName" : "SoftwareDescription.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : "Name of the software.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : "Version of the software.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:OperationStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OperationStatus",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OperationStatus",
+      "description" : "Entity representing the status of an UpdateAction.",
+      "category" : null,
+      "fileName" : "OperationStatus.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Status",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "correlationId",
+        "description" : "Correlation id of the UpdateAction entity.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "operation",
+        "description" : "Operation for which the status is provided, for example: download or install.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Status of the last performed operation on this software module.",
+        "type" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "message",
+        "description" : "Message that can assist for further troubleshooting. If present, this message will be seen in the action history of Eclipse hawkBit.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit.swmodule:SoftwareModule:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareModule",
+        "namespace" : "org.eclipse.hawkbit.swmodule",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit.swmodule:SoftwareModule:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "SoftwareModule",
+      "description" : "Functionblock that represents one software module on the device. From Eclipse Ditto point of view, this must appear as a feature even before the software is downloaded.",
+      "category" : null,
+      "fileName" : "SoftwareModule.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "OperationStatus",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+      }, {
+        "name" : "SoftwareDescription",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:SoftwareDescription:1.0.0"
+      }, {
+        "name" : "OperationStatus",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "moduleName",
+        "description" : "Name of the software module as provided in the SoftwareModuleAction.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "moduleVersion",
+        "description" : "Version of the software module as provided in the SoftwareModuleAction.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Status of the last performed operation on this software module.",
+        "type" : {
+          "name" : "OperationStatus",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:OperationStatus:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "installedSoftware",
+        "description" : "List of all software dependencies which are contained in this software module.",
+        "type" : {
+          "key" : "STRING",
+          "value" : {
+            "name" : "SoftwareDescription",
+            "namespace" : "org.eclipse.hawkbit",
+            "version" : "1.0.0",
+            "prettyFormat" : "org.eclipse.hawkbit:SoftwareDescription:1.0.0"
+          },
+          "type" : "dictionary"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "remove",
+        "description" : "Removes the software module feature from Eclipse Ditto's thing representation.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "org.eclipse.hawkbit:Status:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Status",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Status",
+      "description" : "Datatype for Status",
+      "category" : null,
+      "fileName" : "Status.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "STARTED",
+        "description" : "Confirmation that the request is received.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : "Required dependencies are being downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING_WAITING",
+        "description" : "In the state of downloading, but waiting for another operation to complete. Ex: user confirmation.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADED",
+        "description" : "Software has been downloaded.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLING",
+        "description" : "Software is being installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLING_WAITING",
+        "description" : "In the state of installing, but waiting for another operation to complete. Ex: user confirmation, completion of another software etc.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "INSTALLED",
+        "description" : "Software has been installed.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "CANCELING",
+        "description" : "Operation is being cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "CANCELED",
+        "description" : "Operation is cancelled.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_ERROR",
+        "description" : "Operation is completed with errors.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_SUCCESS",
+        "description" : "Operation is completed successfully.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_WARNING",
+        "description" : "Operation is completed with warnings.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED_REJECTED",
+        "description" : "Operation is rejected.",
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:Status:1.0.0"
+        }
+      } ]
+    }
+  }
+}

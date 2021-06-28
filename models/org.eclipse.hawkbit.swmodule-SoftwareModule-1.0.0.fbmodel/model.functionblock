@@ -1,0 +1,23 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit.swmodule
+version 1.0.0
+displayname "SoftwareModule"
+description "Functionblock that represents one software module on the device. From Eclipse Ditto point of view, this must appear as a feature even before the software is downloaded."
+
+using org.eclipse.hawkbit.OperationStatus;1.0.0
+using org.eclipse.hawkbit.SoftwareDescription;1.0.0
+
+functionblock SoftwareModule {
+
+	status {
+	  mandatory moduleName as string "Name of the software module as provided in the SoftwareModuleAction."
+	  mandatory moduleVersion as string "Version of the software module as provided in the SoftwareModuleAction."
+	  mandatory status as OperationStatus "Status of the last performed operation on this software module."
+      mandatory installedSoftware as dictionary[string, SoftwareDescription] "List of all software dependencies which are contained in this software module."
+    }
+
+	operations {
+	   optional remove() "Removes the software module feature from Eclipse Ditto's thing representation."
+	}
+	
+}

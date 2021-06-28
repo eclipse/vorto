@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 1.0.0
+displayname "OperationStatus"
+description "Entity representing the status of an UpdateAction."
+
+using org.eclipse.hawkbit.Status;1.0.0
+
+entity OperationStatus {
+ mandatory correlationId as string "Correlation id of the UpdateAction entity."
+ mandatory operation as string "Operation for which the status is provided, for example: download or install."
+ mandatory status as Status "Status of the last performed operation on this software module."
+ optional message as string "Message that can assist for further troubleshooting. If present, this message will be seen in the action history of Eclipse hawkBit."
+}

@@ -1,0 +1,17 @@
+vortolang 1.0
+namespace org.eclipse.hawkbit
+version 2.0.0
+displayname "SoftwareArtifactAction"
+description "Datatype for SoftwareArtifactAction"
+using org.eclipse.vorto.Unit ; 1.0.1
+using org.eclipse.hawkbit.Protocol ; 2.0.0
+using org.eclipse.hawkbit.Hash ; 2.0.0
+using org.eclipse.hawkbit.Links ; 2.0.0
+
+entity SoftwareArtifactAction {
+   mandatory filename as string "Filename of the software module artifact."
+   mandatory download as dictionary [ Protocol , Links ] "Urls to download the artifact." 
+   mandatory checksums as dictionary [ Hash , string ] "Checksum values for checksum urls."
+   mandatory size as long with {
+		measurementUnit : org.eclipse.vorto.Unit.Byte } "Artifact size."
+}

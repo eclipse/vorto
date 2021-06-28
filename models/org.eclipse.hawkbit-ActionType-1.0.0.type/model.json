@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "ActionType",
+    "namespace" : "org.eclipse.hawkbit",
+    "version" : "1.0.0",
+    "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+  },
+  "models" : {
+    "org.eclipse.hawkbit:ActionType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ActionType",
+        "namespace" : "org.eclipse.hawkbit",
+        "version" : "1.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ActionType",
+      "description" : "Defines the mode in which an install or download operation must be performed.",
+      "category" : null,
+      "fileName" : "ActionType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "FORCED",
+        "description" : "Device is advised to execute immediately.",
+        "parent" : {
+          "name" : "ActionType",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+        }
+      }, {
+        "name" : "SOFT",
+        "description" : "Device can execute the update at any time, e.g. with user approval or according to its regular update time plan.",
+        "parent" : {
+          "name" : "ActionType",
+          "namespace" : "org.eclipse.hawkbit",
+          "version" : "1.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:ActionType:1.0.0"
+        }
+      } ]
+    }
+  }
+}
