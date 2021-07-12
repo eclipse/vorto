@@ -1,0 +1,398 @@
+{
+  "root" : {
+    "name" : "Appliance",
+    "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+    "version" : "1.0.1",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:Appliance:1.0.1"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da.items.whitegoods:Appliance:1.0.1" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Appliance",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+        "version" : "1.0.1",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:Appliance:1.0.1"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Appliance",
+      "description" : "Represents an appliance known by different names like white goods, major appliance and domestic appliance.",
+      "category" : null,
+      "fileName" : "Appliance.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "ApplianceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+      } ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "state",
+        "description" : "Represents the appliance state.",
+        "type" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        },
+        "constraints" : [ {
+          "type" : "NULLABLE",
+          "value" : "false"
+        } ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "phase",
+        "description" : "Represents the appliance phase.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "disabledOperations",
+        "description" : "Represents the disabled operations.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "on",
+        "description" : "Turns on the appliance.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "off",
+        "description" : "Turns off the appliance.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "start",
+        "description" : "Starts or resumes the appliance activity.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "stop",
+        "description" : "Stops the appliance activity.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "pause",
+        "description" : "Pauses the appliance activity.",
+        "result" : null,
+        "params" : [ ],
+        "breakable" : false
+      } ],
+      "superType" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ApplianceState",
+        "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "ApplianceState.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "OFF",
+        "description" : "The appliance has been turned off.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "STANDBY",
+        "description" : "The appliance went to standby mode.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "IDLE",
+        "description" : "The appliance is turned on, but it's not ready to operate.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "READY",
+        "description" : "The appliance is configured and ready to be started.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "DELAYED_START",
+        "description" : "The appliance delayed start has been configured.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "STARTED",
+        "description" : "The appliance activity has been started.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "ACTION_REQUIRED",
+        "description" : "The appliance activity requires an user interaction to continue.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "PAUSED",
+        "description" : "The appliance activity has been paused.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "STOPPING",
+        "description" : "The appliance activity is stopping.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "FINISHED",
+        "description" : "The appliance activity has finished.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "FAILED",
+        "description" : "The appliance activity has failed.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "STOPPED",
+        "description" : "The appliance activity has been stopped.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : "The appliance state is not known.",
+        "parent" : {
+          "name" : "ApplianceState",
+          "namespace" : "com.bosch.iot.suite.edge.services.da.items.whitegoods",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da.items.whitegoods:ApplianceState:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "FunctionalItem",
+        "namespace" : "com.bosch.iot.suite.edge.services.fim",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.fim:FunctionalItem:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Functional Item",
+      "description" : null,
+      "category" : null,
+      "fileName" : "FunctionalItem.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "tags",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        }, {
+          "type" : "EVENTABLE",
+          "value" : true
+        } ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.0
+
+enum DeviceStatus {
+	INITIALIZING "Indicates that the device is in process of initialization.",
+	ONLINE "Indicates that the recent communication with the device has been passed through.",
+	NOT_CONFIGURED "Indicates that the device is not configured.",
+	OFFLINE "Indicates that the recent communication with the device has been failed.",
+	NOT_INITIALIZED "Indicates that the device is still not initialized.",
+	FIRMWARE_UPDATING "Indicates that the device firmware is updating.",
+	REMOVING "Indicates that the device removing from the system is invoked.",
+	REMOVED "Indicates that the device is removed from the system."
+}

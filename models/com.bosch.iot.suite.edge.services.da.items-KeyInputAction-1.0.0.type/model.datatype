@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.0
+
+enum KeyInputAction {
+	PRESSED "The key has been pressed. Usually, there is a press and an immediate release.",
+	LONG_PRESSED "The key has been long pressed. Usually, there is a press, the key is held down for a while and it's released.",
+	HELD "The key has been held down. Usually, there is a press and the key is held down.",
+	RELEASED "The key has been released. Usually, there is a release after held down."
+}

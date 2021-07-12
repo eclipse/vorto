@@ -1,0 +1,33 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.whitegoods
+version 1.0.1
+displayname "Appliance"
+description "Represents an appliance known by different names like white goods, major appliance and domestic appliance."
+using com.bosch.iot.suite.edge.services.da.items.whitegoods.ApplianceState ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Appliance extends FunctionalItem {
+	status {
+		mandatory state as ApplianceState with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Represents the appliance state."
+
+		mandatory phase as string with {
+			readable : true,eventable : true
+		} "Represents the appliance phase."
+
+		mandatory multiple disabledOperations as string with {
+			readable : true,eventable : true
+		} "Represents the disabled operations."
+	}
+
+	operations {
+		mandatory on() "Turns on the appliance."
+		mandatory off() "Turns off the appliance."
+		mandatory start() "Starts or resumes the appliance activity."
+		mandatory stop() "Stops the appliance activity."
+		mandatory pause() "Pauses the appliance activity."
+	}
+
+}

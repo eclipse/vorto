@@ -1,0 +1,29 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.1
+using com.bosch.iot.suite.edge.services.da.items.maintenance.FirmwareUpdateState ; 1.0.0
+
+entity FirmwareUpdateStatus {
+
+	mandatory url as string with {
+		readable : true
+	} <NULLABLE false> "Represents the firmware image URL."
+
+	mandatory state as FirmwareUpdateState with {
+		readable : true
+	} <NULLABLE false> "Represents the firmware update state."
+
+	mandatory progress as byte with {
+		readable : true
+	} <MIN 0 , MAX 100 , NULLABLE false> "Represents the firmware update progress as a percent."
+
+	mandatory errorCode as int with {
+		readable : true
+	} <NULLABLE false> "Represents the firmware update error code."
+
+	mandatory errorMessage as string with {
+		readable : true
+	} "Represents the firmware update error message."
+
+}
