@@ -1,0 +1,12 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.0
+
+enum FirmwareUpdateState {
+	PENDING "The firmware update is still not started. It's an initial state.",
+	RUNNING "The firmware is updating. It's an intermediate state.",
+	SUCCEEDED "The firmware was successfully updated. It's a final state.",
+	FAILED "The firmware update has failed. It's a final state.",
+	CANCELED "The firmware update has been canceled. It's a final state."
+}

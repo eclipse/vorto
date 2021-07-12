@@ -1,0 +1,102 @@
+{
+  "root" : {
+    "name" : "DeviceStatus",
+    "namespace" : "com.bosch.iot.suite.edge.services.da",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DeviceStatus",
+        "namespace" : "com.bosch.iot.suite.edge.services.da",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : null,
+      "description" : null,
+      "category" : null,
+      "fileName" : "DeviceStatus.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "INITIALIZING",
+        "description" : "Indicates that the device is in process of initialization.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "ONLINE",
+        "description" : "Indicates that the recent communication with the device has been passed through.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "NOT_CONFIGURED",
+        "description" : "Indicates that the device is not configured.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "OFFLINE",
+        "description" : "Indicates that the recent communication with the device has been failed.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "NOT_INITIALIZED",
+        "description" : "Indicates that the device is still not initialized.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "FIRMWARE_UPDATING",
+        "description" : "Indicates that the device firmware is updating.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "REMOVING",
+        "description" : "Indicates that the device removing from the system is invoked.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      }, {
+        "name" : "REMOVED",
+        "description" : "Indicates that the device is removed from the system.",
+        "parent" : {
+          "name" : "DeviceStatus",
+          "namespace" : "com.bosch.iot.suite.edge.services.da",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.services.da:DeviceStatus:1.0.0"
+        }
+      } ]
+    }
+  }
+}

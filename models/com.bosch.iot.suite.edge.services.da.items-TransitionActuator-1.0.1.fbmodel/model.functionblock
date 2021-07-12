@@ -1,0 +1,24 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items
+version 1.0.1
+displayname "Transition Actuator"
+description "Represents an actuator that can change one value to another with a transition time."
+using com.bosch.iot.suite.edge.services.da.items.Actuator ; 1.0.0
+using com.bosch.iot.suite.edge.services.units.Quantity ; 1.0.0
+
+functionblock TransitionActuator extends Actuator {
+	status {
+		mandatory started as boolean with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Indicates whether the transition is started or not."
+	}
+
+	operations {
+		mandatory start(value as Quantity <NULLABLE false> "The target value.",
+			duration as long <MIN 0 , NULLABLE false> "The transition duration in milliseconds.")
+		"Starts a new transition with the given arguments."
+		mandatory stop() "Stops the current transition, if any."
+	}
+
+}

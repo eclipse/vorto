@@ -1,0 +1,10 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.0
+
+enum AdapterOperation {
+	CREATE "The protocol adapter allows to create devices manually.",
+	REMOVE "The protocol adapter allows to remove devices manually.",
+	CANCEL_REMOVE "The protocol adapter allows canceling the remove of the device."
+}

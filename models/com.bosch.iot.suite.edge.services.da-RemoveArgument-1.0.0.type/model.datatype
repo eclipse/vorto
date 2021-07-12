@@ -1,0 +1,11 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.0
+
+enum RemoveArgument {
+	FORCE "Define that the device should be removed immediately no matter if the device is connected or not.",
+	POSTPONE "Define that the device should be postpone removed.",
+	FORCE_RESET "Define that the device should be removed immediately and reset afterwards.",
+	POSTPONE_RESET "Define that the device should be postpone removed and reset afterwards."
+}

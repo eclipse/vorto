@@ -1,0 +1,28 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da
+version 1.0.1
+displayname "Device"
+description "This item abstracts the physical device."
+
+using com.bosch.iot.suite.edge.services.da.DeviceError ; 1.0.1
+using com.bosch.iot.suite.edge.services.da.DeviceStatus ; 1.0.0
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock Device extends FunctionalItem {
+
+	status {
+		mandatory status as DeviceStatus with {
+			readable : true,eventable : true
+		} <NULLABLE false> "Device status."
+
+		mandatory error as DeviceError with {
+			readable : true,eventable : true
+		} "Device status error."
+
+		mandatory timestamp_created as long with {
+			readable : true
+		} <NULLABLE false> "Time stamp when device is created."
+	}
+
+}

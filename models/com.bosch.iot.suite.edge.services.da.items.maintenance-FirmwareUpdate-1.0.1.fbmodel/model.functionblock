@@ -1,0 +1,22 @@
+vortolang 1.0
+
+namespace com.bosch.iot.suite.edge.services.da.items.maintenance
+version 1.0.1
+displayname "Firmware Update"
+description "Updates a firmware."
+using com.bosch.iot.suite.edge.services.da.items.maintenance.FirmwareUpdateStatus ; 1.0.1
+using com.bosch.iot.suite.edge.services.fim.FunctionalItem ; 1.0.0
+
+functionblock FirmwareUpdate extends FunctionalItem {
+	status {
+		mandatory status as FirmwareUpdateStatus with {
+			readable : true,eventable : true
+		} "Represents the firmware update status."
+	}
+
+	operations {
+		mandatory start(url as string "Firmware image URL.") "Starts the firmware update."
+		mandatory cancel() "Cancels the firmware update."
+	}
+
+}
