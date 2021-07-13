@@ -48,18 +48,19 @@ public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
   private void traceResponse(ClientHttpResponse response) throws IOException {
       StringBuilder inputStringBuilder = new StringBuilder();
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"));
-      String line = bufferedReader.readLine();
-      while (line != null) {
-          inputStringBuilder.append(line);
-          inputStringBuilder.append(NEWLINE);
-          line = bufferedReader.readLine();
+      try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))) {
+          String line = bufferedReader.readLine();
+          while (line != null) {
+              inputStringBuilder.append(line);
+              inputStringBuilder.append(NEWLINE);
+              line = bufferedReader.readLine();
+          } 
+          log.debug("============================response begin==========================================");
+          log.debug("Status code  : {}", response.getStatusCode());
+          log.debug("Status text  : {}", response.getStatusText());
+          log.debug("Headers      : {}", response.getHeaders());
+          log.debug("Response body: {}", inputStringBuilder.toString());
+          log.debug("=======================response end=================================================");
       }
-      log.debug("============================response begin==========================================");
-      log.debug("Status code  : {}", response.getStatusCode());
-      log.debug("Status text  : {}", response.getStatusText());
-      log.debug("Headers      : {}", response.getHeaders());
-      log.debug("Response body: {}", inputStringBuilder.toString());
-      log.debug("=======================response end=================================================");
   }
 }
