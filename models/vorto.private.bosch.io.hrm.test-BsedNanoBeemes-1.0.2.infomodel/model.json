@@ -1,0 +1,3109 @@
+{
+  "root": {
+    "name": "BsedNanoBeemes",
+    "namespace": "vorto.private.bosch.io.hrm.test",
+    "version": "1.0.2",
+    "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedNanoBeemes:1.0.2"
+  },
+  "models": {
+    "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedMeasurement",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.0",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "BsedMeasurement",
+      "description": "Datatype for BsedMeasurement",
+      "category": null,
+      "fileName": "BsedMeasurement.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "timestamp",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "measurements",
+          "description": null,
+          "type": {
+            "key": "STRING",
+            "value": "FLOAT",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit.swupdatable:SoftwareUpdatable:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareUpdatable",
+        "namespace": "org.eclipse.hawkbit.swupdatable",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit.swupdatable:SoftwareUpdatable:2.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "SoftwareUpdatable",
+      "description": "Represents the ability of a device to install and manage a certain type of software.",
+      "category": null,
+      "fileName": "SoftwareUpdatable.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SoftwareUpdateAction",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0"
+        },
+        {
+          "name": "SoftwareRemoveAction",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0"
+        },
+        {
+          "name": "OperationStatus",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+        },
+        {
+          "name": "DependencyDescription",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:2.0.0"
+        },
+        {
+          "name": "OperationStatus",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+        },
+        {
+          "name": "OperationStatus",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "softwareModuleType",
+          "description": "The type of the software managed by this feature.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "installedDependencies",
+          "description": "List of all installed software managed by this feature. The key should be the concatenated group.name:version.",
+          "type": {
+            "key": "STRING",
+            "value": {
+              "name": "DependencyDescription",
+              "namespace": "org.eclipse.hawkbit",
+              "version": "1.0.0",
+              "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            },
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "contextDependencies",
+          "description": "Information additional dependencies relevant for software installation, e.g. hardware parts or runtimes like OSGi container or JREs.",
+          "type": {
+            "key": "STRING",
+            "value": {
+              "name": "DependencyDescription",
+              "namespace": "org.eclipse.hawkbit",
+              "version": "1.0.0",
+              "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            },
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "lastOperation",
+          "description": "The last operation's status response.",
+          "type": {
+            "name": "OperationStatus",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "lastFailedOperation",
+          "description": "The last operation status indicating a finished with error.",
+          "type": {
+            "name": "OperationStatus",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "install",
+          "description": "Instruction to download and install.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "update",
+              "description": null,
+              "type": {
+                "name": "SoftwareUpdateAction",
+                "namespace": "org.eclipse.hawkbit",
+                "version": "2.0.0",
+                "prettyFormat": "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "download",
+          "description": "Instruction to download (without installing).",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "update",
+              "description": null,
+              "type": {
+                "name": "SoftwareUpdateAction",
+                "namespace": "org.eclipse.hawkbit",
+                "version": "2.0.0",
+                "prettyFormat": "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "cancel",
+          "description": "Try to cancel a running installation.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "update",
+              "description": null,
+              "type": {
+                "name": "SoftwareUpdateAction",
+                "namespace": "org.eclipse.hawkbit",
+                "version": "2.0.0",
+                "prettyFormat": "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "remove",
+          "description": "Remove an installed software.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "software",
+              "description": null,
+              "type": {
+                "name": "SoftwareRemoveAction",
+                "namespace": "org.eclipse.hawkbit",
+                "version": "2.0.0",
+                "prettyFormat": "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "cancelRemove",
+          "description": "Try to cancel a remove operation.",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "software",
+              "description": null,
+              "type": {
+                "name": "SoftwareRemoveAction",
+                "namespace": "org.eclipse.hawkbit",
+                "version": "2.0.0",
+                "prettyFormat": "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0"
+              },
+              "constraints": [],
+              "multiple": false,
+              "primitive": false
+            }
+          ],
+          "breakable": false
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:OperationStatus:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "OperationStatus",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:OperationStatus:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "OperationStatus",
+      "description": "Entity representing the status of an operation (install/remove) called on a device.",
+      "category": null,
+      "fileName": "OperationStatus.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "Status",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+        },
+        {
+          "name": "SoftwareModuleId",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleId:2.0.0"
+        },
+        {
+          "name": "DependencyDescription",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:2.0.0"
+        },
+        {
+          "name": "Unit",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.1",
+          "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "Id used for correlating the status-update with the operation called before.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "status",
+          "description": "One of the predefined status, representing the failure, progress or sucess of the operation.",
+          "type": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "softwareModule",
+          "description": "Required in the case of an install/download/cancel operation, absent in case of remove or cancelRemove.",
+          "type": {
+            "name": "SoftwareModuleId",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleId:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "software",
+          "description": "Required for a remove or cancelRemove operation, absent in case of install/download/cancel.",
+          "type": {
+            "name": "DependencyDescription",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "progress",
+          "description": "A progress indicator in percentage.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "100"
+            }
+          ],
+          "attributes": [
+            {
+              "type": "MEASUREMENT_UNIT",
+              "value": {
+                "name": "percent",
+                "description": null,
+                "parent": {
+                  "name": "Unit",
+                  "namespace": "org.eclipse.vorto",
+                  "version": "1.0.1",
+                  "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+                }
+              }
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "message",
+          "description": "Message from the device to give more context to the transmitted status.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "statusCode",
+          "description": "Custom status code transmitted by the device.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedMeterDevice",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.4",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4"
+      },
+      "type": "Functionblock",
+      "displayName": "BsedMeterDevice",
+      "description": "Functionblock for BsedMeterDevice",
+      "category": null,
+      "fileName": "BsedMeterDevice.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "BsedMeasurement",
+          "namespace": "vorto.private.bosch.io.hrm.test",
+          "version": "1.0.0",
+          "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+        }
+      ],
+      "configurationProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterPIN",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterType",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterFactor",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkDeliveryInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkStatusInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkMeasurementInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "obisPrecision",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkActive",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkDeliveryObis",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "timeserverUrl",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "lastTimesync",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "actualTime",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "wlanRssi",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "fwVersion",
+          "description": "OKK Firmware Version (example: FW1.23)",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "values",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "extendedValues",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterId",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "measurementInfo",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "accessPointOpen",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "faultProperties": [],
+      "events": [
+        {
+          "name": "measurementsEvent",
+          "properties": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": true,
+              "name": "measurements",
+              "description": null,
+              "type": {
+                "name": "BsedMeasurement",
+                "namespace": "vorto.private.bosch.io.hrm.test",
+                "version": "1.0.0",
+                "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+              },
+              "constraints": [],
+              "attributes": [],
+              "multiple": true,
+              "primitive": false
+            }
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateMeterPIN",
+          "description": "set meter PIN to retrieve extended measurement set",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "meterPIN",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateDeliveryInterval",
+          "description": "set delivery interval for measurement messages in seconds",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "updateInterval",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateStatusInterval",
+          "description": "set delivery interval for status messages in seconds",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "updateStatus",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateDeliveryObis",
+          "description": "set the Obis collected by the device as CSV string, eg. [\"1.8.0\",\"16.7.0\"] ",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "deliveryObisCsv",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateActiveStatus",
+          "description": "disable/enable device measurements",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "status",
+              "description": null,
+              "type": "BOOLEAN",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateTimeserverURL",
+          "description": "set URL to synchronize internal device clock, eg. https://ntp.org",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "ntpUrl",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateMeasurementInterval",
+          "description": "set measurement interval in seconds when device should read from meter",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "okkMeasurementInterval",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateConfig",
+          "description": "set the whole config on the device as jsonString",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "jsonConfig",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updatePrecision",
+          "description": "return precision of the float values",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "obisPrecision",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateAccessPointOpen",
+          "description": "open device AccessPoint on true, otherwise close AP",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "state",
+              "description": null,
+              "type": "BOOLEAN",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:Protocol:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Protocol",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Protocol",
+      "description": "Protocol provided for downloading an artificat",
+      "category": null,
+      "fileName": "Protocol.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "HTTP",
+          "description": null,
+          "parent": {
+            "name": "Protocol",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+          }
+        },
+        {
+          "name": "HTTPS",
+          "description": null,
+          "parent": {
+            "name": "Protocol",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+          }
+        },
+        {
+          "name": "FTP",
+          "description": null,
+          "parent": {
+            "name": "Protocol",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+          }
+        },
+        {
+          "name": "SFTP",
+          "description": null,
+          "parent": {
+            "name": "Protocol",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+          }
+        }
+      ]
+    },
+    "org.eclipse.hawkbit:DependencyDescription:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "DependencyDescription",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareDescription",
+      "description": "Describes a software installed on the device.",
+      "category": null,
+      "fileName": "DependencyDescription.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "group",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "name",
+          "description": "Name of the software.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "version",
+          "description": "Version of the software.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "vorto.private.bosch.io.hrm.test:BsedNanoBeemes:1.0.2": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedNanoBeemes",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.2",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedNanoBeemes:1.0.2"
+      },
+      "type": "InformationModel",
+      "displayName": "BsedNanoBeemes",
+      "description": "Information Model for BsedNanoBeemes",
+      "category": null,
+      "fileName": "BsedNanoBeemes.infomodel",
+      "modelType": "Infomodel",
+      "references": [
+        {
+          "name": "SoftwareUpdatable",
+          "namespace": "org.eclipse.hawkbit.swupdatable",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit.swupdatable:SoftwareUpdatable:2.0.0"
+        },
+        {
+          "name": "BsedMeterDevice",
+          "namespace": "vorto.private.bosch.io.hrm.test",
+          "version": "1.0.4",
+          "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4"
+        }
+      ],
+      "functionblocks": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "softwareupdatable",
+          "description": null,
+          "type": {
+            "name": "SoftwareUpdatable",
+            "namespace": "org.eclipse.hawkbit.swupdatable",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit.swupdatable:SoftwareUpdatable:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "bsedMeterDevice",
+          "description": null,
+          "type": {
+            "name": "BsedMeterDevice",
+            "namespace": "vorto.private.bosch.io.hrm.test",
+            "version": "1.0.4",
+            "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ]
+    },
+    "org.eclipse.hawkbit:Url:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Url",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:Url:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Url",
+      "description": "Datatype for Url",
+      "category": null,
+      "fileName": "Url.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "http",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "https",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:SoftwareArtifactAction:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareArtifactAction",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:SoftwareArtifactAction:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareArtifactAction",
+      "description": "Datatype for SoftwareArtifactAction",
+      "category": null,
+      "fileName": "SoftwareArtifactAction.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "Unit",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.1",
+          "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+        },
+        {
+          "name": "Protocol",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+        },
+        {
+          "name": "Hash",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+        },
+        {
+          "name": "Links",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:Links:2.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "filename",
+          "description": "Filename of the software module artifact.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "download",
+          "description": "Urls to download the artifact.",
+          "type": {
+            "key": {
+              "name": "Protocol",
+              "namespace": "org.eclipse.hawkbit",
+              "version": "2.0.0",
+              "prettyFormat": "org.eclipse.hawkbit:Protocol:2.0.0"
+            },
+            "value": {
+              "name": "Links",
+              "namespace": "org.eclipse.hawkbit",
+              "version": "2.0.0",
+              "prettyFormat": "org.eclipse.hawkbit:Links:2.0.0"
+            },
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "checksums",
+          "description": "Checkum values for checksum urls.",
+          "type": {
+            "key": {
+              "name": "Hash",
+              "namespace": "org.eclipse.hawkbit",
+              "version": "2.0.0",
+              "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+            },
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "size",
+          "description": "Artifact size.",
+          "type": "LONG",
+          "constraints": [],
+          "attributes": [
+            {
+              "type": "MEASUREMENT_UNIT",
+              "value": {
+                "name": "Byte",
+                "description": null,
+                "parent": {
+                  "name": "Unit",
+                  "namespace": "org.eclipse.vorto",
+                  "version": "1.0.1",
+                  "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+                }
+              }
+            }
+          ],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareUpdateAction",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:SoftwareUpdateAction:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareUpdateAction",
+      "description": "Parameter used for instructing the device to install or download one or more software.",
+      "category": null,
+      "fileName": "SoftwareUpdateAction.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "SoftwareModuleAction",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleAction:2.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "An identifier used to correlate the status updates sent from the device for this action.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "softwareModules",
+          "description": "Software modules that needs to be processed.",
+          "type": {
+            "name": "SoftwareModuleAction",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleAction:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "weight",
+          "description": "Priority in case of multiple, parallel installation instructions.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "1000"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "metadata",
+          "description": "Any other information which should be passed to the device.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "forced",
+          "description": "Indicates the urgency of the update. when true, the device should install as soon as possible.",
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:SoftwareModuleAction:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareModuleAction",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleAction:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareModuleAction",
+      "description": "Parameter representing a software module - a collection of artifacts to be downloaded and installed",
+      "category": null,
+      "fileName": "SoftwareModuleAction.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "SoftwareArtifactAction",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareArtifactAction:2.0.0"
+        },
+        {
+          "name": "SoftwareModuleId",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "2.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleId:2.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "softwareModule",
+          "description": "A unique indentifier for the software module.",
+          "type": {
+            "name": "SoftwareModuleId",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleId:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "artifacts",
+          "description": "List of software artifacts contained in the module.",
+          "type": {
+            "name": "SoftwareArtifactAction",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:SoftwareArtifactAction:2.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "metadata",
+          "description": "Any other information which should be passed to the device.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:Status:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Status",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Status",
+      "description": "Datatype for Status",
+      "category": null,
+      "fileName": "Status.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "STARTED",
+          "description": "Confirmation that the request is received.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "DOWNLOADING",
+          "description": "Required dependencies are being downloaded.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "DOWNLOADING_WAITING",
+          "description": "In the state of downloading, but waiting for another operation to complete. Ex: user confirmation.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "DOWNLOADED",
+          "description": "Software has been downloaded.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "INSTALLING",
+          "description": "Software is being installed.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "INSTALLING_WAITING",
+          "description": "In the state of installing, but waiting for another operation to complete. Ex: user confirmation, completion of another software etc.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "INSTALLED",
+          "description": "Software has been installed.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "REMOVING",
+          "description": "Software is in the progress of beeing removed",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "REMOVING_WAITING",
+          "description": "Software remove is waiting for some conditions, e.g. user-confirmation",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "REMOVED",
+          "description": "Software part has been removed - final sucess of all removals should report FINISHED_SUCCESS",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "CANCELING",
+          "description": "Operation is being cancelled.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "CANCELING_WAITING",
+          "description": "Cancel is waiting. Ex: user confirmation.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "CANCEL_REJECTED",
+          "description": "Cancel could not be performed.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "FINISHED_CANCELED",
+          "description": "Operation is successfully cancelled.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "FINISHED_ERROR",
+          "description": "Operation is completed with errors.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "FINISHED_SUCCESS",
+          "description": "Operation is completed successfully.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "FINISHED_WARNING",
+          "description": "Operation is completed with warnings.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        },
+        {
+          "name": "FINISHED_REJECTED",
+          "description": "Operation is rejected.",
+          "parent": {
+            "name": "Status",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Status:2.0.0"
+          }
+        }
+      ]
+    },
+    "org.eclipse.hawkbit:SoftwareModuleId:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareModuleId",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:SoftwareModuleId:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareModuleId",
+      "description": "Unique identifier for software-modules",
+      "category": null,
+      "fileName": "SoftwareModuleId.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "name",
+          "description": "Name for the software module.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "version",
+          "description": "Version of the software module.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.vorto:Unit:1.0.1": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Unit",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.1",
+        "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+      },
+      "type": "Datatype",
+      "displayName": "Unit",
+      "description": "SI units plus some common imperial units",
+      "category": null,
+      "fileName": "Unit.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "second",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "metre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilogram",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "ampere",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kelvin",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "mole",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "candela",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "squareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "cubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "metrePerSecond",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "reciprocalMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilogramPerCubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilogramPerSquareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "cubicMetrePerKilogram",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "amperePerSquareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "amperePerMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "molePerCubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "candelaPerSquareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "radian",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "steriadian",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "hertz",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "newton",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "pascal",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joule",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "watt",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "coulomb",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "volt",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "farad",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "ohm",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "siemens",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "weber",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "tesla",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "henry",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "degreeCelsius",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "lumen",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "lux",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "becquerel",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "gray",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "sievert",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "katal",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "pascalSecond",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "newtonMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "newtonPerMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "radianPerSecond",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "radianPerSecondSquared",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "wattPerSquareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerKelvin",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerKilogramKelvin",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerKilogram",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "wattPerMetreKelvin",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerCubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "voltPerMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "coulombPerCubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "coulombPerSquareMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "faradPerMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "henryPerMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerMole",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "joulePerMoleKelvin",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "coulombPerKilogram",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "grayPerSecond",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "wattPerSteradian",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "wattPerSquareMetreSteradia",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "katalPerCubicMetre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "calorie",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kiloCalorie",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "inch",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "feet",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "yard",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "mile",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "nauticalMile",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "pound",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "stone",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "poundPerSquareInch",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "milePerHour",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "fahrenheit",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "percent",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "beatsPerMinute",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "rotationsPerMinute",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilometre",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilometrePerHour",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "degreeAngle",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "secondsSinceBegin1970",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "minute",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "bar",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "millibar",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kiloWattHour",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "Byte",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "kilobyte",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "megabyte",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        },
+        {
+          "name": "gigabyte",
+          "description": null,
+          "parent": {
+            "name": "Unit",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.1",
+            "prettyFormat": "org.eclipse.vorto:Unit:1.0.1"
+          }
+        }
+      ]
+    },
+    "org.eclipse.hawkbit:Links:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Links",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:Links:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Links",
+      "description": "Datatype for Links",
+      "category": null,
+      "fileName": "Links.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "Url",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:Url:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "url",
+          "description": "Url to download the artifact.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "md5url",
+          "description": "Url to download the MD5SUM file.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:Hash:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Hash",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Hash",
+      "description": "Datatype for Hash",
+      "category": null,
+      "fileName": "Hash.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "SHA1",
+          "description": null,
+          "parent": {
+            "name": "Hash",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+          }
+        },
+        {
+          "name": "MD5",
+          "description": null,
+          "parent": {
+            "name": "Hash",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+          }
+        },
+        {
+          "name": "SHA256",
+          "description": null,
+          "parent": {
+            "name": "Hash",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "2.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:Hash:2.0.0"
+          }
+        }
+      ]
+    },
+    "org.eclipse.hawkbit:DependencyDescription:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "DependencyDescription",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "DependencyDescription",
+      "description": "Describes an installed software or other dependencies for a device.",
+      "category": null,
+      "fileName": "DependencyDescription.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "group",
+          "description": "Group name (e.g. vendor). This should be unique together with name.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "name",
+          "description": "Name of the software or hardware part.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "version",
+          "description": "Version or value uniquely identifying the software or hardware.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "type",
+          "description": "An additional classification type, e.g. hw-part, docker, etc.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SoftwareRemoveAction",
+        "namespace": "org.eclipse.hawkbit",
+        "version": "2.0.0",
+        "prettyFormat": "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SoftwareRemoveAction",
+      "description": "Action instructing the device to remove a defined set of software.",
+      "category": null,
+      "fileName": "SoftwareRemoveAction.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "DependencyDescription",
+          "namespace": "org.eclipse.hawkbit",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "correlationId",
+          "description": "An identifier used to correlate the status updates sent from the device for this action.",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "software",
+          "description": "Software to be removed.",
+          "type": {
+            "name": "DependencyDescription",
+            "namespace": "org.eclipse.hawkbit",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "weight",
+          "description": "Priority in case of multiple, parallel instructions.",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "1000"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "metadata",
+          "description": "MetaData associated with Eclipse hawkBit's Distribution Set.",
+          "type": {
+            "key": "STRING",
+            "value": "STRING",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "forced",
+          "description": "Indicates the urgency of the update, when true the device should install as soon as possible.",
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    }
+  }
+}

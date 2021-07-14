@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace vorto.private.bosch.io.hrm.test
+version 1.0.2
+displayname "BsedNanoBeemes"
+description "Information Model for BsedNanoBeemes"
+
+using org.eclipse.hawkbit.swupdatable.SoftwareUpdatable;2.0.0
+using vorto.private.bosch.io.hrm.test.BsedMeterDevice;1.0.4
+
+infomodel BsedNanoBeemes {
+
+	functionblocks {
+	mandatory softwareupdatable as SoftwareUpdatable
+	mandatory bsedMeterDevice as BsedMeterDevice
+	}
+}

@@ -1,0 +1,598 @@
+{
+  "root": {
+    "name": "BsedMeterDevice",
+    "namespace": "vorto.private.bosch.io.hrm.test",
+    "version": "1.0.4",
+    "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4"
+  },
+  "models": {
+    "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedMeasurement",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.0",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "BsedMeasurement",
+      "description": "Datatype for BsedMeasurement",
+      "category": null,
+      "fileName": "BsedMeasurement.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "timestamp",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "measurements",
+          "description": null,
+          "type": {
+            "key": "STRING",
+            "value": "FLOAT",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedMeterDevice",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.4",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeterDevice:1.0.4"
+      },
+      "type": "Functionblock",
+      "displayName": "BsedMeterDevice",
+      "description": "Functionblock for BsedMeterDevice",
+      "category": null,
+      "fileName": "BsedMeterDevice.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "BsedMeasurement",
+          "namespace": "vorto.private.bosch.io.hrm.test",
+          "version": "1.0.0",
+          "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+        }
+      ],
+      "configurationProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterPIN",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterType",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterFactor",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkDeliveryInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkStatusInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkMeasurementInterval",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "obisPrecision",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkActive",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "okkDeliveryObis",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": true,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "timeserverUrl",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "lastTimesync",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "actualTime",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "wlanRssi",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "fwVersion",
+          "description": "OKK Firmware Version (example: FW1.23)",
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "values",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "extendedValues",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "meterId",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "measurementInfo",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "accessPointOpen",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "faultProperties": [],
+      "events": [
+        {
+          "name": "measurementsEvent",
+          "properties": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": true,
+              "name": "measurements",
+              "description": null,
+              "type": {
+                "name": "BsedMeasurement",
+                "namespace": "vorto.private.bosch.io.hrm.test",
+                "version": "1.0.0",
+                "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+              },
+              "constraints": [],
+              "attributes": [],
+              "multiple": true,
+              "primitive": false
+            }
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateMeterPIN",
+          "description": "set meter PIN to retrieve extended measurement set",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "meterPIN",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateDeliveryInterval",
+          "description": "set delivery interval for measurement messages in seconds",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "updateInterval",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateStatusInterval",
+          "description": "set delivery interval for status messages in seconds",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "updateStatus",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateDeliveryObis",
+          "description": "set the Obis collected by the device as CSV string, eg. [\"1.8.0\",\"16.7.0\"] ",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "deliveryObisCsv",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateActiveStatus",
+          "description": "disable/enable device measurements",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "status",
+              "description": null,
+              "type": "BOOLEAN",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateTimeserverURL",
+          "description": "set URL to synchronize internal device clock, eg. https://ntp.org",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "ntpUrl",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateMeasurementInterval",
+          "description": "set measurement interval in seconds when device should read from meter",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "okkMeasurementInterval",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateConfig",
+          "description": "set the whole config on the device as jsonString",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "jsonConfig",
+              "description": null,
+              "type": "STRING",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updatePrecision",
+          "description": "return precision of the float values",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "obisPrecision",
+              "description": null,
+              "type": "INT",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "name": "updateAccessPointOpen",
+          "description": "open device AccessPoint on true, otherwise close AP",
+          "result": null,
+          "params": [
+            {
+              "targetPlatformKey": null,
+              "stereotypes": [],
+              "mappingReference": null,
+              "mandatory": false,
+              "name": "state",
+              "description": null,
+              "type": "BOOLEAN",
+              "constraints": [],
+              "multiple": false,
+              "primitive": true
+            }
+          ],
+          "breakable": false
+        }
+      ],
+      "superType": null
+    }
+  }
+}
