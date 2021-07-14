@@ -1,0 +1,52 @@
+vortolang 1.0
+namespace vorto.private.bosch.io.hrm.test
+version 1.0.4
+displayname "BsedMeterDevice"
+description "Functionblock for BsedMeterDevice"
+
+using vorto.private.bosch.io.hrm.test.BsedMeasurement;1.0.0
+
+functionblock BsedMeterDevice {
+configuration {
+mandatory meterPIN as string
+mandatory meterType as string //could be also an enum
+mandatory meterFactor as int
+mandatory okkDeliveryInterval as int
+mandatory okkStatusInterval as int
+mandatory okkMeasurementInterval as int
+mandatory obisPrecision as int
+mandatory okkActive as boolean 
+mandatory multiple okkDeliveryObis as string 
+mandatory timeserverUrl as string
+
+}
+operations {
+    updateMeterPIN(meterPIN as string) "set meter PIN to retrieve extended measurement set"
+    updateDeliveryInterval(updateInterval as int) "set delivery interval for measurement messages in seconds"
+    updateStatusInterval(updateStatus as int) "set delivery interval for status messages in seconds"
+    updateDeliveryObis(deliveryObisCsv as string) "set the Obis collected by the device as CSV string, eg. [\"1.8.0\",\"16.7.0\"] "
+    updateActiveStatus(status as boolean) "disable/enable device measurements"
+    updateTimeserverURL(ntpUrl as string) "set URL to synchronize internal device clock, eg. https://ntp.org"
+    updateMeasurementInterval(okkMeasurementInterval as int) "set measurement interval in seconds when device should read from meter"
+    updateConfig (jsonConfig as string) "set the whole config on the device as jsonString"
+    updatePrecision(obisPrecision as int) "return precision of the float values"
+    updateAccessPointOpen(state as boolean) "open device AccessPoint on true, otherwise close AP"
+}
+events {
+  measurementsEvent  { 
+        
+        multiple measurements as BsedMeasurement
+    }
+    }
+status {
+    mandatory lastTimesync as dateTime //last ntp update
+    mandatory actualTime as dateTime 
+    mandatory wlanRssi as int
+    mandatory fwVersion as string "OKK Firmware Version (example: FW1.23)"
+    mandatory values as boolean // meter attached?
+    mandatory extendedValues as boolean 
+    mandatory meterId as string //1ESY132354356436
+    optional measurementInfo as string
+    optional accessPointOpen as boolean
+    }
+}

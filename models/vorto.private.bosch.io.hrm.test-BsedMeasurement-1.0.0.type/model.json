@@ -1,0 +1,62 @@
+{
+  "root": {
+    "name": "BsedMeasurement",
+    "namespace": "vorto.private.bosch.io.hrm.test",
+    "version": "1.0.0",
+    "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+  },
+  "models": {
+    "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BsedMeasurement",
+        "namespace": "vorto.private.bosch.io.hrm.test",
+        "version": "1.0.0",
+        "prettyFormat": "vorto.private.bosch.io.hrm.test:BsedMeasurement:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "BsedMeasurement",
+      "description": "Datatype for BsedMeasurement",
+      "category": null,
+      "fileName": "BsedMeasurement.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "timestamp",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "measurements",
+          "description": null,
+          "type": {
+            "key": "STRING",
+            "value": "FLOAT",
+            "type": "dictionary"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    }
+  }
+}

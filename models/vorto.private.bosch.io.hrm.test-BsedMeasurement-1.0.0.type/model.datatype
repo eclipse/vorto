@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace vorto.private.bosch.io.hrm.test
+version 1.0.0
+displayname "BsedMeasurement"
+description "Datatype for BsedMeasurement"
+
+entity BsedMeasurement {
+    mandatory timestamp as dateTime
+    mandatory measurements as dictionary[string, float]
+}
