@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "Error"
+description "Represents an error information to utilize its definition and interpretation via a code and a message"
+
+entity Error {
+    optional code as int "The code for the error"
+    optional message as string "Helper message for interpreting the error"
+}
