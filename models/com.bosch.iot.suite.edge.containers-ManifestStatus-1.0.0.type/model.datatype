@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "ManifestStatus"
+description "Represents the processing status of the provided manifest to apply"
+
+enum ManifestStatus {
+    STARTED,
+    RUNNING,
+    MODIFIED_LOCALLY,
+    FINISHED_SUCCESS,
+    FINISHED_ERROR,
+    FINISHED_REJECTED
+}
