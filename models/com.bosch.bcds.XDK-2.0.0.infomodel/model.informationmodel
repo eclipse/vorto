@@ -1,0 +1,32 @@
+vortolang 1.0
+
+namespace com.bosch.bcds
+version 2.0.0
+displayname "XDK"
+description "Bosch XDK providing various sensors"
+
+using org.eclipse.vorto.Rotation; 1.0.0
+using org.eclipse.vorto.Acceleration; 1.0.0
+using org.eclipse.vorto.Humidity; 1.0.0
+using org.eclipse.vorto.MagneticStrength; 1.0.0
+using org.eclipse.vorto.BarometricPressure; 1.0.0
+using org.eclipse.vorto.Temperature; 1.0.0
+using org.eclipse.vorto.Illuminance; 1.0.0
+using org.eclipse.vorto.Acoustics; 1.0.0
+using org.eclipse.vorto.Battery; 1.0.0
+using org.eclipse.vorto.Connectivity; 1.0.0
+
+infomodel XDK {
+	functionblocks {
+		rotation as Rotation
+		acceleration as Acceleration
+		humidity as Humidity
+		magneticStrength as MagneticStrength
+		pressure as BarometricPressure
+		temperature as Temperature
+		illuminance as Illuminance
+		acoustics as Acoustics
+		battery as Battery
+		connectivity as Connectivity
+	}
+}

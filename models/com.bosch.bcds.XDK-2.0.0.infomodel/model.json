@@ -1,0 +1,1295 @@
+{
+  "root": {
+    "name": "XDK",
+    "namespace": "com.bosch.bcds",
+    "version": "2.0.0",
+    "prettyFormat": "com.bosch.bcds:XDK:2.0.0"
+  },
+  "models": {
+    "org.eclipse.vorto:Illuminance:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Illuminance",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Illuminance:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Illuminance",
+      "description": "Functionblock for Illuminance",
+      "category": "sensors",
+      "fileName": "Illuminance.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto.types:SensorValue:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SensorValue",
+        "namespace": "org.eclipse.vorto.types",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SensorValue",
+      "description": "A float-based data type representing a sensor's current, minimum and maximum measured output",
+      "category": null,
+      "fileName": "SensorValue.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "currentMeasured",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "minMeasured",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "maxMeasured",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.vorto:Battery:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Battery",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Battery:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Battery",
+      "description": "Functionblock for Battery",
+      "category": "peripheral",
+      "fileName": "Battery.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "Percentage",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+        },
+        {
+          "name": "Percentage",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "remainingCapacityAmpHour",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "remainingCapacity",
+          "description": null,
+          "type": {
+            "name": "Percentage",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": {
+        "name": "Voltage",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Voltage:1.0.0"
+      }
+    },
+    "org.eclipse.vorto:BarometricPressure:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "BarometricPressure",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:BarometricPressure:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "BarometricPressure",
+      "description": "Functionblock for BarometricPressure",
+      "category": "sensors",
+      "fileName": "BarometricPressure.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "seaLevel",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Connectivity:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Connectivity",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Connectivity:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Connectivity",
+      "description": "Functionblock for Connectivity",
+      "category": "connectivity",
+      "fileName": "Connectivity.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "ConnectivityStatus",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+        },
+        {
+          "name": "ConnectivityStatus",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "rssi",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "snr",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "lastSeen",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "status",
+          "description": null,
+          "type": {
+            "name": "ConnectivityStatus",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Temperature:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Temperature",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Temperature:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Temperature",
+      "description": "Functionblock for Temperature",
+      "category": "sensors",
+      "fileName": "Temperature.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto.types:Sensor3DValue:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Sensor3DValue",
+        "namespace": "org.eclipse.vorto.types",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SensorValue3D",
+      "description": "Datatype for Sensor3DValue",
+      "category": null,
+      "fileName": "Sensor3DValue.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "x",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "y",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "z",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "com.bosch.bcds:XDK:2.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "XDK",
+        "namespace": "com.bosch.bcds",
+        "version": "2.0.0",
+        "prettyFormat": "com.bosch.bcds:XDK:2.0.0"
+      },
+      "type": "InformationModel",
+      "displayName": "XDK",
+      "description": "Bosch XDK providing various sensors",
+      "category": null,
+      "fileName": "XDK.infomodel",
+      "modelType": "Infomodel",
+      "references": [
+        {
+          "name": "Rotation",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Rotation:1.0.0"
+        },
+        {
+          "name": "Acceleration",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Acceleration:1.0.0"
+        },
+        {
+          "name": "Humidity",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Humidity:1.0.0"
+        },
+        {
+          "name": "MagneticStrength",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:MagneticStrength:1.0.0"
+        },
+        {
+          "name": "BarometricPressure",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:BarometricPressure:1.0.0"
+        },
+        {
+          "name": "Temperature",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Temperature:1.0.0"
+        },
+        {
+          "name": "Illuminance",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Illuminance:1.0.0"
+        },
+        {
+          "name": "Acoustics",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Acoustics:1.0.0"
+        },
+        {
+          "name": "Battery",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Battery:1.0.0"
+        },
+        {
+          "name": "Connectivity",
+          "namespace": "org.eclipse.vorto",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto:Connectivity:1.0.0"
+        }
+      ],
+      "functionblocks": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "rotation",
+          "description": null,
+          "type": {
+            "name": "Rotation",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Rotation:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "acceleration",
+          "description": null,
+          "type": {
+            "name": "Acceleration",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Acceleration:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "humidity",
+          "description": null,
+          "type": {
+            "name": "Humidity",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Humidity:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "magneticStrength",
+          "description": null,
+          "type": {
+            "name": "MagneticStrength",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:MagneticStrength:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "pressure",
+          "description": null,
+          "type": {
+            "name": "BarometricPressure",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:BarometricPressure:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "temperature",
+          "description": null,
+          "type": {
+            "name": "Temperature",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Temperature:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "illuminance",
+          "description": null,
+          "type": {
+            "name": "Illuminance",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Illuminance:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "acoustics",
+          "description": null,
+          "type": {
+            "name": "Acoustics",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Acoustics:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "battery",
+          "description": null,
+          "type": {
+            "name": "Battery",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Battery:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "connectivity",
+          "description": null,
+          "type": {
+            "name": "Connectivity",
+            "namespace": "org.eclipse.vorto",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto:Connectivity:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ]
+    },
+    "org.eclipse.vorto:Rotation:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Rotation",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Rotation:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Rotation",
+      "description": "Functionblock for Rotation",
+      "category": "sensors",
+      "fileName": "Rotation.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        },
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "Sensor3DValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto.types:Percentage:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Percentage",
+        "namespace": "org.eclipse.vorto.types",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "Percentage",
+      "description": "Datatype for Percentage",
+      "category": "units",
+      "fileName": "Percentage.type",
+      "modelType": "EntityModel",
+      "references": [],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "0"
+            },
+            {
+              "type": "MAX",
+              "value": "100"
+            }
+          ],
+          "attributes": [],
+          "multiple": false,
+          "primitive": true
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.vorto.types:SensorValuePercentage:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "SensorValuePercentage",
+        "namespace": "org.eclipse.vorto.types",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto.types:SensorValuePercentage:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "SensorValuePercentage",
+      "description": "A percentage-based data type representing a sensor's current, minimum and maximum measured output",
+      "category": null,
+      "fileName": "SensorValuePercentage.type",
+      "modelType": "EntityModel",
+      "references": [
+        {
+          "name": "Percentage",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+        }
+      ],
+      "properties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "currentMeasured",
+          "description": null,
+          "type": {
+            "name": "Percentage",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "minMeasured",
+          "description": null,
+          "type": {
+            "name": "Percentage",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        },
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": false,
+          "name": "maxMeasured",
+          "description": null,
+          "type": {
+            "name": "Percentage",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Percentage:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "superType": null
+    },
+    "org.eclipse.vorto.types:ConnectivityStatus:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "ConnectivityStatus",
+        "namespace": "org.eclipse.vorto.types",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+      },
+      "type": "Datatype",
+      "displayName": "ConnectivityStatus",
+      "description": "Functionblock for ConnectivityStatus",
+      "category": "connectivity",
+      "fileName": "ConnectivityStatus.type",
+      "modelType": "EnumModel",
+      "references": [],
+      "literals": [
+        {
+          "name": "Connected",
+          "description": null,
+          "parent": {
+            "name": "ConnectivityStatus",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+          }
+        },
+        {
+          "name": "Connecting",
+          "description": null,
+          "parent": {
+            "name": "ConnectivityStatus",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+          }
+        },
+        {
+          "name": "Disconnected",
+          "description": null,
+          "parent": {
+            "name": "ConnectivityStatus",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:ConnectivityStatus:1.0.0"
+          }
+        }
+      ]
+    },
+    "org.eclipse.vorto:MagneticStrength:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "MagneticStrength",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:MagneticStrength:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "MagneticStrength",
+      "description": "The intensity of a magnetic field",
+      "category": "sensors",
+      "fileName": "MagneticStrength.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        },
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "Sensor3DValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Voltage:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Voltage",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Voltage:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Voltage",
+      "description": "Functionblock for Voltage",
+      "category": "sensor",
+      "fileName": "Voltage.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Acoustics:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Acoustics",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Acoustics:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Acoustics",
+      "description": "Functionblock for Acoustics",
+      "category": "sensors",
+      "fileName": "Acoustics.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        },
+        {
+          "name": "SensorValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Humidity:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Humidity",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Humidity:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Humidity",
+      "description": "Functionblock for Humidity",
+      "category": "sensors",
+      "fileName": "Humidity.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "SensorValuePercentage",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValuePercentage:1.0.0"
+        },
+        {
+          "name": "SensorValuePercentage",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:SensorValuePercentage:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "SensorValuePercentage",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:SensorValuePercentage:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    },
+    "org.eclipse.vorto:Acceleration:1.0.0": {
+      "targetPlatformKey": null,
+      "stereotypes": [],
+      "mappingReference": null,
+      "vortolang": "1.0",
+      "id": {
+        "name": "Acceleration",
+        "namespace": "org.eclipse.vorto",
+        "version": "1.0.0",
+        "prettyFormat": "org.eclipse.vorto:Acceleration:1.0.0"
+      },
+      "type": "Functionblock",
+      "displayName": "Acceleration",
+      "description": "",
+      "category": "sensors",
+      "fileName": "Acceleration.fbmodel",
+      "modelType": "FunctionblockModel",
+      "references": [
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        },
+        {
+          "name": "Sensor3DValue",
+          "namespace": "org.eclipse.vorto.types",
+          "version": "1.0.0",
+          "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+        }
+      ],
+      "configurationProperties": [],
+      "statusProperties": [
+        {
+          "targetPlatformKey": null,
+          "stereotypes": [],
+          "mappingReference": null,
+          "mandatory": true,
+          "name": "value",
+          "description": null,
+          "type": {
+            "name": "Sensor3DValue",
+            "namespace": "org.eclipse.vorto.types",
+            "version": "1.0.0",
+            "prettyFormat": "org.eclipse.vorto.types:Sensor3DValue:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "multiple": false,
+          "primitive": false
+        }
+      ],
+      "faultProperties": [],
+      "events": [],
+      "operations": [],
+      "superType": null
+    }
+  }
+}
