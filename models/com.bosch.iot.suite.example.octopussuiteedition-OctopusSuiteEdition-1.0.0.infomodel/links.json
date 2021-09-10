@@ -5,6 +5,6 @@
   "url" : "https://github.com/bosch-io/iot-things-examples/tree/master/octopus-firmware/octopus-hub",
   "displayText" : "Firmware sources"
 }, {
-  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Physical-device-connection---tutorial.html",
+  "url" : "https://docs.bosch-iot-suite.com/device-management/Physical-device-connection---Octopus.html",
   "displayText" : "Tutorial for device connection"
 } ]

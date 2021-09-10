@@ -1,10 +1,10 @@
 [ {
-  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Physical-device-connection---tutorial.html",
+  "url" : "https://docs.bosch-iot-suite.com/device-management/Physical-device-connection---Octopus.html",
   "displayText" : "Tutorial for device connection"
 }, {
   "url" : "https://console.bosch-iot-suite.com/virtual-demo-device",
   "displayText" : "Bosch IoT Suite Virtual Demo Device"
 }, {
-  "url" : "https://docs.bosch-iot-suite.com/asset-communication/Device-connection---Demo-device.html",
+  "url" : "https://docs.bosch-iot-suite.com/device-management/Device-connection---demo-device.html",
   "displayText" : "Tutorial for device connection using the virtual demo device"
 } ]
