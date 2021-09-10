@@ -19,3 +19,11 @@
   - Links: `GET http://localhost:8080/api/v1/attachments/com.bosch.test:Testmodel:1.0.0/links`
   - Images and other attachments: `GET http://localhost:8080/api/v1/attachments/com.bosch.test:Testmodel:1.0.0/`
 - Stop the docker containers    
+
+## Troubleshooting
+
+If you receive the following error message when trying to start the repository:
+
+`[ERROR] [Entrypoint]: MYSQL_USER="root", MYSQL_USER and MYSQL_PASSWORD are for configuring a regular user and cannot be used for the root user `
+
+comment or remove the line ``MYSQL_USER`` in `vorto-variables.env`
