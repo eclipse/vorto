@@ -831,27 +831,20 @@
         "stereotypes" : [ ],
         "mappingReference" : null,
         "name" : "rename",
-        "description" : null,
+        "description" : "Renames the container instance.",
         "result" : null,
-        "params" : [ ],
-        "breakable" : false
-      }, {
-        "targetPlatformKey" : null,
-        "stereotypes" : [ ],
-        "mappingReference" : null,
-        "name" : "name",
-        "description" : null,
-        "result" : null,
-        "params" : [ ],
-        "breakable" : false
-      }, {
-        "targetPlatformKey" : null,
-        "stereotypes" : [ ],
-        "mappingReference" : null,
-        "name" : "mandatory",
-        "description" : null,
-        "result" : null,
-        "params" : [ ],
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "name",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        } ],
         "breakable" : false
       }, {
         "targetPlatformKey" : null,

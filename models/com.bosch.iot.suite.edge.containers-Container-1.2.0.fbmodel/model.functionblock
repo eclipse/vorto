@@ -27,7 +27,7 @@ functionblock Container {
        stop() "Stops the container instance"
        stopWithOptions(options as StopOptions) "Stops the container instance applying the provided options"
        remove(force as boolean) "Removes the container instance and feature (if the removal is successful) and forces the removal if the container is runing"
-       rename(name as mandatory string) "Renames the container instance."
+       rename(name as string) "Renames the container instance."
        update(options as UpdateOptions) "Updates the container instance with the provided options."
   }
 
