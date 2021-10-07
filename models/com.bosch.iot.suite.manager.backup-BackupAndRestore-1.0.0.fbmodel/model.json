@@ -466,7 +466,7 @@
           "stereotypes": [],
           "mappingReference": null,
           "name": "trigger",
-          "description": null,
+          "description": "Represents the last triggered upload status.",
           "result": null,
           "params": [
             {
@@ -505,12 +505,8 @@
           "stereotypes": [],
           "mappingReference": null,
           "name": "cancel",
-          "description": null,
-          "result": {
-            "type": "BOOLEAN",
-            "multiple": false,
-            "primitive": true
-          },
+          "description": "Cancels the upload identified by the correlation ID, only if cancel operation is supported and the upload is not already finished.",
+          "result": null,
           "params": [
             {
               "targetPlatformKey": null,
@@ -598,7 +594,7 @@
           "mappingReference": null,
           "mandatory": true,
           "name": "type",
-          "description": null,
+          "description": "Represents the uploaded objects type, e.g. log, backup, diagnostics, etc.",
           "type": "STRING",
           "constraints": [],
           "attributes": [],
@@ -610,8 +606,8 @@
           "stereotypes": [],
           "mappingReference": null,
           "mandatory": true,
-          "name": "id",
-          "description": null,
+          "name": "context",
+          "description": "Represents the uploaded objects context, unique in the scope of the type. An example context for log type is 'application', 'system', etc.",
           "type": "STRING",
           "constraints": [],
           "attributes": [],
@@ -623,8 +619,8 @@
           "stereotypes": [],
           "mappingReference": null,
           "mandatory": false,
-          "name": "attributes",
-          "description": null,
+          "name": "info",
+          "description": "Represents the instance-specific information.",
           "type": {
             "key": "STRING",
             "value": "STRING",
@@ -641,7 +637,7 @@
           "mappingReference": null,
           "mandatory": true,
           "name": "lastUpload",
-          "description": null,
+          "description": "Represents the last triggered upload status.",
           "type": {
             "name": "UploadStatus",
             "namespace": "com.bosch.iot.suite.manager.upload",
@@ -665,7 +661,7 @@
               "mappingReference": null,
               "mandatory": true,
               "name": "correlationId",
-              "description": null,
+              "description": "Upload request correlation ID.",
               "type": "STRING",
               "constraints": [],
               "attributes": [],
@@ -678,7 +674,7 @@
               "mappingReference": null,
               "mandatory": false,
               "name": "options",
-              "description": null,
+              "description": "Contains upload request additional information. An example is supported storage providers, temporary credentials validity, uploaded object key, etc.",
               "type": {
                 "key": "STRING",
                 "value": "STRING",
@@ -698,7 +694,7 @@
           "stereotypes": [],
           "mappingReference": null,
           "name": "start",
-          "description": null,
+          "description": "Starts an upload with the provided correlation ID and options.\nGeneric upload options could contain\n- https.url - upload HTTPS url\n- https.method - upload HTTPS method, PUT is used by default\n- https.header.<header_key> - https.header. prefixed headers to be included in the upload request. An example is https.header.x-my-header-name: my-header-value when the upload request should include x-my-header-name: my-header-value header\nCloud-specific upload options could contain provider credentials. An example of AWS S3 upload options could be\n- aws.region\n- aws.access.key.id\n- aws.secret.access.key\n- aws.session.token\n- aws.s3.bucket\nAzure Blob Storage upload options could be\n- azure.storage.endpoint\n- azure.shared.access.signature\n- azure.blob.container\nOptions prefixed with info. should be included (without the prefix) in the lastUpload status. An example is info.downloadUrl containing the address the uploaded object could be downloaded from.",
           "result": null,
           "params": [
             {
@@ -765,7 +761,7 @@
           "stereotypes": [],
           "mappingReference": null,
           "name": "trigger",
-          "description": null,
+          "description": "Triggers upload request. Options contain request information. Options prefixed with options. should be included (without the prefix) in the sent request event options.",
           "result": null,
           "params": [
             {
@@ -804,12 +800,8 @@
           "stereotypes": [],
           "mappingReference": null,
           "name": "cancel",
-          "description": null,
-          "result": {
-            "type": "BOOLEAN",
-            "multiple": false,
-            "primitive": true
-          },
+          "description": "Cancels the upload identified by the correlation ID, only if cancel operation is supported and the upload is not already finished.",
+          "result": null,
           "params": [
             {
               "targetPlatformKey": null,
