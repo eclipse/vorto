@@ -79,8 +79,8 @@
           "value" : {
             "name" : "DependencyDescription",
             "namespace" : "org.eclipse.hawkbit",
-            "version" : "1.0.0",
-            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            "version" : "2.0.0",
+            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
           },
           "type" : "dictionary"
         },
@@ -100,8 +100,8 @@
           "value" : {
             "name" : "DependencyDescription",
             "namespace" : "org.eclipse.hawkbit",
-            "version" : "1.0.0",
-            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            "version" : "2.0.0",
+            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
           },
           "type" : "dictionary"
         },
@@ -368,8 +368,8 @@
         "type" : {
           "name" : "DependencyDescription",
           "namespace" : "org.eclipse.hawkbit",
-          "version" : "1.0.0",
-          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
         },
         "constraints" : [ ],
         "attributes" : [ ],
@@ -487,63 +487,6 @@
           "prettyFormat" : "org.eclipse.hawkbit:Protocol:2.0.0"
         }
       } ]
-    },
-    "org.eclipse.hawkbit:DependencyDescription:1.0.0" : {
-      "targetPlatformKey" : null,
-      "stereotypes" : [ ],
-      "mappingReference" : null,
-      "vortolang" : "1.0",
-      "id" : {
-        "name" : "DependencyDescription",
-        "namespace" : "org.eclipse.hawkbit",
-        "version" : "1.0.0",
-        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
-      },
-      "type" : "Datatype",
-      "displayName" : "SoftwareDescription",
-      "description" : "Describes a software installed on the device.",
-      "category" : null,
-      "fileName" : "DependencyDescription.type",
-      "modelType" : "EntityModel",
-      "references" : [ ],
-      "properties" : [ {
-        "targetPlatformKey" : null,
-        "stereotypes" : [ ],
-        "mappingReference" : null,
-        "mandatory" : false,
-        "name" : "group",
-        "description" : null,
-        "type" : "STRING",
-        "constraints" : [ ],
-        "attributes" : [ ],
-        "multiple" : false,
-        "primitive" : true
-      }, {
-        "targetPlatformKey" : null,
-        "stereotypes" : [ ],
-        "mappingReference" : null,
-        "mandatory" : true,
-        "name" : "name",
-        "description" : "Name of the software.",
-        "type" : "STRING",
-        "constraints" : [ ],
-        "attributes" : [ ],
-        "multiple" : false,
-        "primitive" : true
-      }, {
-        "targetPlatformKey" : null,
-        "stereotypes" : [ ],
-        "mappingReference" : null,
-        "mandatory" : true,
-        "name" : "version",
-        "description" : "Version of the software.",
-        "type" : "STRING",
-        "constraints" : [ ],
-        "attributes" : [ ],
-        "multiple" : false,
-        "primitive" : true
-      } ],
-      "superType" : null
     },
     "org.eclipse.hawkbit:Url:1.0.0" : {
       "targetPlatformKey" : null,
@@ -1197,8 +1140,8 @@
           "value" : {
             "name" : "DependencyDescription",
             "namespace" : "org.eclipse.hawkbit",
-            "version" : "1.0.0",
-            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            "version" : "2.0.0",
+            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
           },
           "type" : "dictionary"
         },
@@ -1218,8 +1161,8 @@
           "value" : {
             "name" : "DependencyDescription",
             "namespace" : "org.eclipse.hawkbit",
-            "version" : "1.0.0",
-            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+            "version" : "2.0.0",
+            "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
           },
           "type" : "dictionary"
         },
@@ -2413,8 +2356,8 @@
       "references" : [ {
         "name" : "DependencyDescription",
         "namespace" : "org.eclipse.hawkbit",
-        "version" : "1.0.0",
-        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
       } ],
       "properties" : [ {
         "targetPlatformKey" : null,
@@ -2438,8 +2381,8 @@
         "type" : {
           "name" : "DependencyDescription",
           "namespace" : "org.eclipse.hawkbit",
-          "version" : "1.0.0",
-          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
         },
         "constraints" : [ ],
         "attributes" : [ ],

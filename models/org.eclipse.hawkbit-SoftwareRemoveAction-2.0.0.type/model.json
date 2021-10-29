@@ -6,7 +6,7 @@
     "prettyFormat" : "org.eclipse.hawkbit:SoftwareRemoveAction:2.0.0"
   },
   "models" : {
-    "org.eclipse.hawkbit:DependencyDescription:1.0.0" : {
+    "org.eclipse.hawkbit:DependencyDescription:2.0.0" : {
       "targetPlatformKey" : null,
       "stereotypes" : [ ],
       "mappingReference" : null,
@@ -14,12 +14,12 @@
       "id" : {
         "name" : "DependencyDescription",
         "namespace" : "org.eclipse.hawkbit",
-        "version" : "1.0.0",
-        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
       },
       "type" : "Datatype",
-      "displayName" : "SoftwareDescription",
-      "description" : "Describes a software installed on the device.",
+      "displayName" : "DependencyDescription",
+      "description" : "Describes an installed software or other dependencies for a device.",
       "category" : null,
       "fileName" : "DependencyDescription.type",
       "modelType" : "EntityModel",
@@ -28,9 +28,9 @@
         "targetPlatformKey" : null,
         "stereotypes" : [ ],
         "mappingReference" : null,
-        "mandatory" : false,
+        "mandatory" : true,
         "name" : "group",
-        "description" : null,
+        "description" : "Group name (e.g. vendor). This should be unique together with name.",
         "type" : "STRING",
         "constraints" : [ ],
         "attributes" : [ ],
@@ -42,7 +42,7 @@
         "mappingReference" : null,
         "mandatory" : true,
         "name" : "name",
-        "description" : "Name of the software.",
+        "description" : "Name of the software or hardware part.",
         "type" : "STRING",
         "constraints" : [ ],
         "attributes" : [ ],
@@ -54,7 +54,19 @@
         "mappingReference" : null,
         "mandatory" : true,
         "name" : "version",
-        "description" : "Version of the software.",
+        "description" : "Version or value uniquely identifying the software or hardware.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "type",
+        "description" : "An additional classification type, e.g. hw-part, docker, etc.",
         "type" : "STRING",
         "constraints" : [ ],
         "attributes" : [ ],
@@ -83,8 +95,8 @@
       "references" : [ {
         "name" : "DependencyDescription",
         "namespace" : "org.eclipse.hawkbit",
-        "version" : "1.0.0",
-        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+        "version" : "2.0.0",
+        "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
       } ],
       "properties" : [ {
         "targetPlatformKey" : null,
@@ -108,8 +120,8 @@
         "type" : {
           "name" : "DependencyDescription",
           "namespace" : "org.eclipse.hawkbit",
-          "version" : "1.0.0",
-          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:1.0.0"
+          "version" : "2.0.0",
+          "prettyFormat" : "org.eclipse.hawkbit:DependencyDescription:2.0.0"
         },
         "constraints" : [ ],
         "attributes" : [ ],

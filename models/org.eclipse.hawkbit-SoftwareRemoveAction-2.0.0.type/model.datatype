@@ -3,7 +3,7 @@ namespace org.eclipse.hawkbit
 version 2.0.0
 displayname "SoftwareRemoveAction"
 description "Action instructing the device to remove a defined set of software."
-using org.eclipse.hawkbit.DependencyDescription;1.0.0
+using org.eclipse.hawkbit.DependencyDescription;2.0.0
 
 entity SoftwareRemoveAction {
   mandatory correlationId as string "An identifier used to correlate the status updates sent from the device for this action."
