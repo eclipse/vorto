@@ -1,0 +1,24 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.1.0
+displayname "State"
+description "Represents the current container's full state given the container's lifecycle"
+using com.bosch.iot.suite.edge.containers.Status ; 1.0.0
+
+entity State {
+  mandatory status as
+	Status "Represents the status of this container - Creating, Created, Running, Stopped, Paused, Exited, Dead, Unknown"
+
+	optional pid as int "Represents the container's process's PID"
+
+	optional error as
+	string "Indicates whether there was a problem that has occurred while changing the state of a container"
+
+	optional exitCode as int "Represents the last exit code of the container's internal root process"
+
+	optional startedAt as string "A timestamp of the last successfull container's start operation"
+
+	optional finishedAt as string "A timestamp of the last container's exit"
+
+	optional oomKilled as boolean "Indicated that container is killed due to out of memory"
+ }

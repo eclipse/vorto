@@ -2,10 +2,67 @@
   "root" : {
     "name" : "UpdateOptions",
     "namespace" : "com.bosch.iot.suite.edge.containers",
-    "version" : "1.0.0",
-    "prettyFormat" : "com.bosch.iot.suite.edge.containers:UpdateOptions:1.0.0"
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:UpdateOptions:1.1.0"
   },
   "models" : {
+    "com.bosch.iot.suite.edge.containers:Resources:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Resources",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Resources",
+      "description" : "Represents the container's resource constraints",
+      "category" : null,
+      "fileName" : "Resources.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memory",
+        "description" : "Hard memory limit. The maximum amount of memory the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). The minimum allowed value is 3M.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memoryReservation",
+        "description" : "Soft memory limit for the container in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set, must be smaller than memory.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memorySwap",
+        "description" : "Total amount of memory + swap that the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set must not be smaller than memory. If equal to memory, than the container will not have access to swap. If not set and memory is set, than the container can use as much swap as the memory setting. If set to -1, the container can use unlimited swap, up to the amount available on the host.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "superType" : null
+    },
     "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0" : {
       "targetPlatformKey" : null,
       "stereotypes" : [ ],
@@ -62,7 +119,7 @@
         }
       } ]
     },
-    "com.bosch.iot.suite.edge.containers:UpdateOptions:1.0.0" : {
+    "com.bosch.iot.suite.edge.containers:UpdateOptions:1.1.0" : {
       "targetPlatformKey" : null,
       "stereotypes" : [ ],
       "mappingReference" : null,
@@ -70,8 +127,8 @@
       "id" : {
         "name" : "UpdateOptions",
         "namespace" : "com.bosch.iot.suite.edge.containers",
-        "version" : "1.0.0",
-        "prettyFormat" : "com.bosch.iot.suite.edge.containers:UpdateOptions:1.0.0"
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:UpdateOptions:1.1.0"
       },
       "type" : "Datatype",
       "displayName" : "UpdateOptions",
@@ -84,6 +141,11 @@
         "namespace" : "com.bosch.iot.suite.edge.containers",
         "version" : "1.0.0",
         "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+      }, {
+        "name" : "Resources",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
       } ],
       "properties" : [ {
         "targetPlatformKey" : null,
@@ -97,6 +159,23 @@
           "namespace" : "com.bosch.iot.suite.edge.containers",
           "version" : "1.0.0",
           "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : false,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "resources",
+        "description" : "Updates the resource limits for the container.",
+        "type" : {
+          "name" : "Resources",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
         },
         "constraints" : [ ],
         "attributes" : [ ],

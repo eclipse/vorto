@@ -1,0 +1,217 @@
+{
+  "root" : {
+    "name" : "State",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.1.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:State:1.1.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:State:1.1.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "State",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:State:1.1.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "State",
+      "description" : "Represents the current container's full state given the container's lifecycle",
+      "category" : null,
+      "fileName" : "State.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Status",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : "Represents the status of this container - Creating, Created, Running, Stopped, Paused, Exited, Dead, Unknown",
+        "type" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : false,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "pid",
+        "description" : "Represents the container's process's PID",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "error",
+        "description" : "Indicates whether there was a problem that has occurred while changing the state of a container",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "exitCode",
+        "description" : "Represents the last exit code of the container's internal root process",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "startedAt",
+        "description" : "A timestamp of the last successfull container's start operation",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "finishedAt",
+        "description" : "A timestamp of the last container's exit",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "oomKilled",
+        "description" : "Indicated that container is killed due to out of memory",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:Status:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Status",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Status",
+      "description" : "Represents the current container's status given the container's lifecycle",
+      "category" : null,
+      "fileName" : "Status.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "CREATING",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "CREATED",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "RUNNING",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "STOPPED",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "PAUSED",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "EXITED",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "DEAD",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      }, {
+        "name" : "UNKNOWN",
+        "description" : null,
+        "parent" : {
+          "name" : "Status",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Status:1.0.0"
+        }
+      } ]
+    }
+  }
+}

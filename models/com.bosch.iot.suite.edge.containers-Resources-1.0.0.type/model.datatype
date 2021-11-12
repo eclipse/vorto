@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "Resources"
+description "Represents the container's resource constraints"
+
+entity Resources {
+	optional memory as string "Hard memory limit. The maximum amount of memory the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). The minimum allowed value is 3M."
+
+	optional memoryReservation as string "Soft memory limit for the container in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set, must be smaller than memory."
+
+	optional memorySwap as string "Total amount of memory + swap that the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set must not be smaller than memory. If equal to memory, than the container will not have access to swap. If not set and memory is set, than the container can use as much swap as the memory setting. If set to -1, the container can use unlimited swap, up to the amount available on the host."
+}
