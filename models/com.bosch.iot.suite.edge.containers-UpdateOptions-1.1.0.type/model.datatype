@@ -1,10 +1,13 @@
 vortolang 1.0
 namespace com.bosch.iot.suite.edge.containers
-version 1.0.0
+version 1.1.0
 displayname "UpdateOptions"
 description "Represents the container update options"
 using com.bosch.iot.suite.edge.containers.RestartPolicy ; 1.0.0
+using com.bosch.iot.suite.edge.containers.Resources ; 1.0.0
 
 entity UpdateOptions {
 	optional restartPolicy as RestartPolicy "Updates the restart policy for the container. The policy will be applied when the container exits."
+
+	optional resources as Resources "Updates the resource limits for the container."
 }
