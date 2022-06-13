@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.mkr
+version 1.0.0
+displayname "Arduino MKR Vidor 4000"
+description "Information Model for Arduino MKR Vidor 4000"
+
+using org.eclipse.ditto.examples.arduino.connectivity.WiFi;1.0.0
+
+	
+infomodel ArduinoMKRVidor4000 {
+
+	functionblocks {
+	    mandatory wifi as WiFi "Wi-Fi module"
+	}
+}

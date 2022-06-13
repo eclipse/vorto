@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.connectivity.wifi
+version 1.0.0
+displayname "EncryptionProtocol"
+description "Types of Wi-Fi encryption protocols"
+
+enum EncryptionProtocol {
+    WEP  "Wired Equivalent Privacy",
+    WPA  "Wi-Fi Protected Access",
+    WPA2 "Wi-Fi Protected Access Version 2",
+    NONE "Open wireless network",
+    AUTO "Dynamic Encryption"
+}

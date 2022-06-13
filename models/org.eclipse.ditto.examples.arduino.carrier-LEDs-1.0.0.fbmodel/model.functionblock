@@ -1,0 +1,25 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.carrier
+version 1.0.0
+displayname "LEDs"
+description "Functionblock for LEDs"
+
+using org.eclipse.ditto.examples.Color;1.0.0
+
+functionblock LEDs {
+  configuration {
+    numPixels as int "The number of pixels in the object"
+  }
+
+  status {
+    brightness as int <MIN 0, MAX 255> "Returns the overall brightness, from 0 (no brightness) to 255 (maximum brightness)."
+  }
+
+  operations{
+    fill(color as Color, first as int "First led to count", count as int "number of leds to fill") "Fill X amount of the LEDs with the same color."
+    setPixelColor(index as int "Pixel index", color as Color) "Sets the color of the index’s LED"
+    setBrightness(value as int <MIN 0, MAX 255>) "Set the overall brightness, from 0 (no brightness) to 255 (maximum brightness)."
+    clear() "Clear the buffer of the LEDs."
+    rainbow(hue as int, repetitions as int, saturation as int <MIN 0, MAX 255>, brightness as int <MIN 0, MAX 255>, gammify as boolean)
+  }
+}
