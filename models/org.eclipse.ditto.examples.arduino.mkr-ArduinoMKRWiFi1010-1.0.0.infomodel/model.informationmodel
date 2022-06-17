@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.mkr
+version 1.0.0
+displayname "Arduino MKR WiFi 1010"
+description "Information Model for Arduino MKR WiFi 1010"
+
+using org.eclipse.ditto.examples.arduino.LED;1.0.0
+using org.eclipse.ditto.examples.arduino.connectivity.WiFi;1.0.0
+
+infomodel ArduinoMKRWiFi1010 {
+
+	functionblocks {
+	    mandatory led as LED "Built-in RGB LED"
+	    mandatory wifi as WiFi "Wi-Fi module"
+	}
+}

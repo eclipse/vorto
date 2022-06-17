@@ -1,0 +1,21 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.carrier
+version 1.0.0
+displayname "Gesture"
+description "Functionblock for Gesture"
+
+using org.eclipse.ditto.examples.arduino.Direction;1.0.0
+
+functionblock Gesture {
+
+  status {
+    optional gesture as Direction "The movement direction"
+  }
+
+  operations {
+    setGestureSensitivity(sensitivity as int <MIN 1, MAX 100>  "The desired gesture sensitivity a value between 1 and 100 is required.
+Higher values makes the gesture recognition more sensible but less accurate (a wrong gesture may be detected),
+lower values makes the gesture recognition more accurate but less sensible (some gestures may be missed).
+The default sensitivity value is 80") "Sets gesture sensor sensitivity."
+	}
+}

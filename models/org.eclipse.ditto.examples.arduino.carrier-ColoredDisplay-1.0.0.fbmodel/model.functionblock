@@ -1,0 +1,28 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.carrier
+version 1.0.0
+displayname "ColoredDisplay"
+description "Functionblock for ColoredDisplay"
+
+using org.eclipse.ditto.examples.Color;1.0.0
+
+functionblock ColoredDisplay {
+
+  status {
+    mandatory currentText as string
+  }
+
+  operations {
+    fillScreen(color as Color) "Changes the screen color."
+
+    setRotation(value as int <MIN 0, MAX 3> "0 is the starting position with no rotation.
+1 - 90 degree rotation,
+2 - 180 degree rotation, and
+3 - 270 defree rotation") "Sets the angle of the screen."
+
+    print(text as string) "Prints the text at the current cursor position"
+    setTextColor(color as Color) "Sets the text color."
+    setTextSize(size as int) "Sets the text size"
+    setCursor(x as int, y as int) "Sets the cursor position"
+  }
+}

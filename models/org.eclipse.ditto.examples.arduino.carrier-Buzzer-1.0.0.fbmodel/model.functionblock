@@ -1,0 +1,21 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.carrier
+version 1.0.0
+displayname "Buzzer"
+description "Functionblock for a Sound Buzzer"
+
+functionblock Buzzer {
+
+  configuration {
+  }
+
+  status {
+  }
+
+  operations {
+    sound(frequency as int) "Makes a tone with the selected frequency."
+    noSound() "Stops the tone signal."
+    beep(frequency as int, duration as long) "Emits a beep with the given frequency (default 800) and duration in milliseconds (default 20)."
+  }
+
+}

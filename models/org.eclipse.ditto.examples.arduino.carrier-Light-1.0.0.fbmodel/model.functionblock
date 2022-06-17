@@ -1,0 +1,23 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.carrier
+version 1.0.0
+displayname "Light"
+description "Functionblock for Light"
+
+using org.eclipse.ditto.examples.Color;1.0.0
+
+functionblock Light {
+
+	status {
+		optional color as Color "The color represented in RGB"
+		optional intensity as int "The ambient light intensity"
+	}
+
+	operations {
+		setLEDBoost(boost_mode as int <MIN 0, MAX 3>) returns boolean "Sets the desired power increase.
+0 sets boost to 100% (this is the default power value),
+1 sets boost to 150%,
+2 sets boost to 200% and
+3 sets boost to 300%"
+	}
+}

@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino
+version 1.0.0
+displayname "Direction"
+description "Datatype for Direction"
+
+enum Direction {
+  UP,
+  DOWN,
+  RIGHT,
+  LEFT,
+  NONE
+}

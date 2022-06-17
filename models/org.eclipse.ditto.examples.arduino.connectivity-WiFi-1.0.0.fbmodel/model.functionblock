@@ -1,0 +1,21 @@
+vortolang 1.0
+namespace org.eclipse.ditto.examples.arduino.connectivity
+version 1.0.0
+displayname "Wi-Fi Module"
+description "Functionblock for Wi-Fi module"
+
+using org.eclipse.ditto.examples.arduino.connectivity.wifi.EncryptionProtocol;1.0.0
+
+functionblock WiFi {
+   status {
+        optional SSID as string "Name of the network the module is connected to"
+        optional BSSID as string "Access point MAC address the module is connected to"
+        optional RSSI as int <MIN -100, MAX 0> "Wi-Fi strength measured in dBm. This measure goes from -100 to 0, with -100 being the worst"
+        optional encryptionType as EncryptionProtocol "Encryption type of the current network"
+        optional mac as string "MAC Address"
+        optional localIP as string "IP address"
+        optional gatewayIP as string "Gateway IP address"
+        optional subnetMask as string "Subnet mask"
+   }
+   
+}
