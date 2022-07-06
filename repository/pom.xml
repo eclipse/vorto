@@ -201,7 +201,7 @@
 			<dependency>
 				<groupId>org.jgroups</groupId>
 				<artifactId>jgroups</artifactId>
-				<version>3.6.11.Final</version>
+				<version>4.0.0.Final</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
