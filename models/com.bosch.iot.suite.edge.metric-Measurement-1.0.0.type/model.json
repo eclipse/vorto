@@ -1,0 +1,55 @@
+{
+  "root" : {
+    "name" : "Measurement",
+    "namespace" : "com.bosch.iot.suite.edge.metric",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.metric:Measurement:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.metric:Measurement:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Measurement",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Measurement:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Measurement",
+      "description" : "Represents a measured value per measure identifier.",
+      "category" : null,
+      "fileName" : "Measurement.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "A measure identifier. For group of measure the syntax is <group>.<measure>, e.g. memory.total and memory.used.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "The measured value.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

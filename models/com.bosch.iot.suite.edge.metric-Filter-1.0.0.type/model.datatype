@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.metric
+version 1.0.0
+displayname "Filter"
+description "Represents the required metrics per originator."
+
+entity Filter {
+  optional originator as string "The originator identifier."
+  optional multiple ids as string "Measure identifiers per originator. Skip for all possible measures. Use '<group>.*' suffix to specify all identifiers within a group."
+}

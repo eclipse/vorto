@@ -1,0 +1,258 @@
+{
+  "root" : {
+    "name" : "Metrics",
+    "namespace" : "com.bosch.iot.suite.edge.metric",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.metric:Metrics:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.metric:Filter:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Filter",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Filter:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Filter",
+      "description" : "Represents the required metrics per originator.",
+      "category" : null,
+      "fileName" : "Filter.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "originator",
+        "description" : "The originator identifier.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "ids",
+        "description" : "Measure identifiers per originator. Skip for all possible measures. Use '<group>.*' suffix to specify all identifiers within a group.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.metric:Metrics:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Metrics",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Metrics:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "Metrics",
+      "description" : "Helper service that allows reporting runtime metrics on a specified frequency.",
+      "category" : null,
+      "fileName" : "Metrics.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "OriginatorMeasurements",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:OriginatorMeasurements:1.0.0"
+      }, {
+        "name" : "Filter",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Filter:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ ],
+      "faultProperties" : [ ],
+      "events" : [ {
+        "name" : "data",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "snapshot",
+          "description" : "Snapshot with the measurements collected per each originator matching the request filter.",
+          "type" : {
+            "name" : "OriginatorMeasurements",
+            "namespace" : "com.bosch.iot.suite.edge.metric",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.metric:OriginatorMeasurements:1.0.0"
+          },
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "primitive" : false,
+          "multiple" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "Metric data generation timestamp.",
+          "type" : "LONG",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        } ]
+      } ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "request",
+        "description" : "Metrics request definition or request for canceling metric reporting.",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "frequency",
+          "description" : "Reporting frequency as duration sting, e.g. '10m' or '30s'. Missing, zero or negative duration value is used to stop metric reporting.",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "primitive" : true,
+          "multiple" : false
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "filters",
+          "description" : "Describes a filter to limit data to only required metrics. Skip to request the default set of device metrics.",
+          "type" : {
+            "name" : "Filter",
+            "namespace" : "com.bosch.iot.suite.edge.metric",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.metric:Filter:1.0.0"
+          },
+          "constraints" : [ ],
+          "primitive" : false,
+          "multiple" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.metric:OriginatorMeasurements:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "OriginatorMeasurements",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:OriginatorMeasurements:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "OriginatorMeasurements",
+      "description" : "Represents all measurements per originator.",
+      "category" : null,
+      "fileName" : "OriginatorMeasurements.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Measurement",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Measurement:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "originator",
+        "description" : "The originator identifier.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "measurements",
+        "description" : "All measurements collected per originator.",
+        "type" : {
+          "name" : "Measurement",
+          "namespace" : "com.bosch.iot.suite.edge.metric",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.metric:Measurement:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : false,
+        "multiple" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.metric:Measurement:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Measurement",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Measurement:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Measurement",
+      "description" : "Represents a measured value per measure identifier.",
+      "category" : null,
+      "fileName" : "Measurement.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : "A measure identifier. For group of measure the syntax is <group>.<measure>, e.g. memory.total and memory.used.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : "The measured value.",
+        "type" : "FLOAT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.metric
+version 1.0.0
+displayname "OriginatorMeasurements"
+description "Represents all measurements per originator."
+
+using com.bosch.iot.suite.edge.metric.Measurement;1.0.0
+
+entity OriginatorMeasurements {
+  mandatory originator as string "The originator identifier."
+  mandatory multiple measurements as Measurement "All measurements collected per originator."
+}
