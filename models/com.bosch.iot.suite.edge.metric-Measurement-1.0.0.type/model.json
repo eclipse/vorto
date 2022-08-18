@@ -30,7 +30,7 @@
         "mappingReference" : null,
         "mandatory" : true,
         "name" : "id",
-        "description" : "The measure identifier. For group of measures the syntax is <group>.<measure>, e.g. memory.total and memory.used.",
+        "description" : "The measure identifier. For а group of measures the syntax is <group>.<measure>, e.g. memory.total and memory.used.",
         "type" : "STRING",
         "constraints" : [ ],
         "attributes" : [ ],

@@ -11,7 +11,7 @@ functionblock Metrics {
   events {
     data {
       mandatory multiple snapshot as OriginatorMeasurements "The snapshot with the measurements collected per each originator matching the request filter."
-      mandatory timestamp as long "The timestamp of metric data generation."
+      mandatory timestamp as long "The timestamp of the metric data generation."
     } "The metric data matching the provided request filter."
   }
 

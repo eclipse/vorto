@@ -5,6 +5,6 @@ displayname "Measurement"
 description "Represents a measured value per measure identifier."
 
 entity Measurement {
-  mandatory id as string "The measure identifier. For group of measures the syntax is <group>.<measure>, e.g. memory.total and memory.used."
+  mandatory id as string "The measure identifier. For а group of measures the syntax is <group>.<measure>, e.g. memory.total and memory.used."
   mandatory value as float "The measured value."
 }

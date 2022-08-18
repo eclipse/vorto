@@ -5,6 +5,6 @@ displayname "Filter"
 description "Represents the required metrics per originator."
 
 entity Filter {
-  optional originator as string "The originator identifier."
+  optional originator as string "The originator identifier. Skip to request measures for all originators, according to the context this could result in metrics reports for multiple originators or a single collective one."
   optional multiple ids as string "The measure identifiers per originator. Skip for all possible measures. Use '<group>.*' to specify all identifiers within a group."
 }
