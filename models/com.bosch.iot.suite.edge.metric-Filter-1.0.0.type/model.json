@@ -42,7 +42,7 @@
         "mappingReference" : null,
         "mandatory" : false,
         "name" : "ids",
-        "description" : "Measure identifiers per originator. Skip for all possible measures. Use '<group>.*' suffix to specify all identifiers within a group.",
+        "description" : "The measure identifiers per originator. Skip for all possible measures. Use '<group>.*' to specify all identifiers within a group.",
         "type" : "STRING",
         "constraints" : [ ],
         "attributes" : [ ],
