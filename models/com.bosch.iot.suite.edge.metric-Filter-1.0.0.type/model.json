@@ -1,0 +1,55 @@
+{
+  "root" : {
+    "name" : "Filter",
+    "namespace" : "com.bosch.iot.suite.edge.metric",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.metric:Filter:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.metric:Filter:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Filter",
+        "namespace" : "com.bosch.iot.suite.edge.metric",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.metric:Filter:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Filter",
+      "description" : "Represents the required metrics per originator.",
+      "category" : null,
+      "fileName" : "Filter.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "originator",
+        "description" : "The originator identifier. Skip to request measures for all originators, according to the context this could result in metrics reports for multiple originators or a single collective one.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "ids",
+        "description" : "The measure identifiers per originator. Skip for all possible measures. Use '<group>.*' to specify all identifiers within a group.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "primitive" : true,
+        "multiple" : true
+      } ],
+      "superType" : null
+    }
+  }
+}
