@@ -19,5 +19,5 @@ entity OperationStatus {
  optional progress as int with {
 		measurementUnit : org.eclipse.vorto.Unit.percent } <MIN 0 , MAX 100> "A progress indicator in percentage."
  optional message as string "Message from the device to give more context to the transmitted status."
- optional statusCode as string "Custom status code transmitted by the device."
+ optional statusCode as int "Custom status code transmitted by the device."
 }
