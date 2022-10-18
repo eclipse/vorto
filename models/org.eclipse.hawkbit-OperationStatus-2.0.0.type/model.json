@@ -1031,8 +1031,14 @@
         "mandatory" : false,
         "name" : "statusCode",
         "description" : "Custom status code transmitted by the device.",
-        "type" : "STRING",
-        "constraints" : [ ],
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "MIN",
+          "value" : "-2147483648"
+        }, {
+          "type" : "MAX",
+          "value" : "2147483647"
+        } ],
         "attributes" : [ ],
         "multiple" : false,
         "primitive" : true
